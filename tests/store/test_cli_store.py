@@ -210,14 +210,22 @@ def test_get_store_context_migrates_legacy_paths(tmp_path):
     assert (legacy_store / "core" / "store_index.yaml").exists()
 
 
-def test_get_store_context_mentions_global_store_when_no_local_exists(tmp_path, monkeypatch):
+def test_get_store_context_fails_when_no_local_and_no_global(tmp_path, monkeypatch):
     project = tmp_path / "project"
     project.mkdir()
     monkeypatch.chdir(project)
     monkeypatch.setenv("HOME", str(tmp_path / "home"))
 
-    with pytest.raises(SystemExit):
+    with pytest.raises(SystemExit) as exc:
         cli_main(["models", "list"])
+    assert "init --path" in str(exc.value)
+
+
+def test_get_store_context_readonly_falls_back_to_global(tmp_path, monkeypatch):
+    project = tmp_path / "project"
+    project.mkdir()
+    monkeypatch.chdir(project)
+    monkeypatch.setenv("HOME", str(tmp_path / "home"))
 
     global_store = Path.home() / ".sldb"
     from sldb.store.io import save_store_index
@@ -225,9 +233,8 @@ def test_get_store_context_mentions_global_store_when_no_local_exists(tmp_path, 
 
     save_store_index(global_store, StoreIndex())
 
-    with pytest.raises(SystemExit) as exc:
-        cli_main(["models", "list"])
-    assert f"Pass --store {global_store}" in str(exc.value)
+    result = cli_main(["models", "list"])
+    assert result == 0
 
 
 def test_model_add_sets_hash_a(tmp_path):

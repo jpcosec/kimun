@@ -107,6 +107,10 @@ def _add_stores_group(
     m.add_argument("concept_b", help="Second concept")
     m.add_argument("--store", help="Store path")
 
+    listing = s.add_parser("list", help="List federated stores.")
+    listing.add_argument("--store", help="Store path")
+    listing.add_argument("--format", choices=("text", "json", "yaml"), default="text")
+
 
 def _add_models_group(
     subparsers: argparse._SubParsersAction[argparse.ArgumentParser],
@@ -282,6 +286,10 @@ def _add_docs_group(
         action="store_true",
         help="Also inspect ![[transclusions]] as recoverable targets",
     )
+
+    listing = s.add_parser("list", help="List tracked documents.")
+    listing.add_argument("--store", help="Store path")
+    listing.add_argument("--format", choices=("text", "json", "yaml"), default="text")
 
     compose = s.add_parser(
         "compose",

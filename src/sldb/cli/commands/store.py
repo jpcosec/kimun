@@ -78,7 +78,7 @@ class StoreCLI:
     def check(self, args: Any) -> int:
         from sldb.store.diagnostics import diagnose_store
 
-        sp, root = get_store_context(args.store)
+        sp, root = get_store_context(args.store, mode="readonly")
         res = diagnose_store(sp, root, pythonpath=args.pythonpath)
 
         if args.format in ("json", "yaml"):

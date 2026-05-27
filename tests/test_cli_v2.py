@@ -251,7 +251,7 @@ def test_models_list_lists_registered_models(tmp_path, capsys):
     assert payload["models"][0]["documents"] == 1
 
 
-def test_models_list_reports_missing_local_store_and_global_scope(tmp_path, capsys, monkeypatch):
+def test_models_list_fails_on_no_store_and_no_global(tmp_path, capsys, monkeypatch):
     project = tmp_path / "no-store-project"
     project.mkdir()
     monkeypatch.chdir(project)
@@ -263,6 +263,13 @@ def test_models_list_reports_missing_local_store_and_global_scope(tmp_path, caps
     assert "No global store exists" in str(exc.value)
     assert "sldb stores init --path ." in str(exc.value)
 
+
+def test_models_list_falls_back_to_global_when_no_local(tmp_path, capsys, monkeypatch):
+    project = tmp_path / "no-store-project"
+    project.mkdir()
+    monkeypatch.chdir(project)
+    monkeypatch.setenv("HOME", str(tmp_path / "home"))
+
     home_store_root = Path.home()
     (home_store_root / ".sldb" / "core").mkdir(parents=True, exist_ok=True)
     (home_store_root / ".sldb" / "runtime").mkdir(parents=True, exist_ok=True)
@@ -271,10 +278,10 @@ def test_models_list_reports_missing_local_store_and_global_scope(tmp_path, caps
 
     save_store_index(home_store_root / ".sldb", StoreIndex())
 
-    with pytest.raises(SystemExit) as exc:
-        cli_main(["models", "list"])
-    assert "A global store exists at" in str(exc.value)
-    assert "Pass --store" in str(exc.value)
+    result = cli_main(["models", "list"])
+    assert result == 0
+    stderr = capsys.readouterr().err
+    assert "falling back to global store" in stderr
 
 
 def test_inbox_lists_and_shows_notes(tmp_path, capsys):

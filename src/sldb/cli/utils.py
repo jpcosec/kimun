@@ -63,8 +63,15 @@ def write_text(path: str, content: str) -> None:
     Path(path).write_text(content, encoding="utf-8")
 
 
-def get_store_context(store_arg: str | None) -> tuple[Path, Path]:
-    """Resolve store path and project root."""
+def get_store_context(
+    store_arg: str | None, mode: str = "default"
+) -> tuple[Path, Path]:
+    """Resolve store path and project root.
+
+    When *mode* is ``"readonly"`` and no local store is found,
+    falls back to the global ``~/.sldb/`` with a warning instead of
+    raising an error.
+    """
     from sldb.store.resolver import global_store_path, find_local_store
     from sldb.core.exceptions import SLDBStoreError
 
@@ -72,22 +79,32 @@ def get_store_context(store_arg: str | None) -> tuple[Path, Path]:
         sp = Path(store_arg).resolve()
     else:
         found = find_local_store()
-        if not found:
+        if found:
+            sp = found
+        else:
             cwd = Path.cwd().resolve()
             global_store = global_store_path().resolve()
             if global_store.exists():
+                if mode == "readonly":
+                    print(
+                        f"[warning] No local .sldb store; falling back to "
+                        f"global store at {global_store}",
+                        file=sys.stderr,
+                    )
+                    sp = global_store
+                else:
+                    raise SLDBStoreError(
+                        "No local .sldb store found from "
+                        f"{cwd}. A global store exists at {global_store}. "
+                        f"Pass --store {global_store} to use it, or run "
+                        "'sldb stores init --path .' to create a local store."
+                    )
+            else:
                 raise SLDBStoreError(
                     "No local .sldb store found from "
-                    f"{cwd}. A global store exists at {global_store}. "
-                    f"Pass --store {global_store} to use it, or run "
-                    "'sldb stores init --path .' to create a local store."
+                    f"{cwd}. No global store exists at {global_store}. "
+                    "Run 'sldb stores init --path .' to create one, or pass --store PATH."
                 )
-            raise SLDBStoreError(
-                "No local .sldb store found from "
-                f"{cwd}. No global store exists at {global_store}. "
-                "Run 'sldb stores init --path .' to create one, or pass --store PATH."
-            )
-        sp = found
     from sldb.store.layout import project_root, store_exists
     from sldb.store.migration import migrate_store_layout
 

@@ -1,10 +1,11 @@
 ---
 id: task-007
 domain: cli/store/ux
-status: open
+status: closed
 priority: p1
 depends_on: []
 created: "2026-05-27"
+closed: "2026-05-27"
 ---
 
 # Add first-class docs list and stores list discovery surfaces

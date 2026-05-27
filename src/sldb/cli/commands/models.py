@@ -59,7 +59,7 @@ class ModelsCLI:
         raise SystemExit(f"Unknown models command: {command}")
 
     def list(self, args: Any) -> int:
-        sp, root = get_store_context(args.store)
+        sp, root = get_store_context(args.store, mode="readonly")
         idx = load_store_index(sp)
         models = []
         for entry in sorted(idx.models, key=lambda item: item.name):
