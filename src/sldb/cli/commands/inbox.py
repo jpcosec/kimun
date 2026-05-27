@@ -19,6 +19,8 @@ from sldb.store.resolver import find_local_store
 class InboxCLI:
     """Log unclear points or suggestions into desk/inbox/."""
 
+    _MIN_DETAIL_CHARS = 24
+
     def run(self, args: Any) -> int:
         if args.list:
             return self._list_notes(args)
@@ -34,6 +36,7 @@ class InboxCLI:
 
         created_at = datetime.now()
         title = args.title.strip() if args.title else self._derive_title(args.message)
+        self._validate_message(args.message, title)
         slug = self._slug(title)
         path = inbox_dir / f"{created_at.strftime('%Y%m%d-%H%M%S')}-{args.kind}-{slug}.md"
         path.write_text(
@@ -45,6 +48,19 @@ class InboxCLI:
         if tracked_name:
             print(f"Tracked '{tracked_name}'")
         return 0
+
+    def _validate_message(self, message: str, title: str) -> None:
+        normalized = " ".join(message.strip().split())
+        if len(normalized) >= self._MIN_DETAIL_CHARS:
+            return
+        if "\n" in message.strip():
+            return
+        if normalized.lower() == title.strip().lower():
+            raise SLDBStoreError(
+                "Inbox note needs more detail. Provide at least one short explanatory sentence "
+                f"or a multi-line note; title-only placeholders under {self._MIN_DETAIL_CHARS} "
+                "characters are rejected."
+            )
 
     def _desk_root(self, args: Any) -> Path:
         if args.desk_root:

@@ -1,7 +1,7 @@
 ---
 id: task-006
 domain: desk/inbox/ux
-status: open
+status: done
 priority: p2
 depends_on: []
 created: "2026-05-26"

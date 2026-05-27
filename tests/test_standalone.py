@@ -67,6 +67,19 @@ Jinja greeting: Hello {{ title }}!
     )
 
 
+class PandocCVDoc(StructuredNLDoc):
+    __template__ = """
+# ⸢rev•title⸥
+
+⸢rev•body⸥
+""".strip()
+
+    title: str = Field(description="CV title shown in the H1 heading.")
+    body: str = Field(
+        description="Body after the H1, including lead paragraph, fenced div blocks, and nested headings."
+    )
+
+
 def _write_model_module(base_path: Path) -> str:
     module_path = base_path / "external_models.py"
     module_path.write_text(
@@ -164,6 +177,41 @@ status: stable
 
     payload_again = data_ext.extract_values(ast.split_nodes(rendered), recipes)
     assert payload_again == payload
+
+
+def test_title_body_model_roundtrips_pandoc_fenced_divs():
+    markdown = """
+# Curriculum Vitae
+
+This CV keeps Pandoc fenced div blocks intact so an external review UI can keep parsing them structurally.
+
+::: {.job role="Staff Engineer" org="Hum Labs" dates="2021-2024"}
+## Work
+
+Built the document pipeline.
+
+- Shipped structured review surfaces
+- Kept Markdown editable
+:::
+
+::: {.education degree="MSc" org="UNLP" dates="2018-2020"}
+## Education
+
+Studied computational linguistics.
+:::
+""".strip()
+
+    payload = extract_model_data(PandocCVDoc, markdown)
+    assert payload["title"] == "Curriculum Vitae"
+    assert "::: {.job role=\"Staff Engineer\"" in payload["body"]
+    assert "::: {.education degree=\"MSc\"" in payload["body"]
+
+    rendered = render_model_markdown(PandocCVDoc, payload)
+    assert "::: {.job role=\"Staff Engineer\"" in rendered
+    assert "::: {.education degree=\"MSc\"" in rendered
+
+    valid, details = validate_model_input_roundtrip(PandocCVDoc, markdown)
+    assert valid, details
 
 
 if __name__ == "__main__":

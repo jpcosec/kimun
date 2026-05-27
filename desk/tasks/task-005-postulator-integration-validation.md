@@ -1,7 +1,7 @@
 ---
 id: task-005
 domain: integration/store/workflow
-status: open
+status: done
 priority: p1
 depends_on: []
 created: "2026-05-26"

@@ -81,4 +81,5 @@ python -m sldb docs show req-ontology-feature-request --store .sldb --pythonpath
 - The current docs models are intentionally coarse and family-level.
 - Deep heading navigation comes from `sections` and semantic indexes more than from many fine-grained document fields.
 - Generic `title + body` models work best when the document starts with a short lead paragraph before jumping into dense fenced blocks.
+- That same shallow pattern is the current recommended path for Pandoc fenced div documents such as CVs: preserve the blocks in `body` first, then add custom handlers only if you need typed access to div attributes.
 - Atom docs are intentionally smaller and more repetitive than the narrative docs because they are meant to act as canonical concept definitions.

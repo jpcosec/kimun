@@ -88,6 +88,29 @@ sldb models list --store ~/.sldb --format yaml
 
 If you run a store-based command outside a repo with a local `.sldb/`, SLDB will now tell you whether it found a global `~/.sldb/` and whether you should pass `--store` explicitly.
 
+## Can SLDB model Pandoc fenced CV docs without redesigning them?
+
+Yes, at the shallow `title + body` level.
+
+If the CV already uses Pandoc fenced div blocks such as `::: {.job ...}` and `::: {.education ...}`, SLDB can preserve and round-trip those blocks as part of the body field without flattening the format.
+
+Recommended pattern:
+
+- keep the document model shallow, usually `title + body`
+- keep one short lead paragraph after the H1 before the first fenced div
+- let downstream tools continue parsing the fenced div attributes structurally
+
+Current limit:
+
+- SLDB does not yet treat fenced div attributes as first-class typed fields on its own
+- if you need `role`, `org`, `dates`, and similar attributes as typed fields, use a custom model or handler strategy for that document family
+
+Minimal example:
+
+```bash
+python -m sldb validate sldb.examples.pandoc_cv.cv_model:PandocCVDoc --input src/sldb/examples/pandoc_cv/cv.input.md --pythonpath .
+```
+
 ## What identifier do tracked docs use?
 
 A tracked doc has a logical store name plus a physical file path.
@@ -282,6 +305,8 @@ sldb inbox "Add more examples for docs update" --kind suggestion --title "docs u
 sldb inbox --list
 sldb inbox --show tracked-doc-names
 ```
+
+The note body must contain at least one short explanatory sentence. Title-only placeholders such as `Repo-targeted note` are rejected so the inbox stays actionable.
 
 Use `--kind unclear` for unresolved confusion and `--kind suggestion` for proposed improvements.
 If you need to force a different target, pass `--desk-root` explicitly or `--store` to anchor the desk to a specific project root.

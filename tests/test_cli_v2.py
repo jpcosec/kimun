@@ -213,6 +213,22 @@ def test_inbox_writes_desk_note(tmp_path, capsys):
     assert "The docs should explain tracked doc names more clearly." in text
 
 
+def test_inbox_rejects_title_only_placeholder(tmp_path):
+    desk_root = tmp_path / "desk"
+    with pytest.raises(SystemExit) as exc:
+        cli_main(
+            [
+                "inbox",
+                "Repo-targeted note",
+                "--kind",
+                "unclear",
+                "--desk-root",
+                str(desk_root),
+            ]
+        )
+    assert "Inbox note needs more detail" in str(exc.value)
+
+
 def test_models_list_lists_registered_models(tmp_path, capsys):
     store, pythonpath = _setup_store(tmp_path)
     capsys.readouterr()

@@ -244,6 +244,9 @@ Write an unclear point or suggestion into the target project's `desk/inbox/` as 
 If the active project has a store and a registered `InboxNoteDoc`, new notes are also
 auto-tracked into that store.
 
+Short title-only placeholders are rejected. Give the note at least one short explanatory
+sentence or use a multi-line body.
+
 Examples:
   sldb inbox "The docs still do not define tracked doc names clearly" --kind unclear
   sldb inbox "Add examples for docs update" --kind suggestion --title "docs update examples"

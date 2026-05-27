@@ -1,7 +1,7 @@
 ---
 id: task-004
 domain: models/docs/pandoc
-status: open
+status: done
 priority: p1
 depends_on: []
 created: "2026-05-26"

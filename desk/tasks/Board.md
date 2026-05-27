@@ -10,17 +10,18 @@ The next meaningful desk work is to consolidate open repo work into first-class 
 
 | Task | Domain | Focus |
 |------|--------|-------|
-| task-004 | models/docs/pandoc | Validate SLDB support for Pandoc fenced CV documents |
-| task-005 | integration/store/workflow | Define validation and workflow guidance for Postulator integration |
-| task-006 | desk/inbox/ux | Triage incomplete repo-targeted inbox notes |
-| task-002 | opsys/docs/ux | Export the locally drafted reporting and UX CLI testing guides into `opsys` |
 
-The active desk slice is now centered on downstream integration questions, document-shape validation, inbox hygiene, and one cross-repo handoff task that moves generic operational guides into `opsys`.
+
+The local SLDB backlog for the current slice is closed. Generic workflow guidance now lives in `deskops`, and the remaining workflow-native follow-up lives downstream rather than in the SLDB repo-local board.
 
 ## Recently Closed
 
 | Task | Domain | Outcome |
 |------|--------|---------|
+| task-002 | opsys/docs/ux | Exported the reporting and UX CLI testing guides into `deskops/docs/` and left forwarding references in `sldb` |
+| task-006 | desk/inbox/ux | Rejected title-only placeholder inbox notes and documented the minimum actionable note rule |
+| task-005 | integration/store/workflow | Added a minimal Postulator-style integration guide with store, tracking, and ownership recommendations |
+| task-004 | models/docs/pandoc | Proved shallow `title + body` support for Pandoc fenced div CV documents and added a runnable example |
 | task-003 | cli/store/ux | Added `models list`, improved missing-store guidance around local versus global scope, and updated onboarding docs/help |
 | task-001 | cli/docs/desk | Added FAQ, explore, inbox, spec2viz onboarding diagrams, and a grounded `deskops` boundary proposal |
 

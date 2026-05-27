@@ -1,7 +1,7 @@
 ---
 id: task-002
 domain: opsys/docs/ux
-status: open
+status: done
 priority: p1
 depends_on: []
 created: "2026-05-24"
