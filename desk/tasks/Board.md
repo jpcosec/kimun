@@ -10,9 +10,10 @@ The next meaningful desk work is to consolidate open repo work into first-class 
 
 | Task | Domain | Focus |
 |------|--------|-------|
+| task-007 | cli/store/ux | Add first-class docs list and stores list discovery surfaces |
+| task-008 | cli/store/ux | Fall back to global store for read-only commands from uninitialized locations |
 
-
-The local SLDB backlog for the current slice is closed. Generic workflow guidance now lives in `deskops`, and the remaining workflow-native follow-up lives downstream rather than in the SLDB repo-local board.
+The local SLDB backlog is mostly closed for the current slice, but two follow-up CLI discovery tasks remain: extend the successful `models list` pattern to docs and stores, and make uninitialized-folder behavior softer for read-only commands without weakening local-init rules for writes.
 
 ## Recently Closed
 
