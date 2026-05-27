@@ -9,6 +9,9 @@ sldb
 ├── validate <model-ref> (--input FILE | --data FILE) [--format text|json|yaml] [--pythonpath PATH]
 ├── init [path] [--force]
 ├── example [path]
+├── faq [question] [--format text|json|yaml] [--faq-path PATH]
+├── inbox [<message>] [--kind unclear|suggestion] [--title TEXT] [--desk-root PATH] [--author TEXT] [--list] [--show ID] [--limit N] [--format text|json|yaml]
+├── explore <term> [--source all|docs|docstrings] [--regex] [--docs-root PATH] [--code-root PATH] [--max-results N] [--format text|json|yaml]
 ├── recover <doc> [--store PATH] [--depth N] [--format text|json|yaml] [--links-only] [--include-transclusions]
 ├── compose <doc> [-o PATH] [--store PATH] [--format markdown|json|yaml]
 ├── ls <address> [--store PATH] [--pythonpath PATH]
@@ -23,16 +26,21 @@ sldb
 │   └── update [--store PATH] [--pythonpath PATH]
 ├── model
 │   ├── add <model-ref> [--canonical] [--store PATH] [--pythonpath PATH]
+│   ├── list [--store PATH] [--format text|json|yaml]
 │   └── update <name> [--store PATH] [--pythonpath PATH]
 └── doc
     ├── add --model NAME -o PATH <payload> [--name NAME] [--store PATH] [--pythonpath PATH]
     ├── track <path> --model NAME [--name NAME] [--store PATH] [--pythonpath PATH] [--force]
-    └── update <name> --model NAME <payload> [--store PATH] [--pythonpath PATH]
+    ├── update <name> --model NAME <payload> [--store PATH] [--pythonpath PATH]
+    └── explore <term> [--source all|docs|docstrings] [--regex] [--docs-root PATH] [--code-root PATH] [--max-results N] [--format text|json|yaml]
 ```
 
 ## Command Groups
 
 - direct document workflows: `extract`, `render`, `validate`, `recover`, `compose`
+- entry-level onboarding: `faq`
+- feedback capture into repo desk: `inbox`
+- deep written guidance search: `explore` and `docs explore`
 - project bootstrapping: `init`, `example`
 - store registry and indexing workflows: `store ...`, `ls`, `get`, `glob`, `find`
 - model contract workflows: `model ...`

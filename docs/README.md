@@ -5,9 +5,18 @@ This directory can now be worked through SLDB models and the project-local store
 ## Current Model Mapping
 
 - `docs.models:ArchitectureNarrativeDoc` - `docs/architecture/*.md`
+- `docs.models:AtomicDocumentDoc` - `docs/atoms/*.atom.md`
+- `docs.models:FAQDoc` - `docs/faq.md`
 - `docs.models:PackagingDoc` - `docs/packaging instructions.md`
 - `docs.models:RequestDoc` - `docs/requests/*.md`
 - `docs.models:StoreReadmeDoc` - `.sldb/README.md`
+
+## Atom And Document Split
+
+The docs surface now has two layers:
+
+- `docs/atoms/*.atom.md` holds short SSOT concept definitions such as store, tracked doc, semantic versus physical search, and compose versus recover.
+- `docs/faq.md` and the other higher-level docs explain workflows and point back to those atoms instead of redefining everything inline.
 
 ## Why These Models Are Shallow
 
@@ -33,6 +42,8 @@ Register the models:
 
 ```bash
 python -m sldb models add docs.models:ArchitectureNarrativeDoc --store .sldb --pythonpath .
+python -m sldb models add docs.models:AtomicDocumentDoc --store .sldb --pythonpath .
+python -m sldb models add docs.models:FAQDoc --store .sldb --pythonpath .
 python -m sldb models add docs.models:PackagingDoc --store .sldb --pythonpath .
 python -m sldb models add docs.models:RequestDoc --store .sldb --pythonpath .
 python -m sldb models add docs.models:StoreReadmeDoc --store .sldb --pythonpath .
@@ -42,6 +53,8 @@ Track the documents, then rebuild indexes:
 
 ```bash
 python -m sldb docs track docs/architecture/current-system-overview.md --model ArchitectureNarrativeDoc --name arch-current-system-overview --store .sldb --pythonpath .
+python -m sldb docs track docs/atoms/store.atom.md --model AtomicDocumentDoc --name atom-store --store .sldb --pythonpath .
+python -m sldb docs track docs/faq.md --model FAQDoc --name faq --store .sldb --pythonpath .
 python -m sldb docs track .sldb/README.md --model StoreReadmeDoc --name sldb-readme --store .sldb --pythonpath .
 python -m sldb stores update --store .sldb --pythonpath .
 ```
@@ -56,6 +69,8 @@ Query the tracked docs:
 
 ```bash
 python -m sldb find type.documentation.architecture --in semantic --store .sldb --pythonpath .
+python -m sldb find type.documentation.atom --in semantic --store .sldb --pythonpath .
+python -m sldb docs show faq --store .sldb --pythonpath . --format yaml
 python -m sldb docs show sldb-readme --store .sldb --pythonpath . --format yaml
 python -m sldb sections show arch-current-system-overview --store .sldb --pythonpath . --format yaml
 python -m sldb docs show req-ontology-feature-request --store .sldb --pythonpath . --format yaml
@@ -66,3 +81,4 @@ python -m sldb docs show req-ontology-feature-request --store .sldb --pythonpath
 - The current docs models are intentionally coarse and family-level.
 - Deep heading navigation comes from `sections` and semantic indexes more than from many fine-grained document fields.
 - Generic `title + body` models work best when the document starts with a short lead paragraph before jumping into dense fenced blocks.
+- Atom docs are intentionally smaller and more repetitive than the narrative docs because they are meant to act as canonical concept definitions.

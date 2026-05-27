@@ -1,0 +1,8 @@
+documents:
+- name: desk-spec
+  path: desk/SPEC.md
+  hash_c: d8436da9952d40937e5b435cb773418da42a6b822ef00ffa5375d5b56d4c8acb
+  hash_d: ad4eab53a973ccaa8913d57f6c70dd8f5f4f65345177039fbff2a14c9ef1a61f
+  semantic_tags:
+  - type.desk.spec
+  - workspace.desk.governance

@@ -1,0 +1,13 @@
+name: AtomicDocumentDoc
+model_ref: docs.models:AtomicDocumentDoc
+path: docs/models.py
+documents_index: .sldb/core/documents/AtomicDocumentDoc.yaml
+sections_index: .sldb/runtime/sections/AtomicDocumentDoc.yaml
+hash_b: 6aeaa28ada0b7efea2346bf7630cca7d864503d782221f79cfcd9f176c5b5bee
+version: 1
+canonical: false
+family: null
+semantics:
+- type.documentation.atom
+- workspace.docs.atoms
+base_models: []

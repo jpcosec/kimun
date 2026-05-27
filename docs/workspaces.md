@@ -20,17 +20,20 @@ The pattern in this repo is:
 - documentation indexes the code and explains the `why`, `what`, and `when`
 - tracked Markdown workspaces make temporary operational state queryable
 
-In the local ecosystem checkout, that downstream layer currently lives in the sibling `../opsys` repo.
+In the local ecosystem checkout, that downstream layer currently lives in the sibling `../deskops` repo, which is the current local repo name for the opsys workspace.
 
 ## Durable Project Docs: `docs/`
 
 `docs/` is the durable explanatory layer.
 
 - it indexes the codebase and user-facing workflows
+- it can keep a small atom layer for canonical concept definitions that larger docs reuse
 - it explains intent, constraints, and operating guidance
 - it should not become a duplicate implementation layer
 
 Use `docs/` for stable guidance that should survive beyond one execution cycle.
+
+For first-use orientation in this repo, start with `docs/faq.md`, then drop into `docs/atoms/*.atom.md` for the canonical definitions behind recurring SLDB concepts.
 
 ## Store Discipline
 

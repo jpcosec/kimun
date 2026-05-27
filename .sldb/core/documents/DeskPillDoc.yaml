@@ -1,0 +1,15 @@
+documents:
+- name: pill-001
+  path: desk/pills/pill-001-sldb-vs-deskops-boundary.md
+  hash_c: ff4e9dbf093c2a164902204e948077928025ce0dbd04d00470c828b73014863f
+  hash_d: a4ffc1adc084267df3e72441055f6ea76251586359a4cf8ab78c7c561654387d
+  semantic_tags:
+  - type.desk.pill
+  - workspace.desk.pills
+- name: pill-002
+  path: desk/pills/pill-002-onboarding-surface-before-depth.md
+  hash_c: dd8968b2eb36dfaad9ff79f5d8e352ac1dfdca03fe141e08f269e2ef19658d62
+  hash_d: 72f44fb6c08888a2fd73e1d932b036d86410676962a7fb9dea591beb57d6453c
+  semantic_tags:
+  - type.desk.pill
+  - workspace.desk.pills

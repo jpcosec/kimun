@@ -1,0 +1,13 @@
+name: DeskSpecDoc
+model_ref: desk.models:DeskSpecDoc
+path: desk/models.py
+documents_index: .sldb/core/documents/DeskSpecDoc.yaml
+sections_index: .sldb/runtime/sections/DeskSpecDoc.yaml
+hash_b: dd0c9b1038ae1aa5702adf6d1aa114fdf047ff5a17023e75e92a9b44d456f5b3
+version: 1
+canonical: false
+family: null
+semantics:
+- type.desk.spec
+- workspace.desk.governance
+base_models: []

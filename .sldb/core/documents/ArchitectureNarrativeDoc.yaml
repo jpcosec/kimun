@@ -1,22 +1,22 @@
 documents:
 - name: arch-current-cli-tree
   path: docs/architecture/current-cli-tree.md
-  hash_c: 5076edb35527de5b7768803c42a0e0dfe562b9e0bd1c72e633c380f7797c0961
-  hash_d: 0614e0081558124137f3efd435dc4be7f894b6da942fc3bfff2f0f110df0a7e0
+  hash_c: e3e38a91d4328702582d442215fa6f7fac77a99a875dfcd4061963caa4260bcf
+  hash_d: c02b2553b4d2de267efc1b92187d91470c589a1daa7bd2e001bebfc9e8a72808
   semantic_tags:
   - type.documentation.architecture
   - workspace.docs.architecture
 - name: arch-current-source-tree
   path: docs/architecture/current-source-tree.md
-  hash_c: fce660583cbcdf414d11d39b0f1d435ff577d5a25cb8e7351f63d77aa22bce6a
-  hash_d: 48fb66ef407bc9d47f700efab03332d01abbc43293b47bc1052e564069907f8b
+  hash_c: 7b09ba3634721ac2797dddbfae144cd61d531e8d65bb099f74744ab26c039015
+  hash_d: 4bbc26dffd7a064293e66a35f41ca6269f867feaa65a2f74450b0e5773d503b8
   semantic_tags:
   - type.documentation.architecture
   - workspace.docs.architecture
 - name: arch-current-system-overview
   path: docs/architecture/current-system-overview.md
-  hash_c: 84d5ab5280d6627e343b1a13c77866000639853e8158b16d32638634867642f8
-  hash_d: 3226ead9ff9dcb099afac351a06fc6c9403adff7f547128da2a43e3661184709
+  hash_c: 9c10475223b6697c0f679ab07606e32ac0778b05021332e1dfd4828d6d84f3cb
+  hash_d: 36f1d4bf5719c01cfa4f24d14cd2022f22dd699c8cabd9e6e4e2ad9961a0a7cb
   semantic_tags:
   - type.documentation.architecture
   - workspace.docs.architecture
@@ -38,6 +38,13 @@ documents:
   path: docs/architecture/smg-ir.md
   hash_c: 52e25d37532238685e91f52a16a5d9c0a1a9791db6d09e08e59486e99e00cd75
   hash_d: 10395644a91c231555a0b91b9fb6646b47602466b47cbfafa9a4b966d7c7c7b2
+  semantic_tags:
+  - type.documentation.architecture
+  - workspace.docs.architecture
+- name: arch-deskops-boundary-proposal
+  path: docs/architecture/deskops-boundary-proposal.md
+  hash_c: 9b6185c04c14c83d72e21d1eaf0cb1912f5006ec81aeaf444a43bdc7c325ed52
+  hash_d: 1c495519a119a29bf2ae3c87411f0a5733dd39b1c9585d4acd191a40b8ef6e27
   semantic_tags:
   - type.documentation.architecture
   - workspace.docs.architecture

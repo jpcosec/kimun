@@ -7,7 +7,7 @@ import sys
 import pytest
 
 from sldb.cli import main as cli_main
-from sldb.store.io import load_models_index, load_store_index
+from sldb.store.io import load_documents_index, load_models_index, load_store_index
 
 
 def _write_models(base: Path) -> str:
@@ -101,6 +101,30 @@ def _model_index_path(store: Path, model_name: str) -> Path:
 
 
 def test_help_topics(capsys):
+    assert cli_main(["--help"]) == 0
+    out = capsys.readouterr().out
+    assert "SLDB's main workflow is:" in out
+    assert "Primary surfaces:" in out
+    assert "raw-find" not in out
+    assert "extract, render, validate   Direct model-first operations without a store" in out
+
+    original_argv = sys.argv[:]
+    try:
+        sys.argv = ["sldb", "--help"]
+        assert cli_main() == 0
+        out = capsys.readouterr().out
+        assert "SLDB's main workflow is:" in out
+        assert "raw-find" not in out
+    finally:
+        sys.argv = original_argv
+
+    assert cli_main(["help"]) == 0
+    out = capsys.readouterr().out
+    assert "not `bash sldb ...`" in out
+    assert "explore   Deep markdown docs and docstring search" in out
+    assert "faq       Question-oriented onboarding answers" in out
+    assert "inbox     Log unclear points or suggestions to the active project desk" in out
+
     assert cli_main(["help", "fields"]) == 0
     out = capsys.readouterr().out
     assert "fields append" in out
@@ -111,6 +135,321 @@ def test_help_topics(capsys):
     assert "sections show" in out
     assert "sections find" in out
     assert "sections fields" in out
+    capsys.readouterr()
+    assert cli_main(["help", "explore"]) == 0
+    out = capsys.readouterr().out
+    assert "Deep search over markdown docs and Python docstrings" in out
+    assert "--source all|docs|docstrings" in out
+
+    assert cli_main(["find", "--help"]) == 0
+    out = capsys.readouterr().out
+    assert "Use `physical` for names, paths, section titles, and field addresses" in out
+    assert "sldb find roadmap --in physical --type doc" in out
+    assert "Typical shapes:" in out
+
+    assert cli_main(["docs", "--help"]) == 0
+    out = capsys.readouterr().out
+    assert "`recover` and `compose` work on explicit Markdown links and transclusions" in out
+    assert "Resolve [[links]] and report their targets." in out
+    assert "Expand ![[transclusions]] into composed Markdown." in out
+
+    assert cli_main(["docs", "recover", "--help"]) == 0
+    out = capsys.readouterr().out
+    assert "sldb docs recover roadmap --store .sldb" in out
+    assert "Recursive recovery depth when following resolved links" in out
+    assert "Also inspect ![[transclusions]] as recoverable targets" in out
+
+    assert cli_main(["docs", "compose", "--help"]) == 0
+    out = capsys.readouterr().out
+    assert "sldb docs compose roadmap --store .sldb -o -" in out
+    assert "Output path or - for stdout" in out
+    assert "Return composed markdown or a structured report" in out
+
+    assert cli_main(["models", "--help"]) == 0
+    out = capsys.readouterr().out
+    assert "list                List registered models." in out
+
+    assert cli_main(["help", "models"]) == 0
+    out = capsys.readouterr().out
+    assert "models list --store .sldb" in out
+
+
+def test_faq_lists_and_selects_questions(capsys):
+    assert cli_main(["faq"]) == 0
+    out = capsys.readouterr().out
+    assert "SLDB FAQ questions:" in out
+    assert "What exactly is a store?" in out
+
+    assert cli_main(["faq", "store"]) == 0
+    out = capsys.readouterr().out
+    assert "What exactly is a store?" in out
+    assert "A store is SLDB's metadata workspace" in out
+
+
+def test_inbox_writes_desk_note(tmp_path, capsys):
+    desk_root = tmp_path / "desk"
+    assert (
+        cli_main(
+            [
+                "inbox",
+                "The docs should explain tracked doc names more clearly.",
+                "--kind",
+                "suggestion",
+                "--title",
+                "tracked doc names",
+                "--desk-root",
+                str(desk_root),
+            ]
+        )
+        == 0
+    )
+    out = capsys.readouterr().out
+    assert "Wrote" in out
+    inbox_files = list((desk_root / "inbox").glob("*.md"))
+    assert len(inbox_files) == 1
+    text = inbox_files[0].read_text(encoding="utf-8")
+    assert "kind: suggestion" in text
+    assert "# tracked doc names" in text
+    assert "The docs should explain tracked doc names more clearly." in text
+
+
+def test_models_list_lists_registered_models(tmp_path, capsys):
+    store, pythonpath = _setup_store(tmp_path)
+    capsys.readouterr()
+
+    assert (
+        cli_main(["models", "list", "--store", str(store)])
+        == 0
+    )
+    out = capsys.readouterr().out
+    assert "Models in" in out
+    assert "RoadmapDoc | cli_v2_models:RoadmapDoc" in out
+    assert "1 docs" in out
+
+    assert (
+        cli_main(["models", "list", "--store", str(store), "--format", "json"])
+        == 0
+    )
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["models"][0]["name"] == "RoadmapDoc"
+    assert payload["models"][0]["documents"] == 1
+
+
+def test_models_list_reports_missing_local_store_and_global_scope(tmp_path, capsys, monkeypatch):
+    project = tmp_path / "no-store-project"
+    project.mkdir()
+    monkeypatch.chdir(project)
+    monkeypatch.setenv("HOME", str(tmp_path / "home"))
+
+    with pytest.raises(SystemExit) as exc:
+        cli_main(["models", "list"])
+    assert "No local .sldb store found" in str(exc.value)
+    assert "No global store exists" in str(exc.value)
+    assert "sldb stores init --path ." in str(exc.value)
+
+    home_store_root = Path.home()
+    (home_store_root / ".sldb" / "core").mkdir(parents=True, exist_ok=True)
+    (home_store_root / ".sldb" / "runtime").mkdir(parents=True, exist_ok=True)
+    from sldb.store.io import save_store_index
+    from sldb.store.models import StoreIndex
+
+    save_store_index(home_store_root / ".sldb", StoreIndex())
+
+    with pytest.raises(SystemExit) as exc:
+        cli_main(["models", "list"])
+    assert "A global store exists at" in str(exc.value)
+    assert "Pass --store" in str(exc.value)
+
+
+def test_inbox_lists_and_shows_notes(tmp_path, capsys):
+    desk_root = tmp_path / "desk"
+    assert (
+        cli_main(
+            [
+                "inbox",
+                "Semantic docs are still a bit unclear.",
+                "--kind",
+                "unclear",
+                "--title",
+                "semantic docs",
+                "--desk-root",
+                str(desk_root),
+            ]
+        )
+        == 0
+    )
+    capsys.readouterr()
+    assert (
+        cli_main(
+            [
+                "inbox",
+                "Add more examples for compose.",
+                "--kind",
+                "suggestion",
+                "--title",
+                "compose examples",
+                "--desk-root",
+                str(desk_root),
+            ]
+        )
+        == 0
+    )
+    capsys.readouterr()
+
+    assert cli_main(["inbox", "--list", "--desk-root", str(desk_root)]) == 0
+    out = capsys.readouterr().out
+    assert "semantic docs" in out
+    assert "compose examples" in out
+
+    assert (
+        cli_main(
+            [
+                "inbox",
+                "--show",
+                "compose-examples",
+                "--desk-root",
+                str(desk_root),
+            ]
+        )
+        == 0
+    )
+    out = capsys.readouterr().out
+    assert "# compose examples" in out
+    assert "kind: suggestion" in out
+    assert "Add more examples for compose." in out
+
+
+def test_inbox_defaults_to_local_store_project_desk(tmp_path, capsys, monkeypatch):
+    project = tmp_path / "target-project"
+    project.mkdir()
+    assert cli_main(["stores", "init", "--path", str(project)]) == 0
+    capsys.readouterr()
+
+    other = tmp_path / "other"
+    other.mkdir()
+    monkeypatch.chdir(other)
+
+    assert (
+        cli_main(
+            [
+                "inbox",
+                "Route this to the target project desk.",
+                "--store",
+                str(project / ".sldb"),
+            ]
+        )
+        == 0
+    )
+    out = capsys.readouterr().out
+    assert str(project / "desk" / "inbox") in out
+    note_files = list((project / "desk" / "inbox").glob("*.md"))
+    assert len(note_files) == 1
+    assert not (other / "desk").exists()
+
+
+def test_inbox_auto_tracks_when_model_registered(tmp_path, capsys, monkeypatch):
+    project = tmp_path / "target-project"
+    project.mkdir()
+    assert cli_main(["stores", "init", "--path", str(project)]) == 0
+    capsys.readouterr()
+
+    repo_pythonpath = str(Path(__file__).resolve().parents[1])
+    assert (
+        cli_main(
+            [
+                "models",
+                "add",
+                "desk.models:InboxNoteDoc",
+                "--store",
+                str(project / ".sldb"),
+                "--pythonpath",
+                repo_pythonpath,
+            ]
+        )
+        == 0
+    )
+    capsys.readouterr()
+
+    monkeypatch.chdir(project)
+    assert (
+        cli_main(
+            [
+                "inbox",
+                "Track this inbox note automatically.",
+                "--title",
+                "auto track inbox",
+                "--pythonpath",
+                repo_pythonpath,
+            ]
+        )
+        == 0
+    )
+    out = capsys.readouterr().out
+    assert "Tracked '" in out
+
+    store = project / ".sldb"
+    entry = next(m for m in load_store_index(store).models if m.name == "InboxNoteDoc")
+    model_index = load_models_index(project / entry.models_index)
+    docs_index = load_documents_index(project / model_index.documents_index)
+    tracked = next(doc for doc in docs_index.documents if "auto-track-inbox" in doc.name)
+    assert tracked.path.startswith("desk/inbox/")
+
+
+def test_explore_searches_docs_and_docstrings(tmp_path, capsys):
+    docs_root = tmp_path / "docs"
+    code_root = tmp_path / "src"
+    docs_root.mkdir()
+    code_root.mkdir()
+
+    (docs_root / "faq.md").write_text(
+        "# FAQ\n\nThe store keeps metadata close to Markdown.\n",
+        encoding="utf-8",
+    )
+    (code_root / "knowledge.py").write_text(
+        '"""Store helpers for SLDB docs."""\n\n\nclass Guide:\n    """StructuredNLDoc-oriented guide surface."""\n',
+        encoding="utf-8",
+    )
+
+    assert (
+        cli_main(
+            [
+                "explore",
+                "store",
+                "--docs-root",
+                str(docs_root),
+                "--code-root",
+                str(code_root),
+                "--format",
+                "json",
+            ]
+        )
+        == 0
+    )
+    payload = json.loads(capsys.readouterr().out)["results"]
+    assert any(item["source"] == "docs" for item in payload)
+    assert any(item["source"] == "docstrings" for item in payload)
+
+    assert (
+        cli_main(
+            [
+                "docs",
+                "explore",
+                "StructuredNLDoc",
+                "--source",
+                "docstrings",
+                "--docs-root",
+                str(docs_root),
+                "--code-root",
+                str(code_root),
+                "--format",
+                "json",
+            ]
+        )
+        == 0
+    )
+    payload = json.loads(capsys.readouterr().out)["results"]
+    assert payload[0]["source"] == "docstrings"
+    assert payload[0]["anchor"] == "Guide"
 
 
 def test_ast_show_document_has_sections(tmp_path, capsys):

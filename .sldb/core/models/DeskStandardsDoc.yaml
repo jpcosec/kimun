@@ -1,0 +1,13 @@
+name: DeskStandardsDoc
+model_ref: desk.models:DeskStandardsDoc
+path: desk/models.py
+documents_index: .sldb/core/documents/DeskStandardsDoc.yaml
+sections_index: .sldb/runtime/sections/DeskStandardsDoc.yaml
+hash_b: 7a0806b1755a69e5b91694b04615696b387e7e9f90926d7f159a14c8bd39a46b
+version: 1
+canonical: false
+family: null
+semantics:
+- type.desk.standards
+- workspace.desk.governance
+base_models: []

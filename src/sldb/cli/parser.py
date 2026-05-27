@@ -7,8 +7,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="sldb",
         description=(
-            "SLDB: graph-first Markdown data layer. Use `sldb help` to explore stores, "
-            "models, docs, fields, AST, and unified find."
+            "SLDB: structured Markdown models plus an optional store. Use `sldb help` "
+            "for first-use guidance and `sldb explore` for deep docs/docstring search."
         ),
         formatter_class=argparse.RawTextHelpFormatter,
     )
@@ -18,6 +18,9 @@ def build_parser() -> argparse.ArgumentParser:
     _add_project_commands(subparsers)
     _add_public_group_commands(subparsers)
     _add_help_commands(subparsers)
+    _add_faq_commands(subparsers)
+    _add_inbox_commands(subparsers)
+    _add_explore_commands(subparsers)
     _add_ast_commands(subparsers)
     _add_find_commands(subparsers)
     _add_legacy_commands(subparsers)
@@ -53,11 +56,11 @@ def _add_basic_commands(
 def _add_project_commands(
     subparsers: argparse._SubParsersAction[argparse.ArgumentParser],
 ) -> None:
-    p = subparsers.add_parser("init", help="Initialize skill file.")
+    p = subparsers.add_parser("init", help=argparse.SUPPRESS)
     p.add_argument("path", nargs="?", default=".")
     p.add_argument("--force", action="store_true")
 
-    p = subparsers.add_parser("example", help="Create example bundle.")
+    p = subparsers.add_parser("example", help=argparse.SUPPRESS)
     p.add_argument("path", nargs="?", default=".")
 
 
@@ -121,6 +124,10 @@ def _add_models_group(
     u.add_argument("model", help="Model name")
     u.add_argument("--store", help="Store path")
     u.add_argument("--pythonpath", help="Project path")
+
+    listing = s.add_parser("list", help="List registered models.")
+    listing.add_argument("--store", help="Store path")
+    listing.add_argument("--format", choices=("text", "json", "yaml"), default="text")
 
     show = s.add_parser("show", help="Show registered model info.")
     show.add_argument("model", help="Model name")
@@ -190,7 +197,16 @@ def _add_models_group(
 def _add_docs_group(
     subparsers: argparse._SubParsersAction[argparse.ArgumentParser],
 ) -> None:
-    p = subparsers.add_parser("docs", help="Tracked document workflows.")
+    p = subparsers.add_parser(
+        "docs",
+        help="Tracked document workflows.",
+        description=(
+            "Operate on tracked Markdown documents. `create`, `track`, and `update` "
+            "work on model payloads. `recover` and `compose` work on explicit "
+            "Markdown links and transclusions."
+        ),
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
     s = p.add_subparsers(dest="docs_command", required=True)
 
     a = s.add_parser("create", help="Create and track document.")
@@ -226,21 +242,93 @@ def _add_docs_group(
     show.add_argument("--pythonpath", help="Project path")
     show.add_argument("--format", choices=("json", "yaml"), default="json")
 
-    recover = s.add_parser("recover", help="Recover links.")
+    recover = s.add_parser(
+        "recover",
+        help="Resolve [[links]] and report their targets.",
+        description=(
+            "Resolve Obsidian-style `[[links]]` inside a document. This command does "
+            "not extract payload data; it reports which link targets resolve through "
+            "tracked docs or physical paths."
+        ),
+        epilog=(
+            "Examples:\n"
+            "  sldb docs recover roadmap --store .sldb\n"
+            "  sldb docs recover docs/roadmap.md --links-only\n"
+            "  sldb docs recover roadmap --include-transclusions --depth 2 --format yaml\n"
+        ),
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
     recover.add_argument("doc", help="Doc name or path")
     recover.add_argument("--store", help="Store path")
-    recover.add_argument("--format", choices=("text", "json", "yaml"), default="text")
-    recover.add_argument("--depth", type=int, default=1)
-    recover.add_argument("--links-only", action="store_true")
-    recover.add_argument("--include-transclusions", action="store_true")
+    recover.add_argument(
+        "--format",
+        choices=("text", "json", "yaml"),
+        default="text",
+        help="Output format for the recovery report",
+    )
+    recover.add_argument(
+        "--depth",
+        type=int,
+        default=1,
+        help="Recursive recovery depth when following resolved links",
+    )
+    recover.add_argument(
+        "--links-only",
+        action="store_true",
+        help="Print only unique resolved/unresolved link targets",
+    )
+    recover.add_argument(
+        "--include-transclusions",
+        action="store_true",
+        help="Also inspect ![[transclusions]] as recoverable targets",
+    )
 
-    compose = s.add_parser("compose", help="Compose transclusions.")
+    compose = s.add_parser(
+        "compose",
+        help="Expand ![[transclusions]] into composed Markdown.",
+        description=(
+            "Expand Obsidian-style `![[transclusions]]` recursively into one composed "
+            "output document. This operates on Markdown content, not on extracted "
+            "payload values."
+        ),
+        epilog=(
+            "Examples:\n"
+            "  sldb docs compose roadmap --store .sldb -o -\n"
+            "  sldb docs compose docs/roadmap.md --format markdown\n"
+            "  sldb docs compose roadmap --format yaml\n"
+        ),
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
     compose.add_argument("doc", help="Doc name or path")
     compose.add_argument("--store", help="Store path")
-    compose.add_argument("-o", "--output", default="-")
     compose.add_argument(
-        "--format", choices=("markdown", "json", "yaml"), default="markdown"
+        "-o",
+        "--output",
+        default="-",
+        help="Output path or - for stdout",
     )
+    compose.add_argument(
+        "--format",
+        choices=("markdown", "json", "yaml"),
+        default="markdown",
+        help="Return composed markdown or a structured report",
+    )
+
+    explore = s.add_parser(
+        "explore", help="Search tracked docs, repo docs, and docstrings."
+    )
+    explore.add_argument("term", help="Search term or regex")
+    explore.add_argument(
+        "--source",
+        choices=("all", "docs", "docstrings"),
+        default="all",
+        help="Where to search: markdown docs, Python docstrings, or both",
+    )
+    explore.add_argument("--regex", action="store_true")
+    explore.add_argument("--docs-root", default="docs", help="Docs directory to scan")
+    explore.add_argument("--code-root", default="src", help="Python source directory to scan")
+    explore.add_argument("--max-results", type=int, default=20)
+    explore.add_argument("--format", choices=("text", "json", "yaml"), default="text")
 
 
 def _add_fields_group(
@@ -333,8 +421,74 @@ def _add_help_commands(
     p.add_argument(
         "topic",
         nargs="?",
-        help="stores, models, docs, fields, sections, ast, find, legacy",
+        help="stores, models, docs, fields, sections, ast, find, faq, inbox, explore, legacy",
     )
+
+
+def _add_faq_commands(
+    subparsers: argparse._SubParsersAction[argparse.ArgumentParser],
+) -> None:
+    p = subparsers.add_parser("faq", help="Browse the first-use FAQ by question.")
+    p.add_argument(
+        "question",
+        nargs="?",
+        help="Question index, slug, or text fragment. Omit to list available questions.",
+    )
+    p.add_argument("--format", choices=("text", "json", "yaml"), default="text")
+    p.add_argument("--faq-path", default="docs/faq.md", help="FAQ markdown path")
+
+
+def _add_inbox_commands(
+    subparsers: argparse._SubParsersAction[argparse.ArgumentParser],
+) -> None:
+    p = subparsers.add_parser(
+        "inbox", help="Log unclear points or suggestions into the repo desk."
+    )
+    p.add_argument("message", nargs="?", help="Inbox note body")
+    p.add_argument(
+        "--kind",
+        choices=("unclear", "suggestion"),
+        default="unclear",
+        help="Type of desk note to write",
+    )
+    p.add_argument("--title", help="Short title for the note")
+    p.add_argument(
+        "--desk-root",
+        help="Desk root directory override; defaults to the active project desk",
+    )
+    p.add_argument(
+        "--store",
+        help="Store path used to resolve the target project root for the default desk",
+    )
+    p.add_argument(
+        "--pythonpath",
+        help="Project path used when auto-tracking inbox notes through a registered InboxNoteDoc model",
+    )
+    p.add_argument("--author", default="cli", help="Source label for the inbox note")
+    p.add_argument("--list", action="store_true", help="List desk inbox notes")
+    p.add_argument("--show", help="Show one inbox note by filename, stem, or slug fragment")
+    p.add_argument("--limit", type=int, default=20, help="Limit listed notes")
+    p.add_argument("--format", choices=("text", "json", "yaml"), default="text")
+
+
+def _add_explore_commands(
+    subparsers: argparse._SubParsersAction[argparse.ArgumentParser],
+) -> None:
+    p = subparsers.add_parser(
+        "explore", help="Search markdown docs and Python docstrings."
+    )
+    p.add_argument("term", help="Search term or regex")
+    p.add_argument(
+        "--source",
+        choices=("all", "docs", "docstrings"),
+        default="all",
+        help="Where to search: markdown docs, Python docstrings, or both",
+    )
+    p.add_argument("--regex", action="store_true")
+    p.add_argument("--docs-root", default="docs", help="Docs directory to scan")
+    p.add_argument("--code-root", default="src", help="Python source directory to scan")
+    p.add_argument("--max-results", type=int, default=20)
+    p.add_argument("--format", choices=("text", "json", "yaml"), default="text")
 
 
 def _add_ast_commands(
@@ -356,7 +510,27 @@ def _add_ast_commands(
 def _add_find_commands(
     subparsers: argparse._SubParsersAction[argparse.ArgumentParser],
 ) -> None:
-    p = subparsers.add_parser("find", help="Unified semantic + physical retrieval.")
+    p = subparsers.add_parser(
+        "find",
+        help="Unified semantic + physical retrieval.",
+        description=(
+            "Search the SLDB graph by physical structure, semantic tags, or both. "
+            "Use `physical` for names, paths, section titles, and field addresses. "
+            "Use `semantic` for tags or meaning-like concepts."
+        ),
+        epilog=(
+            "Examples:\n"
+            "  sldb find roadmap --in physical --type doc\n"
+            "  sldb find type.documentation.architecture --in semantic --type doc\n"
+            "  sldb find tasks --type section --where '\"Roadmap\" in breadcrumbs'\n"
+            "  sldb find title --type field --select doc,field,value\n\n"
+            "Typical shapes:\n"
+            "  term      a path-like token, tracked name, section title, or semantic tag\n"
+            "  --where   a simple filter such as 'value = \"open\"' or '\"X\" in breadcrumbs'\n"
+            "  --select  comma-separated output fields such as doc,path,value\n"
+        ),
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
     p.add_argument("term", help="Resource term, semantic tag, or physical token")
     p.add_argument(
         "--in",

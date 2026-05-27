@@ -5,6 +5,7 @@ import sys
 from typing import Any
 
 from sldb.cli.parser import build_parser
+from sldb.cli.commands.help import SHORT_ARGPARSE_HELP
 from sldb.core.exceptions import SLDBError
 
 
@@ -21,16 +22,16 @@ _DEPRECATED: dict[str, str] = {
 }
 
 
-def _deprecated_handler(old_name: str, replacement: str, handler):
-    """Wrap a handler to emit a deprecation warning before delegating."""
+def _deprecated_handler(old_name: str, replacement: str, handler=None):
+    """Wrap a handler to emit a deprecation warning and delegate or exit."""
 
     def wrapper(args):
         if not os.environ.get("SLDB_SUPPRESS_DEPRECATION"):
-            print(
-                f"[deprecated] Use 'sldb {replacement}' instead of 'sldb {old_name}'",
-                file=sys.stderr,
-            )
-        return handler(args)
+            msg = f"[deprecated] Use '{replacement}' instead of 'sldb {old_name}'"
+            print(msg, file=sys.stderr)
+        if handler:
+            return handler(args)
+        return 0
 
     return wrapper
 
@@ -42,10 +43,13 @@ class CLI:
         from sldb.cli.commands.ast import ASTCLI
         from sldb.cli.commands.basic import BasicCLI
         from sldb.cli.commands.docs import DocsCLI
+        from sldb.cli.commands.explore import ExploreCLI
         from sldb.cli.commands.fields import FieldsCLI
         from sldb.cli.commands.find import FindCLI
+        from sldb.cli.commands.faq import FAQCLI
         from sldb.cli.commands.help import HelpCLI
         from sldb.cli.commands.init import InitCLI
+        from sldb.cli.commands.inbox import InboxCLI
         from sldb.cli.commands.legacy import LegacyCLI
         from sldb.cli.commands.links import LinkCLI
         from sldb.cli.commands.models import ModelsCLI
@@ -66,6 +70,9 @@ class CLI:
             "init": InitCLI().init,
             "example": InitCLI().example,
             "help": HelpCLI().run,
+            "faq": FAQCLI().run,
+            "inbox": InboxCLI().run,
+            "explore": ExploreCLI().run,
             "ast": ASTCLI().run,
             "find": FindCLI().run,
             "stores": StoresCLI().run,
@@ -86,6 +93,9 @@ class CLI:
         }
 
     def run(self, argv: Any = None) -> int:
+        if argv in (["-h"], ["--help"]):
+            print(SHORT_ARGPARSE_HELP)
+            return 0
         parser = build_parser()
         try:
             args = parser.parse_args(argv)
@@ -107,6 +117,9 @@ class CLI:
 def main(argv: Any = None) -> int:
     """CLI entry point with error handling."""
     try:
+        if argv is None and sys.argv[1:] in (["-h"], ["--help"]):
+            print(SHORT_ARGPARSE_HELP)
+            return 0
         return CLI().run(argv)
     except SLDBError as e:
         raise SystemExit(str(e))

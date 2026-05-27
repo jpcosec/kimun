@@ -1,0 +1,13 @@
+name: DeskTaskDoc
+model_ref: desk.models:DeskTaskDoc
+path: desk/models.py
+documents_index: .sldb/core/documents/DeskTaskDoc.yaml
+sections_index: .sldb/runtime/sections/DeskTaskDoc.yaml
+hash_b: bd7800d2921f5c957759e5016500b8f7b30158b6e6ff2d154cd737ff7b94b817
+version: 1
+canonical: false
+family: null
+semantics:
+- type.desk.task
+- workspace.desk.tasks
+base_models: []

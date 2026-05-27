@@ -3,9 +3,8 @@ from __future__ import annotations
 import json
 from typing import Any
 import yaml
-from pathlib import Path
 
-from sldb.cli.utils import resolve_model_ref
+from sldb.cli.utils import get_store_context, resolve_model_ref
 from sldb.store.query import (
     find_semantic,
     find_structural,
@@ -18,7 +17,6 @@ from sldb.store.query import (
     list_semantic,
     list_structural,
 )
-from sldb.store.resolver import find_local_store
 from sldb.core.exceptions import SLDBStoreError
 
 
@@ -26,12 +24,7 @@ class QueryCLI:
     """Handles store-based queries and exploration."""
 
     def _resolve_store(self, args: Any) -> Any:
-        if args.store:
-            return Path(args.store).resolve()
-        found = find_local_store()
-        if not found:
-            raise SLDBStoreError("No store found. Run 'sldb store init'.")
-        return found
+        return get_store_context(args.store)[0]
 
     def ls(self, args: Any) -> int:
         store = self._resolve_store(args)

@@ -1,0 +1,13 @@
+name: FAQDoc
+model_ref: docs.models:FAQDoc
+path: docs/models.py
+documents_index: .sldb/core/documents/FAQDoc.yaml
+sections_index: .sldb/runtime/sections/FAQDoc.yaml
+hash_b: 67a37f21398f00cb6dc092463f62e64e10a8fac60d1b962471b204c04941eede
+version: 1
+canonical: false
+family: null
+semantics:
+- type.documentation.faq
+- workspace.docs.faq
+base_models: []

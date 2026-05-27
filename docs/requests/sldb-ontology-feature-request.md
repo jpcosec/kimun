@@ -14,12 +14,12 @@ labels:
 
 ## Context
 
-We use SLDB across multiple repositories (wikipu, analyzer, docs, etc.). Each repo has documents that semantically overlap (READMEs, concepts, ADRs) but with different field names and structures.
+We use SLDB across multiple repositories (hum, analyzer, docs, etc.). Each repo has documents that semantically overlap (READMEs, concepts, ADRs) but with different field names and structures.
 
 **Example: README as ConceptDoc**
 
 ```
-wikipu/README.md    → ConceptDoc → {title, abstract, purpose}
+hum-core/README.md    → ConceptDoc → {title, abstract, purpose}
 analyzer/README.md  → ConceptDoc → {title, overview, setup, api}
 ```
 
@@ -33,7 +33,7 @@ Field descriptions exist but are prose-only:
 abstract: str = Field(description="One-paragraph summary of the concept")
 ```
 
-Humans read this. Machines cannot infer that `overview` in analyzer maps to `abstract` in wikipu.
+Humans read this. Machines cannot infer that `overview` in analyzer maps to `abstract` in hum.
 
 ## Proposal: Semantic Field Metadata
 
@@ -62,7 +62,7 @@ class ConceptDoc(StructuredNLDoc):
         metadata=Semantic(
             concept="what-it-is",
             aliases=["overview", "synopsis"],
-            canonical_model="wikipu:ConceptDoc.abstract",
+            canonical_model="hum:ConceptDoc.abstract",
             synonym_of="analyzer:ConceptDoc.overview"
         )
     )
@@ -80,7 +80,7 @@ class ConceptDoc(StructuredNLDoc):
         description="One-paragraph summary of the concept",
         semantics="concept:what-it-is",
         alias_of=["overview", "synopsis"],
-        canonical="wikipu:ConceptDoc.abstract"
+        canonical="hum:ConceptDoc.abstract"
     )
 ```
 
@@ -93,7 +93,7 @@ Simpler but less flexible.
 models:
   ConceptDoc:
     version: "2.1.0"
-    canonical: wikipu
+    canonical: hum
     field_definitions:
       abstract:
         meaning: "What this thing IS"
@@ -108,28 +108,28 @@ Models stay clean. Ontology is external but versioned.
 ## Feature: `sldb model diff`
 
 ```bash
-sldb model diff wikipu:ConceptDoc analyzer:ConceptDoc
+sldb model diff hum:ConceptDoc analyzer:ConceptDoc
 ```
 
 ```yaml
 model: ConceptDoc
-canonical: wikipu:ConceptDoc (v2.1.0)
+canonical: hum:ConceptDoc (v2.1.0)
 
 differing_fields:
   abstract:
-    wikipu: abstract (canonical)
+    hum: abstract (canonical)
     analyzer: overview (alias → abstract)
     compatible: true
   definition:
-    wikipu: exists
+    hum: exists
     analyzer: missing
     compatible: true
   setup:
-    wikipu: missing
+    hum: missing
     analyzer: exists
     compatible: true
   api:
-    wikipu: missing
+    hum: missing
     analyzer: exists
     compatible: true
 
@@ -152,7 +152,7 @@ sldb ontology tree       # show field hierarchy as tree
 ### `sldb ontology tree`
 
 ```bash
-$ sldb ontology tree wikipu:ConceptDoc
+$ sldb ontology tree hum:ConceptDoc
 
 ConceptDoc (v2.1.0)
 ├── title (concept: name:ConceptDoc.title)
@@ -170,16 +170,16 @@ $ sldb sync analyzer/ --semantic
 Syncing ConceptDoc...
 
 abstract:
-  wikipu: abstract (canonical) ←→ analyzer: overview (mapped)
+  hum: abstract (canonical) ←→ analyzer: overview (mapped)
   sync: yes (semantically equivalent)
 
 definition:
-  wikipu: exists
+  hum: exists
   analyzer: missing
   sync: no (no mapping defined)
 
 setup:
-  wikipu: missing
+  hum: missing
   analyzer: exists
   sync: skipped (orphan in analyzer)
 
@@ -189,10 +189,10 @@ setup:
 ## Feature: `sldb model validate --cross-repo`
 
 ```bash
-$ sldb model validate analyzer:ConceptDoc --cross-repo wikipu:ConceptDoc
+$ sldb model validate analyzer:ConceptDoc --cross-repo hum:ConceptDoc
 
 Checking: analyzer:ConceptDoc
-Canonical: wikipu:ConceptDoc (v2.1.0)
+Canonical: hum:ConceptDoc (v2.1.0)
 
 ✓ abstract: alias mapped (overview → abstract)
 ✓ definition: canonical (no alias needed)
@@ -225,7 +225,7 @@ store_hash = hash(model_hashes)
 # .sldb/ontology.yaml
 version: "1.0"
 canonical_models:
-  wikipu:ConceptDoc: "2.1.0"
+  hum:ConceptDoc: "2.1.0"
 ```
 
 ### 4. Fallback Behavior
@@ -280,5 +280,5 @@ sldb search "what-it-is" --field-semantics
 
 ---
 
-Submitted by: wikipu team
+Submitted by: hum team
 Date: 2026-04-22

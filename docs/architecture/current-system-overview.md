@@ -58,5 +58,7 @@ Semantic artifacts:
 - `docs/architecture/spec2viz/current-components.yml`
 - `docs/architecture/spec2viz/current-store-lifecycle.yml`
 - `docs/architecture/spec2viz/current-runtime.yml`
+- `docs/architecture/spec2viz/current-onboarding-surface.yml`
+- `docs/architecture/spec2viz/proposed-deskops-components.yml`
 
 Rendered Mermaid outputs are in `docs/architecture/spec2viz/rendered/`.

@@ -150,6 +150,67 @@ class PackagingDoc(StructuredNLDoc):
     )
 
 
+class AtomicDocumentDoc(StructuredNLDoc):
+    __semantics__ = {
+        "type": ["documentation", "atom"],
+        "workspace": ["docs", "atoms"],
+    }
+    __template__ = """
+# ⸢rev•title⸥
+
+## Related Concepts
+
+- ⸢rev,list•related_concepts⸥
+
+## What It Is
+
+⸢rev•what_it_is⸥
+
+## Why It Matters
+
+⸢rev•why_it_matters⸥
+
+## How It Works
+
+⸢rev•how_it_works⸥
+
+## When It Shows Up
+
+⸢rev•when_it_shows_up⸥
+
+## Where It Lives
+
+⸢rev•where_it_lives⸥
+
+## Who Uses It
+
+⸢rev•who_uses_it⸥
+""".strip()
+
+    title: str = Field(description="Primary H1 heading for the atomic knowledge document.")
+    related_concepts: list[str] = Field(
+        description="Short list of adjacent concepts that connect this atom to the wider SLDB knowledge graph."
+    )
+    what_it_is: str = Field(
+        description="Direct definition of the concept without workflow preamble or surrounding history."
+    )
+    why_it_matters: str = Field(
+        description="Reason this concept exists and what user or system confusion it prevents."
+    )
+    how_it_works: str = Field(
+        description="Operational explanation of the mechanism or contract that the concept represents."
+    )
+    when_it_shows_up: str = Field(
+        description="Concrete moments in the SLDB workflow where a user or command encounters this concept."
+    )
+    where_it_lives: str = Field(
+        description="Physical or logical location where the concept is materialized in files, commands, or runtime structures."
+    )
+    who_uses_it: str = Field(
+        description="Primary consumers of the concept and the practical outcome they get from it."
+    )
+
+
 class PlanDoc(StructuredNLDoc):
     __semantics__ = {
         "type": ["documentation", "plan"],

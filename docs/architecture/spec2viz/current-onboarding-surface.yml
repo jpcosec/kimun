@@ -1,0 +1,136 @@
+id: sldb.current.onboarding_surface
+title: SLDB Current Onboarding Surface
+type: component
+version: "0.1"
+
+data:
+  nodes:
+    OnboardingEntry:
+      label: Onboarding Entry Surface
+      kind: core
+      contains:
+        - PortadaHelp
+        - CuratedHelp
+        - FAQSurface
+        - ExploreSurface
+        - InboxSurface
+
+    PortadaHelp:
+      label: sldb --help
+      kind: core
+
+    CuratedHelp:
+      label: sldb help / help <topic>
+      kind: core
+
+    FAQSurface:
+      label: sldb faq
+      kind: core
+
+    ExploreSurface:
+      label: sldb explore
+      kind: core
+
+    InboxSurface:
+      label: sldb inbox
+      kind: core
+
+    DocumentationCorpus:
+      label: Documentation Corpus
+      kind: boundary
+      contains:
+        - ReadmeDoc
+        - FAQDoc
+        - AtomDocs
+        - ArchitectureDocs
+
+    ReadmeDoc:
+      label: README.md
+      kind: boundary
+
+    FAQDoc:
+      label: docs/faq.md
+      kind: boundary
+
+    AtomDocs:
+      label: docs/atoms/*.atom.md
+      kind: boundary
+
+    ArchitectureDocs:
+      label: docs/architecture/*.md
+      kind: boundary
+
+    ModelAndStoreLayer:
+      label: Model + Store Layer
+      kind: core
+      contains:
+        - StructuredModels
+        - LocalStore
+        - QuerySurfaces
+
+    StructuredModels:
+      label: StructuredNLDoc models
+      kind: core
+
+    LocalStore:
+      label: .sldb store
+      kind: database
+
+    QuerySurfaces:
+      label: find / sections / ast / fields
+      kind: core
+
+    DeskBridge:
+      label: desk/inbox bridge
+      kind: boundary
+
+  edges:
+    - from: PortadaHelp
+      to: CuratedHelp
+      relation: points_to
+      label: deeper guidance
+
+    - from: CuratedHelp
+      to: FAQSurface
+      relation: points_to
+      label: question-oriented answers
+
+    - from: CuratedHelp
+      to: ExploreSurface
+      relation: points_to
+      label: deep written search
+
+    - from: FAQSurface
+      to: FAQDoc
+      relation: reads
+      label: parse questions
+
+    - from: ExploreSurface
+      to: DocumentationCorpus
+      relation: searches
+      label: markdown docs
+
+    - from: ExploreSurface
+      to: StructuredModels
+      relation: searches
+      label: Python docstrings
+
+    - from: CuratedHelp
+      to: DocumentationCorpus
+      relation: explains
+      label: concepts and workflows
+
+    - from: DocumentationCorpus
+      to: ModelAndStoreLayer
+      relation: documents
+      label: current behavior
+
+    - from: QuerySurfaces
+      to: LocalStore
+      relation: uses
+      label: tracked docs and indexes
+
+    - from: InboxSurface
+      to: DeskBridge
+      relation: writes
+      label: unclear/suggestion notes

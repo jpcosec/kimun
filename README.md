@@ -2,7 +2,7 @@
 
 A structurally aware Markdown extraction and template mapping library based on `mdast` principles. SLDB allows you to treat Markdown files as a structured persistence layer, mapping them directly to Pydantic models.
 
-Within the `wikipu-ecosystem`, SLDB is the human-readable rendering and navigation layer over canonical `specYaml` semantics. It may author, extract, and render structured markdown, but it should not compete with `specyaml/` as the semantic source-of-truth contract.
+Within the `hum-ecosystem`, SLDB is the human-readable rendering and navigation layer over canonical `specYaml` semantics. It may author, extract, and render structured markdown, but it should not compete with `specyaml/` as the semantic source-of-truth contract.
 
 The workflow-domain example layer now lives in the sibling `opsys` repo, not inside `sldb` itself. See `docs/workspaces.md` for the boundary between reusable SLDB infrastructure and downstream workflow-domain consumers.
 
@@ -25,6 +25,8 @@ pip install sldb
 
 The package ships with a graph-first `sldb` CLI.
 
+Run commands as `sldb ...` or `python -m sldb ...`, not `bash sldb ...`.
+
 Start with curated help:
 
 ```bash
@@ -32,10 +34,23 @@ sldb help
 sldb help find
 sldb help fields
 sldb help ast
+sldb help docs
+sldb faq
+sldb faq store
+sldb explore store
 ```
 
 The public workflow is now organized around `stores`, `models`, `docs`, `fields`, `sections`, `find`, and `ast`.
 The older raw address/query surface still exists under `sldb legacy ...`, but it is no longer the primary interface.
+
+To inspect what one store already knows, use `sldb models list --store .sldb`.
+
+If you are new to the CLI concepts, read `docs/faq.md` after `sldb help`. The FAQ answers the first-use questions around stores, model refs, tracked doc names, semantic versus physical search, and link composition.
+
+You can also browse those answers directly from the CLI with `sldb faq`, and log unclear points or improvement suggestions into the active project's `desk/inbox/` with `sldb inbox`.
+
+To revisit those notes later, use `sldb inbox --list` and `sldb inbox --show <id>`.
+If the project store already has `InboxNoteDoc` registered, new inbox notes auto-track into the store too.
 
 > **Deprecation notice (v0.5):** The singular command aliases (`store`, `model`, `doc`, `ls`, `get`, `glob`, `raw-find`, `recover`, `compose`) are deprecated and will be removed in **v0.6**. Use the plural surfaces (`stores`, `models`, `docs`) or `sldb legacy ...` instead. Set `SLDB_SUPPRESS_DEPRECATION=1` or pass `-W ignore` to silence deprecation warnings in automation.
 
@@ -55,6 +70,7 @@ Store, model, and doc lifecycle:
 
 ```bash
 sldb stores init --path .
+sldb models list --store .sldb
 sldb models add myapp.docs:RecipeDoc --store .sldb --pythonpath src
 sldb models template edit RecipeDoc --input next.template.md --store .sldb --pythonpath src
 sldb models fields add RecipeDoc summary --type str --description "Short summary" --default '"Draft"' --store .sldb --pythonpath src

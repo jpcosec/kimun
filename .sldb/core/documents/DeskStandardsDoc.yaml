@@ -1,0 +1,8 @@
+documents:
+- name: desk-standards
+  path: desk/STANDARDS.md
+  hash_c: 7fcea8e7394cd6f0c39a58b31c8dad1c63eef38e3d4a85bec5be6ab318a4f217
+  hash_d: 64c6883852e9742842227fd56c7d6433ebc42c8428e74169425ec11dcb83d35c
+  semantic_tags:
+  - type.desk.standards
+  - workspace.desk.governance

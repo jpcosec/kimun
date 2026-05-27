@@ -40,6 +40,8 @@ class ModelsCLI:
         if command in {"add", "update"}:
             args.model_command = command
             return self._model.run(args)
+        if command == "list":
+            return self.list(args)
         if command == "show":
             payload = ast_for_target(
                 args.store, args.pythonpath, f"models/{args.model}"
@@ -55,6 +57,45 @@ class ModelsCLI:
         if command == "fields":
             return self.fields(args)
         raise SystemExit(f"Unknown models command: {command}")
+
+    def list(self, args: Any) -> int:
+        sp, root = get_store_context(args.store)
+        idx = load_store_index(sp)
+        models = []
+        for entry in sorted(idx.models, key=lambda item: item.name):
+            model_index = load_models_index(root / entry.models_index)
+            docs_index = load_documents_index(root / model_index.documents_index)
+            models.append(
+                {
+                    "name": entry.name,
+                    "model_ref": entry.model_ref,
+                    "path": entry.path,
+                    "version": model_index.version,
+                    "canonical": getattr(model_index, "canonical", False),
+                    "family": getattr(model_index, "family", None),
+                    "semantics": list(getattr(model_index, "semantics", [])),
+                    "documents": len(docs_index.documents),
+                }
+            )
+
+        payload = {"store": str(sp), "models": models}
+        if args.format == "json":
+            print(json.dumps(payload, indent=2))
+            return 0
+        if args.format == "yaml":
+            print(yaml.safe_dump(payload, sort_keys=False, allow_unicode=True))
+            return 0
+
+        if not models:
+            print(f"No models registered in {sp}")
+            return 0
+        print(f"Models in {sp}:")
+        for item in models:
+            extra = [f"{item['documents']} docs", f"v{item['version']}"]
+            if item["canonical"]:
+                extra.append("canonical")
+            print(f"- {item['name']} | {item['model_ref']} | {', '.join(extra)}")
+        return 0
 
     def fields(self, args: Any) -> int:
         if args.fields_command == "add":

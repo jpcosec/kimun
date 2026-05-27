@@ -34,7 +34,7 @@ Together they can do things neither can do alone.
 
 ## Clarification: Relationship with kg_db
 
-**IMPORTANT:** This request and `extract-kg_db-from-wikipu.md` are **complementary, not contradictory**.
+**IMPORTANT:** This request and `extract-kg_db-from-hum.md` are **complementary, not contradictory**.
 
 | Library | Scope |
 |---|---|
@@ -106,7 +106,7 @@ class Edge(BaseModel):
 relationships:
   - target: analyzer:ConceptDoc.foo.md
     relation: extends
-  - target: wikipu:ADRDoc.bar.md
+  - target: hum:ADRDoc.bar.md
     relation: documents
   - target: self:Chapter.1.md
     relation: contains
@@ -193,7 +193,7 @@ from owlready2 import World, sync_reasoner
 
 # Run reasoner
 world = World()
-graph = world.get_ontology("https://wikipu.ai/")
+graph = world.get_ontology("https://hum.ai/")
 sync_reasoner(graph)
 ```
 
@@ -462,6 +462,6 @@ def build_context_bundle(request: ContextRequest) -> ContextBundle:
 
 ---
 
-Submitted by: wikipu team
+Submitted by: hum team
 Date: 2026-04-22
-Repo: https://github.com/jpcosec/wikipu
+Repo: https://github.com/jpcosec/hum

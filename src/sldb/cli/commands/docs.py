@@ -6,6 +6,7 @@ from typing import Any
 import yaml
 
 from sldb.cli.commands.doc import DocCLI
+from sldb.cli.commands.explore import ExploreCLI
 from sldb.cli.commands.links import LinkCLI
 from sldb.cli.graph import ast_for_target
 
@@ -15,6 +16,7 @@ class DocsCLI:
 
     def __init__(self) -> None:
         self._doc = DocCLI()
+        self._explore = ExploreCLI()
         self._links = LinkCLI()
 
     def run(self, args: Any) -> int:
@@ -38,4 +40,6 @@ class DocsCLI:
             return self._links.recover(args)
         if command == "compose":
             return self._links.compose(args)
+        if command == "explore":
+            return self._explore.run(args)
         raise SystemExit(f"Unknown docs command: {command}")

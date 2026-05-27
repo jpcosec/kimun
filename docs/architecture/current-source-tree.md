@@ -19,6 +19,7 @@ src/
 │   ├── validation.py
 │   ├── cli/
 │   │   ├── __init__.py
+│   │   ├── commands/
 │   │   └── main.py
 │   ├── core/
 │   │   ├── __init__.py
@@ -65,11 +66,15 @@ src/
 - `src/sldb/models/structured_doc.py`: base model contract and field-description enforcement
 - `src/sldb/runtime/`: config and extract/render/roundtrip helpers used by the CLI and store hashing
 - `src/sldb/cli/main.py`: top-level command parser and execution flow
+- `src/sldb/cli/commands/faq.py`: question-oriented entry point into the repo FAQ markdown
+- `src/sldb/cli/commands/inbox.py`: desk note writer for unclear points and suggestions
+- `src/sldb/cli/commands/explore.py`: deep search over markdown docs and Python docstrings
 - `src/sldb/store/`: YAML-backed store layer for indexes, hashing, diagnostics, and store lookup
 - `src/sldb/assets/skills/`: bundled skill-file assets for `sldb init`
 - `src/sldb/examples/reference_bundle/`: bundled reference example for `sldb example`
 - compatibility re-export modules remain at `src/sldb/*.py` for older import paths
 - `src/nldb/`: rename shim that tells users to use `sldb`
+- `docs/atoms/`: atom-sized SSOT concept docs used by the FAQ and other higher-level guidance
 
 ## Test Distribution
 

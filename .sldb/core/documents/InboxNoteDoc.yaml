@@ -1,0 +1,88 @@
+documents:
+- name: inbox-postulator-validation
+  path: desk/inbox/20260520-172355-suggestion-needed-validation-for-postulator-integration.md
+  hash_c: 729158777b434286254f47816f0a0d492af01f7e0a5386ff9ec9bc45e2023ad9
+  hash_d: 82b80ea479d01c9946207825ff404c414b4329b50bb1fc0a14ed0448da6b24e3
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
+- name: inbox-pandoc-cv-question
+  path: desk/inbox/20260520-172355-unclear-can-sldb-model-pandoc-fenced-cv-docs.md
+  hash_c: 3aa557d9c168f6748fc1fedd56ebcc0dec5362a21f3f21f90860622220e2e3c6
+  hash_d: caa24f07e1c5d4367cf71d7a85d82790f195dd04aa775d00849948cbdd03f3ce
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
+- name: 20260521-033950-suggestion-tracked-doc-names
+  path: /tmp/pytest-of-jp/pytest-28/test_inbox_writes_desk_note0/desk/inbox/20260521-033950-suggestion-tracked-doc-names.md
+  hash_c: 25f9ce8b68d9cc5709117579d53e42ecc39e1c131698f2f1e08b2b87cbb1559b
+  hash_d: ccd237843e18a37390cb99a5992a7f453ebea5d0a4f23fc57612287b327bacbe
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
+- name: 20260521-033951-unclear-semantic-docs
+  path: /tmp/pytest-of-jp/pytest-28/test_inbox_lists_and_shows_not0/desk/inbox/20260521-033951-unclear-semantic-docs.md
+  hash_c: f994f2e48deb8db8074f6a9ede8520075d4f20d51104df144ba34c129ad7a2f5
+  hash_d: dafec9438f48a46242c8cf854b01c4247a8cd5afa2bb21a5eebfdadf554ba3e2
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
+- name: 20260521-033951-suggestion-compose-examples
+  path: /tmp/pytest-of-jp/pytest-28/test_inbox_lists_and_shows_not0/desk/inbox/20260521-033951-suggestion-compose-examples.md
+  hash_c: a6338bccb553cd4833f9ea2e323be1ffd1193acf88a3a3c12e023db4fc32026c
+  hash_d: f000a4dc22b1519709f0d047b8f505cae3a355bef1a42ac99c84dd979f3dcea0
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
+- name: 20260521-034037-suggestion-tracked-doc-names
+  path: /tmp/pytest-of-jp/pytest-29/test_inbox_writes_desk_note0/desk/inbox/20260521-034037-suggestion-tracked-doc-names.md
+  hash_c: 3173d50670970ca55b34b6c751195dd26812940e03740bdca954e4fc0e01d37d
+  hash_d: ab2085f89255e3bdac954e9653827b1537f04d4fb6e313c9e2101a8d529a63b8
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
+- name: 20260521-034037-unclear-semantic-docs
+  path: /tmp/pytest-of-jp/pytest-29/test_inbox_lists_and_shows_not0/desk/inbox/20260521-034037-unclear-semantic-docs.md
+  hash_c: e661932e641466d08dabbf0038351d15327ca8514b0b284a598b443c67f38ec7
+  hash_d: ef699fd6f192fca8135330fa87b47d29d0cf072bf8c955205dfb8f181e58917a
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
+- name: 20260521-034037-suggestion-compose-examples
+  path: /tmp/pytest-of-jp/pytest-29/test_inbox_lists_and_shows_not0/desk/inbox/20260521-034037-suggestion-compose-examples.md
+  hash_c: dd24805caedc4e9063ecfa77964fd50d1fb82a8772bae249c05634fef1588c55
+  hash_d: 1507a97db5c589b99fe9c5d859c1db8a477aa1825cf3dd8ca1c2064e91768f81
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
+- name: 20260521-034106-suggestion-tracked-doc-names
+  path: /tmp/pytest-of-jp/pytest-30/test_inbox_writes_desk_note0/desk/inbox/20260521-034106-suggestion-tracked-doc-names.md
+  hash_c: 9bf28e7e72559e2fcc6810e9dba390e0bfe64bfb435991730d91f4a80290d040
+  hash_d: a186a26c9ac4e47417e9a02822838f153cd40b89b66bd7211b5b9be78763bc5d
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
+- name: 20260521-034107-unclear-semantic-docs
+  path: /tmp/pytest-of-jp/pytest-30/test_inbox_lists_and_shows_not0/desk/inbox/20260521-034107-unclear-semantic-docs.md
+  hash_c: befe6693942ab0e643be3c6423c8e9794ebe1b1cbcdfd71f22de96a1591da962
+  hash_d: de309617c12bce8631e110e42c9842ee5d0e6956368fc428d897786799576b2e
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
+- name: 20260521-034107-suggestion-compose-examples
+  path: /tmp/pytest-of-jp/pytest-30/test_inbox_lists_and_shows_not0/desk/inbox/20260521-034107-suggestion-compose-examples.md
+  hash_c: 48faa8103898a946a2cd3523d23cd473219d4dfdc369867cee13156144d7005e
+  hash_d: ce6b52674a507b3cd530b19ce33fd545a71a8bb37adb4e34bb258e91fdf00ccc
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
+- name: suggestion-tracked-doc-names
+  path: /tmp/pytest-of-jp/pytest-3/test_inbox_writes_desk_note0/desk/inbox/20260526-181711-suggestion-tracked-doc-names.md
+  hash_c: 7abcd20b39ea75084873663ffdf6287c1104124cdee791ea9bf1214b74fb49db
+  hash_d: 45594db8b936c77f7a23e78fee7e536d346aba752f4d81f1bc687d731bbbefad
+  semantic_tags: []
+- name: unclear-semantic-docs
+  path: /tmp/pytest-of-jp/pytest-3/test_inbox_lists_and_shows_not0/desk/inbox/20260526-181711-unclear-semantic-docs.md
+  hash_c: d1eabc2ef33c2cc2b79a7947bf868daf11e0985832caaafbe54f858812a9ef85
+  hash_d: 97d6cf3eeb70dc9037c50397d342407dcf7c0a7e6584440be104e3becddc007e
+  semantic_tags: []

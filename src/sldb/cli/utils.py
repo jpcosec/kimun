@@ -65,7 +65,7 @@ def write_text(path: str, content: str) -> None:
 
 def get_store_context(store_arg: str | None) -> tuple[Path, Path]:
     """Resolve store path and project root."""
-    from sldb.store.resolver import find_local_store
+    from sldb.store.resolver import global_store_path, find_local_store
     from sldb.core.exceptions import SLDBStoreError
 
     if store_arg:
@@ -73,7 +73,20 @@ def get_store_context(store_arg: str | None) -> tuple[Path, Path]:
     else:
         found = find_local_store()
         if not found:
-            raise SLDBStoreError("No store found. Run 'sldb store init'.")
+            cwd = Path.cwd().resolve()
+            global_store = global_store_path().resolve()
+            if global_store.exists():
+                raise SLDBStoreError(
+                    "No local .sldb store found from "
+                    f"{cwd}. A global store exists at {global_store}. "
+                    f"Pass --store {global_store} to use it, or run "
+                    "'sldb stores init --path .' to create a local store."
+                )
+            raise SLDBStoreError(
+                "No local .sldb store found from "
+                f"{cwd}. No global store exists at {global_store}. "
+                "Run 'sldb stores init --path .' to create one, or pass --store PATH."
+            )
         sp = found
     from sldb.store.layout import project_root, store_exists
     from sldb.store.migration import migrate_store_layout

@@ -1,0 +1,8 @@
+documents:
+- name: desk-board
+  path: desk/tasks/Board.md
+  hash_c: e7893ea6b54349d1b86d2b074dc553aa048c3103b1c71e2e02e491df0f0aca03
+  hash_d: c7a1ad853a983321b8ce106dffb51b8116d2ff958a1bd4dbf08a9877ab5b5af7
+  semantic_tags:
+  - type.desk.board
+  - workspace.desk.tasks
