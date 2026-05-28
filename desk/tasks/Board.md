@@ -6,19 +6,6 @@ The repo now has a clearer onboarding surface, a CLI FAQ flow, inbox routing anc
 
 The next meaningful desk work is to consolidate open repo work into first-class tasks, close the gap between ad hoc notes and executable backlog items, and keep generic product guidance separate from repo-local delivery tracking.
 
-## Recently Closed
-
-| Task | Domain | Outcome |
-|------|--------|---------|
-| task-007 | cli/store/ux | Added `docs list` and `stores list` with text/json/yaml output |
-| task-008 | cli/store/ux | Read-only store commands fall back to global `~/.sldb/` with a warning when no local store exists |
-| task-002 | opsys/docs/ux | Exported the reporting and UX CLI testing guides into `deskops/docs/` and left forwarding references in `sldb` |
-| task-006 | desk/inbox/ux | Rejected title-only placeholder inbox notes and documented the minimum actionable note rule |
-| task-005 | integration/store/workflow | Added a minimal Postulator-style integration guide with store, tracking, and ownership recommendations |
-| task-004 | models/docs/pandoc | Proved shallow `title + body` support for Pandoc fenced div CV documents and added a runnable example |
-| task-003 | cli/store/ux | Added `models list`, improved missing-store guidance around local versus global scope, and updated onboarding docs/help |
-| task-001 | cli/docs/desk | Added FAQ, explore, inbox, spec2viz onboarding diagrams, and a grounded `deskops` boundary proposal |
-
 ## Working Rules
 
 1. Each active task should be completable from the task file, listed pills, and referenced repo surfaces.
