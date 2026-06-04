@@ -107,6 +107,18 @@ def _add_stores_group(
     m.add_argument("concept_b", help="Second concept")
     m.add_argument("--store", help="Store path")
 
+    export = s.add_parser("semantic-export", help="Export semantic payloads.")
+    export.add_argument("--store", help="Store path")
+    export.add_argument("--pythonpath", help="Project path")
+    export.add_argument("--format", choices=("kgdb",), default="kgdb")
+    export.add_argument("--encoding", choices=("json", "yaml"), default="json")
+    export.add_argument("--output", "-o", default="-", help="Output path or -")
+    export.add_argument(
+        "--rebuild",
+        action="store_true",
+        help="Refresh semantic and section indexes before exporting",
+    )
+
     listing = s.add_parser("list", help="List federated stores.")
     listing.add_argument("--store", help="Store path")
     listing.add_argument("--format", choices=("text", "json", "yaml"), default="text")

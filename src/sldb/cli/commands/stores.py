@@ -6,7 +6,8 @@ from typing import Any
 import yaml
 
 from sldb.cli.commands.store import StoreCLI
-from sldb.cli.utils import get_store_context
+from sldb.cli.utils import get_store_context, resolve_model_ref, write_text
+from sldb.store.export import export_kgdb_semantic_payload
 from sldb.store.io import load_store_index
 
 
@@ -19,8 +20,27 @@ class StoresCLI:
     def run(self, args: Any) -> int:
         if args.stores_command == "list":
             return self.list(args)
+        if args.stores_command == "semantic-export":
+            return self.semantic_export(args)
         args.store_command = args.stores_command
         return self._store.run(args)
+
+    def semantic_export(self, args: Any) -> int:
+        sp, root = get_store_context(args.store, mode="readonly")
+        payload = export_kgdb_semantic_payload(
+            sp,
+            root,
+            resolve_model_ref,
+            args.pythonpath,
+            rebuild=args.rebuild,
+            command=["sldb", "stores", "semantic-export", "--format", args.format],
+        )
+        if args.encoding == "json":
+            content = json.dumps(payload, indent=2) + "\n"
+        else:
+            content = yaml.safe_dump(payload, sort_keys=False, allow_unicode=True)
+        write_text(args.output, content)
+        return 0
 
     def list(self, args: Any) -> int:
         sp, root = get_store_context(args.store, mode="readonly")
