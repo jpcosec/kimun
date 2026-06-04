@@ -18,6 +18,8 @@ The docs surface now has two layers:
 - `docs/atoms/*.atom.md` holds short SSOT concept definitions such as store, tracked doc, semantic versus physical search, and compose versus recover.
 - `docs/faq.md` and the other higher-level docs explain workflows and point back to those atoms instead of redefining everything inline.
 
+The architecture docs also define integration boundaries, including the [SLDB semantic export boundary for KGDB](architecture/semantic-export-boundary.md).
+
 ## Why These Models Are Shallow
 
 The documentation corpus is structurally heterogeneous.

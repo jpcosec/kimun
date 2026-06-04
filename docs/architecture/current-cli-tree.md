@@ -24,6 +24,13 @@ sldb
 │   ├── semantic-map <local-tag> <global-tag> [--store PATH]
 │   ├── check [--store PATH] [--format text|json|yaml] [--pythonpath PATH]
 │   └── update [--store PATH] [--pythonpath PATH]
+├── stores
+│   ├── init [--path PATH] [--force]
+│   ├── semantic-map <local-tag> <global-tag> [--store PATH]
+│   ├── check [--store PATH] [--format text|json|yaml] [--pythonpath PATH]
+│   ├── update [--store PATH] [--pythonpath PATH]
+│   ├── semantic-export [--store PATH] [--pythonpath PATH] [--format kgdb] [--encoding json|yaml] [-o PATH|-] [--rebuild]
+│   └── list [--store PATH] [--format text|json|yaml]
 ├── model
 │   ├── add <model-ref> [--canonical] [--store PATH] [--pythonpath PATH]
 │   ├── list [--store PATH] [--format text|json|yaml]
@@ -42,6 +49,6 @@ sldb
 - feedback capture into repo desk: `inbox`
 - deep written guidance search: `explore` and `docs explore`
 - project bootstrapping: `init`, `example`
-- store registry and indexing workflows: `store ...`, `ls`, `get`, `glob`, `find`
+- store registry, indexing, and semantic export workflows: `stores ...`, `store ...`, `ls`, `get`, `glob`, `find`
 - model contract workflows: `model ...`
 - document instance workflows: `doc ...`

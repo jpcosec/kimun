@@ -219,6 +219,7 @@ There are several ways, depending on the level you want:
 - `fields query`: query the same field path across tracked docs
 - `find`: retrieve docs, sections, and fields semantically or physically
 - `ast show`: inspect the normalized graph view
+- `stores semantic-export`: emit the graph-ready SLDB semantic payload for KGDB ingestion
 
 Examples:
 
@@ -226,7 +227,10 @@ Examples:
 sldb extract myapp.docs:Book docs/book.md output.yaml
 sldb docs show my-book --store .sldb --format yaml
 sldb fields query title --store .sldb --format yaml
+sldb stores semantic-export --store .sldb --pythonpath src --format kgdb --encoding json -o kgdb.semantic.json
 ```
+
+`stores semantic-export` differs from semantic search: it exports SLDB's semantic document truth in bulk for a graph consumer, while `find --in semantic` answers a specific retrieval query. The export does not add source-file dependency edges or workflow-specific relations; those belong to downstream graph adapters.
 
 ## How do I update data in tracked docs?
 
