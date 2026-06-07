@@ -263,6 +263,34 @@ sldb docs recover roadmap --store .sldb
 sldb docs compose roadmap --store .sldb -o -
 ```
 
+## Should SLDB provide structured reference and materialization fields?
+
+Not as required core fields today.
+
+SLDB should stay generic: it owns structured Markdown contracts, tracked document identity, validation, composition, semantic indexes, and semantic export. Workflow-specific concepts such as source atoms, materialization outputs, validation hooks, and role-specific references should usually live in project models or downstream workflow systems such as `deskops`.
+
+Use explicit fields in your own `StructuredNLDoc` model when a project needs metadata such as `source_atoms`, `output_kind`, `output`, or `validates_with`. Promote a pattern into SLDB only when it is reusable across unrelated projects and does not encode one workflow domain.
+
+## How should I model large composed documents?
+
+Start shallow unless you need typed structure.
+
+Use a `title + body` style model for large READMEs, FAQs, architecture docs, and narrative documents when SLDB only needs to preserve, validate, track, and search the document as a whole.
+
+Use typed fields or typed section models when code needs to query or update specific parts independently. Use `docs compose` when a human-facing document should expand explicit transclusions from other tracked documents.
+
+Do not store reverse use-site lists inside the source documents by default. Prefer forward references in the composed/materialized document and let the store, semantic export, or downstream graph adapters answer reverse questions.
+
+## Should SLDB emit graph-ready payloads for KGDB?
+
+Yes, through the semantic export boundary.
+
+Use `sldb stores semantic-export` to emit SLDB-owned semantic document truth for graph consumers. The export includes model entries, document entries, sections, semantic tags, semantic DAG relationships, equivalences, and store/hash provenance.
+
+SLDB should not emit workflow-specific graph edges or source-code dependency edges as part of that semantic truth. Downstream adapters such as `deskops` or KGDB can add those edges after ingesting the export.
+
+See [Semantic Export Boundary](architecture/semantic-export-boundary.md).
+
 ## What should a first-time workflow look like?
 
 If you are evaluating SLDB for the first time:
