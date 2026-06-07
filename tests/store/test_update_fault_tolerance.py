@@ -72,14 +72,15 @@ def test_store_update_skips_missing_doc(tmp_path, capsys):
 
 
 _LOCK_HOLDER_SCRIPT = """\
-import sys
+import os, sys, time
 sys.path.insert(0, sys.argv[1])
 from pathlib import Path
 from sldb.store.io import store_lock
-import time
 sp = Path(sys.argv[2])
+ready_file = Path(sys.argv[4])
 duration = float(sys.argv[3])
 with store_lock(sp):
+    ready_file.write_text("ready")
     time.sleep(duration)
 """
 
@@ -90,12 +91,18 @@ def test_store_lock_fails_fast_when_busy(tmp_path):
     root.mkdir()
     store_path, _doc_path = _setup_store(root)
 
+    ready_file = tmp_path / "lock_ready"
     lock_holder = subprocess.Popen(
-        [sys.executable, "-c", _LOCK_HOLDER_SCRIPT, _SRC, str(store_path), "5.0"],
+        [sys.executable, "-c", _LOCK_HOLDER_SCRIPT, _SRC, str(store_path), "5.0", str(ready_file)],
         env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"},
     )
 
-    time.sleep(0.5)
+    for _ in range(50):
+        if ready_file.exists():
+            break
+        time.sleep(0.1)
+
+    assert ready_file.exists(), "Subprocess never acquired the lock"
 
     with pytest.raises(SystemExit) as exc:
         cli_main(
@@ -113,12 +120,18 @@ def test_store_lock_wait_blocks_until_released(tmp_path):
     root.mkdir()
     store_path, _doc_path = _setup_store(root)
 
+    ready_file = tmp_path / "lock_ready_wait"
     lock_holder = subprocess.Popen(
-        [sys.executable, "-c", _LOCK_HOLDER_SCRIPT, _SRC, str(store_path), "1.5"],
+        [sys.executable, "-c", _LOCK_HOLDER_SCRIPT, _SRC, str(store_path), "1.5", str(ready_file)],
         env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"},
     )
 
-    time.sleep(0.3)
+    for _ in range(30):
+        if ready_file.exists():
+            break
+        time.sleep(0.1)
+
+    assert ready_file.exists(), "Subprocess never acquired the lock"
 
     exit_code = cli_main(
         [

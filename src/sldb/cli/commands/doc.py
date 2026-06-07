@@ -31,7 +31,11 @@ class DocCLI:
 
     def _parse_payload(self, payload_arg: str) -> dict[str, Any]:
         p = Path(payload_arg)
-        if p.exists():
+        try:
+            is_path = p.exists()
+        except OSError:
+            is_path = False
+        if is_path:
             return yaml.safe_load(p.read_text(encoding="utf-8"))
         try:
             data = yaml.safe_load(payload_arg)

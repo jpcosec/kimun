@@ -100,6 +100,59 @@ def _model_index_path(store: Path, model_name: str) -> Path:
     return store.parent / entry.models_index
 
 
+def test_docs_create_accepts_long_inline_json_payload(tmp_path):
+    pythonpath = _write_models(tmp_path)
+    root = tmp_path / "repo"
+    root.mkdir()
+    store = root / ".sldb"
+    assert cli_main(["stores", "init", "--path", str(root)]) == 0
+    assert (
+        cli_main(
+            [
+                "models",
+                "add",
+                "cli_v2_models:RoadmapDoc",
+                "--store",
+                str(store),
+                "--pythonpath",
+                pythonpath,
+            ]
+        )
+        == 0
+    )
+
+    long_title = "x" * 300
+    output = root / "long-inline.md"
+    assert (
+        cli_main(
+            [
+                "docs",
+                "create",
+                "--model",
+                "RoadmapDoc",
+                "-o",
+                str(output),
+                json.dumps(
+                    {
+                        "title": long_title,
+                        "status": "draft",
+                        "tasks": ["Ship CLI"],
+                        "semantic_tags": ["project.sldb.database"],
+                    }
+                ),
+                "--store",
+                str(store),
+                "--pythonpath",
+                pythonpath,
+            ]
+        )
+        == 0
+    )
+
+    assert output.exists()
+    assert f"# {long_title}" in output.read_text(encoding="utf-8")
+
+
 def test_help_topics(capsys):
     assert cli_main(["--help"]) == 0
     out = capsys.readouterr().out
