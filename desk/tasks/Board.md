@@ -10,13 +10,6 @@ The next meaningful desk work is to consolidate open repo work into first-class 
 
 No active tasks are routed on this board right now.
 
-## Done
-
-| ID | Domain | Task | Resolved At |
-|----|--------|------|-------------|
-| 002 | sldb/cli | Fix docs create treating inline JSON as path | 2026-06-07 |
-| 001 | sldb/testing | Fix stale pycache breaking store lock test | 2026-06-06 |
-
 ## Working Rules
 
 1. Each active task should be completable from the task file, listed pills, and referenced repo surfaces.

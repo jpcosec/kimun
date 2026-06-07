@@ -55,7 +55,7 @@ Each pill captures:
 Drafted -> Bound to task (desk/pills/) -> Audited after step ->
   -> Still needed? Keep.
   -> Redundant with code/docs? Delete.
-  -> Complete. Knowledge flows to code/docs. Delete or deprecate.
+  -> Complete. Move the knowledge into code/docs, then delete or deprecate.
 ```
 
 **Non-redundancy rule:** Code is truth. Docs is index. Context is reasoning (subset of subset). Context pills must not repeat what is already in code or docs.
@@ -131,7 +131,7 @@ When all tasks in a phase or delivery slice are done:
 1. COMPILE   -> Rebuild if applicable (bundles, dist).
 2. AUDIT     -> Run the relevant tests and quality checks.
 3. REGRESS   -> Fix any test failures.
-4. FLOW      -> Knowledge flows: pills -> code/docs. Delete redundant pills.
+4. FLOW      -> Move needed pill knowledge into code/docs. Delete redundant pills.
 5. ADVANCE   -> Move to next phase.
 ```
 
@@ -158,6 +158,8 @@ When all tasks in a phase or delivery slice are done:
 | ID | Domain | Item |
 |----|--------|------|
 ```
+
+Completed tasks are not kept on the board. When a task is resolved, delete its task file and remove its active row in the same atomic commit as the resolving change.
 
 ---
 
@@ -211,7 +213,7 @@ Scopes:  use the smallest accurate repo area, component, command, or workflow su
 - [ ] Proceed with ambiguous task without creating or requesting missing context
 - [ ] Create implementation artifacts instead of referencing existing pills
 - [ ] Let pills drift from code/docs (redundant or stale)
-- [ ] Keep pills after their knowledge has flowed to code/docs
+- [ ] Keep pills after their knowledge has been explicitly moved into code/docs
 - [ ] Mark task complete without auditing git history
 - [ ] Commit with untracked files (gitignore or track first)
 - [ ] Skip tests to "get it done"
