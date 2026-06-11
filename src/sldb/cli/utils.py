@@ -76,7 +76,7 @@ def get_store_context(
     from sldb.core.exceptions import SLDBStoreError
 
     if store_arg:
-        sp = Path(store_arg).resolve()
+        sp = _resolve_store_arg(store_arg)
     else:
         found = find_local_store()
         if found:
@@ -114,6 +114,35 @@ def get_store_context(
     return sp, root
 
 
+def _resolve_store_arg(store_arg: str) -> Path:
+    """Resolve an explicit store path or a linked store alias from the local store."""
+    from sldb.store.resolver import find_local_store
+    from sldb.store.layout import project_root, store_exists
+    from sldb.store.io import load_store_index
+    from sldb.core.exceptions import SLDBStoreError
+
+    candidate = Path(store_arg).resolve()
+    if store_exists(candidate):
+        return candidate
+
+    local_store = find_local_store()
+    if local_store is None:
+        return candidate
+
+    local_root = project_root(local_store)
+    store_index = load_store_index(local_store)
+    linked = next((entry for entry in store_index.stores if entry.name == store_arg), None)
+    if linked is None:
+        return candidate
+
+    linked_path = Path(linked.path)
+    resolved = linked_path if linked_path.is_absolute() else (local_root / linked_path)
+    resolved = resolved.resolve()
+    if not store_exists(resolved):
+        raise SLDBStoreError(f"Linked store '{store_arg}' does not exist at {resolved}.")
+    return resolved
+
+
 def registered_model(
     store_path: Path, model_name: str, pythonpath: str | None
 ) -> tuple[type, Any, Any]:
@@ -122,11 +151,145 @@ def registered_model(
 
     idx = load_store_index(store_path)
     entry = next((m for m in idx.models if m.name == model_name), None)
-    if entry is None:
-        from sldb.core.exceptions import SLDBStoreError
+    if entry is not None:
+        return resolve_model_ref(entry.model_ref, pythonpath), entry, idx
 
-        raise SLDBStoreError(f"Model '{model_name}' not registered.")
-    return resolve_model_ref(entry.model_ref, pythonpath), entry, idx
+    federated = _find_federated_model(store_path, model_name, pythonpath)
+    if federated is not None:
+        return federated
+
+    from sldb.core.exceptions import SLDBStoreError
+
+    raise SLDBStoreError(f"Model '{model_name}' not registered.")
+
+
+def _find_federated_model(
+    destination_store: Path, model_name: str, pythonpath: str | None
+) -> tuple[type, Any, Any] | None:
+    """Find a model in linked stores and register a local document index for it."""
+    from sldb.store.resolver import find_local_store
+    from sldb.store.layout import project_root, store_exists
+    from sldb.store.io import (
+        load_store_index,
+    )
+
+    if ":" not in model_name:
+        return None
+
+    store_alias, remote_model_name = model_name.split(":", 1)
+    linked_store = None
+    for registry_store in _model_registry_stores(destination_store, find_local_store()):
+        registry_root = project_root(registry_store)
+        registry_index = load_store_index(registry_store)
+        linked = next(
+            (entry for entry in registry_index.stores if entry.name == store_alias), None
+        )
+        if linked is None:
+            continue
+        linked_path = Path(linked.path)
+        candidate = (
+            linked_path if linked_path.is_absolute() else registry_root / linked_path
+        ).resolve()
+        if store_exists(candidate):
+            linked_store = candidate
+            break
+    if linked_store is None:
+        return None
+
+    destination_root = project_root(destination_store)
+    destination_index = load_store_index(destination_store)
+    linked_root = project_root(linked_store)
+    linked_index = load_store_index(linked_store)
+    remote_entry = next(
+        (entry for entry in linked_index.models if entry.name == remote_model_name), None
+    )
+    if remote_entry is None:
+        return None
+
+    model_type = resolve_model_ref(remote_entry.model_ref, pythonpath)
+    local_entry = _ensure_federated_model_entry(
+        destination_store,
+        destination_root,
+        destination_index,
+        model_type,
+        remote_entry.model_ref,
+        linked_root / remote_entry.path,
+    )
+    return model_type, local_entry, load_store_index(destination_store)
+
+
+def _model_registry_stores(destination_store: Path, local_store: Path | None) -> list[Path]:
+    stores = [destination_store]
+    if local_store is not None and local_store.resolve() != destination_store.resolve():
+        stores.append(local_store.resolve())
+    return stores
+
+
+def _ensure_federated_model_entry(
+    store_path: Path,
+    root: Path,
+    store_index: Any,
+    model_type: type[StructuredNLDoc],
+    model_ref: str,
+    model_path: Path,
+) -> Any:
+    from sldb.store.io import (
+        load_store_index,
+        save_documents_index,
+        save_models_index,
+        store_lock,
+    )
+    from sldb.store.layout import documents_index_relpath, models_index_relpath
+    from sldb.store.models import DocumentsIndex, ModelEntry, ModelsIndex
+    from sldb.store.ops import cascade_hash_a
+    from sldb.store.semantic_tags import flatten_model_semantics
+
+    existing = next(
+        (entry for entry in store_index.models if entry.name == model_type.__name__), None
+    )
+    if existing is not None:
+        return existing
+
+    mi_rel = models_index_relpath(model_type.__name__)
+    di_rel = documents_index_relpath(model_type.__name__)
+    try:
+        rel_model_path = str(model_path.resolve().relative_to(root))
+    except ValueError:
+        rel_model_path = str(model_path.resolve())
+
+    with store_lock(store_path):
+        latest_index = load_store_index(store_path)
+        existing = next(
+            (entry for entry in latest_index.models if entry.name == model_type.__name__),
+            None,
+        )
+        if existing is not None:
+            return existing
+
+        save_documents_index(root / di_rel, DocumentsIndex())
+        save_models_index(
+            root / mi_rel,
+            ModelsIndex(
+                name=model_type.__name__,
+                model_ref=model_ref,
+                path=rel_model_path,
+                documents_index=di_rel,
+                hash_b="",
+                version=1,
+                canonical=False,
+                semantics=flatten_model_semantics(model_type),
+            ),
+        )
+        entry = ModelEntry(
+            name=model_type.__name__,
+            model_ref=model_ref,
+            path=rel_model_path,
+            models_index=mi_rel,
+            version=1,
+        )
+        latest_index.models.append(entry)
+        cascade_hash_a(store_path, root, latest_index)
+        return entry
 
 
 def parse_data_value(raw: str) -> Any:

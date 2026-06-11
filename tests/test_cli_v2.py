@@ -42,6 +42,27 @@ Status: ⸢rev•status⸥
     return str(module.parent)
 
 
+def _write_federated_models(base: Path) -> str:
+    sys.modules.pop("federated_models", None)
+    module = base / "federated_models.py"
+    module.write_text(
+        '''from pydantic import Field
+from sldb import StructuredNLDoc
+
+
+class RequestDoc(StructuredNLDoc):
+    __template__ = """# ⸢rev•title⸥
+
+⸢rev,markdown•body⸥
+""".strip()
+    title: str = Field(description="Request title.")
+    body: str = Field(description="Request body.")
+''',
+        encoding="utf-8",
+    )
+    return str(module.parent)
+
+
 def _setup_store(tmp_path: Path) -> tuple[Path, str]:
     pythonpath = _write_models(tmp_path)
     root = tmp_path / "repo"
@@ -151,6 +172,166 @@ def test_docs_create_accepts_long_inline_json_payload(tmp_path):
 
     assert output.exists()
     assert f"# {long_title}" in output.read_text(encoding="utf-8")
+
+
+def test_docs_create_accepts_linked_store_alias(tmp_path, monkeypatch):
+    pythonpath = _write_federated_models(tmp_path)
+    central = tmp_path / "central"
+    target = tmp_path / "target"
+    central.mkdir()
+    target.mkdir()
+    central_store = central / ".sldb"
+    target_store = target / ".sldb"
+
+    assert cli_main(["stores", "init", "--path", str(central)]) == 0
+    assert cli_main(["stores", "init", "--path", str(target)]) == 0
+    monkeypatch.chdir(central)
+    assert (
+        cli_main(
+            [
+                "models",
+                "add",
+                "federated_models:RequestDoc",
+                "--store",
+                str(target_store),
+                "--pythonpath",
+                pythonpath,
+            ]
+        )
+        == 0
+    )
+    assert (
+        cli_main(
+            [
+                "stores",
+                "add",
+                str(target_store),
+                "--name",
+                "target",
+                "--store",
+                str(central_store),
+            ]
+        )
+        == 0
+    )
+
+    assert (
+        cli_main(
+            [
+                "docs",
+                "create",
+                "--store",
+                "target",
+                "--model",
+                "RequestDoc",
+                "-o",
+                "desk/inbox/request-123.md",
+                json.dumps({"title": "Need review", "body": "Please review this."}),
+                "--pythonpath",
+                pythonpath,
+            ],
+        )
+        == 0
+    )
+
+    output = target / "desk" / "inbox" / "request-123.md"
+    assert output.exists()
+    assert "# Need review" in output.read_text(encoding="utf-8")
+    docs_index = load_documents_index(
+        target / ".sldb" / "core" / "documents" / "RequestDoc.yaml"
+    )
+    assert [doc.path for doc in docs_index.documents] == [
+        "desk/inbox/request-123.md"
+    ]
+
+
+def test_docs_create_uses_model_from_linked_store_namespace(tmp_path, monkeypatch):
+    pythonpath = _write_federated_models(tmp_path)
+    central = tmp_path / "central"
+    models_repo = tmp_path / "deskops"
+    target = tmp_path / "target"
+    central.mkdir()
+    models_repo.mkdir()
+    target.mkdir()
+    central_store = central / ".sldb"
+    models_store = models_repo / ".sldb"
+    target_store = target / ".sldb"
+
+    assert cli_main(["stores", "init", "--path", str(central)]) == 0
+    assert cli_main(["stores", "init", "--path", str(models_repo)]) == 0
+    assert cli_main(["stores", "init", "--path", str(target)]) == 0
+    monkeypatch.chdir(central)
+    assert (
+        cli_main(
+            [
+                "models",
+                "add",
+                "federated_models:RequestDoc",
+                "--store",
+                str(models_store),
+                "--pythonpath",
+                pythonpath,
+            ]
+        )
+        == 0
+    )
+    assert (
+        cli_main(
+            [
+                "stores",
+                "add",
+                str(models_store),
+                "--name",
+                "deskops",
+                "--store",
+                str(central_store),
+            ]
+        )
+        == 0
+    )
+    assert (
+        cli_main(
+            [
+                "stores",
+                "add",
+                str(target_store),
+                "--name",
+                "target",
+                "--store",
+                str(central_store),
+            ]
+        )
+        == 0
+    )
+
+    assert (
+        cli_main(
+            [
+                "docs",
+                "create",
+                "--store",
+                "target",
+                "--model",
+                "deskops:RequestDoc",
+                "-o",
+                "desk/inbox/request-456.md",
+                json.dumps({"title": "Need model", "body": "Use deskops model."}),
+                "--pythonpath",
+                pythonpath,
+            ],
+        )
+        == 0
+    )
+
+    output = target / "desk" / "inbox" / "request-456.md"
+    assert output.exists()
+    assert "Use deskops model." in output.read_text(encoding="utf-8")
+    docs_index = load_documents_index(
+        target / ".sldb" / "core" / "documents" / "RequestDoc.yaml"
+    )
+    assert [doc.path for doc in docs_index.documents] == [
+        "desk/inbox/request-456.md"
+    ]
 
 
 def test_help_topics(capsys):

@@ -323,6 +323,24 @@ Stores can reference each other. The local store always wins on name collisions.
 sldb stores add ~/.sldb/shared-ontology --name shared
 ```
 
+Linked store aliases can be used as generic document destinations from the current project. Relative output paths are resolved against the destination store's project root:
+
+```bash
+sldb docs create --store shared --model Book -o docs/book.md data.yaml
+```
+
+Models can also be resolved from a linked store namespace and registered into the destination store as a document index when first used:
+
+```bash
+sldb docs create \
+  --store target-project \
+  --model deskops:InboxRequestDoc \
+  -o desk/inbox/request-123.md \
+  request.yaml
+```
+
+SLDB treats this as a generic stores/models/docs operation. Workflow tools such as `deskops` should own higher-level semantics like inbox routing, sender/recipient fields, request lifecycle, and assignment, and call SLDB only to resolve stores, render, validate, write, and track structured Markdown documents.
+
 ### Relationship semantics
 
 Model relationships (`inherits`, `has_many`) are **not** stored in the index — they are derived at query time from the Python class hierarchy and field types. The YAML index stores only physical pointers; the Pydantic class is the single source of truth for schema and semantics.

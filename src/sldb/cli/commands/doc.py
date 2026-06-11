@@ -54,7 +54,7 @@ class DocCLI:
         if not valid:
             raise SLDBValidationError("Idempotency fail", details)
 
-        out = Path(args.output).resolve()
+        out = self._resolve_doc_path(args.output, root)
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(rendered + "\n", encoding="utf-8")
         track_document(
@@ -74,7 +74,7 @@ class DocCLI:
     def track(self, args: Any) -> int:
         sp, root = get_store_context(args.store)
         model_type, entry, idx = registered_model(sp, args.model, args.pythonpath)
-        path = Path(args.path).resolve()
+        path = self._resolve_doc_path(args.path, root)
 
         if not args.force:
             valid, details = validate_model_input_roundtrip(
@@ -197,3 +197,7 @@ class DocCLI:
             cascade_hash_a(sp, root, idx)
         print(f"Untracked '{doc.name}'")
         return 0
+
+    def _resolve_doc_path(self, raw_path: str, root: Path) -> Path:
+        path = Path(raw_path)
+        return path.resolve() if path.is_absolute() else (root / path).resolve()

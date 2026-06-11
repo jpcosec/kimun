@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Add generic cross-store document writes through linked store aliases and federated model namespaces for workflow tools such as `deskops`.
+
 ## 0.2.0 - 2026-05-16
 
 - **Store write concurrency**: atomic writes + advisory `fcntl` locks on all index write paths; `--wait` flag for `stores update`
