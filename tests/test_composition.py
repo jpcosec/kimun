@@ -103,6 +103,23 @@ def test_board_doc_renders_composed_task_summaries(tmp_path: Path):
     )
 
 
+def test_composition_skips_invalid_referenced_documents(tmp_path: Path):
+    _load_composition_models(tmp_path)
+    task_path = tmp_path / "task-invalid.md"
+    task_path.write_text("# Missing Status\n\n## Goal\n\nIncomplete.", encoding="utf-8")
+
+    rendered = render_model_markdown(
+        ComposedBoardDoc,
+        {
+            "title": "Composition Board",
+            "tasks": [str(task_path)],
+        },
+    )
+
+    assert "## Task Details" in rendered
+    assert "Missing Status" not in rendered
+
+
 def test_ritual_doc_renders_composed_step_details(tmp_path: Path):
     models = _load_composition_models(tmp_path)
     step_path = tmp_path / "step-a.md"

@@ -42,6 +42,25 @@ class SimpleDoc(StructuredNLDoc):
     items: list = Field(description="Bullet list items.")
 
 
+class FrontmatterFieldsDoc(StructuredNLDoc):
+    __template__ = """---
+id: ⸢rev•id⸥
+status: ⸢rev•status⸥
+tags: ⸢rev•tags⸥
+---
+
+# ⸢rev•title⸥
+
+⸢rev•body⸥
+""".strip()
+
+    id: str = Field(description="Stable document identifier.")
+    status: str = Field(description="Document lifecycle status.")
+    tags: list[str] = Field(description="Semantic tags.")
+    title: str = Field(description="Document title heading.")
+    body: str = Field(description="Markdown body content.")
+
+
 class AdvancedMarkersDoc(StructuredNLDoc):
     __template__ = """
 # ⸢rev•title⸥
@@ -423,6 +442,22 @@ def test_example_bundle_roundtrips():
     assert "## YAML metadata block" in rendered
     assert input_valid is True
     assert data_valid is True
+
+
+def test_frontmatter_fields_render_and_extract():
+    payload = {
+        "id": "doc-001",
+        "status": "active",
+        "tags": ["system:sldb", "topic:frontmatter"],
+        "title": "Frontmatter metadata",
+        "body": "The body stays focused on human-readable content.",
+    }
+
+    rendered = render_model_markdown(FrontmatterFieldsDoc, payload)
+    extracted = extract_model_data(FrontmatterFieldsDoc, rendered)
+
+    assert rendered.startswith("---\nid: doc-001\nstatus: active\ntags:\n- system:sldb")
+    assert extracted == payload
 
 
 def test_example_bundle_self_idempotency():

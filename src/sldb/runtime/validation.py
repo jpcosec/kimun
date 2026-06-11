@@ -73,6 +73,8 @@ class Validator:
                 markers = r.get("props_info", [])
                 if "marker" in r:
                     markers.append(r["marker"])
+                if "markers" in r:
+                    markers.extend(item["marker"] for item in r["markers"])
                 if "col_markers" in r:
                     for cm in r["col_markers"].values():
                         markers.append(cm["marker"])

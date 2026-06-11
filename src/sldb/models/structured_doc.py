@@ -52,7 +52,10 @@ class StructuredNLDoc(BaseModel):
             path = Path(ref)
             if not path.exists() or model_type is None:
                 continue
-            payload = self._extract_composed_payload(model_type, path)
+            try:
+                payload = self._extract_composed_payload(model_type, path)
+            except Exception:
+                continue
             if not payload:
                 continue
             rendered.append(line_template.format(**payload))

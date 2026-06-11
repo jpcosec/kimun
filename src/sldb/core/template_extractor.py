@@ -112,6 +112,8 @@ class TemplateExtractor:
                 markers = recipe["props_info"]
             elif "marker" in recipe:  # List, Table, Yaml
                 markers = [recipe["marker"]]
+            elif "markers" in recipe:  # Yaml with multiple field markers
+                markers = [item["marker"] for item in recipe["markers"]]
 
             for marker in markers:
                 if marker.is_reversible:
