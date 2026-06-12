@@ -34,8 +34,12 @@ class TemplateExtractor:
                             recipe.update(
                                 {
                                     "outer_index": outer_index,
-                                    "outer_type": outer_type,
-                                    "outer_tag": block_node.tag,
+                                    "outer_type": recipe.get(
+                                        "match_outer_type", outer_type
+                                    ),
+                                    "outer_tag": recipe.get(
+                                        "match_outer_tag", block_node.tag
+                                    ),
                                     "inner_path": current_path,
                                 }
                             )
@@ -65,8 +69,12 @@ class TemplateExtractor:
                             recipe.update(
                                 {
                                     "outer_index": outer_index,
-                                    "outer_type": outer_type,
-                                    "outer_tag": block_node.tag,
+                                    "outer_type": recipe.get(
+                                        "match_outer_type", outer_type
+                                    ),
+                                    "outer_tag": recipe.get(
+                                        "match_outer_tag", block_node.tag
+                                    ),
                                     "inner_path": current_path,
                                 }
                             )

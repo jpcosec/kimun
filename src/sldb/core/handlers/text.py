@@ -63,6 +63,26 @@ class TextNodeHandler(BaseNodeHandler):
         if not pattern_data["dynamic_found"]:
             return []
 
+        if (
+            len(pattern_data["props_info"]) == 1
+            and content.startswith("⸢")
+            and content.endswith("⸥")
+        ):
+            marker = pattern_data["props_info"][0]
+            table_columns = self._table_columns(marker)
+            if table_columns is not None:
+                return [
+                    {
+                        "name": marker.name,
+                        "marker": marker,
+                        "table_columns": table_columns,
+                        "props": [marker.name],
+                        "handler": "table",
+                        "match_outer_type": "table",
+                        "match_outer_tag": "table",
+                    }
+                ]
+
         recipe = {
             "props": [m.name for m in pattern_data["props_info"]],
             "props_info": pattern_data["props_info"],
@@ -73,6 +93,14 @@ class TextNodeHandler(BaseNodeHandler):
             recipe["anchor"] = True
 
         return [recipe]
+
+    def _table_columns(self, marker: Any) -> list[str] | None:
+        for trait in marker.traits:
+            if trait == "table":
+                return []
+            if trait.startswith("table[") and trait.endswith("]"):
+                return [col.strip() for col in trait[6:-1].split(",") if col.strip()]
+        return None
 
     def extract_data(self, node: SLDBNode, recipe: dict[str, Any]) -> Any:
         content = self.get_text(node).strip()

@@ -15,10 +15,11 @@
 desk/
   tasks/       # Active work surface. Tasks deleted when resolved.
   pills/       # Context pills bound to tasks. Audited after each step.
-  inbox/       # Incoming unclear points, questions, and suggestions.
+  drawers/     # Local unclear points, questions, suggestions, and task candidates.
+  inbox/       # Cross-project requests routed by deskops, not local staging.
 ```
 
-**Rule:** Desk surfaces should reference only durable repo context: task files, pills, inbox notes, source files, tests, docs, and commits.
+**Rule:** Desk surfaces should reference only durable repo context: task files, pills, local drawer notes, cross-project inbox requests, source files, tests, docs, and commits.
 
 ---
 
@@ -154,7 +155,7 @@ When all tasks in a phase or delivery slice are done:
 | ID | Domain | Blocker | Gate |
 |----|--------|--------|------|
 
-## Ready to Promote (from inbox/)
+## Ready to Promote (from drawers/)
 | ID | Domain | Item |
 |----|--------|------|
 ```

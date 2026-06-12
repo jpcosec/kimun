@@ -17,4 +17,4 @@ The desk should explain what the repo is trying to deliver next, what local exec
 
 ## Current Priority
 
-The current priority is to finish the desk surface enough that it can serve as a real handoff point to `deskops`: standards, spec, board, tasks, pills, and inbox notes should all be modelled and tracked before richer workflow automation is attempted.
+The current priority is to keep the SLDB desk surface useful as local project state while moving reusable workflow semantics toward `deskops`: standards, spec, board, tasks, pills, and local drawer notes belong here only when they describe SLDB-specific work, while inbox request routing belongs to `deskops`.

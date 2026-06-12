@@ -1,6 +1,6 @@
 ---
 id: issue-sldb-table-marker
-status: open
+status: closed
 tags:
 - system:sldb
 - topic:templates
@@ -67,3 +67,7 @@ Donde `name,status,goal` son las keys del dict que se renderizan como columnas. 
 ## Pills
 
 - `desk/contexts/pill-sldb-template-markers.md` — cómo funcionan los marcadores `⸢rev•⸥` en SLDB
+
+## Resolution
+
+Implemented as `⸢rev,table[...]•field⸥` and `⸢rev,table•field⸥`, with Markdown table render/extract roundtrip coverage for explicit columns, inferred columns, and empty cells.

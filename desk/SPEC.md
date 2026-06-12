@@ -2,7 +2,7 @@
 
 ## Product Goal
 
-Provide a minimal but credible local desk surface for the SLDB repo so current work, decisions, inbox notes, and future workflow boundaries can be represented as structured Markdown and queried through the store.
+Provide a minimal but credible local desk surface for the SLDB repo so current work, decisions, local drawer notes, and future workflow boundaries can be represented as structured Markdown and queried through the store.
 
 ## Real Use Case
 
@@ -17,7 +17,8 @@ The first credible slice is:
 - local desk pill docs
 - a desk standards doc
 - a desk spec doc
-- inbox notes tracked through a local inbox-note model
+- local drawer notes for unclear points and task candidates
+- future `deskops`-owned inbox request docs for cross-project routing
 
 ## What Is Currently Missing
 
@@ -26,7 +27,7 @@ The desk is still missing richer lifecycle operations, explicit cross-linking be
 ## Non-Goals For This Delivery
 
 - implementing full `deskops`
-- cross-repo routing semantics
+- implementing cross-repo routing semantics inside SLDB
 - automated commit rituals
 - moving all desk logic out of SLDB immediately
 

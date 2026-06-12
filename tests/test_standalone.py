@@ -61,6 +61,26 @@ tags: ⸢rev•tags⸥
     body: str = Field(description="Markdown body content.")
 
 
+class TableMarkerDoc(StructuredNLDoc):
+    __template__ = """# ⸢rev•title⸥
+
+⸢rev,table[name,status,goal]•tasks⸥
+""".strip()
+
+    title: str = Field(description="Document title heading.")
+    tasks: list[dict[str, str]] = Field(description="Structured task table rows.")
+
+
+class InferredTableMarkerDoc(StructuredNLDoc):
+    __template__ = """# ⸢rev•title⸥
+
+⸢rev,table•tasks⸥
+""".strip()
+
+    title: str = Field(description="Document title heading.")
+    tasks: list[dict[str, str]] = Field(description="Structured task table rows.")
+
+
 class AdvancedMarkersDoc(StructuredNLDoc):
     __template__ = """
 # ⸢rev•title⸥
@@ -457,6 +477,40 @@ def test_frontmatter_fields_render_and_extract():
     extracted = extract_model_data(FrontmatterFieldsDoc, rendered)
 
     assert rendered.startswith("---\nid: doc-001\nstatus: active\ntags:\n- system:sldb")
+    assert extracted == payload
+
+
+def test_table_marker_renders_and_extracts_explicit_columns():
+    payload = {
+        "title": "Task Board",
+        "tasks": [
+            {"name": "Model", "status": "done", "goal": "Define shape"},
+            {"name": "Writer", "status": "open", "goal": "Ship docs"},
+        ],
+    }
+
+    rendered = render_model_markdown(TableMarkerDoc, payload)
+    extracted = extract_model_data(TableMarkerDoc, rendered)
+
+    assert "| name | status | goal |" in rendered
+    assert "| --- | --- | --- |" in rendered
+    assert "| Model | done | Define shape |" in rendered
+    assert extracted == payload
+
+
+def test_table_marker_infers_columns_and_preserves_empty_cells():
+    payload = {
+        "title": "Task Board",
+        "tasks": [
+            {"name": "Model", "status": "", "goal": "Define shape"},
+        ],
+    }
+
+    rendered = render_model_markdown(InferredTableMarkerDoc, payload)
+    extracted = extract_model_data(InferredTableMarkerDoc, rendered)
+
+    assert "| name | status | goal |" in rendered
+    assert "| Model |  | Define shape |" in rendered
     assert extracted == payload
 
 

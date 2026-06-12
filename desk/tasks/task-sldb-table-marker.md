@@ -1,7 +1,7 @@
 ---
 id: task-sldb-table-marker
 domain: sldb/templates
-status: open
+status: done
 priority: p1
 depends_on: []
 created: "2026-06-11"
@@ -53,3 +53,10 @@ Prefer explicit columns from `table[...]`; if omitted, infer columns from the fi
 - Extracting those tables returns the expected structured value.
 - Roundtrip behavior is covered by tests.
 - Existing marker behavior still passes.
+
+## Completion Notes
+
+- Implemented `⸢rev,table[...]•field⸥` with explicit column support.
+- Implemented `⸢rev,table•field⸥` with column inference from the first row.
+- Added roundtrip tests for explicit columns, inferred columns, and empty cells.
+- Verified with `pytest tests/test_standalone.py -k 'table_marker'` and the full `pytest` suite.

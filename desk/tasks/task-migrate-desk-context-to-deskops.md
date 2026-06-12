@@ -1,7 +1,7 @@
 ---
 id: task-migrate-desk-context-to-deskops
 domain: desk/boundary
-status: open
+status: blocked
 priority: p2
 depends_on: []
 created: "2026-06-11"
@@ -57,6 +57,18 @@ Keep changes small and preserve this repo's ability to understand its active wor
 - Any migrated reusable workflow context has a clear owner in `deskops`.
 - `.sldb` model registrations for desk workflow documents point at the canonical `deskops` models, or the task records why that cannot happen yet.
 - The board and affected desk docs are updated after material changes.
+
+## Current Blocker
+
+- `deskops` exists at `/home/jp/proyectos/hum-ecosystem/tools/deskops`, but its worktree is heavily dirty with many modified and untracked workflow model/materialization files. Those changes appear to be active user or other-agent work and should not be overwritten here.
+- Importable `deskops.models:TaskDoc`, `BoardDoc`, and `PillDoc` exist, but their schemas/templates are not compatible with the current SLDB local desk documents (`DeskTaskDoc`, `DeskBoardDoc`, `DeskPillDoc`). Directly rewriting SLDB's `.sldb` registrations would break validation for existing local documents.
+- `deskops.models:InboxNoteDoc` currently still represents unclear/suggestion notes, so it does not yet encode the desired cross-project request-routing inbox contract.
+
+## Partial Boundary Cleanup
+
+- Updated SLDB local desk wording so local unclear points and task candidates belong to `drawers`, not `inbox`.
+- Reserved `inbox` wording for `deskops`-owned cross-project request routing.
+- Left local `desk/models.py` workflow shims in place until canonical compatible `deskops` models are available and the store can import them safely.
 
 ## Done When
 

@@ -65,6 +65,9 @@ class TableNodeHandler(BaseNodeHandler):
             elif child.type == "tr":
                 rows.append(child)
 
+        if "marker" in recipe and self._is_table_marker(recipe["marker"]):
+            return self._extract_marker_table(rows, recipe)
+
         # Skip header and template rows? No, in data nodes there is no template row.
         # But in extraction, we don't know if it's a template or data.
         # DataExtractor passes data nodes.
@@ -96,3 +99,29 @@ class TableNodeHandler(BaseNodeHandler):
                 results.append(row_record)
 
         return {recipe["name"]: results} if results else None
+
+    def _is_table_marker(self, marker: Any) -> bool:
+        return any(trait == "table" or trait.startswith("table[") for trait in marker.traits)
+
+    def _extract_marker_table(
+        self, rows: list[SLDBNode], recipe: dict[str, Any]
+    ) -> dict[str, list[dict[str, str]]]:
+        if not rows:
+            return {recipe["name"]: []}
+
+        headers = [self.get_text(cell).strip() for cell in rows[0].children]
+        explicit_columns = recipe.get("table_columns") or []
+        columns = explicit_columns or headers
+        header_lookup = {header: idx for idx, header in enumerate(headers)}
+
+        records: list[dict[str, str]] = []
+        for row in rows[1:]:
+            record = {}
+            for column in columns:
+                col_idx = header_lookup.get(column)
+                if col_idx is None or col_idx >= len(row.children):
+                    record[column] = ""
+                    continue
+                record[column] = self.get_text(row.children[col_idx]).strip()
+            records.append(record)
+        return {recipe["name"]: records}

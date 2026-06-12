@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add reversible `rev,table[...]` template markers for rendering and extracting Markdown tables backed by `list[dict]` fields.
 - Add generic cross-store document writes through linked store aliases and federated model namespaces for workflow tools such as `deskops`.
 
 ## 0.2.0 - 2026-05-16

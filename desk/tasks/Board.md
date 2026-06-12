@@ -2,20 +2,20 @@
 
 ## Current State Summary
 
-The repo now has open desk work promoted from issue notes into first-class task documents.
+The repo now has one open desk boundary task after landing the generic SLDB table marker and cross-store write/model resolution support.
 
-The active work now splits between an SLDB template capability and a desk boundary cleanup that can consume SLDB's generic cross-store write/model resolution support.
+The remaining desk boundary cleanup is partially blocked by the current dirty `deskops` worktree and by canonical `deskops` task/board/pill models that do not yet match this repo's existing desk documents.
 
 ## Active
 
 | ID | Domain | Task | Priority | Depends On | Pills |
 |----|--------|------|----------|------------|-------|
-| `task-sldb-table-marker` | `sldb/templates` | Add reversible table template marker | `p1` | - | `desk/pills/pill-003-template-marker-roundtrip-contract.md` |
-| `task-migrate-desk-context-to-deskops` | `desk/boundary` | Migrate reusable desk context toward deskops | `p2` | - | `desk/pills/pill-001-sldb-vs-deskops-boundary.md` |
+| `task-migrate-desk-context-to-deskops` | `desk/boundary` | Migrate reusable desk context toward deskops | `p2` | blocked on compatible canonical `deskops` models | `desk/pills/pill-001-sldb-vs-deskops-boundary.md` |
 
 ## Recently Closed
 
 - `task-sldb-cross-store-write-and-model-resolution`: linked store aliases now work as document destinations, and linked store namespaces can provide models for generic document writes.
+- `task-sldb-table-marker`: SLDB templates now support reversible `rev,table[...]` markers for Markdown table roundtrips.
 
 ## Working Rules
 
