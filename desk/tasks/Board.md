@@ -2,14 +2,15 @@
 
 ## Current State Summary
 
-The repo now has one open desk boundary task after landing the generic SLDB table marker and cross-store write/model resolution support.
+The repo now has one open extraction bug task and one blocked desk boundary task after landing the generic SLDB table marker and cross-store write/model resolution support.
 
-The remaining desk boundary cleanup is partially blocked by the current dirty `deskops` worktree and by canonical `deskops` task/board/pill models that do not yet match this repo's existing desk documents.
+The active SLDB-owned work is to fix the skipped `optrev` block extraction test. The desk boundary cleanup remains blocked by the current dirty `deskops` worktree and by canonical `deskops` task/board/pill models that do not yet match this repo's existing desk documents.
 
 ## Active
 
 | ID | Domain | Task | Priority | Depends On | Pills |
 |----|--------|------|----------|------------|-------|
+| `task-fix-optrev-block-extraction` | `sldb/extraction` | Fix optrev block extraction | `p1` | - | - |
 | `task-migrate-desk-context-to-deskops` | `desk/boundary` | Migrate reusable desk context toward deskops | `p2` | blocked on compatible canonical `deskops` models | `desk/pills/pill-001-sldb-vs-deskops-boundary.md` |
 
 ## Recently Closed
