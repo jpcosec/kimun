@@ -85,6 +85,40 @@ class DataExtractor:
                 rendered_blocks.append(text)
         return "\n\n".join(rendered_blocks).strip()
 
+    def _block_matches_recipe_for_position(
+        self, block: SLDBNode, recipe: dict[str, Any]
+    ) -> bool:
+        if block.type != recipe["outer_type"]:
+            return False
+
+        is_anchor = recipe.get("anchor", False)
+        if not is_anchor and block.tag != recipe.get("outer_tag", ""):
+            return False
+
+        handler_key = recipe.get("handler", "text")
+        if handler_key == "text":
+            content = self.node_handler.handlers["text"].get_text(block).strip()
+            import re
+
+            return re.fullmatch(recipe["regex"], content) is not None
+
+        matched, _ = self._match_recipe_at_block(block, recipe)
+        return matched
+
+    def _current_block_matches_future_recipe(
+        self,
+        data_blocks: list[SLDBNode],
+        recipes: list[dict[str, Any]],
+        recipe_idx: int,
+        block_idx: int,
+    ) -> bool:
+        for future_recipe in recipes[recipe_idx + 1 :]:
+            if self._block_matches_recipe_for_position(
+                data_blocks[block_idx], future_recipe
+            ):
+                return True
+        return False
+
     def extract_values(
         self,
         data_blocks: list[SLDBNode],
@@ -124,7 +158,11 @@ class DataExtractor:
                 current_block_idx = max(search_index, boundary_idx - 1)
                 continue
 
-            for block_idx in range(search_index, len(data_blocks)):
+            block_range = range(search_index, len(data_blocks))
+            if recipe.get("optional_block"):
+                block_range = range(search_index, min(search_index + 1, len(data_blocks)))
+
+            for block_idx in block_range:
                 if current_block_idx != -1 and block_idx != current_block_idx:
                     break
 
@@ -135,6 +173,11 @@ class DataExtractor:
                 matched, values = self._match_recipe_at_block(block, recipe)
                 if not matched:
                     continue
+
+                if recipe.get("optional_block") and self._current_block_matches_future_recipe(
+                    data_blocks, recipes, recipe_idx, block_idx
+                ):
+                    break
 
                 if recipe.get("anchor", False):
                     current_block_idx = block_idx

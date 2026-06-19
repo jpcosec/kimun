@@ -4,7 +4,6 @@ from pathlib import Path
 from pydantic import Field
 from sldb import StructuredNLDoc
 from sldb.cli import main as cli_main
-from sldb.cli.utils import get_store_context
 from sldb.store.io import load_store_index, load_models_index, load_documents_index
 from sldb.store.layout import (
     semantic_dag_path,
@@ -31,16 +30,16 @@ _PY_ARGS = ["--pythonpath", _SRC]
 
 
 def _init(tmp):
-    cli_main(["store", "init", "--path", str(tmp)])
+    cli_main(["stores", "init", "--path", str(tmp)])
 
 
 def _model_add(tmp):
-    cli_main(["model", "add", _REF] + _STORE_ARGS(tmp) + _PY_ARGS)
+    cli_main(["models", "add", _REF] + _STORE_ARGS(tmp) + _PY_ARGS)
 
 
 def _doc_track(tmp, doc, name=None):
     args = (
-        ["doc", "track", str(doc), "--model", "SimpleBook"]
+        ["docs", "track", str(doc), "--model", "SimpleBook"]
         + _STORE_ARGS(tmp)
         + _PY_ARGS
     )
@@ -53,7 +52,7 @@ def _doc_track(tmp, doc, name=None):
 
 
 def test_store_init_creates_index(tmp_path):
-    assert cli_main(["store", "init", "--path", str(tmp_path)]) == 0
+    assert cli_main(["stores", "init", "--path", str(tmp_path)]) == 0
     index = load_store_index(tmp_path / ".sldb")
     assert index.stores == [] and index.models == []
     assert store_index_path(tmp_path / ".sldb").exists()
@@ -64,12 +63,12 @@ def test_store_init_creates_index(tmp_path):
 def test_store_init_fails_if_exists(tmp_path):
     _init(tmp_path)
     with pytest.raises(SystemExit):
-        cli_main(["store", "init", "--path", str(tmp_path)])
+        cli_main(["stores", "init", "--path", str(tmp_path)])
 
 
 def test_store_init_force_overwrites(tmp_path):
     _init(tmp_path)
-    assert cli_main(["store", "init", "--path", str(tmp_path), "--force"]) == 0
+    assert cli_main(["stores", "init", "--path", str(tmp_path), "--force"]) == 0
 
 
 # ── store add (federation) ────────────────────────────────────────────────────
@@ -80,7 +79,7 @@ def test_store_add_links_other_store(tmp_path):
     other.mkdir()
     _init(tmp_path)
     _init(other)
-    rc = cli_main(["store", "add", str(other / ".sldb")] + _STORE_ARGS(tmp_path))
+    rc = cli_main(["stores", "add", str(other / ".sldb")] + _STORE_ARGS(tmp_path))
     assert rc == 0
     index = load_store_index(tmp_path / ".sldb")
     assert any(s.path for s in index.stores)
@@ -90,7 +89,7 @@ def test_store_add_fails_on_invalid_path(tmp_path):
     _init(tmp_path)
     with pytest.raises(SystemExit):
         cli_main(
-            ["store", "add", str(tmp_path / "nonexistent")] + _STORE_ARGS(tmp_path)
+            ["stores", "add", str(tmp_path / "nonexistent")] + _STORE_ARGS(tmp_path)
         )
 
 
@@ -100,12 +99,12 @@ def test_store_add_fails_if_already_linked(tmp_path):
     _init(tmp_path)
     _init(other)
     cli_main(
-        ["store", "add", str(other / ".sldb"), "--name", "other"]
+        ["stores", "add", str(other / ".sldb"), "--name", "other"]
         + _STORE_ARGS(tmp_path)
     )
     with pytest.raises(SystemExit):
         cli_main(
-            ["store", "add", str(other / ".sldb"), "--name", "other"]
+            ["stores", "add", str(other / ".sldb"), "--name", "other"]
             + _STORE_ARGS(tmp_path)
         )
 
@@ -120,7 +119,7 @@ def test_store_check_clean_passes(tmp_path, capsys):
     doc.write_text("# My Book\n", encoding="utf-8")
     _doc_track(tmp_path, doc)
     capsys.readouterr()
-    rc = cli_main(["store", "check"] + _STORE_ARGS(tmp_path) + _PY_ARGS)
+    rc = cli_main(["stores", "check"] + _STORE_ARGS(tmp_path) + _PY_ARGS)
     assert rc == 0
     assert "PASS" in capsys.readouterr().out
 
@@ -133,7 +132,7 @@ def test_store_check_data_mutation_fails(tmp_path, capsys):
     _doc_track(tmp_path, doc)
     doc.write_text("# Changed Title\n", encoding="utf-8")
     capsys.readouterr()
-    rc = cli_main(["store", "check"] + _STORE_ARGS(tmp_path) + _PY_ARGS)
+    rc = cli_main(["stores", "check"] + _STORE_ARGS(tmp_path) + _PY_ARGS)
     assert rc == 1
     assert "FAIL" in capsys.readouterr().out
 
@@ -144,7 +143,7 @@ def test_store_check_json_format(tmp_path, capsys):
     capsys.readouterr()
     with pytest.raises(SystemExit) as exc:
         cli_main(
-            ["store", "check", "--format", "json"] + _STORE_ARGS(tmp_path) + _PY_ARGS
+            ["stores", "check", "--format", "json"] + _STORE_ARGS(tmp_path) + _PY_ARGS
         )
     assert exc.value.code == 1
     data = json.loads(capsys.readouterr().out)
@@ -163,7 +162,7 @@ def test_store_update_recomputes_hashes(tmp_path):
     # Tamper file directly
     doc.write_text("# Changed Title\n", encoding="utf-8")
     # Update should recompute, making check pass again
-    cli_main(["store", "update"] + _STORE_ARGS(tmp_path) + _PY_ARGS)
+    cli_main(["stores", "update"] + _STORE_ARGS(tmp_path) + _PY_ARGS)
     from sldb.store.diagnostics import diagnose_store
 
     result = diagnose_store(tmp_path / ".sldb", tmp_path, pythonpath=_SRC)
@@ -175,7 +174,7 @@ def test_store_update_recomputes_hashes(tmp_path):
 
 def test_model_add_registers_model(tmp_path):
     _init(tmp_path)
-    assert cli_main(["model", "add", _REF] + _STORE_ARGS(tmp_path) + _PY_ARGS) == 0
+    assert cli_main(["models", "add", _REF] + _STORE_ARGS(tmp_path) + _PY_ARGS) == 0
     names = [m.name for m in load_store_index(tmp_path / ".sldb").models]
     assert "SimpleBook" in names
 
@@ -191,23 +190,6 @@ def test_model_add_creates_index_files(tmp_path):
     assert models_idx.name == "SimpleBook"
     assert models_idx.documents_index == ".sldb/core/documents/SimpleBook.yaml"
     assert docs_idx.documents == []
-
-
-def test_get_store_context_migrates_legacy_paths(tmp_path):
-    _init(tmp_path)
-    legacy_store = tmp_path / ".sldb"
-    (legacy_store / "store_index.yaml").write_text(
-        (legacy_store / "core" / "store_index.yaml").read_text(encoding="utf-8"),
-        encoding="utf-8",
-    )
-    (legacy_store / "core" / "store_index.yaml").unlink()
-
-    _model_add(tmp_path)
-    store_path, root = get_store_context(str(legacy_store))
-
-    assert store_path == legacy_store
-    assert root == tmp_path
-    assert (legacy_store / "core" / "store_index.yaml").exists()
 
 
 def test_get_store_context_fails_when_no_local_and_no_global(tmp_path, monkeypatch):
@@ -261,7 +243,7 @@ def test_model_update_reindexes_docs(tmp_path):
     _doc_track(tmp_path, doc)
     hash_a_before = load_store_index(tmp_path / ".sldb").hash_a
     doc.write_text("# Changed Title\n", encoding="utf-8")
-    cli_main(["model", "update", "SimpleBook"] + _STORE_ARGS(tmp_path) + _PY_ARGS)
+    cli_main(["models", "update", "SimpleBook"] + _STORE_ARGS(tmp_path) + _PY_ARGS)
     assert load_store_index(tmp_path / ".sldb").hash_a != hash_a_before
 
 
@@ -275,7 +257,7 @@ def test_doc_track_registers_document(tmp_path):
     doc.write_text("# My Book\n", encoding="utf-8")
     assert (
         cli_main(
-            ["doc", "track", str(doc), "--model", "SimpleBook"]
+            ["docs", "track", str(doc), "--model", "SimpleBook"]
             + _STORE_ARGS(tmp_path)
             + _PY_ARGS
         )
@@ -317,7 +299,7 @@ def test_doc_track_fails_idempotency(tmp_path):
     )
     with pytest.raises(SystemExit):
         cli_main(
-            ["doc", "track", str(doc), "--model", "SimpleBook"]
+            ["docs", "track", str(doc), "--model", "SimpleBook"]
             + _STORE_ARGS(tmp_path)
             + _PY_ARGS
         )
@@ -331,7 +313,7 @@ def test_doc_track_force_bypasses_idempotency(tmp_path):
         "not valid markdown for this template at all !!!!\n", encoding="utf-8"
     )
     rc = cli_main(
-        ["doc", "track", str(doc), "--model", "SimpleBook", "--force"]
+        ["docs", "track", str(doc), "--model", "SimpleBook", "--force"]
         + _STORE_ARGS(tmp_path)
         + _PY_ARGS
     )
@@ -344,7 +326,7 @@ def test_doc_track_fails_model_not_registered(tmp_path):
     doc.write_text("# My Book\n", encoding="utf-8")
     with pytest.raises(SystemExit):
         cli_main(
-            ["doc", "track", str(doc), "--model", "SimpleBook"] + _STORE_ARGS(tmp_path)
+            ["docs", "track", str(doc), "--model", "SimpleBook"] + _STORE_ARGS(tmp_path)
         )
 
 
@@ -367,8 +349,8 @@ def test_doc_add_creates_file_and_tracks(tmp_path):
     out = tmp_path / "output.md"
     rc = cli_main(
         [
-            "doc",
-            "add",
+            "docs",
+            "create",
             "--model",
             "SimpleBook",
             "-o",
@@ -398,8 +380,8 @@ def test_doc_add_from_yaml_file(tmp_path):
     out = tmp_path / "output.md"
     rc = cli_main(
         [
-            "doc",
-            "add",
+            "docs",
+            "create",
             "--model",
             "SimpleBook",
             "-o",
@@ -433,7 +415,7 @@ def test_doc_update_rewrites_and_reindexes(tmp_path):
 
     cli_main(
         [
-            "doc",
+            "docs",
             "update",
             "book",
             '{"title": "Updated Title"}',
@@ -454,7 +436,7 @@ def test_doc_update_fails_unknown_doc(tmp_path):
     with pytest.raises(SystemExit):
         cli_main(
             [
-                "doc",
+                "docs",
                 "update",
                 "nonexistent",
                 '{"title": "x"}',

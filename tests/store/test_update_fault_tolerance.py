@@ -15,7 +15,7 @@ _SRC = str(Path(__file__).resolve().parent.parent.parent / "src")
 
 def _setup_store(root: Path) -> Path:
     """Create a minimal store with one model for testing."""
-    cli_main(["store", "init", "--path", str(root)])
+    cli_main(["stores", "init", "--path", str(root)])
     store_path = root / ".sldb"
     model_py = root / "models.py"
     model_py.write_text(
@@ -26,7 +26,7 @@ def _setup_store(root: Path) -> Path:
     )
     cli_main(
         [
-            "model",
+            "models",
             "add",
             "models:MyDoc",
             "--store",
@@ -38,8 +38,8 @@ def _setup_store(root: Path) -> Path:
     doc_path = root / "doc.md"
     cli_main(
         [
-            "doc",
-            "add",
+            "docs",
+            "create",
             "--model",
             "MyDoc",
             "-o",
@@ -62,7 +62,7 @@ def test_store_update_skips_missing_doc(tmp_path, capsys):
     doc_path.unlink()
 
     exit_code = cli_main(
-        ["store", "update", "--store", str(store_path), "--pythonpath", str(root)]
+        ["stores", "update", "--store", str(store_path), "--pythonpath", str(root)]
     )
 
     assert exit_code == 1
@@ -106,7 +106,7 @@ def test_store_lock_fails_fast_when_busy(tmp_path):
 
     with pytest.raises(SystemExit) as exc:
         cli_main(
-            ["store", "update", "--store", str(store_path), "--pythonpath", str(root)]
+            ["stores", "update", "--store", str(store_path), "--pythonpath", str(root)]
         )
 
     lock_holder.terminate()
@@ -135,7 +135,7 @@ def test_store_lock_wait_blocks_until_released(tmp_path):
 
     exit_code = cli_main(
         [
-            "store",
+            "stores",
             "update",
             "--wait",
             "--store",

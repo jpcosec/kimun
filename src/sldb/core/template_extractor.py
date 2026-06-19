@@ -64,6 +64,7 @@ class TemplateExtractor:
                                 and block_text.startswith("⸢")
                                 and block_text.endswith("⸥")
                                 and recipe.get("regex") == "^(.*?)$"
+                                and recipe["props_info"][0].is_reversible
                             ):
                                 recipe["capture_mode"] = "section_body"
                             recipe.update(
@@ -109,9 +110,11 @@ class TemplateExtractor:
     def _validate_invariants(self, recipes: list[dict[str, Any]]) -> None:
         """
         Enforces canonical reversible-marker invariants.
+
+        `rev` markers remain unique canonical extraction sources. `optrev`
+        markers are allowed to stand on their own as optional reversible blocks.
         """
         rev_counts: dict[str, int] = {}
-        optrev_orphans: set[str] = set()
 
         for recipe in recipes:
             # Check for markers in the recipe (Text, List, Table, Yaml all have different shapes now)
@@ -126,21 +129,9 @@ class TemplateExtractor:
             for marker in markers:
                 if marker.is_reversible:
                     rev_counts[marker.name] = rev_counts.get(marker.name, 0) + 1
-                elif marker.is_optional:
-                    optrev_orphans.add(marker.name)
 
-        # Check for multiple revs
         for name, count in rev_counts.items():
             if count > 1:
                 raise SLDBASTError(
                     f"Multiple canonical 'rev' markers found for field '{name}'."
                 )
-            if name in optrev_orphans:
-                optrev_orphans.remove(name)
-
-        # Check for orphans
-        if optrev_orphans:
-            orphan_list = ", ".join(sorted(optrev_orphans))
-            raise SLDBASTError(
-                f"Optional 'optrev' markers found for fields without a canonical 'rev' source: {orphan_list}"
-            )

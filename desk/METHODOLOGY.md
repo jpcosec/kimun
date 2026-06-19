@@ -15,7 +15,7 @@
 desk/
   tasks/       # Active work surface. Tasks deleted when resolved.
   pills/       # Context pills bound to tasks. Audited after each step.
-  drawers/     # Local unclear points, questions, suggestions, and task candidates.
+  drawer/      # Local unclear points, questions, suggestions, and task candidates.
   inbox/       # Cross-project requests routed by deskops, not local staging.
 ```
 
@@ -155,7 +155,7 @@ When all tasks in a phase or delivery slice are done:
 | ID | Domain | Blocker | Gate |
 |----|--------|--------|------|
 
-## Ready to Promote (from drawers/)
+## Ready to Promote (from drawer/)
 | ID | Domain | Item |
 |----|--------|------|
 ```

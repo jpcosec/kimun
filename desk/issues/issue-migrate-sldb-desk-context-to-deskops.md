@@ -13,7 +13,7 @@ SLDB has repo-local `desk/` context and Python model files that duplicate or ove
 
 ## Scope
 
-- Review `tools/sldb/desk/contexts/` and `tools/sldb/desk/pills/`.
+- Review the remaining local desk context surfaces and `tools/sldb/desk/pills/`.
 - Distill durable knowledge into deskops atoms or docs where it belongs.
 - Remove or migrate SLDB `desk/` Python code such as `desk/models.py` if it is still active.
 - Leave SLDB with only project docs that are truly owned by SLDB.

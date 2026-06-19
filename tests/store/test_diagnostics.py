@@ -18,10 +18,10 @@ _MODULE_REF = f"{CheckDoc.__module__}:{CheckDoc.__name__}"
 def _make_store(tmp_path):
     doc = tmp_path / "doc.md"
     doc.write_text("# Hello\n", encoding="utf-8")
-    cli_main(["store", "init", "--path", str(tmp_path)])
+    cli_main(["stores", "init", "--path", str(tmp_path)])
     cli_main(
         [
-            "model",
+            "models",
             "add",
             _MODULE_REF,
             "--store",
@@ -32,7 +32,7 @@ def _make_store(tmp_path):
     )
     cli_main(
         [
-            "doc",
+            "docs",
             "track",
             str(doc),
             "--model",

@@ -89,6 +89,17 @@ class TextNodeHandler(BaseNodeHandler):
             "regex": pattern_data["regex"],
             "handler": "text",
         }
+        if pattern_data["props_info"] and all(
+            marker.is_optional for marker in pattern_data["props_info"]
+        ):
+            recipe["all_optional"] = True
+        if (
+            len(pattern_data["props_info"]) == 1
+            and pattern_data["props_info"][0].is_optional
+            and content.startswith("⸢")
+            and content.endswith("⸥")
+        ):
+            recipe["optional_block"] = True
         if not pattern_data["props_info"]:
             recipe["anchor"] = True
 

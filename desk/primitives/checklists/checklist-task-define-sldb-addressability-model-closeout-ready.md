@@ -1,0 +1,25 @@
+---
+id: checklist-task-define-sldb-addressability-model-closeout-ready
+status: active
+condition_refs:
+- condition-task-define-sldb-addressability-model-ready-for-closeout
+- condition-task-define-sldb-addressability-model-has-testing-evidence
+mode: all
+tags:
+- primitive:checklist
+---
+
+# Closeout Ready
+
+## Summary
+
+_Summarize what this checklist proves._
+
+Confirms the task is ready for closeout.
+
+## Items
+
+_List the human-readable checks in this checklist._
+
+- Task is ready for closeout
+- Testing evidence exists

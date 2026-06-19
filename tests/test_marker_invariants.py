@@ -13,13 +13,14 @@ def test_duplicate_rev_markers_fail():
     with pytest.raises(SLDBASTError, match="Multiple canonical 'rev' markers found for field 'field1'"):
         extractor.extract_nodes(ast.split_nodes(template))
 
-def test_orphaned_optrev_fails():
-    template = "⸢optrev•field1⸥ without rev"
+def test_standalone_optrev_passes():
+    template = "⸢optrev•field1⸥"
     ast = AST_Handler()
     extractor = TemplateExtractor()
-    
-    with pytest.raises(SLDBASTError, match="Optional 'optrev' markers found for fields without a canonical 'rev' source: field1"):
-        extractor.extract_nodes(ast.split_nodes(template))
+
+    recipes = extractor.extract_nodes(ast.split_nodes(template))
+    assert len(recipes) == 1
+    assert recipes[0]["props"] == ["field1"]
 
 def test_valid_rev_and_optrev_pass():
     template = "⸢rev•field1⸥ and ⸢optrev•field1⸥"

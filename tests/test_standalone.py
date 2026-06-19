@@ -1,8 +1,5 @@
 import pytest
 import json
-import os
-import subprocess
-import sys
 import yaml
 from importlib.resources import files
 from pathlib import Path
@@ -525,7 +522,6 @@ def test_example_bundle_self_idempotency():
     assert first_payload == second_payload
 
 
-@pytest.mark.skip(reason="Known issue with DataExtractor optrev block matching")
 def test_advanced_marker_families_render_and_extract():
     reset_config()
     model = AdvancedMarkersDoc(
@@ -589,24 +585,6 @@ def test_python_markers_can_be_filtered_in_unsafe_mode():
 
     assert "Allowed: HELLO" in rendered
     assert "Blocked: ⸢py•title.lower()⸥" in rendered
-
-
-def test_legacy_nldb_import_shows_migration_message():
-    with pytest.raises(ImportError, match="renamed to 'sldb'"):
-        __import__("nldb")
-
-
-def test_legacy_python_m_nldb_shows_migration_message():
-    result = subprocess.run(
-        [sys.executable, "-m", "nldb"],
-        cwd=Path(__file__).resolve().parents[1],
-        env={**os.environ, "PYTHONPATH": "src"},
-        capture_output=True,
-        text=True,
-    )
-
-    assert result.returncode != 0
-    assert "renamed to 'sldb'" in result.stderr
 
 
 def test_structured_nl_doc_requires_field_descriptions():

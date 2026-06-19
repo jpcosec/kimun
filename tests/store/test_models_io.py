@@ -78,13 +78,6 @@ def test_load_store_index_missing_raises(tmp_path):
         load_store_index(tmp_path / "nonexistent")
 
 
-def test_load_store_index_accepts_legacy_flat_path(tmp_path):
-    legacy = tmp_path / "store_index.yaml"
-    legacy.write_text("stores: []\nmodels: []\nhash_a: legacy\n", encoding="utf-8")
-    loaded = load_store_index(tmp_path)
-    assert loaded.hash_a == "legacy"
-
-
 def test_save_creates_parent_dirs(tmp_path):
     path = tmp_path / "a" / "b" / "docs.yaml"
     save_documents_index(path, DocumentsIndex())

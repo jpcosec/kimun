@@ -1,8 +1,0 @@
-documents:
-- name: task-001
-  path: desk/tasks/task-001-onboarding-surface-and-deskops-boundary.md
-  hash_c: dc883b7a9fa37c7889cd5abe874304ed40f46f5ec608f63567d7e3d38dd8fb6c
-  hash_d: f96aa27064aa24679fcc6c54d7279ee21ebed3f45786ae9e3c9f56cf994252b4
-  semantic_tags:
-  - type.desk.task
-  - workspace.desk.tasks

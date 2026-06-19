@@ -66,7 +66,7 @@ Donde `name,status,goal` son las keys del dict que se renderizan como columnas. 
 
 ## Pills
 
-- `desk/contexts/pill-sldb-template-markers.md` — cómo funcionan los marcadores `⸢rev•⸥` en SLDB
+- `desk/pills/pill-003-template-marker-roundtrip-contract.md` — guardrail for how reversible template markers should behave in SLDB
 
 ## Resolution
 

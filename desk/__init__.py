@@ -1,12 +1,9 @@
 """Repo-local desk workspace package."""
 
-from desk.models import DeskBoardDoc, DeskPillDoc, DeskSpecDoc, DeskStandardsDoc, DeskTaskDoc, InboxNoteDoc
+from desk.models import DeskSpecDoc, DeskStandardsDoc, InboxNoteDoc
 
 __all__ = [
-    "DeskBoardDoc",
-    "DeskPillDoc",
     "DeskSpecDoc",
     "DeskStandardsDoc",
-    "DeskTaskDoc",
     "InboxNoteDoc",
 ]

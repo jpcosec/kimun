@@ -1,8 +1,8 @@
 documents:
 - name: arch-current-cli-tree
   path: docs/architecture/current-cli-tree.md
-  hash_c: e3e38a91d4328702582d442215fa6f7fac77a99a875dfcd4061963caa4260bcf
-  hash_d: c02b2553b4d2de267efc1b92187d91470c589a1daa7bd2e001bebfc9e8a72808
+  hash_c: e88352b0dfc002d6ea83378f813297f2dc90b8e9d53088ca044d202dd411598e
+  hash_d: 4a81bb7b4f854c8b0f4a9bcb210ba6e2d09e767b80b8632725a1e6dc4d9fe55c
   semantic_tags:
   - type.documentation.architecture
   - workspace.docs.architecture

@@ -269,6 +269,23 @@ class RequestDoc(StructuredNLDoc):
     )
 
 
+class FAQDoc(StructuredNLDoc):
+    __semantics__ = {
+        "type": ["documentation", "faq"],
+        "workspace": ["docs", "faq"],
+    }
+    __template__ = """
+# ⸢rev•title⸥
+
+⸢rev•body⸥
+""".strip()
+
+    title: str = Field(description="Primary H1 heading for the FAQ document.")
+    body: str = Field(
+        description="Full FAQ body after the H1, including subsections, code blocks, and examples."
+    )
+
+
 class StoreReadmeDoc(StructuredNLDoc):
     __semantics__ = {
         "type": ["documentation", "store"],

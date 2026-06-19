@@ -39,11 +39,11 @@ def test_recover_and_compose_links(tmp_path, capsys):
     pythonpath = _write_models(tmp_path)
     store = tmp_path / ".sldb"
 
-    assert cli_main(["store", "init", "--path", str(tmp_path)]) == 0
+    assert cli_main(["stores", "init", "--path", str(tmp_path)]) == 0
     assert (
         cli_main(
             [
-                "model",
+                "models",
                 "add",
                 "link_models:NoteDoc",
                 "--store",
@@ -57,7 +57,7 @@ def test_recover_and_compose_links(tmp_path, capsys):
     assert (
         cli_main(
             [
-                "model",
+                "models",
                 "add",
                 "link_models:RootDoc",
                 "--store",
@@ -84,7 +84,7 @@ def test_recover_and_compose_links(tmp_path, capsys):
     assert (
         cli_main(
             [
-                "doc",
+                "docs",
                 "track",
                 str(concept),
                 "--model",
@@ -100,7 +100,7 @@ def test_recover_and_compose_links(tmp_path, capsys):
     assert (
         cli_main(
             [
-                "doc",
+                "docs",
                 "track",
                 str(constraints),
                 "--model",
@@ -116,7 +116,7 @@ def test_recover_and_compose_links(tmp_path, capsys):
     assert (
         cli_main(
             [
-                "doc",
+                "docs",
                 "track",
                 str(root),
                 "--model",
@@ -133,6 +133,7 @@ def test_recover_and_compose_links(tmp_path, capsys):
     capsys.readouterr()
     rc = cli_main(
         [
+            "docs",
             "recover",
             str(root),
             "--store",
@@ -153,7 +154,7 @@ def test_recover_and_compose_links(tmp_path, capsys):
     assert recovered["unresolved"] == []
 
     capsys.readouterr()
-    rc = cli_main(["compose", str(root), "--store", str(store)])
+    rc = cli_main(["docs", "compose", str(root), "--store", str(store)])
     composed = capsys.readouterr().out
     assert rc == 0
     assert "See [[concept]] for background." in composed

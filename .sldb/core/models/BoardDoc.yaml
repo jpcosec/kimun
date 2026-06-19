@@ -1,0 +1,13 @@
+name: BoardDoc
+model_ref: deskops.models:BoardDoc
+path: /home/jp/proyectos/hum-ecosystem/tools/deskops/deskops/models/board.py
+documents_index: .sldb/core/documents/BoardDoc.yaml
+sections_index: .sldb/runtime/sections/BoardDoc.yaml
+hash_b: c8c29a001872ffb35e8f6da9618087e625c0582b0828961d0aa32ded18a5a350
+version: 1
+canonical: false
+family: null
+semantics:
+- type.workflow.board
+- workspace.desk
+base_models: []

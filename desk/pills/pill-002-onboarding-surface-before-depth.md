@@ -1,21 +1,36 @@
 ---
-pill_type: pattern
-scope: domain
-nature: implementation
-bound_to: CLI help, FAQ, docs explore, desk onboarding
-created: "2026-05-20"
-lifecycle: current
+id: pill-002-onboarding-surface-before-depth
+tags:
+- system:sldb
+- topic:onboarding
+- topic:cli
+- workspace:desk
 ---
 
 # Put a small onboarding surface before the deep system
 
-When a tool has many concepts, the first-use layer should be a small stack:
+## What
 
-1. portada help
-2. curated help by topic
-3. FAQ by question
-4. deep exploration over docs and docstrings
+The first-use layer for SLDB should stay small and legible before asking users to understand the full store, model, and workflow depth.
 
-That stack prevents users from needing full architectural context just to understand the first command they should run.
+## Why
 
-In this repo, that means `sldb --help`, `sldb help`, `sldb faq`, and `sldb explore` should work together as one layered onboarding system.
+A broad concept stack is easier to adopt when users first see a compact entry surface such as help, FAQ, docs explore, and a small number of clear examples.
+
+## When
+
+Apply this pill to changes affecting help, FAQ, documentation entry points, onboarding commands, or repo-first discovery surfaces.
+
+## Where
+
+- `docs/faq.md`
+- CLI help and parser surfaces
+- onboarding-oriented docs and examples
+
+## How
+
+Favor a minimal top layer that points users to deeper capabilities only after the first-use path is understandable.
+
+## How Not
+
+Do not force first-time users to reconstruct the full internal architecture before they can discover the next useful command or document.
