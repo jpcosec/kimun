@@ -224,4 +224,4 @@ class InboxCLI:
         if fmt == "yaml":
             print(yaml.safe_dump(payload, sort_keys=False, allow_unicode=True))
             return
-        print(json.dumps(payload, indent=2))
+        print(json.dumps(payload, indent=2, default=str))
