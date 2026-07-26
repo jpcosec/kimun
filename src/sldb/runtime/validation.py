@@ -85,7 +85,13 @@ class Validator:
                     elif isinstance(m, dict) and m.get("kind") == "rev":
                         rev_fields.add(m.get("name"))
 
-            is_valid = all(input_data.get(f) == extracted.get(f) for f in rev_fields)
+            def _norm(val):
+                return val.strip() if isinstance(val, str) else val
+
+            is_valid = all(
+                _norm(input_data.get(f)) == _norm(extracted.get(f))
+                for f in rev_fields
+            )
 
         details = {
             "mode": "input" if markdown is not None else "data",

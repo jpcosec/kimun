@@ -32,6 +32,8 @@ class DataExtractor:
         is_anchor = recipe.get("anchor", False)
         if not is_anchor and block.tag != recipe.get("outer_tag", ""):
             return False, None
+        if is_anchor and recipe.get("outer_tag") and block.tag != recipe["outer_tag"]:
+            return False, None
 
         handler_key = recipe.get("handler", "text")
         current_node = block
