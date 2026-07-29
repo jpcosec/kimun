@@ -1,1 +1,106 @@
-documents: []
+documents:
+- name: faq-command-group
+  path: desk/atoms/faq-command-group.md
+  hash_c: af9ab45e1b6e6f07efc779a12c7445f553e045842ef0f8427ecd2a9c2ac85adf
+  hash_d: ''
+  semantic_tags:
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: models-command-group
+  path: desk/atoms/models-command-group.md
+  hash_c: 61733ca6bcd397edb244587feb42d79ac60f56e3c8925964bde6b25b8bc125e5
+  hash_d: ''
+  semantic_tags:
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: rust-code-linting
+  path: desk/atoms/rust-code-linting.md
+  hash_c: 5b90eb0cd7b858f55562c9a5b4dd9aadb103ab5fbeeda7f5cf6d0f7258cba23d
+  hash_d: ''
+  semantic_tags:
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: document
+  path: desk/atoms/document.md
+  hash_c: 4f4b2c41414978184e651b7a275c41a160512f1d131e98cf24b43b04d3ea21b1
+  hash_d: ''
+  semantic_tags:
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: relation-ast-extensibility
+  path: desk/atoms/relation-ast-extensibility.md
+  hash_c: 638b00378b528a41fad4cc8184fb02636ab9715d1ab2d785731c2d76b1fe70a9
+  hash_d: ''
+  semantic_tags:
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: field-binding
+  path: desk/atoms/field-binding.md
+  hash_c: f7bb3e3d246d4d73986bea6ef86403bbc62718ad4d6d332bf29813e01901eb1b
+  hash_d: ''
+  semantic_tags:
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: tree-sitter-adapter
+  path: desk/atoms/tree-sitter-adapter.md
+  hash_c: aafb911fc02c98d030f25a164818adc8474c1ef22d51e24f220518270fa72c8b
+  hash_d: ''
+  semantic_tags:
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: emitter-compiler
+  path: desk/atoms/emitter-compiler.md
+  hash_c: 64763e9370b2b9c5275fbd973633947cbbd0046885a05dd0731825ff7224d74c
+  hash_d: ''
+  semantic_tags:
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: structured-text
+  path: desk/atoms/structured-text.md
+  hash_c: 58328cf11b910212a8626cd3ac735d4100e73d9b2b4842f158d574a9319a93df
+  hash_d: ''
+  semantic_tags:
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: git-orchestration-in-python
+  path: desk/atoms/git-orchestration-in-python.md
+  hash_c: cc283109bb1e6841d1c05684813555cc957cda28883040770ed002d746ce4486
+  hash_d: ''
+  semantic_tags:
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: text-layer-vs-graph-layer
+  path: desk/atoms/text-layer-vs-graph-layer.md
+  hash_c: befe4a1c510e4ef006e0c29e1d841762bcd3a16c7a345b9adf16ff70cb18d0cd
+  hash_d: ''
+  semantic_tags:
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: how-to-get-data-out-of-sldb
+  path: desk/atoms/how-to-get-data-out-of-sldb.md
+  hash_c: 94e9eb0da3415f913a9e2e3343cd3dea213ece2229cdb2acd61dab2bba046a30
+  hash_d: ''
+  semantic_tags:
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: hook-binding
+  path: desk/atoms/hook-binding.md
+  hash_c: 2a57ac9005f8e778d8e1dd6eafc4a2d0daa2243a108e573a5fa7a33fee02aa60
+  hash_d: ''
+  semantic_tags:
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: decision-search-index-library
+  path: desk/atoms/decision-search-index-library.md
+  hash_c: a929a004e8a9d33afd602b3b1689244c84e4e38b3bb626dbcc6a718fd4616b70
+  hash_d: ''
+  semantic_tags:
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: local-vs-global-store-precedence
+  path: desk/atoms/local-vs-global-store-precedence.md
+  hash_c: f83a6c669b673c5ac0c691e3cc82ecf248816970319f61fab26009aadb3ef7d9
+  hash_d: ''
+  semantic_tags:
+  - type.knowledge.atom
+  - workspace.desk.atoms
