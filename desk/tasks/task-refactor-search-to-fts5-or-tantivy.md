@@ -6,7 +6,7 @@ tags:
 - workspace:desk
 - artifact:task
 routine: routine-task-implement-rust-core
-current_node: execution
+current_node: close
 history: []
 references:
 - desk/atoms/decision-search-index-library.md
@@ -20,19 +20,34 @@ checklists: []
 
 ## Rationale
 
-The initial search implementation relies on full table scans (`LIKE %...%`) in SQLite, ignoring `decision-search-index-library.md` which mandated robust full-text indexing.
+_Explain why this task exists or the business driver behind it._
+
+
 
 ## Goal
 
-- Remove simplistic payload scanning.
-- Integrate either `tantivy` or setup SQLite `FTS5` virtual tables.
-- Synchronize node insertion with the FTS/Tantivy index.
+_Describe the concrete result this task must produce._
+
+
 
 ## Scope
 
-- Rust Core `sldb-core/src/store/search.rs`
-- SQLite schema in `sldb-core/src/store/schema.rs`
+_State what is in scope and what is out of scope._
+
+
+
+## Implementation Path
+
+_Outline the expected implementation route or affected surface._
+
+
+
+## Validation
+
+_List the checks required before this task can close._
+
+- 
 
 ## Done When
 
-Semantic and full-text searches resolve efficiently using a proper search index without O(N) table scans.
+_Name the observable condition that makes the task complete._

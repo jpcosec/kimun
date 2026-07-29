@@ -27,6 +27,17 @@ CREATE TABLE IF NOT EXISTS edges (
 -- Index for fast graph traversal
 CREATE INDEX IF NOT EXISTS idx_edges_source ON edges(source_hash);
 CREATE INDEX IF NOT EXISTS idx_edges_target ON edges(target_hash);
+
+-- FTS5 Search Index
+CREATE VIRTUAL TABLE IF NOT EXISTS search_index USING fts5(
+    payload,
+    hash UNINDEXED
+);
+
+-- Trigger to keep search index synchronized
+CREATE TRIGGER IF NOT EXISTS nodes_ai AFTER INSERT ON nodes BEGIN
+    INSERT INTO search_index(hash, payload) VALUES (new.hash, new.payload);
+END;
 "#;
 
 pub fn initialize_schema(conn: &Connection) -> Result<()> {

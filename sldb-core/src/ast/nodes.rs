@@ -1,5 +1,5 @@
-use rowan::{ast::AstNode, Language};
-use super::{SldbLanguage, SyntaxKind, SyntaxNode};
+use rowan::ast::AstNode;
+use crate::ast::language::{SyntaxKind, SyntaxNode, SldbLanguage};
 
 // Define concrete AST nodes that wrap the generic SyntaxNode.
 
