@@ -6,7 +6,7 @@ version: "0.1"
 data:
   nodes:
     GraphStore:
-      label: Graph Store
+      label: Append-Only Graph Store
       kind: database
       contains:
         - ASTNodes
@@ -41,7 +41,7 @@ data:
       kind: core
 
     RelationASTs:
-      label: relation AST payloads
+      label: relation AST payloads (indexed for semantics/tags)
       kind: core
 
     AnchorNodes:

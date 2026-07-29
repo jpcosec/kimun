@@ -1,4 +1,18 @@
 namespaces:
+  architecture:
+    do_not_use_when: Tagging specific implementation code or bugs
+    examples:
+    - architecture:component
+    - architecture:decision
+    meaning: Architectural components and decisions
+    use_when: Tagging components, systems, or design decisions
+  concept:
+    do_not_use_when: Tagging concrete systems or code
+    examples:
+    - concept:ast
+    - concept:store
+    meaning: Core concepts and domain terminology
+    use_when: Tagging glossary terms or theoretical concepts
   domain:
     do_not_use_when: A more specific system, topic, layer, or pattern tag applies.
     examples:

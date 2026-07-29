@@ -77,6 +77,9 @@ data:
       to: python_cli_layer
       protocol: Python entrypoint
     - from: python_cli_layer
+      to: project_repo
+      protocol: Git tracking / version control
+    - from: python_cli_layer
       to: rust_core
       protocol: FFI / API boundary
     - from: rust_core

@@ -19,6 +19,11 @@ data:
         - CommandGroups
         - DirectMode
         - StoreBackedMode
+        - GitIntegration
+
+    GitIntegration:
+      label: Git tracking / version control
+      kind: core
 
     CommandGroups:
       label: plural-first command groups
@@ -96,7 +101,7 @@ data:
       kind: core
 
     GraphStore:
-      label: Local Graph Store
+      label: Local Append-Only Graph Store
       kind: database
       contains:
         - ASTPersistence
@@ -104,7 +109,7 @@ data:
         - HistoryArtifacts
 
     ASTPersistence:
-      label: persisted AST nodes + edges
+      label: persisted AST nodes + edges (immutable)
       kind: database
 
     DerivedIndexes:
@@ -112,7 +117,7 @@ data:
       kind: database
 
     HistoryArtifacts:
-      label: event log / snapshots / provenance
+      label: append-only event log / snapshots / provenance
       kind: database
 
     Adapters:
