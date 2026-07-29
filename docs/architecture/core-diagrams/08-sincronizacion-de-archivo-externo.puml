@@ -1,0 +1,43 @@
+@startuml
+title Sincronización de archivo externo
+
+actor Client
+participant "Source Manager" as Source
+participant "Filesystem Adapter" as FS
+participant "Merkle Engine" as Merkle
+participant "Parser Registry" as Parser
+participant "Canonicalizer" as Canonical
+participant "Graph Reconciler" as Reconciler
+participant "Transaction Engine" as Tx
+
+Client -> Source : open(document)
+
+Source -> FS : stat(source_path)
+FS --> Source : size, modified_at, file_id
+
+Source -> Merkle : compare_source_fingerprint(document)
+
+alt fuente no cambió
+    Merkle --> Source : unchanged
+    Source --> Client : current revision
+else posiblemente cambió
+    Merkle --> Source : unknown or changed
+    Source -> FS : read affected content
+    FS --> Source : bytes
+
+    Source -> Parser : parse(bytes)
+    Parser --> Source : syntax AST
+
+    Source -> Canonical : normalize(AST)
+    Canonical --> Source : canonical AST
+
+    Source -> Reconciler : diff(current graph, canonical AST)
+    Reconciler --> Source : operations
+
+    Source -> Tx : commit(operations)
+    Tx --> Source : new revision
+
+    Source --> Client : new revision
+end
+
+@enduml

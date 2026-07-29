@@ -1,0 +1,46 @@
+@startuml
+title Secuencia de una transacción
+
+actor Client
+participant "Lisp Runtime" as Lisp
+participant "Kernel API" as API
+participant "Transaction Engine" as Tx
+participant "Type Registry" as Types
+participant "Graph Repository" as Graph
+participant "Merkle Engine" as Merkle
+database "Transaction Log" as Log
+database "Revision Store" as Revisions
+participant "Event Bus" as Events
+
+Client -> Lisp : expresión Lisp
+Lisp -> Lisp : leer y expandir macros
+Lisp -> Lisp : compilar a TransactionPlan
+Lisp -> API : submit(plan)
+
+API -> Tx : execute(plan)
+Tx -> Types : validar tipos e invariantes
+Types --> Tx : resultado
+
+Tx -> Graph : cargar base_revision
+Graph --> Tx : snapshot
+
+Tx -> Tx : aplicar operaciones en staging
+Tx -> Merkle : invalidar nodos afectados
+Merkle --> Tx : dirty roots
+
+Tx -> Log : append(transaction)
+Log --> Tx : transaction_id
+
+Tx -> Merkle : calcular root hash si es requerido
+Merkle --> Tx : root_hash
+
+Tx -> Revisions : put(new revision)
+Tx -> Graph : compare-and-swap head
+Graph --> Tx : committed
+
+Tx -> Events : publish(TransactionCommitted)
+Tx --> API : RevisionId
+API --> Lisp : resultado
+Lisp --> Client : nueva revisión
+
+@enduml

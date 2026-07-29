@@ -1,0 +1,39 @@
+@startuml
+title Construcción de una proyección
+
+start
+
+:Recibir ProjectionSpec;
+:Resolver revisión;
+
+if (¿Existe cache válida?) then (sí)
+    :Retornar proyección cacheada;
+    stop
+endif
+
+:Obtener subgrafo canónico;
+
+if (Tipo de proyección) then (AST estructural)
+    :Proyectar ownership edges;
+    :Preservar orden y nodos sintácticos;
+elseif (AST semántico)
+    :Aplicar reglas semánticas;
+    :Resolver referencias;
+    :Construir conceptos y relaciones;
+elseif (Render)
+    :Obtener AST estructural;
+    :Aplicar renderer determinista;
+elseif (Embeddings)
+    :Seleccionar unidades semánticas;
+    :Calcular o recuperar embeddings;
+elseif (Lógica)
+    :Materializar hechos y relaciones;
+    :Evaluar reglas booleanas;
+endif
+
+:Calcular source_hash;
+:Guardar resultado derivado;
+:Retornar ProjectionResult;
+
+stop
+@enduml

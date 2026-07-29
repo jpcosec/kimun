@@ -1,0 +1,103 @@
+@startuml
+title Organización propuesta de crates
+
+package "kernel-core" {
+    class Node
+    class Edge
+    class Transaction
+    class Operation
+    class Revision
+    class KernelError
+}
+
+package "kernel-storage" {
+    interface StorageBackend
+    class RedbBackend
+    class MemoryBackend
+    class ContentStore
+    class TransactionLog
+}
+
+package "kernel-graph" {
+    class GraphRepository
+    class GraphSnapshot
+    class GraphIndex
+    class PetgraphProjection
+}
+
+package "kernel-merkle" {
+    class HashEngine
+    class HashCache
+    class DirtySet
+}
+
+package "kernel-query" {
+    class QueryEngine
+    class QueryPlan
+    class QueryResult
+}
+
+package "kernel-document" {
+    interface Parser
+    interface Renderer
+    class Canonicalizer
+    class SourceManager
+}
+
+package "kernel-projection" {
+    interface Projection
+    class StructuralAstProjection
+    class SemanticProjection
+}
+
+package "kernel-semantics" {
+    class EmbeddingIndex
+    class LogicEngine
+    class DerivedArtifact
+}
+
+package "kernel-lisp" {
+    class Reader
+    class MacroExpander
+    class Compiler
+    class LispRuntime
+}
+
+package "kernel-hooks" {
+    class HookEngine
+    class EffectOutbox
+    class EffectRunner
+}
+
+package "kernel-api" {
+    class Kernel
+    class Session
+}
+
+"kernel-api" --> "kernel-core"
+"kernel-api" --> "kernel-query"
+"kernel-api" --> "kernel-projection"
+"kernel-api" --> "kernel-hooks"
+
+"kernel-graph" --> "kernel-core"
+"kernel-graph" --> "kernel-storage"
+
+"kernel-merkle" --> "kernel-core"
+"kernel-merkle" --> "kernel-storage"
+
+"kernel-query" --> "kernel-graph"
+"kernel-query" --> "kernel-semantics"
+
+"kernel-document" --> "kernel-core"
+"kernel-document" --> "kernel-projection"
+
+"kernel-projection" --> "kernel-graph"
+"kernel-semantics" --> "kernel-projection"
+
+"kernel-lisp" --> "kernel-core"
+"kernel-lisp" --> "kernel-query"
+
+"kernel-hooks" --> "kernel-core"
+"kernel-hooks" --> "kernel-api"
+
+@enduml

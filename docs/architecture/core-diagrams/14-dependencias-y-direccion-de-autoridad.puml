@@ -1,0 +1,32 @@
+@startuml
+title Dependencias y dirección de autoridad
+
+rectangle "Lisp / DSL" as Lisp
+rectangle "CLI / UI / Agents" as Clients
+rectangle "Projections" as Projections
+rectangle "Semantics" as Semantics
+rectangle "Hooks and Effects" as Effects
+rectangle "Kernel Core" as Core
+rectangle "Storage Traits" as Storage
+rectangle "Storage Implementation" as Backend
+
+Lisp --> Core : compila a operaciones
+Clients --> Core : comandos y consultas
+Projections --> Core : leen revisiones
+Semantics --> Projections : datos derivados
+Effects --> Core : registran resultados
+
+Core --> Storage
+Storage --> Backend
+
+note bottom of Core
+Único componente autorizado
+para producir nuevas revisiones.
+end note
+
+note right of Lisp
+Extensible, pero no controla
+directamente la persistencia.
+end note
+
+@enduml

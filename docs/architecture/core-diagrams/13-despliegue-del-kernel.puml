@@ -1,0 +1,40 @@
+@startuml
+title Despliegue del kernel
+
+node "Máquina local" {
+    artifact "CLI" as CLI
+    artifact "Desktop UI" as UI
+    artifact "Agent Process" as Agent
+
+    node "Kernel Process" {
+        artifact "Kernel API"
+        artifact "Lisp Runtime"
+        artifact "Transaction Engine"
+        artifact "Query Engine"
+        artifact "Hook Engine"
+    }
+
+    database "redb / RocksDB" as DB
+    folder "Content Store" as Content
+    folder "Indexed Files" as Files
+    node "WASM Sandbox" as Sandbox
+}
+
+cloud "Git Remote" as Git
+cloud "LLM / Embedding API" as Models
+cloud "External APIs" as APIs
+
+CLI --> "Kernel API" : IPC / embedded
+UI --> "Kernel API" : IPC / HTTP
+Agent --> "Kernel API" : IPC / gRPC
+
+"Kernel API" --> DB
+"Kernel API" --> Content
+"Kernel API" --> Files
+
+"Hook Engine" --> Sandbox
+Sandbox --> Git
+Sandbox --> APIs
+"Query Engine" --> Models
+
+@enduml

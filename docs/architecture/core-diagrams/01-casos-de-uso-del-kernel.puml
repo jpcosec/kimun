@@ -1,0 +1,49 @@
+@startuml
+title Casos de uso del kernel
+
+left to right direction
+
+actor Usuario
+actor Agente
+actor "Archivo externo" as ExternalFile
+actor "Herramienta externa" as Tool
+actor "Servicio semántico" as SemanticService
+
+rectangle "Knowledge Kernel" {
+    usecase "Importar documento" as Import
+    usecase "Consultar estructura" as Query
+    usecase "Aplicar transformación" as Transform
+    usecase "Crear proyección" as Projection
+    usecase "Consultar historial" as History
+    usecase "Verificar integridad" as Integrity
+    usecase "Evaluar reglas lógicas" as Logic
+    usecase "Buscar por embeddings" as Embeddings
+    usecase "Ejecutar hook" as Hook
+    usecase "Ejecutar efecto externo" as Effect
+    usecase "Detectar cambio externo\nbajo demanda" as Detect
+}
+
+Usuario --> Import
+Usuario --> Query
+Usuario --> Transform
+Usuario --> Projection
+Usuario --> History
+
+Agente --> Query
+Agente --> Transform
+Agente --> Logic
+Agente --> Embeddings
+Agente --> Hook
+
+ExternalFile --> Detect
+Detect --> Import
+
+Hook --> Effect
+Effect --> Tool
+
+SemanticService --> Embeddings
+
+Query ..> Integrity : incluye
+Transform ..> Integrity : incluye
+
+@enduml

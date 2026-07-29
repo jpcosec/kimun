@@ -1,0 +1,225 @@
+{
+  "main": {
+    "id": "abc2e5e115e18bd6",
+    "type": "split",
+    "children": [
+      {
+        "id": "f80f676164a3932c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4b60681869c93329",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "docs/architecture/target-system-overview.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "target-system-overview"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "a9008cf71c7dc392",
+    "type": "split",
+    "children": [
+      {
+        "id": "808b197ef4569a62",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5e799c8e45885a51",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Explorador de archivos"
+            }
+          },
+          {
+            "id": "d868f39f15224e3f",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Buscar"
+            }
+          },
+          {
+            "id": "39965cce7ab0db2b",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Marcadores"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "1085ddbceb7d0cb9",
+    "type": "split",
+    "children": [
+      {
+        "id": "dea2b83d4b8ea94f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "25ae36eb0cc49875",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "docs/architecture/target-system-overview.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Enlaces entrantes de target-system-overview"
+            }
+          },
+          {
+            "id": "f075f37ed1798615",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "docs/architecture/target-system-overview.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Enlaces salientes de target-system-overview"
+            }
+          },
+          {
+            "id": "196b587872a236b2",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Etiquetas"
+            }
+          },
+          {
+            "id": "5322813030fee70f",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Todas las propiedades"
+            }
+          },
+          {
+            "id": "cecea48b02fb73a1",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "docs/architecture/target-system-overview.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Esquema de target-system-overview"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Abrir selector rápido": false,
+      "graph:Abrir vista gráfica": false,
+      "canvas:Crear nuevo lienzo": false,
+      "daily-notes:Abrir la nota de hoy": false,
+      "templates:Insertar plantilla": false,
+      "command-palette:Abrir paleta de comandos": false,
+      "bases:Crear nueva base": false
+    }
+  },
+  "active": "4b60681869c93329",
+  "lastOpenFiles": [
+    "docs/architecture/core-diagrams/14-dependencias-y-direccion-de-autoridad.puml",
+    "docs/architecture/core-diagrams/13-despliegue-del-kernel.puml",
+    "docs/architecture/core-diagrams/12-contrato-parse-render-parse.puml",
+    "docs/architecture/core-diagrams/11-estados-de-un-documento.puml",
+    "docs/architecture/core-diagrams/10-ejecucion-segura-de-hooks.puml",
+    "docs/architecture/core-diagrams/09-construccion-de-una-proyeccion.puml",
+    "docs/architecture/core-diagrams/08-sincronizacion-de-archivo-externo.puml",
+    "docs/architecture/core-diagrams/07-calculo-merkle-perezoso.puml",
+    "docs/architecture/core-diagrams/06-secuencia-de-una-transaccion.puml",
+    "docs/architecture/core-diagrams/05-persistencia-del-kernel.puml",
+    "docs/architecture/core-diagrams/03-organizacion-propuesta-de-crates.puml",
+    "desk/atoms/source-manager.md",
+    "desk/atoms/derived-edge.md",
+    "desk/atoms/semantic-edge.md",
+    "desk/atoms/reference-edge.md",
+    "desk/atoms/ownership-edge.md",
+    "desk/atoms/agent-provider.md",
+    "desk/atoms/semantic-provider.md",
+    "desk/atoms/storage-backend.md",
+    "desk/atoms/renderer.md",
+    "desk/atoms/parser.md",
+    "desk/atoms/document-source.md",
+    "desk/atoms/artifact.md",
+    "desk/atoms/event-bus.md",
+    "desk/atoms/projection-spec.md",
+    "desk/atoms/canonicalizer.md",
+    "desk/atoms/ports-and-adapters.md",
+    "desk/atoms/capability-model.md",
+    "desk/atoms/effect-outbox.md",
+    "desk/atoms/lisp-metalanguage.md",
+    "desk/atoms/kernel-api.md",
+    "desk/atoms/document-head.md",
+    "desk/atoms/content-addressed-store.md",
+    "desk/atoms/transaction-log.md",
+    "desk/atoms/primitive-operation.md",
+    "desk/atoms/transaction.md"
+  ]
+}

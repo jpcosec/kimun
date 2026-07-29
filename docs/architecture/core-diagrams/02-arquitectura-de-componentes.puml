@@ -1,0 +1,107 @@
+@startuml
+title Arquitectura de componentes
+
+skinparam componentStyle rectangle
+
+actor Usuario
+actor Agente
+
+component "CLI / UI / API" as Clients
+component "Lisp Runtime" as Lisp
+component "Kernel API" as API
+
+package "Core Kernel" {
+    component "Transaction Engine" as Tx
+    component "Graph Repository" as Graph
+    component "Type Registry" as Types
+    component "Query Engine" as Query
+    component "Projection Engine" as Projection
+    component "Merkle Engine" as Merkle
+    component "Event Bus" as Events
+}
+
+package "Documents" {
+    component "Parser Registry" as Parsers
+    component "Canonicalizer" as Canonicalizer
+    component "Renderer Registry" as Renderers
+    component "External Source Manager" as Sources
+}
+
+package "Semantics" {
+    component "Structural AST Projection" as Structural
+    component "Semantic Graph Projection" as Semantic
+    component "Embedding Index" as Embeddings
+    component "Boolean Logic Engine" as Logic
+}
+
+package "Automation" {
+    component "Hook Engine" as Hooks
+    component "Effect Outbox" as Outbox
+    component "Effect Runner" as Runner
+    component "Agent Harness" as Harness
+}
+
+package "Persistence" {
+    database "Transaction Log" as TxLog
+    database "Content Addressed Store" as CAS
+    database "Indexes / Caches" as Indexes
+    component "Storage Backend" as Store
+}
+
+cloud "Git / Filesystem / APIs" as ExternalTools
+cloud "Embedding / LLM Services" as Models
+
+Usuario --> Clients
+Agente --> Harness
+
+Clients --> API
+Harness --> API
+Lisp --> API : QueryPlan\nTransactionPlan
+
+API --> Tx
+API --> Query
+API --> Projection
+
+Tx --> Types
+Tx --> Graph
+Tx --> Merkle
+Tx --> TxLog
+Tx --> Events
+
+Graph --> Store
+Graph --> CAS
+Graph --> Indexes
+
+Query --> Graph
+Query --> Logic
+Query --> Embeddings
+
+Projection --> Structural
+Projection --> Semantic
+Projection --> Renderers
+
+Parsers --> Canonicalizer
+Canonicalizer --> Tx
+
+Sources --> Parsers
+Sources --> Merkle
+
+Events --> Hooks
+Hooks --> Outbox
+Outbox --> Runner
+Runner --> ExternalTools
+Runner --> Harness
+
+Embeddings --> Models
+
+Store --> TxLog
+Store --> CAS
+Store --> Indexes
+
+note right of Graph
+Petgraph puede usarse aquí como
+vista materializada en memoria,
+no como persistencia primaria.
+end note
+
+@enduml
