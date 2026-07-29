@@ -1,0 +1,196 @@
+id: sldb.target.components
+title: SLDB Target System Components
+type: component
+version: "0.1"
+
+data:
+  nodes:
+    ProductSurfaces:
+      label: Product Surfaces
+      kind: core
+      contains:
+        - PythonCLI
+        - VisualUX
+
+    PythonCLI:
+      label: Python CLI orchestration
+      kind: core
+      contains:
+        - CommandGroups
+        - DirectMode
+        - StoreBackedMode
+
+    CommandGroups:
+      label: plural-first command groups
+      kind: core
+
+    DirectMode:
+      label: extract / render / validate
+      kind: core
+
+    StoreBackedMode:
+      label: stores / models / docs / fields / sections / find / ast
+      kind: core
+
+    RustCore:
+      label: Rust Canonical Core
+      kind: core
+      contains:
+        - CanonicalAST
+        - Importers
+        - Emitters
+        - CanonicalRelations
+        - Hashing
+
+    CanonicalAST:
+      label: canonical AST
+      kind: core
+
+    Importers:
+      label: importers / translators
+      kind: core
+      contains:
+        - MarkdownImporter
+
+    MarkdownImporter:
+      label: Markdown importer
+      kind: core
+
+    Emitters:
+      label: emitters / compilers
+      kind: core
+      contains:
+        - MarkdownEmitter
+        - DocumentMaterializer
+
+    MarkdownEmitter:
+      label: Markdown emitter
+      kind: core
+
+    DocumentMaterializer:
+      label: document materializer
+      kind: core
+
+    CanonicalRelations:
+      label: canonical relations + relation ASTs
+      kind: core
+      contains:
+        - LinkRelations
+        - StoreRelations
+        - AnchorNodes
+
+    LinkRelations:
+      label: link relations between ASTs
+      kind: core
+
+    StoreRelations:
+      label: store relations between ASTs
+      kind: core
+
+    AnchorNodes:
+      label: anchor nodes
+      kind: core
+
+    Hashing:
+      label: hashing layer
+      kind: core
+
+    GraphStore:
+      label: Local Graph Store
+      kind: database
+      contains:
+        - ASTPersistence
+        - DerivedIndexes
+        - HistoryArtifacts
+
+    ASTPersistence:
+      label: persisted AST nodes + edges
+      kind: database
+
+    DerivedIndexes:
+      label: store/search/section/field indexes
+      kind: database
+
+    HistoryArtifacts:
+      label: event log / snapshots / provenance
+      kind: database
+
+    Adapters:
+      label: Adapters / Projections
+      kind: core
+      contains:
+        - SemanticExporter
+        - ProseMirrorAdapter
+        - TreeSitterAdapter
+
+    SemanticExporter:
+      label: semantic exporter
+      kind: core
+
+    ProseMirrorAdapter:
+      label: ProseMirror adapter
+      kind: core
+
+    TreeSitterAdapter:
+      label: tree-sitter adapter
+      kind: core
+
+    VisualUX:
+      label: future visual UX
+      kind: boundary
+
+  edges:
+    - from: PythonCLI
+      to: RustCore
+      relation: orchestrates
+      label: minimal Python shell
+
+    - from: RustCore
+      to: GraphStore
+      relation: persists
+      label: canonical graph store
+
+    - from: MarkdownImporter
+      to: CanonicalAST
+      relation: builds
+      label: Markdown -> AST
+
+    - from: CanonicalAST
+      to: MarkdownEmitter
+      relation: projects
+      label: AST -> Markdown
+
+    - from: CanonicalAST
+      to: CanonicalRelations
+      relation: owns
+      label: canonical links / anchors / store edges
+
+    - from: Hashing
+      to: CanonicalAST
+      relation: annotates
+      label: hash fields on nodes
+
+    - from: GraphStore
+      to: DerivedIndexes
+      relation: materializes
+      label: searchable views
+
+    - from: RustCore
+      to: Adapters
+      relation: drives
+      label: derived projections
+
+    - from: SemanticExporter
+      to: GraphStore
+      relation: reads
+      label: semantic export boundary
+
+    - from: VisualUX
+      to: ProseMirrorAdapter
+      relation: uses
+      label: editing projection
+
+    - from: VisualUX
+      to: GraphStore
+      relation: queries
+      label: inspect nodes / edges / models / templates

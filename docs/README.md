@@ -20,6 +20,8 @@ The docs surface now has two layers:
 
 The architecture docs also define integration boundaries, including the [SLDB semantic export boundary for KGDB](architecture/semantic-export-boundary.md).
 
+For the refactor target direction, see [Target System Overview](architecture/target-system-overview.md).
+
 ## Why These Models Are Shallow
 
 The documentation corpus is structurally heterogeneous.

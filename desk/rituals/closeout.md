@@ -7,4 +7,4 @@ tags:
 
 # Closeout ritual
 
-Close a sldb task only after validation passes, the board is updated, and the final change is ready to commit.
+Close a sldb-refactor-worktree task only after validation passes, the board is updated, and the final change is ready to commit.

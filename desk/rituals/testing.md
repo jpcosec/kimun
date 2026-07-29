@@ -7,4 +7,4 @@ tags:
 
 # Testing ritual
 
-Run the smallest relevant validation first, then broaden coverage when sldb changes shared behavior.
+Run the smallest relevant validation first, then broaden coverage when sldb-refactor-worktree changes shared behavior.

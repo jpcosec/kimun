@@ -1,97 +1,9 @@
 stores: []
 models:
-- name: ArchitectureDoc
-  model_ref: docs.models:ArchitectureDoc
-  path: docs/models.py
-  models_index: .sldb/core/models/ArchitectureDoc.yaml
-  version: 1
-  canonical: false
-  family: null
-  semantics: []
-- name: PackagingDoc
-  model_ref: docs.models:PackagingDoc
-  path: docs/models.py
-  models_index: .sldb/core/models/PackagingDoc.yaml
-  version: 1
-  canonical: false
-  family: null
-  semantics: []
-- name: PlanDoc
-  model_ref: docs.models:PlanDoc
-  path: docs/models.py
-  models_index: .sldb/core/models/PlanDoc.yaml
-  version: 1
-  canonical: false
-  family: null
-  semantics: []
-- name: SpecDoc
-  model_ref: docs.models:SpecDoc
-  path: docs/models.py
-  models_index: .sldb/core/models/SpecDoc.yaml
-  version: 1
-  canonical: false
-  family: null
-  semantics: []
-- name: RequestDoc
-  model_ref: docs.models:RequestDoc
-  path: docs/models.py
-  models_index: .sldb/core/models/RequestDoc.yaml
-  version: 1
-  canonical: false
-  family: null
-  semantics: []
-- name: ArchitectureNarrativeDoc
-  model_ref: docs.models:ArchitectureNarrativeDoc
-  path: docs/models.py
-  models_index: .sldb/core/models/ArchitectureNarrativeDoc.yaml
-  version: 1
-  canonical: false
-  family: null
-  semantics: []
-- name: StoreReadmeDoc
-  model_ref: docs.models:StoreReadmeDoc
-  path: docs/models.py
-  models_index: .sldb/core/models/StoreReadmeDoc.yaml
-  version: 1
-  canonical: false
-  family: null
-  semantics: []
-- name: AtomicDocumentDoc
-  model_ref: docs.models:AtomicDocumentDoc
-  path: docs/models.py
-  models_index: .sldb/core/models/AtomicDocumentDoc.yaml
-  version: 1
-  canonical: false
-  family: null
-  semantics: []
-- name: FAQDoc
-  model_ref: docs.models:FAQDoc
-  path: docs/models.py
-  models_index: .sldb/core/models/FAQDoc.yaml
-  version: 1
-  canonical: false
-  family: null
-  semantics: []
-- name: DeskStandardsDoc
-  model_ref: desk.models:DeskStandardsDoc
-  path: desk/models.py
-  models_index: .sldb/core/models/DeskStandardsDoc.yaml
-  version: 1
-  canonical: false
-  family: null
-  semantics: []
-- name: DeskSpecDoc
-  model_ref: desk.models:DeskSpecDoc
-  path: desk/models.py
-  models_index: .sldb/core/models/DeskSpecDoc.yaml
-  version: 1
-  canonical: false
-  family: null
-  semantics: []
-- name: InboxNoteDoc
-  model_ref: deskops.models:InboxNoteDoc
-  path: /home/jp/proyectos/hum-ecosystem/tools/deskops/deskops/models/inbox.py
-  models_index: .sldb/core/models/InboxNoteDoc.yaml
+- name: BoardDoc
+  model_ref: deskops.models:BoardDoc
+  path: /home/jp/proyectos/hum-ecosystem/tools/deskops/deskops/models/board.py
+  models_index: .sldb/core/models/BoardDoc.yaml
   version: 1
   canonical: false
   family: null
@@ -104,14 +16,6 @@ models:
   canonical: false
   family: null
   semantics: []
-- name: BoardDoc
-  model_ref: deskops.models:BoardDoc
-  path: /home/jp/proyectos/hum-ecosystem/tools/deskops/deskops/models/board.py
-  models_index: .sldb/core/models/BoardDoc.yaml
-  version: 1
-  canonical: false
-  family: null
-  semantics: []
 - name: PillDoc
   model_ref: deskops.models:PillDoc
   path: /home/jp/proyectos/hum-ecosystem/tools/deskops/deskops/models/pill.py
@@ -120,4 +24,74 @@ models:
   canonical: false
   family: null
   semantics: []
-hash_a: 624a5a06a6fddd4b3c8f04fafee03c8f1dcca298cb32a0203fdcc3c6275f8668
+- name: RitualDoc
+  model_ref: deskops.models:RitualDoc
+  path: /home/jp/proyectos/hum-ecosystem/tools/deskops/deskops/models/ritual.py
+  models_index: .sldb/core/models/RitualDoc.yaml
+  version: 1
+  canonical: false
+  family: null
+  semantics: []
+- name: InboxNoteDoc
+  model_ref: deskops.models:InboxNoteDoc
+  path: /home/jp/proyectos/hum-ecosystem/tools/deskops/deskops/models/inbox.py
+  models_index: .sldb/core/models/InboxNoteDoc.yaml
+  version: 1
+  canonical: false
+  family: null
+  semantics: []
+- name: RepositoryDoc
+  model_ref: deskops.models:RepositoryDoc
+  path: /home/jp/proyectos/hum-ecosystem/tools/deskops/deskops/models/repository.py
+  models_index: .sldb/core/models/RepositoryDoc.yaml
+  version: 1
+  canonical: false
+  family: null
+  semantics: []
+- name: StepDoc
+  model_ref: deskops.models:StepDoc
+  path: /home/jp/proyectos/hum-ecosystem/tools/deskops/deskops/models/step.py
+  models_index: .sldb/core/models/StepDoc.yaml
+  version: 1
+  canonical: false
+  family: null
+  semantics: []
+- name: AtomDoc
+  model_ref: deskops.models:AtomDoc
+  path: /home/jp/proyectos/hum-ecosystem/tools/deskops/deskops/models/atom.py
+  models_index: .sldb/core/models/AtomDoc.yaml
+  version: 1
+  canonical: false
+  family: null
+  semantics: []
+- name: FAQDoc
+  model_ref: deskops.models:FAQDoc
+  path: /home/jp/proyectos/hum-ecosystem/tools/deskops/deskops/models/faq.py
+  models_index: .sldb/core/models/FAQDoc.yaml
+  version: 1
+  canonical: false
+  family: null
+  semantics: []
+predicates:
+- name: is_solved_by
+  axis: HOW
+  description: Identifies how the source is solved.
+- name: implements
+  axis: HOW
+  description: Identifies what the source implements.
+- name: mathematically_proves
+  axis: WHY
+  description: Provides a mathematical proof.
+- name: explains_failure_of
+  axis: WHY
+  description: Explains why the target fails.
+- name: grounded_by
+  axis: PROVENANCE
+  description: Identifies supporting provenance.
+- name: restricts
+  axis: WHEN_WHERE
+  description: Restricts the target context.
+- name: defines
+  axis: WHAT
+  description: Defines the target concept.
+hash_a: e2176e5b5f35a0bdb69a7abc5f1b04cc0b2a5a0128290a900662346fe5744a4b

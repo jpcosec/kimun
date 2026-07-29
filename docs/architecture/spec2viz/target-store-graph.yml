@@ -1,0 +1,123 @@
+id: sldb.target.store_graph
+title: SLDB Target Graph Store
+type: component
+version: "0.1"
+
+data:
+  nodes:
+    GraphStore:
+      label: Graph Store
+      kind: database
+      contains:
+        - ASTNodes
+        - RelationEdges
+        - RelationASTs
+        - AnchorNodes
+        - HashFields
+        - DerivedIndexes
+
+    ASTNodes:
+      label: document / model / section / field-capable AST nodes
+      kind: core
+
+    RelationEdges:
+      label: typed edges between ASTs
+      kind: core
+      contains:
+        - LinkEdges
+        - StoreEdges
+        - DependencyEdges
+
+    LinkEdges:
+      label: link edges
+      kind: core
+
+    StoreEdges:
+      label: store edges
+      kind: core
+
+    DependencyEdges:
+      label: dependency / projection edges
+      kind: core
+
+    RelationASTs:
+      label: relation AST payloads
+      kind: core
+
+    AnchorNodes:
+      label: anchor nodes
+      kind: core
+      contains:
+        - TextAnchors
+        - ASTAnchors
+
+    TextAnchors:
+      label: text anchors
+      kind: core
+
+    ASTAnchors:
+      label: AST anchors
+      kind: core
+
+    HashFields:
+      label: node hash fields
+      kind: core
+
+    DerivedIndexes:
+      label: derived indexes
+      kind: database
+      contains:
+        - SectionIndex
+        - FieldIndex
+        - SearchIndex
+        - SemanticIndex
+
+    SectionIndex:
+      label: section index
+      kind: database
+
+    FieldIndex:
+      label: field index
+      kind: database
+
+    SearchIndex:
+      label: search projection
+      kind: database
+
+    SemanticIndex:
+      label: tag-based semantic index
+      kind: database
+
+  edges:
+    - from: GraphStore
+      to: ASTNodes
+      relation: persists
+      label: canonical nodes
+    - from: GraphStore
+      to: RelationEdges
+      relation: persists
+      label: canonical edges
+    - from: GraphStore
+      to: RelationASTs
+      relation: persists
+      label: extensible relation payloads
+    - from: GraphStore
+      to: AnchorNodes
+      relation: persists
+      label: canonical anchors
+    - from: HashFields
+      to: ASTNodes
+      relation: annotates
+      label: hash as field
+    - from: TextAnchors
+      to: RelationEdges
+      relation: participates_in
+      label: anchor-aware linking
+    - from: ASTAnchors
+      to: RelationEdges
+      relation: participates_in
+      label: structure-aware linking
+    - from: GraphStore
+      to: DerivedIndexes
+      relation: materializes
+      label: projections for queries

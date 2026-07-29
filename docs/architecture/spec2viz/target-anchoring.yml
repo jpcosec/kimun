@@ -1,0 +1,105 @@
+id: sldb.target.anchoring
+title: SLDB Target Anchoring Model
+type: component
+version: "0.1"
+
+data:
+  nodes:
+    AnchorNode:
+      label: Anchor Node
+      kind: core
+      contains:
+        - DocumentPath
+        - SourceHash
+        - Locator
+        - SampleText
+        - Comments
+        - AnchorKind
+
+    DocumentPath:
+      label: source document path
+      kind: core
+
+    SourceHash:
+      label: source document hash
+      kind: core
+
+    Locator:
+      label: pointer / locator
+      kind: core
+
+    SampleText:
+      label: quoted text sample
+      kind: core
+
+    Comments:
+      label: anchor comments
+      kind: core
+
+    AnchorKind:
+      label: text anchor or AST anchor
+      kind: core
+
+    StructuredDocs:
+      label: structured document families
+      kind: boundary
+      contains:
+        - ReversibleDocs
+        - FamilySpecificLocators
+
+    ReversibleDocs:
+      label: reversible AST-render-AST families
+      kind: boundary
+
+    FamilySpecificLocators:
+      label: family-specific anchor methods
+      kind: boundary
+      contains:
+        - PDFLocators
+        - HTMLLocators
+        - CodeLocators
+        - TextLocators
+
+    PDFLocators:
+      label: page / XML locators
+      kind: boundary
+
+    HTMLLocators:
+      label: DOM / element locators
+      kind: boundary
+
+    CodeLocators:
+      label: tree-sitter / syntax locators
+      kind: boundary
+
+    TextLocators:
+      label: char / paragraph / page locators
+      kind: boundary
+
+  edges:
+    - from: AnchorNode
+      to: DocumentPath
+      relation: requires
+    - from: AnchorNode
+      to: SourceHash
+      relation: requires
+    - from: AnchorNode
+      to: Locator
+      relation: requires
+    - from: AnchorNode
+      to: SampleText
+      relation: requires
+    - from: AnchorNode
+      to: Comments
+      relation: may_include
+    - from: AnchorNode
+      to: AnchorKind
+      relation: classifies
+    - from: AnchorKind
+      to: ReversibleDocs
+      relation: may_target
+      label: AST-aware anchors where possible
+    - from: FamilySpecificLocators
+      to: Locator
+      relation: specializes
+      label: document-family-dependent

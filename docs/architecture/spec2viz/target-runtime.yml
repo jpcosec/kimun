@@ -1,0 +1,99 @@
+id: sldb.target.runtime
+title: SLDB Target Runtime View
+type: deployment
+version: "0.1"
+
+data:
+  nodes:
+    user_shell:
+      label: Developer Shell
+      kind: client
+      contains:
+        - sldb_cli
+
+    project_repo:
+      label: Project Repository
+      kind: server
+      contains:
+        - markdown_docs
+        - project_models
+        - local_store
+
+    rust_runtime:
+      label: Rust Runtime
+      kind: server
+      contains:
+        - rust_core
+        - importer_emitter_stack
+        - graph_engine
+
+    python_runtime:
+      label: Python Runtime
+      kind: server
+      contains:
+        - python_cli_layer
+
+    visual_runtime:
+      label: Visual Runtime
+      kind: boundary
+      contains:
+        - editor_projection
+        - graph_explorer
+
+  artifacts:
+    sldb_cli:
+      label: sldb CLI entrypoint
+      kind: backend
+    python_cli_layer:
+      label: Python CLI orchestration layer
+      kind: backend
+    rust_core:
+      label: Rust canonical core
+      kind: backend
+    importer_emitter_stack:
+      label: Markdown import / emit stack
+      kind: backend
+    graph_engine:
+      label: local graph store engine
+      kind: database
+    project_models:
+      label: model ASTs / model definitions
+      kind: backend
+    markdown_docs:
+      label: rendered or tracked document files
+      kind: backend
+    local_store:
+      label: .sldb graph store
+      kind: database
+    editor_projection:
+      label: ProseMirror-style editor projection
+      kind: backend
+    graph_explorer:
+      label: graph explorer / inspectors
+      kind: backend
+
+  connections:
+    - from: sldb_cli
+      to: python_cli_layer
+      protocol: Python entrypoint
+    - from: python_cli_layer
+      to: rust_core
+      protocol: FFI / API boundary
+    - from: rust_core
+      to: importer_emitter_stack
+      protocol: internal API
+    - from: rust_core
+      to: graph_engine
+      protocol: internal API
+    - from: graph_engine
+      to: local_store
+      protocol: local persistence
+    - from: rust_core
+      to: project_models
+      protocol: model loading / schema translation
+    - from: importer_emitter_stack
+      to: markdown_docs
+      protocol: filesystem
+    - from: visual_runtime
+      to: graph_engine
+      protocol: projection/query API

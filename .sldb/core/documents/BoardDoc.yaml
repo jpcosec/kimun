@@ -1,12 +1,1 @@
-documents:
-- name: desk-board
-  path: desk/tasks/Board.md
-  hash_c: 328fc9cd3d9b3a20fc533a549105c3368c757ee6b9141c684b87fb095c622268
-  hash_d: b15ec0ec1977d9824fc3a1aa60d0517df096f7998a173243c872dd21665cb45c
-  semantic_tags:
-  - system:deskops
-  - system:sldb
-  - topic:routing
-  - type.workflow.board
-  - workspace.desk
-  - workspace:desk
+documents: []
