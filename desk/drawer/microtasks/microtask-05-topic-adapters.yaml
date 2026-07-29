@@ -1,0 +1,13 @@
+title: "Implement Adapters"
+goal: "Implement the required functionality for topic:adapters."
+why: "Required by the architecture specifications defined in the bound atoms."
+scope: "Microtask focused strictly on topic:adapters."
+validation:
+  - "echo 'Validation pending implementation'"
+depends_on:
+  - "macrotask-03-importers-emitters"
+payload: |
+  # Execution Context
+  This microtask requires adhering to the specifications of the following atoms:
+  - [binds:: [[tree-sitter-adapter]]]
+  - [binds:: [[prosemirror-adapter]]]

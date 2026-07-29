@@ -1,0 +1,14 @@
+title: "Implement Testing"
+goal: "Implement the required functionality for topic:testing."
+why: "Required by the architecture specifications defined in the bound atoms."
+scope: "Microtask focused strictly on topic:testing."
+validation:
+  - "echo 'Validation pending implementation'"
+depends_on:
+  - "macrotask-02-python-ffi"
+payload: |
+  # Execution Context
+  This microtask requires adhering to the specifications of the following atoms:
+  - [binds:: [[python-testing]]]
+  - [binds:: [[rust-testing]]]
+  - [binds:: [[testing]]]
