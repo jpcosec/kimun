@@ -1,7 +1,7 @@
 ---
 id: tree-sitter-adapter
 title: tree-sitter adapter
-five_wh_one_plus: what
+five_wh_one_plus: how
 tags:
 - system:sldb
 - layer:runtime

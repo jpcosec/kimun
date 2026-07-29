@@ -1,7 +1,7 @@
 ---
 id: reversible-document-family
 title: Reversible document family
-five_wh_one_plus: what
+five_wh_one_plus: when
 tags:
 - system:sldb
 - layer:document-model

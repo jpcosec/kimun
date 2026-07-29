@@ -1,7 +1,7 @@
 ---
 id: model-browser
 title: Model browser
-five_wh_one_plus: what
+five_wh_one_plus: where
 tags:
 - system:sldb
 - layer:runtime

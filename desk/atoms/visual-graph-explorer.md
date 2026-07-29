@@ -1,7 +1,7 @@
 ---
 id: visual-graph-explorer
 title: Visual graph explorer
-five_wh_one_plus: what
+five_wh_one_plus: where
 tags:
 - system:sldb
 - layer:runtime

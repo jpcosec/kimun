@@ -1,7 +1,7 @@
 ---
 id: visual-ux-surface
 title: Visual UX Surface
-five_wh_one_plus: what
+five_wh_one_plus: where
 tags:
 - system:sldb
 - layer:runtime

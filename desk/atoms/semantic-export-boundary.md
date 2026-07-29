@@ -1,7 +1,7 @@
 ---
 id: semantic-export-boundary
 title: Semantic export boundary
-five_wh_one_plus: what
+five_wh_one_plus: why
 tags:
 - system:sldb
 - layer:runtime

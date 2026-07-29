@@ -1,7 +1,7 @@
 ---
 id: markdown-importer
 title: Markdown importer
-five_wh_one_plus: what
+five_wh_one_plus: how
 tags:
 - system:sldb
 - layer:document-model

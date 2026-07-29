@@ -1,7 +1,7 @@
 ---
 id: text-layer-vs-graph-layer
 title: Text layer vs graph layer
-five_wh_one_plus: what
+five_wh_one_plus: why
 tags:
 - system:sldb
 - layer:architecture

@@ -1,7 +1,7 @@
 ---
 id: repository-registry
 title: Repository registry
-five_wh_one_plus: what
+five_wh_one_plus: where
 tags:
 - system:sldb
 - layer:runtime

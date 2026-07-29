@@ -1,7 +1,7 @@
 ---
 id: immutable-append-only-database
 title: Immutable append-only database
-five_wh_one_plus: what
+five_wh_one_plus: why
 tags:
 - architecture:decision
 - concept:store

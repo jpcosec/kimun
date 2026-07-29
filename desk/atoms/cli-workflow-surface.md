@@ -1,7 +1,7 @@
 ---
 id: cli-workflow-surface
 title: CLI Workflow Surface
-five_wh_one_plus: what
+five_wh_one_plus: where
 tags:
 - system:sldb
 - layer:cli

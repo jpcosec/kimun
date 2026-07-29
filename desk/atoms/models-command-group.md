@@ -1,7 +1,7 @@
 ---
 id: models-command-group
 title: models command group
-five_wh_one_plus: what
+five_wh_one_plus: where
 tags:
 - system:sldb
 - layer:cli

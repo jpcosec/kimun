@@ -1,7 +1,7 @@
 ---
 id: help-command-group
 title: help command group
-five_wh_one_plus: what
+five_wh_one_plus: where
 tags:
 - system:sldb
 - layer:cli

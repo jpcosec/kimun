@@ -1,7 +1,7 @@
 ---
 id: hook-runtime
 title: Hook runtime
-five_wh_one_plus: what
+five_wh_one_plus: how
 tags:
 - system:sldb
 - layer:runtime
