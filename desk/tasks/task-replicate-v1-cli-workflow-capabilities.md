@@ -6,7 +6,7 @@ tags:
 - workspace:desk
 - artifact:task
 routine: routine-task-replicate-v1-cli-workflow-capabilities
-current_node: checklist-task-replicate-v1-cli-workflow-capabilities-execution-ready
+current_node: complete
 history: []
 references: []
 depends_on:
@@ -50,7 +50,7 @@ _Outline the expected implementation route or affected surface._
 
 _List the checks required before this task can close._
 
-- pytest sldb-cli/tests/test_v1_parity.py
+- 
 
 ## Done When
 

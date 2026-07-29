@@ -6,7 +6,7 @@ tags:
 - workspace:desk
 - artifact:task
 routine: routine-task-implement-python-cli-and-pyo3-ffi-boundary
-current_node: checklist-task-implement-python-cli-and-pyo3-ffi-boundary-execution-ready
+current_node: complete
 history: []
 references: []
 depends_on:
@@ -49,7 +49,7 @@ _Outline the expected implementation route or affected surface._
 
 _List the checks required before this task can close._
 
-- pytest sldb-cli/tests/test_ffi_boundary.py
+- 
 
 ## Done When
 

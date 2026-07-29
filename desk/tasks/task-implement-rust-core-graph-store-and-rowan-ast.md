@@ -6,7 +6,7 @@ tags:
 - workspace:desk
 - artifact:task
 routine: routine-task-implement-rust-core-graph-store-and-rowan-ast
-current_node: operator-task-implement-rust-core-graph-store-and-rowan-ast-activate
+current_node: complete
 history: []
 references: []
 depends_on: []
