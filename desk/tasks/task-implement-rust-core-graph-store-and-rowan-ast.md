@@ -6,7 +6,7 @@ tags:
 - workspace:desk
 - artifact:task
 routine: routine-task-implement-rust-core-graph-store-and-rowan-ast
-current_node: complete
+current_node: close
 history: []
 references: []
 depends_on: []

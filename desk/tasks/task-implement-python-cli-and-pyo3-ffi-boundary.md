@@ -6,7 +6,7 @@ tags:
 - workspace:desk
 - artifact:task
 routine: routine-task-implement-python-cli-and-pyo3-ffi-boundary
-current_node: complete
+current_node: close
 history: []
 references: []
 depends_on:

@@ -6,7 +6,7 @@ tags:
 - workspace:desk
 - artifact:task
 routine: routine-task-implement-testing
-current_node: complete
+current_node: close
 history: []
 references: []
 depends_on:
