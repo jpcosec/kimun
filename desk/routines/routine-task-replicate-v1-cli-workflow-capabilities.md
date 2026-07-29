@@ -28,6 +28,7 @@ terminal_nodes:
 tags:
 - workspace:desk
 - primitive:routine
+steps: []
 ---
 
 # Routine for Replicate V1 CLI Workflow Capabilities
