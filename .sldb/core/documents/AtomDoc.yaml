@@ -1,11 +1,1 @@
-documents:
-- name: atom-canonical-ast
-  path: desk/atoms/atom-canonical-ast.md
-  hash_c: 4d20171a7d8d67d7808476e4b932962fb00af0ae3bbb5f12b18257eaf62c9be6
-  hash_d: 6aff3bceb4590b989566f83605470f8b6039380a1def7666548e3b3cbac23851
-  semantic_tags:
-  - layer:document-model
-  - system:sldb
-  - topic:ast
-  - type.knowledge.atom
-  - workspace.desk.atoms
+documents: []

@@ -1,13 +1,20 @@
 ---
+# board-xxx
 id: board-001
+# Affected workspace or domain
 scope: desk
-tasks: []
+# List of task-xxx paths
+tasks:
+- desk/tasks/task-track-atom-work.md
+# List of pill-xxx paths
 pills:
 - desk/contexts/pills.md
+# List of ritual-xxx paths
 rituals:
 - desk/rituals/execution.md
 - desk/rituals/testing.md
 - desk/rituals/closeout.md
+# e.g., system:sldb, workspace:desk
 tags:
 - workspace:desk
 ---
@@ -16,8 +23,18 @@ tags:
 
 ## Purpose
 
-Route the active execution set for sldb-refactor-worktree.
+_Explain what this board routes and why it exists._
+
+
 
 ## Notes
 
-Bootstrap complete. Add active task docs under `desk/tasks/` and route them here.
+_Add short operational notes about the current routed set._
+
+
+
+## Task Details
+
+_Generated from the task references above._
+
+- Track Atom Work [draft] - Track all untracked atom documents

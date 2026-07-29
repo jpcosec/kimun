@@ -28,9 +28,10 @@ Este informe detalla las librerías (crates) recomendadas en el ecosistema Rust 
 ## 4. Hashing e Identidad (Canonical Identity)
 * **`blake3`**: Algoritmo criptográfico ultra-rápido. Perfecto para firmar contenido (`SourceHash`), calcular hashes de nodos y construir árboles de Merkle para los índices semánticos. Su paralelismo intrínseco acelerará enormemente los rebuilds del repositorio.
 
-## 5. Cargas Útiles (`RelationASTs`) y Serialización
+## 5. Índices Derivados (Derived Indexes) y Serialización
 * **`serde` y `serde_json`**: Indispensables para (de)serializar los AST, las proyecciones y exportaciones del `SemanticExporter`.
 * **`rmp-serde` (MessagePack)** o **`bincode`**: Para almacenar las cargas dinámicas de los `RelationASTs` directamente en blobs binarios compactos dentro del Graph Store (SQLite), minimizando el peso del caché y la base de datos local.
+* **`tantivy`** o **SQLite FTS5**: Específicamente para resolver el `SearchIndex` requerido en la arquitectura. `tantivy` ofrece búsqueda full-text de nivel industrial puramente en Rust, mientras que FTS5 puede manejarse directamente desde `rusqlite`.
 
 ## 6. Concurrencia y Performance
 * **`rayon`**: Para el *data-parallelism* (procesamiento paralelo) durante la fase de *Importers*. La lectura, parseo de los AST, hashing y extracción de anclajes de cientos de documentos se puede distribuir eficientemente en todos los cores disponibles con una línea de código (`par_iter`).
