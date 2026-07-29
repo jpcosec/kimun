@@ -1,44 +1,192 @@
-namespaces:
+system:
+  sldb:
+    kind: leaf
+    meaning: Atom belongs to the SLDB refactor target knowledge base.
+
+domain:
   architecture:
-    do_not_use_when: Tagging specific implementation code or bugs
-    examples:
-    - architecture:component
-    - architecture:decision
-    meaning: Architectural components and decisions
-    use_when: Tagging components, systems, or design decisions
-  concept:
-    do_not_use_when: Tagging concrete systems or code
-    examples:
-    - concept:ast
-    - concept:store
-    meaning: Core concepts and domain terminology
-    use_when: Tagging glossary terms or theoretical concepts
-  domain:
-    do_not_use_when: A more specific system, topic, layer, or pattern tag applies.
-    examples:
-    - domain:knowledge-management
-    - domain:task-execution
-    meaning: Problem domain or durable area of concern.
-    use_when: The atom belongs to a reusable problem domain.
-  layer:
-    do_not_use_when: The tag names only a broad topic or system.
-    examples:
-    - layer:document-model
-    - layer:runtime
-    - layer:cli
-    meaning: Architectural layer where the atom applies.
-    use_when: The atom is scoped to a layer of the system.
-  system:
-    do_not_use_when: The tag is only a general topic.
-    examples:
-    - system:deskops
-    - system:sldb
-    meaning: System, project, or tool the atom belongs to.
-    use_when: The atom is about a specific system.
-  topic:
-    do_not_use_when: The atom describes a reusable implementation shape.
-    examples:
-    - topic:atoms
-    - topic:composition
-    meaning: Subject area discussed by the atom.
-    use_when: The atom is about a conceptual topic.
+    decisions:
+      kind: leaf
+      meaning: Decision rationale and chosen architectural commitments.
+      spec2viz_nodes: [RustCore, CanonicalAST, GraphStore, PythonCLI]
+    boundaries:
+      kind: leaf
+      meaning: Ownership and handoff boundaries between major layers or downstream systems.
+      spec2viz_nodes: [ProductSurfaces, RustCore, GraphStore, Adapters]
+    migration-strategy:
+      kind: leaf
+      meaning: Sequencing and scope-control rules for the refactor path.
+      spec2viz_nodes: [PythonCLI, RustCore, GraphStore]
+
+  surfaces:
+    cli:
+      command-groups:
+        kind: leaf
+        meaning: Public CLI families and user-facing command surfaces.
+        spec2viz_nodes: [PythonCLI, CommandGroups]
+      workflows:
+        kind: leaf
+        meaning: When and how the user moves through CLI workflow modes.
+        spec2viz_nodes: [PythonCLI, DirectMode, StoreBackedMode]
+      onboarding:
+        kind: leaf
+        meaning: Help and FAQ surfaces that orient new users.
+        spec2viz_nodes: [PythonCLI, CommandGroups]
+      inputs-outputs:
+        kind: leaf
+        meaning: Invocation contracts, payload forms, and retrieval-oriented I/O surfaces.
+        spec2viz_nodes: [PythonCLI]
+    visual:
+      inspectors:
+        kind: leaf
+        meaning: Visual inspection, browsing, and editing-adjacent UX surfaces.
+        spec2viz_nodes: [VisualUX, ProseMirrorAdapter]
+
+  model:
+    ast-core:
+      kind: leaf
+      meaning: Canonical node identity, existence, and tree-spine structure.
+      spec2viz_nodes: [CanonicalAST]
+    documents:
+      kind: leaf
+      meaning: Document families, document contracts, and document-level structural rules.
+      spec2viz_nodes: [CanonicalAST]
+    fields-schemas:
+      kind: leaf
+      meaning: Field bindings, schema contracts, and typed structural shape.
+      spec2viz_nodes: [CanonicalAST]
+    addressability:
+      kind: leaf
+      meaning: Stable addressing inside canonical structure.
+      spec2viz_nodes: [CanonicalAST, AnchorNodes]
+    anchors:
+      kind: leaf
+      meaning: Canonical anchor payloads and locator-bearing attachment strategy.
+      spec2viz_nodes: [AnchorNodes]
+    relations:
+      kind: leaf
+      meaning: Canonical relations, relation payloads, and relation-bearing edges.
+      spec2viz_nodes: [CanonicalRelations, RelationEdges, RelationASTs]
+    text-structure:
+      kind: leaf
+      meaning: Authored text shape that maps into the canonical model.
+      spec2viz_nodes: [CanonicalAST, MarkdownImporter, MarkdownEmitter]
+
+  pipeline:
+    importers:
+      kind: leaf
+      meaning: Inbound translation from authored sources into canonical structure.
+      spec2viz_nodes: [Importers, MarkdownImporter]
+    emitters:
+      kind: leaf
+      meaning: Outbound projection from canonical structure into rendered artifacts.
+      spec2viz_nodes: [Emitters, MarkdownEmitter, DocumentMaterializer]
+
+  store:
+    graph:
+      kind: leaf
+      meaning: Local graph-store substrate and its persistence model.
+      spec2viz_nodes: [GraphStore, ASTPersistence]
+    indexes:
+      kind: leaf
+      meaning: Derived indexes materialized from canonical graph state.
+      spec2viz_nodes: [DerivedIndexes, SectionIndex, FieldIndex, SearchIndex, SemanticIndex]
+    history:
+      kind: leaf
+      meaning: Append-only temporal and snapshot artifacts beside canonical state.
+      spec2viz_nodes: [HistoryArtifacts]
+    hashing:
+      kind: leaf
+      meaning: Hash-bearing state, Merkle behavior, and structural cache identity.
+      spec2viz_nodes: [Hashing, HashFields]
+    integrity:
+      kind: leaf
+      meaning: Checks that prove tracked-state correctness and detect drift.
+      spec2viz_nodes: [GraphStore, HashFields, DerivedIndexes]
+
+  runtime:
+    semantic:
+      kind: leaf
+      meaning: Explicit semantic tags, semantic payloads, and semantic auxiliary structures.
+      spec2viz_nodes: [SemanticExporter, SemanticIndex, RelationASTs]
+    query:
+      kind: leaf
+      meaning: Query-time access patterns over canonical and derived state.
+      spec2viz_nodes: [GraphStore, DerivedIndexes]
+    projections:
+      kind: leaf
+      meaning: Runtime projections derived from canonical state for downstream use.
+      spec2viz_nodes: [DerivedIndexes, SemanticExporter, ProseMirrorAdapter, TreeSitterAdapter]
+    adapters:
+      kind: leaf
+      meaning: Adapter surfaces for external projection and editing models.
+      spec2viz_nodes: [Adapters, ProseMirrorAdapter, TreeSitterAdapter, SemanticExporter]
+    hooks:
+      kind: leaf
+      meaning: Hook attachment and runtime execution behavior.
+      spec2viz_nodes: [CanonicalAST]
+    provenance:
+      kind: leaf
+      meaning: Runtime authorship and provenance-bearing records.
+      spec2viz_nodes: [HistoryArtifacts]
+    resolvers:
+      kind: leaf
+      meaning: Runtime resolution of anchors and selectors into concrete targets.
+      spec2viz_nodes: [AnchorNodes, GraphStore]
+
+  implementation:
+    rust-core:
+      kind: leaf
+      meaning: Rust-side implementation substrate and engine ownership.
+      spec2viz_nodes: [RustCore, GraphStore, Hashing]
+    python-cli:
+      kind: leaf
+      meaning: Python-side orchestration and git-adjacent shell behavior.
+      spec2viz_nodes: [PythonCLI, GitIntegration]
+
+  quality:
+    patterns:
+      generic:
+        kind: leaf
+        meaning: Cross-language implementation patterns.
+        spec2viz_nodes: [RustCore, PythonCLI]
+      rust:
+        kind: leaf
+        meaning: Rust-specific implementation patterns.
+        spec2viz_nodes: [RustCore]
+      python:
+        kind: leaf
+        meaning: Python-specific implementation patterns.
+        spec2viz_nodes: [PythonCLI]
+    testing:
+      generic:
+        kind: leaf
+        meaning: Cross-language testing rules and expectations.
+        spec2viz_nodes: [PythonCLI, RustCore, GraphStore]
+      rust:
+        kind: leaf
+        meaning: Rust-specific testing practice.
+        spec2viz_nodes: [RustCore]
+      python:
+        kind: leaf
+        meaning: Python-specific testing practice.
+        spec2viz_nodes: [PythonCLI]
+    clean-code:
+      generic:
+        kind: leaf
+        meaning: Cross-language readability and maintainability rules.
+        spec2viz_nodes: [PythonCLI, RustCore]
+      rust:
+        kind: leaf
+        meaning: Rust-specific code cleanliness rules.
+        spec2viz_nodes: [RustCore]
+      python:
+        kind: leaf
+        meaning: Python-specific code cleanliness rules.
+        spec2viz_nodes: [PythonCLI]
+
+rules:
+  - Every atom should carry exactly one `domain:*` leaf tag plus `system:sldb`.
+  - Prefer spec2viz-aligned leaf domains over generic topic names.
+  - Use `five_wh_one_plus` for question-shape; use `domain:*` for knowledge partition.
+  - When an atom spans multiple areas, tag the dominant ownership leaf and express the rest through related-atom links.

@@ -6,7 +6,7 @@ tags:
 - workspace:desk
 - artifact:task
 routine: routine-task-implement-rust-core-graph-store-and-rowan-ast
-current_node: checklist-task-implement-rust-core-graph-store-and-rowan-ast-execution-ready
+current_node: operator-task-implement-rust-core-graph-store-and-rowan-ast-activate
 history: []
 references: []
 depends_on: []
@@ -48,7 +48,7 @@ _Outline the expected implementation route or affected surface._
 
 _List the checks required before this task can close._
 
-- cargo test --manifest-path sldb-core/Cargo.toml
+- 
 
 ## Done When
 

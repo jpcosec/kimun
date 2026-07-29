@@ -1,9 +1,0 @@
-title: "Replicate V1 CLI Workflow Capabilities"
-why: "Phase 1 requires that all prior functionality (managing atoms, graph reflection, missing edges, desk status) is available via the new engine before expanding to new features."
-goal: "Re-implement the deskops equivalent commands on top of the new Python-Rust architecture, ensuring 100% parity with V1."
-scope: "Python CLI subcommands and integration testing against actual workspace atoms."
-validation:
-  - "pytest sldb-cli/tests/test_v1_parity.py"
-depends_on:
-  - "macrotask-02-python-ffi"
-  - "macrotask-03-importers-emitters"

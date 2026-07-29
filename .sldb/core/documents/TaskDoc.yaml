@@ -1,1 +1,505 @@
-documents: []
+documents:
+- name: task-implement-adapters
+  path: desk/tasks/task-implement-adapters.md
+  hash_c: b311125a9ffecacdf5a8bdb47db9ea847ca30030c688131ad24160a8542ac538
+  hash_d: 3fd2c23fd772c8dd16b340c943b6019d8210bcbc8c167a1ca3ab3caaafb56ae2
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-addressability
+  path: desk/tasks/task-implement-addressability.md
+  hash_c: 5178569ee0ab5c7ce42f43675d2389792654b49534d4a9fc30ef67da382ddb5a
+  hash_d: 5e26f887d60964812f910ce37bca7118c93dd6ee4559a8be584f1cddc8188d25
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-anchors
+  path: desk/tasks/task-implement-anchors.md
+  hash_c: e84e40d4b5fd2c87464100887b5883ba74509c5a628bdeea0999d5ae8adcf099
+  hash_d: 02c0e37b7694244123d8ba8714616c7287f4fc7a48201960281c2b88a3df2298
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-ast
+  path: desk/tasks/task-implement-ast.md
+  hash_c: 8feb5beef1deee13e346657fd129675de02470b28bdca0c4bda93c08276f6f91
+  hash_d: 72eeb2be0bcff7c7b1507da03e0547f7841090ae768c2a411efc6a65991f7424
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-authoring
+  path: desk/tasks/task-implement-authoring.md
+  hash_c: 828eeefb941851674c7c0328989a4e983e25321c6e78153ed26bd450df181411
+  hash_d: 8e231400d3a1010028d3628cbb586dd808bcd2db56f2344fffad4e79de5d1f10
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-boundary
+  path: desk/tasks/task-implement-boundary.md
+  hash_c: bb124e242c8f6d7289938918a39f65ea8c436787c42ac5e3ad9278e4e833bcc9
+  hash_d: 1c9e10e93d04fc7876d9bf5f39ae3009e865123a834d65a12f84318a2ba5276f
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-cache
+  path: desk/tasks/task-implement-cache.md
+  hash_c: 55afb6967f09f1e182b2412072669eb3451de4bf697d3fdb736ff9d7663d495a
+  hash_d: aa6b65c7485498acf443906c8cb6fca557098a2f7f0e5974dffe23756d6cc897
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-clean-code
+  path: desk/tasks/task-implement-clean-code.md
+  hash_c: 078997abc8df1ce6a456a87be9ec81813aa2a9be5a6552ad82b0b19cbdfd26c5
+  hash_d: 824e52b157b31f76b2ca38c2fb7e740d667b377fc6e670ebc0c4530c7964203b
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-cli
+  path: desk/tasks/task-implement-cli.md
+  hash_c: a8c082e15f2ce0a3aed8b163e239f13c6b3f1985b76d0424a2f3ffb6a0450e2a
+  hash_d: abd5b50203bd4aa09feec5bce288904f922785bf9ab1fabc39aae7bb6aecf48a
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-composition
+  path: desk/tasks/task-implement-composition.md
+  hash_c: 6d6056c40d70e5e94de363f685dfcf696b60cf1fc3c9045898d9be948a2ce9d6
+  hash_d: b9b3ed324766d03fe4fd38ef1d4da37aa55dafc18d9c88551db5e8a253b819b3
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-document-families
+  path: desk/tasks/task-implement-document-families.md
+  hash_c: 524062c6c2eddb19641ec0dbac7f0ff1d3fb28526d297d15cc4b4dd1b15977e4
+  hash_d: 95fe4a95db544ebfcdfd790563e5fd3d846d3e332df3447f68dbc624c6ffcb18
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-documents
+  path: desk/tasks/task-implement-documents.md
+  hash_c: 6f41021c39e75474e84f308c692fbcacd059c057a224fb129511961a2f240e54
+  hash_d: 75d878b540dca539d405a3e653f3ff6b85f323402ff20da30273ea3b2e199fcd
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-emitters
+  path: desk/tasks/task-implement-emitters.md
+  hash_c: 8b81154bb45d631d042e1080aa9a41ecf38f7e857d773ee94c4daae360a73ec4
+  hash_d: 3ad07eac3d2f39ebeaae341dae57953f81f9802e2a4ccab8d8f6e612f0530d49
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-fields
+  path: desk/tasks/task-implement-fields.md
+  hash_c: 8dd26807646688426dc4c62c24a380607ecc2d3d2f17ab161e229fa9f7cbcfee
+  hash_d: eeed197d0ad590e71f2b4c820f9829976dc5e0b7068f3384344eb0e0f79f6a65
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-general
+  path: desk/tasks/task-implement-general.md
+  hash_c: 47afca4f3c07dd47e514a635588523f258108722bf080aee10a7bcd53089fcb0
+  hash_d: 4e8bbbfd9ac89d40c90d73883ffe4089934edf93e3faa25ccaa1acb7424e720d
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-graphs
+  path: desk/tasks/task-implement-graphs.md
+  hash_c: 8b6ec678b5a1c0f416e43d57f92af4f8d6681ee768d6ae5cafd6d7428c13e1ca
+  hash_d: e5e9a09e157038aecc10acf009261567652fdacb0d1198020a2862a7f4ef792a
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-hashing
+  path: desk/tasks/task-implement-hashing.md
+  hash_c: 8eb29717ff45e9bc9af8d59a4a0e1d1756ecc4975eb88ad96940aa2e17f65973
+  hash_d: afcc11c601d7af6a556ea0c82e4c368838c3ecffbe56e9a72e292aebd66f0526
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-history
+  path: desk/tasks/task-implement-history.md
+  hash_c: cdcd7483e2d0984e9eb5320ab67b89800ea1ac26f21935af4a4fed8611813fa1
+  hash_d: d6aaf94853083491fd3949110cb6d21bb1791f3d4df50494008173769c81481f
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-hooks
+  path: desk/tasks/task-implement-hooks.md
+  hash_c: 43177e944c30160475be4e14660d75199be3fbc9c46e1259d495fb6a090da1d5
+  hash_d: 6110a17d7418380d8de5bd9e04b990f651198892049abb896712d88cf7f6b0d3
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-identity
+  path: desk/tasks/task-implement-identity.md
+  hash_c: e58fc235da73b339fdf787e7e20c12bec485c779dd306fafc1a48063bf3db4db
+  hash_d: 729e09f745f599b1de98f13b83beccacefd61dfdd1a0f1c8b4c528338651266b
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-importers
+  path: desk/tasks/task-implement-importers.md
+  hash_c: cf10ee8f098905859fd6029aad26b171deaeb7b0b8e05616c1f9b27eefe91979
+  hash_d: 2f18c7504cf8976a0faa8300f53c09793e17b2456f4ec3ad52c23cea01eb5a47
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-indexes
+  path: desk/tasks/task-implement-indexes.md
+  hash_c: cbf2b93b2cd821df3c105f1953bea34682ef223cf2762264099c793b6613211f
+  hash_d: 78ec865db44e498f7bf07daf61dea704b8d0c12844c454ab12ebf90b9aa2a4a7
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-links
+  path: desk/tasks/task-implement-links.md
+  hash_c: 01678808da82afd3173a0fa259211ce8c2fe4d822c9d6d106b4ab4554218ef8c
+  hash_d: 4f6f644dcfd7198be20619c0e50ff7a0accb0f1fc3e4aecf335ec2e9474bdbc4
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-markdown
+  path: desk/tasks/task-implement-markdown.md
+  hash_c: 745b24a13f5dd2ef2f4a42d976f59a7e5506ec2ae8a7fae2ab6aa04573ec30b5
+  hash_d: 301915645e840fda9152e4d79991582bd00abb0c8385a55816f13410998add06
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-materialization
+  path: desk/tasks/task-implement-materialization.md
+  hash_c: 9849b9ad8ca9f102f509ed2abf320c9a9a618aafda145567ecc4c8a5185b6069
+  hash_d: dd5e16ac28f8d0f03b08eb5e3eff0f96bda26a2d1927f7d23f940eab6bd57b5b
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-models
+  path: desk/tasks/task-implement-models.md
+  hash_c: 15103c71a061b87f44217aac811fb5c1308f4478b4759fee49663b09299c3f7d
+  hash_d: 3c141034e7e6d0148f10f9b71935097bf7c72b2be937fbd8d9e3108128378512
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-navigation
+  path: desk/tasks/task-implement-navigation.md
+  hash_c: f405d92cc9a5cecf94bdbed237028b552bfe79ccbabc2a6b614468dacf8b7898
+  hash_d: 93c6136c2585bb1a08898f5669841bda8733c4606c62360e6cda0d9a45494b4d
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-nodes
+  path: desk/tasks/task-implement-nodes.md
+  hash_c: b01e8eb43c0c7b3f4c766b6d52fb8963f4234bb77fbd8b03a6a80e8a088a44c6
+  hash_d: 76985315fcd5e300eead2d0d339e99d79a6e0e6f0a904f43fa7a3b9eeb639944
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-onboarding
+  path: desk/tasks/task-implement-onboarding.md
+  hash_c: 62f72097eb068636a1ea2e5ee00343dab0e7f0d3e54035de5957f0b5906a0229
+  hash_d: 499dd69141933f79073bf108e723590af5003c4040b1a2926d0fcba79a317e8b
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-patterns
+  path: desk/tasks/task-implement-patterns.md
+  hash_c: 737bf21cedfd760ce617fd94e024551973cc52234fdecee15229fab0e55b1eea
+  hash_d: b39437f7c8db88d0f87943282e581e6309e36e4c4f5271e66176b87a30c2b286
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-payloads
+  path: desk/tasks/task-implement-payloads.md
+  hash_c: 6589ff426e5aee1cde53480e1ec845191c6d46f7ad4d82b796e194a2d2780697
+  hash_d: cbaa8de83d387b9ae7616324cb5ab6e9d7f5ee21900baead6d7645f352ea01e7
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-projections
+  path: desk/tasks/task-implement-projections.md
+  hash_c: 73dfbe6fe1f401a3e4ec40db948240d2c5c0548fcc67e2e99b3531b9f9ae60ce
+  hash_d: cf7ee7ae5326efb29abf8b4c557194651826f621592152a384772e445560c99f
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-provenance
+  path: desk/tasks/task-implement-provenance.md
+  hash_c: 992a369cbf8f97333e81bacbbf34083ceafe76c9c6e5149429960290ebebc494
+  hash_d: 3cd4a806655646754345cea3a9f01f205e1ce5ed637ddce836ef1b4ac2b4c43d
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-python-cli-and-pyo3-ffi-boundary
+  path: desk/tasks/task-implement-python-cli-and-pyo3-ffi-boundary.md
+  hash_c: 03356cb9d1849bc6b50aa0146ead0d5cb1231af0c206ac83ff0e94ce67b579ca
+  hash_d: 2d82367a80c0d354274d4322c9eb659bd827b89b9eac0635119762f2bd45ed7a
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-python
+  path: desk/tasks/task-implement-python.md
+  hash_c: 002165edd6e0178547d6533bac130df5fbce428931b5684fa878f89b328dad9c
+  hash_d: 654d280f01e9e493dd495c3058eca1129ddb650968011a96fb2697b929ed71da
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-queries
+  path: desk/tasks/task-implement-queries.md
+  hash_c: 63e57391cc4164d75a23f491fe6c570e92127ccc31b5dd367f1bbd7d8cdb32da
+  hash_d: 885cc35c335fd9a232b8d676a7f26f2f86c8d1397586184969ddfa70320b7098
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-relations
+  path: desk/tasks/task-implement-relations.md
+  hash_c: 872f160834708c3230845de5611672fddfed4bb45fdcdffc3eb57590c250aa12
+  hash_d: d4286150446042ef535538f19ee410ee8284efa008babb08793912e781b72de0
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-retrieval
+  path: desk/tasks/task-implement-retrieval.md
+  hash_c: b7cf53d9968bc9efda9fe3d32e9afe2b175b43dfbb09255f90b497609d15e792
+  hash_d: c2f197d3924ff704d387b913f55ec12d80fbe821efc14011fc98ba95ce3f0a17
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-rust-core-graph-store-and-rowan-ast
+  path: desk/tasks/task-implement-rust-core-graph-store-and-rowan-ast.md
+  hash_c: 997f47bd83a17c0b87ce68eb491615c579a717063422815955f8766e2f3844d6
+  hash_d: 6cfb88d745dede80c1e851a99526e26b6c263573e657e5fb7681bd6dd9b91b04
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-rust-core
+  path: desk/tasks/task-implement-rust-core.md
+  hash_c: 468f5aa820914a4dc19054727eb876561406e0c1227748c11f0b221179be59cf
+  hash_d: ff5e3651d9af778fe88542210b95d6a12ddaf0ae442618a3b96dc5b955c0cf02
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-rust
+  path: desk/tasks/task-implement-rust.md
+  hash_c: 0c1a8a78a9eacf1a7f1a6d0e45bd7e30b2568ffbba3f823aa79aae923be94bdf
+  hash_d: bee2835d49c4f9ca6aaa3ab9fa127bc1ce3a91f25422d9e0237d8cdbe4830782
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-schemas
+  path: desk/tasks/task-implement-schemas.md
+  hash_c: ce6f544f5dd1c0d5785a631f3281ced8b311fad4a2520696ab10eb9a84d52949
+  hash_d: 3641fa63d648e0b1c2e7998e2944f07ffdd30653830aa9ee44d1437b94216163
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-search
+  path: desk/tasks/task-implement-search.md
+  hash_c: ea1dfc9e0d7730a4e4ba664765998f58635525b85628c011dcccb706f3285410
+  hash_d: 5168c74446b0012a62392bb7de728b97449fe367109feaac8b6e3867b0fab766
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-semantic-export
+  path: desk/tasks/task-implement-semantic-export.md
+  hash_c: b33fa9e3ff74df383a0a43d0593d8db8e1913b92c9a060efb8c9bc42437419fc
+  hash_d: fd45b6e616feefbd49e2ab84ea1e6785837b07f267e3e597c60b1178eae27e5d
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-semantic-indexing
+  path: desk/tasks/task-implement-semantic-indexing.md
+  hash_c: 2e69d8f7635b9a7a33804fb5c3e965592b32a675ab1be8392220b0931b15b843
+  hash_d: fa4ecd433b98b8a72a5cc5c09e9c86197067625ad641ec6de2bd49a01a728ada
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-store
+  path: desk/tasks/task-implement-store.md
+  hash_c: a455b3e72158213c646d6acb940954a255d22b634df1b75ef3aacff9de590780
+  hash_d: cf6a6b55858ca93757eb28d7f8341fba6a41958c41eaca65fd696b8cffc8c3d7
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-structured-text
+  path: desk/tasks/task-implement-structured-text.md
+  hash_c: bddb127befe7f8f80bce80c1beb53e4ab7c3bba10844a2cc83d3ad9183907aee
+  hash_d: 9830109cf2d06e53e377a475a7d948c7f60c2478b4f526e8b555e2070f439985
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-structure
+  path: desk/tasks/task-implement-structure.md
+  hash_c: db673e750d177cc3fe3ded9e718f78bb058fe9a2deabc80c46729511251446d6
+  hash_d: c87f0376021d2fdd74654e4ffddf050ca9948f7f8303e46cf5caf420e58a62aa
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-testing
+  path: desk/tasks/task-implement-testing.md
+  hash_c: f22ccc894df7d830a36e4b2efe321cf96f43766bd17f76d1a51956cd9d743742
+  hash_d: 2986e9e67f72b758be5aa70c68c94c01f5e2490ad320c769e24fba4ece0060a7
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-text-graph
+  path: desk/tasks/task-implement-text-graph.md
+  hash_c: 0d4f6ef29d2d6b54bc435721128e3a898d007359255d368a703b4104c472f1e4
+  hash_d: f6efa3c4a794026663df89a1ac1da209ca13efb2c319bce25fa18fe7f86840bc
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-types
+  path: desk/tasks/task-implement-types.md
+  hash_c: 8b64e6b543597c7cb7f371baf44643e19a7835ee56f77582a5e1ece0e97c2569
+  hash_d: def778edbafbe5cbd365257001ffed28cd6f596099fc94e76f7ee73906fd2e64
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-ux
+  path: desk/tasks/task-implement-ux.md
+  hash_c: 94a23152b2bb300eb15ba1e7bb0e3cb115cd292276c2280a1697fc136d718fb4
+  hash_d: 2c5311cdaf4f40a14998f2fb8214713b3c75fdfca41f0f691a883115b9a7a14b
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-implement-workflows
+  path: desk/tasks/task-implement-workflows.md
+  hash_c: 636bedf2924fdb0e4b6c7aa234e394cb1a8b237033c76329b9b4c62e566593ce
+  hash_d: 3564d035ea3724d562c130a19840cd6e0f5c1e16271cfce3df35a679348f6006
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-importers-emitters-and-semantic-indexing
+  path: desk/tasks/task-importers-emitters-and-semantic-indexing.md
+  hash_c: f9013292531a26288f8ab29d498ed43621e856ed0108b895dc6699570e9edee4
+  hash_d: 996e9b680e4a63e7b6a590cd70945ef301789f1b329cb4257054068383f37910
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-replicate-v1-cli-workflow-capabilities
+  path: desk/tasks/task-replicate-v1-cli-workflow-capabilities.md
+  hash_c: be087d29234ab3cca06f37b79cd89d4db5eecff9f3d035a372fc5dbda1dd2a51
+  hash_d: 35d23c4fc6f89dd072df70ab45b5e7adea066a401629f146045a5edec8a7e5d3
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-track-atom-work
+  path: desk/tasks/task-track-atom-work.md
+  hash_c: e627db22e495ac2a4fdc6fd30ba1fc93263c19bd0dd60441d92e0b2df28633cc
+  hash_d: ba3c1bd1d151ff77d87d74e7fefef9ef511e484f43bed4f54f400fbf2bc321a1
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
