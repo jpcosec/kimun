@@ -1,0 +1,14 @@
+/home/jp/proyectos/hum-ecosystem/tools/sldb-refactor-worktree/sldb-core/target/debug/deps/thiserror-bb4957bf3bf518de.d: /home/jp/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/lib.rs /home/jp/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/aserror.rs /home/jp/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/display.rs /home/jp/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/var.rs /home/jp/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/private.rs /home/jp/proyectos/hum-ecosystem/tools/sldb-refactor-worktree/sldb-core/target/debug/build/thiserror-9106b1af0c2c642b/out/private.rs
+
+/home/jp/proyectos/hum-ecosystem/tools/sldb-refactor-worktree/sldb-core/target/debug/deps/libthiserror-bb4957bf3bf518de.rlib: /home/jp/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/lib.rs /home/jp/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/aserror.rs /home/jp/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/display.rs /home/jp/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/var.rs /home/jp/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/private.rs /home/jp/proyectos/hum-ecosystem/tools/sldb-refactor-worktree/sldb-core/target/debug/build/thiserror-9106b1af0c2c642b/out/private.rs
+
+/home/jp/proyectos/hum-ecosystem/tools/sldb-refactor-worktree/sldb-core/target/debug/deps/libthiserror-bb4957bf3bf518de.rmeta: /home/jp/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/lib.rs /home/jp/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/aserror.rs /home/jp/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/display.rs /home/jp/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/var.rs /home/jp/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/private.rs /home/jp/proyectos/hum-ecosystem/tools/sldb-refactor-worktree/sldb-core/target/debug/build/thiserror-9106b1af0c2c642b/out/private.rs
+
+/home/jp/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/lib.rs:
+/home/jp/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/aserror.rs:
+/home/jp/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/display.rs:
+/home/jp/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/var.rs:
+/home/jp/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.19/src/private.rs:
+/home/jp/proyectos/hum-ecosystem/tools/sldb-refactor-worktree/sldb-core/target/debug/build/thiserror-9106b1af0c2c642b/out/private.rs:
+
+# env-dep:OUT_DIR=/home/jp/proyectos/hum-ecosystem/tools/sldb-refactor-worktree/sldb-core/target/debug/build/thiserror-9106b1af0c2c642b/out
