@@ -6,7 +6,7 @@ tags:
 - workspace:desk
 - artifact:task
 routine: routine-task-replicate-v1-cli-workflow-capabilities
-current_node: complete
+current_node: close
 history: []
 references: []
 depends_on:
