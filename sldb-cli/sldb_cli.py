@@ -18,5 +18,17 @@ def hash_text(text: str):
     except ImportError:
         typer.echo("Error: sldb_ffi not installed or compiled. Build it with maturin.")
 
+@app.command()
+def track(path: str, model: str = "Doc"):
+    """Track a document into SLDB"""
+    typer.echo(f"Tracking {path} as {model}...")
+    # Integration logic will use importers/markdown.py
+    
+@app.command()
+def build():
+    """Build the SLDB Graph Snapshot"""
+    typer.echo("Building graph snapshot...")
+    # Integration logic will use emitters and sldb core
+
 if __name__ == "__main__":
     app()
