@@ -37,3 +37,6 @@ Python patterns define the reusable implementation shapes for CLI orchestration,
 ### 5WH1+ neighborhood
 
 - This atom is typed by its `five_wh_one_plus` field and should be queried together with nearby `what`/`how`/`when`/`where` atoms rather than as an isolated note.
+
+### Supports
+- [supports:: [[direct-mode-vs-store-backed-mode]]]

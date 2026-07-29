@@ -38,3 +38,6 @@ Semantic indexing is the infrastructure that derives richer retrieval and semant
 ### 5WH1+ neighborhood
 
 - This atom is typed by its `five_wh_one_plus` field and should be queried together with nearby `what`/`how`/`when`/`where` atoms rather than as an isolated note.
+
+### Depends on
+- [depends_on:: [[rust-core]]]

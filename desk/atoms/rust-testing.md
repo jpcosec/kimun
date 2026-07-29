@@ -39,3 +39,6 @@ Rust testing validates the unit-level and structural correctness of the canonica
 ### 5WH1+ neighborhood
 
 - This atom is typed by its `five_wh_one_plus` field and should be queried together with nearby `what`/`how`/`when`/`where` atoms rather than as an isolated note.
+
+### Supports
+- [supports:: [[store-integrity-checks]]]

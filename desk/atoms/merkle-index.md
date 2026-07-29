@@ -36,3 +36,6 @@ The Merkle index organizes node and subtree hashes into a structural integrity a
 ### 5WH1+ neighborhood
 
 - This atom is typed by its `five_wh_one_plus` field and should be queried together with nearby `what`/`how`/`when`/`where` atoms rather than as an isolated note.
+
+### Depends on
+- [depends_on:: [[rust-core]]]

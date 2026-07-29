@@ -36,3 +36,6 @@ The Markdown emitter compiles canonical AST structure back into Markdown as a de
 ### 5WH1+ neighborhood
 
 - This atom is typed by its `five_wh_one_plus` field and should be queried together with nearby `what`/`how`/`when`/`where` atoms rather than as an isolated note.
+
+### Depends on
+- [depends_on:: [[decision-rowan-ast]]]

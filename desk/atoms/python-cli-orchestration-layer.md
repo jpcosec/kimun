@@ -37,3 +37,7 @@ The Python CLI orchestration layer is the user-facing shell that preserves SLDB 
 ### 5WH1+ neighborhood
 
 - This atom is typed by its `five_wh_one_plus` field and should be queried together with nearby `what`/`how`/`when`/`where` atoms rather than as an isolated note.
+
+### Depends on
+- [depends_on:: [[store-infrastructure]]]
+- [depends_on:: [[what-a-store-is]]]

@@ -39,3 +39,7 @@ The Rust core is the implementation substrate for the canonical AST, structural 
 ### 5WH1+ neighborhood
 
 - This atom is typed by its `five_wh_one_plus` field and should be queried together with nearby `what`/`how`/`when`/`where` atoms rather than as an isolated note.
+
+### Supports
+- [supports:: [[merkle-index]]]
+- [supports:: [[dependency-index]]]
