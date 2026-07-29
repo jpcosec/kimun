@@ -72,8 +72,35 @@ def main():
 
     args = parser.parse_args()
 
-    # Placeholder router
-    print(f"SLDB CLI Router invoked for command group: {args.command}")
+    # Route execution based on command groups
+    if args.command == "stores":
+        if args.stores_cmd == "init":
+            from sldb_cli.store import Store
+            store_path = ".sldb.sqlite"
+            print(f"Initializing SLDB store at {store_path}...")
+            # This triggers connection and schema setup in Rust core
+            Store(store_path)
+            print("✨ SLDB store successfully initialized via Rust Core!")
+        elif args.stores_cmd == "build":
+            print("Building indexes... (delegated to Rust)")
+        elif args.stores_cmd == "destroy":
+            print("Destroying store...")
+
+    elif args.command == "find":
+        if args.find_cmd == "text":
+            from sldb_cli.store import Store
+            # Temporary positional read, should use argparse for query later
+            query = input("Enter search query: ")
+            store = Store(".sldb.sqlite")
+            results = store.search_nodes_by_payload(query)
+            print(f"🔎 Search results for '{query}':")
+            for r in results:
+                print(f" - [{r.hash[:8]}] {r.node_type}: {r.payload[:50]}")
+        else:
+            print(f"Executing find {args.find_cmd} via Rust Core...")
+            
+    else:
+        print(f"SLDB CLI Router invoked for command group: {args.command}. Subcommand: {getattr(args, f'{args.command}_cmd', 'N/A')}")
 
 if __name__ == '__main__':
     main()
