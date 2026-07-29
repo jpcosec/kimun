@@ -1,102 +1,281 @@
 id: sldb.target.runtime
-title: SLDB Target Runtime View
+title: Knowledge Kernel Runtime View
 type: deployment
-version: "0.1"
+version: "0.2"
 
 data:
   nodes:
-    user_shell:
-      label: Developer Shell
+    local_machine:
+      label: Local Machine
+      kind: server
+      contains:
+        - client_surfaces
+        - kernel_process
+        - persistence_runtime
+        - operations_runtime
+        - sandbox_runtime
+
+    client_surfaces:
+      label: Client Surfaces
       kind: client
       contains:
-        - sldb_cli
+        - cli_client
+        - desktop_ui
+        - agent_process
+        - embedded_app
+        - markdown_surface
+        - lisp_surface
 
-    project_repo:
-      label: Project Repository
+    kernel_process:
+      label: Kernel Process
       kind: server
       contains:
-        - markdown_docs
-        - project_models
-        - local_store
+        - kernel_api
+        - capability_gate
+        - plan_compiler
+        - lisp_runtime
+        - transaction_engine
+        - query_engine
+        - projection_engine
+        - hook_engine
+        - observability_surface
+        - failure_classifier
+        - recovery_manager
+        - migration_manager
+        - conformance_runner
 
-    rust_runtime:
-      label: Rust Runtime
+    persistence_runtime:
+      label: Persistence Runtime
       kind: server
       contains:
-        - rust_core
-        - importer_emitter_stack
-        - graph_engine
+        - local_database
+        - content_store
+        - tracked_files
+        - compatibility_metadata
+        - backup_exports
+        - retention_runtime
+        - garbage_collector
 
-    python_runtime:
-      label: Python Runtime
+    operations_runtime:
+      label: Operations Runtime
       kind: server
       contains:
-        - python_cli_layer
+        - verify_recover_tools
+        - export_import_tools
 
-    visual_runtime:
-      label: Visual Runtime
+    sandbox_runtime:
+      label: Wasm / effect sandbox
+      kind: boundary
+
+    external_world:
+      label: External World
       kind: boundary
       contains:
-        - editor_projection
-        - graph_explorer
+        - git_remote
+        - llm_services
+        - external_apis
 
   artifacts:
-    sldb_cli:
-      label: sldb CLI entrypoint
+    cli_client:
+      label: CLI client
+      kind: boundary
+    markdown_surface:
+      label: Markdown text surface
+      kind: boundary
+    lisp_surface:
+      label: Lisp schema / macro surface
+      kind: boundary
+    desktop_ui:
+      label: Desktop UI
+      kind: boundary
+    agent_process:
+      label: Agent process
+      kind: boundary
+    embedded_app:
+      label: Embedded Rust app
+      kind: boundary
+    kernel_api:
+      label: Kernel API boundary
       kind: backend
-    python_cli_layer:
-      label: Python CLI orchestration layer
+    capability_gate:
+      label: capability gate
       kind: backend
-    rust_core:
-      label: Rust canonical core
+    plan_compiler:
+      label: plan compiler
       kind: backend
-    importer_emitter_stack:
-      label: Markdown import / emit stack
+    lisp_runtime:
+      label: Lisp runtime
       kind: backend
-    graph_engine:
-      label: local graph store engine
+    transaction_engine:
+      label: Transaction engine
+      kind: backend
+    query_engine:
+      label: Query engine
+      kind: backend
+    projection_engine:
+      label: Projection engine
+      kind: backend
+    hook_engine:
+      label: Hook engine
+      kind: backend
+    observability_surface:
+      label: observability surface
+      kind: backend
+    failure_classifier:
+      label: failure classifier
+      kind: backend
+    recovery_manager:
+      label: recovery manager
+      kind: backend
+    migration_manager:
+      label: migration manager
+      kind: backend
+    conformance_runner:
+      label: conformance runner
+      kind: backend
+    local_database:
+      label: redb / Cozo / memory backend
       kind: database
-    project_models:
-      label: model ASTs / model definitions
-      kind: backend
-    markdown_docs:
-      label: rendered or tracked document files
-      kind: backend
-    local_store:
-      label: .sldb graph store
+    content_store:
+      label: content-addressed payload store
       kind: database
-    editor_projection:
-      label: ProseMirror-style editor projection
+    tracked_files:
+      label: tracked source files
       kind: backend
-    graph_explorer:
-      label: graph explorer / inspectors
+    compatibility_metadata:
+      label: compatibility metadata
+      kind: database
+    backup_exports:
+      label: backup / export artifacts
+      kind: database
+    retention_runtime:
+      label: retention policy runtime
       kind: backend
+    garbage_collector:
+      label: garbage collector
+      kind: backend
+    verify_recover_tools:
+      label: verify / recover tools
+      kind: backend
+    export_import_tools:
+      label: export / import tools
+      kind: backend
+    git_remote:
+      label: Git remotes
+      kind: boundary
+    llm_services:
+      label: embedding / LLM services
+      kind: boundary
+    external_apis:
+      label: external tools / APIs
+      kind: boundary
 
   connections:
-    - from: sldb_cli
-      to: python_cli_layer
-      protocol: Python entrypoint
-    - from: python_cli_layer
-      to: project_repo
-      protocol: Git tracking / version control
-    - from: python_cli_layer
-      to: rust_core
-      protocol: FFI / API boundary
-    - from: rust_core
-      to: importer_emitter_stack
+    - from: cli_client
+      to: kernel_api
+      protocol: embedded / IPC / HTTP
+    - from: desktop_ui
+      to: kernel_api
+      protocol: IPC / HTTP
+    - from: agent_process
+      to: kernel_api
+      protocol: IPC / gRPC / MCP adapter
+    - from: embedded_app
+      to: kernel_api
+      protocol: Rust API
+    - from: markdown_surface
+      to: kernel_api
+      protocol: import / render through kernel
+    - from: lisp_surface
+      to: kernel_api
+      protocol: schema / macro requests through kernel
+    - from: lisp_runtime
+      to: plan_compiler
+      protocol: plan compilation
+    - from: plan_compiler
+      to: capability_gate
+      protocol: plan validation
+    - from: capability_gate
+      to: kernel_api
+      protocol: admitted kernel request
+    - from: kernel_api
+      to: transaction_engine
       protocol: internal API
-    - from: rust_core
-      to: graph_engine
+    - from: kernel_api
+      to: observability_surface
+      protocol: status / explain
+    - from: kernel_api
+      to: query_engine
       protocol: internal API
-    - from: graph_engine
-      to: local_store
-      protocol: local persistence
-    - from: rust_core
-      to: project_models
-      protocol: model loading / schema translation
-    - from: importer_emitter_stack
-      to: markdown_docs
-      protocol: filesystem
-    - from: visual_runtime
-      to: graph_engine
-      protocol: projection/query API
+    - from: kernel_api
+      to: projection_engine
+      protocol: internal API
+    - from: transaction_engine
+      to: local_database
+      protocol: storage backend
+    - from: transaction_engine
+      to: failure_classifier
+      protocol: failure classification
+    - from: failure_classifier
+      to: recovery_manager
+      protocol: recovery escalation
+    - from: query_engine
+      to: local_database
+      protocol: storage backend
+    - from: projection_engine
+      to: content_store
+      protocol: artifact IO
+    - from: projection_engine
+      to: tracked_files
+      protocol: render / source IO
+    - from: query_engine
+      to: observability_surface
+      protocol: query traces
+    - from: hook_engine
+      to: observability_surface
+      protocol: effect traces
+    - from: conformance_runner
+      to: transaction_engine
+      protocol: behavioral attestation
+    - from: conformance_runner
+      to: query_engine
+      protocol: behavioral attestation
+    - from: conformance_runner
+      to: projection_engine
+      protocol: behavioral attestation
+    - from: hook_engine
+      to: sandbox_runtime
+      protocol: effect execution
+    - from: sandbox_runtime
+      to: git_remote
+      protocol: Git
+    - from: sandbox_runtime
+      to: external_apis
+      protocol: network / tool API
+    - from: query_engine
+      to: llm_services
+      protocol: semantic provider API
+    - from: recovery_manager
+      to: local_database
+      protocol: verify / replay / rebuild
+    - from: recovery_manager
+      to: content_store
+      protocol: payload verification
+    - from: migration_manager
+      to: compatibility_metadata
+      protocol: version checks
+    - from: export_import_tools
+      to: backup_exports
+      protocol: export / import
+    - from: verify_recover_tools
+      to: recovery_manager
+      protocol: operator control
+    - from: retention_runtime
+      to: garbage_collector
+      protocol: retention decisions
+    - from: garbage_collector
+      to: content_store
+      protocol: payload pruning
+    - from: garbage_collector
+      to: local_database
+      protocol: cache / index pruning

@@ -1,4 +1,5 @@
 ---
+layer: core
 id: markdown-importer
 title: Markdown importer
 five_wh_one_plus: how
@@ -12,11 +13,12 @@ provenance: desk/drawer/features/feature-sldb-explicit-target-architecture.md
 
 ## Answer
 
-The Markdown importer translates Markdown documents into canonical AST structure without making Markdown the sovereign model.
+The Markdown importer translates the Markdown text surface into Rust-owned canonical structure without making Markdown the sovereign model.
 
 ## Supporting points
 
 - Markdown remains a key authoring and migration input surface.
+- Markdown is input projection, not kernel authority.
 - This importer is likely part of the first safe vertical slice.
 - It preserves compatibility of user workflows while changing internals deeply.
 

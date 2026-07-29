@@ -1,38 +1,44 @@
 ---
+layer: store
 id: store-infrastructure
 title: Store infrastructure
 five_wh_one_plus: what
 tags:
 - system:sldb
 - domain:store.graph
-provenance: desk/drawer/features/feature-sldb-explicit-target-architecture.md
+provenance: libraries_core.md
 ---
 
 # Store infrastructure
 
 ## Answer
 
-Store infrastructure is the metadata, index, integrity, and runtime workspace built around canonical AST documents rather than the conceptual center of the system.
+Store infrastructure is the set of persistent and rebuildable services around the kernel repository: storage backends, logs, heads, indexes, caches, and recovery flows.
 
 ## Supporting points
 
-- The store survives as infrastructure rather than sovereign model.
-- It should hold registrations, tracked state, integrity artifacts, and rebuildable indexes.
-- Its purpose is operational support around canonical content.
+- The persistent core is append-only transaction history, immutable revisions, content-addressed payloads, and document heads.
+- Rebuildable services include petgraph views, search indexes, semantic projections, hash caches, and other accelerators.
+- Backends must be replaceable behind a storage trait so the kernel model stays independent from redb, Cozo, or future engines.
+- Crash recovery and index rebuild are mandatory store responsibilities.
 
 ## Related atoms
 
 ### Depends on
 
-- [depends_on:: [[canonical-ast]]]
-- [depends_on:: [[projection]]]
-- [depends_on:: [[node-hash]]]
+- [depends_on:: [[transaction-log]]]
+- [depends_on:: [[content-addressed-store]]]
+- [depends_on:: [[document-head]]]
+- [depends_on:: [[append-only-event-log]]]
 
 ### Supports
 
-- [supports:: [[what-a-store-is]]]
+- [supports:: [[graph-store]]]
 - [supports:: [[store-integrity-checks]]]
-- [supports:: [[tracked-document-identity]]]
+- [supports:: [[store-recovery]]]
+- [supports:: [[backup-export]]]
+- [supports:: [[garbage-collection]]]
+- [supports:: [[semantic-indexing]]]
 
 ### 5WH1+ neighborhood
 

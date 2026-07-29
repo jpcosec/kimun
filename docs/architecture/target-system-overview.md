@@ -4,15 +4,16 @@ This document captures the current target architecture direction for the SLDB re
 
 ## Main Direction
 
-- **Phase 1**: Replicate v1 functionality
-- canonical AST is the sovereign internal model
-- links and anchors are canonical AST/store concepts, not late projections
-- model = empty AST
-- store = local graph database connecting ASTs (append-only / immutable)
+- **Phase 1**: replicate the required v1-visible workflows without changing kernel authority
+- the kernel is Rust-owned
+- the canonical persistence model is an append-only immutable revisioned graph
+- canonical AST is the structural substrate for authored document families within that kernel model
+- links and anchors are canonical kernel/store concepts, not late projections
+- model = empty canonical graph/document state
 - render round-trips for reversible document families must stay exact
-- Rust should own almost everything needed to recreate SLDB v1 behavior (extensibility is done in Rust)
-- Python should stay as a minimal CLI orchestration shell, but retains responsibility for Git interactions
-- no semantic baseline expansion now beyond existing tags and store/field indexing
+- external interfaces are adapters around the kernel, not alternate authorities
+- Python may remain a CLI/orchestration adapter for Git-facing flows, but it is not the architectural center
+- no semantic baseline expansion now beyond existing parity needs
 
 ## Graph Store Direction
 
@@ -21,19 +22,19 @@ The current YAML-index-first store should evolve into an **append-only, immutabl
 Keep from v1:
 
 - local project store
-- tracked document workflow (orchestrated by Python)
+- tracked document workflow
 - integrity checks
 - indexes and rebuilds
 - semantic export boundary
 
 Change internally:
 
-- persist canonical AST nodes and typed edges
-- persist canonical links between ASTs
-- persist anchor nodes
-- treat hashes as node fields
-- allow relations to carry their own extensible payload structure (`RelationAST`), which can be indexed for store, semantic graphs, tagging, etc.
-- materialize section/field/search/semantic views as derived indexes
+- persist canonical documents, revisions, nodes, and typed edges
+- persist canonical structural AST data for authored document families
+- persist canonical links and anchor nodes
+- treat hashes as canonical fields, not adapter-specific metadata
+- allow relations to carry extensible payload structures
+- materialize section/field/search/semantic views as derived indexes behind replaceable storage/query adapters
 
 ## Reversible And Non-Reversible Families
 

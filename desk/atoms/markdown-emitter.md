@@ -1,4 +1,5 @@
 ---
+layer: core
 id: markdown-emitter
 title: Markdown emitter
 five_wh_one_plus: how
@@ -12,7 +13,7 @@ provenance: desk/drawer/features/feature-sldb-explicit-target-architecture.md
 
 ## Answer
 
-The Markdown emitter compiles canonical AST structure back into Markdown as a derived projection.
+The Markdown emitter compiles Rust-owned canonical structure back into the Markdown text surface as a derived projection.
 
 ## Supporting points
 
@@ -29,6 +30,7 @@ The Markdown emitter compiles canonical AST structure back into Markdown as a de
 
 ### Supports
 
+- [supports:: [[markdown-text-surface]]]
 - [supports:: [[create-vs-track-vs-update]]]
 - [supports:: [[canonical-existence]]]
 

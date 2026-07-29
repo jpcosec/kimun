@@ -1,123 +1,238 @@
 id: sldb.target.store_graph
-title: SLDB Target Graph Store
+title: Knowledge Kernel Store Graph
 type: component
-version: "0.1"
+version: "0.2"
 
 data:
   nodes:
-    GraphStore:
-      label: Append-Only Graph Store
+    KernelRepository:
+      label: Kernel Repository
       kind: database
       contains:
-        - ASTNodes
-        - RelationEdges
-        - RelationASTs
-        - AnchorNodes
-        - HashFields
-        - DerivedIndexes
+        - Documents
+        - Revisions
+        - Transactions
+        - Nodes
+        - Edges
+        - Artifacts
+        - TransactionLog
+        - ContentStore
+        - HeadStore
+        - CompatibilityMetadata
+        - BackupExports
+        - RetentionRoots
+        - RebuildableState
 
-    ASTNodes:
-      label: document / model / section / field-capable AST nodes
+    Documents:
+      label: documents
       kind: core
 
-    RelationEdges:
-      label: typed edges between ASTs
-      kind: core
-      contains:
-        - LinkEdges
-        - StoreEdges
-        - DependencyEdges
-
-    LinkEdges:
-      label: link edges
+    Revisions:
+      label: immutable revisions
       kind: core
 
-    StoreEdges:
-      label: store edges
-      kind: core
-
-    DependencyEdges:
-      label: dependency / projection edges
-      kind: core
-
-    RelationASTs:
-      label: relation AST payloads (indexed for semantics/tags)
-      kind: core
-
-    AnchorNodes:
-      label: anchor nodes
+    Transactions:
+      label: committed transactions
       kind: core
       contains:
-        - TextAnchors
-        - ASTAnchors
+        - PrimitiveOperations
 
-    TextAnchors:
-      label: text anchors
+    PrimitiveOperations:
+      label: primitive operations
       kind: core
 
-    ASTAnchors:
-      label: AST anchors
+    Nodes:
+      label: canonical nodes
       kind: core
 
-    HashFields:
-      label: node hash fields
+    Edges:
+      label: canonical edges
+      kind: core
+      contains:
+        - OwnershipEdges
+        - ReferenceEdges
+        - SemanticEdges
+        - DerivedEdges
+
+    OwnershipEdges:
+      label: ownership edges
       kind: core
 
-    DerivedIndexes:
-      label: derived indexes
+    ReferenceEdges:
+      label: reference edges
+      kind: core
+
+    SemanticEdges:
+      label: semantic edges
+      kind: core
+
+    DerivedEdges:
+      label: derived edges
+      kind: core
+
+    Artifacts:
+      label: artifacts / derived payloads
+      kind: core
+
+    TransactionLog:
+      label: append-only transaction log
+      kind: database
+
+    ContentStore:
+      label: content-addressed store
+      kind: database
+
+    HeadStore:
+      label: document heads
+      kind: database
+
+    CompatibilityMetadata:
+      label: compatibility metadata
+      kind: database
+
+    BackupExports:
+      label: backup / export artifacts
+      kind: database
+
+    RetentionRoots:
+      label: retention roots / pins
+      kind: database
+
+    RebuildableState:
+      label: rebuildable indexes / caches
       kind: database
       contains:
-        - SectionIndex
-        - FieldIndex
+        - HashCache
         - SearchIndex
         - SemanticIndex
+        - ProjectionCache
+        - PetgraphView
+        - ObservabilityLog
+        - DegradedState
 
-    SectionIndex:
-      label: section index
+    ObservabilityLog:
+      label: observability log / traces
       kind: database
 
-    FieldIndex:
-      label: field index
+    DegradedState:
+      label: degraded-state records
+      kind: database
+
+    HashCache:
+      label: hash cache
       kind: database
 
     SearchIndex:
-      label: search projection
+      label: lexical search index
       kind: database
 
     SemanticIndex:
-      label: tag-based semantic index
+      label: semantic / embedding index
+      kind: database
+
+    ProjectionCache:
+      label: projection cache
+      kind: database
+
+    PetgraphView:
+      label: petgraph materialization
       kind: database
 
   edges:
-    - from: GraphStore
-      to: ASTNodes
+    - from: KernelRepository
+      to: Documents
       relation: persists
-      label: canonical nodes
-    - from: GraphStore
-      to: RelationEdges
+    - from: KernelRepository
+      to: Revisions
       relation: persists
-      label: canonical edges
-    - from: GraphStore
-      to: RelationASTs
+    - from: KernelRepository
+      to: Transactions
       relation: persists
-      label: extensible relation payloads
-    - from: GraphStore
-      to: AnchorNodes
+    - from: KernelRepository
+      to: Nodes
       relation: persists
-      label: canonical anchors
-    - from: HashFields
-      to: ASTNodes
-      relation: annotates
-      label: hash as field
-    - from: TextAnchors
-      to: RelationEdges
-      relation: participates_in
-      label: anchor-aware linking
-    - from: ASTAnchors
-      to: RelationEdges
-      relation: participates_in
-      label: structure-aware linking
-    - from: GraphStore
-      to: DerivedIndexes
+    - from: KernelRepository
+      to: Edges
+      relation: persists
+    - from: KernelRepository
+      to: Artifacts
+      relation: persists
+    - from: KernelRepository
+      to: TransactionLog
+      relation: treats_as_source_of_truth
+    - from: KernelRepository
+      to: ContentStore
+      relation: treats_as_source_of_truth
+    - from: KernelRepository
+      to: HeadStore
+      relation: updates
+    - from: KernelRepository
+      to: CompatibilityMetadata
+      relation: version_tracks
+    - from: KernelRepository
+      to: BackupExports
+      relation: exports_to
+    - from: KernelRepository
+      to: RetentionRoots
+      relation: protects_with
+    - from: Transactions
+      to: PrimitiveOperations
+      relation: contains
+    - from: Revisions
+      to: Transactions
+      relation: produced_by
+    - from: Revisions
+      to: Nodes
       relation: materializes
-      label: projections for queries
+    - from: Revisions
+      to: Edges
+      relation: materializes
+    - from: Nodes
+      to: Artifacts
+      relation: may_attach
+    - from: Revisions
+      to: RetentionRoots
+      relation: may_be_pinned_by
+    - from: OwnershipEdges
+      to: Nodes
+      relation: structures
+      label: participates in Merkle recursion
+    - from: ReferenceEdges
+      to: Nodes
+      relation: references
+      label: excluded from structural recursion
+    - from: SemanticEdges
+      to: Nodes
+      relation: relates
+      label: derived meaning
+    - from: DerivedEdges
+      to: Artifacts
+      relation: links_to
+      label: derived lineage
+    - from: CompatibilityMetadata
+      to: Transactions
+      relation: versions_semantics_for
+    - from: CompatibilityMetadata
+      to: Revisions
+      relation: versions_format_for
+    - from: BackupExports
+      to: TransactionLog
+      relation: packages
+    - from: BackupExports
+      to: ContentStore
+      relation: packages
+    - from: RetentionRoots
+      to: Revisions
+      relation: keeps_reachable
+    - from: RetentionRoots
+      to: Artifacts
+      relation: may_pin
+    - from: RebuildableState
+      to: ObservabilityLog
+      relation: records
+    - from: RebuildableState
+      to: DegradedState
+      relation: records
+    - from: KernelRepository
+      to: RebuildableState
+      relation: rebuilds

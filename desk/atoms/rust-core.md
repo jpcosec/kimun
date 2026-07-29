@@ -1,44 +1,49 @@
 ---
+layer: core
 id: rust-core
 title: Rust core
 five_wh_one_plus: what
 tags:
 - system:sldb
 - domain:implementation.rust-core
-provenance: desk/drawer/features/feature-sldb-explicit-target-architecture.md
+provenance: core_README.md
 ---
 
 # Rust core
 
 ## Answer
 
-The Rust core is the implementation substrate for the canonical AST, structural invariants, hashing, and graph-capable low-level operations.
+The Rust core is the knowledge kernel that alone enforces canonical data invariants, transactions, revisions, hashing, persistence, and capability-checked effects.
 
 ## Supporting points
 
-- Rust carries the strongest invariants of the refactor.
-- It should own the canonical structure and adjacent infrastructure, not only performance-sensitive helpers.
-- It is the extensible base for future projections and adapters.
+- Rust is the only authority allowed to produce new revisions.
+- Markdown, Lisp, CLI, UI, agents, parsers, and semantic services are projection or adapter surfaces around the kernel rather than alternate authorities.
+- The core must stay small enough to verify: types, operations, validation, transaction execution, Merkle hashing, and storage contracts belong here.
+- The kernel may expose embedded or daemonized APIs later, but the invariant boundary remains the same.
 
 ## Related atoms
 
 ### Depends on
 
-- [depends_on:: [[canonical-ast]]]
-- [depends_on:: [[rust-patterns]]]
+- [depends_on:: [[transaction]]]
+- [depends_on:: [[revision]]]
+- [depends_on:: [[graph-store]]]
+- [depends_on:: [[node-hash]]]
 
 ### Supports
 
-- [supports:: [[node]]]
-- [supports:: [[tree-spine]]]
-- [supports:: [[field-binding]]]
-- [supports:: [[node-hash]]]
+- [supports:: [[kernel-api]]]
+- [supports:: [[query-engine]]]
 - [supports:: [[projection]]]
+- [supports:: [[projection-surface]]]
+- [supports:: [[hook-runtime]]]
+
+### Constrains
+
+- [constrains:: [[ports-and-adapters]]]
+- [constrains:: [[lisp-metalanguage]]]
 
 ### 5WH1+ neighborhood
 
 - This atom is typed by its `five_wh_one_plus` field and should be queried together with nearby `what`/`how`/`when`/`where` atoms rather than as an isolated note.
-
-### Supports
-- [supports:: [[merkle-index]]]
-- [supports:: [[dependency-index]]]

@@ -1,4 +1,5 @@
 ---
+layer: core
 id: canonical-ast
 title: Canonical AST
 five_wh_one_plus: what
@@ -12,13 +13,14 @@ provenance: desk/drawer/features/feature-sldb-explicit-target-architecture.md
 
 ## Answer
 
-The canonical AST is the source of truth and the shared substrate for the refactored SLDB system.
+The canonical AST is the structural source of truth for authored document families and a shared substrate inside the refactored kernel's canonical graph/revision model.
 
 ## Supporting points
 
 - Markdown is an importer/exporter and editing surface rather than the sovereign representation.
-- CLI workflows, future visual UX, importers, emitters, and infrastructure all depend on this shared substrate.
-- Store-like behavior is infrastructure over the AST rather than the conceptual center.
+- CLI workflows, future visual UX, importers, emitters, and infrastructure depend on this structural substrate.
+- Documents, revisions, nodes, edges, transactions, and provenance remain canonical kernel concerns.
+- Store behavior is not an alternate authority; it persists canonical kernel state, including structural AST data where applicable.
 
 ## Related atoms
 

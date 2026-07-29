@@ -1,201 +1,522 @@
 id: sldb.target.components
-title: SLDB Target System Components
+title: Knowledge Kernel Components
 type: component
-version: "0.1"
+version: "0.2"
 
 data:
   nodes:
-    ProductSurfaces:
-      label: Product Surfaces
+    Clients:
+      label: Clients
+      kind: boundary
+      contains:
+        - CLI
+        - UI
+        - Agents
+        - EmbeddedRust
+
+    CLI:
+      label: CLI client
+      kind: boundary
+
+    UI:
+      label: Desktop / visual UI
+      kind: boundary
+
+    Agents:
+      label: Agents / MCP clients
+      kind: boundary
+
+    EmbeddedRust:
+      label: embedded Rust application
+      kind: boundary
+
+    KernelBoundary:
+      label: Kernel Authority Boundary
       kind: core
       contains:
-        - PythonCLI
-        - VisualUX
+        - KernelAPI
+        - LispRuntime
+        - MarkdownSurface
+        - CapabilityGate
+        - PlanCompiler
 
-    PythonCLI:
-      label: Python CLI orchestration
+    MarkdownSurface:
+      label: Markdown text surface
+      kind: boundary
+
+    CapabilityGate:
+      label: capability gate
+      kind: core
+
+    PlanCompiler:
+      label: plan compiler
       kind: core
       contains:
-        - CommandGroups
-        - DirectMode
-        - StoreBackedMode
-        - GitIntegration
+        - TransactionPlan
+        - QueryPlan
+        - ProjectionPlan
+        - EffectPlan
 
-    GitIntegration:
-      label: Git tracking / version control
+    TransactionPlan:
+      label: transaction plan
       kind: core
 
-    CommandGroups:
-      label: plural-first command groups
+    QueryPlan:
+      label: query plan
       kind: core
 
-    DirectMode:
-      label: extract / render / validate
+    ProjectionPlan:
+      label: projection plan
       kind: core
 
-    StoreBackedMode:
-      label: stores / models / docs / fields / sections / find / ast
+    EffectPlan:
+      label: effect plan
       kind: core
 
-    RustCore:
-      label: Rust Canonical Core
-      kind: core
-      contains:
-        - CanonicalAST
-        - Importers
-        - Emitters
-        - CanonicalRelations
-        - Hashing
-
-    CanonicalAST:
-      label: canonical AST
+    KernelAPI:
+      label: Kernel API
       kind: core
 
-    Importers:
-      label: importers / translators
+    LispRuntime:
+      label: Lisp schema / macro surface
+      kind: core
+
+    CoreKernel:
+      label: Core Kernel
       kind: core
       contains:
-        - MarkdownImporter
+        - TransactionEngine
+        - GraphRepository
+        - TypeRegistry
+        - QueryEngine
+        - ProjectionEngine
+        - MerkleEngine
+        - EventBus
+        - FailureClassifier
+        - RecoveryManager
+        - MigrationManager
+        - Observability
+        - ConformanceHarness
 
-    MarkdownImporter:
-      label: Markdown importer
+    FailureClassifier:
+      label: failure classifier
       kind: core
 
-    Emitters:
-      label: emitters / compilers
+    RecoveryManager:
+      label: recovery manager
+      kind: core
+
+    MigrationManager:
+      label: migration manager
+      kind: core
+
+    Observability:
+      label: observability surface
+      kind: core
+
+    ConformanceHarness:
+      label: conformance harness
+      kind: core
+
+    TransactionEngine:
+      label: transaction engine
+      kind: core
+
+    GraphRepository:
+      label: graph repository
+      kind: core
+
+    TypeRegistry:
+      label: type registry
+      kind: core
+
+    QueryEngine:
+      label: query engine
+      kind: core
+
+    ProjectionEngine:
+      label: projection engine
+      kind: core
+
+    MerkleEngine:
+      label: merkle engine
+      kind: core
+
+    EventBus:
+      label: event bus
+      kind: core
+
+    Documents:
+      label: Document Adapters
       kind: core
       contains:
-        - MarkdownEmitter
-        - DocumentMaterializer
+        - ParserRegistry
+        - Canonicalizer
+        - RendererRegistry
+        - SourceManager
 
-    MarkdownEmitter:
-      label: Markdown emitter
+    ParserRegistry:
+      label: parser registry
       kind: core
 
-    DocumentMaterializer:
-      label: document materializer
+    Canonicalizer:
+      label: canonicalizer
       kind: core
 
-    CanonicalRelations:
-      label: canonical relations + relation ASTs
+    RendererRegistry:
+      label: renderer registry
+      kind: core
+
+    SourceManager:
+      label: external source manager
+      kind: core
+
+    Semantics:
+      label: Semantics
       kind: core
       contains:
-        - LinkRelations
-        - StoreRelations
-        - AnchorNodes
+        - StructuralProjection
+        - LispSchemaProjection
+        - LispMacroProjection
+        - MarkdownProjection
+        - SemanticProjection
+        - EmbeddingIndex
+        - LogicEngine
 
-    LinkRelations:
-      label: link relations between ASTs
+    StructuralProjection:
+      label: structural AST projection
       kind: core
 
-    StoreRelations:
-      label: store relations between ASTs
+    LispSchemaProjection:
+      label: Lisp schema projection
       kind: core
 
-    AnchorNodes:
-      label: anchor nodes
+    LispMacroProjection:
+      label: Lisp macro projection
       kind: core
 
-    Hashing:
-      label: hashing layer
+    MarkdownProjection:
+      label: Markdown text projection
       kind: core
 
-    GraphStore:
-      label: Local Append-Only Graph Store
+    SemanticProjection:
+      label: semantic graph projection
+      kind: core
+
+    EmbeddingIndex:
+      label: embedding index
+      kind: core
+
+    LogicEngine:
+      label: boolean / rule engine
+      kind: core
+
+    Automation:
+      label: Automation
+      kind: core
+      contains:
+        - HookEngine
+        - EffectOutbox
+        - EffectRunner
+        - AgentHarness
+
+    HookEngine:
+      label: hook engine
+      kind: core
+
+    EffectOutbox:
+      label: effect outbox
+      kind: core
+
+    EffectRunner:
+      label: effect runner
+      kind: core
+
+    AgentHarness:
+      label: agent harness
+      kind: core
+
+    Persistence:
+      label: Persistence
       kind: database
       contains:
-        - ASTPersistence
-        - DerivedIndexes
-        - HistoryArtifacts
+        - TransactionLog
+        - ContentStore
+        - RevisionStore
+        - HeadStore
+        - CompatibilityMetadata
+        - BackupExportStore
+        - IndexesCaches
+        - StorageBackend
+        - GarbageCollector
+        - RetentionPolicy
 
-    ASTPersistence:
-      label: persisted AST nodes + edges (immutable)
+    CompatibilityMetadata:
+      label: compatibility metadata
       kind: database
 
-    DerivedIndexes:
-      label: store/search/section/field indexes
+    BackupExportStore:
+      label: backup / export artifacts
       kind: database
 
-    HistoryArtifacts:
-      label: append-only event log / snapshots / provenance
+    GarbageCollector:
+      label: garbage collector
       kind: database
 
-    Adapters:
-      label: Adapters / Projections
-      kind: core
+    RetentionPolicy:
+      label: retention policy
+      kind: database
+
+    TransactionLog:
+      label: transaction log
+      kind: database
+
+    ContentStore:
+      label: content-addressed store
+      kind: database
+
+    RevisionStore:
+      label: revision store
+      kind: database
+
+    HeadStore:
+      label: document heads
+      kind: database
+
+    IndexesCaches:
+      label: indexes / caches
+      kind: database
+
+    StorageBackend:
+      label: storage backend
+      kind: database
+
+    ExternalSystems:
+      label: External Systems
+      kind: boundary
       contains:
-        - SemanticExporter
-        - ProseMirrorAdapter
-        - TreeSitterAdapter
+        - FilesystemGitAPIs
+        - Models
 
-    SemanticExporter:
-      label: semantic exporter
-      kind: core
+    FilesystemGitAPIs:
+      label: Git / filesystem / external tools
+      kind: boundary
 
-    ProseMirrorAdapter:
-      label: ProseMirror adapter
-      kind: core
-
-    TreeSitterAdapter:
-      label: tree-sitter adapter
-      kind: core
-
-    VisualUX:
-      label: future visual UX
+    Models:
+      label: embedding / LLM services
       kind: boundary
 
   edges:
-    - from: PythonCLI
-      to: RustCore
-      relation: orchestrates
-      label: minimal Python shell
-
-    - from: RustCore
-      to: GraphStore
-      relation: persists
-      label: canonical graph store
-
-    - from: MarkdownImporter
-      to: CanonicalAST
-      relation: builds
-      label: Markdown -> AST
-
-    - from: CanonicalAST
-      to: MarkdownEmitter
-      relation: projects
-      label: AST -> Markdown
-
-    - from: CanonicalAST
-      to: CanonicalRelations
-      relation: owns
-      label: canonical links / anchors / store edges
-
-    - from: Hashing
-      to: CanonicalAST
-      relation: annotates
-      label: hash fields on nodes
-
-    - from: GraphStore
-      to: DerivedIndexes
-      relation: materializes
-      label: searchable views
-
-    - from: RustCore
-      to: Adapters
-      relation: drives
-      label: derived projections
-
-    - from: SemanticExporter
-      to: GraphStore
-      relation: reads
-      label: semantic export boundary
-
-    - from: VisualUX
-      to: ProseMirrorAdapter
+    - from: CLI
+      to: KernelAPI
       relation: uses
-      label: editing projection
-
-    - from: VisualUX
-      to: GraphStore
+      label: command client
+    - from: UI
+      to: KernelAPI
+      relation: uses
+      label: visual client
+    - from: Agents
+      to: KernelAPI
+      relation: uses
+      label: agent client
+    - from: EmbeddedRust
+      to: KernelAPI
+      relation: uses
+      label: embedded client
+    - from: LispRuntime
+      to: PlanCompiler
+      relation: compiles_to
+      label: explicit plan families
+    - from: LispRuntime
+      to: ProjectionEngine
+      relation: projects_through
+      label: schema and macro forms
+    - from: MarkdownSurface
+      to: SourceManager
+      relation: supplies_text_to
+    - from: PlanCompiler
+      to: TransactionPlan
+      relation: emits
+    - from: PlanCompiler
+      to: QueryPlan
+      relation: emits
+    - from: PlanCompiler
+      to: ProjectionPlan
+      relation: emits
+    - from: PlanCompiler
+      to: EffectPlan
+      relation: emits
+    - from: TransactionPlan
+      to: CapabilityGate
+      relation: checked_by
+    - from: QueryPlan
+      to: CapabilityGate
+      relation: checked_by
+    - from: ProjectionPlan
+      to: CapabilityGate
+      relation: checked_by
+    - from: EffectPlan
+      to: CapabilityGate
+      relation: checked_by
+    - from: CapabilityGate
+      to: KernelAPI
+      relation: admits_to_kernel
+    - from: KernelAPI
+      to: TransactionEngine
+      relation: dispatches
+    - from: KernelAPI
+      to: Observability
+      relation: reports_to
+    - from: KernelAPI
+      to: QueryEngine
+      relation: dispatches
+    - from: KernelAPI
+      to: ProjectionEngine
+      relation: dispatches
+    - from: TransactionEngine
+      to: TypeRegistry
+      relation: validates
+    - from: TransactionEngine
+      to: GraphRepository
+      relation: stages_on
+    - from: TransactionEngine
+      to: MerkleEngine
+      relation: invalidates_and_hashes
+    - from: TransactionEngine
+      to: TransactionLog
+      relation: appends
+    - from: TransactionEngine
+      to: RevisionStore
+      relation: writes
+    - from: TransactionEngine
+      to: HeadStore
+      relation: compare_and_swaps
+    - from: TransactionEngine
+      to: EventBus
+      relation: publishes
+    - from: TransactionEngine
+      to: FailureClassifier
+      relation: classifies_failures_with
+    - from: FailureClassifier
+      to: RecoveryManager
+      relation: escalates_to
+    - from: RecoveryManager
+      to: StorageBackend
+      relation: verifies_and_recovers_via
+    - from: MigrationManager
+      to: CompatibilityMetadata
+      relation: reads_and_writes
+    - from: ConformanceHarness
+      to: TransactionEngine
+      relation: attests
+    - from: ConformanceHarness
+      to: QueryEngine
+      relation: attests
+    - from: ConformanceHarness
+      to: ProjectionEngine
+      relation: attests
+    - from: GraphRepository
+      to: StorageBackend
+      relation: persists_via
+    - from: StorageBackend
+      to: TransactionLog
+      relation: manages
+    - from: StorageBackend
+      to: ContentStore
+      relation: manages
+    - from: StorageBackend
+      to: RevisionStore
+      relation: manages
+    - from: StorageBackend
+      to: HeadStore
+      relation: manages
+    - from: StorageBackend
+      to: IndexesCaches
+      relation: manages
+    - from: StorageBackend
+      to: CompatibilityMetadata
+      relation: manages
+    - from: StorageBackend
+      to: BackupExportStore
+      relation: manages
+    - from: GarbageCollector
+      to: RetentionPolicy
+      relation: applies
+    - from: GarbageCollector
+      to: ContentStore
+      relation: prunes
+    - from: GarbageCollector
+      to: IndexesCaches
+      relation: prunes
+    - from: SourceManager
+      to: ParserRegistry
+      relation: parses_with
+    - from: ParserRegistry
+      to: Canonicalizer
+      relation: normalizes_into
+    - from: Canonicalizer
+      to: TransactionEngine
+      relation: produces_operations_for
+    - from: SourceManager
+      to: FilesystemGitAPIs
+      relation: reads_from
+    - from: SourceManager
+      to: MerkleEngine
+      relation: fingerprints
+    - from: ProjectionEngine
+      to: StructuralProjection
+      relation: builds
+    - from: ProjectionEngine
+      to: LispSchemaProjection
+      relation: builds
+    - from: ProjectionEngine
+      to: LispMacroProjection
+      relation: builds
+    - from: ProjectionEngine
+      to: MarkdownProjection
+      relation: builds
+    - from: ProjectionEngine
+      to: SemanticProjection
+      relation: builds
+    - from: ProjectionEngine
+      to: RendererRegistry
+      relation: renders_with
+    - from: MarkdownProjection
+      to: MarkdownSurface
+      relation: materializes_as
+    - from: QueryEngine
+      to: GraphRepository
+      relation: reads
+    - from: QueryEngine
+      to: LogicEngine
+      relation: evaluates
+    - from: QueryEngine
+      to: EmbeddingIndex
       relation: queries
-      label: inspect nodes / edges / models / templates
+    - from: QueryEngine
+      to: Observability
+      relation: emits_query_signals_to
+    - from: EmbeddingIndex
+      to: Models
+      relation: uses
+    - from: EventBus
+      to: HookEngine
+      relation: triggers
+    - from: EventBus
+      to: Observability
+      relation: emits_runtime_signals_to
+    - from: HookEngine
+      to: EffectOutbox
+      relation: enqueues
+    - from: EffectOutbox
+      to: EffectRunner
+      relation: feeds
+    - from: EffectRunner
+      to: FilesystemGitAPIs
+      relation: executes_against
+    - from: EffectRunner
+      to: AgentHarness
+      relation: may_delegate_to
+    - from: EffectRunner
+      to: Observability
+      relation: emits_effect_signals_to

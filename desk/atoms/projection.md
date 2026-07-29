@@ -1,34 +1,42 @@
 ---
+layer: core
 id: projection
 title: Projection
 five_wh_one_plus: what
 tags:
 - system:sldb
 - domain:runtime.projections
-provenance: desk/drawer/features/feature-sldb-explicit-target-architecture.md
+provenance: reasoning.md
 ---
 
 # Projection
 
 ## Answer
 
-A projection is any derived output or view produced from the canonical AST without becoming the source of truth.
+A projection is a deterministic derived view computed from a canonical revision under an explicit projection specification and engine version.
 
 ## Supporting points
 
-- Markdown materialization is one projection among others, not the definition of the document.
-- Graph exports, search views, editor views, and runtime artifacts belong to this derived layer.
-- Projection keeps canonical existence separate from emission and presentation.
+- Structural ASTs, semantic graphs, renders, embeddings, logic views, Markdown surfaces, and Lisp forms are all projections.
+- Projections never become the primary authority for the document; they are cached or persisted as derived artifacts.
+- A projection result must remain traceable to `revision + projection spec + engine version + source hash`.
+- Projection invalidation is allowed and expected; rebuildability is a core property of the architecture.
 
 ## Related atoms
 
+### Depends on
+
+- [depends_on:: [[projection-spec]]]
+- [depends_on:: [[revision]]]
+- [depends_on:: [[graph-store]]]
+
 ### Supports
 
-- [supports:: [[rust-testing]]]
-
-### Constrains
-
-- [constrains:: [[rust-code-linting]]]
+- [supports:: [[projection-surface]]]
+- [supports:: [[document-materializer]]]
+- [supports:: [[semantic-exporter]]]
+- [supports:: [[search-projection]]]
+- [supports:: [[embeddings]]]
 
 ### 5WH1+ neighborhood
 
