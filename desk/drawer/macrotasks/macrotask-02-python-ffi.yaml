@@ -1,0 +1,8 @@
+title: "Implement Python CLI and PyO3 FFI Boundary"
+why: "To maintain the current development environment and orchestration layer in Python while securely delegating heavy lifting to Rust without IPC overhead."
+goal: "Develop the pyo3 bindings to expose the Rust store and AST. Scaffold the Typer/Click based Python CLI that drives Git integrations."
+scope: "FFI bindings and the Python shell wrapping the Rust primitives. Does not include specific business logic commands like 'list atoms'."
+validation:
+  - "pytest sldb-cli/tests/test_ffi_boundary.py"
+depends_on:
+  - "macrotask-01-rust-core-ast-store"

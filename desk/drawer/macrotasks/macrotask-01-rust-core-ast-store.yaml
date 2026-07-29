@@ -1,0 +1,7 @@
+title: "Implement Rust Core: Graph Store and Rowan AST"
+why: "The new architecture requires a sovereign Rust core to guarantee lossless reversible parsing (via rowan), cryptographically sound structural identity (blake3), and immutable append-only persistence (rusqlite)."
+goal: "Build the foundational `.sldb/` database schema in SQLite, the graph abstractions using petgraph, and the rowan-based lossless AST."
+scope: "Rust core only. No FFI or Python bindings in this phase. Focus on schema, SQLite file-locks, hashing, and tree manipulations."
+validation:
+  - "cargo test --manifest-path sldb-core/Cargo.toml"
+depends_on: []

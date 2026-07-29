@@ -1,0 +1,8 @@
+title: "Importers, Emitters, and Semantic Indexing"
+why: "The system needs to convert physical Markdown files into the Canonical AST and vice versa without losing data, and support fast text searching."
+goal: "Implement pulldown-cmark based importers, rowan-based reversible emitters, and setup Tantivy or SQLite FTS5 for the SearchIndex."
+scope: "Both Rust and Python adapters. Serialization payloads with serde."
+validation:
+  - "cargo test --manifest-path sldb-core/Cargo.toml --test importers"
+depends_on:
+  - "macrotask-01-rust-core-ast-store"
