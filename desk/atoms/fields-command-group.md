@@ -1,6 +1,6 @@
 ---
 id: fields-command-group
-title: `fields` command group
+title: fields command group
 five_wh_one_plus: what
 tags:
 - system:sldb

@@ -1,6 +1,6 @@
 ---
 id: find-command-group
-title: `find` command group
+title: find command group
 five_wh_one_plus: what
 tags:
 - system:sldb

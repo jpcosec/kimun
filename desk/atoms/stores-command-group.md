@@ -1,6 +1,6 @@
 ---
 id: stores-command-group
-title: `stores` command group
+title: stores command group
 five_wh_one_plus: what
 tags:
 - system:sldb

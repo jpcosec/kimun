@@ -1,0 +1,13 @@
+---
+id: relation-ast-extensibility
+title: RelationAST and extensibility
+five_wh_one_plus: what
+tags:
+- architecture:decision
+- concept:ast
+provenance: docs/architecture/target-system-overview.md
+---
+
+# RelationAST and extensibility
+
+Extensibility resides entirely in the Rust environment. The `RelationASTs` payloads serve as the foundational structure that is materialized and indexed to generate semantic graphs, the store, and tags. This allows extending relationships with strongly typed data structures within Rust.

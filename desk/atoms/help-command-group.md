@@ -1,6 +1,6 @@
 ---
 id: help-command-group
-title: `help` command group
+title: help command group
 five_wh_one_plus: what
 tags:
 - system:sldb

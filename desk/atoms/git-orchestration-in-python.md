@@ -1,0 +1,13 @@
+---
+id: git-orchestration-in-python
+title: Git orchestration in Python
+five_wh_one_plus: what
+tags:
+- architecture:component
+- system:sldb
+provenance: docs/architecture/target-system-overview.md
+---
+
+# Git orchestration in Python
+
+Python remains responsible for the Git tracking logic (`GitIntegration` component inside `PythonCLI`). The `python_cli_layer` communicates directly with the `project_repo` to manage tracked documents, while deferring core parsing and store logic to Rust.

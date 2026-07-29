@@ -1,6 +1,6 @@
 ---
 id: models-command-group
-title: `models` command group
+title: models command group
 five_wh_one_plus: what
 tags:
 - system:sldb
