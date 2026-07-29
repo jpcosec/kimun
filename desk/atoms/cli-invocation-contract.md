@@ -1,4 +1,5 @@
 ---
+layer: shell
 id: cli-invocation-contract
 title: CLI invocation contract
 five_wh_one_plus: how

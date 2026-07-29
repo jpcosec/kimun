@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: source-document-hash
 title: Source document hash
 five_wh_one_plus: what

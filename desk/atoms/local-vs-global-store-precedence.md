@@ -1,4 +1,5 @@
 ---
+layer: store
 id: local-vs-global-store-precedence
 title: Local vs global store precedence
 five_wh_one_plus: where

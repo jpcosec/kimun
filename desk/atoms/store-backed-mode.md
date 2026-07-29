@@ -1,4 +1,5 @@
 ---
+layer: shell
 id: store-backed-mode
 title: Store-backed mode
 five_wh_one_plus: when

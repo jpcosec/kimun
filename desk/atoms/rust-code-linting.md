@@ -1,4 +1,5 @@
 ---
+layer: core
 id: rust-code-linting
 title: Rust code linting
 five_wh_one_plus: how

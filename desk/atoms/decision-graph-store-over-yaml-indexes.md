@@ -1,4 +1,5 @@
 ---
+layer: store
 id: decision-graph-store-over-yaml-indexes
 title: "Decision: graph store over YAML indexes"
 five_wh_one_plus: why

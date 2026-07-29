@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: schema-binding
 title: Schema Binding
 five_wh_one_plus: what

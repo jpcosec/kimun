@@ -1,4 +1,5 @@
 ---
+layer: core
 id: decision-blake3-hashing
 title: Decision blake3 hashing
 five_wh_one_plus: why

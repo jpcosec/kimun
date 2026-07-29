@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: lead-paragraph-anchor-rule
 title: Lead paragraph anchor rule
 five_wh_one_plus: how

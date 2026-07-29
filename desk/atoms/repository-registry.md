@@ -1,4 +1,5 @@
 ---
+layer: shell
 id: repository-registry
 title: Repository registry
 five_wh_one_plus: where

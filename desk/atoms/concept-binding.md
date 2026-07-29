@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: concept-binding
 title: Concept binding
 five_wh_one_plus: what

@@ -1,4 +1,5 @@
 ---
+layer: store
 id: section-index
 title: Section index
 five_wh_one_plus: what

@@ -1,4 +1,5 @@
 ---
+layer: store
 id: snapshots
 title: Snapshots
 five_wh_one_plus: what

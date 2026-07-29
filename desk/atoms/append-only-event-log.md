@@ -1,4 +1,5 @@
 ---
+layer: store
 id: append-only-event-log
 title: Append-only event log
 five_wh_one_plus: what

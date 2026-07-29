@@ -1,4 +1,5 @@
 ---
+layer: core
 id: anchor-sample
 title: Anchor sample
 five_wh_one_plus: what

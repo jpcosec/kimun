@@ -1,10 +1,15 @@
 ---
 id: ritual-execution
-steps: []
+steps:
+- recover board and task state from repo artifacts
+- read the task's governing atoms, diagrams, and bound pills
+- create exactly one named planning artifact for the active task
+- keep the task planning-only and avoid implementation claims
+- record downstream constraints inside the artifact
 tags:
 - workspace:desk
 ---
 
 # Execution ritual
 
-Review the board, bind the relevant pills, keep scope tight, and implement only the active task for sldb-refactor-worktree.
+Review the board, bind the planning pill, and produce only the contract artifact required by the active planning task.

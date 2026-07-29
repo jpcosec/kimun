@@ -1,4 +1,5 @@
 ---
+layer: core
 id: decision-rayon-parallelism
 title: Decision rayon parallelism
 five_wh_one_plus: why

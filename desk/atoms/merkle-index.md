@@ -1,4 +1,5 @@
 ---
+layer: store
 id: merkle-index
 title: Merkle index
 five_wh_one_plus: what

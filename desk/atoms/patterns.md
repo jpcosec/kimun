@@ -1,4 +1,5 @@
 ---
+layer: shell
 id: patterns
 title: Patterns
 five_wh_one_plus: how

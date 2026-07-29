@@ -1,4 +1,5 @@
 ---
+layer: core
 id: page-locator
 title: Page locator
 five_wh_one_plus: what

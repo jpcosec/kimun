@@ -1,4 +1,5 @@
 ---
+layer: core
 id: projection-edge
 title: Projection edge
 five_wh_one_plus: what

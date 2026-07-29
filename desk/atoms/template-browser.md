@@ -1,4 +1,5 @@
 ---
+layer: shell
 id: template-browser
 title: Template browser
 five_wh_one_plus: where

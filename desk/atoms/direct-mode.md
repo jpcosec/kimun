@@ -1,4 +1,5 @@
 ---
+layer: shell
 id: direct-mode
 title: Direct mode
 five_wh_one_plus: when

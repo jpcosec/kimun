@@ -1,4 +1,5 @@
 ---
+layer: shell
 id: embeddings
 title: Embeddings
 five_wh_one_plus: what

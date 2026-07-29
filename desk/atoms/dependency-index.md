@@ -1,4 +1,5 @@
 ---
+layer: store
 id: dependency-index
 title: Dependency index
 five_wh_one_plus: what

@@ -1,4 +1,5 @@
 ---
+layer: shell
 id: phase-1-v1-replication
 title: Phase 1 v1 replication
 five_wh_one_plus: when

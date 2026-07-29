@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: structurednldoc-contract
 title: StructuredNLDoc contract
 five_wh_one_plus: what

@@ -1,4 +1,5 @@
 ---
+layer: shell
 id: local-anchor-resolver
 title: Local anchor resolver
 five_wh_one_plus: how

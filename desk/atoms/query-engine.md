@@ -1,37 +1,41 @@
 ---
+layer: core
 id: query-engine
 title: Query engine
 five_wh_one_plus: how
 tags:
 - system:sldb
 - domain:runtime.query
-provenance: /home/jp/proyectos/hum-ecosystem/tools/sldb/README.md
+provenance: interfaces.md
 ---
 
 # Query engine
 
 ## Answer
 
-The query engine executes structured retrieval over physical, semantic, section, field, and graph-oriented views derived from canonical content.
+The query engine executes revision-aware retrieval over canonical graphs, histories, diffs, and derived projections without becoming the source of truth itself.
 
 ## Supporting points
 
-- It unifies retrieval behavior across multiple derived views.
-- It should sit over indexes and projections rather than own document truth.
-- It is a core runtime service for navigation and discovery.
+- Queries must resolve against an explicit revision or document head.
+- The engine should unify structural traversal, history inspection, diffing, logical facts, and semantic lookups under query plans.
+- Query execution may use indexes, semantic providers, and graph materializations, but correctness remains anchored in canonical revisions.
+- The engine is allowed to compose structural and semantic retrieval, but it must explain provenance for each result.
 
 ## Related atoms
 
 ### Depends on
 
-- [depends_on:: [[search-projection]]]
-- [depends_on:: [[section-index]]]
-- [depends_on:: [[field-index]]]
+- [depends_on:: [[graph-store]]]
+- [depends_on:: [[projection-spec]]]
+- [depends_on:: [[semantic-indexing]]]
+- [depends_on:: [[revision]]]
 
 ### Supports
 
-- [supports:: [[semantic-vs-physical-search]]]
+- [supports:: [[kernel-api]]]
 - [supports:: [[how-to-get-data-out-of-sldb]]]
+- [supports:: [[projection]]]
 
 ### 5WH1+ neighborhood
 

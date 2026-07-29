@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: tracked-document-identity
 title: Tracked document identity
 five_wh_one_plus: what

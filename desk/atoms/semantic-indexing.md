@@ -1,4 +1,5 @@
 ---
+layer: store
 id: semantic-indexing
 title: Semantic indexing
 five_wh_one_plus: how

@@ -1,34 +1,37 @@
 ---
+layer: core
 id: decision-rust-core-with-minimal-python
-title: "Decision: Rust core with minimal Python"
+title: Decision kernel authority stays in Rust
 five_wh_one_plus: why
 tags:
 - system:sldb
 - domain:architecture.decisions
-provenance: desk/drawer/features/feature-sldb-explicit-target-architecture.md
+provenance: core_README.md
 ---
 
-# Decision: Rust core with minimal Python
+# Decision kernel authority stays in Rust
 
 ## Answer
 
-The target pushes almost all engine responsibility into Rust and keeps Python minimal so the canonical runtime, hashing, persistence, import/export, and structural transforms live in one fast, strongly constrained core.
+The architecture keeps all authoritative mutation, revision, hashing, persistence, and capability validation inside the Rust kernel. Python, Lisp, CLI, UI, and agents remain clients or metalanguages around that authority.
 
 ## Supporting points
 
-- The refactor aims to minimize Python left after migration rather than preserve the old split.
-- A Rust core is a better fit for hashing, durable persistence, graph operations, and exact structural runtime contracts.
-- Python remains valuable as an orchestration and CLI shell during migration and continuity.
+- The older Python-orchestration framing is now subordinate to the stronger kernel model.
+- Multiple frontends may exist, but none of them may bypass transaction validation or revision production.
+- This keeps the smallest correctness-critical surface in one strongly constrained implementation language.
 
 ## Related atoms
 
 ### Supports
 
 - [supports:: [[rust-core]]]
-- [supports:: [[python-cli-orchestration-layer]]]
+- [supports:: [[kernel-api]]]
+- [supports:: [[lisp-metalanguage]]]
 
 ### Constrains
 
+- [constrains:: [[python-cli-orchestration-layer]]]
 - [constrains:: [[phase-1-v1-replication]]]
 
 ### 5WH1+ neighborhood

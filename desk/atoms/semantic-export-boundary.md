@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: semantic-export-boundary
 title: Semantic export boundary
 five_wh_one_plus: why

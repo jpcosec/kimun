@@ -1,4 +1,5 @@
 ---
+layer: core
 id: temporal-layer
 title: Temporal layer
 five_wh_one_plus: what

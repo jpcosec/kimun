@@ -1,4 +1,5 @@
 ---
+layer: shell
 id: decision-v1-parity-before-scope-expansion
 title: "Decision: v1 parity before scope expansion"
 five_wh_one_plus: why

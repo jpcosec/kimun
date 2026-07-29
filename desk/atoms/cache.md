@@ -1,4 +1,5 @@
 ---
+layer: core
 id: cache
 title: Cache
 five_wh_one_plus: what

@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: semantic-search
 title: Semantic search
 five_wh_one_plus: when

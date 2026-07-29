@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: model-reference-format
 title: Model reference format
 five_wh_one_plus: how

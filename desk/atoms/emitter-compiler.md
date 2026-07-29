@@ -1,4 +1,5 @@
 ---
+layer: core
 id: emitter-compiler
 title: Emitter / compiler
 five_wh_one_plus: how

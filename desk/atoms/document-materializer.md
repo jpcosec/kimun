@@ -1,4 +1,5 @@
 ---
+layer: core
 id: document-materializer
 title: Document materializer
 five_wh_one_plus: how

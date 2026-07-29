@@ -1,4 +1,5 @@
 ---
+layer: store
 id: derived-index
 title: Derived index
 five_wh_one_plus: what

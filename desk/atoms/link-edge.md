@@ -1,4 +1,5 @@
 ---
+layer: core
 id: link-edge
 title: Link edge
 five_wh_one_plus: what

@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: shallow-title-plus-body-default
 title: Shallow `title + body` default
 five_wh_one_plus: when

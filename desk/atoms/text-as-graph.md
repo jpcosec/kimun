@@ -1,4 +1,5 @@
 ---
+layer: shell
 id: text-as-graph
 title: Text as graph
 five_wh_one_plus: what

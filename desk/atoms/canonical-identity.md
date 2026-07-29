@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: canonical-identity
 title: Canonical Identity
 five_wh_one_plus: what

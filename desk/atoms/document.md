@@ -1,37 +1,41 @@
 ---
+layer: shared
 id: document
 title: Document
 five_wh_one_plus: what
 tags:
 - system:sldb
 - domain:model.documents
-provenance: desk/drawer/features/feature-canonical-ast-design-current-state.md
+provenance: core_README.md
 ---
 
 # Document
 
 ## Answer
 
-A document is a first-class canonical unit that owns structured content and participates in projections and lineage.
+A document is the stable canonical unit whose evolving states are recorded as immutable revisions over a graph of typed nodes and edges.
 
 ## Supporting points
 
-- The AST represents documents directly rather than only files or rendered text.
-- Document-level identity, provenance, hashing, and projection depend on documents being explicit units.
-- CLI and future visual tooling both need inspectable document-level entities.
+- A document is not identical to one source file or one renderer output.
+- A document may have an external source reference, but the kernel persists canonical structure, revision lineage, and derived artifacts separately from that source.
+- Documents are the unit for heads, history, conflict detection, projections, and provenance.
+- Invalid or partially parsed documents must still be representable so failures become auditable state rather than lost input.
+
 ## Related atoms
 
 ### Depends on
 
-- [depends_on:: [[canonical-ast]]]
+- [depends_on:: [[revision]]]
 - [depends_on:: [[canonical-identity]]]
-- [depends_on:: [[tree-spine]]]
+- [depends_on:: [[graph-store]]]
 
 ### Supports
 
 - [supports:: [[node]]]
 - [supports:: [[tracked-document-identity]]]
 - [supports:: [[projection]]]
+- [supports:: [[reversible-document-family]]]
 
 ### 5WH1+ neighborhood
 

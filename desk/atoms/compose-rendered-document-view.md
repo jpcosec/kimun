@@ -1,4 +1,5 @@
 ---
+layer: shell
 id: compose-rendered-document-view
 title: Compose rendered document view
 five_wh_one_plus: when

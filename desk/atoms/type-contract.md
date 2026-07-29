@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: type-contract
 title: Type Contract
 five_wh_one_plus: what

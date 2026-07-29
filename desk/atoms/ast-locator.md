@@ -1,4 +1,5 @@
 ---
+layer: core
 id: ast-locator
 title: AST locator
 five_wh_one_plus: what

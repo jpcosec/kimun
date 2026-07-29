@@ -1,4 +1,5 @@
 ---
+layer: core
 id: decision-canonical-ast-over-markdown
 title: "Decision: canonical AST over Markdown"
 five_wh_one_plus: why

@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: decision-links-and-anchors-are-canonical
 title: "Decision: links and anchors are canonical"
 five_wh_one_plus: why

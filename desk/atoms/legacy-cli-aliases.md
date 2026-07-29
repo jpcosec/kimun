@@ -1,4 +1,5 @@
 ---
+layer: shell
 id: legacy-cli-aliases
 title: Legacy CLI aliases
 five_wh_one_plus: when

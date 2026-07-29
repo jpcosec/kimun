@@ -1,4 +1,5 @@
 ---
+layer: core
 id: link-reference
 title: Link Reference
 five_wh_one_plus: what

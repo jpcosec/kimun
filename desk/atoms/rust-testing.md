@@ -1,4 +1,5 @@
 ---
+layer: core
 id: rust-testing
 title: Rust testing
 five_wh_one_plus: how

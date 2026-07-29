@@ -1,4 +1,5 @@
 ---
+layer: core
 id: dependency-edge
 title: Dependency edge
 five_wh_one_plus: what

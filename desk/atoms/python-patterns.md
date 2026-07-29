@@ -1,4 +1,5 @@
 ---
+layer: shell
 id: python-patterns
 title: Python patterns
 five_wh_one_plus: how

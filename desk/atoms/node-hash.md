@@ -1,35 +1,40 @@
 ---
+layer: core
 id: node-hash
-title: Node Hash
+title: Node hash
 five_wh_one_plus: what
 tags:
 - system:sldb
 - domain:store.hashing
-provenance: desk/drawer/features/feature-canonical-ast-design-current-state.md
+provenance: diagramas_core.md
 ---
 
-# Node Hash
+# Node hash
 
 ## Answer
 
-A node hash is the structural fingerprint used to support integrity, caching, and incremental recomputation.
+A node hash is the deterministic Merkle fingerprint computed from canonical node data plus the hashes of structurally owned children.
 
 ## Supporting points
 
-- Structural hashing is part of the target architecture from the start rather than a later optimization.
-- Node and subtree hashes support Merkle behavior and fine-grained invalidation.
-- Hashing makes projections and infrastructure recomputation depend on canonical structure rather than file timestamps alone.
+- Structural hashing is lazy: dirty branches are invalidated on change and recomputed only when queried, committed, exported, or verified.
+- Only ownership edges participate recursively in the structural Merkle so references and semantic cycles cannot break hashing.
+- The same canonical content must always produce the same hash.
+- Hash caches are rebuildable accelerators, not sources of truth.
+
 ## Related atoms
 
 ### Depends on
 
 - [depends_on:: [[node]]]
-- [depends_on:: [[provenance-record]]]
+- [depends_on:: [[content-addressed-store]]]
+- [depends_on:: [[source-document-hash]]]
 
 ### Supports
 
 - [supports:: [[store-integrity-checks]]]
 - [supports:: [[projection]]]
+- [supports:: [[revision]]]
 
 ### 5WH1+ neighborhood
 

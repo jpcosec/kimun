@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: addressability-layer
 title: Addressability layer
 five_wh_one_plus: what

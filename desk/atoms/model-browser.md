@@ -1,4 +1,5 @@
 ---
+layer: shell
 id: model-browser
 title: Model browser
 five_wh_one_plus: where

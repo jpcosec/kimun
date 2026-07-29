@@ -1,4 +1,5 @@
 ---
+layer: shell
 id: graph-projection
 title: Graph projection
 five_wh_one_plus: how

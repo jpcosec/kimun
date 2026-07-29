@@ -1,4 +1,5 @@
 ---
+layer: core
 id: transclusion-reference
 title: Transclusion Reference
 five_wh_one_plus: what

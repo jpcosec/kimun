@@ -1,4 +1,5 @@
 ---
+layer: core
 id: importer-translator
 title: Importer / translator
 five_wh_one_plus: how

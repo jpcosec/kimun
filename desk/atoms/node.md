@@ -1,38 +1,41 @@
 ---
+layer: shared
 id: node
 title: Node
 five_wh_one_plus: what
 tags:
 - system:sldb
 - domain:model.ast-core
-provenance: desk/drawer/features/feature-canonical-ast-design-current-state.md
+provenance: core_README.md
 ---
 
 # Node
 
 ## Answer
 
-A node is the primary owned structural unit inside the canonical AST.
+A node is the primary canonical entity stored inside a document revision, carrying stable identity, a type, payload references, and metadata.
 
 ## Supporting points
 
-- Nodes carry kind/subtype, payload, attributes, and source/origin span information.
-- Nodes are the units addressed by links, anchors, provenance, and hashes.
-- Nodes sit on the tree spine while also participating in graph-capable side relations.
+- Nodes are revisioned through transactions, not edited in place.
+- Nodes participate in multiple edge semantics: structural ownership, reference, semantic, and derived relations.
+- Stable node identity matters for reconciliation, provenance, projections, and targeted transforms.
+- Node payloads may be canonical content or references to stored artifacts, but node identity cannot collapse into adapter-specific handles.
+
 ## Related atoms
 
 ### Depends on
 
-- [depends_on:: [[canonical-ast]]]
+- [depends_on:: [[document]]]
 - [depends_on:: [[canonical-identity]]]
-- [depends_on:: [[tree-spine]]]
+- [depends_on:: [[relation-ast]]]
 
 ### Supports
 
 - [supports:: [[field-binding]]]
 - [supports:: [[link-reference]]]
-- [supports:: [[external-anchor]]]
 - [supports:: [[node-hash]]]
+- [supports:: [[stable-selector]]]
 
 ### 5WH1+ neighborhood
 

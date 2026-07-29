@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: canonical-existence
 title: Canonical Existence
 five_wh_one_plus: what

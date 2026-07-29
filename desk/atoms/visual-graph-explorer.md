@@ -1,4 +1,5 @@
 ---
+layer: shell
 id: visual-graph-explorer
 title: Visual graph explorer
 five_wh_one_plus: where

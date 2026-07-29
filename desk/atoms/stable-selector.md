@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: stable-selector
 title: Stable Selector
 five_wh_one_plus: what

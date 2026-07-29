@@ -1,19 +1,40 @@
 ---
+layer: store
 id: decision-rusqlite-store
-title: Decision rusqlite store
+title: Decision store backend behind trait
 five_wh_one_plus: why
 tags:
 - system:sldb
 - domain:architecture.decisions
-provenance: desk/drawer/features/feature-rust-library-stack.md
+provenance: libraries_core.md
 ---
 
-# Decision rusqlite store
+# Decision store backend behind trait
 
-`rusqlite` is selected for managing the local `.sldb/` database. Given the append-only and immutable nature of the graph store, its synchronous and lightweight access model is ideal for controlling SQLite file-locks and transactions directly from Rust.
+## Answer
+
+The kernel must own a `StorageBackend` boundary and avoid baking SQLite-specific behavior into the canonical model. `rusqlite` is no longer the governing decision.
+
+## Supporting points
+
+- The new architecture treats backend choice as replaceable infrastructure.
+- `redb` is the default embedded direction for the controlled kernel path.
+- `CozoDB` remains a valid prototyping backend when faster graph/query experimentation is worth the tradeoff.
+- Transaction semantics, revisions, hashes, and capabilities must stay invariant across backend swaps.
 
 ## Related atoms
 
-### Implements
-- [implements:: [[graph-store]]]
-- [implements:: [[immutable-append-only-database]]]
+### Supports
+
+- [supports:: [[store-infrastructure]]]
+- [supports:: [[graph-store]]]
+- [supports:: [[ports-and-adapters]]]
+
+### Constrains
+
+- [constrains:: [[transaction-log]]]
+- [constrains:: [[content-addressed-store]]]
+
+### 5WH1+ neighborhood
+
+- This atom is typed by its `five_wh_one_plus` field and should be queried together with nearby `what`/`how`/`when`/`where` atoms rather than as an isolated note.

@@ -1,4 +1,5 @@
 ---
+layer: core
 id: syntax-locator
 title: Syntax locator
 five_wh_one_plus: what

@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: document-path
 title: Document path
 five_wh_one_plus: what

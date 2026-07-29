@@ -1,4 +1,5 @@
 ---
+layer: store
 id: immutable-append-only-database
 title: Immutable append-only database
 five_wh_one_plus: why

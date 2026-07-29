@@ -1,4 +1,5 @@
 ---
+layer: core
 id: source-locator
 title: Source locator
 five_wh_one_plus: what

@@ -1,4 +1,5 @@
 ---
+layer: core
 id: search-projection
 title: Search projection
 five_wh_one_plus: how

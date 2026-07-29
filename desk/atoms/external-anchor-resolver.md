@@ -1,4 +1,5 @@
 ---
+layer: shell
 id: external-anchor-resolver
 title: External anchor resolver
 five_wh_one_plus: how

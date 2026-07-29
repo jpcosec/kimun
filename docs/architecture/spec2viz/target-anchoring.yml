@@ -1,17 +1,17 @@
 id: sldb.target.anchoring
-title: SLDB Target Anchoring Model
+title: Knowledge Kernel Anchoring Model
 type: component
-version: "0.1"
+version: "0.2"
 
 data:
   nodes:
     AnchorNode:
-      label: Anchor Node
+      label: Anchor node
       kind: core
       contains:
         - DocumentPath
         - SourceHash
-        - Locator
+        - StableSelector
         - SampleText
         - Comments
         - AnchorKind
@@ -21,12 +21,44 @@ data:
       kind: core
 
     SourceHash:
-      label: source document hash
+      label: source hash / source fingerprint
       kind: core
 
-    Locator:
-      label: pointer / locator
+    StableSelector:
+      label: stable selector
       kind: core
+      contains:
+        - StructuralLocator
+        - TextLocator
+        - FamilySpecificLocator
+
+    StructuralLocator:
+      label: structural / AST locator
+      kind: core
+
+    TextLocator:
+      label: text locator
+      kind: core
+
+    FamilySpecificLocator:
+      label: family-specific locator
+      kind: boundary
+      contains:
+        - PDFLocator
+        - HTMLLocator
+        - CodeLocator
+
+    PDFLocator:
+      label: page / XML locator
+      kind: boundary
+
+    HTMLLocator:
+      label: DOM / element locator
+      kind: boundary
+
+    CodeLocator:
+      label: syntax / tree-sitter locator
+      kind: boundary
 
     SampleText:
       label: quoted text sample
@@ -37,43 +69,11 @@ data:
       kind: core
 
     AnchorKind:
-      label: text anchor or AST anchor
+      label: AST / text / external anchor kind
       kind: core
 
-    StructuredDocs:
-      label: structured document families
-      kind: boundary
-      contains:
-        - ReversibleDocs
-        - FamilySpecificLocators
-
-    ReversibleDocs:
-      label: reversible AST-render-AST families
-      kind: boundary
-
-    FamilySpecificLocators:
-      label: family-specific anchor methods
-      kind: boundary
-      contains:
-        - PDFLocators
-        - HTMLLocators
-        - CodeLocators
-        - TextLocators
-
-    PDFLocators:
-      label: page / XML locators
-      kind: boundary
-
-    HTMLLocators:
-      label: DOM / element locators
-      kind: boundary
-
-    CodeLocators:
-      label: tree-sitter / syntax locators
-      kind: boundary
-
-    TextLocators:
-      label: char / paragraph / page locators
+    ReversibleFamilies:
+      label: reversible document families
       kind: boundary
 
   edges:
@@ -84,22 +84,27 @@ data:
       to: SourceHash
       relation: requires
     - from: AnchorNode
-      to: Locator
+      to: StableSelector
       relation: requires
     - from: AnchorNode
       to: SampleText
-      relation: requires
+      relation: may_include
     - from: AnchorNode
       to: Comments
       relation: may_include
     - from: AnchorNode
       to: AnchorKind
       relation: classifies
+    - from: StableSelector
+      to: StructuralLocator
+      relation: may_use
+    - from: StableSelector
+      to: TextLocator
+      relation: may_use
+    - from: StableSelector
+      to: FamilySpecificLocator
+      relation: may_specialize_to
     - from: AnchorKind
-      to: ReversibleDocs
-      relation: may_target
-      label: AST-aware anchors where possible
-    - from: FamilySpecificLocators
-      to: Locator
-      relation: specializes
-      label: document-family-dependent
+      to: ReversibleFamilies
+      relation: prefers
+      label: AST-aware anchors where canonical structure exists

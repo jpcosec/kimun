@@ -1,4 +1,5 @@
 ---
+layer: core
 id: dom-locator
 title: DOM locator
 five_wh_one_plus: what

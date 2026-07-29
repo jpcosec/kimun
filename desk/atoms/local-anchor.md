@@ -1,4 +1,5 @@
 ---
+layer: core
 id: local-anchor
 title: Local anchor
 five_wh_one_plus: what

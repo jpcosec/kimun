@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: canonical-address
 title: Canonical address
 five_wh_one_plus: what

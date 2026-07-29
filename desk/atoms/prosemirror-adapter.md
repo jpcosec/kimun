@@ -1,4 +1,5 @@
 ---
+layer: core
 id: prosemirror-adapter
 title: ProseMirror adapter
 five_wh_one_plus: how

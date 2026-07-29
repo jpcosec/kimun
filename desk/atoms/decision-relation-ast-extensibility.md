@@ -1,4 +1,5 @@
 ---
+layer: core
 id: decision-relation-ast-extensibility
 title: "Decision: relation AST extensibility"
 five_wh_one_plus: why

@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: semantic-tag
 title: Semantic tag
 five_wh_one_plus: what

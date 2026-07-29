@@ -1,4 +1,5 @@
 ---
+layer: core
 id: matrix-adapter
 title: Matrix adapter
 five_wh_one_plus: how

@@ -1,4 +1,5 @@
 ---
+layer: store
 id: store-edge
 title: Store edge
 five_wh_one_plus: what

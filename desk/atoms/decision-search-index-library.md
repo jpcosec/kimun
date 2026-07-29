@@ -1,19 +1,39 @@
 ---
+layer: store
 id: decision-search-index-library
-title: Decision search index library
+title: Decision search and semantic indexes are replaceable
 five_wh_one_plus: why
 tags:
 - system:sldb
 - domain:architecture.decisions
-provenance: desk/drawer/features/feature-rust-library-stack.md
+provenance: libraries_core.md
 ---
 
-# Decision search index library
+# Decision search and semantic indexes are replaceable
 
-For deriving the `SearchIndex`, either `tantivy` (industrial-grade full-text search in Rust) or SQLite's `FTS5` (via `rusqlite`) will be used. Both options provide the capabilities necessary to power rapid lexical searches over the text extracted from the Canonical AST.
+## Answer
+
+Search and semantic indexing are derived services behind kernel-controlled interfaces rather than fixed primary technologies.
+
+## Supporting points
+
+- Lexical search, embeddings, and logic facts are derived from canonical revisions and can be rebuilt.
+- Backend choice may differ by phase: redb plus custom indexes, Cozo-backed query facilities, or other replaceable engines.
+- Index technology must not leak into node identity, transaction semantics, or revision compatibility.
 
 ## Related atoms
 
-### Implements
-- [implements:: [[search-projection]]]
-- [implements:: [[derived-index]]]
+### Supports
+
+- [supports:: [[semantic-indexing]]]
+- [supports:: [[search-projection]]]
+- [supports:: [[query-engine]]]
+
+### Constrains
+
+- [constrains:: [[graph-store]]]
+- [constrains:: [[projection]]]
+
+### 5WH1+ neighborhood
+
+- This atom is typed by its `five_wh_one_plus` field and should be queried together with nearby `what`/`how`/`when`/`where` atoms rather than as an isolated note.

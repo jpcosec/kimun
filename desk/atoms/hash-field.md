@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: hash-field
 title: Hash field
 five_wh_one_plus: what

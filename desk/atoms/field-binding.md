@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: field-binding
 title: Field Binding
 five_wh_one_plus: what

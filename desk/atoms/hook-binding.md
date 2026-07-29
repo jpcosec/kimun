@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: hook-binding
 title: Hook Binding
 five_wh_one_plus: what

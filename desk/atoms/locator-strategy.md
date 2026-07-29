@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: locator-strategy
 title: Locator strategy
 five_wh_one_plus: how

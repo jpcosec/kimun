@@ -1,4 +1,5 @@
 ---
+layer: shell
 id: git-orchestration-in-python
 title: Git orchestration in Python
 five_wh_one_plus: why

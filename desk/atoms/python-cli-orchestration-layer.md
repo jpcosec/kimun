@@ -1,31 +1,34 @@
 ---
+layer: shell
 id: python-cli-orchestration-layer
 title: Python CLI orchestration layer
 five_wh_one_plus: how
 tags:
 - system:sldb
 - domain:implementation.python-cli
-provenance: desk/drawer/features/feature-sldb-product-principles-and-cli-continuity.md
+provenance: interfaces.md
 ---
 
 # Python CLI orchestration layer
 
 ## Answer
 
-The Python CLI orchestration layer is the user-facing shell that preserves SLDB workflow continuity while delegating canonical structural work to the core.
+The Python CLI orchestration layer is an optional client shell that drives the kernel through public APIs without owning canonical state or persistence semantics.
 
 ## Supporting points
 
-- It keeps the recognizable SLDB command family.
-- It should orchestrate workflows rather than re-own canonical structure.
-- It is the migration surface between v1 behavior and the new core.
+- Python is no longer the defining boundary of the architecture; it is one adapter alongside embedded Rust, local IPC, HTTP, or agent-facing protocols.
+- It may preserve command continuity and workflow ergonomics, but all authoritative mutations still compile to kernel transaction plans.
+- Python should not define identity, revision semantics, hashing, canonicalization, or storage layout.
+- Any Python integration should sit behind the same kernel API and capability rules as other clients.
 
 ## Related atoms
 
 ### Depends on
 
+- [depends_on:: [[kernel-api]]]
 - [depends_on:: [[cli-workflow-surface]]]
-- [depends_on:: [[python-patterns]]]
+- [depends_on:: [[ports-and-adapters]]]
 
 ### Supports
 
@@ -33,10 +36,10 @@ The Python CLI orchestration layer is the user-facing shell that preserves SLDB 
 - [supports:: [[create-vs-track-vs-update]]]
 - [supports:: [[recover-vs-compose]]]
 
+### Constrains
+
+- [constrains:: [[rust-core]]]
+
 ### 5WH1+ neighborhood
 
 - This atom is typed by its `five_wh_one_plus` field and should be queried together with nearby `what`/`how`/`when`/`where` atoms rather than as an isolated note.
-
-### Depends on
-- [depends_on:: [[store-infrastructure]]]
-- [depends_on:: [[what-a-store-is]]]

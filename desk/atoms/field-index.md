@@ -1,4 +1,5 @@
 ---
+layer: store
 id: field-index
 title: Field index
 five_wh_one_plus: what

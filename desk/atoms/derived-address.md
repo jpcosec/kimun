@@ -1,4 +1,5 @@
 ---
+layer: shared
 id: derived-address
 title: Derived address
 five_wh_one_plus: what

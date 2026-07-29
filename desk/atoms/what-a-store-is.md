@@ -1,4 +1,5 @@
 ---
+layer: store
 id: what-a-store-is
 title: What a store is
 five_wh_one_plus: what

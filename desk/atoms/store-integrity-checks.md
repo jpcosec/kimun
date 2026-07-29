@@ -1,4 +1,5 @@
 ---
+layer: store
 id: store-integrity-checks
 title: Store integrity checks
 five_wh_one_plus: how
