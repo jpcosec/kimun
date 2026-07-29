@@ -4,8 +4,7 @@ title: Text layer vs graph layer
 five_wh_one_plus: why
 tags:
 - system:sldb
-- layer:architecture
-- topic:boundary
+- domain:architecture.boundaries
 provenance: /home/jp/proyectos/hum-ecosystem/tools/sldb-refactor-worktree/docs/architecture/sldb-text-layer-vs-kgdb-graph-layer.md
 ---
 

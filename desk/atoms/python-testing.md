@@ -4,8 +4,7 @@ title: Python testing
 five_wh_one_plus: how
 tags:
 - system:sldb
-- layer:cli
-- topic:testing
+- domain:quality.testing.python
 provenance: desk/rituals/testing.md
 ---
 

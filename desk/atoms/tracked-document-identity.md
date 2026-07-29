@@ -4,8 +4,7 @@ title: Tracked document identity
 five_wh_one_plus: what
 tags:
 - system:sldb
-- layer:runtime
-- topic:documents
+- domain:store.integrity
 provenance: /home/jp/proyectos/hum-ecosystem/tools/sldb/docs/faq.md
 ---
 

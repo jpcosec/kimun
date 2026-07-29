@@ -4,8 +4,7 @@ title: Compose rendered document view
 five_wh_one_plus: when
 tags:
 - system:sldb
-- layer:cli
-- topic:composition
+- domain:surfaces.cli.workflows
 provenance: /home/jp/proyectos/hum-ecosystem/tools/sldb/docs/faq.md
 ---
 

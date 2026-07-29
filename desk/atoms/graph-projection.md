@@ -4,8 +4,7 @@ title: Graph projection
 five_wh_one_plus: how
 tags:
 - system:sldb
-- layer:runtime
-- topic:graphs
+- domain:runtime.projections
 provenance: desk/drawer/features/feature-sldb-explicit-target-architecture.md
 ---
 

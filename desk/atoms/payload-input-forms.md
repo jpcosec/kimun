@@ -4,8 +4,7 @@ title: Payload input forms
 five_wh_one_plus: how
 tags:
 - system:sldb
-- layer:cli
-- topic:payloads
+- domain:surfaces.cli.inputs-outputs
 provenance: /home/jp/proyectos/hum-ecosystem/tools/sldb/docs/faq.md
 ---
 

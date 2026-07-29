@@ -4,8 +4,7 @@ title: Semantic reference
 five_wh_one_plus: what
 tags:
 - system:sldb
-- layer:runtime
-- topic:semantic-indexing
+- domain:runtime.semantic
 provenance: desk/drawer/features/feature-canonical-ast-design-current-state.md
 ---
 

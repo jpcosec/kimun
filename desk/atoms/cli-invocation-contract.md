@@ -4,8 +4,7 @@ title: CLI invocation contract
 five_wh_one_plus: how
 tags:
 - system:sldb
-- layer:cli
-- topic:cli
+- domain:surfaces.cli.inputs-outputs
 provenance: /home/jp/proyectos/hum-ecosystem/tools/sldb/README.md
 ---
 

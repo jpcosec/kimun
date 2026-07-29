@@ -4,8 +4,7 @@ title: Projection
 five_wh_one_plus: what
 tags:
 - system:sldb
-- layer:document-model
-- topic:projections
+- domain:runtime.projections
 provenance: desk/drawer/features/feature-sldb-explicit-target-architecture.md
 ---
 

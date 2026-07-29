@@ -4,8 +4,7 @@ title: Shallow `title + body` default
 five_wh_one_plus: when
 tags:
 - system:sldb
-- layer:document-model
-- topic:authoring
+- domain:model.text-structure
 provenance: /home/jp/proyectos/hum-ecosystem/tools/sldb/docs/faq.md
 ---
 

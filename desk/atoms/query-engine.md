@@ -4,8 +4,7 @@ title: Query engine
 five_wh_one_plus: how
 tags:
 - system:sldb
-- layer:runtime
-- topic:queries
+- domain:runtime.query
 provenance: /home/jp/proyectos/hum-ecosystem/tools/sldb/README.md
 ---
 

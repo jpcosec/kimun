@@ -4,8 +4,7 @@ title: Canonical Identity
 five_wh_one_plus: what
 tags:
 - system:sldb
-- layer:document-model
-- topic:identity
+- domain:model.ast-core
 provenance: desk/drawer/features/feature-canonical-ast-design-current-state.md
 ---
 

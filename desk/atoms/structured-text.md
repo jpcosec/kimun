@@ -4,8 +4,7 @@ title: Structured text
 five_wh_one_plus: what
 tags:
 - system:sldb
-- layer:document-model
-- topic:structured-text
+- domain:model.text-structure
 provenance: /home/jp/proyectos/hum-ecosystem/tools/sldb-refactor-worktree/docs/atoms/structured-text.atom.md
 ---
 

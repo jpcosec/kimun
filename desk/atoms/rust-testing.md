@@ -4,8 +4,7 @@ title: Rust testing
 five_wh_one_plus: how
 tags:
 - system:sldb
-- layer:runtime
-- topic:testing
+- domain:quality.testing.rust
 provenance: desk/rituals/testing.md
 ---
 

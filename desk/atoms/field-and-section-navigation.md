@@ -4,8 +4,7 @@ title: Field and section navigation
 five_wh_one_plus: how
 tags:
 - system:sldb
-- layer:cli
-- topic:navigation
+- domain:surfaces.cli.workflows
 provenance: /home/jp/proyectos/hum-ecosystem/tools/sldb/README.md
 ---
 

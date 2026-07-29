@@ -4,8 +4,7 @@ title: Rust core
 five_wh_one_plus: what
 tags:
 - system:sldb
-- layer:runtime
-- topic:rust
+- domain:implementation.rust-core
 provenance: desk/drawer/features/feature-sldb-explicit-target-architecture.md
 ---
 

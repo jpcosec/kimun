@@ -4,8 +4,7 @@ title: Patterns
 five_wh_one_plus: how
 tags:
 - system:sldb
-- layer:runtime
-- topic:patterns
+- domain:quality.patterns.generic
 provenance: desk/drawer/features/feature-canonical-ast-design-current-state.md
 ---
 

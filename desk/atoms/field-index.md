@@ -4,8 +4,7 @@ title: Field index
 five_wh_one_plus: what
 tags:
 - system:sldb
-- layer:runtime
-- topic:indexes
+- domain:store.indexes
 provenance: /home/jp/proyectos/hum-ecosystem/tools/sldb/docs/faq.md
 ---
 

@@ -4,8 +4,7 @@ title: faq command group
 five_wh_one_plus: where
 tags:
 - system:sldb
-- layer:cli
-- topic:onboarding
+- domain:surfaces.cli.onboarding
 provenance: /home/jp/proyectos/hum-ecosystem/tools/sldb/docs/faq.md
 ---
 

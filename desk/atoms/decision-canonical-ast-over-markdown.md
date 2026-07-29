@@ -1,11 +1,10 @@
 ---
 id: decision-canonical-ast-over-markdown
-title: Decision: canonical AST over Markdown
+title: "Decision: canonical AST over Markdown"
 five_wh_one_plus: why
 tags:
 - system:sldb
-- layer:architecture
-- topic:decision
+- domain:architecture.decisions
 provenance: desk/drawer/features/feature-sldb-target-architecture-ast-core.md
 ---
 

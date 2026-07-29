@@ -4,8 +4,7 @@ title: Document materializer
 five_wh_one_plus: how
 tags:
 - system:sldb
-- layer:document-model
-- topic:materialization
+- domain:pipeline.emitters
 provenance: desk/drawer/features/feature-sldb-product-principles-and-cli-continuity.md
 ---
 

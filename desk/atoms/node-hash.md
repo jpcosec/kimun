@@ -4,8 +4,7 @@ title: Node Hash
 five_wh_one_plus: what
 tags:
 - system:sldb
-- layer:runtime
-- topic:hashing
+- domain:store.hashing
 provenance: desk/drawer/features/feature-canonical-ast-design-current-state.md
 ---
 

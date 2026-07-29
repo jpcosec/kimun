@@ -4,8 +4,7 @@ title: Store infrastructure
 five_wh_one_plus: what
 tags:
 - system:sldb
-- layer:runtime
-- topic:store
+- domain:store.graph
 provenance: desk/drawer/features/feature-sldb-explicit-target-architecture.md
 ---
 

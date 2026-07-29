@@ -4,8 +4,7 @@ title: AST locator
 five_wh_one_plus: what
 tags:
 - system:sldb
-- layer:runtime
-- topic:anchors
+- domain:model.anchors
 provenance: desk/drawer/features/feature-canonical-ast-design-current-state.md
 ---
 

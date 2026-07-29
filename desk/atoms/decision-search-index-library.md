@@ -3,8 +3,8 @@ id: decision-search-index-library
 title: Decision search index library
 five_wh_one_plus: why
 tags:
-- architecture:decision
-- concept:store
+- system:sldb
+- domain:architecture.decisions
 provenance: desk/drawer/features/feature-rust-library-stack.md
 ---
 

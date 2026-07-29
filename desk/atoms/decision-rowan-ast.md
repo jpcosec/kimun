@@ -3,8 +3,8 @@ id: decision-rowan-ast
 title: Decision rowan AST
 five_wh_one_plus: why
 tags:
-- architecture:decision
-- concept:ast
+- system:sldb
+- domain:architecture.decisions
 provenance: desk/drawer/features/feature-rust-library-stack.md
 ---
 

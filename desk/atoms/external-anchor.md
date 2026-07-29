@@ -4,8 +4,7 @@ title: External Anchor
 five_wh_one_plus: what
 tags:
 - system:sldb
-- layer:document-model
-- topic:anchors
+- domain:model.anchors
 provenance: desk/drawer/features/feature-canonical-ast-design-current-state.md
 ---
 

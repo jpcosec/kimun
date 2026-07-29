@@ -4,8 +4,7 @@ title: Model reference format
 five_wh_one_plus: how
 tags:
 - system:sldb
-- layer:cli
-- topic:models
+- domain:surfaces.cli.inputs-outputs
 provenance: /home/jp/proyectos/hum-ecosystem/tools/sldb/README.md
 ---
 

@@ -1,11 +1,10 @@
 ---
 id: decision-v1-parity-before-scope-expansion
-title: Decision: v1 parity before scope expansion
+title: "Decision: v1 parity before scope expansion"
 five_wh_one_plus: why
 tags:
 - system:sldb
-- layer:architecture
-- topic:decision
+- domain:architecture.migration-strategy
 provenance: desk/drawer/features/feature-sldb-product-principles-and-cli-continuity.md
 ---
 

@@ -4,8 +4,7 @@ title: Code linting
 five_wh_one_plus: how
 tags:
 - system:sldb
-- layer:runtime
-- topic:clean-code
+- domain:quality.clean-code.generic
 provenance: desk/drawer/features/feature-sldb-product-principles-and-cli-continuity.md
 ---
 

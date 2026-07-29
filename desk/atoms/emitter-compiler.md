@@ -4,8 +4,7 @@ title: Emitter / compiler
 five_wh_one_plus: how
 tags:
 - system:sldb
-- layer:document-model
-- topic:emitters
+- domain:pipeline.emitters
 provenance: desk/drawer/features/feature-sldb-explicit-target-architecture.md
 ---
 

@@ -4,8 +4,7 @@ title: Derived index
 five_wh_one_plus: what
 tags:
 - system:sldb
-- layer:runtime
-- topic:indexes
+- domain:store.indexes
 provenance: docs/architecture/target-system-overview.md
 ---
 

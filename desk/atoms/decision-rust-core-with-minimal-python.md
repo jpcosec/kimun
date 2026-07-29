@@ -1,11 +1,10 @@
 ---
 id: decision-rust-core-with-minimal-python
-title: Decision: Rust core with minimal Python
+title: "Decision: Rust core with minimal Python"
 five_wh_one_plus: why
 tags:
 - system:sldb
-- layer:architecture
-- topic:decision
+- domain:architecture.decisions
 provenance: desk/drawer/features/feature-sldb-explicit-target-architecture.md
 ---
 

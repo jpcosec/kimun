@@ -4,8 +4,7 @@ title: Store integrity checks
 five_wh_one_plus: how
 tags:
 - system:sldb
-- layer:runtime
-- topic:store
+- domain:store.integrity
 provenance: /home/jp/proyectos/hum-ecosystem/tools/sldb/docs/faq.md
 ---
 

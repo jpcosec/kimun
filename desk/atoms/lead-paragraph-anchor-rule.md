@@ -4,8 +4,7 @@ title: Lead paragraph anchor rule
 five_wh_one_plus: how
 tags:
 - system:sldb
-- layer:document-model
-- topic:authoring
+- domain:model.text-structure
 provenance: /home/jp/proyectos/hum-ecosystem/tools/sldb/docs/README.md
 ---
 

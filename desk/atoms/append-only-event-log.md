@@ -4,8 +4,7 @@ title: Append-only event log
 five_wh_one_plus: what
 tags:
 - system:sldb
-- layer:runtime
-- topic:history
+- domain:store.history
 provenance: desk/drawer/features/feature-canonical-ast-design-current-state.md
 ---
 

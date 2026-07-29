@@ -4,8 +4,7 @@ title: Python patterns
 five_wh_one_plus: how
 tags:
 - system:sldb
-- layer:cli
-- topic:patterns
+- domain:quality.patterns.python
 provenance: desk/drawer/features/feature-sldb-product-principles-and-cli-continuity.md
 ---
 

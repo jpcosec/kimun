@@ -4,8 +4,7 @@ title: Testing
 five_wh_one_plus: how
 tags:
 - system:sldb
-- layer:runtime
-- topic:testing
+- domain:quality.testing.generic
 provenance: desk/rituals/testing.md
 ---
 

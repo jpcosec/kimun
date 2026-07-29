@@ -4,8 +4,7 @@ title: Canonical Existence
 five_wh_one_plus: what
 tags:
 - system:sldb
-- layer:document-model
-- topic:materialization
+- domain:model.ast-core
 provenance: desk/drawer/features/feature-sldb-product-principles-and-cli-continuity.md
 ---
 

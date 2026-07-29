@@ -4,8 +4,7 @@ title: CLI Workflow Surface
 five_wh_one_plus: where
 tags:
 - system:sldb
-- layer:cli
-- topic:cli
+- domain:surfaces.cli.command-groups
 provenance: desk/drawer/features/feature-sldb-product-principles-and-cli-continuity.md
 ---
 

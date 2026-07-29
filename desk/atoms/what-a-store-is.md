@@ -4,8 +4,7 @@ title: What a store is
 five_wh_one_plus: what
 tags:
 - system:sldb
-- layer:runtime
-- topic:store
+- domain:store.graph
 provenance: /home/jp/proyectos/hum-ecosystem/tools/sldb/docs/faq.md
 ---
 

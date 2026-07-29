@@ -4,8 +4,7 @@ title: StructuredNLDoc contract
 five_wh_one_plus: what
 tags:
 - system:sldb
-- layer:document-model
-- topic:models
+- domain:model.documents
 provenance: /home/jp/proyectos/hum-ecosystem/tools/sldb/docs/faq.md
 ---
 

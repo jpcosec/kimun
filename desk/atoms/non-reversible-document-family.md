@@ -4,8 +4,7 @@ title: Non-reversible document family
 five_wh_one_plus: when
 tags:
 - system:sldb
-- layer:document-model
-- topic:document-families
+- domain:model.documents
 provenance: desk/drawer/features/feature-canonical-ast-design-current-state.md
 ---
 

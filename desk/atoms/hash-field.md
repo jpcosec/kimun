@@ -4,8 +4,7 @@ title: Hash field
 five_wh_one_plus: what
 tags:
 - system:sldb
-- layer:runtime
-- topic:hashing
+- domain:store.hashing
 provenance: docs/architecture/target-system-overview.md
 ---
 

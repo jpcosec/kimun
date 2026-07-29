@@ -4,8 +4,7 @@ title: Field descriptions are required contract
 five_wh_one_plus: why
 tags:
 - system:sldb
-- layer:document-model
-- topic:fields
+- domain:architecture.decisions
 provenance: /home/jp/proyectos/hum-ecosystem/tools/sldb/README.md
 ---
 

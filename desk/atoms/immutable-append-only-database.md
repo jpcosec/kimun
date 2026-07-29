@@ -3,8 +3,8 @@ id: immutable-append-only-database
 title: Immutable append-only database
 five_wh_one_plus: why
 tags:
-- architecture:decision
-- concept:store
+- system:sldb
+- domain:store.graph
 provenance: docs/architecture/target-system-overview.md
 ---
 

@@ -4,8 +4,7 @@ title: Semantic tag
 five_wh_one_plus: what
 tags:
 - system:sldb
-- layer:runtime
-- topic:semantic-indexing
+- domain:runtime.semantic
 provenance: /home/jp/proyectos/hum-ecosystem/tools/sldb/docs/faq.md
 ---
 

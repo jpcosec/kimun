@@ -4,8 +4,7 @@ title: Highlighting engine
 five_wh_one_plus: what
 tags:
 - system:sldb
-- layer:runtime
-- topic:ux
+- domain:surfaces.visual.inspectors
 provenance: desk/drawer/features/feature-sldb-product-principles-and-cli-continuity.md
 ---
 

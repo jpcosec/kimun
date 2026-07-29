@@ -4,8 +4,7 @@ title: Link edge
 five_wh_one_plus: what
 tags:
 - system:sldb
-- layer:runtime
-- topic:relations
+- domain:model.relations
 provenance: desk/drawer/features/feature-canonical-ast-design-current-state.md
 ---
 

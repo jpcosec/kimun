@@ -4,8 +4,7 @@ title: Direct mode
 five_wh_one_plus: when
 tags:
 - system:sldb
-- layer:cli
-- topic:workflows
+- domain:surfaces.cli.workflows
 provenance: /home/jp/proyectos/hum-ecosystem/tools/sldb/docs/faq.md
 ---
 

@@ -3,8 +3,8 @@ id: decision-pyo3-ffi
 title: Decision pyo3 FFI
 five_wh_one_plus: why
 tags:
-- architecture:decision
-- concept:rust-core
+- system:sldb
+- domain:architecture.decisions
 provenance: desk/drawer/features/feature-rust-library-stack.md
 ---
 

@@ -4,8 +4,7 @@ title: Fragment id
 five_wh_one_plus: what
 tags:
 - system:sldb
-- layer:document-model
-- topic:addressability
+- domain:model.addressability
 provenance: desk/drawer/features/feature-canonical-ast-design-current-state.md
 ---
 
