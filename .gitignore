@@ -22,3 +22,6 @@ dist/
 .sldb/.config/
 
 .DS_Store
+# Rust build artifacts
+sldb-core/target/
+target/
