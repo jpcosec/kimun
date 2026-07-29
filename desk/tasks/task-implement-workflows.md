@@ -6,7 +6,7 @@ tags:
 - workspace:desk
 - artifact:task
 routine: routine-task-implement-workflows
-current_node: checklist-task-implement-workflows-execution-ready
+current_node: complete
 history: []
 references: []
 depends_on:
@@ -49,7 +49,7 @@ _Outline the expected implementation route or affected surface._
 
 _List the checks required before this task can close._
 
-- echo 'Validation pending implementation'
+- 
 
 ## Done When
 
