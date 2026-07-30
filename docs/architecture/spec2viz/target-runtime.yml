@@ -164,7 +164,7 @@ data:
       label: Git remotes
       kind: boundary
     llm_services:
-      label: embedding / LLM services
+      label: embedding / LLM services (deferred after first slice)
       kind: boundary
     external_apis:
       label: external tools / APIs
@@ -254,7 +254,7 @@ data:
       protocol: network / tool API
     - from: query_engine
       to: llm_services
-      protocol: semantic provider API
+      protocol: deferred semantic provider API
     - from: recovery_manager
       to: local_database
       protocol: verify / replay / rebuild

@@ -176,9 +176,6 @@ data:
       kind: core
       contains:
         - StructuralProjection
-        - LispSchemaProjection
-        - LispMacroProjection
-        - MarkdownProjection
         - SemanticProjection
         - EmbeddingIndex
         - LogicEngine
@@ -187,24 +184,12 @@ data:
       label: structural AST projection
       kind: core
 
-    LispSchemaProjection:
-      label: Lisp schema projection
-      kind: core
-
-    LispMacroProjection:
-      label: Lisp macro projection
-      kind: core
-
-    MarkdownProjection:
-      label: Markdown text projection
-      kind: core
-
     SemanticProjection:
       label: semantic graph projection
       kind: core
 
     EmbeddingIndex:
-      label: embedding index
+      label: embedding index (deferred after first slice)
       kind: core
 
     LogicEngine:
@@ -303,7 +288,7 @@ data:
       kind: boundary
 
     Models:
-      label: embedding / LLM services
+      label: embedding / LLM services (deferred after first slice)
       kind: boundary
 
   edges:
@@ -467,21 +452,12 @@ data:
       to: StructuralProjection
       relation: builds
     - from: ProjectionEngine
-      to: LispSchemaProjection
-      relation: builds
-    - from: ProjectionEngine
-      to: LispMacroProjection
-      relation: builds
-    - from: ProjectionEngine
-      to: MarkdownProjection
-      relation: builds
-    - from: ProjectionEngine
       to: SemanticProjection
       relation: builds
     - from: ProjectionEngine
       to: RendererRegistry
       relation: renders_with
-    - from: MarkdownProjection
+    - from: RendererRegistry
       to: MarkdownSurface
       relation: materializes_as
     - from: QueryEngine
@@ -492,13 +468,13 @@ data:
       relation: evaluates
     - from: QueryEngine
       to: EmbeddingIndex
-      relation: queries
+      relation: may_query_later
     - from: QueryEngine
       to: Observability
       relation: emits_query_signals_to
     - from: EmbeddingIndex
       to: Models
-      relation: uses
+      relation: may_use_later
     - from: EventBus
       to: HookEngine
       relation: triggers

@@ -13,11 +13,13 @@ provenance: reasoning.md
 
 ## Answer
 
-A projection is a deterministic derived view computed from a canonical revision under an explicit projection specification and engine version.
+A projection is a deterministic derived view computed from canonical kernel/database state under an explicit projection specification and engine version.
 
 ## Supporting points
 
-- Structural ASTs, semantic graphs, renders, embeddings, logic views, Markdown surfaces, and Lisp forms are all projections.
+- A projection selects, reorganizes, or interprets canonical state for a specific purpose.
+- Semantic graphs, backlinks, dependency views, anchor maps, and other specialized graph/runtime views are projections.
+- Generic renders or materializations such as Markdown, HTML, JSON, or API payloads should be described as renders/materializations rather than as projections unless a doc needs both terms explicitly.
 - Projections never become the primary authority for the document; they are cached or persisted as derived artifacts.
 - A projection result must remain traceable to `revision + projection spec + engine version + source hash`.
 - Projection invalidation is allowed and expected; rebuildability is a core property of the architecture.

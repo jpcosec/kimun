@@ -13,12 +13,12 @@ provenance: desk/drawer/features/feature-sldb-explicit-target-architecture.md
 
 ## Answer
 
-The Markdown emitter compiles Rust-owned canonical structure back into the Markdown text surface as a derived projection.
+The Markdown emitter compiles Rust-owned canonical structure back into the Markdown text surface as a derived materialization.
 
 ## Supporting points
 
 - Markdown output remains important for users.
-- Materialized Markdown is projection, not existence itself.
+- Materialized Markdown is a rendered output from canonical state, not existence itself.
 - This emitter closes the first safe round-trip slice.
 
 ## Related atoms

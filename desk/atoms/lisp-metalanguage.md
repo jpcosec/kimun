@@ -14,12 +14,12 @@ provenance: reasoning.md
 
 ## Answer
 
-Lisp is a projection language around the Rust kernel for expressing schemas, macros, queries, transforms, rules, and effects, but it is not an authority that mutates persistence directly.
+Lisp is an authored language surface around the Rust kernel for expressing schemas, macros, queries, transforms, rules, and effects, but it is not an authority that mutates persistence directly.
 
 ## Supporting points
 
 - Lisp expressions must compile to `TransactionPlan`, `QueryPlan`, `ProjectionPlan`, or `EffectPlan` before execution.
-- Lisp may also carry schema and functional forms as projection surfaces around kernel meaning.
+- Authored Lisp forms are input surfaces; any later kernel-derived Lisp output is a materialization, not the authority itself.
 - The kernel validates compiled plans against types, invariants, and capabilities.
 - This preserves extensibility without turning macros into a hidden privileged persistence API.
 

@@ -13,13 +13,15 @@ provenance: core_README.md
 
 ## Answer
 
-The Markdown text surface is the human-authored textual projection used for writing, reading, importing, and rendering structured content around the Rust kernel.
+The Markdown text surface is a human-authored textual input surface and output materialization around the Rust kernel.
 
 ## Supporting points
 
 - Markdown is useful as text, not as the system authority.
+- Authored Markdown is input, not canonical state and not yet a projection.
+- Rendered Markdown is a materialized output from Rust-owned canonical meaning.
 - Markdown import and render must remain subordinate to Rust-owned canonical meaning.
-- Markdown may be round-trippable for reversible families while still remaining a projection surface.
+- Markdown may be round-trippable for reversible families while still remaining non-authoritative.
 
 ## Related atoms
 

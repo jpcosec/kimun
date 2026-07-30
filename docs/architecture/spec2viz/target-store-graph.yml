@@ -127,7 +127,7 @@ data:
       kind: database
 
     SemanticIndex:
-      label: semantic / embedding index
+      label: semantic / embedding index (deferred after first slice)
       kind: database
 
     ProjectionCache:

@@ -2,15 +2,7 @@
 # board-xxx
 id: board-001
 scope: desk
-tasks:
-- desk/tasks/task-freeze-phase-1-parity-contract.md
-- desk/tasks/task-freeze-python-rust-ownership-and-ffi-contract.md
-- desk/tasks/task-specify-rust-canonical-core-contract.md
-- desk/tasks/task-specify-markdown-roundtrip-contract.md
-- desk/tasks/task-specify-graph-store-contract.md
-- desk/tasks/task-specify-anchoring-contract.md
-- desk/tasks/task-specify-query-and-index-parity-contract.md
-- desk/tasks/task-specify-cli-parity-contract.md
+tasks: []
 pills:
 - desk/contexts/pills.md
 - desk/contexts/pill-planning-contracts.md
@@ -27,23 +19,21 @@ tags:
 
 ## Purpose
 
-Route bounded workflow tasks that freeze the exact Phase 1 product contracts from atoms before any implementation starts.
+Keep the active board clear until the first implementation promotion set is ready.
 
 ## Notes
 
-- The accidental implementation was removed from the workspace.
-- This board now routes contract/specification tasks only.
-- Atoms are the product truth.
-- Spec2viz is the target projection.
-- No task here claims implementation progress.
+- The contract-freezing pass is complete.
+- The next promotion set is limited to the first implementation slice already agreed:
+  - Rust kernel foundation
+  - Lisp control/data surface
+  - Markdown roundtrip first slice
+- Those macrotasks are currently drafted in `desk/drawer/features/` and are not promoted yet.
+- Embeddings and semantic-provider work are deferred and must not enter the first promotion set.
+- No entry here claims implementation progress from this planning-only workspace.
 
-## Task Details
+## Promotion queue
 
-- Freeze Phase 1 Parity Contract [closed] - Lock the exact user-visible Phase 1 product contract and non-goals.
-- Freeze Python/Rust Ownership and FFI Contract [closed] - Lock the orchestration boundary so Python stays thin and Rust owns the canonical engine.
-- Specify Rust Canonical Core Contract [closed] - Define the exact canonical AST, hashing, selector, and relation substrate required by Phase 1.
-- Specify Markdown Round-Trip Contract [closed] - Define the exact reversible Markdown import/render contract and proof obligations.
-- Specify Graph Store Contract [closed] - Define the exact append-only persistence, derived indexes, and store integrity contract.
-- Specify Anchoring Contract [closed] - Define the exact canonical anchor payload and anchor-kind behavior required by the target.
-- Specify Query and Index Parity Contract [closed] - Define the exact Phase 1 retrieval/index surface without semantic scope expansion.
-- Specify CLI Parity Contract [closed] - Define the exact command-group continuity surface that consumes the approved contracts above.
+- `desk/drawer/features/feature-rust-kernel-foundation-first-slice.md`
+- `desk/drawer/features/feature-lisp-control-and-data-surface-first-slice.md`
+- `desk/drawer/features/feature-markdown-roundtrip-first-slice.md`

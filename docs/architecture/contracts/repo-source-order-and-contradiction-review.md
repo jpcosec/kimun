@@ -65,7 +65,7 @@ Use this order when sources disagree.
 - `docs/architecture/spec2viz/` = diagram projections
 - `docs/architecture/target-system-overview.md` = concise target summary
 - `desk/tasks/` + `desk/contexts/` + `desk/rituals/` = workflow harness state
-- `docs/reports/` = historical analysis that cannot override current architecture state
+- superseded historical analysis should live in Git history rather than in the live KB
 
 ## Contradiction review
 
@@ -74,15 +74,15 @@ Use this order when sources disagree.
 - Resolved.
 - `docs/README.md` now reflects `contracts/`, planning packs, and `reports/`.
 
-### 2. Planning-only workspace vs `docs/reports/code-review-report-2026-07-29.md`
+### 2. Planning-only workspace vs prior historical review material
 
-- Resolved by authority classification.
-- The report remains historical and non-authoritative for the current planning workspace.
+- Resolved by KB policy.
+- Superseded review material belongs in Git history, not in the live planning workspace.
 
-### 3. Current board state vs `docs/reports/task-audit-report-2026-07-29.md`
+### 3. Current board state vs prior historical audit material
 
-- Resolved by authority classification.
-- Board and task files remain current workflow truth; the audit report remains historical analysis.
+- Resolved by KB policy.
+- Board and task files remain current workflow truth; stale audit material should not remain in the live KB.
 
 ### 4. Phase 1 family scope: `phase-1-parity-contract.md` vs `rust-canonical-core-contract.md`
 
@@ -106,11 +106,12 @@ Use this order when sources disagree.
 - Treat contract docs as lower-authority materializations that must align upward.
 - Treat overview/spec2viz as summary/projection documents.
 - Treat board/task/pill/ritual files as workflow truth, not architecture truth.
-- Treat reports and older planning packs as historical unless re-anchored by an active task or a current contract.
+- Treat superseded reports as Git-retained history, not as live KB material.
+- Treat older planning packs as historical unless re-anchored by an active task or a current contract.
 
 ## Downstream constraints
 
-- No future planning task may cite `docs/reports/` as authority over atoms, contracts, board state, or workspace guardrails.
+- No future planning task may cite deleted historical reports as authority over atoms, contracts, board state, or workspace guardrails.
 - Any future doc that summarizes `docs/` contents must include `contracts/`, `reports/`, and planning packs or explicitly mark itself partial.
 - Any Phase 1 work that mentions non-Markdown emitters or non-reversible families must state whether it is long-term direction or Phase 1 obligation.
 - Any new contradiction review must use this precedence order unless replaced by a newer contract.

@@ -13,12 +13,13 @@ provenance: core_README.md
 
 ## Answer
 
-The Lisp macro language is the projection surface used to express reusable functional behavior that lowers into kernel-validated plans rather than mutating canonical state directly.
+The Lisp macro language is an authored input surface used to express reusable functional behavior that lowers into kernel-validated plans rather than mutating canonical state directly.
 
 ## Supporting points
 
 - Macros are for functionality, composition, and reuse.
 - Macro expansion does not bypass Rust-owned validation, typing, capability checks, or transaction rules.
+- Authored macro forms are inputs; any later emitted Lisp representation from canonical state is a materialization.
 - Macro forms should be translatable or hostable by other surfaces without changing kernel authority.
 
 ## Related atoms

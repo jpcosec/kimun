@@ -12,7 +12,6 @@ This directory keeps planning and architecture material for the current kernel/c
 - `architecture/spec2viz/target-anchoring.yml`
 - `architecture/phase-1-resolution-pack.md`
 - `architecture/phase-1-macro-implementation-plan.md`
-- `reports/`
 
 ## Authority note
 
@@ -25,6 +24,6 @@ The higher-priority architecture sources for this repo are the root core docs:
 5. `libraries_core.md`
 6. `plan_core.md`
 
-`desk/atoms/` remain durable concept truth after those core docs. Contracts and reports under `docs/` are lower-authority materializations and historical analysis.
+`desk/atoms/` remain durable concept truth after those core docs. Contracts under `docs/` are lower-authority materializations. Superseded historical analysis should live in Git history, not in the live KB.
 
 Legacy runtime docs, current-state snapshots, old atom materializations, and request-era documents were intentionally removed from this worktree.
