@@ -180,7 +180,7 @@ Source basis:
 - Embeddings and embedding storage details
 - Semantic-index placeholders such as proposition or matrix-style engines
 - Text-as-graph placeholders
-- Exact Rust schema, serialization format, storage engine, and selector grammar
+- Exact Clojure schema, serialization format, storage engine, and selector grammar
 - Exact CLI command continuity matrix
 
 ## Review findings

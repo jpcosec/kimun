@@ -5,8 +5,8 @@ title: Lisp macro language
 five_wh_one_plus: what
 tags:
 - system:sldb
-- domain:architecture.boundaries
-provenance: core_README.md
+- domain:architecture-boundaries
+provenance: source docs/core/core_README.md
 ---
 
 # Lisp macro language
@@ -18,7 +18,7 @@ The Lisp macro language is an authored input surface used to express reusable fu
 ## Supporting points
 
 - Macros are for functionality, composition, and reuse.
-- Macro expansion does not bypass Rust-owned validation, typing, capability checks, or transaction rules.
+- Macro expansion does not bypass Clojure-owned validation, typing, capability checks, or transaction rules.
 - Authored macro forms are inputs; any later emitted Lisp representation from canonical state is a materialization.
 - Macro forms should be translatable or hostable by other surfaces without changing kernel authority.
 
@@ -26,7 +26,7 @@ The Lisp macro language is an authored input surface used to express reusable fu
 
 ### Depends on
 
-- [depends_on:: [[rust-core]]]
+- [depends_on:: [[clojure-core]]]
 - [depends_on:: [[lisp-metalanguage]]]
 - [depends_on:: [[transaction-plan]]]
 - [depends_on:: [[effect-plan]]]

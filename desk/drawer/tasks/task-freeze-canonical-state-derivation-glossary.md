@@ -15,7 +15,7 @@ references:
 - interfaces.md
 - libraries_core.md
 - plan_core.md
-- desk/atoms/rust-core.md
+- desk/atoms/clojure-core.md
 - desk/atoms/projection.md
 - desk/atoms/document-materializer.md
 - docs/architecture/target-system-overview.md
@@ -50,7 +50,7 @@ Produce one planning-only glossary contract and align the most directly affected
 ## Validation
 
 - Does the artifact define the glossary terms explicitly?
-- Does it keep canonical authority in Rust-owned database-backed state?
+- Does it keep canonical authority in Clojure-owned database-backed state?
 - Does it distinguish input, render/materialization, projection, and derived index?
 - Does it stay planning-only?
 

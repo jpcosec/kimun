@@ -5,8 +5,8 @@ title: Patterns
 five_wh_one_plus: how
 tags:
 - system:sldb
-- domain:quality.patterns.generic
-provenance: desk/drawer/features/feature-canonical-ast-design-current-state.md
+- domain:quality-patterns-generic
+provenance: source docs/drawer-features/feature-canonical-ast-design-current-state.md
 ---
 
 # Patterns
@@ -25,7 +25,7 @@ Patterns capture reusable architectural and implementation shapes that should re
 
 ### Supports
 
-- [supports:: [[rust-patterns]]]
+- [supports:: [[clojure-patterns]]]
 - [supports:: [[python-patterns]]]
 
 ### 5WH1+ neighborhood

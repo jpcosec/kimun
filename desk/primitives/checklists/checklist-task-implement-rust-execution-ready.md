@@ -1,6 +1,6 @@
 ---
 # checklist-xxx
-id: checklist-task-implement-rust-execution-ready
+id: checklist-task-implement-clojure-execution-ready
 # draft | active | complete | archived
 status: active
 # List of condition-xxx paths

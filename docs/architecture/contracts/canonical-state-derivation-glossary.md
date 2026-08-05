@@ -12,7 +12,7 @@ Governing sources:
 - `interfaces.md`
 - `libraries_core.md`
 - `plan_core.md`
-- `desk/atoms/rust-core.md`
+- `desk/atoms/clojure-core.md`
 - `desk/atoms/document-materializer.md`
 - `docs/architecture/target-system-overview.md`
 
@@ -62,7 +62,7 @@ Rule:
 
 ### Canonical state
 
-The maximum authority of knowledge in this system: Rust-owned kernel state persisted in the canonical database.
+The maximum authority of knowledge in this system: Clojure-owned kernel state persisted in the canonical database.
 
 It includes:
 
@@ -143,9 +143,9 @@ Rule:
 
 - do not call authored Markdown or authored Lisp a projection
 - do not call generic rendered Markdown a graph-style projection when `render` or `materialization` is clearer
-- keep the authority statement fixed: Rust-owned canonical state persisted in the database is the source of truth
+- keep the authority statement fixed: Clojure-owned canonical state persisted in the database is the source of truth
 - use `projection` for specialized views and `render/materialization` for representation output unless a doc explicitly needs both terms
 
 ## Validation attestation
 
-This artifact defines the glossary, keeps authority in Rust-owned canonical database-backed state, distinguishes the derivation categories clearly, and makes no implementation progress claims.
+This artifact defines the glossary, keeps authority in Clojure-owned canonical database-backed state, distinguishes the derivation categories clearly, and makes no implementation progress claims.

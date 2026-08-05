@@ -5,8 +5,8 @@ title: Semantic indexing
 five_wh_one_plus: how
 tags:
 - system:sldb
-- domain:runtime.semantic
-provenance: desk/drawer/features/feature-canonical-ast-design-current-state.md
+- domain:runtime-semantic
+provenance: source docs/drawer-features/feature-canonical-ast-design-current-state.md
 ---
 
 # Semantic indexing
@@ -40,4 +40,4 @@ Semantic indexing is the infrastructure that derives richer retrieval and semant
 - This atom is typed by its `five_wh_one_plus` field and should be queried together with nearby `what`/`how`/`when`/`where` atoms rather than as an isolated note.
 
 ### Depends on
-- [depends_on:: [[rust-core]]]
+- [depends_on:: [[clojure-core]]]

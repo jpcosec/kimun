@@ -1,12 +1,12 @@
 ---
 # checklist-xxx
-id: checklist-task-implement-rust-closeout-ready
+id: checklist-task-implement-clojure-closeout-ready
 # draft | active | complete | archived
 status: active
 # List of condition-xxx paths
 condition_refs:
-- condition-task-implement-rust-ready-for-closeout
-- condition-task-implement-rust-has-closeout-evidence
+- condition-task-implement-clojure-ready-for-closeout
+- condition-task-implement-clojure-has-closeout-evidence
 # all | any
 mode: all
 # e.g., system:deskops

@@ -1,11 +1,11 @@
 ---
 # checklist-xxx
-id: checklist-task-implement-rust-core-graph-store-and-rowan-ast-testing-ready
+id: checklist-task-implement-clojure-core-graph-store-and-rowan-ast-testing-ready
 # draft | active | complete | archived
 status: active
 # List of condition-xxx paths
 condition_refs:
-- condition-task-implement-rust-core-graph-store-and-rowan-ast-has-validation
+- condition-task-implement-clojure-core-graph-store-and-rowan-ast-has-validation
 # all | any
 mode: all
 # e.g., system:deskops

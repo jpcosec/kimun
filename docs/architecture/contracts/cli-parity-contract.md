@@ -2,7 +2,7 @@
 
 ## Purpose and governing sources
 
-This contract defines the terminal-facing surface of SLDB, ensuring continuity for existing users while enabling the new Rust-backed engine.
+This contract defines the terminal-facing surface of SLDB, ensuring continuity for existing users while enabling the new Clojure-backed engine.
 
 Governing sources:
 - `desk/atoms/cli-workflow-surface.md`
@@ -47,5 +47,5 @@ The CLI must implement the following top-level groups:
 ## UX Constraints
 
 - **Consistent Flags**: Standardized `-r/--recursive`, `-f/--format`, and `-o/--output`.
-- **Error Reporting**: Human-readable errors from the Python orchestration layer, wrapping technical Rust-core failures.
+- **Error Reporting**: Human-readable errors from the Python orchestration layer, wrapping technical Clojure-core failures.
 - **Output Formats**: Mandatory support for `text` (default) and `json`.

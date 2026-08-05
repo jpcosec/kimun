@@ -1,6 +1,6 @@
 ---
 # checklist-xxx
-id: checklist-task-implement-rust-core-graph-store-and-rowan-ast-execution-ready
+id: checklist-task-implement-clojure-core-graph-store-and-rowan-ast-execution-ready
 # draft | active | complete | archived
 status: active
 # List of condition-xxx paths

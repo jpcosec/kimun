@@ -5,8 +5,8 @@ title: Canonical AST
 five_wh_one_plus: what
 tags:
 - system:sldb
-- domain:model.ast-core
-provenance: desk/drawer/features/feature-sldb-explicit-target-architecture.md
+- domain:model-ast-core
+provenance: source docs/drawer-features/feature-sldb-explicit-target-architecture.md
 ---
 
 # Canonical AST
@@ -26,12 +26,12 @@ The canonical AST is the structural source of truth for authored document famili
 
 ### Supports
 
-- [supports:: [[rust-patterns]]]
-- [supports:: [[rust-testing]]]
+- [supports:: [[clojure-patterns]]]
+- [supports:: [[clojure-testing]]]
 
 ### Constrains
 
-- [constrains:: [[rust-code-linting]]]
+- [constrains:: [[clojure-code-linting]]]
 
 ### 5WH1+ neighborhood
 

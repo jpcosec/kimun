@@ -5,16 +5,16 @@ title: Store recovery
 five_wh_one_plus: how
 tags:
 - system:sldb
-- domain:store.graph
-- domain:quality.reliability
-provenance: also_core.md
+- domain:store-graph
+- domain:quality-reliability
+provenance: source docs/core/also_core.md
 ---
 
 # Store recovery
 
 ## Answer
 
-Store recovery is the set of replay, verify, rebuild, restore, and repair flows used to return the repository to a trustworthy state after crash, migration, degradation, or corruption.
+Store recovery is the set of replay, verify, rebuild, restore, and repair flows used to return the repository to a tclojureworthy state after crash, migration, degradation, or corruption.
 
 ## Supporting points
 

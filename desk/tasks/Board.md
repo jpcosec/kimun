@@ -25,15 +25,16 @@ Keep the active board clear until the first implementation promotion set is read
 
 - The contract-freezing pass is complete.
 - The next promotion set is limited to the first implementation slice already agreed:
-  - Rust kernel foundation
+  - Clojure kernel foundation
   - Lisp control/data surface
   - Markdown roundtrip first slice
 - Those macrotasks are currently drafted in `desk/drawer/features/` and are not promoted yet.
 - Embeddings and semantic-provider work are deferred and must not enter the first promotion set.
 - No entry here claims implementation progress from this planning-only workspace.
+- SpecYAML traceability layer closed (2026-08-04): specyaml is the machine-readable nexus between atoms and diagrams; vistas HTML is generated (`scripts/generate_vistas_html.py`) and drift-checked (`scripts/validate_spec_traceability.py`, 0 errors / 3 coverage warnings for vistas d03/d05/d06). See `desk/contexts/pill-specyaml-traceability.md`.
 
 ## Promotion queue
 
-- `desk/drawer/features/feature-rust-kernel-foundation-first-slice.md`
+- `desk/drawer/features/feature-clojure-kernel-foundation-first-slice.md`
 - `desk/drawer/features/feature-lisp-control-and-data-surface-first-slice.md`
 - `desk/drawer/features/feature-markdown-roundtrip-first-slice.md`

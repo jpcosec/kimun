@@ -88,7 +88,7 @@ Produce one combined markdown draft file at `subagent/drafts/contracts-batch-b.m
      - `docs/architecture/spec2viz/target-runtime.yml`
      - `desk/tasks/task-specify-cli-parity-contract.md`
      Required bullets should cover recognizable continuity for `extract`, `render`, `validate`, plus `docs`, `ast`, `fields`, `find`, `models`, `stores`, `sections`, `faq`, and `help`; keep Python responsible for orchestration/UX/Git interaction only; and map CLI groups back to the underlying core/store/query contracts without redefining internals.
-   - Acceptance: The draft preserves the CLI surface described by the task and diagrams, keeps canonical logic in Rust, and lists explicit Phase 1 CLI non-goals.
+   - Acceptance: The draft preserves the CLI surface described by the task and diagrams, keeps canonical logic in Clojure, and lists explicit Phase 1 CLI non-goals.
 
 7. **Add a compact closing acceptance report for the batch-draft artifact**
    - File: `/home/jp/proyectos/hum-ecosystem/tools/sldb-refactor-worktree/subagent/drafts/contracts-batch-b.md`
@@ -114,7 +114,7 @@ Produce one combined markdown draft file at `subagent/drafts/contracts-batch-b.m
 - The user-directed `context.md` file is missing from the repository, so the executor must rely on the overview, spec2viz YAMLs, and task files unless clarified otherwise.
 - The destination directory `subagent/drafts/` does not currently exist and must be created implicitly when writing the output file.
 - The four named contract docs do not yet exist as standalone files in the repo; this task asks for combined draft content only, so the executor should not widen scope by creating the individual docs.
-- The graph, anchoring, query, and CLI tasks depend conceptually on parity/rust-core/round-trip contracts that are not part of this batch; the drafts should reference those dependencies carefully without inventing missing contract details.
+- The graph, anchoring, query, and CLI tasks depend conceptually on parity/clojure-core/round-trip contracts that are not part of this batch; the drafts should reference those dependencies carefully without inventing missing contract details.
 - `noStagedFiles` cannot be directly verified with the available tools; any acceptance note on staged state should be marked as inferred unless separately checked by the parent.
 
 ```acceptance-report

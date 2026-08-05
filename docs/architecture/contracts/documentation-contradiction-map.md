@@ -15,7 +15,7 @@ Governing sources:
 - `README.md`
 - `docs/architecture/target-system-overview.md`
 - `docs/architecture/contracts/repo-source-order-and-contradiction-review.md`
-- `desk/atoms/rust-core.md`
+- `desk/atoms/clojure-core.md`
 - `desk/atoms/canonical-ast.md`
 - `desk/atoms/projection.md`
 - `desk/atoms/lisp-metalanguage.md`
@@ -48,7 +48,7 @@ This pass used both mechanisms the repo discussion proposed:
    - candidate contradiction pairs found: `345`
 2. **Subagent review for adjudication**
    - narrowed reviews were run over the highest-value concept families:
-     - Rust/Python authority and canonical model
+     - Clojure/Python authority and canonical model
      - AST vs graph and Phase 1 parity scope
      - Lisp/Markdown/projection semantics
      - historical reports vs current authority docs
@@ -87,7 +87,7 @@ This pass found four useful classes:
 
 ## Aligned concepts
 
-### Rust owns canonical authority
+### Clojure owns canonical authority
 
 Status: **aligned**
 
@@ -95,14 +95,14 @@ Evidence:
 
 - `README.md`
 - `docs/architecture/target-system-overview.md`
-- `docs/architecture/contracts/python-rust-ownership-and-ffi-contract.md`
-- `docs/architecture/contracts/rust-canonical-core-contract.md`
-- `desk/atoms/rust-core.md`
+- `docs/architecture/contracts/python-clojure-ownership-and-ffi-contract.md`
+- `docs/architecture/contracts/clojure-canonical-core-contract.md`
+- `desk/atoms/clojure-core.md`
 
 Resolution:
 
 - No contradiction.
-- The repo is consistent that Rust alone owns canonical invariants, revisions, transactions, hashing, persistence, and capability-checked effects.
+- The repo is consistent that Clojure alone owns canonical invariants, revisions, transactions, hashing, persistence, and capability-checked effects.
 
 ### Python is optional orchestration, not authority
 
@@ -112,7 +112,7 @@ Evidence:
 
 - `README.md`
 - `docs/architecture/target-system-overview.md`
-- `docs/architecture/contracts/python-rust-ownership-and-ffi-contract.md`
+- `docs/architecture/contracts/python-clojure-ownership-and-ffi-contract.md`
 
 Resolution:
 
@@ -128,12 +128,12 @@ Evidence:
 - `desk/atoms/markdown-text-surface.md`
 - `desk/atoms/markdown-importer.md`
 - `desk/atoms/markdown-emitter.md`
-- `desk/atoms/rust-core.md`
+- `desk/atoms/clojure-core.md`
 
 Resolution:
 
 - No contradiction.
-- Markdown is consistently treated as text surface plus import/export path around Rust-owned meaning.
+- Markdown is consistently treated as text surface plus import/export path around Clojure-owned meaning.
 
 ### Lisp is not canonical authority
 
@@ -144,7 +144,7 @@ Evidence:
 - `desk/atoms/lisp-metalanguage.md`
 - `desk/atoms/lisp-schema-language.md`
 - `desk/atoms/lisp-macro-language.md`
-- `desk/atoms/rust-core.md`
+- `desk/atoms/clojure-core.md`
 
 Resolution:
 
@@ -161,25 +161,25 @@ Evidence:
 
 - `README.md` says the canonical persistence model is an immutable revisioned graph
 - `docs/architecture/target-system-overview.md` says append-only immutable revisioned graph / graph-store-first
-- `docs/architecture/contracts/python-rust-ownership-and-ffi-contract.md` says append-only database
-- `docs/architecture/contracts/rust-canonical-core-contract.md` says graph-store
+- `docs/architecture/contracts/python-clojure-ownership-and-ffi-contract.md` says append-only database
+- `docs/architecture/contracts/clojure-canonical-core-contract.md` says graph-store
 
 Resolution wording:
 
 > The canonical model is a revisioned graph, persisted in an append-only immutable graph store.
 
-### Rust core contract can read AST-centric instead of full-model-centric
+### Clojure core contract can read AST-centric instead of full-model-centric
 
 Status: **wording drift**
 
 Evidence:
 
 - broader docs name documents, revisions, transactions, links, anchors, and provenance as canonical kernel concerns
-- `docs/architecture/contracts/rust-canonical-core-contract.md` emphasizes AST, selectors, hashes, and relations more than the whole model envelope
+- `docs/architecture/contracts/clojure-canonical-core-contract.md` emphasizes AST, selectors, hashes, and relations more than the whole model envelope
 
 Resolution wording:
 
-> The Rust core is authoritative for the full canonical model: documents, revisions, nodes, typed edges, transactions, provenance, and the structural AST persisted within the append-only revisioned graph.
+> The Clojure core is authoritative for the full canonical model: documents, revisions, nodes, typed edges, transactions, provenance, and the structural AST persisted within the append-only revisioned graph.
 
 ### Markdown and non-authority vocabulary drifts across atoms
 
@@ -193,58 +193,56 @@ Evidence:
 
 Resolution wording:
 
-> Markdown never owns canonical meaning or revisions; it is an input/output surface around Rust-owned canonical state.
+> Markdown never owns canonical meaning or revisions; it is an input/output surface around Clojure-owned canonical state.
 
 ## Phase/scope differences
 
 ### Phase 1 parity contract is narrower than the macro plan and resolution pack
 
-Status: **phase/scope difference**
+Status: **Resolved by removal (2026-07-31)**
 
 Evidence:
 
-- `docs/architecture/phase-1-resolution-pack.md`
-- `docs/architecture/phase-1-macro-implementation-plan.md`
 - `docs/architecture/contracts/phase-1-parity-contract.md`
+- `desk/atoms/decision-v1-parity-before-scope-expansion.md`
 
 Problem:
 
-- the resolution pack and macro plan describe a broader closure surface including store lifecycle/integrity and store-backed inspection/query surfaces
-- the parity contract names a narrower closure floor centered on the initial parity slice
+- older deleted planning packs described a broader closure surface including store lifecycle/integrity and store-backed inspection/query surfaces
+- the live parity contract names the narrower closure floor centered on the initial parity slice
 
 Adjudication:
 
-- this is better read as a phase/scope distinction than as a hard contradiction
-- it still needs clearer wording so readers do not confuse the first closure slice with the broader Phase 1 envelope
+- the deleted planning packs no longer participate in live KB authority
+- parity wording is now governed by the frozen contracts and `desk/atoms/decision-v1-parity-before-scope-expansion.md`
 
 Resolution wording:
 
-> Distinguish the initial parity slice from the broader Phase 1 workflow envelope explicitly, so command-surface expectations are phase-scoped rather than contradictory.
+> Resolved by removal (2026-07-31): the packs were deleted from the live KB and survive only in Git history; parity wording is governed by the frozen contracts and `desk/atoms/decision-v1-parity-before-scope-expansion.md`.
 
 ### Phase 1 acceptance bar mixes exact rendered equality with source-byte equivalence
 
-Status: **phase/scope difference**
+Status: **Resolved by removal (2026-07-31)**
 
 Evidence:
 
 - `README.md`
-- `docs/architecture/phase-1-resolution-pack.md`
-- `docs/architecture/phase-1-macro-implementation-plan.md`
 - `docs/architecture/contracts/phase-1-parity-contract.md`
+- `desk/atoms/decision-v1-parity-before-scope-expansion.md`
 
 Problem:
 
-- most docs summarize the bar as exact rendered Markdown equality for reversible families
-- the parity contract sharpens that to byte-level behavior for the initial Markdown-only family
+- older deleted planning packs had mixed broader exact-render wording with a sharper byte-level acceptance bar for the initial Markdown-only family
+- the live parity contract remains the authoritative acceptance bar for the initial reversible family
 
 Adjudication:
 
-- this is acceptable once the Markdown-only starting scope is made explicit
-- the stricter byte-level bar should be described as the initial Markdown-family acceptance rule, not as a generic all-format rule
+- the deleted planning packs no longer participate in live KB authority
+- parity wording is now governed by the frozen contracts and `desk/atoms/decision-v1-parity-before-scope-expansion.md`
 
 Resolution wording:
 
-> For the initial Markdown-only reversible family, the acceptance bar is byte-level round-trip behavior. Broader exact-render wording should remain clearly tied to that same family until other families exist.
+> Resolved by removal (2026-07-31): the packs were deleted from the live KB and survive only in Git history; parity wording is governed by the frozen contracts and `desk/atoms/decision-v1-parity-before-scope-expansion.md`.
 
 ## Terminology issue resolved by glossary freeze
 
@@ -272,7 +270,7 @@ Adjudication:
 
 - this was primarily a terminology problem rather than a deep architectural conflict
 - the glossary freezes the cleaner model: authored input, canonical state, render/materialization, projection, and derived index
-- maximum authority remains Rust-owned canonical state persisted in the database
+- maximum authority remains Clojure-owned canonical state persisted in the database
 
 Resolution wording:
 

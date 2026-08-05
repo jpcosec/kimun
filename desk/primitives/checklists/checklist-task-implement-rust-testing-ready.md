@@ -1,11 +1,11 @@
 ---
 # checklist-xxx
-id: checklist-task-implement-rust-testing-ready
+id: checklist-task-implement-clojure-testing-ready
 # draft | active | complete | archived
 status: active
 # List of condition-xxx paths
 condition_refs:
-- condition-task-implement-rust-has-validation
+- condition-task-implement-clojure-has-validation
 # all | any
 mode: all
 # e.g., system:deskops

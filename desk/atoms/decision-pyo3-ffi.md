@@ -5,8 +5,8 @@ title: Decision embedded FFI is optional, not sovereign
 five_wh_one_plus: why
 tags:
 - system:sldb
-- domain:architecture.decisions
-provenance: interfaces.md
+- domain:architecture-decisions
+provenance: source docs/core/interfaces.md
 ---
 
 # Decision embedded FFI is optional, not sovereign
@@ -31,7 +31,7 @@ An embedded FFI such as PyO3 may exist for Python clients, but it is an adapter 
 ### Constrains
 
 - [constrains:: [[ports-and-adapters]]]
-- [constrains:: [[rust-core]]]
+- [constrains:: [[clojure-core]]]
 
 ### 5WH1+ neighborhood
 

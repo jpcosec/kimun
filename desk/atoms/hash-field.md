@@ -5,8 +5,8 @@ title: Hash field
 five_wh_one_plus: what
 tags:
 - system:sldb
-- domain:store.hashing
-provenance: docs/architecture/target-system-overview.md
+- domain:store-hashing
+provenance: source docs/architecture/target-system-overview.md
 ---
 
 # Hash field
@@ -18,7 +18,7 @@ A hash field is the node field that stores the hash value associated with a cano
 ## Supporting points
 
 - Hash is modeled as node data, not as a separate semantic node.
-- It should be computed by dedicated Rust hashing logic.
+- It should be computed by dedicated Clojure hashing logic.
 - It supports integrity and anchoring workflows.
 
 ## Related atoms
@@ -26,7 +26,7 @@ A hash field is the node field that stores the hash value associated with a cano
 ### Depends on
 
 - [depends_on:: [[node-hash]]]
-- [depends_on:: [[rust-core]]]
+- [depends_on:: [[clojure-core]]]
 
 ### Supports
 

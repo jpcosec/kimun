@@ -24,7 +24,7 @@ references:
 - docs/architecture/spec2viz/target-runtime.yml
 - docs/architecture/spec2viz/target-anchoring.yml
 depends_on:
-- feature-rust-kernel-foundation-first-slice
+- feature-clojure-kernel-foundation-first-slice
 - feature-lisp-control-and-data-surface-first-slice
 ---
 

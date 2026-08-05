@@ -26,7 +26,7 @@ The domain tree is intentionally aligned to the target diagrams:
 - `domain:pipeline.*` maps to `Importers`, `MarkdownImporter`, `Emitters`, `MarkdownEmitter`, and `DocumentMaterializer`
 - `domain:store.*` maps to `GraphStore`, `ASTPersistence`, `DerivedIndexes`, `HistoryArtifacts`, `Hashing`, and `HashFields`
 - `domain:runtime.*` maps to `Adapters`, `SemanticExporter`, projection surfaces, provenance, and query/runtime behavior
-- `domain:implementation.*` maps to the PythonCLI/RustCore implementation split
+- `domain:implementation.*` maps to the PythonCLI/ClojureCore implementation split
 - `domain:architecture.*` maps to cross-cutting decisions, boundaries, and migration sequencing
 - `domain:quality.*` maps to implementation practice around patterns, testing, and clean code
 

@@ -5,16 +5,16 @@ title: Lisp metalanguage
 five_wh_one_plus: how
 tags:
 - system:sldb
-- domain:architecture.boundaries
-- domain:architecture.integration
-provenance: reasoning.md
+- domain:architecture-boundaries
+- domain:architecture-integration
+provenance: source docs/core/reasoning.md
 ---
 
 # Lisp metalanguage
 
 ## Answer
 
-Lisp is an authored language surface around the Rust kernel for expressing schemas, macros, queries, transforms, rules, and effects, but it is not an authority that mutates persistence directly.
+Lisp is an authored language surface around the Clojure kernel for expressing schemas, macros, queries, transforms, rules, and effects, but it is not an authority that mutates persistence directly.
 
 ## Supporting points
 

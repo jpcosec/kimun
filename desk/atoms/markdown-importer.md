@@ -5,15 +5,15 @@ title: Markdown importer
 five_wh_one_plus: how
 tags:
 - system:sldb
-- domain:pipeline.importers
-provenance: desk/drawer/features/feature-sldb-explicit-target-architecture.md
+- domain:pipeline-importers
+provenance: source docs/drawer-features/feature-sldb-explicit-target-architecture.md
 ---
 
 # Markdown importer
 
 ## Answer
 
-The Markdown importer translates the Markdown text surface into Rust-owned canonical structure without making Markdown the sovereign model.
+The Markdown importer translates the Markdown text surface into Clojure-owned canonical structure without making Markdown the sovereign model.
 
 ## Supporting points
 

@@ -24,7 +24,7 @@ references:
 - docs/architecture/spec2viz/target-components.yml
 - docs/architecture/spec2viz/target-runtime.yml
 depends_on:
-- feature-rust-kernel-foundation-first-slice
+- feature-clojure-kernel-foundation-first-slice
 ---
 
 # Lisp control and data surface first slice

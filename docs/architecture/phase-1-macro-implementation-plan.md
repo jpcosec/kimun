@@ -10,7 +10,7 @@ These are not open for redesign during implementation:
 
 - Phase 1 = **v1 parity before scope expansion**.
 - **Canonical AST is sovereign**.
-- **Rust owns the canonical engine/runtime responsibility**.
+- **Clojure owns the canonical engine/runtime responsibility**.
 - **Python stays a thin CLI orchestration shell**.
 - **Links and anchors are canonical**, not late projections.
 - **Graph store is append-only / immutable**.
@@ -23,12 +23,12 @@ Implementation should happen in this order:
 
 1. **Freeze product contract**
 2. **Freeze ownership/boundary contract**
-3. **Build canonical Rust substrate**
+3. **Build canonical Clojure substrate**
 4. **Prove reversible Markdown round-trip**
 5. **Build append-only graph store**
 6. **Add canonical links + anchors**
 7. **Materialize derived indexes + query surface**
-8. **Wire Python CLI shell to Rust core**
+8. **Wire Python CLI shell to Clojure core**
 9. **Close v1 command-group parity**
 10. **Only then inspect post-parity gaps / next-phase work**
 
@@ -61,9 +61,9 @@ Without this, every later implementation slice can drift.
 
 ### Outcome
 
-One approved ownership matrix for Python vs Rust.
+One approved ownership matrix for Python vs Clojure.
 
-### Rust owns
+### Clojure owns
 
 - canonical AST
 - hashing / identity
@@ -94,7 +94,7 @@ Without this, Python will start re-owning engine behavior again.
 
 ---
 
-## Milestone 2 — Canonical Rust substrate
+## Milestone 2 — Canonical Clojure substrate
 
 ### Outcome
 
@@ -117,7 +117,7 @@ A minimal canonical substrate strong enough for every later slice.
 
 ### Deliverable
 
-- Rust core substrate, tests, and invariants.
+- Clojure core substrate, tests, and invariants.
 
 ### Dependency
 
@@ -278,11 +278,11 @@ Consumers:
 
 ---
 
-## Milestone 7 — Python CLI shell over Rust core
+## Milestone 7 — Python CLI shell over Clojure core
 
 ### Outcome
 
-Python becomes a thin orchestrator over approved Rust capabilities.
+Python becomes a thin orchestrator over approved Clojure capabilities.
 
 ### Implementation scope
 
@@ -350,9 +350,9 @@ Recognizable CLI continuity is restored on top of the new architecture.
 
 If task wording and atoms diverge, atoms win.
 
-### 2. Rust is the engine
+### 2. Clojure is the engine
 
-When in doubt, canonical/runtime responsibility belongs in Rust.
+When in doubt, canonical/runtime responsibility belongs in Clojure.
 
 ### 3. Python is orchestration only
 
@@ -383,7 +383,7 @@ Open questions:
 - exact command-group closure criteria
 - exact deferred scope list
 
-### B. Python/Rust boundary may need more explicit atomization
+### B. Python/Clojure boundary may need more explicit atomization
 
 Open questions:
 - exact FFI object model
@@ -414,7 +414,7 @@ Open question:
 If new atoms are needed, they will most likely belong in these areas:
 
 - parity acceptance rules
-- Python/Rust FFI seam
+- Python/Clojure FFI seam
 - canonical AST node/selector contract
 - relation payload contract
 - anchor payload requirements

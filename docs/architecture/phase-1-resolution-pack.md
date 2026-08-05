@@ -43,9 +43,9 @@ Reason:
 - it proves Python does not need to own canonical parsing logic
 - it gives a hard acceptance harness before store/index/query work expands
 
-### 3. What must Rust own in Phase 1?
+### 3. What must Clojure own in Phase 1?
 
-Rust owns all canonical/runtime truth:
+Clojure owns all canonical/runtime truth:
 
 - AST structure
 - hashing / identity
@@ -135,7 +135,7 @@ This is now the macro sequence to follow:
 
 1. parity contract
 2. ownership / FFI contract
-3. Rust canonical substrate
+3. Clojure canonical substrate
 4. Markdown reversible proof slice
 5. graph store persistence
 6. canonical links + anchors
@@ -160,9 +160,9 @@ Must answer:
 - exact deferred workflows
 - exact parity judgment rules
 
-### B. `python-rust-ownership-matrix`
+### B. `python-clojure-ownership-matrix`
 
-Needed because the current Rust/Python direction is clear, but the explicit capability ownership matrix is missing.
+Needed because the current Clojure/Python direction is clear, but the explicit capability ownership matrix is missing.
 
 Must answer:
 - who owns importer/emitter runtime
@@ -241,7 +241,7 @@ Must answer:
 ### Create first
 
 - `phase-1-parity-contract`
-- `python-rust-ownership-matrix`
+- `python-clojure-ownership-matrix`
 - `ffi-contract`
 - `phase-1-canonical-ast-contract`
 

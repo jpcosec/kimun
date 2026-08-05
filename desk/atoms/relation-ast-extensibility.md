@@ -5,13 +5,13 @@ title: RelationAST and extensibility
 five_wh_one_plus: how
 tags:
 - system:sldb
-- domain:implementation.rust-core
-provenance: docs/architecture/target-system-overview.md
+- domain:implementation-clojure-core
+provenance: source docs/architecture/target-system-overview.md
 ---
 
 # RelationAST and extensibility
 
-Extensibility resides entirely in the Rust environment. The `RelationASTs` payloads serve as the foundational structure that is materialized and indexed to generate semantic graphs, the store, and tags. This allows extending relationships with strongly typed data structures within Rust.
+Extensibility resides entirely in the Clojure environment. The `RelationASTs` payloads serve as the foundational structure that is materialized and indexed to generate semantic graphs, the store, and tags. This allows extending relationships with strongly typed data structures within Clojure.
 
 ## Related atoms
 
@@ -19,4 +19,4 @@ Extensibility resides entirely in the Rust environment. The `RelationASTs` paylo
 - [specializes:: [[relation-ast]]]
 
 ### Supports
-- [supports:: [[rust-core]]]
+- [supports:: [[clojure-core]]]

@@ -5,8 +5,8 @@ title: Decision rayon parallelism
 five_wh_one_plus: why
 tags:
 - system:sldb
-- domain:architecture.decisions
-provenance: desk/drawer/features/feature-rust-library-stack.md
+- domain:architecture-decisions
+provenance: source docs/drawer-features/feature-clojure-library-stack.md
 ---
 
 # Decision rayon parallelism
@@ -16,7 +16,7 @@ provenance: desk/drawer/features/feature-rust-library-stack.md
 ## Related atoms
 
 ### Implements
-- [implements:: [[rust-core]]]
+- [implements:: [[clojure-core]]]
 
 ### Supports
 - [supports:: [[importer-translator]]]

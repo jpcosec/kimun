@@ -5,8 +5,8 @@ title: Python patterns
 five_wh_one_plus: how
 tags:
 - system:sldb
-- domain:quality.patterns.python
-provenance: desk/drawer/features/feature-sldb-product-principles-and-cli-continuity.md
+- domain:quality-patterns-python
+provenance: source docs/drawer-features/feature-sldb-product-principles-and-cli-continuity.md
 ---
 
 # Python patterns
@@ -18,7 +18,7 @@ Python patterns define the reusable implementation shapes for CLI orchestration,
 ## Supporting points
 
 - Python should preserve the recognizable SLDB CLI and workflow ergonomics.
-- Patterns here should favor thin orchestration, explicit contracts, low duplication, and clear boundaries around the Rust core.
+- Patterns here should favor thin orchestration, explicit contracts, low duplication, and clear boundaries around the Clojure core.
 - These patterns should keep user behavior stable while internals evolve.
 
 ## Related atoms

@@ -5,8 +5,8 @@ title: Threat model
 five_wh_one_plus: why
 tags:
 - system:sldb
-- domain:security.capabilities
-provenance: also_core.md
+- domain:security-capabilities
+provenance: source docs/core/also_core.md
 ---
 
 # Threat model
@@ -17,7 +17,7 @@ The threat model names the adversaries, abuse cases, and failure pressures that 
 
 ## Supporting points
 
-- It should cover malicious Lisp, untrusted plugins, path traversal, prompt injection in documents, resource exhaustion, recursive hooks, and data leakage.
+- It should cover malicious Lisp, untclojureed plugins, path traversal, prompt injection in documents, resource exhaustion, recursive hooks, and data leakage.
 - Threat modeling gives the capability system concrete adversaries instead of abstract permissions only.
 - Security claims without an explicit threat model are underspecified.
 

@@ -19,7 +19,7 @@ references:
 - docs/faq.md
 - docs/architecture/target-system-overview.md
 - docs/architecture/contracts/repo-source-order-and-contradiction-review.md
-- desk/atoms/rust-core.md
+- desk/atoms/clojure-core.md
 - desk/atoms/projection.md
 - desk/atoms/lisp-metalanguage.md
 - desk/atoms/markdown-text-surface.md

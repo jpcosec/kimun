@@ -15,7 +15,7 @@ Governing sources:
 
 ## Phase 1 Parity Floor
 
-Phase 1 is a structural refactor, not a feature expansion. The "Parity Floor" is the set of capabilities that must survive the transition from the legacy Python implementation to the Rust-core implementation.
+Phase 1 is a structural refactor, not a feature expansion. The "Parity Floor" is the set of capabilities that must survive the transition from the legacy Python implementation to the Clojure-core implementation.
 
 ### 1. Recognizable CLI Surface
 - Maintenance of the `sldb` plural-first command structure.

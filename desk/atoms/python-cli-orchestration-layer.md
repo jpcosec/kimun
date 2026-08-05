@@ -5,8 +5,8 @@ title: Python CLI orchestration layer
 five_wh_one_plus: how
 tags:
 - system:sldb
-- domain:implementation.python-cli
-provenance: interfaces.md
+- domain:implementation-python-cli
+provenance: source docs/core/interfaces.md
 ---
 
 # Python CLI orchestration layer
@@ -17,7 +17,7 @@ The Python CLI orchestration layer is an optional client shell that drives the k
 
 ## Supporting points
 
-- Python is no longer the defining boundary of the architecture; it is one adapter alongside embedded Rust, local IPC, HTTP, or agent-facing protocols.
+- Python is no longer the defining boundary of the architecture; it is one adapter alongside embedded Clojure, local IPC, HTTP, or agent-facing protocols.
 - It may preserve command continuity and workflow ergonomics, but all authoritative mutations still compile to kernel transaction plans.
 - Python should not define identity, revision semantics, hashing, canonicalization, or storage layout.
 - Any Python integration should sit behind the same kernel API and capability rules as other clients.
@@ -38,7 +38,7 @@ The Python CLI orchestration layer is an optional client shell that drives the k
 
 ### Constrains
 
-- [constrains:: [[rust-core]]]
+- [constrains:: [[clojure-core]]]
 
 ### 5WH1+ neighborhood
 

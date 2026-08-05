@@ -1,12 +1,12 @@
 ---
-id: pill-rust-guidelines
+id: pill-clojure-guidelines
 tags:
 - workspace:desk
 ---
 
-# Pill: Rust Guidelines
+# Pill: Clojure Guidelines
 
-This pill ensures the Rust Core (`sldb-core`) implementation adheres to the project's strict architecture:
+This pill ensures the Clojure Core (`sldb-core`) implementation adheres to the project's strict architecture:
 - **Zero-loss Reversibility**: Use `rowan` strictly. No data loss (including trivia/whitespace) is allowed when mutating the AST.
 - **Append-Only Store**: `rusqlite` interactions must follow the append-only paradigm. Do not UPDATE records; append new edges/nodes.
 - **Identity First**: Hashes (`blake3`) dictate the graph, not internal autoincrements.

@@ -5,15 +5,15 @@ title: Markdown emitter
 five_wh_one_plus: how
 tags:
 - system:sldb
-- domain:pipeline.emitters
-provenance: desk/drawer/features/feature-sldb-explicit-target-architecture.md
+- domain:pipeline-emitters
+provenance: source docs/drawer-features/feature-sldb-explicit-target-architecture.md
 ---
 
 # Markdown emitter
 
 ## Answer
 
-The Markdown emitter compiles Rust-owned canonical structure back into the Markdown text surface as a derived materialization.
+The Markdown emitter compiles Clojure-owned canonical structure back into the Markdown text surface as a derived materialization.
 
 ## Supporting points
 

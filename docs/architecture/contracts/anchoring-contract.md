@@ -29,7 +29,7 @@ Governing sources:
 ## Stable Selectors
 
 - **Resilience**: Selectors must be designed to survive non-structural changes (e.g., adding whitespace around a target).
-- **Resolution**: The Rust engine must be able to resolve a selector to a specific byte range or AST node with high confidence.
+- **Resolution**: The Clojure engine must be able to resolve a selector to a specific byte range or AST node with high confidence.
 
 ## Anchor Lifecycle
 

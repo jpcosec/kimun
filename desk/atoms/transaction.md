@@ -5,8 +5,8 @@ title: Transaction
 five_wh_one_plus: what
 tags:
 - system:sldb
-- domain:runtime.transactions
-provenance: reasoning.md
+- domain:runtime-transactions
+provenance: source docs/core/reasoning.md
 ---
 
 # Transaction
@@ -32,7 +32,7 @@ A transaction is the only authorized unit of mutation: a validated, ordered set 
 
 ### Supports
 
-- [supports:: [[rust-core]]]
+- [supports:: [[clojure-core]]]
 - [supports:: [[transaction-log]]]
 - [supports:: [[event-bus]]]
 

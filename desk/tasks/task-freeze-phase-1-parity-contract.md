@@ -27,11 +27,11 @@ checklists: []
 
 ## Rationale
 
-This task is governed by the `decision-v1-parity-before-scope-expansion.md` atom. Phase 1 is a structural migration of the canonical engine from Python to Rust. To prevent architectural drift, we must freeze the product surface at the "v1 floor." This ensures that fundamental round-trip and storage invariants are replicated perfectly before any Phase 2 features (e.g., VisualUX, Semantic Search) are introduced.
+This task is governed by the `decision-v1-parity-before-scope-expansion.md` atom. Phase 1 is a structural migration of the canonical engine from Python to Clojure. To prevent architectural drift, we must freeze the product surface at the "v1 floor." This ensures that fundamental round-trip and storage invariants are replicated perfectly before any Phase 2 features (e.g., VisualUX, Semantic Search) are introduced.
 
 ## Goal
 
-Formalize and lock the exact set of user-visible workflows, command groups, and structural invariants that constitute "v1 parity." This includes the transition from Python-owned ASTs to Rust-owned `CanonicalAST` as the single source of truth.
+Formalize and lock the exact set of user-visible workflows, command groups, and structural invariants that constitute "v1 parity." This includes the transition from Python-owned ASTs to Clojure-owned `CanonicalAST` as the single source of truth.
 
 ## Scope
 
@@ -48,7 +48,7 @@ Formalize and lock the exact set of user-visible workflows, command groups, and 
 ## Implementation Path
 
 1. **Audit**: Map every v1 command and flag to its required internal behavior.
-2. **Translate**: Specify how Python orchestration sequences calls to the Rust engine via the FFI boundary.
+2. **Translate**: Specify how Python orchestration sequences calls to the Clojure engine via the FFI boundary.
 3. **Formalize**: Define the "Parity Floor" in `docs/architecture/contracts/phase-1-parity-contract.md`.
 4. **Freeze**: Secure approval of the contract as the immutable boundary for implementation.
 

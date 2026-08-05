@@ -5,8 +5,8 @@ title: Code linting
 five_wh_one_plus: how
 tags:
 - system:sldb
-- domain:quality.clean-code.generic
-provenance: desk/drawer/features/feature-sldb-product-principles-and-cli-continuity.md
+- domain:quality-clean-code-generic
+provenance: source docs/drawer-features/feature-sldb-product-principles-and-cli-continuity.md
 ---
 
 # Code linting
@@ -25,7 +25,7 @@ Code linting is the clean-code dimension that keeps the refactor readable, const
 
 ### Supports
 
-- [supports:: [[rust-code-linting]]]
+- [supports:: [[clojure-code-linting]]]
 - [supports:: [[python-code-linting]]]
 
 ### 5WH1+ neighborhood

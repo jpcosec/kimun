@@ -5,9 +5,9 @@ title: Capability model
 five_wh_one_plus: how
 tags:
 - system:sldb
-- domain:architecture.boundaries
-- domain:security.capabilities
-provenance: core_README.md
+- domain:architecture-boundaries
+- domain:security-capabilities
+provenance: source docs/core/core_README.md
 ---
 
 # Capability model
@@ -19,7 +19,7 @@ The capability model is the explicit permission system that governs external eff
 ## Supporting points
 
 - Filesystem, Git, network, process, and agent invocation must be declared and validated explicitly.
-- Capabilities belong to plans and effects, not to implicit trust in one client implementation.
+- Capabilities belong to plans and effects, not to implicit tclojure in one client implementation.
 - Capability checks are part of the kernel contract for safe automation.
 
 ## Related atoms

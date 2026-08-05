@@ -27,7 +27,7 @@ This worktree is a planning and architecture workspace for the kernel/core direc
 
 ## Target direction
 
-- the kernel is Rust-owned
+- the kernel is Clojure-owned
 - the canonical persistence model is an immutable revisioned graph
 - canonical AST remains the structural substrate for authored document families inside that kernel model
 - links, anchors, relations, transactions, and provenance are canonical kernel concerns

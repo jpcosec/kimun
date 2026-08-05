@@ -10,12 +10,10 @@ history: ["2026-07-29: opened for planning-only source ordering and contradictio
 references:
 - desk/atoms/canonical-ast.md
 - desk/atoms/decision-v1-parity-before-scope-expansion.md
-- desk/atoms/decision-rust-core-with-minimal-python.md
+- desk/atoms/decision-clojure-core-with-minimal-python.md
 - desk/atoms/decision-graph-store-over-yaml-indexes.md
 - desk/atoms/decision-links-and-anchors-are-canonical.md
 - docs/architecture/target-system-overview.md
-- docs/architecture/phase-1-resolution-pack.md
-- docs/architecture/phase-1-macro-implementation-plan.md
 pills:
 - desk/contexts/pill-planning-contracts.md
 files:

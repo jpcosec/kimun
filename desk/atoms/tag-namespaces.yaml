@@ -8,15 +8,15 @@ domain:
     decisions:
       kind: leaf
       meaning: Decision rationale and chosen architectural commitments.
-      spec2viz_nodes: [RustCore, CanonicalAST, GraphStore, PythonCLI]
+      spec2viz_nodes: [ClojureCore, CanonicalAST, GraphStore, PythonCLI]
     boundaries:
       kind: leaf
       meaning: Ownership and handoff boundaries between major layers or downstream systems.
-      spec2viz_nodes: [ProductSurfaces, RustCore, GraphStore, Adapters]
+      spec2viz_nodes: [ProductSurfaces, ClojureCore, GraphStore, Adapters]
     migration-strategy:
       kind: leaf
       meaning: Sequencing and scope-control rules for the refactor path.
-      spec2viz_nodes: [PythonCLI, RustCore, GraphStore]
+      spec2viz_nodes: [PythonCLI, ClojureCore, GraphStore]
 
   surfaces:
     cli:
@@ -135,10 +135,10 @@ domain:
       spec2viz_nodes: [AnchorNodes, GraphStore]
 
   implementation:
-    rust-core:
+    clojure-core:
       kind: leaf
-      meaning: Rust-side implementation substrate and engine ownership.
-      spec2viz_nodes: [RustCore, GraphStore, Hashing]
+      meaning: Clojure-side implementation substrate and engine ownership.
+      spec2viz_nodes: [ClojureCore, GraphStore, Hashing]
     python-cli:
       kind: leaf
       meaning: Python-side orchestration and git-adjacent shell behavior.
@@ -149,11 +149,11 @@ domain:
       generic:
         kind: leaf
         meaning: Cross-language implementation patterns.
-        spec2viz_nodes: [RustCore, PythonCLI]
-      rust:
+        spec2viz_nodes: [ClojureCore, PythonCLI]
+      clojure:
         kind: leaf
-        meaning: Rust-specific implementation patterns.
-        spec2viz_nodes: [RustCore]
+        meaning: Clojure-specific implementation patterns.
+        spec2viz_nodes: [ClojureCore]
       python:
         kind: leaf
         meaning: Python-specific implementation patterns.
@@ -162,11 +162,11 @@ domain:
       generic:
         kind: leaf
         meaning: Cross-language testing rules and expectations.
-        spec2viz_nodes: [PythonCLI, RustCore, GraphStore]
-      rust:
+        spec2viz_nodes: [PythonCLI, ClojureCore, GraphStore]
+      clojure:
         kind: leaf
-        meaning: Rust-specific testing practice.
-        spec2viz_nodes: [RustCore]
+        meaning: Clojure-specific testing practice.
+        spec2viz_nodes: [ClojureCore]
       python:
         kind: leaf
         meaning: Python-specific testing practice.
@@ -175,11 +175,11 @@ domain:
       generic:
         kind: leaf
         meaning: Cross-language readability and maintainability rules.
-        spec2viz_nodes: [PythonCLI, RustCore]
-      rust:
+        spec2viz_nodes: [PythonCLI, ClojureCore]
+      clojure:
         kind: leaf
-        meaning: Rust-specific code cleanliness rules.
-        spec2viz_nodes: [RustCore]
+        meaning: Clojure-specific code cleanliness rules.
+        spec2viz_nodes: [ClojureCore]
       python:
         kind: leaf
         meaning: Python-specific code cleanliness rules.

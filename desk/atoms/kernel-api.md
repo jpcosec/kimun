@@ -5,9 +5,9 @@ title: Kernel API
 five_wh_one_plus: where
 tags:
 - system:sldb
-- domain:architecture.boundaries
-- domain:architecture.integration
-provenance: interfaces.md
+- domain:architecture-boundaries
+- domain:architecture-integration
+provenance: source docs/core/interfaces.md
 ---
 
 # Kernel API
@@ -18,7 +18,7 @@ The kernel API is the public authority boundary for opening documents, submittin
 
 ## Supporting points
 
-- The same authority surface must be reachable from embedded Rust, Python FFI, local IPC, HTTP, gRPC, UI clients, and agents.
+- The same authority surface must be reachable from embedded Clojure, Python FFI, local IPC, HTTP, gRPC, UI clients, and agents.
 - Public contracts should be typed around document handles, transaction builders, query plans, projection specs, and event streams.
 - No client-facing adapter may bypass kernel validation by writing directly to persistence.
 
@@ -26,7 +26,7 @@ The kernel API is the public authority boundary for opening documents, submittin
 
 ### Depends on
 
-- [depends_on:: [[rust-core]]]
+- [depends_on:: [[clojure-core]]]
 - [depends_on:: [[transaction]]]
 - [depends_on:: [[query-engine]]]
 - [depends_on:: [[projection]]]

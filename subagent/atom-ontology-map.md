@@ -80,7 +80,7 @@ The durable center is **not Markdown, not store artifacts, and not any editor mo
 
 ### Placeholders / not yet fixed
 
-- Exact Rust schema
+- Exact Clojure schema
 - Final serialization format
 - Final storage engine
 - Exact AST v1 minimum schema
