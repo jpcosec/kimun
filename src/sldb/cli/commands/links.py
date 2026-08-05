@@ -30,9 +30,14 @@ class LinkCLI:
 
         if args.format == "text":
             for link in res.get("links", []):
-                print(
-                    f"{link['kind']}: {link['target']} [{'ok' if link['resolved'] else 'FAIL'}]"
-                )
+                resolved = "ok" if link["resolved"] else "FAIL"
+                if link.get("predicate"):
+                    w5h1 = f"[{link['w5h1_type']}]" if link.get("w5h1_type") else ""
+                    print(
+                        f"{link['kind']}: [{link['predicate']}]{w5h1} {link['target']} [{resolved}]"
+                    )
+                else:
+                    print(f"{link['kind']}: {link['target']} [{resolved}]")
         elif args.format == "json":
             print(json.dumps(res, indent=2))
         else:

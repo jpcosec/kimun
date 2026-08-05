@@ -1,8 +1,8 @@
 documents:
 - name: desk-board
   path: desk/tasks/Board.md
-  hash_c: 328fc9cd3d9b3a20fc533a549105c3368c757ee6b9141c684b87fb095c622268
-  hash_d: b15ec0ec1977d9824fc3a1aa60d0517df096f7998a173243c872dd21665cb45c
+  hash_c: 19fd7162fdba9edf2518893041d7247da71d4e9d40a5290c1204cc016fe66554
+  hash_d: 53a1010550b1a0ab2ae93e1a7b71e8992e2d222101f51e053d53ec40afd0e94d
   semantic_tags:
   - system:deskops
   - system:sldb
