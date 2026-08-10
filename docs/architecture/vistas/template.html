@@ -101,7 +101,48 @@
   .anno-popup .row { display:flex; gap:6px; margin-top:8px; justify-content:flex-end; }
   .anno-popup button { background:var(--bg); color:var(--bone-dim); border:1px solid var(--line); border-radius:5px; padding:5px 10px; font-family:'JetBrains Mono',monospace; font-size:10px; cursor:pointer; }
   .anno-popup button:hover { color:var(--amber); border-color:var(--amber); }
-  #anno-btn.on { color:var(--amber); border-color:var(--amber); }
+
+  /* ---------- UI y W5H1 Atoms ---------- */
+  .atom-tooltip {
+    position: fixed; z-index: 100;
+    width: 320px; max-height: 400px; overflow-y: auto;
+    background: rgba(18, 18, 26, 0.95); border: 1px solid var(--amber); border-radius: 8px;
+    padding: 14px; font-size: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .atom-tooltip.interactive { pointer-events: auto; }
+  .atom-tooltip h4 { color: var(--amber); margin-bottom: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; }
+  .atom-tooltip .atom-entry { margin-bottom: 12px; }
+  .atom-tooltip .atom-q { color: var(--bone); font-family: 'JetBrains Mono', monospace; font-size: 10px; margin-bottom: 4px; border-bottom: 1px solid var(--line); padding-bottom: 2px; text-transform: uppercase; }
+  .atom-tooltip .atom-b { color: var(--bone-dim); font-size: 11.5px; line-height: 1.5; white-space: pre-wrap; }
+  .atom-tooltip .missing { color: #e34c4c; font-size: 10px; font-family: 'JetBrains Mono', monospace; margin-top: 8px; }
+  
+  .tracker-modal {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 80%; max-width: 600px; max-height: 80vh; overflow-y: auto;
+    background: var(--card); border: 1px solid var(--amber); border-radius: 12px;
+    padding: 24px; z-index: 200; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    display: none;
+  }
+  .tracker-modal h3 { color: var(--amber); font-family: 'Fraunces', serif; margin-bottom: 16px; font-size: 22px; }
+  .tracker-modal .close-btn { position: absolute; top: 16px; right: 20px; background: none; border: none; color: var(--bone-dim); cursor: pointer; font-size: 20px; }
+  .tracker-modal .close-btn:hover { color: var(--amber); }
+  .tracker-item { margin-bottom: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--bone-dim); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 4px; }
+  .tracker-item strong { color: var(--bone); }
+  .tracker-item .miss { color: #e34c4c; }
+
+  #floating-controls { position: fixed; bottom: 20px; right: 20px; z-index: 90; display: flex; gap: 10px; }
+  .float-btn {
+    background: var(--card); border: 1px solid var(--line); color: var(--bone-dim);
+    padding: 10px 16px; border-radius: 20px; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .float-btn:hover { color: var(--amber); border-color: var(--amber); }
+  .float-btn.on { background: var(--amber); color: var(--bg); border-color: var(--amber); font-weight: bold; }
 </style>
 </head>
 <body>
@@ -122,6 +163,17 @@
   <div>SLDB · KNOWLEDGE KERNEL · VISTAS UML</div>
   <div class="sig">planning-only · <span>deskops / sldb</span></div>
 </footer>
+
+<div id="floating-controls">
+  <button id="btn-tracker" class="float-btn">🎯 Track que nos falta</button>
+  <button id="anno-btn" class="float-btn">✎ Marcar (Overlay)</button>
+</div>
+
+<div id="tracker-modal" class="tracker-modal">
+  <button class="close-btn" onclick="document.getElementById('tracker-modal').style.display='none'">✕</button>
+  <h3>Track de Átomos Faltantes (W5H1)</h3>
+  <div id="tracker-list"></div>
+</div>
 
 <script>
   mermaid.initialize({
@@ -220,6 +272,7 @@
   /* ---------- anotaciones (planning-only) ---------- */
   let annoMode = false, annoCache = [];
   const ANNO_SEL = 'g.node, g.classGroup, g.stateGroup, rect.actor, g.cluster';
+  const W5H1 = ['what', 'why', 'how', 'how_not', 'when', 'where', 'for_whom']; // Expected atoms
 
   function annoLabel(el) {
     if (el.matches('g.cluster')) {
@@ -239,7 +292,7 @@
       const r = await fetch('/annotations');
       annoCache = await r.json();
       annoRender();
-    } catch { console.warn('annotate_server no activo: python3 scripts/annotate_server.py'); }
+    } catch { console.warn('annotate_server no activo'); }
   }
   function annoRender() {
     document.querySelectorAll('.anno-marked').forEach(el => el.classList.remove('anno-marked'));
@@ -286,8 +339,7 @@
     div.querySelector('textarea').focus();
   }
   function initAnnotations() {
-    const btn = document.createElement('a');
-    btn.href = '#'; btn.textContent = '✎ marcar'; btn.id = 'anno-btn';
+    const btn = document.getElementById('anno-btn');
     btn.addEventListener('click', e => {
       e.preventDefault();
       annoMode = !annoMode;
@@ -295,15 +347,115 @@
       btn.classList.toggle('on', annoMode);
       if (!annoMode) annoClose();
     });
-    document.querySelector('nav').appendChild(btn);
     document.addEventListener('click', e => {
-      if (!annoMode || e.target.closest('.anno-popup, #anno-btn')) return;
+      if (!annoMode || e.target.closest('.anno-popup, #floating-controls')) return;
       const el = e.target.closest(ANNO_SEL);
       if (!el) return;
       e.preventDefault(); e.stopPropagation();
       annoPopup(el, e.clientX, e.clientY);
     }, true);
     annoLoad();
+  }
+
+  /* ---------- Atoms W5H1 Hover & Tracker ---------- */
+  let tooltipEl = null;
+  function showAtomTooltip(el, e, label, data) {
+    if (annoMode) return;
+    if (!tooltipEl) {
+      tooltipEl = document.createElement('div');
+      tooltipEl.className = 'atom-tooltip';
+      document.body.appendChild(tooltipEl);
+      
+      tooltipEl.addEventListener('mouseenter', () => tooltipEl.classList.add('interactive'));
+      tooltipEl.addEventListener('mouseleave', () => tooltipEl.style.opacity = '0');
+    }
+    
+    let html = `<h4>Atom: ${data ? data.title : label}</h4>`;
+    let missing = [...W5H1];
+    if (data && data.atoms) {
+      for (const [q, atom] of Object.entries(data.atoms)) {
+        missing = missing.filter(m => m !== q);
+        html += `<div class="atom-entry"><div class="atom-q">${q}</div><div class="atom-b">${atom.body}</div></div>`;
+      }
+    }
+    if (missing.length > 0) {
+      html += `<div class="missing">⚠️ Falta W5H1: ${missing.join(', ')}</div>`;
+    }
+    
+    tooltipEl.innerHTML = html;
+    tooltipEl.style.opacity = '1';
+    
+    const rect = el.getBoundingClientRect();
+    let left = e.clientX + 15;
+    let top = e.clientY + 15;
+    if (left + 320 > window.innerWidth) left = e.clientX - 335;
+    if (top + tooltipEl.offsetHeight > window.innerHeight) top = window.innerHeight - tooltipEl.offsetHeight - 15;
+    tooltipEl.style.left = left + 'px';
+    tooltipEl.style.top = top + 'px';
+  }
+
+  function initAtomsUI() {
+    const db = window.ATOMS_DB || {};
+    const missingNodes = new Set();
+    
+    document.querySelectorAll(ANNO_SEL).forEach(el => {
+      const label = annoLabel(el).toLowerCase();
+      if (!label || label.length < 2) return;
+      
+      const data = db[label];
+      const foundCount = data && data.atoms ? Object.keys(data.atoms).length : 0;
+      
+      if (foundCount < W5H1.length) {
+        missingNodes.add(label);
+        if (el.matches('g.node, rect.actor')) {
+           const warn = document.createElementNS("http://www.w3.org/2000/svg", "text");
+           warn.textContent = "⚠️";
+           warn.setAttribute("fill", "#e34c4c");
+           warn.setAttribute("font-size", "14");
+           warn.style.pointerEvents = "none";
+           const bbox = el.getBBox ? el.getBBox() : {x:0, y:0};
+           warn.setAttribute("x", bbox.x - 5);
+           warn.setAttribute("y", bbox.y + 10);
+           el.appendChild(warn);
+        }
+      }
+      
+      el.addEventListener('mouseenter', e => showAtomTooltip(el, e, label, data));
+      el.addEventListener('mousemove', e => {
+        if (tooltipEl && tooltipEl.style.opacity === '1' && !tooltipEl.classList.contains('interactive')) {
+           let left = e.clientX + 15;
+           let top = e.clientY + 15;
+           if (left + 320 > window.innerWidth) left = e.clientX - 335;
+           if (top + tooltipEl.offsetHeight > window.innerHeight) top = window.innerHeight - tooltipEl.offsetHeight - 15;
+           tooltipEl.style.left = left + 'px';
+           tooltipEl.style.top = top + 'px';
+        }
+      });
+      el.addEventListener('mouseleave', () => {
+        if (tooltipEl && !tooltipEl.classList.contains('interactive')) {
+          tooltipEl.style.opacity = '0';
+        }
+      });
+    });
+
+    const trackerBtn = document.getElementById('btn-tracker');
+    trackerBtn.addEventListener('click', () => {
+      const modal = document.getElementById('tracker-modal');
+      const list = document.getElementById('tracker-list');
+      if (missingNodes.size === 0) {
+        list.innerHTML = '<div style="color:var(--amber)">🎉 Todos los componentes tienen sus W5H1 completos.</div>';
+      } else {
+        list.innerHTML = Array.from(missingNodes).sort().map(lbl => {
+          const d = db[lbl];
+          let miss = [...W5H1];
+          if (d && d.atoms) {
+             miss = miss.filter(m => !Object.keys(d.atoms).includes(m));
+          }
+          return `<div class="tracker-item"><strong>${lbl}</strong>: <span class="miss">faltan ${miss.join(', ')}</span></div>`;
+        }).join('');
+      }
+      modal.style.display = 'block';
+    });
   }
 
   document.addEventListener('DOMContentLoaded', async () => {
@@ -326,6 +478,7 @@
     } finally {
       bindBoards();
       initAnnotations();
+      setTimeout(initAtomsUI, 500);
     }
   });
 </script>
