@@ -15,9 +15,13 @@ This task tightens the SLDB-to-KGDB handoff contract so downstream graph systems
 
 ## Why
 
-The repo already exports models, documents, sections, semantic tags, semantic DAG data, and hashes. The open question is whether that contract is explicit enough about document-subunit provenance once addressability/query/composition become richer.
+The repo already exports models, documents, sections, semantic tags, semantic DAG data, and hashes. The open question is whether that contract is explicit enough about document-subunit provenance once addressability, query, and composition become richer.
 
-## Required Reads
+## When
+
+Apply this pill when defining export provenance, deciding which source anchors must survive export, or clarifying the boundary between SLDB textual identity and downstream graph identity.
+
+## Where
 
 Read these first:
 
@@ -27,51 +31,26 @@ Read these first:
 - `docs/architecture/sldb-text-layer-vs-kgdb-graph-layer.md`
 - `src/sldb/store/export.py`
 
-## Current Repo Reality
+Provenance that may need explicit handling:
 
-The current export payload includes:
-
-- model entries with model metadata and hashes;
-- document entries with stable export ids and document hashes;
-- section entries with ids, breadcrumbs, slugs, semantic tags, and line ranges;
-- semantic DAG nodes and equivalences;
-- store/runtime provenance metadata.
-
-The current contract deliberately excludes graph persistence policy, workflow-specific edges, and direct runtime scraping as an ingestion contract.
-
-## In Scope
-
-Define what provenance must survive export when richer SLDB structure is referenced, including:
-
-- source document identity;
-- addressable textual unit identity when relevant;
-- model identity;
-- semantic tags;
-- extraction/hash lineage;
-- how downstream systems distinguish source anchors from graph-native identities.
-
-## Out of Scope
-
-Do not define:
-
-- KGDB persistence internals;
-- graph entity unification rules;
-- workflow-specific edges from deskops or repo-local operations;
-- a requirement that KGDB mirror SLDB private runtime layout.
-
-## Expected Outputs
-
-Produce a durable contract update that states:
-
-- what provenance anchors are required;
-- which anchors are canonical versus derived;
-- what the export payload must preserve for downstream traceability;
-- whether new payload fields or clarified semantics are needed;
-- follow-up implementation tasks if payload changes should be staged.
+- source document identity
+- addressable textual unit identity when relevant
+- model identity
+- semantic tags
+- extraction/hash lineage
+- how downstream systems distinguish source anchors from graph-native identities
 
 ## How
 
 Use the addressability contract as the source-side truth. Preserve enough information that a downstream graph node or edge can be traced back to the authored document unit it came from without pretending the source anchor is itself a graph identity.
+
+Produce a durable contract update that states:
+
+- what provenance anchors are required
+- which anchors are canonical versus derived
+- what the export payload must preserve for downstream traceability
+- whether new payload fields or clarified semantics are needed
+- follow-up implementation tasks if payload changes should be staged
 
 ## How Not
 

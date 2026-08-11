@@ -1,0 +1,391 @@
+documents:
+- name: edge-task-define-sldb-addressability-model-activate-to-testing
+  path: desk/primitives/edges/edge-task-define-sldb-addressability-model-activate-to-testing.md
+  hash_c: c8f56091928d369d1ebf9d484700d40b13ae06df6c6dbed26fe63af5f1d58df6
+  hash_d: 874ceca374ce7ee2d0f32713ba749014426635366f4a87fbb243a37808b49268
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-define-sldb-addressability-model-close-to-complete
+  path: desk/primitives/edges/edge-task-define-sldb-addressability-model-close-to-complete.md
+  hash_c: 502060cf3c4aa98ba4cbb986a9711f578955f9079c98675a99b37d33bb427328
+  hash_d: 85c16ba29d671df748cb9f4fc9ada6ea4a8fca61f07169750e16fa3d67781dda
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-define-sldb-addressability-model-closeout-to-close
+  path: desk/primitives/edges/edge-task-define-sldb-addressability-model-closeout-to-close.md
+  hash_c: acaafcc0084ab32b8843b13461b785fd0bd885444fc740ae53ac28fdbdbde12d
+  hash_d: 95de43a3ba710b712d3ba0d14436e243117be06b8999340b7e537d0443ae70ed
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-define-sldb-addressability-model-execution-to-activate
+  path: desk/primitives/edges/edge-task-define-sldb-addressability-model-execution-to-activate.md
+  hash_c: 28657cbc3506f2e44c786c44ffdd400d062b0112a2a5b15488c532e53b1306eb
+  hash_d: b307faa996fe15ac345f9647fe765c736f2ebebf395ba8bc72d5dd08694584b3
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-define-sldb-addressability-model-ready-to-closeout
+  path: desk/primitives/edges/edge-task-define-sldb-addressability-model-ready-to-closeout.md
+  hash_c: 95ae4872d627f9a49cbe3e82cc6e01a745d5845e42ab3313937692a370c36a95
+  hash_d: 80d53aa31c596c471144a30a4e9330599e7822e917b14d07b039979af71f8010
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-define-sldb-addressability-model-testing-to-ready
+  path: desk/primitives/edges/edge-task-define-sldb-addressability-model-testing-to-ready.md
+  hash_c: eab793d683ac911135547a329f0ee147a951e7550c542f5efd2433c9d1ef506a
+  hash_d: 4f10933729efefb76cf2749d2802e6b29c0b4c592f86d3ad16358d6974492e57
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-definir-arquitectura-objetivo-modular-de-sldb-activate-to-testing
+  path: desk/primitives/edges/edge-task-definir-arquitectura-objetivo-modular-de-sldb-activate-to-testing.md
+  hash_c: fe524538a727ec28b9d6831529b3b40aac25393fd0e31c92281a369d66b193f5
+  hash_d: 8e6d61e1365201d4a07d05c18a0e9ca833c5847bac6a1aa6bdb37b61e33c3055
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-definir-arquitectura-objetivo-modular-de-sldb-close-to-complete
+  path: desk/primitives/edges/edge-task-definir-arquitectura-objetivo-modular-de-sldb-close-to-complete.md
+  hash_c: 2d31f7de357185966822e99ea32f38c7d1104ebe79a798088e28270ee32b07de
+  hash_d: 6a217123c2151dee6995132063ad3af8ac7f647a35f5c626c298299950c963b2
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-definir-arquitectura-objetivo-modular-de-sldb-closeout-to-close
+  path: desk/primitives/edges/edge-task-definir-arquitectura-objetivo-modular-de-sldb-closeout-to-close.md
+  hash_c: 3702cd04deee08d16f08a6a62d20dd84f7fa04ff36de471eadd4be048f59ebe0
+  hash_d: 7854fecb1aa0977171bbcf41a0e77cccbc609fc5d20e64b1b06bfe274b0eef76
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-definir-arquitectura-objetivo-modular-de-sldb-execution-to-activate
+  path: desk/primitives/edges/edge-task-definir-arquitectura-objetivo-modular-de-sldb-execution-to-activate.md
+  hash_c: bb42b3753daac8689e834cc0e7f5a2101b4f2bc2eb768d8a49bd001dd552a53c
+  hash_d: 8d6b6d307df7301c4cdf4cb4cadda97b4efc2dab47508f035c32b28eae9ca89d
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-definir-arquitectura-objetivo-modular-de-sldb-ready-to-closeout
+  path: desk/primitives/edges/edge-task-definir-arquitectura-objetivo-modular-de-sldb-ready-to-closeout.md
+  hash_c: 348a5a7691b9e320116aa4c1b6424f5aff3398e36ebccc05cabd752a696ea0ff
+  hash_d: d0ae78746bcf0863390902426a7fc99190af9749d3f898dddc85a6cc29deb9dd
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-definir-arquitectura-objetivo-modular-de-sldb-testing-to-ready
+  path: desk/primitives/edges/edge-task-definir-arquitectura-objetivo-modular-de-sldb-testing-to-ready.md
+  hash_c: b381e3dc325dc9d69ac894424cf9e7cd249b0b0e145b87f105c957f6b6a90019
+  hash_d: 70012354d337df914be6abb341c5ebe15e1229c25d31e2a7c3e5f6a9ece4caba
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-design-sldb-ast-query-primitives-activate-to-testing
+  path: desk/primitives/edges/edge-task-design-sldb-ast-query-primitives-activate-to-testing.md
+  hash_c: b8f693b1a400ddfdc89b9f09c28c07da537e57f6b4bedaee47a13524ebc0f4c1
+  hash_d: 1281f1fc7c5e74d98922c3414726d079a77080c660481ea77e5065c4f03b1397
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-design-sldb-ast-query-primitives-close-to-complete
+  path: desk/primitives/edges/edge-task-design-sldb-ast-query-primitives-close-to-complete.md
+  hash_c: 1d4eba72c9f4f2a477bf3aca3ffe9f4f1232bb1c8fa18f8bf369ebc45f4ddb91
+  hash_d: dc9c31503fb584eab3c31c9afe1bbe64c1249b38a4c55be75efc3fa51375f90e
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-design-sldb-ast-query-primitives-closeout-to-close
+  path: desk/primitives/edges/edge-task-design-sldb-ast-query-primitives-closeout-to-close.md
+  hash_c: 48eeda3e8f6fd379d0c8d194a662906a0885b48f60a9ecf967caafab698f00b7
+  hash_d: 797e8bde3446e7578fc1849a8fe176d6d4fd064e2b9ab778a5cc650dfd9ba19d
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-design-sldb-ast-query-primitives-execution-to-activate
+  path: desk/primitives/edges/edge-task-design-sldb-ast-query-primitives-execution-to-activate.md
+  hash_c: a4f1ad8f9789a8303e3c3ea1f3e66586271d761ea6b197748c4e5ed1a96733b1
+  hash_d: c9b4414147a724eceb3b24a1d9a837e3e810b5893259424f4e8261fc00a53482
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-design-sldb-ast-query-primitives-ready-to-closeout
+  path: desk/primitives/edges/edge-task-design-sldb-ast-query-primitives-ready-to-closeout.md
+  hash_c: e4e2b361c643447a1bb6c28e97dd5ed2660adf8555ad016c6cf61f0b95de6718
+  hash_d: 9f52bcb84725e95a379155352465720a14cba7803653d1b4fd3df6c56b08fe18
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-design-sldb-ast-query-primitives-testing-to-ready
+  path: desk/primitives/edges/edge-task-design-sldb-ast-query-primitives-testing-to-ready.md
+  hash_c: 62ae959f80fef7c7a314c008cb69e09530beb127efe95d82995a96731b7bd01b
+  hash_d: cf9ce3e8e86a55df0ec231f6abc9d8a53e74c90485dcfa41ca96e22d95c79e3f
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: "edge-task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3n-activate-to-testing"
+  path: "desk/primitives/edges/edge-task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3\
+    n-activate-to-testing.md"
+  hash_c: 655846f1144dee8d1b2b1ed5f071b329afc804ed902747afcd585fda0ac15020
+  hash_d: 65f05015c984931704054e7c6c83176bff06e165d4ca517d651226dd9cc0362e
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: "edge-task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3n-close-to-complete"
+  path: "desk/primitives/edges/edge-task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3\
+    n-close-to-complete.md"
+  hash_c: b7adab7034e0c00fcba2506d1dc5adee8cd1adc3ba3c73259761e2a12ff16e93
+  hash_d: 79bfc4aee38aa1b8381a4916ad44e7474d9c2d87b246d5dc664409ac078ef8c2
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: "edge-task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3n-closeout-to-close"
+  path: "desk/primitives/edges/edge-task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3\
+    n-closeout-to-close.md"
+  hash_c: c4299dc42840c80fe47b2123370066c6d5a826b4dbad2c8b793ec5d61ab955a3
+  hash_d: 741a6e8fed9790fdbcb5a7d9d8b9544dee0b9acd234d45424ff5f7cf1bea927e
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: "edge-task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3n-execution-to-activate"
+  path: "desk/primitives/edges/edge-task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3\
+    n-execution-to-activate.md"
+  hash_c: 3c94492fc6fae33561346be18660e81dfe56452c7158fc90e16c9d33a6586809
+  hash_d: 6d68181cac9a0466fbc2ed917a5f6de2cf965c29cad9ea0e94dfa364a3327752
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: "edge-task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3n-ready-to-closeout"
+  path: "desk/primitives/edges/edge-task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3\
+    n-ready-to-closeout.md"
+  hash_c: 3486f5c39cbd5a276cf85a3fae98fc11be148798e63b1a5adbe6e8e819054a90
+  hash_d: 3df9222602c4327b4dca6538d6b5721093a2e18a65ae049e6bcd708e1ca45563
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: "edge-task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3n-testing-to-ready"
+  path: "desk/primitives/edges/edge-task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3\
+    n-testing-to-ready.md"
+  hash_c: cf0662fb4f16d65cc54804d0574d476b341baa46f9d454228e94b10cbe97c6d7
+  hash_d: fc5e4574d0b5c1536beef7a0befa8cca6f4272f22b2b9026bd1919d0fc43a2ec
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: "edge-task-ejecutar-refactor-base-del-n\xFAcleo-sldb-activate-to-testing"
+  path: "desk/primitives/edges/edge-task-ejecutar-refactor-base-del-n\xFAcleo-sldb-activate-to-testing.md"
+  hash_c: 2d6ef3e3099beab016dbe5dfe6a5b3ea50609bd354f65741ca94f3b602dfc6ff
+  hash_d: b11698ad955d64dcb3d2899cb2bf3b414a17463e3190185baa42b0baf6f6eed2
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: "edge-task-ejecutar-refactor-base-del-n\xFAcleo-sldb-close-to-complete"
+  path: "desk/primitives/edges/edge-task-ejecutar-refactor-base-del-n\xFAcleo-sldb-close-to-complete.md"
+  hash_c: 1be9fdd615fa4d68ad79bf2bebc3c9049e901792d1c6751036087cd27878365c
+  hash_d: 626befca30d57b3fe151cf677cd6415156630e8b1eaf79b30cac8a646a504131
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: "edge-task-ejecutar-refactor-base-del-n\xFAcleo-sldb-closeout-to-close"
+  path: "desk/primitives/edges/edge-task-ejecutar-refactor-base-del-n\xFAcleo-sldb-closeout-to-close.md"
+  hash_c: 06e2181b9d1bd06aff273b4802cb9cfdd5eea0c6c7fbf0e624efc4a074cd1fdf
+  hash_d: 08c96b597c9308ad08ee9327532c7b83fedc69e35eb87f380df2c5afab0ce556
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: "edge-task-ejecutar-refactor-base-del-n\xFAcleo-sldb-execution-to-activate"
+  path: "desk/primitives/edges/edge-task-ejecutar-refactor-base-del-n\xFAcleo-sldb-execution-to-activate.md"
+  hash_c: fe3a879afd469caa10990b87a9a7a1134f2fdf52ca08d006c596b82221bb4a54
+  hash_d: 3d6438e8671903ba33408977e375821be65751ba54b42e93a32b4efe1c44e6e7
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: "edge-task-ejecutar-refactor-base-del-n\xFAcleo-sldb-ready-to-closeout"
+  path: "desk/primitives/edges/edge-task-ejecutar-refactor-base-del-n\xFAcleo-sldb-ready-to-closeout.md"
+  hash_c: 966205a4835405cb5a3016cee0cb281fc102567ff574148560b1fad07a189266
+  hash_d: 700622049dcb2d0d7c7f43a9a85c6bd682fe59ae3985fe87634cede7756b53a6
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: "edge-task-ejecutar-refactor-base-del-n\xFAcleo-sldb-testing-to-ready"
+  path: "desk/primitives/edges/edge-task-ejecutar-refactor-base-del-n\xFAcleo-sldb-testing-to-ready.md"
+  hash_c: 574cad979ce4a70adf637247e3d1fef0d2a5e38a35664c26317e2b50f7065fe4
+  hash_d: b74bb8086be03c96d008a3aa1decfbf908e7e76159a2c20d1cbf05846a53b629
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-expand-sldb-composition-modes-activate-to-testing
+  path: desk/primitives/edges/edge-task-expand-sldb-composition-modes-activate-to-testing.md
+  hash_c: 4b6e725d8181983c0fbfd065d2f2294c3ffc7d7a59fe587b7c93f246ac38c049
+  hash_d: 7ad2215e280c1003c3b3750cc3f4ad8d3555f390c2901916d95b274cd5a93ed0
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-expand-sldb-composition-modes-close-to-complete
+  path: desk/primitives/edges/edge-task-expand-sldb-composition-modes-close-to-complete.md
+  hash_c: b56ec1795d77092612100cec78cdfe482e56324fb4785935181756b883d788e3
+  hash_d: ec43293ac311285d257b767c5ad8645887f537370eb25f00d0bcfa73ac87369f
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-expand-sldb-composition-modes-closeout-to-close
+  path: desk/primitives/edges/edge-task-expand-sldb-composition-modes-closeout-to-close.md
+  hash_c: 62f99cc58f9e97b5de052b4cd337dc4de5ef337f7ad3c5b4cd9886ad94e34497
+  hash_d: 2fe9b32e553221e800ede66d5bf0b5049523fcfeb2c1e59fcacab21ecd62330b
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-expand-sldb-composition-modes-execution-to-activate
+  path: desk/primitives/edges/edge-task-expand-sldb-composition-modes-execution-to-activate.md
+  hash_c: fe3dc4e8b33d67e080066e02dda7bef08e5cf06cf2e88d9a14e3a63d4d08e7fa
+  hash_d: 0cb05eac69bf2628ffd12cd8c628848e0cebe1e7925c61a860b5b3b804902033
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-expand-sldb-composition-modes-ready-to-closeout
+  path: desk/primitives/edges/edge-task-expand-sldb-composition-modes-ready-to-closeout.md
+  hash_c: cfd3e2b2817dacec4a15ee2939f3e5e331b9b22ad8fbbe0a1381cfb753fc5b83
+  hash_d: 683f1a014707657fb8e99683e757c88947825feeb24e2cf137af4028274009c6
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-expand-sldb-composition-modes-testing-to-ready
+  path: desk/primitives/edges/edge-task-expand-sldb-composition-modes-testing-to-ready.md
+  hash_c: b34d53819d4959b2a2b3fc23d29fff2468cdcbbd964b3206731376927f40804e
+  hash_d: ca26dab6d0ab5b06545a4d58bbc77c6b91ede8342f6db2ae8d9bbaede66bb900
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-mapear-arquitectura-real-de-sldb-activate-to-testing
+  path: desk/primitives/edges/edge-task-mapear-arquitectura-real-de-sldb-activate-to-testing.md
+  hash_c: c5b838d541101fc307dbda0a9a2c7d785595d5ec4609f3adbb0787f6e1e4c60c
+  hash_d: d8382d67c45947f35b59b866ee53632e571968dce8f57e5741d67a58ee24f161
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-mapear-arquitectura-real-de-sldb-close-to-complete
+  path: desk/primitives/edges/edge-task-mapear-arquitectura-real-de-sldb-close-to-complete.md
+  hash_c: 1692399a7cd1bac79dc693163d0278401e1628f67231ad2266303a3fa48cea1d
+  hash_d: 6a77c4f9b26f1a9d5cf0f6dd271b6955922b2981958479aa26e83f247724d7ba
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-mapear-arquitectura-real-de-sldb-closeout-to-close
+  path: desk/primitives/edges/edge-task-mapear-arquitectura-real-de-sldb-closeout-to-close.md
+  hash_c: ccc8ae35034ab20d376a99250b1d7e000b26e8a67554013927511bff90ef7214
+  hash_d: d2aa660cccb066d5dbe6984c6805a82cce707abf929d480dd1252af3a6fe9952
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-mapear-arquitectura-real-de-sldb-execution-to-activate
+  path: desk/primitives/edges/edge-task-mapear-arquitectura-real-de-sldb-execution-to-activate.md
+  hash_c: 17472ebf2aaad9e9c80b36d23c10d1e7221e2e3fd187e95b971acf6eee88dbd9
+  hash_d: ba4172883fafd530f77030efb44c21fc2c4534719748dba3b89f46cde0b09e63
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-mapear-arquitectura-real-de-sldb-ready-to-closeout
+  path: desk/primitives/edges/edge-task-mapear-arquitectura-real-de-sldb-ready-to-closeout.md
+  hash_c: dd5feb220816d3bd69881802249aed21945ab57b85635c467cb24986873e5dbe
+  hash_d: fdefa6a46a817081cf2c8fc08421d4512a0df80a8c43bb9183adf14321081a22
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-mapear-arquitectura-real-de-sldb-testing-to-ready
+  path: desk/primitives/edges/edge-task-mapear-arquitectura-real-de-sldb-testing-to-ready.md
+  hash_c: fe759632a08683e018991993d20047d5e175443de0c4ef263607fd63107f2c08
+  hash_d: 7631ace404c8498287679923c5362af89d16bc95737c8d6a8686acec0399e6c0
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-tighten-semantic-export-provenance-contract-activate-to-testing
+  path: desk/primitives/edges/edge-task-tighten-semantic-export-provenance-contract-activate-to-testing.md
+  hash_c: 0fbb077beff7d7330e8fd389d7dd011bf6d401a88b480e64388212f69c409fbb
+  hash_d: adf3588a6aa86335c51f5760c02844ce8a5f9561be84116b8a58bfc37b901e6f
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-tighten-semantic-export-provenance-contract-close-to-complete
+  path: desk/primitives/edges/edge-task-tighten-semantic-export-provenance-contract-close-to-complete.md
+  hash_c: ac83988db743c9381259d8ca1d7bdc5a02a9b81733e23d63a5a9656d789900a8
+  hash_d: a00d731714d494ec179cba52cab52f6270b67caeacf1f8b4291bcc08d2cbe1fc
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-tighten-semantic-export-provenance-contract-closeout-to-close
+  path: desk/primitives/edges/edge-task-tighten-semantic-export-provenance-contract-closeout-to-close.md
+  hash_c: b4bd3cbe3c800fe52572dc974f9e5adb0ce4d83ab0dd8db680aaa50d220c449c
+  hash_d: 3b7cdee614bfe4011d16cc4e3160a3ad4a00c174194e6b993e0a8c6f2f1dcab8
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-tighten-semantic-export-provenance-contract-execution-to-activate
+  path: desk/primitives/edges/edge-task-tighten-semantic-export-provenance-contract-execution-to-activate.md
+  hash_c: c0f9d9f81e0caae5d07a3498fbb95fe62bc9799987fac7775b4219f1459d0ab5
+  hash_d: b2448dd282f2e362985a2983c511843bb2ad2c5b19bb91b043d187c2895bca8b
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-tighten-semantic-export-provenance-contract-ready-to-closeout
+  path: desk/primitives/edges/edge-task-tighten-semantic-export-provenance-contract-ready-to-closeout.md
+  hash_c: 6bf2ee805a8af97cd4c8f2499e0ef8564578d0819fde8109edb2ec1286f83ba4
+  hash_d: ca03784dcab0f3be2ee588616373bff0cd8041cdd1132df35cc1a31c6fb3930b
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives
+- name: edge-task-tighten-semantic-export-provenance-contract-testing-to-ready
+  path: desk/primitives/edges/edge-task-tighten-semantic-export-provenance-contract-testing-to-ready.md
+  hash_c: 1a4dfc007df850e323244ffbd65d72a3cce4b40fdd85c346ecdd4ac11412014d
+  hash_d: 73ba5cb3586ae8ba0d69ac14e7531abc3d9071e45b16d3a793f4e1ad50fe9e49
+  semantic_tags:
+  - primitive:edge
+  - type.workflow.edge
+  - workspace.desk.primitives

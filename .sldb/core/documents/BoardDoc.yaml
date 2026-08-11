@@ -1,8 +1,19 @@
 documents:
 - name: desk-board
   path: desk/tasks/Board.md
-  hash_c: 19fd7162fdba9edf2518893041d7247da71d4e9d40a5290c1204cc016fe66554
-  hash_d: 53a1010550b1a0ab2ae93e1a7b71e8992e2d222101f51e053d53ec40afd0e94d
+  hash_c: 8754889c0f0b27b709592f8338022da58f00563e62ec80a3e64146269031df95
+  hash_d: cee3d497df68280bbfc63f916a152529f37e3d3732f2606ccd54f35a018b6fbd
+  semantic_tags:
+  - system:deskops
+  - system:sldb
+  - topic:routing
+  - type.workflow.board
+  - workspace.desk
+  - workspace:desk
+- name: Board
+  path: desk/tasks/Board.md
+  hash_c: 8754889c0f0b27b709592f8338022da58f00563e62ec80a3e64146269031df95
+  hash_d: cee3d497df68280bbfc63f916a152529f37e3d3732f2606ccd54f35a018b6fbd
   semantic_tags:
   - system:deskops
   - system:sldb

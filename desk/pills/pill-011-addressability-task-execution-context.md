@@ -14,15 +14,19 @@ This task defines how SLDB names meaningful textual units inside authored docume
 
 ## Why
 
-Three existing surfaces already need a stable notion of “what unit are we talking about?”
+Three existing surfaces already need a stable notion of what textual unit is being referenced:
 
-- structural query design;
-- composition inputs and references;
-- semantic export provenance.
+- structural query design
+- composition inputs and references
+- semantic export provenance
 
 Without an explicit contract, each surface will invent its own selectors.
 
-## Required Reads
+## When
+
+Apply this pill when defining canonical versus derived addresses, deciding which document subunits are meaningfully addressable, or reasoning about edit stability and provenance.
+
+## Where
 
 Read these first:
 
@@ -35,28 +39,7 @@ Read these first:
 - `src/sldb/store/export.py`
 - `docs/architecture/semantic-export-boundary.md`
 
-## Current Repo Reality
-
-Today the repo already has several kinds of address-like references:
-
-- tracked document identity via store model/doc names;
-- field-level access through structural query addresses such as `st.{Model}.doc.field`;
-- section export ids shaped like `Model:doc#section.path`;
-- AST block trees produced from Markdown tokens in `src/sldb/core/ast.py`.
-
-These are related but not yet unified into one explicit doctrine for document subunits.
-
-## In Scope
-
-Define:
-
-- which textual units are meaningfully addressable in SLDB;
-- which addresses are canonical versus derived;
-- how addresses behave under normal edits such as heading renames, list insertions, or field value changes;
-- whether some units are only queryable but not canonical export anchors;
-- how document-local addresses relate to tracked document identity.
-
-Likely units to evaluate:
+Relevant unit types to evaluate:
 
 - whole document
 - section / subsection
@@ -66,30 +49,19 @@ Likely units to evaluate:
 - paragraph or block
 - composition target fragments
 
-## Out of Scope
-
-Do not define:
-
-- KGDB global entity identity;
-- graph equivalence or entity unification;
-- final end-user CLI syntax for every future query surface;
-- a full implementation of all address resolvers unless needed as a proof point.
-
-## Expected Outputs
-
-At minimum produce a durable contract doc that answers:
-
-- the addressable unit inventory;
-- canonical address shapes;
-- derived address shapes;
-- edit-stability rules;
-- provenance implications for export.
-
-If implementation is still unsafe afterward, extract follow-up tasks instead of forcing code prematurely.
-
 ## How
 
 Use existing repo behaviors as evidence, then define the missing contract. Prefer examples that show how the same unit would be referenced by a document author, a structural query, a composition feature, and a semantic export payload.
+
+At minimum, produce a durable contract that answers:
+
+- the addressable unit inventory
+- canonical address shapes
+- derived address shapes
+- edit-stability rules
+- provenance implications for export
+
+If implementation is still unsafe afterward, extract follow-up tasks instead of forcing code prematurely.
 
 ## How Not
 

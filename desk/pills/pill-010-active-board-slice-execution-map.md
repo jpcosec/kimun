@@ -24,7 +24,11 @@ A zero-context agent should treat these tasks as one ordered design chain, not a
 
 The current repo already has partial surfaces for AST parsing, store structural querying, transclusion, render-time composition, and semantic export. Those surfaces encode assumptions, but the cross-cutting contract connecting them is still under-specified. This board exists to make those assumptions explicit before broad runtime expansion.
 
-## Required Reads
+## When
+
+Apply this pill when working on the active board slice around addressability, query, composition, and semantic export design, especially when a change could harden assumptions before the upstream contract is written down.
+
+## Where
 
 Read these before changing anything in this slice:
 
@@ -44,30 +48,16 @@ Read these before changing anything in this slice:
 - `src/sldb/store/export.py`
 - `tests/test_composition.py`
 
-## Current Repo Reality
+## How
 
-The repo already provides:
+Work text-first and contract-first. Use existing repo surfaces as evidence, describe what is already true, then define the missing contract in a way later tasks can consume without reopening the architecture debate.
 
-- Markdown AST parsing into `SLDBNode` trees in `src/sldb/core/ast.py`.
-- Store structural queries over tracked model/doc/field addresses using the `st.{Model}.doc.field` family.
-- Transclusion composition through `[[target]]` / `![[target]]` in `src/sldb/links.py`.
-- Render-time composition through `StructuredNLDoc.__compositions__` in `src/sldb/models/structured_doc.py`.
-- Semantic export with document and section provenance in `src/sldb/store/export.py` and `docs/architecture/semantic-export-boundary.md`.
-
-The gap is not “nothing exists.” The gap is that document-subunit addressability and its relationship to query/composition/export are not yet named as a coherent contract.
-
-## Execution Order
-
-Use this order unless the board changes explicitly:
+Use this execution order unless the board changes explicitly:
 
 1. `task-define-sldb-addressability-model`
 2. `task-design-sldb-ast-query-primitives`
 3. `task-expand-sldb-composition-modes`
 4. `task-tighten-semantic-export-provenance-contract`
-
-Later tasks may read ahead, but they should not finalize contracts that assume answers the upstream tasks have not yet written down.
-
-## Expected Outputs
 
 This slice should primarily produce durable design artifacts:
 
@@ -75,10 +65,6 @@ This slice should primarily produce durable design artifacts:
 - atoms if a concept becomes reusable beyond a single task
 - follow-up implementation tasks if runtime changes are implied but not yet safe to harden
 - code changes only when needed to validate or demonstrate a now-explicit contract
-
-## How
-
-Work text-first and contract-first. Use existing repo surfaces as evidence, describe what is already true, then define the missing contract in a way later tasks can consume without reopening the architecture debate.
 
 ## How Not
 

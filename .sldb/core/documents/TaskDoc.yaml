@@ -2,7 +2,7 @@ documents:
 - name: task-define-sldb-addressability-model
   path: desk/tasks/task-define-sldb-addressability-model.md
   hash_c: 2ee7e6f899d2e85b6fcb5b4b616585e3fe7249d1a4538f275e0ee80690291868
-  hash_d: 80725497170ca824130a3dcce9603c9bafad93166cdc88fb762c226464bd5bf4
+  hash_d: 37ec382905e229c9c228b51e3cb1dbcaded585010ddeb9b7eac84faea7f3bb15
   semantic_tags:
   - artifact:task
   - source:drawer
@@ -12,7 +12,7 @@ documents:
 - name: task-design-sldb-ast-query-primitives
   path: desk/tasks/task-design-sldb-ast-query-primitives.md
   hash_c: bc709f2e779673bf5252b9d06cf1c834e1eae0e72d702792eb6cd03fbec77334
-  hash_d: 8c506aa0b301523dc203d51450fead23421e606d413e7c59606370089e28de9d
+  hash_d: 2b49a817c8c2ebd8765b8d122acdaa2d4b4229389240eeabc2aa2e294e72e7c3
   semantic_tags:
   - artifact:task
   - source:drawer
@@ -22,7 +22,7 @@ documents:
 - name: task-expand-sldb-composition-modes
   path: desk/tasks/task-expand-sldb-composition-modes.md
   hash_c: 58096369c876b6ce440294add2e695844781bb4b02ad7a128874f6eab55fe780
-  hash_d: 1a98767747202a0d24484235ab5964adaf8aa8b95d0cdf4c6cbb3fa63baaeeee
+  hash_d: 51dac885990bdd285f7d585e6db17cb423ae1850bd28fb867909067cb0957829
   semantic_tags:
   - artifact:task
   - source:drawer
@@ -32,10 +32,47 @@ documents:
 - name: task-tighten-semantic-export-provenance-contract
   path: desk/tasks/task-tighten-semantic-export-provenance-contract.md
   hash_c: 6aafb378b88ab01d6f66cb5ca1b7676bcdf26ee033370b8ba44890b0ecffec6d
-  hash_d: bf94d72f811c580e82a15a5059b41edabc2af279c953f124031718249ead321a
+  hash_d: c7c813d61fd8c96a3d2d48c3722d4f6abdb2f07ac73f325d63f8500d882bcdc1
   semantic_tags:
   - artifact:task
   - source:drawer
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-definir-arquitectura-objetivo-modular-de-sldb
+  path: desk/tasks/task-definir-arquitectura-objetivo-modular-de-sldb.md
+  hash_c: 015d788f8ea74e7ecea67a4c7aaa9e89a322a653965271ab4d273cddbcfba4b4
+  hash_d: 3b2bf55954a9c91be743c77d4855805e0f11845441978e748e89fbaee80a6efb
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: "task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3n"
+  path: "desk/tasks/task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3\
+    n.md"
+  hash_c: dc17fffcfd27dd8ab5dd5d91d68bddf163d88f6d06db9631375113e64f224bb9
+  hash_d: 9334dd6570da1dd2648d79b15d2b4046afd78479c957f9f29e63df435c9dd3ed
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: "task-ejecutar-refactor-base-del-n\xFAcleo-sldb"
+  path: "desk/tasks/task-ejecutar-refactor-base-del-n\xFAcleo-sldb.md"
+  hash_c: 6e41f484f9287854f036b312dbf95cf2fc75467786418b504681bbc2693ec75a
+  hash_d: c8bde9b3bc9cf6ec6e5446f9996a1c739e588ea271c47a7433ef1d7e4992a8eb
+  semantic_tags:
+  - artifact:task
+  - type.workflow.task
+  - workspace.desk
+  - workspace:desk
+- name: task-mapear-arquitectura-real-de-sldb
+  path: desk/tasks/task-mapear-arquitectura-real-de-sldb.md
+  hash_c: 1c6cf66a43d3cda151fdd92ced1590951083e1ba66d2c7a64450d98a15bfa5b3
+  hash_d: 4cdc0c1fe0704ac452a648cba7508ac1e3d2f0e62ba6b838aa7a0205a8096fc8
+  semantic_tags:
+  - artifact:task
   - type.workflow.task
   - workspace.desk
   - workspace:desk
