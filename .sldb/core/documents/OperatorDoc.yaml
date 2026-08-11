@@ -1,0 +1,199 @@
+documents:
+- name: operator-task-define-sldb-addressability-model-activate
+  path: desk/primitives/operators/operator-task-define-sldb-addressability-model-activate.md
+  hash_c: acef64471d6deaea4f85e1d6f37e37c926b31b65310f8f09259b634aad28d0bc
+  hash_d: e622cbe70bfb468d5c9f89a011482a1e230dcd981a5f999d50f51d56c1c595d1
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: operator-task-define-sldb-addressability-model-close
+  path: desk/primitives/operators/operator-task-define-sldb-addressability-model-close.md
+  hash_c: 0ee6ce4079926032c49484504c77b028f41543b98ef1cf3f989cab9daa144b7e
+  hash_d: 9457fbd8ee9824e36992e491dea3993d57e51653c31b4d9828a80665126eff7a
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: operator-task-define-sldb-addressability-model-ready-for-testing
+  path: desk/primitives/operators/operator-task-define-sldb-addressability-model-ready-for-testing.md
+  hash_c: 8a254440c4c0a52d397c6e3aafcfb115277e160c88102df41ff884fc60af2aff
+  hash_d: 1cdf020e3e1b6d45fe43241e043bb27d8b2715f59dfd310ba0e664731b15d4a6
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: operator-task-definir-arquitectura-objetivo-modular-de-sldb-activate
+  path: desk/primitives/operators/operator-task-definir-arquitectura-objetivo-modular-de-sldb-activate.md
+  hash_c: 1bb9dabc13567b80a12e8de027b85f1d8e2342e1c015b62026a8bca70f160c1b
+  hash_d: ff0806dced51ab769577401e1c7f51bfce4d1f17a04695d487477c8ab7b38875
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: operator-task-definir-arquitectura-objetivo-modular-de-sldb-close
+  path: desk/primitives/operators/operator-task-definir-arquitectura-objetivo-modular-de-sldb-close.md
+  hash_c: c943adc1bb2a097a7e0823efb6c6b5f731accabc08af359b0459572d42e36db0
+  hash_d: 318802fdef2a4bb9627a4518d2d2f7baea1fc50e2d2b99652c82d4db3a90df57
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: operator-task-definir-arquitectura-objetivo-modular-de-sldb-ready-for-testing
+  path: desk/primitives/operators/operator-task-definir-arquitectura-objetivo-modular-de-sldb-ready-for-testing.md
+  hash_c: 9402f2e76b0e825b185bd6990465d225f27c759e8705d608ec3a2634b44acb86
+  hash_d: 6f5f9bdf71791d381c75bf958c0746e3be3587fdb9bbcf951274ad8a4c5ef98c
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: operator-task-design-sldb-ast-query-primitives-activate
+  path: desk/primitives/operators/operator-task-design-sldb-ast-query-primitives-activate.md
+  hash_c: 80ac0a08d446fda2c742dad1c7b2074b7da9e2b0ede1f5369de8e0d8102363f0
+  hash_d: 67ea8b866a8b4381a0783a169cdb751cc532568a7efdb7931380fb6cf5284142
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: operator-task-design-sldb-ast-query-primitives-close
+  path: desk/primitives/operators/operator-task-design-sldb-ast-query-primitives-close.md
+  hash_c: 5086f10658cc8d77a0bdf4c4fdc242a392a269d462a034ee806baae41605d81a
+  hash_d: 994ce813248c131d3b21be9d79a147be2963e494fe03526ad4ad32475da8f97e
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: operator-task-design-sldb-ast-query-primitives-ready-for-testing
+  path: desk/primitives/operators/operator-task-design-sldb-ast-query-primitives-ready-for-testing.md
+  hash_c: c4771f0d7ab60d5b2d264de830ed28df736f099dc092218920293158cee750c5
+  hash_d: d7c76bd7208651428e73d1f6c8c30685956fe6bb4d908565f926c867872ff31d
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: "operator-task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3n-activate"
+  path: "desk/primitives/operators/operator-task-dise\xF1ar-estrategia-de-extracci\xF3\
+    n-y-modularizaci\xF3n-activate.md"
+  hash_c: cbec23b321f265d390f159b1aa00eb27f5f5368be1ccb77cdab144b0c8d1f222
+  hash_d: 3686a8acdabf09e08f9ba9649de7f5cc70b9d5aa65bdf5b673cff0fb78b13bfe
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: "operator-task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3n-close"
+  path: "desk/primitives/operators/operator-task-dise\xF1ar-estrategia-de-extracci\xF3\
+    n-y-modularizaci\xF3n-close.md"
+  hash_c: ed07fc04875bb31038fd3c76b9d2870564d0588eafc07094c88917e69899c613
+  hash_d: 18fb198b91e8a88a2ede3ec313a1faea0b73d858684d589e3ec8fdc670de86ef
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: "operator-task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3n-ready-for-testing"
+  path: "desk/primitives/operators/operator-task-dise\xF1ar-estrategia-de-extracci\xF3\
+    n-y-modularizaci\xF3n-ready-for-testing.md"
+  hash_c: 7acfcaf62ab21b9d635aac45449830f5146e1fc6ef2c98e52360511f3b008502
+  hash_d: 876b5181d32bfea6bca7c3f303160c90f791738887eb7486d85b6649ba7a0bfb
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: "operator-task-ejecutar-refactor-base-del-n\xFAcleo-sldb-activate"
+  path: "desk/primitives/operators/operator-task-ejecutar-refactor-base-del-n\xFA\
+    cleo-sldb-activate.md"
+  hash_c: c8699a7d9784a7a7bda0301359a9532b84ce96f77d257a01188fe8dbdf3f4119
+  hash_d: bba14d47efbf4c223049b4278e71a10dc6acce6a441042fc8a4badf508d74515
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: "operator-task-ejecutar-refactor-base-del-n\xFAcleo-sldb-close"
+  path: "desk/primitives/operators/operator-task-ejecutar-refactor-base-del-n\xFA\
+    cleo-sldb-close.md"
+  hash_c: 4f69a39144406927567f0c7ad0c4048fb3d14ec241f594034a351e5a2c96accb
+  hash_d: 19a85883cc2aeff195ba4edd78f1a3c7335eeb6aebac2468facc76a29014eaf7
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: "operator-task-ejecutar-refactor-base-del-n\xFAcleo-sldb-ready-for-testing"
+  path: "desk/primitives/operators/operator-task-ejecutar-refactor-base-del-n\xFA\
+    cleo-sldb-ready-for-testing.md"
+  hash_c: 33d77906551368658e91465a9efc9b88ea8a44f6612ba1e3a9106303bf54297a
+  hash_d: a51ba9ab0f54c762819e9dae45cfd194d505989aaa7cfdd5ed98c7369641733b
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: operator-task-expand-sldb-composition-modes-activate
+  path: desk/primitives/operators/operator-task-expand-sldb-composition-modes-activate.md
+  hash_c: 8541c79c00b0bc4c4cce5fc1c00be9fe8070b4fd3978f7929cb47b718be4e749
+  hash_d: 45cde3f15b560f3699609de81038af3eba027c67213d6a945f5fb991721a29a1
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: operator-task-expand-sldb-composition-modes-close
+  path: desk/primitives/operators/operator-task-expand-sldb-composition-modes-close.md
+  hash_c: 6370c7e9596e97184f337c9532a9115c018322a134b74a41620ab169ce89bd20
+  hash_d: 20821d006c3ea1484a1c9f7198becba5e8cb2ff41a31483dbf5990a8da84abf3
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: operator-task-expand-sldb-composition-modes-ready-for-testing
+  path: desk/primitives/operators/operator-task-expand-sldb-composition-modes-ready-for-testing.md
+  hash_c: c190d4aa634169c9d93aa6f5fd7d68d11d2d05edf67f872cfeb1b58be93a55a5
+  hash_d: 8c0131cbb1d9a8b10595b42021525b77bc7bcba9e75d66418fdcd74b65ad86bf
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: operator-task-mapear-arquitectura-real-de-sldb-activate
+  path: desk/primitives/operators/operator-task-mapear-arquitectura-real-de-sldb-activate.md
+  hash_c: 75b4e6ea32a52d2bb8596eb41020007731479bc04db04f6ef1a7ec5e7c736815
+  hash_d: 77f68f24ff2f1b7e5fa525e57f06e139ed91a2c68618d9ce381a24749da210c1
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: operator-task-mapear-arquitectura-real-de-sldb-close
+  path: desk/primitives/operators/operator-task-mapear-arquitectura-real-de-sldb-close.md
+  hash_c: 2f1f6bf2551d1397f94c092a0ecf75e6083884d85939da0599f20e4f2b80d69b
+  hash_d: 22e7f6102cca70878d7cf15c9086263e4985e75a3d429d16c31cb24e49e295cb
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: operator-task-mapear-arquitectura-real-de-sldb-ready-for-testing
+  path: desk/primitives/operators/operator-task-mapear-arquitectura-real-de-sldb-ready-for-testing.md
+  hash_c: bb5a7743ca35a37cee33441ec89446d78581d04bda034f1ce34bfa302e64cd5e
+  hash_d: 6a773c747130bbd6425aba3eb387a5c633b455e4a9c83840b395973dee7e9768
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: operator-task-tighten-semantic-export-provenance-contract-activate
+  path: desk/primitives/operators/operator-task-tighten-semantic-export-provenance-contract-activate.md
+  hash_c: 53f1372dcda40d955477917aaeab5875d57eb3938ad31ce5e222118c09d3b798
+  hash_d: 1e0dd1e4d9e02697bf726f9afddb32021b48acd16e14284d360dd08d4c8c0c2c
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: operator-task-tighten-semantic-export-provenance-contract-close
+  path: desk/primitives/operators/operator-task-tighten-semantic-export-provenance-contract-close.md
+  hash_c: 0a4682a488b6ecf27707904e6aa4061923d4fd7321ddf037538e9cb585338993
+  hash_d: 16331618cc80ed66d238d5e15cf4cc0db17d283b3565757e2bfc3607a03184e6
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives
+- name: operator-task-tighten-semantic-export-provenance-contract-ready-for-testing
+  path: desk/primitives/operators/operator-task-tighten-semantic-export-provenance-contract-ready-for-testing.md
+  hash_c: f02f931884949af90665ab9878a724f2f4c47a1bc53e54de01be8f9b3e36788a
+  hash_d: 9422a4f2a52e4ba0451f7783d367179f40291c88871f2c05400dcb0c52b1b25b
+  semantic_tags:
+  - primitive:operator
+  - type.workflow.operator
+  - workspace.desk.primitives

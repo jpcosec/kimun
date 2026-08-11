@@ -1,0 +1,13 @@
+name: RoutineDoc
+model_ref: deskops.models:RoutineDoc
+path: /home/jp/proyectos/hum-ecosystem/tools/deskops/deskops/models/routine.py
+documents_index: .sldb/core/documents/RoutineDoc.yaml
+sections_index: ''
+hash_b: a2d4bc7e0d2334ad51277dccf229cec6181023c44feddadde8e39fd4c88406c6
+version: 1
+canonical: false
+family: null
+semantics:
+- type.workflow.routine
+- workspace.desk.routines
+base_models: []

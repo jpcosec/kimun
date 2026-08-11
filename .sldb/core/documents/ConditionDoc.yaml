@@ -1,0 +1,269 @@
+documents:
+- name: condition-task-define-sldb-addressability-model-has-implementation-path
+  path: desk/primitives/conditions/condition-task-define-sldb-addressability-model-has-implementation-path.md
+  hash_c: 167d88460e9aa83ef0dafb84db92d1462f14a73feb9f1bd2a05a809704930d99
+  hash_d: 87ee45b88e257edac268a9a4c151bec0208a2215466e295e16d18b8fff61f914
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-define-sldb-addressability-model-has-testing-evidence
+  path: desk/primitives/conditions/condition-task-define-sldb-addressability-model-has-testing-evidence.md
+  hash_c: e91b11e70213c21199c790616b9efb5d3a3f8ee5cc7dacf0512adab0e89b30ac
+  hash_d: 7079bdb1ca5d88e09acd6303ca079545f921da3006a314d69326885c653056cd
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-define-sldb-addressability-model-has-validation
+  path: desk/primitives/conditions/condition-task-define-sldb-addressability-model-has-validation.md
+  hash_c: 8658f8c6807f386343fd7f010dd7f05f427d0d412e76c540e7f1819e34e25fe2
+  hash_d: 3379ffb05038a33af6a2b4b92fdf5150cd58e9c90ed3a1ecbc795d45b0493d6f
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-define-sldb-addressability-model-ready-for-closeout
+  path: desk/primitives/conditions/condition-task-define-sldb-addressability-model-ready-for-closeout.md
+  hash_c: 26a39d0bf6c49618073ebfe3852a7ede86a0ba039eb8ca65f582ecd0d5210664
+  hash_d: a07a6d72cc70471cbc714dc7b8d3de7e7fee1b449b9419c6619f9a4e195e8ce7
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-definir-arquitectura-objetivo-modular-de-sldb-has-closeout-evidence
+  path: desk/primitives/conditions/condition-task-definir-arquitectura-objetivo-modular-de-sldb-has-closeout-evidence.md
+  hash_c: 67159ceee43ee664a85c1286997d1e15f160f7468c8062e365661e22317702b3
+  hash_d: 128d3faea9bdaa801c13a429fba0c873af88d6802271d69a31aa6e06c3ec4e2d
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-definir-arquitectura-objetivo-modular-de-sldb-has-implementation-path
+  path: desk/primitives/conditions/condition-task-definir-arquitectura-objetivo-modular-de-sldb-has-implementation-path.md
+  hash_c: 3dbced9e846b312592b7d68dbdd6a0c063275fe6912553bcb377fc33dfbcb8df
+  hash_d: e71b6c294f43af30c90a196a11863d4f798e45c76742a6ddf4c2399dfee8174a
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-definir-arquitectura-objetivo-modular-de-sldb-has-validation
+  path: desk/primitives/conditions/condition-task-definir-arquitectura-objetivo-modular-de-sldb-has-validation.md
+  hash_c: c9762583f76443b2cf0873d23d88b8b86a75e76031c09d0a976160ac8ec13fc7
+  hash_d: 5d112e0c8278cf897969f7cafd1250d8dccb80d12fab01cb6f7d3c9635b32f2a
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-definir-arquitectura-objetivo-modular-de-sldb-ready-for-closeout
+  path: desk/primitives/conditions/condition-task-definir-arquitectura-objetivo-modular-de-sldb-ready-for-closeout.md
+  hash_c: a1d0f1e7fd2be60ff5f3b8808866fc4ba70e36ecf710bb1bfa33ab96628bb6b5
+  hash_d: dd509d46959ffc6215c72e4a7c56da5bbce1107d2721ace8d958a14774da5683
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-design-sldb-ast-query-primitives-has-implementation-path
+  path: desk/primitives/conditions/condition-task-design-sldb-ast-query-primitives-has-implementation-path.md
+  hash_c: 998c5350380d0fce54964a7d7201a056873b24f80f0b5c4c475e97e17a675fb4
+  hash_d: 95b62bbc5883f0cdf6e2a2deafa86f5a4839ddb48be86aa5ed2941f412aa2fea
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-design-sldb-ast-query-primitives-has-testing-evidence
+  path: desk/primitives/conditions/condition-task-design-sldb-ast-query-primitives-has-testing-evidence.md
+  hash_c: 90777522f4b999e907775c2ab36233e6d7f54d591a42a15ce807f7628c7963a2
+  hash_d: f621a969519033337516c4e55029ab651f2f308fec8b01f249a1bff1626c3345
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-design-sldb-ast-query-primitives-has-validation
+  path: desk/primitives/conditions/condition-task-design-sldb-ast-query-primitives-has-validation.md
+  hash_c: b778b91f4bf8b4e2eb7f7ba1967324f0a89df0e67c1a59263bc0d9d56811e712
+  hash_d: 6ad71ab6be6f43d716e59fdb0f415ca8151dbe997c5a8065b0318571e611a005
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-design-sldb-ast-query-primitives-ready-for-closeout
+  path: desk/primitives/conditions/condition-task-design-sldb-ast-query-primitives-ready-for-closeout.md
+  hash_c: 07efdfcba0210355232bae176ea6838c7d9abf1a4e2d413a080d861b2b56fb59
+  hash_d: 7ebc30bdfcd9c8a5fb257a785ea3abf667ff22abe6c8e55bb8909fc8af534724
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: "condition-task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3\
+    n-has-closeout-evidence"
+  path: "desk/primitives/conditions/condition-task-dise\xF1ar-estrategia-de-extracci\xF3\
+    n-y-modularizaci\xF3n-has-closeout-evidence.md"
+  hash_c: 86a2260853b032f2cebf26dc6f97910ddc0b0bc27716357638ab4b154a0d11cf
+  hash_d: 25d4f5e68c4d867f8425c7deca56d55f4292035f349083dd36698ce01069628f
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: "condition-task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3\
+    n-has-implementation-path"
+  path: "desk/primitives/conditions/condition-task-dise\xF1ar-estrategia-de-extracci\xF3\
+    n-y-modularizaci\xF3n-has-implementation-path.md"
+  hash_c: ef08bc35f462732081ed87ab874683c69299313a3b0b946302ebd919fc30c24e
+  hash_d: 89cae0ada514fc7aed7daba002c3322c60d198e75357a017f22e549e762e1b4a
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: "condition-task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3\
+    n-has-validation"
+  path: "desk/primitives/conditions/condition-task-dise\xF1ar-estrategia-de-extracci\xF3\
+    n-y-modularizaci\xF3n-has-validation.md"
+  hash_c: 437f37cdbd936d727e1ec65b5e2a39113dc9ba486144e896c81e0db1de08b39e
+  hash_d: a8e703892e9cb227e32ef70a9bd1bd35dd22d62c15d605aa56cf0741dbf33d2c
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: "condition-task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3\
+    n-ready-for-closeout"
+  path: "desk/primitives/conditions/condition-task-dise\xF1ar-estrategia-de-extracci\xF3\
+    n-y-modularizaci\xF3n-ready-for-closeout.md"
+  hash_c: e1db26e06a9910b11bc0449b77b17c93794d08d046b28b4e01d02f9d9b8c4777
+  hash_d: 1ff05e7182b3a5d01812165433881ea7ca2ea41ede0dc654f82525c5b3e1c6b8
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: "condition-task-ejecutar-refactor-base-del-n\xFAcleo-sldb-has-closeout-evidence"
+  path: "desk/primitives/conditions/condition-task-ejecutar-refactor-base-del-n\xFA\
+    cleo-sldb-has-closeout-evidence.md"
+  hash_c: 8b52c83b25e94c858b4d625991c3738a1220fc94f5ed0ffd6ce8aec79103132a
+  hash_d: b99d3421914e1a21279e828c460ecf94bde79da6d9146a2bfd4f03ccd10e1f0d
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: "condition-task-ejecutar-refactor-base-del-n\xFAcleo-sldb-has-implementation-path"
+  path: "desk/primitives/conditions/condition-task-ejecutar-refactor-base-del-n\xFA\
+    cleo-sldb-has-implementation-path.md"
+  hash_c: bd1110878a543fa34c2679ef55bd14bfbf6d91b64c0e1d274ba966a5e7fb246a
+  hash_d: 49f891d809a36d382eb33090ca00bb8c023706ace0ae9e1c1826ef0df05dd426
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: "condition-task-ejecutar-refactor-base-del-n\xFAcleo-sldb-has-validation"
+  path: "desk/primitives/conditions/condition-task-ejecutar-refactor-base-del-n\xFA\
+    cleo-sldb-has-validation.md"
+  hash_c: f9007c66900864232bc321265897d521bd5c408c3d2172b283a0b5aba0e32f99
+  hash_d: 36dc7e20c12782be612bb630ec18532db8a627509503074dd9b0f62cb4d50b24
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: "condition-task-ejecutar-refactor-base-del-n\xFAcleo-sldb-ready-for-closeout"
+  path: "desk/primitives/conditions/condition-task-ejecutar-refactor-base-del-n\xFA\
+    cleo-sldb-ready-for-closeout.md"
+  hash_c: fece1edb79a9b3885412fe8cc2c8be33cb45649be6f1e6a3b518e27a61f5df31
+  hash_d: c0788c4a5d721d1debc3b67751ed3183a78fedc9c6868fea8a21ca8f947c9080
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-expand-sldb-composition-modes-has-implementation-path
+  path: desk/primitives/conditions/condition-task-expand-sldb-composition-modes-has-implementation-path.md
+  hash_c: 47d0c1aeb0d4223c271b06736a22392489fd5c7f768845db24f59fedcaff7629
+  hash_d: 1383bd23876a3ed5dade9bd7d0173e80cf1906abff39a9ae48c70897dba5682f
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-expand-sldb-composition-modes-has-testing-evidence
+  path: desk/primitives/conditions/condition-task-expand-sldb-composition-modes-has-testing-evidence.md
+  hash_c: 06c39c890e92a3b9b3bd6d5b381de06cbab0190c67f3da120e87d13aedac941e
+  hash_d: b16dcbe4c733645438ddeffa21ac2c55778e5dd9261cc7112818e644cd3dd59e
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-expand-sldb-composition-modes-has-validation
+  path: desk/primitives/conditions/condition-task-expand-sldb-composition-modes-has-validation.md
+  hash_c: 5a9dd63657feb7efd75060bc7c417c3b8ada81388a03389602f1f12ce8091341
+  hash_d: ae977579d4ebf216ea12f6f98c02c17b9b43598e0701abdc38e749e4fc330ce1
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-expand-sldb-composition-modes-ready-for-closeout
+  path: desk/primitives/conditions/condition-task-expand-sldb-composition-modes-ready-for-closeout.md
+  hash_c: 04f6d81f00234e9af89a9d29caadd430ff52944ae0f2d4227d243d552e22b33e
+  hash_d: a73e863ac758bce2d32fd67591ed91875b57084e7d320a4ea51bc08d82c008be
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-mapear-arquitectura-real-de-sldb-has-closeout-evidence
+  path: desk/primitives/conditions/condition-task-mapear-arquitectura-real-de-sldb-has-closeout-evidence.md
+  hash_c: 50e970a1e1cc1536322ca03470132cdef1fc159f360bdd58257da6cb9549b802
+  hash_d: bf9a0d7158249d416159da76477c56de04e5ae094ccf86edc29b5b29ba464f9d
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-mapear-arquitectura-real-de-sldb-has-implementation-path
+  path: desk/primitives/conditions/condition-task-mapear-arquitectura-real-de-sldb-has-implementation-path.md
+  hash_c: 5768db2c3cd668eac240d005d75569fe8e1580b26f18de33cce53d88dda4f8e2
+  hash_d: 2656d9ce9f3fa101f96d0d1af4a26ee2b7721dbfc38053a664c5e206ed7ab8e9
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-mapear-arquitectura-real-de-sldb-has-validation
+  path: desk/primitives/conditions/condition-task-mapear-arquitectura-real-de-sldb-has-validation.md
+  hash_c: a411a0fd3b93742649fe84c601ae777417c0e2d588bc6faf2a38040f08f8ecf8
+  hash_d: 7eefebddefdffbccaa6cd603ac004da1ce4dfd75b416faf92cc7be3b577f7e88
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-mapear-arquitectura-real-de-sldb-ready-for-closeout
+  path: desk/primitives/conditions/condition-task-mapear-arquitectura-real-de-sldb-ready-for-closeout.md
+  hash_c: 39f0a80bc45e17988e951963086b42a70ab79672d5472bd75454013d39eddb77
+  hash_d: d45ba6dcdd474b3b90927e5999721622d2fe2a08965e873f93899eb34397680a
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-tighten-semantic-export-provenance-contract-has-implementation-path
+  path: desk/primitives/conditions/condition-task-tighten-semantic-export-provenance-contract-has-implementation-path.md
+  hash_c: 3d0d7f8b20fb67221f9d9d7bf2a7eeb2314303e1e4750b8d4a1024107f78cbbd
+  hash_d: d4582c772eecd98ecfc1a4b1bf6b035c5974ee98ccae6138d207dd746c326bd5
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-tighten-semantic-export-provenance-contract-has-testing-evidence
+  path: desk/primitives/conditions/condition-task-tighten-semantic-export-provenance-contract-has-testing-evidence.md
+  hash_c: 1bed5e7c2b6697e10ea82b92007cad04016fa87437cb277173e4cb96b92896ac
+  hash_d: b9637f67232f38f0d7c2234d4e9bb81b9912c64d494ad4ca82b4f8454040b308
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-tighten-semantic-export-provenance-contract-has-validation
+  path: desk/primitives/conditions/condition-task-tighten-semantic-export-provenance-contract-has-validation.md
+  hash_c: bca4be08e9de3f001aff864c758e20159d53eb05a4984c2df6bc330212782488
+  hash_d: 8055dc18ad30f40b595507c72a6da078d20fe89a07438dbfe0eda7fbd6adfa4f
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives
+- name: condition-task-tighten-semantic-export-provenance-contract-ready-for-closeout
+  path: desk/primitives/conditions/condition-task-tighten-semantic-export-provenance-contract-ready-for-closeout.md
+  hash_c: 0f0ee871ae1786d3b0fa698092fe562ef373e2437788fa9792089c4e86361799
+  hash_d: dc5c6415cba05aa7a4439ed12c4f42e9ed2df3c6dca48912ebf98e31070203eb
+  semantic_tags:
+  - primitive:condition
+  - type.workflow.condition
+  - workspace.desk.primitives

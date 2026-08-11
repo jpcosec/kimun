@@ -1,0 +1,202 @@
+documents:
+- name: checklist-task-define-sldb-addressability-model-closeout-ready
+  path: desk/primitives/checklists/checklist-task-define-sldb-addressability-model-closeout-ready.md
+  hash_c: 41e8c0fd54a4ad52e1d66f4c3c259851aee31df02717f11e8c296c9d60ddc95d
+  hash_d: 056c5b79d80ba4788e6f6af377fa6475dbb89aba7a8b2e32fb9c33c2e6a7e979
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: checklist-task-define-sldb-addressability-model-execution-ready
+  path: desk/primitives/checklists/checklist-task-define-sldb-addressability-model-execution-ready.md
+  hash_c: 593ee8194053e895f326cf8e41e056cc1a7d0a701a8d7ab191f57ce2279384d4
+  hash_d: 7808e8aaa35af301de324e84f251b9e9a95900338d21952edb24c863c9407a21
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: checklist-task-define-sldb-addressability-model-testing-ready
+  path: desk/primitives/checklists/checklist-task-define-sldb-addressability-model-testing-ready.md
+  hash_c: a449a4b58655384f8810dfc20a039c5afb2b5d82d30304564b992d799d8440e1
+  hash_d: 92ee49b7742c2c64f52f44b4951f431ce22c37da524ee31acc94f651b49702d8
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: checklist-task-definir-arquitectura-objetivo-modular-de-sldb-closeout-ready
+  path: desk/primitives/checklists/checklist-task-definir-arquitectura-objetivo-modular-de-sldb-closeout-ready.md
+  hash_c: 8c9d3664c8f7d7ca4ca0bb68c8ae64557578ee0d01c7f770c948d51a63a92f9f
+  hash_d: ab204423024c5acc9fb50793629cb63fcbd5f333e6b68883a1ef74e770d62c77
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: checklist-task-definir-arquitectura-objetivo-modular-de-sldb-execution-ready
+  path: desk/primitives/checklists/checklist-task-definir-arquitectura-objetivo-modular-de-sldb-execution-ready.md
+  hash_c: 8a0cbff077e47209a23f25b29482febe6d295d469621c6d7170693d71ad267b0
+  hash_d: f822783e4d480f2c037a512a5ea313bf32691175f03129041e76d954d959a8a2
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: checklist-task-definir-arquitectura-objetivo-modular-de-sldb-testing-ready
+  path: desk/primitives/checklists/checklist-task-definir-arquitectura-objetivo-modular-de-sldb-testing-ready.md
+  hash_c: 2d0bad3f1d1616a865604e5869913d63a4ae36a6054689e7b73d0475dc3b106e
+  hash_d: c7df80dff64b1d20c65fb6d615e270bbd7d1f17e0ba57eeea3725678fc56fd4e
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: checklist-task-design-sldb-ast-query-primitives-closeout-ready
+  path: desk/primitives/checklists/checklist-task-design-sldb-ast-query-primitives-closeout-ready.md
+  hash_c: 1796b654b3b0f1f445fcb0024d9cf333d934fa1571ad301e5f3abbb9314ed53b
+  hash_d: 86e1181e4a18e542b24efd7a8b6f67de0310e632f0aecd95f70271a8615aaf5f
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: checklist-task-design-sldb-ast-query-primitives-execution-ready
+  path: desk/primitives/checklists/checklist-task-design-sldb-ast-query-primitives-execution-ready.md
+  hash_c: 788534fc126dc25034f526feeed8b1f6001257f313474eee2f9647d9ede5f413
+  hash_d: c8f65f6f9f2c769896819db9328e5ec7d502e0887026e29bcf24a2c22a4907bb
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: checklist-task-design-sldb-ast-query-primitives-testing-ready
+  path: desk/primitives/checklists/checklist-task-design-sldb-ast-query-primitives-testing-ready.md
+  hash_c: 10759d1129070e7401ec07a0296025ca9ab6d2e04a66a6ce90bfac805ecb33ea
+  hash_d: c615a6b09062b5765772c29cbf53c6bc899d320f3589c9ccc87d5760d004b0c8
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: "checklist-task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3\
+    n-closeout-ready"
+  path: "desk/primitives/checklists/checklist-task-dise\xF1ar-estrategia-de-extracci\xF3\
+    n-y-modularizaci\xF3n-closeout-ready.md"
+  hash_c: 4418f78fdc8eec2610005d2e37da257f837d6166715e99aeab9a913d2b822f42
+  hash_d: 1e46570573f921e39e30f680d7cec941eb0a7d1a167cee7ac8b5acf6d8f155a7
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: "checklist-task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3\
+    n-execution-ready"
+  path: "desk/primitives/checklists/checklist-task-dise\xF1ar-estrategia-de-extracci\xF3\
+    n-y-modularizaci\xF3n-execution-ready.md"
+  hash_c: c08e3c31039c61a29269c9f2ceeec9715e83d836e1a2b4a9a251c8d0895e5638
+  hash_d: c1dd3f5dee33431ea9da23aca6032dd41eb33a505dbb556d37e9dd8c7f2db263
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: "checklist-task-dise\xF1ar-estrategia-de-extracci\xF3n-y-modularizaci\xF3\
+    n-testing-ready"
+  path: "desk/primitives/checklists/checklist-task-dise\xF1ar-estrategia-de-extracci\xF3\
+    n-y-modularizaci\xF3n-testing-ready.md"
+  hash_c: df6d734793112bed0f52fe58dbc68ae36b6d78817c3843d806abddc1a8223ea0
+  hash_d: 25c672e10ee03803b05b83281f437cc6b6e30f88dec984313b7d8ec87e7c123e
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: "checklist-task-ejecutar-refactor-base-del-n\xFAcleo-sldb-closeout-ready"
+  path: "desk/primitives/checklists/checklist-task-ejecutar-refactor-base-del-n\xFA\
+    cleo-sldb-closeout-ready.md"
+  hash_c: f08465a5c37542868f7d9302a1aad46dfc788a8f8cd1576866d83df96e573fc9
+  hash_d: c5d608d9a6a2607a12beaffcff7da10174c232c99999ed10100eea45e9eccf09
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: "checklist-task-ejecutar-refactor-base-del-n\xFAcleo-sldb-execution-ready"
+  path: "desk/primitives/checklists/checklist-task-ejecutar-refactor-base-del-n\xFA\
+    cleo-sldb-execution-ready.md"
+  hash_c: 8e161786d2103a30c00a929a6e74d4c3929ab449d29471294aace6174cfea4be
+  hash_d: d2b8679c516458593d6ed776473105557cdf4e6aa4b73f31877748ec70dbc73a
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: "checklist-task-ejecutar-refactor-base-del-n\xFAcleo-sldb-testing-ready"
+  path: "desk/primitives/checklists/checklist-task-ejecutar-refactor-base-del-n\xFA\
+    cleo-sldb-testing-ready.md"
+  hash_c: aaa4e30979c9e397903ecbbaf1fcae1fe8650b6200190ddf4148cf8fde4ff058
+  hash_d: d605618f749e0353f913a21c9503c94e147c05882fb7873c5bbf93c5e693de67
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: checklist-task-expand-sldb-composition-modes-closeout-ready
+  path: desk/primitives/checklists/checklist-task-expand-sldb-composition-modes-closeout-ready.md
+  hash_c: 272df62ff449a06f3bee5aa2f790056179508dff07eb7716eea34091516c5ee7
+  hash_d: eeb177b545c451c16fefc5e4c721b9f4334829cf25971aa03a88790851b641a6
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: checklist-task-expand-sldb-composition-modes-execution-ready
+  path: desk/primitives/checklists/checklist-task-expand-sldb-composition-modes-execution-ready.md
+  hash_c: fed7e3d45a1371692e4357bcd405f6e0029177ae836225561f9af76eb10e32c6
+  hash_d: 71aa9153f45d7ded72d2743ed0be5257e19886002fb8db40418a43f364e7952b
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: checklist-task-expand-sldb-composition-modes-testing-ready
+  path: desk/primitives/checklists/checklist-task-expand-sldb-composition-modes-testing-ready.md
+  hash_c: 690e696c6d12d31f69719b5302bdf2d18c5f8796f257e027622578e8b83f1ad8
+  hash_d: 98862d15736248d47a1bfcdc2adfca55e93ea34c3f3ba06db8a79d54e7bee00f
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: checklist-task-mapear-arquitectura-real-de-sldb-closeout-ready
+  path: desk/primitives/checklists/checklist-task-mapear-arquitectura-real-de-sldb-closeout-ready.md
+  hash_c: 1a6df1a0b69580db0ac0cd3ec0fe84e44cba72771e712325655278f733c3fecc
+  hash_d: e6e28e3ebf8678328d43ade581b887a2a1b5c70f3b2dba0d88227d78a123ffb3
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: checklist-task-mapear-arquitectura-real-de-sldb-execution-ready
+  path: desk/primitives/checklists/checklist-task-mapear-arquitectura-real-de-sldb-execution-ready.md
+  hash_c: b90e9d1ad90cd05cf6ce171ab028a8234292bcb83aa149d33746e85afb671b58
+  hash_d: 7327bb8d3614d45cf3e27d3e979da231283fec02e164f1a54e74f61c022e7aec
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: checklist-task-mapear-arquitectura-real-de-sldb-testing-ready
+  path: desk/primitives/checklists/checklist-task-mapear-arquitectura-real-de-sldb-testing-ready.md
+  hash_c: 8174d7ff20af0124175fcef8c15845ac948f63f35d8f3b431be7c880d2367a64
+  hash_d: 6b64a82b9fb64c0c75224cddd1a4542760455e2b6b2503d34ed1a10d7ad0128b
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: checklist-task-tighten-semantic-export-provenance-contract-closeout-ready
+  path: desk/primitives/checklists/checklist-task-tighten-semantic-export-provenance-contract-closeout-ready.md
+  hash_c: 3f8e2046103a4e5fb63875d3567b3982358903f80dd80410bcfa7e6f272a0686
+  hash_d: c8fd4de1ca295fb2dc7dd441b5e353ddbb0afd5df57a58a9be34fae9ff5500bb
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: checklist-task-tighten-semantic-export-provenance-contract-execution-ready
+  path: desk/primitives/checklists/checklist-task-tighten-semantic-export-provenance-contract-execution-ready.md
+  hash_c: 8013043c1673a78ff1e9803f631d19ecbf72ea3482777521752d56000b9619db
+  hash_d: 3d3ccc1714039671d9266c021b29aa655a09c05548432ae6892acf71ee84e2fe
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
+- name: checklist-task-tighten-semantic-export-provenance-contract-testing-ready
+  path: desk/primitives/checklists/checklist-task-tighten-semantic-export-provenance-contract-testing-ready.md
+  hash_c: 5a7249d2d7414562f9b6d904ee579cd5809cde2bee286bac2849a3e2514eea6a
+  hash_d: 50e68832526220f70c339e3146e5adbdf29cf1fabebf1e5f8f8aac45f523685c
+  semantic_tags:
+  - primitive:checklist
+  - type.workflow.checklist
+  - workspace.desk.primitives
