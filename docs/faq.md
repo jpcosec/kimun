@@ -137,12 +137,14 @@ They do different jobs:
 - `docs create`: render a new Markdown file from a registered model plus payload data, then track it
 - `docs track`: validate and register an existing Markdown file
 - `docs update`: re-render an already tracked doc with new payload data
-- `docs recover`: resolve `[[links]]` and report what they point to
+- `docs recover`: resolve `[[links]]` and `[predicate:: [[links]]]`, then report their targets and registered predicate axes
 - `docs compose`: expand `![[transclusions]]` into a composed output
+
+Predicate definitions belong to the selected store and are managed through `sldb predicates add|list|show|validate|remove`.
 
 The important distinction is that `recover` and `compose` are link/transclusion commands, not payload extraction commands.
 
-See the [Compose vs Recover atom](atoms/compose-vs-recover.atom.md).
+See the [Compose vs Recover atom](atoms/compose-vs-recover.atom.md) and [Predicate Links atom](atoms/predicate-links.atom.md).
 
 ## What is a `StructuredNLDoc` model?
 

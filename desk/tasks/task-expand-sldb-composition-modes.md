@@ -3,9 +3,20 @@ id: task-expand-sldb-composition-modes
 status: active
 references:
 - desk/drawer/tasks/task-expand-sldb-composition-modes.md
-depends_on: []
-pills: []
-files: []
+depends_on:
+- task-define-sldb-addressability-model
+- task-design-sldb-ast-query-primitives
+pills:
+- pill-007-sldb-text-layer-vs-kgdb-graph-layer
+- pill-010-active-board-slice-execution-map
+- pill-011-addressability-task-execution-context
+- pill-012-query-task-execution-context
+- pill-013-composition-task-execution-context
+files:
+- docs/architecture/sldb-text-layer-vs-kgdb-graph-layer.md
+- src/sldb/models/structured_doc.py
+- src/sldb/links.py
+- tests/test_composition.py
 routine: routine-task-expand-sldb-composition-modes
 checklists:
 - checklist-task-expand-sldb-composition-modes-execution-ready
@@ -25,7 +36,7 @@ tags:
 
 _Explain why this task exists or the business driver behind it._
 
-Not provided.
+Composition design should reuse the same addressability and query assumptions as the rest of this board. The result should stay text-first and produce readable outputs rather than graph-native reasoning behavior.
 
 ## Goal
 
@@ -43,7 +54,7 @@ Consider transclusion composition, summary composition, sectional composition, a
 
 _Outline the expected implementation route or affected surface._
 
-Promoted from desk/drawer/tasks/task-expand-sldb-composition-modes.md.
+After the addressability and query contracts are clear, define broader text-first composition modes that consume those contracts instead of inventing a separate reference model.
 
 ## Validation
 

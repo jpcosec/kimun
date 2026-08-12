@@ -53,6 +53,7 @@ class CLI:
         from sldb.cli.commands.legacy import LegacyCLI
         from sldb.cli.commands.links import LinkCLI
         from sldb.cli.commands.models import ModelsCLI
+        from sldb.cli.commands.predicates import PredicatesCLI
         from sldb.cli.commands.query import QueryCLI
         from sldb.cli.commands.sections import SectionsCLI
         from sldb.cli.commands.stores import StoresCLI
@@ -77,6 +78,7 @@ class CLI:
             "find": FindCLI().run,
             "stores": StoresCLI().run,
             "models": ModelsCLI().run,
+            "predicates": PredicatesCLI().run,
             "docs": DocsCLI().run,
             "fields": FieldsCLI().run,
             "sections": SectionsCLI().run,

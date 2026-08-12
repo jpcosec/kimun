@@ -5,6 +5,7 @@ from sldb.store.models import (
     DocumentsIndex,
     ModelEntry,
     ModelsIndex,
+    PredicateEntry,
     SectionContextRecord,
     SectionsIndex,
     StoreEntry,
@@ -34,6 +35,9 @@ def test_store_index_roundtrip(tmp_path):
                 models_index=".sldb/models/Book.yaml",
             )
         ],
+        predicates=[
+            PredicateEntry(name="implements", axis="HOW", description="Implements")
+        ],
         hash_a="abc123",
     )
     save_store_index(tmp_path, index)
@@ -46,6 +50,7 @@ def test_store_index_empty_defaults(tmp_path):
     loaded = load_store_index(tmp_path)
     assert loaded.stores == []
     assert loaded.models == []
+    assert loaded.predicates == []
     assert loaded.hash_a == ""
 
 

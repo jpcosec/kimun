@@ -69,6 +69,7 @@ def _add_public_group_commands(
 ) -> None:
     _add_stores_group(subparsers)
     _add_models_group(subparsers)
+    _add_predicates_group(subparsers)
     _add_docs_group(subparsers)
     _add_fields_group(subparsers)
     _add_sections_group(subparsers)
@@ -210,6 +211,54 @@ def _add_models_group(
     create.add_argument("--stdout", action="store_true", help="Print generated code")
 
 
+def _add_predicates_group(
+    subparsers: argparse._SubParsersAction[argparse.ArgumentParser],
+) -> None:
+    p = subparsers.add_parser(
+        "predicates",
+        help="Store-backed semantic link predicates.",
+        description=(
+            "Manage predicate names and semantic axes used by "
+            "`[predicate:: [[target]]]` links. Definitions are persisted in the "
+            "selected store; unregistered predicates recover as CUSTOM."
+        ),
+        epilog=(
+            "Examples:\n"
+            "  sldb predicates add depends_on --axis DEPENDENCY --store .sldb\n"
+            "  sldb predicates list --store .sldb\n"
+            "  sldb predicates show depends_on --store .sldb --format yaml\n"
+            "  sldb predicates validate --store .sldb\n"
+            "  sldb predicates remove depends_on --store .sldb"
+        ),
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
+    s = p.add_subparsers(dest="predicates_command", required=True)
+
+    add = s.add_parser("add", help="Register a predicate definition.")
+    add.add_argument("name", help="Predicate name used in [name:: [[target]]].")
+    add.add_argument("--axis", required=True, help="Semantic axis, for example HOW.")
+    add.add_argument("--description", default="", help="Predicate description.")
+    add.add_argument("--store", help="Store path")
+
+    listing = s.add_parser("list", help="List predicate definitions.")
+    listing.add_argument("--store", help="Store path")
+    listing.add_argument("--format", choices=("text", "json", "yaml"), default="text")
+
+    show = s.add_parser("show", help="Show one predicate definition.")
+    show.add_argument("name", help="Predicate name")
+    show.add_argument("--store", help="Store path")
+    show.add_argument("--format", choices=("text", "json", "yaml"), default="text")
+
+    validate = s.add_parser("validate", help="Validate predicate definitions.")
+    validate.add_argument("name", nargs="?", help="Optional predicate name")
+    validate.add_argument("--store", help="Store path")
+    validate.add_argument("--format", choices=("text", "json", "yaml"), default="text")
+
+    remove = s.add_parser("remove", help="Remove a predicate definition.")
+    remove.add_argument("name", help="Predicate name")
+    remove.add_argument("--store", help="Store path")
+
+
 def _add_docs_group(
     subparsers: argparse._SubParsersAction[argparse.ArgumentParser],
 ) -> None:
@@ -262,9 +311,9 @@ def _add_docs_group(
         "recover",
         help="Resolve [[links]] and report their targets.",
         description=(
-            "Resolve Obsidian-style `[[links]]` inside a document. This command does "
-            "not extract payload data; it reports which link targets resolve through "
-            "tracked docs or physical paths."
+            "Resolve Obsidian-style `[[links]]` and `[predicate:: [[links]]]` inside "
+            "a document. Predicate axes come from the selected store's registered "
+            "predicate definitions."
         ),
         epilog=(
             "Examples:\n"
@@ -346,7 +395,9 @@ def _add_docs_group(
     )
     explore.add_argument("--regex", action="store_true")
     explore.add_argument("--docs-root", default="docs", help="Docs directory to scan")
-    explore.add_argument("--code-root", default="src", help="Python source directory to scan")
+    explore.add_argument(
+        "--code-root", default="src", help="Python source directory to scan"
+    )
     explore.add_argument("--max-results", type=int, default=20)
     explore.add_argument("--format", choices=("text", "json", "yaml"), default="text")
 
@@ -441,7 +492,7 @@ def _add_help_commands(
     p.add_argument(
         "topic",
         nargs="?",
-        help="stores, models, docs, fields, sections, ast, find, faq, inbox, explore, legacy",
+        help="stores, models, predicates, docs, fields, sections, ast, find, faq, inbox, explore, legacy",
     )
 
 
@@ -486,7 +537,9 @@ def _add_inbox_commands(
     )
     p.add_argument("--author", default="cli", help="Source label for the inbox note")
     p.add_argument("--list", action="store_true", help="List desk inbox notes")
-    p.add_argument("--show", help="Show one inbox note by filename, stem, or slug fragment")
+    p.add_argument(
+        "--show", help="Show one inbox note by filename, stem, or slug fragment"
+    )
     p.add_argument("--limit", type=int, default=20, help="Limit listed notes")
     p.add_argument("--format", choices=("text", "json", "yaml"), default="text")
 

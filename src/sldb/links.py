@@ -1,13 +1,18 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
 
 from sldb.store.layout import project_root
 from sldb.store.io import load_documents_index, load_models_index, load_store_index
+from sldb.store.predicates import predicate_axes
 
 LINK_PATTERN = re.compile(r"(!)?\[\[([^\]]+)\]\]")
+INLINE_PREDICATE_LINK_PATTERN = re.compile(
+    r"\[([a-zA-Z0-9_-]+)::\s*(!)?\[\[([^\]]+)\]\]\]"
+)
 
 
 @dataclass
@@ -15,6 +20,8 @@ class ParsedLink:
     raw: str
     target: str
     kind: str
+    predicate: str | None = None
+    w5h1_type: str | None = None
 
 
 @dataclass
@@ -25,16 +32,46 @@ class ResolvedLink:
     resolved: bool
     path: str | None = None
     source: str | None = None
+    predicate: str | None = None
+    w5h1_type: str | None = None
 
 
-def parse_links(markdown: str) -> list[ParsedLink]:
+def parse_links(
+    markdown: str, predicate_types: Mapping[str, str] | None = None
+) -> list[ParsedLink]:
     links: list[ParsedLink] = []
+    seen_matches = set()
+    predicate_types = predicate_types or {}
+
+    # 1. Parse inline predicate links: [predicate:: [[target]]]
+    for match in INLINE_PREDICATE_LINK_PATTERN.finditer(markdown):
+        pred = match.group(1).strip()
+        bang = match.group(2)
+        target = match.group(3).strip()
+        w5h1 = predicate_types.get(pred, "CUSTOM")
+        links.append(
+            ParsedLink(
+                raw=match.group(0),
+                target=target,
+                kind="transclusion" if bang else "predicate_link",
+                predicate=pred,
+                w5h1_type=w5h1,
+            )
+        )
+        seen_matches.add(match.span())
+
+    # 2. Parse standard [[target]] or ![[target]] links
     for match in LINK_PATTERN.finditer(markdown):
+        # Skip if already captured as inline predicate
+        if any(s[0] <= match.start() and match.end() <= s[1] for s in seen_matches):
+            continue
         links.append(
             ParsedLink(
                 raw=match.group(0),
                 target=match.group(2).strip(),
                 kind="transclusion" if match.group(1) else "link",
+                predicate=None,
+                w5h1_type=None,
             )
         )
     return links
@@ -64,43 +101,60 @@ def resolve_document_input(doc_ref: str, store_path: Path | None) -> Path:
 
 
 def resolve_link_target(
-    target: str, current_doc: Path, store_path: Path | None
+    target: str,
+    current_doc: Path,
+    store_path: Path | None,
+    predicate: str | None = None,
+    w5h1_type: str | None = None,
 ) -> ResolvedLink:
     current_doc = current_doc.resolve()
     tracked = _tracked_documents(store_path) if store_path else {}
     if target in tracked:
         return ResolvedLink(
-            raw=f"[[{target}]]",
+            raw=f"[{predicate}:: [[{target}]]]" if predicate else f"[[{target}]]",
             target=target,
-            kind="link",
+            kind="predicate_link" if predicate else "link",
             resolved=True,
             path=tracked[target],
             source="store",
+            predicate=predicate,
+            w5h1_type=w5h1_type,
         )
 
     candidate = (current_doc.parent / target).resolve()
     if candidate.exists():
         return ResolvedLink(
-            raw=f"[[{target}]]",
+            raw=f"[{predicate}:: [[{target}]]]" if predicate else f"[[{target}]]",
             target=target,
-            kind="link",
+            kind="predicate_link" if predicate else "link",
             resolved=True,
             path=str(candidate),
             source="path",
+            predicate=predicate,
+            w5h1_type=w5h1_type,
         )
 
     direct = Path(target)
     if direct.exists():
         return ResolvedLink(
-            raw=f"[[{target}]]",
+            raw=f"[{predicate}:: [[{target}]]]" if predicate else f"[[{target}]]",
             target=target,
-            kind="link",
+            kind="predicate_link" if predicate else "link",
             resolved=True,
             path=str(direct.resolve()),
             source="path",
+            predicate=predicate,
+            w5h1_type=w5h1_type,
         )
 
-    return ResolvedLink(raw=f"[[{target}]]", target=target, kind="link", resolved=False)
+    return ResolvedLink(
+        raw=f"[{predicate}:: [[{target}]]]" if predicate else f"[[{target}]]",
+        target=target,
+        kind="predicate_link" if predicate else "link",
+        resolved=False,
+        predicate=predicate,
+        w5h1_type=w5h1_type,
+    )
 
 
 def recover_links(
@@ -109,12 +163,19 @@ def recover_links(
     include_transclusions: bool = False,
     depth: int = 1,
     seen: set[Path] | None = None,
+    predicate_types: Mapping[str, str] | None = None,
 ) -> dict:
     """
     Recover links from a document, optionally recursing to a specified depth.
     """
     doc_path = doc_path.resolve()
     seen = seen or set()
+    if predicate_types is None:
+        predicate_types = (
+            predicate_axes(load_store_index(store_path).predicates)
+            if store_path
+            else {}
+        )
     if doc_path in seen or depth < 1:
         return {
             "root": doc_path.stem,
@@ -126,14 +187,26 @@ def recover_links(
 
     markdown = doc_path.read_text(encoding="utf-8")
     recovered = []
-    for link in parse_links(markdown):
+    for link in parse_links(markdown, predicate_types):
         if link.kind == "transclusion" and not include_transclusions:
-            resolved_result = resolve_link_target(link.target, doc_path, store_path)
+            resolved_result = resolve_link_target(
+                link.target,
+                doc_path,
+                store_path,
+                predicate=link.predicate,
+                w5h1_type=link.w5h1_type,
+            )
             resolved_result.kind = link.kind
             resolved_result.raw = link.raw
             recovered.append(resolved_result)
             continue
-        resolved = resolve_link_target(link.target, doc_path, store_path)
+        resolved = resolve_link_target(
+            link.target,
+            doc_path,
+            store_path,
+            predicate=link.predicate,
+            w5h1_type=link.w5h1_type,
+        )
         resolved.kind = link.kind
         resolved.raw = link.raw
         recovered.append(resolved)
@@ -145,6 +218,8 @@ def recover_links(
             "resolved": entry.resolved,
             "path": entry.path,
             "source": entry.source,
+            "predicate": entry.predicate,
+            "w5h1_type": entry.w5h1_type,
         }
         for entry in recovered
     ]
@@ -154,7 +229,12 @@ def recover_links(
         for entry in recovered:
             if entry.resolved and entry.path:
                 nested = recover_links(
-                    Path(entry.path), store_path, include_transclusions, depth - 1, seen
+                    Path(entry.path),
+                    store_path,
+                    include_transclusions,
+                    depth - 1,
+                    seen,
+                    predicate_types,
                 )
                 links.extend(nested["links"])
 

@@ -22,6 +22,7 @@ from sldb.store.io import (
 from sldb.store.layout import store_exists
 from sldb.store.models import SemanticDAG, StoreEntry, StoreIndex
 from sldb.store.models import SemanticIndex
+from sldb.store.predicates import default_predicates
 from sldb.store.ops import cascade_hash_a
 from sldb.store.semantic import (
     RebuildReport,
@@ -52,7 +53,7 @@ class StoreCLI:
         sp = root / ".sldb"
         if store_exists(sp) and not args.force:
             raise SLDBStoreError(f"Store exists at {sp}.")
-        save_store_index(sp, StoreIndex())
+        save_store_index(sp, StoreIndex(predicates=default_predicates()))
         save_semantic_dag(sp, SemanticDAG(equivalences={}))
         save_semantic_index(sp, SemanticIndex())
         print(f"Initialized store at {sp}")

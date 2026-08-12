@@ -17,9 +17,16 @@ class ModelEntry(BaseModel):
     semantics: list[str] = Field(default_factory=list)
 
 
+class PredicateEntry(BaseModel):
+    name: str
+    axis: str
+    description: str = ""
+
+
 class StoreIndex(BaseModel):
     stores: list[StoreEntry] = Field(default_factory=list)
     models: list[ModelEntry] = Field(default_factory=list)
+    predicates: list[PredicateEntry] = Field(default_factory=list)
     hash_a: str = ""
 
 
