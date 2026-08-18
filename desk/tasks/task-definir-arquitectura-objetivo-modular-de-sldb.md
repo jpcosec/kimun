@@ -1,22 +1,27 @@
 ---
 id: task-definir-arquitectura-objetivo-modular-de-sldb
-status: draft
+status: active
 summary: ''
 tags:
 - workspace:desk
 - artifact:task
+- source:drawer
 routine: routine-task-definir-arquitectura-objetivo-modular-de-sldb
-current_node: checklist-task-definir-arquitectura-objetivo-modular-de-sldb-execution-ready
+current_node: completed
 history: []
-references: []
-depends_on:
-- task-mapear-arquitectura-real-de-sldb
+references:
+- desk/drawer/tasks/task-definir-arquitectura-objetivo-modular-de-sldb.md
+depends_on: []
 pills: []
 files: []
 checklists:
 - checklist-task-definir-arquitectura-objetivo-modular-de-sldb-execution-ready
 - checklist-task-definir-arquitectura-objetivo-modular-de-sldb-testing-ready
 - checklist-task-definir-arquitectura-objetivo-modular-de-sldb-closeout-ready
+task_type: ''
+inherits_from: []
+inherit_acceptance_context: false
+atoms: []
 ---
 
 # Definir arquitectura objetivo modular de SLDB
@@ -25,9 +30,11 @@ checklists:
 
 _Explain why this task exists or the business driver behind it._
 
-Antes de tocar código necesitamos decidir qué queda en el núcleo y qué debe modularizarse o extraerse.
+Not provided.
 
 ## Goal
+
+_Describe the concrete result this task must produce._
 
 _Describe the concrete result this task must produce._
 
@@ -37,20 +44,24 @@ Definir bounded contexts, contratos entre componentes y criterio de separación 
 
 _State what is in scope and what is out of scope._
 
+_State what is in scope and what is out of scope._
+
 Core documental, runtime/model binding, query/semantic, store, links/transclusion y CLI. Incluir criterios para extraer subsistemas como store.
 
 ## Implementation Path
 
 _Outline the expected implementation route or affected surface._
 
-Tomar el mapa actual, proponer arquitectura objetivo, identificar fronteras y registrar decisiones estables sólo cuando maduren.
+Promoted from desk/drawer/tasks/task-definir-arquitectura-objetivo-modular-de-sldb.md.
 
 ## Validation
 
 _List the checks required before this task can close._
 
-- python -m compileall src
+- pytest
 
 ## Done When
 
 _Name the observable condition that makes the task complete._
+
+Promoted work is completed, validated, and closed with a commit.
