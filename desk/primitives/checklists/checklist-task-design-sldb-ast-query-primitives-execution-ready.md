@@ -1,8 +1,13 @@
 ---
+# checklist-xxx
 id: checklist-task-design-sldb-ast-query-primitives-execution-ready
+# draft | active | complete | archived
 status: active
+# List of condition-xxx paths
 condition_refs: []
+# all | any
 mode: all
+# e.g., system:deskops
 tags:
 - primitive:checklist
 ---
