@@ -1,10 +1,15 @@
 ---
+# checklist-xxx
 id: checklist-task-define-sldb-addressability-model-closeout-ready
+# draft | active | complete | archived
 status: active
+# List of condition-xxx paths
 condition_refs:
 - condition-task-define-sldb-addressability-model-ready-for-closeout
-- condition-task-define-sldb-addressability-model-has-testing-evidence
+- condition-task-define-sldb-addressability-model-has-closeout-evidence
+# all | any
 mode: all
+# e.g., system:deskops
 tags:
 - primitive:checklist
 ---
@@ -22,4 +27,4 @@ Confirms the task is ready for closeout.
 _List the human-readable checks in this checklist._
 
 - Task is ready for closeout
-- Testing evidence exists
+- Durable evidence is verified
