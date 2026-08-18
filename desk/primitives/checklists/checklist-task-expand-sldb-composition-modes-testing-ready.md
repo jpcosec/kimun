@@ -1,9 +1,14 @@
 ---
+# checklist-xxx
 id: checklist-task-expand-sldb-composition-modes-testing-ready
+# draft | active | complete | archived
 status: active
+# List of condition-xxx paths
 condition_refs:
 - condition-task-expand-sldb-composition-modes-has-validation
+# all | any
 mode: all
+# e.g., system:deskops
 tags:
 - primitive:checklist
 ---

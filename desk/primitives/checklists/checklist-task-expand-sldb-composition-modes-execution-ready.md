@@ -1,8 +1,13 @@
 ---
+# checklist-xxx
 id: checklist-task-expand-sldb-composition-modes-execution-ready
+# draft | active | complete | archived
 status: active
+# List of condition-xxx paths
 condition_refs: []
+# all | any
 mode: all
+# e.g., system:deskops
 tags:
 - primitive:checklist
 ---
