@@ -1,9 +1,14 @@
 ---
+# checklist-xxx
 id: checklist-task-tighten-semantic-export-provenance-contract-testing-ready
+# draft | active | complete | archived
 status: active
+# List of condition-xxx paths
 condition_refs:
 - condition-task-tighten-semantic-export-provenance-contract-has-validation
+# all | any
 mode: all
+# e.g., system:deskops
 tags:
 - primitive:checklist
 ---
