@@ -501,17 +501,5 @@ class ModelsCLI:
         return "".join(lines)
 
     def _tracked_docs_for_model(self, args: Any) -> list[tuple[str, str]]:
-        sp, root = get_store_context(args.store)
-        idx = load_store_index(sp)
-        m_entry = next((m for m in idx.models if m.name == args.model), None)
-        if not m_entry:
-            raise SLDBModelError(f"Model '{args.model}' not found.")
-        m_idx = load_models_index(root / m_entry.models_index)
-        d_idx = load_documents_index(root / m_idx.documents_index)
-        docs: list[tuple[str, str]] = []
-        for doc in d_idx.documents:
-            doc_path = Path(doc.path)
-            if not doc_path.is_absolute():
-                doc_path = root / doc_path
-            docs.append((doc.name, str(doc_path)))
-        return docs
+        from sldb.store.facade import get_tracked_docs
+        return get_tracked_docs(args.model, args.store)
