@@ -1,0 +1,8 @@
+graph TD
+    LocalProjectStore["Local Project Store"]
+    SharedOntologyStore["Shared Ontology Store"]
+    StoreResolver["Store Resolver"]
+    CLI["CLI"]
+    CLI -->|uses| StoreResolver
+    StoreResolver -->|reads_writes| LocalProjectStore
+    LocalProjectStore -->|federates| SharedOntologyStore

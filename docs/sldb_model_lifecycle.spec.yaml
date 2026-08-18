@@ -1,0 +1,29 @@
+id: sldb.model.lifecycle
+title: Draft-first Model Lifecycle
+type: state
+version: "1.0"
+data:
+  entity: ModelContract
+  initial: Active
+  states:
+    - id: Active
+      label: Active
+    - id: Drafting
+      label: Drafting
+    - id: ValidationFailed
+      label: ValidationFailed
+    - id: ReadyForPromotion
+      label: ReadyForPromotion
+  transitions:
+    - from: Active
+      to: Drafting
+      "on": "models template edit"
+    - from: Drafting
+      to: ValidationFailed
+      "on": "models validate"
+    - from: Drafting
+      to: ReadyForPromotion
+      "on": "models validate passes"
+    - from: ReadyForPromotion
+      to: Active
+      "on": "models validate --promote (updates hash_a)"

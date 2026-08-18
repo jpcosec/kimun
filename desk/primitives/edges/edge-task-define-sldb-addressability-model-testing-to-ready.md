@@ -1,9 +1,15 @@
 ---
+# edge-xxx
 id: edge-task-define-sldb-addressability-model-testing-to-ready
+# active | archived
 status: active
+# Source node identifier
 source: checklist-task-define-sldb-addressability-model-testing-ready
+# Target node identifier
 target: operator-task-define-sldb-addressability-model-ready-for-testing
+# Optional condition identifier guarding the transition
 condition_ref: ''
+# e.g., system:deskops
 tags:
 - primitive:edge
 ---

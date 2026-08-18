@@ -1,0 +1,31 @@
+id: sldb.query.engine
+title: SLDB Query Engine Workflow
+type: activity
+version: "1.0"
+data:
+  start: start_query
+  end: end_query
+  steps:
+    start_query:
+      label: Start Query
+      next: decide_namespace
+    decide_namespace:
+      label: Decide Namespace
+      branches:
+        "Structural st.*": load_docs
+        "Local Semantic se.*": load_docs
+        "Global Semantic gse.*": load_docs
+    load_docs:
+      label: Load Runtime Documents
+      next: apply_filters
+    apply_filters:
+      label: Apply Predicate Filters (--where)
+      next: resolve_dag
+    resolve_dag:
+      label: Resolve Semantic DAG equivalences
+      next: return_results
+    return_results:
+      label: Return Results
+      next: end_query
+    end_query:
+      label: End

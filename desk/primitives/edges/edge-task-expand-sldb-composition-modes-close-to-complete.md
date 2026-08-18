@@ -1,9 +1,15 @@
 ---
+# edge-xxx
 id: edge-task-expand-sldb-composition-modes-close-to-complete
+# active | archived
 status: active
+# Source node identifier
 source: operator-task-expand-sldb-composition-modes-close
+# Target node identifier
 target: complete
+# Optional condition identifier guarding the transition
 condition_ref: ''
+# e.g., system:deskops
 tags:
 - primitive:edge
 ---

@@ -1,0 +1,54 @@
+flowchart TD
+    File["src/sldb/runtime/validation.py"]
+
+    File --> Imports
+    File --> Validator
+    File --> TopLevel
+
+    Imports --> Typing["typing: Any, cast, Literal"]
+    Imports --> ASTH["sldb.core.ast: AST_Handler"]
+    Imports --> DE["sldb.core.data_extractor: DataExtractor"]
+    Imports --> Renderer["sldb.core.renderer: SLDBRenderer"]
+    Imports --> TE["sldb.core.template_extractor: TemplateExtractor"]
+    Imports --> SD["sldb.models.structured_doc: StructuredNLDoc"]
+
+    Validator --> Init["__init__"]
+    Validator --> Recipes["_get_recipes"]
+    Validator --> Extract["extract"]
+    Validator --> Render["render"]
+    Validator --> Validate["validate"]
+
+    Init --> InitA["store model_type"]
+    Init --> InitB["AST_Handler()"]
+    Init --> InitC["TemplateExtractor()"]
+    Init --> InitD["DataExtractor()"]
+    Init --> InitE["SLDBRenderer()"]
+
+    Recipes --> RecipesA["split_nodes(template)"]
+    Recipes --> RecipesB["extract_nodes(...)"]
+
+    Extract --> ExtractA["split_nodes(markdown)"]
+    Extract --> ExtractB["extract_values(...)"]
+    Extract --> ExtractC["StructuredNLDoc(**payload)"]
+    Extract --> ExtractD["model_dump(json)"]
+
+    Render --> RenderA["StructuredNLDoc(**data)"]
+    Render --> RenderB["renderer.render(model)"]
+
+    Validate --> ValA["choose input_data"]
+    Validate --> ValB["render(input_data)"]
+    Validate --> ValC["extract(rendered)"]
+    Validate --> ValD["strict_roundtrip | render_validity"]
+    Validate --> ValE["details dict"]
+
+    TopLevel --> TL1["extract_model_data"]
+    TopLevel --> TL2["validate_model_input_roundtrip"]
+    TopLevel --> TL3["validate_model_data_roundtrip"]
+    TopLevel --> TL4["extract_payload"]
+    TopLevel --> TL5["render_markdown"]
+    TopLevel --> TL6["render_model_markdown"]
+
+    TL4 --> TL4A["local imports"]
+    TL4 --> TL4B["AST_Handler + TemplateExtractor + DataExtractor"]
+    TL5 --> TL5A["local _RenderModel"]
+    TL5 --> TL5B["SLDBRenderer()"]

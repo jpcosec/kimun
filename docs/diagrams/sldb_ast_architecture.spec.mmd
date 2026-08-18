@@ -1,0 +1,749 @@
+graph TD
+    system_sldb["SLDB"]
+    module_links["links"]
+    module_sldb_store_layout["sldb.store.layout"]
+    module_sldb_store_io["sldb.store.io"]
+    module_sldb_store_predicates["sldb.store.predicates"]
+    class_links_ParsedLink["ParsedLink"]
+    class_links_ResolvedLink["ResolvedLink"]
+    module___init__["__init__"]
+    module_sldb_core_ast["sldb.core.ast"]
+    module_sldb_core_data_extractor["sldb.core.data_extractor"]
+    module_sldb_core_renderer["sldb.core.renderer"]
+    module_sldb_core_template_extractor["sldb.core.template_extractor"]
+    module_sldb_models_structured_doc["sldb.models.structured_doc"]
+    module_sldb_runtime_config["sldb.runtime.config"]
+    module___main__["__main__"]
+    module_sldb_cli["sldb.cli"]
+    module_core_renderer["core.renderer"]
+    module_jinja2["jinja2"]
+    module_sldb_core_handlers_router["sldb.core.handlers.router"]
+    module_sldb_core_renderer_engine_list["sldb.core.renderer_engine.list"]
+    module_sldb_core_renderer_engine_table["sldb.core.renderer_engine.table"]
+    module_sldb_core_renderer_engine_yaml["sldb.core.renderer_engine.yaml"]
+    class_core_renderer_SLDBRenderer["SLDBRenderer"]
+    module_core_template_extractor["core.template_extractor"]
+    module_sldb_core_exceptions["sldb.core.exceptions"]
+    module_sldb_core_node["sldb.core.node"]
+    module_sldb_core_node_handler["sldb.core.node_handler"]
+    class_core_template_extractor_TemplateExtractor["TemplateExtractor"]
+    module_core_ast["core.ast"]
+    module_markdown_it["markdown_it"]
+    module_markdown_it_tree["markdown_it.tree"]
+    class_core_ast_BaseASTHandler["BaseASTHandler"]
+    class_core_ast_MarkdownASTHandler["MarkdownASTHandler"]
+    module_mdit_py_plugins_front_matter["mdit_py_plugins.front_matter"]
+    module_core_ir["core.ir"]
+    class_core_ir_SourceSpan["SourceSpan"]
+    class_core_ir_SurfaceNode["SurfaceNode"]
+    class_core_ir_DocumentContext["DocumentContext"]
+    class_core_ir_MeaningNode["MeaningNode"]
+    class_core_ir_GraphEdge["GraphEdge"]
+    class_core_ir_GraphView["GraphView"]
+    class_core_ir_SectionContextEntry["SectionContextEntry"]
+    class_core_ir_DocumentIR["DocumentIR"]
+    module_core_node_handler["core.node_handler"]
+    module_core["core"]
+    module_core_data_extractor["core.data_extractor"]
+    class_core_data_extractor_DataExtractor["DataExtractor"]
+    module_core_node["core.node"]
+    class_core_node_SLDBNode["SLDBNode"]
+    module_core_exceptions["core.exceptions"]
+    class_core_exceptions_SLDBError["SLDBError"]
+    class_core_exceptions_SLDBModelError["SLDBModelError"]
+    class_core_exceptions_SLDBModelDraftError["SLDBModelDraftError"]
+    class_core_exceptions_SLDBModelEditError["SLDBModelEditError"]
+    class_core_exceptions_SLDBValidationError["SLDBValidationError"]
+    class_core_exceptions_SLDBStoreError["SLDBStoreError"]
+    class_core_exceptions_SLDBASTError["SLDBASTError"]
+    class_core_exceptions_SLDBLinkError["SLDBLinkError"]
+    module_core_contracts["core.contracts"]
+    class_core_contracts_Marker["Marker"]
+    class_core_contracts_NodeData["NodeData"]
+    class_core_contracts_RenderContext["RenderContext"]
+    module_assets["assets"]
+    module_cli_utils["cli.utils"]
+    module_importlib["importlib"]
+    module_sldb_store_resolver["sldb.store.resolver"]
+    module_sldb_store_migration["sldb.store.migration"]
+    module_sldb_store_models["sldb.store.models"]
+    module_sldb_store_ops["sldb.store.ops"]
+    module_sldb_store_semantic_tags["sldb.store.semantic_tags"]
+    module_cli_parser["cli.parser"]
+    module_cli["cli"]
+    module_sldb_cli_main["sldb.cli.main"]
+    module_sldb_cli_parser["sldb.cli.parser"]
+    module_cli_main["cli.main"]
+    module_sldb_cli_commands_help["sldb.cli.commands.help"]
+    class_cli_main_CLI["CLI"]
+    module_sldb_cli_commands_ast["sldb.cli.commands.ast"]
+    module_sldb_cli_commands_basic["sldb.cli.commands.basic"]
+    module_sldb_cli_commands_docs["sldb.cli.commands.docs"]
+    module_sldb_cli_commands_explore["sldb.cli.commands.explore"]
+    module_sldb_cli_commands_fields["sldb.cli.commands.fields"]
+    module_sldb_cli_commands_find["sldb.cli.commands.find"]
+    module_sldb_cli_commands_faq["sldb.cli.commands.faq"]
+    module_sldb_cli_commands_init["sldb.cli.commands.init"]
+    module_sldb_cli_commands_inbox["sldb.cli.commands.inbox"]
+    module_sldb_cli_commands_legacy["sldb.cli.commands.legacy"]
+    module_sldb_cli_commands_links["sldb.cli.commands.links"]
+    module_sldb_cli_commands_models["sldb.cli.commands.models"]
+    module_sldb_cli_commands_predicates["sldb.cli.commands.predicates"]
+    module_sldb_cli_commands_query["sldb.cli.commands.query"]
+    module_sldb_cli_commands_sections["sldb.cli.commands.sections"]
+    module_sldb_cli_commands_stores["sldb.cli.commands.stores"]
+    module_sldb_cli_commands_store["sldb.cli.commands.store"]
+    module_sldb_cli_commands_model["sldb.cli.commands.model"]
+    module_sldb_cli_commands_doc["sldb.cli.commands.doc"]
+    module_cli_graph["cli.graph"]
+    module_difflib["difflib"]
+    module_sldb_cli_utils["sldb.cli.utils"]
+    module_sldb_core_contracts["sldb.core.contracts"]
+    module_sldb_core_ir["sldb.core.ir"]
+    module_sldb_store_query["sldb.store.query"]
+    class_cli_graph_SectionRecord["SectionRecord"]
+    class_cli_graph_SearchRecord["SearchRecord"]
+    module_runtime_config["runtime.config"]
+    class_runtime_config_SLDBConfig["SLDBConfig"]
+    module_runtime["runtime"]
+    module_runtime_validation["runtime.validation"]
+    class_runtime_validation_Validator["Validator"]
+    module_store_export["store.export"]
+    module_importlib_metadata["importlib.metadata"]
+    module_sldb_store_semantic["sldb.store.semantic"]
+    module_store_ops["store.ops"]
+    module_sldb_store_hashing["sldb.store.hashing"]
+    module_store_hashing["store.hashing"]
+    module_sldb_runtime_validation["sldb.runtime.validation"]
+    module_store_resolver["store.resolver"]
+    module_store_models["store.models"]
+    class_store_models_StoreEntry["StoreEntry"]
+    class_store_models_ModelEntry["ModelEntry"]
+    class_store_models_PredicateEntry["PredicateEntry"]
+    class_store_models_StoreIndex["StoreIndex"]
+    class_store_models_ModelsIndex["ModelsIndex"]
+    class_store_models_DocumentEntry["DocumentEntry"]
+    class_store_models_DocumentsIndex["DocumentsIndex"]
+    class_store_models_SemanticNode["SemanticNode"]
+    class_store_models_SectionContextRecord["SectionContextRecord"]
+    class_store_models_DocSections["DocSections"]
+    class_store_models_SectionsIndex["SectionsIndex"]
+    class_store_models_SemanticDAG["SemanticDAG"]
+    class_store_models_SemanticDocumentRecord["SemanticDocumentRecord"]
+    class_store_models_SemanticIndex["SemanticIndex"]
+    module_store_layout["store.layout"]
+    module_store_diagnostics["store.diagnostics"]
+    module_sldb_store_diagnostics_models["sldb.store.diagnostics_models"]
+    module_store_query["store.query"]
+    module_sldb_store_query_engine_models["sldb.store.query_engine.models"]
+    module_sldb_store_query_engine_structural["sldb.store.query_engine.structural"]
+    module_sldb_store_query_engine_structural_queries["sldb.store.query_engine.structural_queries"]
+    module_sldb_store_query_engine_semantic["sldb.store.query_engine.semantic"]
+    module_sldb_store_query_engine_global_semantic["sldb.store.query_engine.global_semantic"]
+    module_store_semantic_tags["store.semantic_tags"]
+    module_store["store"]
+    module_sldb_store_diagnostics["sldb.store.diagnostics"]
+    module_store_diagnostics_models["store.diagnostics_models"]
+    class_store_diagnostics_models_DiagnosisNote["DiagnosisNote"]
+    class_store_diagnostics_models_DocumentDiagnosis["DocumentDiagnosis"]
+    class_store_diagnostics_models_ModelDiagnosis["ModelDiagnosis"]
+    class_store_diagnostics_models_StoreDiagnosis["StoreDiagnosis"]
+    module_store_migration["store.migration"]
+    module_store_semantic["store.semantic"]
+    class_store_semantic_RebuildReport["RebuildReport"]
+    module_store_predicates["store.predicates"]
+    module_store_io["store.io"]
+    module_contextlib["contextlib"]
+    module_fcntl["fcntl"]
+    module_tempfile["tempfile"]
+    module_models["models"]
+    module_models_structured_doc["models.structured_doc"]
+    class_models_structured_doc_StructuredNLDoc["StructuredNLDoc"]
+    module_examples["examples"]
+    module_examples_reference_bundle_guide_model["examples.reference_bundle.guide_model"]
+    module_sldb["sldb"]
+    class_examples_reference_bundle_guide_model_SLDBGuide["SLDBGuide"]
+    module_examples_reference_bundle["examples.reference_bundle"]
+    module_examples_pandoc_cv_cv_model["examples.pandoc_cv.cv_model"]
+    class_examples_pandoc_cv_cv_model_PandocCVDoc["PandocCVDoc"]
+    module_store_query_engine_structural_queries["store.query_engine.structural_queries"]
+    module_fnmatch["fnmatch"]
+    module_sldb_store_query_engine_filter["sldb.store.query_engine.filter"]
+    module_store_query_engine_models["store.query_engine.models"]
+    class_store_query_engine_models_RuntimeDocument["RuntimeDocument"]
+    module_store_query_engine_semantic_utils["store.query_engine.semantic_utils"]
+    module_store_query_engine_structural["store.query_engine.structural"]
+    module_store_query_engine_global_semantic["store.query_engine.global_semantic"]
+    module_store_query_engine["store.query_engine"]
+    module_store_query_engine_filter["store.query_engine.filter"]
+    module_store_query_engine_semantic["store.query_engine.semantic"]
+    module_sldb_store_query_engine_semantic_utils["sldb.store.query_engine.semantic_utils"]
+    module_cli_commands_help["cli.commands.help"]
+    class_cli_commands_help_HelpCLI["HelpCLI"]
+    module_cli_commands_sections["cli.commands.sections"]
+    module_sldb_cli_graph["sldb.cli.graph"]
+    class_cli_commands_sections_SectionsCLI["SectionsCLI"]
+    module_cli_commands_legacy["cli.commands.legacy"]
+    class_cli_commands_legacy_LegacyCLI["LegacyCLI"]
+    module_cli_commands_init["cli.commands.init"]
+    module_importlib_resources["importlib.resources"]
+    class_cli_commands_init_InitCLI["InitCLI"]
+    module_cli_commands_fields["cli.commands.fields"]
+    class_cli_commands_fields_FieldsCLI["FieldsCLI"]
+    module_cli_commands_find["cli.commands.find"]
+    class_cli_commands_find_FindCLI["FindCLI"]
+    module_cli_commands_models["cli.commands.models"]
+    module_ast["ast"]
+    module_importlib_util["importlib.util"]
+    module_importlib_machinery["importlib.machinery"]
+    class_cli_commands_models_ModelsCLI["ModelsCLI"]
+    module_cli_commands_model["cli.commands.model"]
+    module_inspect["inspect"]
+    class_cli_commands_model_ModelCLI["ModelCLI"]
+    module_cli_commands_docs["cli.commands.docs"]
+    class_cli_commands_docs_DocsCLI["DocsCLI"]
+    module_cli_commands_doc["cli.commands.doc"]
+    class_cli_commands_doc_DocCLI["DocCLI"]
+    module_cli_commands_store["cli.commands.store"]
+    class_cli_commands_store_StoreCLI["StoreCLI"]
+    module_cli_commands_ast["cli.commands.ast"]
+    class_cli_commands_ast_ASTCLI["ASTCLI"]
+    module_cli_commands_inbox["cli.commands.inbox"]
+    class_cli_commands_inbox_InboxCLI["InboxCLI"]
+    module_cli_commands_explore["cli.commands.explore"]
+    class_cli_commands_explore_ExploreHit["ExploreHit"]
+    class_cli_commands_explore_ExploreCLI["ExploreCLI"]
+    module_cli_commands_query["cli.commands.query"]
+    class_cli_commands_query_QueryCLI["QueryCLI"]
+    module_cli_commands_links["cli.commands.links"]
+    module_sldb_links["sldb.links"]
+    class_cli_commands_links_LinkCLI["LinkCLI"]
+    module_cli_commands_basic["cli.commands.basic"]
+    class_cli_commands_basic_BasicCLI["BasicCLI"]
+    module_cli_commands["cli.commands"]
+    module_cli_commands_faq["cli.commands.faq"]
+    class_cli_commands_faq_FAQEntry["FAQEntry"]
+    class_cli_commands_faq_FAQCLI["FAQCLI"]
+    module_cli_commands_stores["cli.commands.stores"]
+    module_sldb_store_export["sldb.store.export"]
+    class_cli_commands_stores_StoresCLI["StoresCLI"]
+    module_cli_commands_predicates["cli.commands.predicates"]
+    class_cli_commands_predicates_PredicatesCLI["PredicatesCLI"]
+    module_assets_skills["assets.skills"]
+    module_core_handlers_text["core.handlers.text"]
+    module_sldb_core_handlers_base["sldb.core.handlers.base"]
+    module_sldb_core_handlers_utils["sldb.core.handlers.utils"]
+    class_core_handlers_text_TextNodeHandler["TextNodeHandler"]
+    module_core_handlers_router["core.handlers.router"]
+    module_sldb_core_handlers_list["sldb.core.handlers.list"]
+    module_sldb_core_handlers_table["sldb.core.handlers.table"]
+    module_sldb_core_handlers_text["sldb.core.handlers.text"]
+    module_sldb_core_handlers_yaml["sldb.core.handlers.yaml"]
+    class_core_handlers_router_SharedNodeHandler["SharedNodeHandler"]
+    module_core_handlers_utils["core.handlers.utils"]
+    module_core_handlers["core.handlers"]
+    module_core_handlers_base["core.handlers.base"]
+    class_core_handlers_base_BaseNodeHandler["BaseNodeHandler"]
+    module_core_handlers_table["core.handlers.table"]
+    class_core_handlers_table_TableNodeHandler["TableNodeHandler"]
+    module_core_handlers_list["core.handlers.list"]
+    class_core_handlers_list_ListNodeHandler["ListNodeHandler"]
+    module_core_handlers_yaml["core.handlers.yaml"]
+    class_core_handlers_yaml_YamlNodeHandler["YamlNodeHandler"]
+    module_core_renderer_engine["core.renderer_engine"]
+    module_core_renderer_engine_base["core.renderer_engine.base"]
+    module_sldb_core_renderer_engine_python_expr["sldb.core.renderer_engine.python_expr"]
+    class_core_renderer_engine_base_BaseRenderer["BaseRenderer"]
+    module_core_renderer_engine_table["core.renderer_engine.table"]
+    module_sldb_core_renderer_engine_base["sldb.core.renderer_engine.base"]
+    class_core_renderer_engine_table_TableRenderer["TableRenderer"]
+    module_core_renderer_engine_list["core.renderer_engine.list"]
+    class_core_renderer_engine_list_ListRenderer["ListRenderer"]
+    module_core_renderer_engine_python_expr["core.renderer_engine.python_expr"]
+    class_core_renderer_engine_python_expr_PythonExpressionRenderer["PythonExpressionRenderer"]
+    module_core_renderer_engine_yaml["core.renderer_engine.yaml"]
+    class_core_renderer_engine_yaml_YamlRenderer["YamlRenderer"]
+    module_core_ingest_scanner["core.ingest.scanner"]
+    module_wiki_compiler_adapters_ontology_facets["wiki_compiler.adapters.ontology_facets"]
+    class_core_ingest_scanner_IgnoreRule["IgnoreRule"]
+    class_core_ingest_scanner_PythonScanner["PythonScanner"]
+    class_core_ingest_scanner_TypeScriptScanner["TypeScriptScanner"]
+    module_core_ingest_engine["core.ingest.engine"]
+    module_core_ingest_manifest["core.ingest.manifest"]
+    module_csv["csv"]
+    class_unknown_ABC["ABC"]
+    class_unknown_BaseASTHandler["BaseASTHandler"]
+    class_unknown_SLDBError["SLDBError"]
+    class_unknown_SLDBModelError["SLDBModelError"]
+    class_unknown_str["str"]
+    class_unknown_StructuredNLDoc["StructuredNLDoc"]
+    class_unknown_BaseNodeHandler["BaseNodeHandler"]
+    class_unknown_BaseRenderer["BaseRenderer"]
+    module_internal_dependency["dependency"]
+    system_sldb -->|contains| module_links
+    module_links -->|imports| module_sldb_store_layout
+    module_links -->|imports| module_sldb_store_io
+    module_links -->|imports| module_sldb_store_predicates
+    module_links -->|contains| class_links_ParsedLink
+    module_links -->|contains| class_links_ResolvedLink
+    system_sldb -->|contains| module___init__
+    module___init__ -->|imports| module_sldb_core_ast
+    module___init__ -->|imports| module_sldb_core_data_extractor
+    module___init__ -->|imports| module_sldb_core_renderer
+    module___init__ -->|imports| module_sldb_core_template_extractor
+    module___init__ -->|imports| module_sldb_models_structured_doc
+    module___init__ -->|imports| module_sldb_runtime_config
+    system_sldb -->|contains| module___main__
+    module___main__ -->|imports| module_sldb_cli
+    system_sldb -->|contains| module_core_renderer
+    module_core_renderer -->|imports| module_jinja2
+    module_core_renderer -->|imports| module_sldb_core_ast
+    module_core_renderer -->|imports| module_sldb_core_handlers_router
+    module_core_renderer -->|imports| module_sldb_core_renderer_engine_list
+    module_core_renderer -->|imports| module_sldb_core_renderer_engine_table
+    module_core_renderer -->|imports| module_sldb_core_renderer_engine_yaml
+    module_core_renderer -->|imports| module_sldb_models_structured_doc
+    module_core_renderer -->|contains| class_core_renderer_SLDBRenderer
+    system_sldb -->|contains| module_core_template_extractor
+    module_core_template_extractor -->|imports| module_sldb_core_exceptions
+    module_core_template_extractor -->|imports| module_sldb_core_node
+    module_core_template_extractor -->|imports| module_sldb_core_node_handler
+    module_core_template_extractor -->|contains| class_core_template_extractor_TemplateExtractor
+    system_sldb -->|contains| module_core_ast
+    module_core_ast -->|imports| module_markdown_it
+    module_core_ast -->|imports| module_markdown_it_tree
+    module_core_ast -->|imports| module_sldb_core_node
+    module_core_ast -->|contains| class_core_ast_BaseASTHandler
+    class_core_ast_BaseASTHandler -->|inherits| class_unknown_ABC
+    module_core_ast -->|contains| class_core_ast_MarkdownASTHandler
+    class_core_ast_MarkdownASTHandler -->|inherits| class_unknown_BaseASTHandler
+    module_core_ast -->|imports| module_mdit_py_plugins_front_matter
+    system_sldb -->|contains| module_core_ir
+    module_core_ir -->|contains| class_core_ir_SourceSpan
+    module_core_ir -->|contains| class_core_ir_SurfaceNode
+    module_core_ir -->|contains| class_core_ir_DocumentContext
+    module_core_ir -->|contains| class_core_ir_MeaningNode
+    module_core_ir -->|contains| class_core_ir_GraphEdge
+    module_core_ir -->|contains| class_core_ir_GraphView
+    module_core_ir -->|contains| class_core_ir_SectionContextEntry
+    module_core_ir -->|contains| class_core_ir_DocumentIR
+    system_sldb -->|contains| module_core_node_handler
+    module_core_node_handler -->|imports| module_sldb_core_handlers_router
+    system_sldb -->|contains| module_core
+    system_sldb -->|contains| module_core_data_extractor
+    module_core_data_extractor -->|imports| module_sldb_core_node
+    module_core_data_extractor -->|imports| module_sldb_core_node_handler
+    module_core_data_extractor -->|contains| class_core_data_extractor_DataExtractor
+    system_sldb -->|contains| module_core_node
+    module_core_node -->|contains| class_core_node_SLDBNode
+    system_sldb -->|contains| module_core_exceptions
+    module_core_exceptions -->|contains| class_core_exceptions_SLDBError
+    module_core_exceptions -->|contains| class_core_exceptions_SLDBModelError
+    class_core_exceptions_SLDBModelError -->|inherits| class_unknown_SLDBError
+    module_core_exceptions -->|contains| class_core_exceptions_SLDBModelDraftError
+    class_core_exceptions_SLDBModelDraftError -->|inherits| class_unknown_SLDBModelError
+    module_core_exceptions -->|contains| class_core_exceptions_SLDBModelEditError
+    class_core_exceptions_SLDBModelEditError -->|inherits| class_unknown_SLDBModelError
+    module_core_exceptions -->|contains| class_core_exceptions_SLDBValidationError
+    class_core_exceptions_SLDBValidationError -->|inherits| class_unknown_SLDBError
+    module_core_exceptions -->|contains| class_core_exceptions_SLDBStoreError
+    class_core_exceptions_SLDBStoreError -->|inherits| class_unknown_SLDBError
+    module_core_exceptions -->|contains| class_core_exceptions_SLDBASTError
+    class_core_exceptions_SLDBASTError -->|inherits| class_unknown_SLDBError
+    module_core_exceptions -->|contains| class_core_exceptions_SLDBLinkError
+    class_core_exceptions_SLDBLinkError -->|inherits| class_unknown_SLDBError
+    system_sldb -->|contains| module_core_contracts
+    module_core_contracts -->|contains| class_core_contracts_Marker
+    module_core_contracts -->|contains| class_core_contracts_NodeData
+    module_core_contracts -->|contains| class_core_contracts_RenderContext
+    system_sldb -->|contains| module_assets
+    system_sldb -->|contains| module_cli_utils
+    module_cli_utils -->|imports| module_importlib
+    module_cli_utils -->|imports| module_sldb_core_exceptions
+    module_cli_utils -->|imports| module_sldb_models_structured_doc
+    module_cli_utils -->|imports| module_sldb_store_resolver
+    module_cli_utils -->|imports| module_sldb_store_layout
+    module_cli_utils -->|imports| module_sldb_store_migration
+    module_cli_utils -->|imports| module_sldb_store_io
+    module_cli_utils -->|imports| module_sldb_store_models
+    module_cli_utils -->|imports| module_sldb_store_ops
+    module_cli_utils -->|imports| module_sldb_store_semantic_tags
+    system_sldb -->|contains| module_cli_parser
+    system_sldb -->|contains| module_cli
+    module_cli -->|imports| module_sldb_cli_main
+    module_cli -->|imports| module_sldb_cli_parser
+    system_sldb -->|contains| module_cli_main
+    module_cli_main -->|imports| module_sldb_cli_parser
+    module_cli_main -->|imports| module_sldb_cli_commands_help
+    module_cli_main -->|imports| module_sldb_core_exceptions
+    module_cli_main -->|contains| class_cli_main_CLI
+    module_cli_main -->|imports| module_sldb_cli_commands_ast
+    module_cli_main -->|imports| module_sldb_cli_commands_basic
+    module_cli_main -->|imports| module_sldb_cli_commands_docs
+    module_cli_main -->|imports| module_sldb_cli_commands_explore
+    module_cli_main -->|imports| module_sldb_cli_commands_fields
+    module_cli_main -->|imports| module_sldb_cli_commands_find
+    module_cli_main -->|imports| module_sldb_cli_commands_faq
+    module_cli_main -->|imports| module_sldb_cli_commands_init
+    module_cli_main -->|imports| module_sldb_cli_commands_inbox
+    module_cli_main -->|imports| module_sldb_cli_commands_legacy
+    module_cli_main -->|imports| module_sldb_cli_commands_links
+    module_cli_main -->|imports| module_sldb_cli_commands_models
+    module_cli_main -->|imports| module_sldb_cli_commands_predicates
+    module_cli_main -->|imports| module_sldb_cli_commands_query
+    module_cli_main -->|imports| module_sldb_cli_commands_sections
+    module_cli_main -->|imports| module_sldb_cli_commands_stores
+    module_cli_main -->|imports| module_sldb_cli_commands_store
+    module_cli_main -->|imports| module_sldb_cli_commands_model
+    module_cli_main -->|imports| module_sldb_cli_commands_doc
+    system_sldb -->|contains| module_cli_graph
+    module_cli_graph -->|imports| module_difflib
+    module_cli_graph -->|imports| module_sldb_cli_utils
+    module_cli_graph -->|imports| module_sldb_store_layout
+    module_cli_graph -->|imports| module_sldb_core_ast
+    module_cli_graph -->|imports| module_sldb_core_contracts
+    module_cli_graph -->|imports| module_sldb_core_ir
+    module_cli_graph -->|imports| module_sldb_store_io
+    module_cli_graph -->|imports| module_sldb_store_models
+    module_cli_graph -->|imports| module_sldb_store_query
+    module_cli_graph -->|contains| class_cli_graph_SectionRecord
+    module_cli_graph -->|contains| class_cli_graph_SearchRecord
+    system_sldb -->|contains| module_runtime_config
+    module_runtime_config -->|contains| class_runtime_config_SLDBConfig
+    system_sldb -->|contains| module_runtime
+    system_sldb -->|contains| module_runtime_validation
+    module_runtime_validation -->|imports| module_sldb_core_ast
+    module_runtime_validation -->|imports| module_sldb_core_data_extractor
+    module_runtime_validation -->|imports| module_sldb_core_renderer
+    module_runtime_validation -->|imports| module_sldb_core_template_extractor
+    module_runtime_validation -->|imports| module_sldb_models_structured_doc
+    module_runtime_validation -->|contains| class_runtime_validation_Validator
+    system_sldb -->|contains| module_store_export
+    module_store_export -->|imports| module_importlib_metadata
+    module_store_export -->|imports| module_sldb_store_io
+    module_store_export -->|imports| module_sldb_store_layout
+    module_store_export -->|imports| module_sldb_store_semantic
+    system_sldb -->|contains| module_store_ops
+    module_store_ops -->|imports| module_sldb_store_hashing
+    module_store_ops -->|imports| module_sldb_store_io
+    module_store_ops -->|imports| module_sldb_store_models
+    module_store_ops -->|imports| module_sldb_store_semantic
+    module_store_ops -->|imports| module_sldb_core_exceptions
+    system_sldb -->|contains| module_store_hashing
+    module_store_hashing -->|imports| module_sldb_models_structured_doc
+    module_store_hashing -->|imports| module_sldb_runtime_validation
+    module_store_hashing -->|imports| module_sldb_store_models
+    system_sldb -->|contains| module_store_resolver
+    module_store_resolver -->|imports| module_sldb_store_layout
+    system_sldb -->|contains| module_store_models
+    module_store_models -->|contains| class_store_models_StoreEntry
+    module_store_models -->|contains| class_store_models_ModelEntry
+    module_store_models -->|contains| class_store_models_PredicateEntry
+    module_store_models -->|contains| class_store_models_StoreIndex
+    module_store_models -->|contains| class_store_models_ModelsIndex
+    module_store_models -->|contains| class_store_models_DocumentEntry
+    module_store_models -->|contains| class_store_models_DocumentsIndex
+    module_store_models -->|contains| class_store_models_SemanticNode
+    module_store_models -->|contains| class_store_models_SectionContextRecord
+    module_store_models -->|contains| class_store_models_DocSections
+    module_store_models -->|contains| class_store_models_SectionsIndex
+    module_store_models -->|contains| class_store_models_SemanticDAG
+    module_store_models -->|contains| class_store_models_SemanticDocumentRecord
+    module_store_models -->|contains| class_store_models_SemanticIndex
+    system_sldb -->|contains| module_store_layout
+    system_sldb -->|contains| module_store_diagnostics
+    module_store_diagnostics -->|imports| module_sldb_models_structured_doc
+    module_store_diagnostics -->|imports| module_sldb_store_layout
+    module_store_diagnostics -->|imports| module_sldb_store_hashing
+    module_store_diagnostics -->|imports| module_sldb_store_io
+    module_store_diagnostics -->|imports| module_sldb_store_models
+    module_store_diagnostics -->|imports| module_sldb_store_diagnostics_models
+    module_store_diagnostics -->|imports| module_sldb_cli_utils
+    system_sldb -->|contains| module_store_query
+    module_store_query -->|imports| module_sldb_runtime_validation
+    module_store_query -->|imports| module_sldb_store_layout
+    module_store_query -->|imports| module_sldb_store_io
+    module_store_query -->|imports| module_sldb_store_query_engine_models
+    module_store_query -->|imports| module_sldb_store_query_engine_structural
+    module_store_query -->|imports| module_sldb_store_query_engine_structural_queries
+    module_store_query -->|imports| module_sldb_store_query_engine_semantic
+    module_store_query -->|imports| module_sldb_store_query_engine_global_semantic
+    system_sldb -->|contains| module_store_semantic_tags
+    system_sldb -->|contains| module_store
+    module_store -->|imports| module_sldb_store_models
+    module_store -->|imports| module_sldb_store_io
+    module_store -->|imports| module_sldb_store_hashing
+    module_store -->|imports| module_sldb_store_resolver
+    module_store -->|imports| module_sldb_store_diagnostics
+    system_sldb -->|contains| module_store_diagnostics_models
+    module_store_diagnostics_models -->|contains| class_store_diagnostics_models_DiagnosisNote
+    class_store_diagnostics_models_DiagnosisNote -->|inherits| class_unknown_str
+    module_store_diagnostics_models -->|contains| class_store_diagnostics_models_DocumentDiagnosis
+    module_store_diagnostics_models -->|contains| class_store_diagnostics_models_ModelDiagnosis
+    module_store_diagnostics_models -->|contains| class_store_diagnostics_models_StoreDiagnosis
+    system_sldb -->|contains| module_store_migration
+    module_store_migration -->|imports| module_sldb_store_io
+    module_store_migration -->|imports| module_sldb_store_layout
+    system_sldb -->|contains| module_store_semantic
+    module_store_semantic -->|imports| module_sldb_runtime_validation
+    module_store_semantic -->|imports| module_sldb_store_io
+    module_store_semantic -->|imports| module_sldb_store_layout
+    module_store_semantic -->|imports| module_sldb_store_models
+    module_store_semantic -->|imports| module_sldb_store_semantic_tags
+    module_store_semantic -->|contains| class_store_semantic_RebuildReport
+    module_store_semantic -->|imports| module_markdown_it
+    module_store_semantic -->|imports| module_markdown_it_tree
+    system_sldb -->|contains| module_store_predicates
+    module_store_predicates -->|imports| module_sldb_store_models
+    system_sldb -->|contains| module_store_io
+    module_store_io -->|imports| module_contextlib
+    module_store_io -->|imports| module_fcntl
+    module_store_io -->|imports| module_tempfile
+    module_store_io -->|imports| module_sldb_core_exceptions
+    module_store_io -->|imports| module_sldb_store_layout
+    module_store_io -->|imports| module_sldb_store_models
+    system_sldb -->|contains| module_models
+    module_models -->|imports| module_sldb_models_structured_doc
+    system_sldb -->|contains| module_models_structured_doc
+    module_models_structured_doc -->|imports| module_importlib
+    module_models_structured_doc -->|contains| class_models_structured_doc_StructuredNLDoc
+    module_models_structured_doc -->|imports| module_sldb_runtime_validation
+    system_sldb -->|contains| module_examples
+    system_sldb -->|contains| module_examples_reference_bundle_guide_model
+    module_examples_reference_bundle_guide_model -->|imports| module_sldb
+    module_examples_reference_bundle_guide_model -->|contains| class_examples_reference_bundle_guide_model_SLDBGuide
+    class_examples_reference_bundle_guide_model_SLDBGuide -->|inherits| class_unknown_StructuredNLDoc
+    system_sldb -->|contains| module_examples_reference_bundle
+    system_sldb -->|contains| module_examples_pandoc_cv_cv_model
+    module_examples_pandoc_cv_cv_model -->|imports| module_sldb
+    module_examples_pandoc_cv_cv_model -->|contains| class_examples_pandoc_cv_cv_model_PandocCVDoc
+    class_examples_pandoc_cv_cv_model_PandocCVDoc -->|inherits| class_unknown_StructuredNLDoc
+    system_sldb -->|contains| module_store_query_engine_structural_queries
+    module_store_query_engine_structural_queries -->|imports| module_fnmatch
+    module_store_query_engine_structural_queries -->|imports| module_sldb_store_query_engine_structural
+    module_store_query_engine_structural_queries -->|imports| module_sldb_store_query_engine_filter
+    system_sldb -->|contains| module_store_query_engine_models
+    module_store_query_engine_models -->|contains| class_store_query_engine_models_RuntimeDocument
+    system_sldb -->|contains| module_store_query_engine_semantic_utils
+    module_store_query_engine_semantic_utils -->|imports| module_sldb_store_layout
+    module_store_query_engine_semantic_utils -->|imports| module_sldb_store_io
+    module_store_query_engine_semantic_utils -->|imports| module_sldb_store_query
+    module_store_query_engine_semantic_utils -->|imports| module_sldb_store_query_engine_models
+    module_store_query_engine_semantic_utils -->|imports| module_sldb_store_semantic
+    system_sldb -->|contains| module_store_query_engine_structural
+    module_store_query_engine_structural -->|imports| module_sldb_store_io
+    module_store_query_engine_structural -->|imports| module_sldb_store_query
+    system_sldb -->|contains| module_store_query_engine_global_semantic
+    module_store_query_engine_global_semantic -->|imports| module_sldb_store_io
+    module_store_query_engine_global_semantic -->|imports| module_sldb_store_query
+    system_sldb -->|contains| module_store_query_engine
+    system_sldb -->|contains| module_store_query_engine_filter
+    module_store_query_engine_filter -->|imports| module_sldb_store_query_engine_models
+    system_sldb -->|contains| module_store_query_engine_semantic
+    module_store_query_engine_semantic -->|imports| module_sldb_store_query_engine_semantic_utils
+    module_store_query_engine_semantic -->|imports| module_sldb_store_query_engine_filter
+    system_sldb -->|contains| module_cli_commands_help
+    module_cli_commands_help -->|contains| class_cli_commands_help_HelpCLI
+    system_sldb -->|contains| module_cli_commands_sections
+    module_cli_commands_sections -->|imports| module_sldb_cli_graph
+    module_cli_commands_sections -->|imports| module_sldb_cli_utils
+    module_cli_commands_sections -->|imports| module_sldb_store_io
+    module_cli_commands_sections -->|imports| module_sldb_store_models
+    module_cli_commands_sections -->|contains| class_cli_commands_sections_SectionsCLI
+    module_cli_commands_sections -->|imports| module_sldb_cli_commands_find
+    system_sldb -->|contains| module_cli_commands_legacy
+    module_cli_commands_legacy -->|imports| module_sldb_cli_commands_links
+    module_cli_commands_legacy -->|imports| module_sldb_cli_commands_query
+    module_cli_commands_legacy -->|contains| class_cli_commands_legacy_LegacyCLI
+    system_sldb -->|contains| module_cli_commands_init
+    module_cli_commands_init -->|imports| module_importlib_resources
+    module_cli_commands_init -->|contains| class_cli_commands_init_InitCLI
+    module_cli_commands_init -->|imports| module_sldb_core_exceptions
+    system_sldb -->|contains| module_cli_commands_fields
+    module_cli_commands_fields -->|imports| module_sldb_cli_graph
+    module_cli_commands_fields -->|imports| module_sldb_cli_utils
+    module_cli_commands_fields -->|imports| module_sldb_runtime_validation
+    module_cli_commands_fields -->|imports| module_sldb_store_hashing
+    module_cli_commands_fields -->|imports| module_sldb_store_io
+    module_cli_commands_fields -->|imports| module_sldb_store_ops
+    module_cli_commands_fields -->|imports| module_sldb_store_query
+    module_cli_commands_fields -->|imports| module_sldb_store_semantic
+    module_cli_commands_fields -->|contains| class_cli_commands_fields_FieldsCLI
+    system_sldb -->|contains| module_cli_commands_find
+    module_cli_commands_find -->|imports| module_sldb_cli_graph
+    module_cli_commands_find -->|imports| module_sldb_store_query_engine_filter
+    module_cli_commands_find -->|contains| class_cli_commands_find_FindCLI
+    module_cli_commands_find -->|imports| module_sldb_cli_utils
+    system_sldb -->|contains| module_cli_commands_models
+    module_cli_commands_models -->|imports| module_ast
+    module_cli_commands_models -->|imports| module_importlib_util
+    module_cli_commands_models -->|imports| module_importlib_machinery
+    module_cli_commands_models -->|imports| module_sldb_cli_commands_model
+    module_cli_commands_models -->|imports| module_sldb_cli_graph
+    module_cli_commands_models -->|imports| module_sldb_cli_utils
+    module_cli_commands_models -->|imports| module_sldb_core_exceptions
+    module_cli_commands_models -->|imports| module_sldb_runtime_validation
+    module_cli_commands_models -->|imports| module_sldb_store_io
+    module_cli_commands_models -->|contains| class_cli_commands_models_ModelsCLI
+    system_sldb -->|contains| module_cli_commands_model
+    module_cli_commands_model -->|imports| module_inspect
+    module_cli_commands_model -->|imports| module_sldb_cli_utils
+    module_cli_commands_model -->|imports| module_sldb_store_hashing
+    module_cli_commands_model -->|imports| module_sldb_store_io
+    module_cli_commands_model -->|imports| module_sldb_store_layout
+    module_cli_commands_model -->|imports| module_sldb_store_models
+    module_cli_commands_model -->|imports| module_sldb_store_ops
+    module_cli_commands_model -->|imports| module_sldb_store_semantic
+    module_cli_commands_model -->|imports| module_sldb_store_semantic_tags
+    module_cli_commands_model -->|imports| module_sldb_core_exceptions
+    module_cli_commands_model -->|contains| class_cli_commands_model_ModelCLI
+    system_sldb -->|contains| module_cli_commands_docs
+    module_cli_commands_docs -->|imports| module_sldb_cli_commands_doc
+    module_cli_commands_docs -->|imports| module_sldb_cli_commands_explore
+    module_cli_commands_docs -->|imports| module_sldb_cli_commands_links
+    module_cli_commands_docs -->|imports| module_sldb_cli_graph
+    module_cli_commands_docs -->|imports| module_sldb_cli_utils
+    module_cli_commands_docs -->|imports| module_sldb_store_io
+    module_cli_commands_docs -->|contains| class_cli_commands_docs_DocsCLI
+    system_sldb -->|contains| module_cli_commands_doc
+    module_cli_commands_doc -->|imports| module_sldb_cli_utils
+    module_cli_commands_doc -->|imports| module_sldb_runtime_validation
+    module_cli_commands_doc -->|imports| module_sldb_store_ops
+    module_cli_commands_doc -->|imports| module_sldb_core_exceptions
+    module_cli_commands_doc -->|contains| class_cli_commands_doc_DocCLI
+    module_cli_commands_doc -->|imports| module_sldb_store_io
+    module_cli_commands_doc -->|imports| module_sldb_store_hashing
+    module_cli_commands_doc -->|imports| module_sldb_store_semantic
+    system_sldb -->|contains| module_cli_commands_store
+    module_cli_commands_store -->|imports| module_sldb_cli_utils
+    module_cli_commands_store -->|imports| module_sldb_core_exceptions
+    module_cli_commands_store -->|imports| module_sldb_store_hashing
+    module_cli_commands_store -->|imports| module_sldb_store_io
+    module_cli_commands_store -->|imports| module_sldb_store_layout
+    module_cli_commands_store -->|imports| module_sldb_store_models
+    module_cli_commands_store -->|imports| module_sldb_store_predicates
+    module_cli_commands_store -->|imports| module_sldb_store_ops
+    module_cli_commands_store -->|imports| module_sldb_store_semantic
+    module_cli_commands_store -->|contains| class_cli_commands_store_StoreCLI
+    module_cli_commands_store -->|imports| module_sldb_store_diagnostics
+    system_sldb -->|contains| module_cli_commands_ast
+    module_cli_commands_ast -->|imports| module_sldb_cli_graph
+    module_cli_commands_ast -->|contains| class_cli_commands_ast_ASTCLI
+    system_sldb -->|contains| module_cli_commands_inbox
+    module_cli_commands_inbox -->|imports| module_sldb_cli_utils
+    module_cli_commands_inbox -->|imports| module_sldb_core_exceptions
+    module_cli_commands_inbox -->|imports| module_sldb_runtime_validation
+    module_cli_commands_inbox -->|imports| module_sldb_store_layout
+    module_cli_commands_inbox -->|imports| module_sldb_store_ops
+    module_cli_commands_inbox -->|imports| module_sldb_store_resolver
+    module_cli_commands_inbox -->|contains| class_cli_commands_inbox_InboxCLI
+    system_sldb -->|contains| module_cli_commands_explore
+    module_cli_commands_explore -->|imports| module_ast
+    module_cli_commands_explore -->|contains| class_cli_commands_explore_ExploreHit
+    module_cli_commands_explore -->|contains| class_cli_commands_explore_ExploreCLI
+    system_sldb -->|contains| module_cli_commands_query
+    module_cli_commands_query -->|imports| module_sldb_cli_utils
+    module_cli_commands_query -->|imports| module_sldb_store_query
+    module_cli_commands_query -->|imports| module_sldb_core_exceptions
+    module_cli_commands_query -->|contains| class_cli_commands_query_QueryCLI
+    system_sldb -->|contains| module_cli_commands_links
+    module_cli_commands_links -->|imports| module_sldb_cli_utils
+    module_cli_commands_links -->|imports| module_sldb_links
+    module_cli_commands_links -->|contains| class_cli_commands_links_LinkCLI
+    system_sldb -->|contains| module_cli_commands_basic
+    module_cli_commands_basic -->|imports| module_sldb_cli_utils
+    module_cli_commands_basic -->|imports| module_sldb_runtime_validation
+    module_cli_commands_basic -->|contains| class_cli_commands_basic_BasicCLI
+    system_sldb -->|contains| module_cli_commands
+    system_sldb -->|contains| module_cli_commands_faq
+    module_cli_commands_faq -->|contains| class_cli_commands_faq_FAQEntry
+    module_cli_commands_faq -->|contains| class_cli_commands_faq_FAQCLI
+    system_sldb -->|contains| module_cli_commands_stores
+    module_cli_commands_stores -->|imports| module_sldb_cli_commands_store
+    module_cli_commands_stores -->|imports| module_sldb_cli_utils
+    module_cli_commands_stores -->|imports| module_sldb_store_export
+    module_cli_commands_stores -->|imports| module_sldb_store_io
+    module_cli_commands_stores -->|contains| class_cli_commands_stores_StoresCLI
+    system_sldb -->|contains| module_cli_commands_predicates
+    module_cli_commands_predicates -->|imports| module_sldb_cli_utils
+    module_cli_commands_predicates -->|imports| module_sldb_core_exceptions
+    module_cli_commands_predicates -->|imports| module_sldb_store_io
+    module_cli_commands_predicates -->|imports| module_sldb_store_models
+    module_cli_commands_predicates -->|imports| module_sldb_store_predicates
+    module_cli_commands_predicates -->|contains| class_cli_commands_predicates_PredicatesCLI
+    system_sldb -->|contains| module_assets_skills
+    system_sldb -->|contains| module_core_handlers_text
+    module_core_handlers_text -->|imports| module_sldb_core_handlers_base
+    module_core_handlers_text -->|imports| module_sldb_core_handlers_utils
+    module_core_handlers_text -->|imports| module_sldb_core_node
+    module_core_handlers_text -->|contains| class_core_handlers_text_TextNodeHandler
+    class_core_handlers_text_TextNodeHandler -->|inherits| class_unknown_BaseNodeHandler
+    system_sldb -->|contains| module_core_handlers_router
+    module_core_handlers_router -->|imports| module_sldb_core_handlers_list
+    module_core_handlers_router -->|imports| module_sldb_core_handlers_table
+    module_core_handlers_router -->|imports| module_sldb_core_handlers_text
+    module_core_handlers_router -->|imports| module_sldb_core_handlers_yaml
+    module_core_handlers_router -->|imports| module_sldb_core_node
+    module_core_handlers_router -->|contains| class_core_handlers_router_SharedNodeHandler
+    system_sldb -->|contains| module_core_handlers_utils
+    module_core_handlers_utils -->|imports| module_sldb_core_contracts
+    system_sldb -->|contains| module_core_handlers
+    system_sldb -->|contains| module_core_handlers_base
+    module_core_handlers_base -->|imports| module_sldb_core_node
+    module_core_handlers_base -->|contains| class_core_handlers_base_BaseNodeHandler
+    class_core_handlers_base_BaseNodeHandler -->|inherits| class_unknown_ABC
+    system_sldb -->|contains| module_core_handlers_table
+    module_core_handlers_table -->|imports| module_sldb_core_handlers_base
+    module_core_handlers_table -->|imports| module_sldb_core_handlers_utils
+    module_core_handlers_table -->|imports| module_sldb_core_node
+    module_core_handlers_table -->|contains| class_core_handlers_table_TableNodeHandler
+    class_core_handlers_table_TableNodeHandler -->|inherits| class_unknown_BaseNodeHandler
+    module_core_handlers_table -->|imports| module_sldb_core_handlers_text
+    system_sldb -->|contains| module_core_handlers_list
+    module_core_handlers_list -->|imports| module_sldb_core_handlers_base
+    module_core_handlers_list -->|imports| module_sldb_core_handlers_utils
+    module_core_handlers_list -->|imports| module_sldb_core_node
+    module_core_handlers_list -->|contains| class_core_handlers_list_ListNodeHandler
+    class_core_handlers_list_ListNodeHandler -->|inherits| class_unknown_BaseNodeHandler
+    system_sldb -->|contains| module_core_handlers_yaml
+    module_core_handlers_yaml -->|imports| module_sldb_core_exceptions
+    module_core_handlers_yaml -->|imports| module_sldb_core_handlers_base
+    module_core_handlers_yaml -->|imports| module_sldb_core_handlers_utils
+    module_core_handlers_yaml -->|imports| module_sldb_core_node
+    module_core_handlers_yaml -->|contains| class_core_handlers_yaml_YamlNodeHandler
+    class_core_handlers_yaml_YamlNodeHandler -->|inherits| class_unknown_BaseNodeHandler
+    system_sldb -->|contains| module_core_renderer_engine
+    system_sldb -->|contains| module_core_renderer_engine_base
+    module_core_renderer_engine_base -->|imports| module_jinja2
+    module_core_renderer_engine_base -->|imports| module_sldb_core_handlers_utils
+    module_core_renderer_engine_base -->|imports| module_sldb_core_renderer_engine_python_expr
+    module_core_renderer_engine_base -->|contains| class_core_renderer_engine_base_BaseRenderer
+    system_sldb -->|contains| module_core_renderer_engine_table
+    module_core_renderer_engine_table -->|imports| module_sldb_core_renderer_engine_base
+    module_core_renderer_engine_table -->|contains| class_core_renderer_engine_table_TableRenderer
+    class_core_renderer_engine_table_TableRenderer -->|inherits| class_unknown_BaseRenderer
+    system_sldb -->|contains| module_core_renderer_engine_list
+    module_core_renderer_engine_list -->|imports| module_sldb_core_renderer_engine_base
+    module_core_renderer_engine_list -->|contains| class_core_renderer_engine_list_ListRenderer
+    class_core_renderer_engine_list_ListRenderer -->|inherits| class_unknown_BaseRenderer
+    system_sldb -->|contains| module_core_renderer_engine_python_expr
+    module_core_renderer_engine_python_expr -->|imports| module_sldb_runtime_config
+    module_core_renderer_engine_python_expr -->|contains| class_core_renderer_engine_python_expr_PythonExpressionRenderer
+    system_sldb -->|contains| module_core_renderer_engine_yaml
+    module_core_renderer_engine_yaml -->|imports| module_sldb_core_renderer_engine_base
+    module_core_renderer_engine_yaml -->|imports| module_sldb_core_handlers_utils
+    module_core_renderer_engine_yaml -->|contains| class_core_renderer_engine_yaml_YamlRenderer
+    class_core_renderer_engine_yaml_YamlRenderer -->|inherits| class_unknown_BaseRenderer
+    system_sldb -->|contains| module_core_ingest_scanner
+    module_core_ingest_scanner -->|imports| module_ast
+    module_core_ingest_scanner -->|imports| module_fnmatch
+    module_core_ingest_scanner -->|imports| module_internal_dependency
+    module_core_ingest_scanner -->|imports| module_wiki_compiler_adapters_ontology_facets
+    module_core_ingest_scanner -->|contains| class_core_ingest_scanner_IgnoreRule
+    module_core_ingest_scanner -->|contains| class_core_ingest_scanner_PythonScanner
+    module_core_ingest_scanner -->|contains| class_core_ingest_scanner_TypeScriptScanner
+    system_sldb -->|contains| module_core_ingest_engine
+    module_core_ingest_engine -->|imports| module_internal_dependency
+    system_sldb -->|contains| module_core_ingest_manifest
+    module_core_ingest_manifest -->|imports| module_csv
+    module_core_ingest_manifest -->|imports| module_internal_dependency

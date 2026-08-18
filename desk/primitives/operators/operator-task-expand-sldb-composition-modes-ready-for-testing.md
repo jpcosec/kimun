@@ -1,9 +1,15 @@
 ---
+# operator-xxx
 id: operator-task-expand-sldb-composition-modes-ready-for-testing
+# active | archived
 status: active
+# Atomic runtime action, e.g., set_field, append_list
 action: set_field
+# Payload path modified by the operator
 target: status
+# Value used by the operator action
 value: ready_for_testing
+# e.g., system:deskops
 tags:
 - primitive:operator
 ---

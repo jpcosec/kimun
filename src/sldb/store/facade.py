@@ -4,7 +4,7 @@ Store facade for decoupling CLI from low-level store operations.
 from pathlib import Path
 from typing import Any
 from sldb.store.io import load_store_index, load_models_index, load_documents_index
-from sldb.store.layout import get_store_context
+from sldb.cli.utils import get_store_context
 from sldb.core.exceptions import SLDBError
 
 def get_tracked_docs(model_name: str, store_path: str | None = None) -> list[tuple[str, str]]:

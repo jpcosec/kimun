@@ -1,9 +1,15 @@
 ---
+# edge-xxx
 id: edge-task-expand-sldb-composition-modes-execution-to-activate
+# active | archived
 status: active
+# Source node identifier
 source: checklist-task-expand-sldb-composition-modes-execution-ready
+# Target node identifier
 target: operator-task-expand-sldb-composition-modes-activate
+# Optional condition identifier guarding the transition
 condition_ref: ''
+# e.g., system:deskops
 tags:
 - primitive:edge
 ---

@@ -1,9 +1,15 @@
 ---
+# condition-xxx
 id: condition-task-define-sldb-addressability-model-ready-for-closeout
+# active | archived
 status: active
+# Payload path the condition reads
 subject: status
+# Predicate applied to the value (e.g., eq, contains)
 predicate: equals
+# Expected value used by the predicate
 expected: ready_for_testing
+# e.g., system:deskops
 tags:
 - primitive:condition
 ---

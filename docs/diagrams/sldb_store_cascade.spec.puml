@@ -1,0 +1,26 @@
+@startuml
+skinparam component<<database>> BackgroundColor #DCEFD8
+skinparam component<<database>> BorderColor #5A9B5A
+skinparam component<<database>> FontColor #1F4F1F
+skinparam rectangle<<database>> BackgroundColor #DCEFD8
+skinparam rectangle<<database>> BorderColor #5A9B5A
+skinparam rectangle<<database>> FontColor #1F4F1F
+skinparam database<<database>> BackgroundColor #DCEFD8
+skinparam database<<database>> BorderColor #5A9B5A
+skinparam database<<database>> FontColor #1F4F1F
+skinparam package<<database>> BackgroundColor #DCEFD8
+skinparam package<<database>> BorderColor #5A9B5A
+skinparam package<<database>> FontColor #1F4F1F
+
+package "StoreIndex" as StoreIndex <<database>> {
+  package "ModelsIndex" as ModelsIndex <<database>> {
+    package "DocumentsIndex" as DocumentsIndex <<database>> {
+      database "DocumentEntry" as DocumentEntry <<database>>
+    }
+  }
+}
+
+StoreIndex --> ModelsIndex : hash_a depends on hash_b
+ModelsIndex --> DocumentsIndex : hash depends on child hashes
+DocumentsIndex --> DocumentEntry : hash_b depends on hash_c and hash_d
+@enduml

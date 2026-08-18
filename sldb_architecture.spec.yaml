@@ -1,0 +1,58 @@
+id: sldb.architecture
+title: SLDB Architecture
+type: component
+version: "1.0"
+data:
+  nodes:
+    CLI:
+      label: CLI
+      kind: interface
+    AST_Handler:
+      label: AST Handler
+      kind: core
+    TemplateExtractor:
+      label: Template Extractor
+      kind: core
+    DataExtractor:
+      label: Data Extractor
+      kind: core
+    SLDBRenderer:
+      label: SLDB Renderer
+      kind: core
+    StoreManager:
+      label: Store Manager
+      kind: core
+    LinkManager:
+      label: Link Manager
+      kind: core
+  edges:
+    - from: CLI
+      to: AST_Handler
+      relation: uses
+    - from: CLI
+      to: TemplateExtractor
+      relation: uses
+    - from: CLI
+      to: DataExtractor
+      relation: uses
+    - from: CLI
+      to: SLDBRenderer
+      relation: uses
+    - from: CLI
+      to: StoreManager
+      relation: uses
+    - from: CLI
+      to: LinkManager
+      relation: uses
+    - from: AST_Handler
+      to: TemplateExtractor
+      relation: passes
+      label: "passes nodes"
+    - from: AST_Handler
+      to: DataExtractor
+      relation: passes
+      label: "passes nodes"
+    - from: StoreManager
+      to: StoreManager
+      relation: handles
+      label: "persistence"

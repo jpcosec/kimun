@@ -1,0 +1,37 @@
+id: sldb.store.cascade
+title: SLDB Store Cascade
+type: component
+version: "1.0"
+data:
+  nodes:
+    StoreIndex:
+      label: StoreIndex
+      kind: database
+      contains:
+        - ModelsIndex
+    ModelsIndex:
+      label: ModelsIndex
+      kind: database
+      contains:
+        - DocumentsIndex
+    DocumentsIndex:
+      label: DocumentsIndex
+      kind: database
+      contains:
+        - DocumentEntry
+    DocumentEntry:
+      label: DocumentEntry
+      kind: database
+  edges:
+    - from: StoreIndex
+      to: ModelsIndex
+      relation: uses
+      label: "hash_a depends on hash_b"
+    - from: ModelsIndex
+      to: DocumentsIndex
+      relation: uses
+      label: "hash depends on child hashes"
+    - from: DocumentsIndex
+      to: DocumentEntry
+      relation: uses
+      label: "hash_b depends on hash_c and hash_d"

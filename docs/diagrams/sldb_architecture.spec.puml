@@ -1,0 +1,32 @@
+@startuml
+skinparam component<<core>> BackgroundColor #D8ECFF
+skinparam component<<core>> BorderColor #4C78A8
+skinparam component<<core>> FontColor #16324F
+skinparam rectangle<<core>> BackgroundColor #D8ECFF
+skinparam rectangle<<core>> BorderColor #4C78A8
+skinparam rectangle<<core>> FontColor #16324F
+skinparam database<<core>> BackgroundColor #D8ECFF
+skinparam database<<core>> BorderColor #4C78A8
+skinparam database<<core>> FontColor #16324F
+skinparam package<<core>> BackgroundColor #D8ECFF
+skinparam package<<core>> BorderColor #4C78A8
+skinparam package<<core>> FontColor #16324F
+
+component "CLI" as CLI <<interface>>
+component "AST Handler" as AST_Handler <<core>>
+component "Template Extractor" as TemplateExtractor <<core>>
+component "Data Extractor" as DataExtractor <<core>>
+component "SLDB Renderer" as SLDBRenderer <<core>>
+component "Store Manager" as StoreManager <<core>>
+component "Link Manager" as LinkManager <<core>>
+
+CLI --> AST_Handler : uses
+CLI --> TemplateExtractor : uses
+CLI --> DataExtractor : uses
+CLI --> SLDBRenderer : uses
+CLI --> StoreManager : uses
+CLI --> LinkManager : uses
+AST_Handler --> TemplateExtractor : passes nodes
+AST_Handler --> DataExtractor : passes nodes
+StoreManager --> StoreManager : persistence
+@enduml

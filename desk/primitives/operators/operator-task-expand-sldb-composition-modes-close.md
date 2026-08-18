@@ -1,9 +1,15 @@
 ---
+# operator-xxx
 id: operator-task-expand-sldb-composition-modes-close
+# active | archived
 status: active
+# Atomic runtime action, e.g., set_field, append_list
 action: set_field
+# Payload path modified by the operator
 target: status
+# Value used by the operator action
 value: closed
+# e.g., system:deskops
 tags:
 - primitive:operator
 ---

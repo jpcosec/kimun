@@ -1,0 +1,36 @@
+flowchart LR
+    subgraph Authored["Authored truth"]
+      Docs["Markdown docs"]
+      Templates["StructuredNLDoc templates"]
+    end
+
+    subgraph Runtime["Runtime / validation layer"]
+      AST["AST_Handler"]
+      Recipes["TemplateExtractor recipes"]
+      Payload["Extracted payload"]
+      Model["StructuredNLDoc instance"]
+      Render["Rendered markdown"]
+    end
+
+    subgraph Store["Derived store artifacts (.sldb)"]
+      DocIdx["documents index"]
+      ModelIdx["models index"]
+      StoreIdx["store_index"]
+      Diagnostics["diagnostics / hashes / tracking"]
+    end
+
+    Docs --> AST
+    Templates --> AST
+    Templates --> Recipes
+    AST --> Payload
+    Recipes --> Payload
+    Payload --> Model
+    Model --> Render
+    Docs --> DocIdx
+    Templates --> ModelIdx
+    DocIdx --> StoreIdx
+    ModelIdx --> StoreIdx
+    StoreIdx --> Diagnostics
+
+    classDef zone fill:#12121a,stroke:#d4a574,color:#f5f0e8;
+    class Docs,Templates,AST,Recipes,Payload,Model,Render,DocIdx,ModelIdx,StoreIdx,Diagnostics zone;

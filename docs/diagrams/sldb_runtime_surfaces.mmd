@@ -1,0 +1,22 @@
+graph TD
+    CLI["CLI commands"]
+    Runtime["runtime.validation\nValidator"]
+    CoreAST["core.ast\nMarkdownASTHandler"]
+    Extractors["template_extractor + data_extractor"]
+    Renderer["core.renderer\nSLDBRenderer"]
+    Models["models.structured_doc\nStructuredNLDoc subclasses"]
+    Store["store.*\nindexes, tracking, diagnostics"]
+    Query["store.query_engine.*"]
+
+    CLI --> Runtime
+    CLI --> Store
+    CLI --> Query
+    Runtime --> CoreAST
+    Runtime --> Extractors
+    Runtime --> Renderer
+    Runtime --> Models
+    Store --> Models
+    Query --> Store
+
+    classDef major fill:#12121a,stroke:#d4a574,color:#f5f0e8;
+    class CLI,Runtime,CoreAST,Extractors,Renderer,Models,Store,Query major;

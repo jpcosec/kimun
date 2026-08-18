@@ -1,9 +1,15 @@
 ---
+# edge-xxx
 id: edge-task-design-sldb-ast-query-primitives-ready-to-closeout
+# active | archived
 status: active
+# Source node identifier
 source: operator-task-design-sldb-ast-query-primitives-ready-for-testing
+# Target node identifier
 target: checklist-task-design-sldb-ast-query-primitives-closeout-ready
+# Optional condition identifier guarding the transition
 condition_ref: ''
+# e.g., system:deskops
 tags:
 - primitive:edge
 ---

@@ -1,9 +1,15 @@
 ---
+# edge-xxx
 id: edge-task-tighten-semantic-export-provenance-contract-execution-to-activate
+# active | archived
 status: active
+# Source node identifier
 source: checklist-task-tighten-semantic-export-provenance-contract-execution-ready
+# Target node identifier
 target: operator-task-tighten-semantic-export-provenance-contract-activate
+# Optional condition identifier guarding the transition
 condition_ref: ''
+# e.g., system:deskops
 tags:
 - primitive:edge
 ---

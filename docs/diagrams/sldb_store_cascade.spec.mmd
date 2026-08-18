@@ -1,0 +1,11 @@
+graph TD
+    StoreIndex["StoreIndex"]
+    StoreIndex --> ModelsIndex
+    ModelsIndex["ModelsIndex"]
+    ModelsIndex --> DocumentsIndex
+    DocumentsIndex["DocumentsIndex"]
+    DocumentsIndex --> DocumentEntry
+    DocumentEntry["DocumentEntry"]
+    StoreIndex -->|hash_a depends on hash_b| ModelsIndex
+    ModelsIndex -->|hash depends on child hashes| DocumentsIndex
+    DocumentsIndex -->|hash_b depends on hash_c and hash_d| DocumentEntry

@@ -5,12 +5,14 @@ id: board-sldb-desk
 scope: sldb-local-desk
 # List of task-xxx paths
 tasks:
+- desk/tasks/task-mapear-arquitectura-real-de-sldb.md
+- desk/tasks/task-definir-arquitectura-objetivo-modular-de-sldb.md
+- desk/tasks/task-dise-ar-estrategia-de-extracci-n-y-modularizaci-n.md
+- desk/tasks/task-ejecutar-refactor-base-del-n-cleo-sldb.md
 - desk/tasks/task-define-sldb-addressability-model.md
 - desk/tasks/task-design-sldb-ast-query-primitives.md
 - desk/tasks/task-expand-sldb-composition-modes.md
 - desk/tasks/task-tighten-semantic-export-provenance-contract.md
-- desk/tasks/task-diseñar-estrategia-de-extracción-y-modularización.md
-- desk/tasks/task-ejecutar-refactor-base-del-núcleo-sldb.md
 # List of pill-xxx paths
 pills:
 - desk/pills/pill-001-sldb-vs-deskops-boundary.md
@@ -52,19 +54,33 @@ _Explain what this board routes and why it exists._
 
 _Add short operational notes about the current routed set._
 
-- Define SLDB addressability model [active] - Define how meaningful document units in SLDB receive stable or derivable addresses so they can be queried, updated, composed, and exported with provenance.
-- Design SLDB AST query primitives [active] - Define the first public query primitives that should operate directly on SLDB document structure rather than on downstream graph semantics.
-- Expand SLDB composition modes [active] - Design a broader composition model for SLDB so composition covers more than current transclusion and render-time child summarization.
-- Tighten semantic export provenance contract [active] - Clarify what provenance and structure SLDB must preserve when exporting graph-ready knowledge to downstream systems such as KGDB.
-- Diseñar estrategia de extracción y modularización [draft] - Definir slices de migración, paquetes candidatos y estrategia para sacar legacy del árbol activo y dejarlo sólo en git.
+- Mapear arquitectura real de SLDB [active] - _Describe the concrete result this task must produce._
 
 ## Task Details
 
 _Generated from the task references above._
 
-- Define SLDB addressability model [active] - Define how meaningful document units in SLDB receive stable or derivable addresses so they can be queried, updated, composed, and exported with provenance.
-- Design SLDB AST query primitives [active] - Define the first public query primitives that should operate directly on SLDB document structure rather than on downstream graph semantics.
-- Expand SLDB composition modes [active] - Design a broader composition model for SLDB so composition covers more than current transclusion and render-time child summarization.
-- Tighten semantic export provenance contract [active] - Clarify what provenance and structure SLDB must preserve when exporting graph-ready knowledge to downstream systems such as KGDB.
-- Diseñar estrategia de extracción y modularización [draft] - Definir slices de migración, paquetes candidatos y estrategia para sacar legacy del árbol activo y dejarlo sólo en git.
-- Ejecutar refactor base del núcleo SLDB [draft] - Implementar los primeros cortes estructurales: romper ciclos, extraer servicios de dominio y adelgazar el CLI.
+- Mapear arquitectura real de SLDB [active] - _Describe the concrete result this task must produce._
+
+Producir un relevamiento estructural del sistema actual usando AST, dependencias, hubs y flujos reales.
+- Definir arquitectura objetivo modular de SLDB [active] - _Describe the concrete result this task must produce._
+
+Definir bounded contexts, contratos entre componentes y criterio de separación para una arquitectura más modular.
+- Diseñar estrategia de extracción y modularización [active] - _Describe the concrete result this task must produce._
+
+Definir slices de migración, paquetes candidatos y estrategia para sacar legacy del árbol activo y dejarlo sólo en git.
+- Ejecutar refactor base del núcleo SLDB [active] - _Describe the concrete result this task must produce._
+
+Implementar los primeros cortes estructurales: romper ciclos, extraer servicios de dominio y adelgazar el CLI.
+- Define SLDB addressability model [active] - _Describe the concrete result this task must produce._
+
+Define how meaningful document units in SLDB receive stable or derivable addresses so they can be queried, updated, composed, and exported with provenance.
+- Design SLDB AST query primitives [active] - _Describe the concrete result this task must produce._
+
+Define the first public query primitives that should operate directly on SLDB document structure rather than on downstream graph semantics.
+- Expand SLDB composition modes [active] - _Describe the concrete result this task must produce._
+
+Design a broader composition model for SLDB so composition covers more than current transclusion and render-time child summarization.
+- Tighten semantic export provenance contract [active] - _Describe the concrete result this task must produce._
+
+Clarify what provenance and structure SLDB must preserve when exporting graph-ready knowledge to downstream systems such as KGDB.

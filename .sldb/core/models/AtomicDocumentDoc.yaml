@@ -3,7 +3,7 @@ model_ref: docs.models:AtomicDocumentDoc
 path: docs/models.py
 documents_index: .sldb/core/documents/AtomicDocumentDoc.yaml
 sections_index: .sldb/runtime/sections/AtomicDocumentDoc.yaml
-hash_b: 6aeaa28ada0b7efea2346bf7630cca7d864503d782221f79cfcd9f176c5b5bee
+hash_b: f26b86f2212ac24042246490b1761ce84e1a6941aebbbea536b9675d2d35ba60
 version: 1
 canonical: false
 family: null

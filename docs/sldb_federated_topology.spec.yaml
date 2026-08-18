@@ -1,0 +1,28 @@
+id: sldb.federated.topology
+title: SLDB Federated Topology
+type: component
+version: "1.0"
+data:
+  nodes:
+    LocalProjectStore:
+      label: Local Project Store
+      kind: database
+    SharedOntologyStore:
+      label: Shared Ontology Store
+      kind: database
+    StoreResolver:
+      label: Store Resolver
+      kind: core
+    CLI:
+      label: CLI
+      kind: interface
+  edges:
+    - from: CLI
+      to: StoreResolver
+      relation: uses
+    - from: StoreResolver
+      to: LocalProjectStore
+      relation: reads_writes
+    - from: LocalProjectStore
+      to: SharedOntologyStore
+      relation: federates

@@ -1,0 +1,6 @@
+stateDiagram-v2
+    [*] --> Active
+    Active --> Drafting : models template edit
+    Drafting --> ValidationFailed : models validate
+    Drafting --> ReadyForPromotion : models validate passes
+    ReadyForPromotion --> Active : models validate --promote (updates hash_a)

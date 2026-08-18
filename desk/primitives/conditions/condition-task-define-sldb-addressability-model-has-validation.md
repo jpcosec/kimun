@@ -1,9 +1,15 @@
 ---
+# condition-xxx
 id: condition-task-define-sldb-addressability-model-has-validation
+# active | archived
 status: active
+# Payload path the condition reads
 subject: validation
+# Predicate applied to the value (e.g., eq, contains)
 predicate: not_empty
+# Expected value used by the predicate
 expected: ''
+# e.g., system:deskops
 tags:
 - primitive:condition
 ---

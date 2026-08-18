@@ -1,0 +1,67 @@
+id: sldb.extraction.flow
+title: SLDB Extraction Flow
+type: sequence
+version: "1.0"
+data:
+  participants:
+    - id: User
+      kind: actor
+    - id: CLI
+      kind: system
+    - id: AST_Handler
+      kind: system
+    - id: TemplateExtractor
+      kind: system
+    - id: DataExtractor
+      kind: system
+    - id: StructuredNLDoc
+      kind: system
+  messages:
+    - from: User
+      to: CLI
+      message: "ask to extract"
+      kind: sync
+    - from: CLI
+      to: AST_Handler
+      message: "parse template"
+      kind: sync
+    - from: AST_Handler
+      to: TemplateExtractor
+      message: "nodes"
+      kind: sync
+    - from: TemplateExtractor
+      to: AST_Handler
+      message: "generates recipes"
+      kind: reply
+    - from: AST_Handler
+      to: CLI
+      message: "recipes"
+      kind: reply
+    - from: CLI
+      to: AST_Handler
+      message: "parse document"
+      kind: sync
+    - from: AST_Handler
+      to: DataExtractor
+      message: "apply recipes to get data"
+      kind: sync
+    - from: DataExtractor
+      to: StructuredNLDoc
+      message: "instantiates"
+      kind: sync
+    - from: StructuredNLDoc
+      to: DataExtractor
+      message: "doc"
+      kind: reply
+    - from: DataExtractor
+      to: AST_Handler
+      message: "data"
+      kind: reply
+    - from: AST_Handler
+      to: CLI
+      message: "structured data"
+      kind: reply
+    - from: CLI
+      to: User
+      message: "extraction result"
+      kind: reply

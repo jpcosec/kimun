@@ -1,9 +1,15 @@
 ---
+# condition-xxx
 id: condition-task-design-sldb-ast-query-primitives-has-implementation-path
+# active | archived
 status: active
+# Payload path the condition reads
 subject: implementation_path
+# Predicate applied to the value (e.g., eq, contains)
 predicate: truthy
+# Expected value used by the predicate
 expected: ''
+# e.g., system:deskops
 tags:
 - primitive:condition
 ---

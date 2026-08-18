@@ -1,0 +1,19 @@
+flowchart LR
+    Template["Model template\nStructuredNLDoc.__template__"] --> ParseTemplate["AST_Handler.split_nodes(template)"]
+    Markdown["Markdown document"] --> ParseMarkdown["AST_Handler.split_nodes(markdown)"]
+
+    ParseTemplate --> RecipeBuild["TemplateExtractor.extract_nodes(...)\nrecipes"]
+    ParseMarkdown --> Blocks["SLDBNode block tree"]
+    RecipeBuild --> Extract["DataExtractor.extract_values(...)\npayload"]
+    Blocks --> Extract
+    Extract --> Normalize["StructuredNLDoc(**payload)\nnormalize + validate"]
+    Normalize --> Render["SLDBRenderer.render(model)"]
+    Render --> MarkdownOut["Rendered markdown"]
+    Normalize --> JsonOut["model_dump(mode='json')"]
+
+    classDef core fill:#12121a,stroke:#d4a574,color:#f5f0e8;
+    classDef io fill:#0a0a0f,stroke:#7aa2f7,color:#f5f0e8;
+    classDef out fill:#0a0a0f,stroke:#7dcf85,color:#f5f0e8;
+    class Template,Markdown,MarkdownOut,JsonOut io;
+    class ParseTemplate,ParseMarkdown,RecipeBuild,Blocks,Extract,Normalize,Render core;
+    class MarkdownOut,JsonOut out;

@@ -1,0 +1,17 @@
+graph TD
+    CLI["CLI"]
+    AST_Handler["AST Handler"]
+    TemplateExtractor["Template Extractor"]
+    DataExtractor["Data Extractor"]
+    SLDBRenderer["SLDB Renderer"]
+    StoreManager["Store Manager"]
+    LinkManager["Link Manager"]
+    CLI -->|uses| AST_Handler
+    CLI -->|uses| TemplateExtractor
+    CLI -->|uses| DataExtractor
+    CLI -->|uses| SLDBRenderer
+    CLI -->|uses| StoreManager
+    CLI -->|uses| LinkManager
+    AST_Handler -->|passes nodes| TemplateExtractor
+    AST_Handler -->|passes nodes| DataExtractor
+    StoreManager -->|persistence| StoreManager

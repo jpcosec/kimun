@@ -1,0 +1,16 @@
+flowchart TD
+    __start([Start])
+    start_query["Start Query"]
+    decide_namespace["Decide Namespace"]
+    load_docs["Load Runtime Documents"]
+    apply_filters["Apply Predicate Filters (--where)"]
+    resolve_dag["Resolve Semantic DAG equivalences"]
+    return_results["Return Results"]
+    end_query["End"]
+    __end([End])
+    __start --> start_query
+    start_query --> decide_namespace
+    load_docs --> apply_filters
+    apply_filters --> resolve_dag
+    resolve_dag --> return_results
+    return_results --> __end

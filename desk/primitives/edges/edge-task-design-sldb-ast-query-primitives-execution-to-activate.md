@@ -1,9 +1,15 @@
 ---
+# edge-xxx
 id: edge-task-design-sldb-ast-query-primitives-execution-to-activate
+# active | archived
 status: active
+# Source node identifier
 source: checklist-task-design-sldb-ast-query-primitives-execution-ready
+# Target node identifier
 target: operator-task-design-sldb-ast-query-primitives-activate
+# Optional condition identifier guarding the transition
 condition_ref: ''
+# e.g., system:deskops
 tags:
 - primitive:edge
 ---

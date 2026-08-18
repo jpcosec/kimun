@@ -1,9 +1,15 @@
 ---
+# condition-xxx
 id: condition-task-design-sldb-ast-query-primitives-ready-for-closeout
+# active | archived
 status: active
+# Payload path the condition reads
 subject: status
+# Predicate applied to the value (e.g., eq, contains)
 predicate: equals
+# Expected value used by the predicate
 expected: ready_for_testing
+# e.g., system:deskops
 tags:
 - primitive:condition
 ---

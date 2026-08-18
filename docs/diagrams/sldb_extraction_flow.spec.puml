@@ -1,0 +1,21 @@
+@startuml
+actor User
+participant CLI
+participant AST_Handler
+participant TemplateExtractor
+participant DataExtractor
+participant StructuredNLDoc
+
+User -> CLI: ask to extract
+CLI -> AST_Handler: parse template
+AST_Handler -> TemplateExtractor: nodes
+TemplateExtractor -> AST_Handler: generates recipes
+AST_Handler -> CLI: recipes
+CLI -> AST_Handler: parse document
+AST_Handler -> DataExtractor: apply recipes to get data
+DataExtractor -> StructuredNLDoc: instantiates
+StructuredNLDoc -> DataExtractor: doc
+DataExtractor -> AST_Handler: data
+AST_Handler -> CLI: structured data
+CLI -> User: extraction result
+@enduml

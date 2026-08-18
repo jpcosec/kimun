@@ -1,0 +1,6 @@
+@startuml
+start
+:Start Query;
+:Decide Namespace;
+stop
+@enduml
