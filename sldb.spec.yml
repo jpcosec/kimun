@@ -2,2319 +2,3082 @@ apiVersion: specyaml/v0alpha1
 kind: Specification
 metadata:
   id: sldb.architecture.semantic
-  title: SLDB Semantic Architecture Map
-  version: '1.0'
+  title: SLDB Semantic Architecture Map (Post-Refactor)
+  version: '2.0'
   status: active
   owners:
   - ecosystem-architecture
 semantics:
   elements:
-  - id: system.sldb
-    kind: system
-    label: SLDB
-    description: Semantic Local Database
-  - id: module.links
+  - id: module.sldb.__main__
     kind: module
-    label: links
-    description: 'File: links.py'
-  - id: module.sldb.store.layout
-    kind: module
-    label: sldb.store.layout
-  - id: module.sldb.store.io
-    kind: module
-    label: sldb.store.io
-  - id: module.sldb.store.predicates
-    kind: module
-    label: sldb.store.predicates
-  - id: class.links.ParsedLink
-    kind: class
-    label: ParsedLink
-  - id: class.links.ResolvedLink
-    kind: class
-    label: ResolvedLink
-  - id: module.__init__
-    kind: module
-    label: __init__
-    description: 'File: __init__.py'
-  - id: module.sldb.core.ast
-    kind: module
-    label: sldb.core.ast
-  - id: module.sldb.core.data_extractor
-    kind: module
-    label: sldb.core.data_extractor
-  - id: module.sldb.core.renderer
-    kind: module
-    label: sldb.core.renderer
-  - id: module.sldb.core.template_extractor
-    kind: module
-    label: sldb.core.template_extractor
-  - id: module.sldb.models.structured_doc
-    kind: module
-    label: sldb.models.structured_doc
-  - id: module.sldb.runtime.config
-    kind: module
-    label: sldb.runtime.config
-  - id: module.__main__
-    kind: module
-    label: __main__
-    description: 'File: __main__.py'
-  - id: module.sldb.cli
-    kind: module
-    label: sldb.cli
-  - id: module.core.renderer
-    kind: module
-    label: core.renderer
-    description: 'File: core/renderer.py'
-  - id: module.jinja2
-    kind: external
-    label: jinja2
-  - id: module.sldb.core.handlers.router
-    kind: module
-    label: sldb.core.handlers.router
-  - id: module.sldb.core.renderer_engine.list
-    kind: module
-    label: sldb.core.renderer_engine.list
-  - id: module.sldb.core.renderer_engine.table
-    kind: module
-    label: sldb.core.renderer_engine.table
-  - id: module.sldb.core.renderer_engine.yaml
-    kind: module
-    label: sldb.core.renderer_engine.yaml
-  - id: class.core.renderer.SLDBRenderer
-    kind: class
-    label: SLDBRenderer
-  - id: module.core.template_extractor
-    kind: module
-    label: core.template_extractor
-    description: 'File: core/template_extractor.py'
-  - id: module.sldb.core.exceptions
-    kind: module
-    label: sldb.core.exceptions
-  - id: module.sldb.core.node
-    kind: module
-    label: sldb.core.node
-  - id: module.sldb.core.node_handler
-    kind: module
-    label: sldb.core.node_handler
-  - id: class.core.template_extractor.TemplateExtractor
-    kind: class
-    label: TemplateExtractor
-  - id: module.core.ast
-    kind: module
-    label: core.ast
-    description: 'File: core/ast.py'
-  - id: module.markdown_it
-    kind: external
-    label: markdown_it
-  - id: module.markdown_it.tree
-    kind: external
-    label: markdown_it.tree
-  - id: class.core.ast.BaseASTHandler
-    kind: class
-    label: BaseASTHandler
-  - id: class.core.ast.MarkdownASTHandler
-    kind: class
-    label: MarkdownASTHandler
-  - id: module.mdit_py_plugins.front_matter
-    kind: external
-    label: mdit_py_plugins.front_matter
-  - id: module.core.ir
-    kind: module
-    label: core.ir
-    description: 'File: core/ir.py'
-  - id: class.core.ir.SourceSpan
-    kind: class
-    label: SourceSpan
-  - id: class.core.ir.SurfaceNode
-    kind: class
-    label: SurfaceNode
-  - id: class.core.ir.DocumentContext
-    kind: class
-    label: DocumentContext
-  - id: class.core.ir.MeaningNode
-    kind: class
-    label: MeaningNode
-  - id: class.core.ir.GraphEdge
-    kind: class
-    label: GraphEdge
-  - id: class.core.ir.GraphView
-    kind: class
-    label: GraphView
-  - id: class.core.ir.SectionContextEntry
-    kind: class
-    label: SectionContextEntry
-  - id: class.core.ir.DocumentIR
-    kind: class
-    label: DocumentIR
-  - id: module.core.node_handler
-    kind: module
-    label: core.node_handler
-    description: 'File: core/node_handler.py'
-  - id: module.core
-    kind: module
-    label: core
-    description: 'File: core/__init__.py'
-  - id: module.core.data_extractor
-    kind: module
-    label: core.data_extractor
-    description: 'File: core/data_extractor.py'
-  - id: class.core.data_extractor.DataExtractor
-    kind: class
-    label: DataExtractor
-  - id: module.core.node
-    kind: module
-    label: core.node
-    description: 'File: core/node.py'
-  - id: class.core.node.SLDBNode
-    kind: class
-    label: SLDBNode
-  - id: module.core.exceptions
-    kind: module
-    label: core.exceptions
-    description: 'File: core/exceptions.py'
-  - id: class.core.exceptions.SLDBError
-    kind: class
-    label: SLDBError
-  - id: class.core.exceptions.SLDBModelError
-    kind: class
-    label: SLDBModelError
-  - id: class.core.exceptions.SLDBModelDraftError
-    kind: class
-    label: SLDBModelDraftError
-  - id: class.core.exceptions.SLDBModelEditError
-    kind: class
-    label: SLDBModelEditError
-  - id: class.core.exceptions.SLDBValidationError
-    kind: class
-    label: SLDBValidationError
-  - id: class.core.exceptions.SLDBStoreError
-    kind: class
-    label: SLDBStoreError
-  - id: class.core.exceptions.SLDBASTError
-    kind: class
-    label: SLDBASTError
-  - id: class.core.exceptions.SLDBLinkError
-    kind: class
-    label: SLDBLinkError
-  - id: module.core.contracts
-    kind: module
-    label: core.contracts
-    description: 'File: core/contracts.py'
-  - id: class.core.contracts.Marker
-    kind: class
-    label: Marker
-  - id: class.core.contracts.NodeData
-    kind: class
-    label: NodeData
-  - id: class.core.contracts.RenderContext
-    kind: class
-    label: RenderContext
-  - id: module.assets
-    kind: module
-    label: assets
-    description: 'File: assets/__init__.py'
-  - id: module.cli.utils
-    kind: module
-    label: cli.utils
-    description: 'File: cli/utils.py'
-  - id: module.importlib
-    kind: external
-    label: importlib
-  - id: module.sldb.store.resolver
-    kind: module
-    label: sldb.store.resolver
-  - id: module.sldb.store.migration
-    kind: module
-    label: sldb.store.migration
-  - id: module.sldb.store.models
-    kind: module
-    label: sldb.store.models
-  - id: module.sldb.store.ops
-    kind: module
-    label: sldb.store.ops
-  - id: module.sldb.store.semantic_tags
-    kind: module
-    label: sldb.store.semantic_tags
-  - id: module.cli.parser
-    kind: module
-    label: cli.parser
-    description: 'File: cli/parser.py'
-  - id: module.cli
-    kind: module
-    label: cli
-    description: 'File: cli/__init__.py'
-  - id: module.sldb.cli.main
-    kind: module
-    label: sldb.cli.main
-  - id: module.sldb.cli.parser
-    kind: module
-    label: sldb.cli.parser
-  - id: module.cli.main
-    kind: module
-    label: cli.main
-    description: 'File: cli/main.py'
-  - id: module.sldb.cli.commands.help
-    kind: module
-    label: sldb.cli.commands.help
-  - id: class.cli.main.CLI
-    kind: class
-    label: CLI
+    label: sldb.__main__
+    description: 'File: sldb/__main__.py'
   - id: module.sldb.cli.commands.ast
     kind: module
     label: sldb.cli.commands.ast
+    description: 'File: sldb/cli/commands/ast.py'
+  - id: class.sldb.cli.commands.ast.ASTCLI
+    kind: class
+    label: ASTCLI
+    description: Class in sldb.cli.commands.ast
   - id: module.sldb.cli.commands.basic
     kind: module
     label: sldb.cli.commands.basic
-  - id: module.sldb.cli.commands.docs
-    kind: module
-    label: sldb.cli.commands.docs
-  - id: module.sldb.cli.commands.explore
-    kind: module
-    label: sldb.cli.commands.explore
-  - id: module.sldb.cli.commands.fields
-    kind: module
-    label: sldb.cli.commands.fields
-  - id: module.sldb.cli.commands.find
-    kind: module
-    label: sldb.cli.commands.find
-  - id: module.sldb.cli.commands.faq
-    kind: module
-    label: sldb.cli.commands.faq
-  - id: module.sldb.cli.commands.init
-    kind: module
-    label: sldb.cli.commands.init
-  - id: module.sldb.cli.commands.inbox
-    kind: module
-    label: sldb.cli.commands.inbox
-  - id: module.sldb.cli.commands.legacy
-    kind: module
-    label: sldb.cli.commands.legacy
-  - id: module.sldb.cli.commands.links
-    kind: module
-    label: sldb.cli.commands.links
-  - id: module.sldb.cli.commands.models
-    kind: module
-    label: sldb.cli.commands.models
-  - id: module.sldb.cli.commands.predicates
-    kind: module
-    label: sldb.cli.commands.predicates
-  - id: module.sldb.cli.commands.query
-    kind: module
-    label: sldb.cli.commands.query
-  - id: module.sldb.cli.commands.sections
-    kind: module
-    label: sldb.cli.commands.sections
-  - id: module.sldb.cli.commands.stores
-    kind: module
-    label: sldb.cli.commands.stores
-  - id: module.sldb.cli.commands.store
-    kind: module
-    label: sldb.cli.commands.store
-  - id: module.sldb.cli.commands.model
-    kind: module
-    label: sldb.cli.commands.model
+    description: 'File: sldb/cli/commands/basic.py'
+  - id: class.sldb.cli.commands.basic.BasicCLI
+    kind: class
+    label: BasicCLI
+    description: Class in sldb.cli.commands.basic
   - id: module.sldb.cli.commands.doc
     kind: module
     label: sldb.cli.commands.doc
-  - id: module.cli.graph
+    description: 'File: sldb/cli/commands/doc.py'
+  - id: class.sldb.cli.commands.doc.DocCLI
+    kind: class
+    label: DocCLI
+    description: Class in sldb.cli.commands.doc
+  - id: module.sldb.cli.commands.doc_helpers
     kind: module
-    label: cli.graph
-    description: 'File: cli/graph.py'
-  - id: module.difflib
-    kind: external
-    label: difflib
+    label: sldb.cli.commands.doc_helpers
+    description: 'File: sldb/cli/commands/doc_helpers.py'
+  - id: module.sldb.cli.commands.docs
+    kind: module
+    label: sldb.cli.commands.docs
+    description: 'File: sldb/cli/commands/docs.py'
+  - id: class.sldb.cli.commands.docs.DocsCLI
+    kind: class
+    label: DocsCLI
+    description: Class in sldb.cli.commands.docs
+  - id: module.sldb.cli.commands.explore
+    kind: module
+    label: sldb.cli.commands.explore
+    description: 'File: sldb/cli/commands/explore.py'
+  - id: class.sldb.cli.commands.explore.ExploreCLI
+    kind: class
+    label: ExploreCLI
+    description: Class in sldb.cli.commands.explore
+  - id: module.sldb.cli.commands.explore_code
+    kind: module
+    label: sldb.cli.commands.explore_code
+    description: 'File: sldb/cli/commands/explore_code.py'
+  - id: class.sldb.cli.commands.explore_code.ExploreCode
+    kind: class
+    label: ExploreCode
+    description: Class in sldb.cli.commands.explore_code
+  - id: module.sldb.cli.commands.explore_docs
+    kind: module
+    label: sldb.cli.commands.explore_docs
+    description: 'File: sldb/cli/commands/explore_docs.py'
+  - id: class.sldb.cli.commands.explore_docs.ExploreDocs
+    kind: class
+    label: ExploreDocs
+    description: Class in sldb.cli.commands.explore_docs
+  - id: module.sldb.cli.commands.explore_hit
+    kind: module
+    label: sldb.cli.commands.explore_hit
+    description: 'File: sldb/cli/commands/explore_hit.py'
+  - id: class.sldb.cli.commands.explore_hit.ExploreHit
+    kind: class
+    label: ExploreHit
+    description: Class in sldb.cli.commands.explore_hit
+  - id: module.sldb.cli.commands.faq
+    kind: module
+    label: sldb.cli.commands.faq
+    description: 'File: sldb/cli/commands/faq.py'
+  - id: class.sldb.cli.commands.faq.FAQCLI
+    kind: class
+    label: FAQCLI
+    description: Class in sldb.cli.commands.faq
+  - id: module.sldb.cli.commands.faq_entry
+    kind: module
+    label: sldb.cli.commands.faq_entry
+    description: 'File: sldb/cli/commands/faq_entry.py'
+  - id: class.sldb.cli.commands.faq_entry.FAQEntry
+    kind: class
+    label: FAQEntry
+    description: Class in sldb.cli.commands.faq_entry
+  - id: module.sldb.cli.commands.fields
+    kind: module
+    label: sldb.cli.commands.fields
+    description: 'File: sldb/cli/commands/fields.py'
+  - id: class.sldb.cli.commands.fields.FieldsCLI
+    kind: class
+    label: FieldsCLI
+    description: Class in sldb.cli.commands.fields
+  - id: module.sldb.cli.commands.fields_mutate
+    kind: module
+    label: sldb.cli.commands.fields_mutate
+    description: 'File: sldb/cli/commands/fields_mutate.py'
+  - id: module.sldb.cli.commands.fields_save
+    kind: module
+    label: sldb.cli.commands.fields_save
+    description: 'File: sldb/cli/commands/fields_save.py'
+  - id: module.sldb.cli.commands.fields_show
+    kind: module
+    label: sldb.cli.commands.fields_show
+    description: 'File: sldb/cli/commands/fields_show.py'
+  - id: module.sldb.cli.commands.fields_target
+    kind: module
+    label: sldb.cli.commands.fields_target
+    description: 'File: sldb/cli/commands/fields_target.py'
+  - id: module.sldb.cli.commands.find
+    kind: module
+    label: sldb.cli.commands.find
+    description: 'File: sldb/cli/commands/find.py'
+  - id: class.sldb.cli.commands.find.FindCLI
+    kind: class
+    label: FindCLI
+    description: Class in sldb.cli.commands.find
+  - id: module.sldb.cli.commands.find_filter
+    kind: module
+    label: sldb.cli.commands.find_filter
+    description: 'File: sldb/cli/commands/find_filter.py'
+  - id: module.sldb.cli.commands.find_filters
+    kind: module
+    label: sldb.cli.commands.find_filters
+    description: 'File: sldb/cli/commands/find_filters.py'
+  - id: class.sldb.cli.commands.find_filters.FindFilters
+    kind: class
+    label: FindFilters
+    description: Class in sldb.cli.commands.find_filters
+  - id: module.sldb.cli.commands.find_format
+    kind: module
+    label: sldb.cli.commands.find_format
+    description: 'File: sldb/cli/commands/find_format.py'
+  - id: class.sldb.cli.commands.find_format.FindFormatter
+    kind: class
+    label: FindFormatter
+    description: Class in sldb.cli.commands.find_format
+  - id: module.sldb.cli.commands.find_proxy
+    kind: module
+    label: sldb.cli.commands.find_proxy
+    description: 'File: sldb/cli/commands/find_proxy.py'
+  - id: class.sldb.cli.commands.find_proxy._RuntimeDocProxy
+    kind: class
+    label: _RuntimeDocProxy
+    description: Class in sldb.cli.commands.find_proxy
+  - id: module.sldb.cli.commands.find_utils
+    kind: module
+    label: sldb.cli.commands.find_utils
+    description: 'File: sldb/cli/commands/find_utils.py'
+  - id: class.sldb.cli.commands.find_utils.RuntimeDocProxy
+    kind: class
+    label: RuntimeDocProxy
+    description: Class in sldb.cli.commands.find_utils
+  - id: module.sldb.cli.commands.help
+    kind: module
+    label: sldb.cli.commands.help
+    description: 'File: sldb/cli/commands/help.py'
+  - id: class.sldb.cli.commands.help.HelpCLI
+    kind: class
+    label: HelpCLI
+    description: Class in sldb.cli.commands.help
+  - id: module.sldb.cli.commands.help_texts
+    kind: module
+    label: sldb.cli.commands.help_texts
+    description: 'File: sldb/cli/commands/help_texts.py'
+  - id: module.sldb.cli.commands.help_texts_core
+    kind: module
+    label: sldb.cli.commands.help_texts_core
+    description: 'File: sldb/cli/commands/help_texts_core.py'
+  - id: module.sldb.cli.commands.help_texts_docs
+    kind: module
+    label: sldb.cli.commands.help_texts_docs
+    description: 'File: sldb/cli/commands/help_texts_docs.py'
+  - id: module.sldb.cli.commands.help_texts_find
+    kind: module
+    label: sldb.cli.commands.help_texts_find
+    description: 'File: sldb/cli/commands/help_texts_find.py'
+  - id: module.sldb.cli.commands.help_texts_other
+    kind: module
+    label: sldb.cli.commands.help_texts_other
+    description: 'File: sldb/cli/commands/help_texts_other.py'
+  - id: module.sldb.cli.commands.help_texts_other2
+    kind: module
+    label: sldb.cli.commands.help_texts_other2
+    description: 'File: sldb/cli/commands/help_texts_other2.py'
+  - id: module.sldb.cli.commands.inbox
+    kind: module
+    label: sldb.cli.commands.inbox
+    description: 'File: sldb/cli/commands/inbox.py'
+  - id: class.sldb.cli.commands.inbox.InboxCLI
+    kind: class
+    label: InboxCLI
+    description: Class in sldb.cli.commands.inbox
+  - id: module.sldb.cli.commands.inbox_core
+    kind: module
+    label: sldb.cli.commands.inbox_core
+    description: 'File: sldb/cli/commands/inbox_core.py'
+  - id: module.sldb.cli.commands.inbox_create
+    kind: module
+    label: sldb.cli.commands.inbox_create
+    description: 'File: sldb/cli/commands/inbox_create.py'
+  - id: module.sldb.cli.commands.inbox_list
+    kind: module
+    label: sldb.cli.commands.inbox_list
+    description: 'File: sldb/cli/commands/inbox_list.py'
+  - id: module.sldb.cli.commands.inbox_parse
+    kind: module
+    label: sldb.cli.commands.inbox_parse
+    description: 'File: sldb/cli/commands/inbox_parse.py'
+  - id: module.sldb.cli.commands.inbox_show
+    kind: module
+    label: sldb.cli.commands.inbox_show
+    description: 'File: sldb/cli/commands/inbox_show.py'
+  - id: module.sldb.cli.commands.init
+    kind: module
+    label: sldb.cli.commands.init
+    description: 'File: sldb/cli/commands/init.py'
+  - id: class.sldb.cli.commands.init.InitCLI
+    kind: class
+    label: InitCLI
+    description: Class in sldb.cli.commands.init
+  - id: module.sldb.cli.commands.legacy
+    kind: module
+    label: sldb.cli.commands.legacy
+    description: 'File: sldb/cli/commands/legacy.py'
+  - id: class.sldb.cli.commands.legacy.LegacyCLI
+    kind: class
+    label: LegacyCLI
+    description: Class in sldb.cli.commands.legacy
+  - id: module.sldb.cli.commands.links
+    kind: module
+    label: sldb.cli.commands.links
+    description: 'File: sldb/cli/commands/links.py'
+  - id: class.sldb.cli.commands.links.LinkCLI
+    kind: class
+    label: LinkCLI
+    description: Class in sldb.cli.commands.links
+  - id: module.sldb.cli.commands.model
+    kind: module
+    label: sldb.cli.commands.model
+    description: 'File: sldb/cli/commands/model.py'
+  - id: class.sldb.cli.commands.model.ModelCLI
+    kind: class
+    label: ModelCLI
+    description: Class in sldb.cli.commands.model
+  - id: module.sldb.cli.commands.model_add
+    kind: module
+    label: sldb.cli.commands.model_add
+    description: 'File: sldb/cli/commands/model_add.py'
+  - id: module.sldb.cli.commands.model_update
+    kind: module
+    label: sldb.cli.commands.model_update
+    description: 'File: sldb/cli/commands/model_update.py'
+  - id: module.sldb.cli.commands.models
+    kind: module
+    label: sldb.cli.commands.models
+    description: 'File: sldb/cli/commands/models.py'
+  - id: class.sldb.cli.commands.models.ModelsCLI
+    kind: class
+    label: ModelsCLI
+    description: Class in sldb.cli.commands.models
+  - id: module.sldb.cli.commands.models_create
+    kind: module
+    label: sldb.cli.commands.models_create
+    description: 'File: sldb/cli/commands/models_create.py'
+  - id: class.sldb.cli.commands.models_create.ModelsCreateCLI
+    kind: class
+    label: ModelsCreateCLI
+    description: Class in sldb.cli.commands.models_create
+  - id: module.sldb.cli.commands.models_fields
+    kind: module
+    label: sldb.cli.commands.models_fields
+    description: 'File: sldb/cli/commands/models_fields.py'
+  - id: class.sldb.cli.commands.models_fields.ModelsFieldsCLI
+    kind: class
+    label: ModelsFieldsCLI
+    description: Class in sldb.cli.commands.models_fields
+  - id: module.sldb.cli.commands.models_list
+    kind: module
+    label: sldb.cli.commands.models_list
+    description: 'File: sldb/cli/commands/models_list.py'
+  - id: class.sldb.cli.commands.models_list.ModelsListCLI
+    kind: class
+    label: ModelsListCLI
+    description: Class in sldb.cli.commands.models_list
+  - id: module.sldb.cli.commands.models_template
+    kind: module
+    label: sldb.cli.commands.models_template
+    description: 'File: sldb/cli/commands/models_template.py'
+  - id: class.sldb.cli.commands.models_template.ModelsTemplateCLI
+    kind: class
+    label: ModelsTemplateCLI
+    description: Class in sldb.cli.commands.models_template
+  - id: module.sldb.cli.commands.models_utils
+    kind: module
+    label: sldb.cli.commands.models_utils
+    description: 'File: sldb/cli/commands/models_utils.py'
+  - id: module.sldb.cli.commands.models_validate
+    kind: module
+    label: sldb.cli.commands.models_validate
+    description: 'File: sldb/cli/commands/models_validate.py'
+  - id: class.sldb.cli.commands.models_validate.ModelsValidateCLI
+    kind: class
+    label: ModelsValidateCLI
+    description: Class in sldb.cli.commands.models_validate
+  - id: module.sldb.cli.commands.models_validate_utils
+    kind: module
+    label: sldb.cli.commands.models_validate_utils
+    description: 'File: sldb/cli/commands/models_validate_utils.py'
+  - id: module.sldb.cli.commands.predicates
+    kind: module
+    label: sldb.cli.commands.predicates
+    description: 'File: sldb/cli/commands/predicates.py'
+  - id: class.sldb.cli.commands.predicates.PredicatesCLI
+    kind: class
+    label: PredicatesCLI
+    description: Class in sldb.cli.commands.predicates
+  - id: module.sldb.cli.commands.predicates_format
+    kind: module
+    label: sldb.cli.commands.predicates_format
+    description: 'File: sldb/cli/commands/predicates_format.py'
+  - id: module.sldb.cli.commands.query
+    kind: module
+    label: sldb.cli.commands.query
+    description: 'File: sldb/cli/commands/query.py'
+  - id: class.sldb.cli.commands.query.QueryCLI
+    kind: class
+    label: QueryCLI
+    description: Class in sldb.cli.commands.query
+  - id: module.sldb.cli.commands.sections
+    kind: module
+    label: sldb.cli.commands.sections
+    description: 'File: sldb/cli/commands/sections.py'
+  - id: class.sldb.cli.commands.sections.SectionsCLI
+    kind: class
+    label: SectionsCLI
+    description: Class in sldb.cli.commands.sections
+  - id: module.sldb.cli.commands.sections_common
+    kind: module
+    label: sldb.cli.commands.sections_common
+    description: 'File: sldb/cli/commands/sections_common.py'
+  - id: module.sldb.cli.commands.sections_fields
+    kind: module
+    label: sldb.cli.commands.sections_fields
+    description: 'File: sldb/cli/commands/sections_fields.py'
+  - id: class.sldb.cli.commands.sections_fields.FieldsSectionsCLI
+    kind: class
+    label: FieldsSectionsCLI
+    description: Class in sldb.cli.commands.sections_fields
+  - id: module.sldb.cli.commands.sections_find
+    kind: module
+    label: sldb.cli.commands.sections_find
+    description: 'File: sldb/cli/commands/sections_find.py'
+  - id: class.sldb.cli.commands.sections_find.FindSectionsCLI
+    kind: class
+    label: FindSectionsCLI
+    description: Class in sldb.cli.commands.sections_find
+  - id: module.sldb.cli.commands.sections_show
+    kind: module
+    label: sldb.cli.commands.sections_show
+    description: 'File: sldb/cli/commands/sections_show.py'
+  - id: class.sldb.cli.commands.sections_show.ShowSectionsCLI
+    kind: class
+    label: ShowSectionsCLI
+    description: Class in sldb.cli.commands.sections_show
+  - id: module.sldb.cli.commands.store
+    kind: module
+    label: sldb.cli.commands.store
+    description: 'File: sldb/cli/commands/store.py'
+  - id: class.sldb.cli.commands.store.StoreCLI
+    kind: class
+    label: StoreCLI
+    description: Class in sldb.cli.commands.store
+  - id: module.sldb.cli.commands.store_add
+    kind: module
+    label: sldb.cli.commands.store_add
+    description: 'File: sldb/cli/commands/store_add.py'
+  - id: module.sldb.cli.commands.store_check
+    kind: module
+    label: sldb.cli.commands.store_check
+    description: 'File: sldb/cli/commands/store_check.py'
+  - id: module.sldb.cli.commands.store_init
+    kind: module
+    label: sldb.cli.commands.store_init
+    description: 'File: sldb/cli/commands/store_init.py'
+  - id: module.sldb.cli.commands.store_semantic_map
+    kind: module
+    label: sldb.cli.commands.store_semantic_map
+    description: 'File: sldb/cli/commands/store_semantic_map.py'
+  - id: module.sldb.cli.commands.store_update
+    kind: module
+    label: sldb.cli.commands.store_update
+    description: 'File: sldb/cli/commands/store_update.py'
+  - id: module.sldb.cli.commands.stores
+    kind: module
+    label: sldb.cli.commands.stores
+    description: 'File: sldb/cli/commands/stores.py'
+  - id: class.sldb.cli.commands.stores.StoresCLI
+    kind: class
+    label: StoresCLI
+    description: Class in sldb.cli.commands.stores
+  - id: module.sldb.cli.dict_utils
+    kind: module
+    label: sldb.cli.dict_utils
+    description: 'File: sldb/cli/dict_utils.py'
+  - id: module.sldb.cli.dispatcher
+    kind: module
+    label: sldb.cli.dispatcher
+    description: 'File: sldb/cli/dispatcher.py'
+  - id: class.sldb.cli.dispatcher.CLI
+    kind: class
+    label: CLI
+    description: Class in sldb.cli.dispatcher
+  - id: module.sldb.cli.federated_utils
+    kind: module
+    label: sldb.cli.federated_utils
+    description: 'File: sldb/cli/federated_utils.py'
+  - id: module.sldb.cli.graph.models_section
+    kind: module
+    label: sldb.cli.graph.models_section
+    description: 'File: sldb/cli/graph/models_section.py'
+  - id: class.sldb.cli.graph.models_section.SectionRecord
+    kind: class
+    label: SectionRecord
+    description: Class in sldb.cli.graph.models_section
+  - id: module.sldb.cli.graph.search_record
+    kind: module
+    label: sldb.cli.graph.search_record
+    description: 'File: sldb/cli/graph/search_record.py'
+  - id: class.sldb.cli.graph.search_record.SearchRecord
+    kind: class
+    label: SearchRecord
+    description: Class in sldb.cli.graph.search_record
+  - id: module.sldb.cli.graph.section_record
+    kind: module
+    label: sldb.cli.graph.section_record
+    description: 'File: sldb/cli/graph/section_record.py'
+  - id: class.sldb.cli.graph.section_record.SectionRecord
+    kind: class
+    label: SectionRecord
+    description: Class in sldb.cli.graph.section_record
+  - id: module.sldb.cli.graph.sections
+    kind: module
+    label: sldb.cli.graph.sections
+    description: 'File: sldb/cli/graph/sections.py'
+  - id: module.sldb.cli.graph.store_ast
+    kind: module
+    label: sldb.cli.graph.store_ast
+    description: 'File: sldb/cli/graph/store_ast.py'
+  - id: module.sldb.cli.graph.utils
+    kind: module
+    label: sldb.cli.graph.utils
+    description: 'File: sldb/cli/graph/utils.py'
+  - id: module.sldb.cli.graph_old.search_record
+    kind: module
+    label: sldb.cli.graph_old.search_record
+    description: 'File: sldb/cli/graph_old/search_record.py'
+  - id: class.sldb.cli.graph_old.search_record.SearchRecord
+    kind: class
+    label: SearchRecord
+    description: Class in sldb.cli.graph_old.search_record
+  - id: module.sldb.cli.graph_old.section_record
+    kind: module
+    label: sldb.cli.graph_old.section_record
+    description: 'File: sldb/cli/graph_old/section_record.py'
+  - id: class.sldb.cli.graph_old.section_record.SectionRecord
+    kind: class
+    label: SectionRecord
+    description: Class in sldb.cli.graph_old.section_record
+  - id: module.sldb.cli.graph_old.utils
+    kind: module
+    label: sldb.cli.graph_old.utils
+    description: 'File: sldb/cli/graph_old/utils.py'
+  - id: module.sldb.cli.graph_ops.ast_target
+    kind: module
+    label: sldb.cli.graph_ops.ast_target
+    description: 'File: sldb/cli/graph_ops/ast_target.py'
+  - id: module.sldb.cli.graph_ops.build_ast
+    kind: module
+    label: sldb.cli.graph_ops.build_ast
+    description: 'File: sldb/cli/graph_ops/build_ast.py'
+  - id: module.sldb.cli.graph_ops.build_ir
+    kind: module
+    label: sldb.cli.graph_ops.build_ir
+    description: 'File: sldb/cli/graph_ops/build_ir.py'
+  - id: module.sldb.cli.graph_ops.extract
+    kind: module
+    label: sldb.cli.graph_ops.extract
+    description: 'File: sldb/cli/graph_ops/extract.py'
+  - id: module.sldb.cli.graph_ops.fields
+    kind: module
+    label: sldb.cli.graph_ops.fields
+    description: 'File: sldb/cli/graph_ops/fields.py'
+  - id: module.sldb.cli.graph_ops.flatten
+    kind: module
+    label: sldb.cli.graph_ops.flatten
+    description: 'File: sldb/cli/graph_ops/flatten.py'
+  - id: module.sldb.cli.graph_ops.iter_records
+    kind: module
+    label: sldb.cli.graph_ops.iter_records
+    description: 'File: sldb/cli/graph_ops/iter_records.py'
+  - id: module.sldb.cli.graph_ops.iter_records_docs
+    kind: module
+    label: sldb.cli.graph_ops.iter_records_docs
+    description: 'File: sldb/cli/graph_ops/iter_records_docs.py'
+  - id: module.sldb.cli.graph_ops.iter_records_helpers
+    kind: module
+    label: sldb.cli.graph_ops.iter_records_helpers
+    description: 'File: sldb/cli/graph_ops/iter_records_helpers.py'
+  - id: module.sldb.cli.graph_ops.map_fields
+    kind: module
+    label: sldb.cli.graph_ops.map_fields
+    description: 'File: sldb/cli/graph_ops/map_fields.py'
+  - id: module.sldb.cli.graph_ops.matches
+    kind: module
+    label: sldb.cli.graph_ops.matches
+    description: 'File: sldb/cli/graph_ops/matches.py'
+  - id: module.sldb.cli.graph_ops.resolve
+    kind: module
+    label: sldb.cli.graph_ops.resolve
+    description: 'File: sldb/cli/graph_ops/resolve.py'
+  - id: module.sldb.cli.graph_ops.utils
+    kind: module
+    label: sldb.cli.graph_ops.utils
+    description: 'File: sldb/cli/graph_ops/utils.py'
+  - id: module.sldb.cli.main
+    kind: module
+    label: sldb.cli.main
+    description: 'File: sldb/cli/main.py'
+  - id: module.sldb.cli.model_utils
+    kind: module
+    label: sldb.cli.model_utils
+    description: 'File: sldb/cli/model_utils.py'
+  - id: module.sldb.cli.parser
+    kind: module
+    label: sldb.cli.parser
+    description: 'File: sldb/cli/parser.py'
+  - id: module.sldb.cli.parsers.basic
+    kind: module
+    label: sldb.cli.parsers.basic
+    description: 'File: sldb/cli/parsers/basic.py'
+  - id: module.sldb.cli.parsers.core
+    kind: module
+    label: sldb.cli.parsers.core
+    description: 'File: sldb/cli/parsers/core.py'
+  - id: module.sldb.cli.parsers.docs1
+    kind: module
+    label: sldb.cli.parsers.docs1
+    description: 'File: sldb/cli/parsers/docs1.py'
+  - id: module.sldb.cli.parsers.docs2
+    kind: module
+    label: sldb.cli.parsers.docs2
+    description: 'File: sldb/cli/parsers/docs2.py'
+  - id: module.sldb.cli.parsers.fields
+    kind: module
+    label: sldb.cli.parsers.fields
+    description: 'File: sldb/cli/parsers/fields.py'
+  - id: module.sldb.cli.parsers.find
+    kind: module
+    label: sldb.cli.parsers.find
+    description: 'File: sldb/cli/parsers/find.py'
+  - id: module.sldb.cli.parsers.hidden
+    kind: module
+    label: sldb.cli.parsers.hidden
+    description: 'File: sldb/cli/parsers/hidden.py'
+  - id: module.sldb.cli.parsers.legacy
+    kind: module
+    label: sldb.cli.parsers.legacy
+    description: 'File: sldb/cli/parsers/legacy.py'
+  - id: module.sldb.cli.parsers.misc
+    kind: module
+    label: sldb.cli.parsers.misc
+    description: 'File: sldb/cli/parsers/misc.py'
+  - id: module.sldb.cli.parsers.models1
+    kind: module
+    label: sldb.cli.parsers.models1
+    description: 'File: sldb/cli/parsers/models1.py'
+  - id: module.sldb.cli.parsers.models2
+    kind: module
+    label: sldb.cli.parsers.models2
+    description: 'File: sldb/cli/parsers/models2.py'
+  - id: module.sldb.cli.parsers.predicates
+    kind: module
+    label: sldb.cli.parsers.predicates
+    description: 'File: sldb/cli/parsers/predicates.py'
+  - id: module.sldb.cli.parsers.project
+    kind: module
+    label: sldb.cli.parsers.project
+    description: 'File: sldb/cli/parsers/project.py'
+  - id: module.sldb.cli.parsers.public
+    kind: module
+    label: sldb.cli.parsers.public
+    description: 'File: sldb/cli/parsers/public.py'
+  - id: module.sldb.cli.parsers.sections
+    kind: module
+    label: sldb.cli.parsers.sections
+    description: 'File: sldb/cli/parsers/sections.py'
+  - id: module.sldb.cli.parsers.stores
+    kind: module
+    label: sldb.cli.parsers.stores
+    description: 'File: sldb/cli/parsers/stores.py'
+  - id: module.sldb.cli.search_record
+    kind: module
+    label: sldb.cli.search_record
+    description: 'File: sldb/cli/search_record.py'
+  - id: class.sldb.cli.search_record.SearchRecord
+    kind: class
+    label: SearchRecord
+    description: Class in sldb.cli.search_record
+  - id: module.sldb.cli.section_record_cls
+    kind: module
+    label: sldb.cli.section_record_cls
+    description: 'File: sldb/cli/section_record_cls.py'
+  - id: class.sldb.cli.section_record_cls.SectionRecord
+    kind: class
+    label: SectionRecord
+    description: Class in sldb.cli.section_record_cls
+  - id: module.sldb.cli.store_context
+    kind: module
+    label: sldb.cli.store_context
+    description: 'File: sldb/cli/store_context.py'
   - id: module.sldb.cli.utils
     kind: module
     label: sldb.cli.utils
-  - id: module.sldb.core.contracts
+    description: 'File: sldb/cli/utils.py'
+  - id: module.sldb.core.ast.base_ast_handler
     kind: module
-    label: sldb.core.contracts
-  - id: module.sldb.core.ir
-    kind: module
-    label: sldb.core.ir
-  - id: module.sldb.store.query
-    kind: module
-    label: sldb.store.query
-  - id: class.cli.graph.SectionRecord
+    label: sldb.core.ast.base_ast_handler
+    description: 'File: sldb/core/ast/base_ast_handler.py'
+  - id: class.sldb.core.ast.base_ast_handler.BaseASTHandler
     kind: class
-    label: SectionRecord
-  - id: class.cli.graph.SearchRecord
+    label: BaseASTHandler
+    description: Class in sldb.core.ast.base_ast_handler
+  - id: module.sldb.core.ast.markdown_ast_handler
+    kind: module
+    label: sldb.core.ast.markdown_ast_handler
+    description: 'File: sldb/core/ast/markdown_ast_handler.py'
+  - id: class.sldb.core.ast.markdown_ast_handler.MarkdownASTHandler
     kind: class
-    label: SearchRecord
-  - id: module.runtime.config
+    label: MarkdownASTHandler
+    description: Class in sldb.core.ast.markdown_ast_handler
+  - id: module.sldb.core.contracts.marker
     kind: module
-    label: runtime.config
-    description: 'File: runtime/config.py'
-  - id: class.runtime.config.SLDBConfig
+    label: sldb.core.contracts.marker
+    description: 'File: sldb/core/contracts/marker.py'
+  - id: class.sldb.core.contracts.marker.Marker
     kind: class
-    label: SLDBConfig
-  - id: module.runtime
+    label: Marker
+    description: Class in sldb.core.contracts.marker
+  - id: module.sldb.core.contracts.node_data
     kind: module
-    label: runtime
-    description: 'File: runtime/__init__.py'
-  - id: module.runtime.validation
-    kind: module
-    label: runtime.validation
-    description: 'File: runtime/validation.py'
-  - id: class.runtime.validation.Validator
+    label: sldb.core.contracts.node_data
+    description: 'File: sldb/core/contracts/node_data.py'
+  - id: class.sldb.core.contracts.node_data.NodeData
     kind: class
-    label: Validator
-  - id: module.store.export
+    label: NodeData
+    description: Class in sldb.core.contracts.node_data
+  - id: module.sldb.core.contracts.render_context
     kind: module
-    label: store.export
-    description: 'File: store/export.py'
-  - id: module.importlib.metadata
-    kind: external
-    label: importlib.metadata
-  - id: module.sldb.store.semantic
-    kind: module
-    label: sldb.store.semantic
-  - id: module.store.ops
-    kind: module
-    label: store.ops
-    description: 'File: store/ops.py'
-  - id: module.sldb.store.hashing
-    kind: module
-    label: sldb.store.hashing
-  - id: module.store.hashing
-    kind: module
-    label: store.hashing
-    description: 'File: store/hashing.py'
-  - id: module.sldb.runtime.validation
-    kind: module
-    label: sldb.runtime.validation
-  - id: module.store.resolver
-    kind: module
-    label: store.resolver
-    description: 'File: store/resolver.py'
-  - id: module.store.models
-    kind: module
-    label: store.models
-    description: 'File: store/models.py'
-  - id: class.store.models.StoreEntry
+    label: sldb.core.contracts.render_context
+    description: 'File: sldb/core/contracts/render_context.py'
+  - id: class.sldb.core.contracts.render_context.RenderContext
     kind: class
-    label: StoreEntry
-  - id: class.store.models.ModelEntry
+    label: RenderContext
+    description: Class in sldb.core.contracts.render_context
+  - id: module.sldb.core.data_extractor
+    kind: module
+    label: sldb.core.data_extractor
+    description: 'File: sldb/core/data_extractor.py'
+  - id: class.sldb.core.data_extractor.DataExtractor
     kind: class
-    label: ModelEntry
-  - id: class.store.models.PredicateEntry
+    label: DataExtractor
+    description: Class in sldb.core.data_extractor
+  - id: module.sldb.core.exceptions.sldb_ast_error
+    kind: module
+    label: sldb.core.exceptions.sldb_ast_error
+    description: 'File: sldb/core/exceptions/sldb_ast_error.py'
+  - id: class.sldb.core.exceptions.sldb_ast_error.SLDBASTError
     kind: class
-    label: PredicateEntry
-  - id: class.store.models.StoreIndex
+    label: SLDBASTError
+    description: Class in sldb.core.exceptions.sldb_ast_error
+  - id: module.sldb.core.exceptions.sldb_error
+    kind: module
+    label: sldb.core.exceptions.sldb_error
+    description: 'File: sldb/core/exceptions/sldb_error.py'
+  - id: class.sldb.core.exceptions.sldb_error.SLDBError
     kind: class
-    label: StoreIndex
-  - id: class.store.models.ModelsIndex
+    label: SLDBError
+    description: Class in sldb.core.exceptions.sldb_error
+  - id: module.sldb.core.exceptions.sldb_link_error
+    kind: module
+    label: sldb.core.exceptions.sldb_link_error
+    description: 'File: sldb/core/exceptions/sldb_link_error.py'
+  - id: class.sldb.core.exceptions.sldb_link_error.SLDBLinkError
     kind: class
-    label: ModelsIndex
-  - id: class.store.models.DocumentEntry
+    label: SLDBLinkError
+    description: Class in sldb.core.exceptions.sldb_link_error
+  - id: module.sldb.core.exceptions.sldb_model_draft_error
+    kind: module
+    label: sldb.core.exceptions.sldb_model_draft_error
+    description: 'File: sldb/core/exceptions/sldb_model_draft_error.py'
+  - id: class.sldb.core.exceptions.sldb_model_draft_error.SLDBModelDraftError
     kind: class
-    label: DocumentEntry
-  - id: class.store.models.DocumentsIndex
+    label: SLDBModelDraftError
+    description: Class in sldb.core.exceptions.sldb_model_draft_error
+  - id: module.sldb.core.exceptions.sldb_model_edit_error
+    kind: module
+    label: sldb.core.exceptions.sldb_model_edit_error
+    description: 'File: sldb/core/exceptions/sldb_model_edit_error.py'
+  - id: class.sldb.core.exceptions.sldb_model_edit_error.SLDBModelEditError
     kind: class
-    label: DocumentsIndex
-  - id: class.store.models.SemanticNode
+    label: SLDBModelEditError
+    description: Class in sldb.core.exceptions.sldb_model_edit_error
+  - id: module.sldb.core.exceptions.sldb_model_error
+    kind: module
+    label: sldb.core.exceptions.sldb_model_error
+    description: 'File: sldb/core/exceptions/sldb_model_error.py'
+  - id: class.sldb.core.exceptions.sldb_model_error.SLDBModelError
     kind: class
-    label: SemanticNode
-  - id: class.store.models.SectionContextRecord
+    label: SLDBModelError
+    description: Class in sldb.core.exceptions.sldb_model_error
+  - id: module.sldb.core.exceptions.sldb_store_error
+    kind: module
+    label: sldb.core.exceptions.sldb_store_error
+    description: 'File: sldb/core/exceptions/sldb_store_error.py'
+  - id: class.sldb.core.exceptions.sldb_store_error.SLDBStoreError
     kind: class
-    label: SectionContextRecord
-  - id: class.store.models.DocSections
+    label: SLDBStoreError
+    description: Class in sldb.core.exceptions.sldb_store_error
+  - id: module.sldb.core.exceptions.sldb_validation_error
+    kind: module
+    label: sldb.core.exceptions.sldb_validation_error
+    description: 'File: sldb/core/exceptions/sldb_validation_error.py'
+  - id: class.sldb.core.exceptions.sldb_validation_error.SLDBValidationError
     kind: class
-    label: DocSections
-  - id: class.store.models.SectionsIndex
+    label: SLDBValidationError
+    description: Class in sldb.core.exceptions.sldb_validation_error
+  - id: module.sldb.core.extractor.recipe_matcher
+    kind: module
+    label: sldb.core.extractor.recipe_matcher
+    description: 'File: sldb/core/extractor/recipe_matcher.py'
+  - id: class.sldb.core.extractor.recipe_matcher.RecipeMatcher
     kind: class
-    label: SectionsIndex
-  - id: class.store.models.SemanticDAG
-    kind: class
-    label: SemanticDAG
-  - id: class.store.models.SemanticDocumentRecord
-    kind: class
-    label: SemanticDocumentRecord
-  - id: class.store.models.SemanticIndex
-    kind: class
-    label: SemanticIndex
-  - id: module.store.layout
-    kind: module
-    label: store.layout
-    description: 'File: store/layout.py'
-  - id: module.store.diagnostics
-    kind: module
-    label: store.diagnostics
-    description: 'File: store/diagnostics.py'
-  - id: module.sldb.store.diagnostics_models
-    kind: module
-    label: sldb.store.diagnostics_models
-  - id: module.store.query
-    kind: module
-    label: store.query
-    description: 'File: store/query.py'
-  - id: module.sldb.store.query_engine.models
-    kind: module
-    label: sldb.store.query_engine.models
-  - id: module.sldb.store.query_engine.structural
-    kind: module
-    label: sldb.store.query_engine.structural
-  - id: module.sldb.store.query_engine.structural_queries
-    kind: module
-    label: sldb.store.query_engine.structural_queries
-  - id: module.sldb.store.query_engine.semantic
-    kind: module
-    label: sldb.store.query_engine.semantic
-  - id: module.sldb.store.query_engine.global_semantic
-    kind: module
-    label: sldb.store.query_engine.global_semantic
-  - id: module.store.semantic_tags
-    kind: module
-    label: store.semantic_tags
-    description: 'File: store/semantic_tags.py'
-  - id: module.store
-    kind: module
-    label: store
-    description: 'File: store/__init__.py'
-  - id: module.sldb.store.diagnostics
-    kind: module
-    label: sldb.store.diagnostics
-  - id: module.store.diagnostics_models
-    kind: module
-    label: store.diagnostics_models
-    description: 'File: store/diagnostics_models.py'
-  - id: class.store.diagnostics_models.DiagnosisNote
-    kind: class
-    label: DiagnosisNote
-  - id: class.store.diagnostics_models.DocumentDiagnosis
-    kind: class
-    label: DocumentDiagnosis
-  - id: class.store.diagnostics_models.ModelDiagnosis
-    kind: class
-    label: ModelDiagnosis
-  - id: class.store.diagnostics_models.StoreDiagnosis
-    kind: class
-    label: StoreDiagnosis
-  - id: module.store.migration
-    kind: module
-    label: store.migration
-    description: 'File: store/migration.py'
-  - id: module.store.semantic
-    kind: module
-    label: store.semantic
-    description: 'File: store/semantic.py'
-  - id: class.store.semantic.RebuildReport
-    kind: class
-    label: RebuildReport
-  - id: module.store.predicates
-    kind: module
-    label: store.predicates
-    description: 'File: store/predicates.py'
-  - id: module.store.io
-    kind: module
-    label: store.io
-    description: 'File: store/io.py'
-  - id: module.contextlib
-    kind: external
-    label: contextlib
-  - id: module.fcntl
-    kind: external
-    label: fcntl
-  - id: module.tempfile
-    kind: external
-    label: tempfile
-  - id: module.models
-    kind: module
-    label: models
-    description: 'File: models/__init__.py'
-  - id: module.models.structured_doc
-    kind: module
-    label: models.structured_doc
-    description: 'File: models/structured_doc.py'
-  - id: class.models.structured_doc.StructuredNLDoc
-    kind: class
-    label: StructuredNLDoc
-  - id: module.examples
-    kind: module
-    label: examples
-    description: 'File: examples/__init__.py'
-  - id: module.examples.reference_bundle.guide_model
-    kind: module
-    label: examples.reference_bundle.guide_model
-    description: 'File: examples/reference_bundle/guide_model.py'
-  - id: module.sldb
-    kind: module
-    label: sldb
-  - id: class.examples.reference_bundle.guide_model.SLDBGuide
-    kind: class
-    label: SLDBGuide
-  - id: module.examples.reference_bundle
-    kind: module
-    label: examples.reference_bundle
-    description: 'File: examples/reference_bundle/__init__.py'
-  - id: module.examples.pandoc_cv.cv_model
-    kind: module
-    label: examples.pandoc_cv.cv_model
-    description: 'File: examples/pandoc_cv/cv_model.py'
-  - id: class.examples.pandoc_cv.cv_model.PandocCVDoc
-    kind: class
-    label: PandocCVDoc
-  - id: module.store.query_engine.structural_queries
-    kind: module
-    label: store.query_engine.structural_queries
-    description: 'File: store/query_engine/structural_queries.py'
-  - id: module.fnmatch
-    kind: external
-    label: fnmatch
-  - id: module.sldb.store.query_engine.filter
-    kind: module
-    label: sldb.store.query_engine.filter
-  - id: module.store.query_engine.models
-    kind: module
-    label: store.query_engine.models
-    description: 'File: store/query_engine/models.py'
-  - id: class.store.query_engine.models.RuntimeDocument
-    kind: class
-    label: RuntimeDocument
-  - id: module.store.query_engine.semantic_utils
-    kind: module
-    label: store.query_engine.semantic_utils
-    description: 'File: store/query_engine/semantic_utils.py'
-  - id: module.store.query_engine.structural
-    kind: module
-    label: store.query_engine.structural
-    description: 'File: store/query_engine/structural.py'
-  - id: module.store.query_engine.global_semantic
-    kind: module
-    label: store.query_engine.global_semantic
-    description: 'File: store/query_engine/global_semantic.py'
-  - id: module.store.query_engine
-    kind: module
-    label: store.query_engine
-    description: 'File: store/query_engine/__init__.py'
-  - id: module.store.query_engine.filter
-    kind: module
-    label: store.query_engine.filter
-    description: 'File: store/query_engine/filter.py'
-  - id: module.store.query_engine.semantic
-    kind: module
-    label: store.query_engine.semantic
-    description: 'File: store/query_engine/semantic.py'
-  - id: module.sldb.store.query_engine.semantic_utils
-    kind: module
-    label: sldb.store.query_engine.semantic_utils
-  - id: module.cli.commands.help
-    kind: module
-    label: cli.commands.help
-    description: 'File: cli/commands/help.py'
-  - id: class.cli.commands.help.HelpCLI
-    kind: class
-    label: HelpCLI
-  - id: module.cli.commands.sections
-    kind: module
-    label: cli.commands.sections
-    description: 'File: cli/commands/sections.py'
-  - id: module.sldb.cli.graph
-    kind: module
-    label: sldb.cli.graph
-  - id: class.cli.commands.sections.SectionsCLI
-    kind: class
-    label: SectionsCLI
-  - id: module.cli.commands.legacy
-    kind: module
-    label: cli.commands.legacy
-    description: 'File: cli/commands/legacy.py'
-  - id: class.cli.commands.legacy.LegacyCLI
-    kind: class
-    label: LegacyCLI
-  - id: module.cli.commands.init
-    kind: module
-    label: cli.commands.init
-    description: 'File: cli/commands/init.py'
-  - id: module.importlib.resources
-    kind: external
-    label: importlib.resources
-  - id: class.cli.commands.init.InitCLI
-    kind: class
-    label: InitCLI
-  - id: module.cli.commands.fields
-    kind: module
-    label: cli.commands.fields
-    description: 'File: cli/commands/fields.py'
-  - id: class.cli.commands.fields.FieldsCLI
-    kind: class
-    label: FieldsCLI
-  - id: module.cli.commands.find
-    kind: module
-    label: cli.commands.find
-    description: 'File: cli/commands/find.py'
-  - id: class.cli.commands.find.FindCLI
-    kind: class
-    label: FindCLI
-  - id: module.cli.commands.models
-    kind: module
-    label: cli.commands.models
-    description: 'File: cli/commands/models.py'
-  - id: module.ast
-    kind: external
-    label: ast
-  - id: module.importlib.util
-    kind: external
-    label: importlib.util
-  - id: module.importlib.machinery
-    kind: external
-    label: importlib.machinery
-  - id: class.cli.commands.models.ModelsCLI
-    kind: class
-    label: ModelsCLI
-  - id: module.cli.commands.model
-    kind: module
-    label: cli.commands.model
-    description: 'File: cli/commands/model.py'
-  - id: module.inspect
-    kind: external
-    label: inspect
-  - id: class.cli.commands.model.ModelCLI
-    kind: class
-    label: ModelCLI
-  - id: module.cli.commands.docs
-    kind: module
-    label: cli.commands.docs
-    description: 'File: cli/commands/docs.py'
-  - id: class.cli.commands.docs.DocsCLI
-    kind: class
-    label: DocsCLI
-  - id: module.cli.commands.doc
-    kind: module
-    label: cli.commands.doc
-    description: 'File: cli/commands/doc.py'
-  - id: class.cli.commands.doc.DocCLI
-    kind: class
-    label: DocCLI
-  - id: module.cli.commands.store
-    kind: module
-    label: cli.commands.store
-    description: 'File: cli/commands/store.py'
-  - id: class.cli.commands.store.StoreCLI
-    kind: class
-    label: StoreCLI
-  - id: module.cli.commands.ast
-    kind: module
-    label: cli.commands.ast
-    description: 'File: cli/commands/ast.py'
-  - id: class.cli.commands.ast.ASTCLI
-    kind: class
-    label: ASTCLI
-  - id: module.cli.commands.inbox
-    kind: module
-    label: cli.commands.inbox
-    description: 'File: cli/commands/inbox.py'
-  - id: class.cli.commands.inbox.InboxCLI
-    kind: class
-    label: InboxCLI
-  - id: module.cli.commands.explore
-    kind: module
-    label: cli.commands.explore
-    description: 'File: cli/commands/explore.py'
-  - id: class.cli.commands.explore.ExploreHit
-    kind: class
-    label: ExploreHit
-  - id: class.cli.commands.explore.ExploreCLI
-    kind: class
-    label: ExploreCLI
-  - id: module.cli.commands.query
-    kind: module
-    label: cli.commands.query
-    description: 'File: cli/commands/query.py'
-  - id: class.cli.commands.query.QueryCLI
-    kind: class
-    label: QueryCLI
-  - id: module.cli.commands.links
-    kind: module
-    label: cli.commands.links
-    description: 'File: cli/commands/links.py'
-  - id: module.sldb.links
-    kind: module
-    label: sldb.links
-  - id: class.cli.commands.links.LinkCLI
-    kind: class
-    label: LinkCLI
-  - id: module.cli.commands.basic
-    kind: module
-    label: cli.commands.basic
-    description: 'File: cli/commands/basic.py'
-  - id: class.cli.commands.basic.BasicCLI
-    kind: class
-    label: BasicCLI
-  - id: module.cli.commands
-    kind: module
-    label: cli.commands
-    description: 'File: cli/commands/__init__.py'
-  - id: module.cli.commands.faq
-    kind: module
-    label: cli.commands.faq
-    description: 'File: cli/commands/faq.py'
-  - id: class.cli.commands.faq.FAQEntry
-    kind: class
-    label: FAQEntry
-  - id: class.cli.commands.faq.FAQCLI
-    kind: class
-    label: FAQCLI
-  - id: module.cli.commands.stores
-    kind: module
-    label: cli.commands.stores
-    description: 'File: cli/commands/stores.py'
-  - id: module.sldb.store.export
-    kind: module
-    label: sldb.store.export
-  - id: class.cli.commands.stores.StoresCLI
-    kind: class
-    label: StoresCLI
-  - id: module.cli.commands.predicates
-    kind: module
-    label: cli.commands.predicates
-    description: 'File: cli/commands/predicates.py'
-  - id: class.cli.commands.predicates.PredicatesCLI
-    kind: class
-    label: PredicatesCLI
-  - id: module.assets.skills
-    kind: module
-    label: assets.skills
-    description: 'File: assets/skills/__init__.py'
-  - id: module.core.handlers.text
-    kind: module
-    label: core.handlers.text
-    description: 'File: core/handlers/text.py'
+    label: RecipeMatcher
+    description: Class in sldb.core.extractor.recipe_matcher
   - id: module.sldb.core.handlers.base
     kind: module
     label: sldb.core.handlers.base
-  - id: module.sldb.core.handlers.utils
-    kind: module
-    label: sldb.core.handlers.utils
-  - id: class.core.handlers.text.TextNodeHandler
+    description: 'File: sldb/core/handlers/base.py'
+  - id: class.sldb.core.handlers.base.BaseNodeHandler
     kind: class
-    label: TextNodeHandler
-  - id: module.core.handlers.router
-    kind: module
-    label: core.handlers.router
-    description: 'File: core/handlers/router.py'
+    label: BaseNodeHandler
+    description: Class in sldb.core.handlers.base
   - id: module.sldb.core.handlers.list
     kind: module
     label: sldb.core.handlers.list
+    description: 'File: sldb/core/handlers/list.py'
+  - id: class.sldb.core.handlers.list.ListNodeHandler
+    kind: class
+    label: ListNodeHandler
+    description: Class in sldb.core.handlers.list
+  - id: module.sldb.core.handlers.router
+    kind: module
+    label: sldb.core.handlers.router
+    description: 'File: sldb/core/handlers/router.py'
+  - id: class.sldb.core.handlers.router.SharedNodeHandler
+    kind: class
+    label: SharedNodeHandler
+    description: Class in sldb.core.handlers.router
   - id: module.sldb.core.handlers.table
     kind: module
     label: sldb.core.handlers.table
+    description: 'File: sldb/core/handlers/table.py'
+  - id: class.sldb.core.handlers.table.TableNodeHandler
+    kind: class
+    label: TableNodeHandler
+    description: Class in sldb.core.handlers.table
   - id: module.sldb.core.handlers.text
     kind: module
     label: sldb.core.handlers.text
+    description: 'File: sldb/core/handlers/text.py'
+  - id: class.sldb.core.handlers.text.TextNodeHandler
+    kind: class
+    label: TextNodeHandler
+    description: Class in sldb.core.handlers.text
+  - id: module.sldb.core.handlers.utils
+    kind: module
+    label: sldb.core.handlers.utils
+    description: 'File: sldb/core/handlers/utils.py'
   - id: module.sldb.core.handlers.yaml
     kind: module
     label: sldb.core.handlers.yaml
-  - id: class.core.handlers.router.SharedNodeHandler
-    kind: class
-    label: SharedNodeHandler
-  - id: module.core.handlers.utils
-    kind: module
-    label: core.handlers.utils
-    description: 'File: core/handlers/utils.py'
-  - id: module.core.handlers
-    kind: module
-    label: core.handlers
-    description: 'File: core/handlers/__init__.py'
-  - id: module.core.handlers.base
-    kind: module
-    label: core.handlers.base
-    description: 'File: core/handlers/base.py'
-  - id: class.core.handlers.base.BaseNodeHandler
-    kind: class
-    label: BaseNodeHandler
-  - id: module.core.handlers.table
-    kind: module
-    label: core.handlers.table
-    description: 'File: core/handlers/table.py'
-  - id: class.core.handlers.table.TableNodeHandler
-    kind: class
-    label: TableNodeHandler
-  - id: module.core.handlers.list
-    kind: module
-    label: core.handlers.list
-    description: 'File: core/handlers/list.py'
-  - id: class.core.handlers.list.ListNodeHandler
-    kind: class
-    label: ListNodeHandler
-  - id: module.core.handlers.yaml
-    kind: module
-    label: core.handlers.yaml
-    description: 'File: core/handlers/yaml.py'
-  - id: class.core.handlers.yaml.YamlNodeHandler
+    description: 'File: sldb/core/handlers/yaml.py'
+  - id: class.sldb.core.handlers.yaml.YamlNodeHandler
     kind: class
     label: YamlNodeHandler
-  - id: module.core.renderer_engine
+    description: Class in sldb.core.handlers.yaml
+  - id: module.sldb.core.ingest.engine
     kind: module
-    label: core.renderer_engine
-    description: 'File: core/renderer_engine/__init__.py'
-  - id: module.core.renderer_engine.base
+    label: sldb.core.ingest.engine
+    description: 'File: sldb/core/ingest/engine.py'
+  - id: module.sldb.core.ingest.ignore_rule
     kind: module
-    label: core.renderer_engine.base
-    description: 'File: core/renderer_engine/base.py'
-  - id: module.sldb.core.renderer_engine.python_expr
-    kind: module
-    label: sldb.core.renderer_engine.python_expr
-  - id: class.core.renderer_engine.base.BaseRenderer
+    label: sldb.core.ingest.ignore_rule
+    description: 'File: sldb/core/ingest/ignore_rule.py'
+  - id: class.sldb.core.ingest.ignore_rule.IgnoreRule
     kind: class
-    label: BaseRenderer
-  - id: module.core.renderer_engine.table
+    label: IgnoreRule
+    description: Class in sldb.core.ingest.ignore_rule
+  - id: module.sldb.core.ingest.manifest
     kind: module
-    label: core.renderer_engine.table
-    description: 'File: core/renderer_engine/table.py'
+    label: sldb.core.ingest.manifest
+    description: 'File: sldb/core/ingest/manifest.py'
+  - id: module.sldb.core.ingest.python_scanner
+    kind: module
+    label: sldb.core.ingest.python_scanner
+    description: 'File: sldb/core/ingest/python_scanner.py'
+  - id: class.sldb.core.ingest.python_scanner.PythonScanner
+    kind: class
+    label: PythonScanner
+    description: Class in sldb.core.ingest.python_scanner
+  - id: module.sldb.core.ingest.renderer
+    kind: module
+    label: sldb.core.ingest.renderer
+    description: 'File: sldb/core/ingest/renderer.py'
+  - id: module.sldb.core.ingest.scanner
+    kind: module
+    label: sldb.core.ingest.scanner
+    description: 'File: sldb/core/ingest/scanner.py'
+  - id: module.sldb.core.ingest.source_parser
+    kind: module
+    label: sldb.core.ingest.source_parser
+    description: 'File: sldb/core/ingest/source_parser.py'
+  - id: module.sldb.core.ingest.typescript_scanner
+    kind: module
+    label: sldb.core.ingest.typescript_scanner
+    description: 'File: sldb/core/ingest/typescript_scanner.py'
+  - id: class.sldb.core.ingest.typescript_scanner.TypeScriptScanner
+    kind: class
+    label: TypeScriptScanner
+    description: Class in sldb.core.ingest.typescript_scanner
+  - id: module.sldb.core.ir.document_context
+    kind: module
+    label: sldb.core.ir.document_context
+    description: 'File: sldb/core/ir/document_context.py'
+  - id: class.sldb.core.ir.document_context.DocumentContext
+    kind: class
+    label: DocumentContext
+    description: Class in sldb.core.ir.document_context
+  - id: module.sldb.core.ir.document_ir
+    kind: module
+    label: sldb.core.ir.document_ir
+    description: 'File: sldb/core/ir/document_ir.py'
+  - id: class.sldb.core.ir.document_ir.DocumentIR
+    kind: class
+    label: DocumentIR
+    description: Class in sldb.core.ir.document_ir
+  - id: module.sldb.core.ir.graph_edge
+    kind: module
+    label: sldb.core.ir.graph_edge
+    description: 'File: sldb/core/ir/graph_edge.py'
+  - id: class.sldb.core.ir.graph_edge.GraphEdge
+    kind: class
+    label: GraphEdge
+    description: Class in sldb.core.ir.graph_edge
+  - id: module.sldb.core.ir.graph_view
+    kind: module
+    label: sldb.core.ir.graph_view
+    description: 'File: sldb/core/ir/graph_view.py'
+  - id: class.sldb.core.ir.graph_view.GraphView
+    kind: class
+    label: GraphView
+    description: Class in sldb.core.ir.graph_view
+  - id: module.sldb.core.ir.meaning_node
+    kind: module
+    label: sldb.core.ir.meaning_node
+    description: 'File: sldb/core/ir/meaning_node.py'
+  - id: class.sldb.core.ir.meaning_node.MeaningNode
+    kind: class
+    label: MeaningNode
+    description: Class in sldb.core.ir.meaning_node
+  - id: module.sldb.core.ir.section_context_entry
+    kind: module
+    label: sldb.core.ir.section_context_entry
+    description: 'File: sldb/core/ir/section_context_entry.py'
+  - id: class.sldb.core.ir.section_context_entry.SectionContextEntry
+    kind: class
+    label: SectionContextEntry
+    description: Class in sldb.core.ir.section_context_entry
+  - id: module.sldb.core.ir.source_span
+    kind: module
+    label: sldb.core.ir.source_span
+    description: 'File: sldb/core/ir/source_span.py'
+  - id: class.sldb.core.ir.source_span.SourceSpan
+    kind: class
+    label: SourceSpan
+    description: Class in sldb.core.ir.source_span
+  - id: module.sldb.core.ir.surface_node
+    kind: module
+    label: sldb.core.ir.surface_node
+    description: 'File: sldb/core/ir/surface_node.py'
+  - id: class.sldb.core.ir.surface_node.SurfaceNode
+    kind: class
+    label: SurfaceNode
+    description: Class in sldb.core.ir.surface_node
+  - id: module.sldb.core.node
+    kind: module
+    label: sldb.core.node
+    description: 'File: sldb/core/node.py'
+  - id: class.sldb.core.node.SLDBNode
+    kind: class
+    label: SLDBNode
+    description: Class in sldb.core.node
+  - id: module.sldb.core.node_handler
+    kind: module
+    label: sldb.core.node_handler
+    description: 'File: sldb/core/node_handler.py'
+  - id: module.sldb.core.renderer
+    kind: module
+    label: sldb.core.renderer
+    description: 'File: sldb/core/renderer.py'
+  - id: class.sldb.core.renderer.SLDBRenderer
+    kind: class
+    label: SLDBRenderer
+    description: Class in sldb.core.renderer
   - id: module.sldb.core.renderer_engine.base
     kind: module
     label: sldb.core.renderer_engine.base
-  - id: class.core.renderer_engine.table.TableRenderer
+    description: 'File: sldb/core/renderer_engine/base.py'
+  - id: class.sldb.core.renderer_engine.base.BaseRenderer
     kind: class
-    label: TableRenderer
-  - id: module.core.renderer_engine.list
+    label: BaseRenderer
+    description: Class in sldb.core.renderer_engine.base
+  - id: module.sldb.core.renderer_engine.list
     kind: module
-    label: core.renderer_engine.list
-    description: 'File: core/renderer_engine/list.py'
-  - id: class.core.renderer_engine.list.ListRenderer
+    label: sldb.core.renderer_engine.list
+    description: 'File: sldb/core/renderer_engine/list.py'
+  - id: class.sldb.core.renderer_engine.list.ListRenderer
     kind: class
     label: ListRenderer
-  - id: module.core.renderer_engine.python_expr
+    description: Class in sldb.core.renderer_engine.list
+  - id: module.sldb.core.renderer_engine.python_expr
     kind: module
-    label: core.renderer_engine.python_expr
-    description: 'File: core/renderer_engine/python_expr.py'
-  - id: class.core.renderer_engine.python_expr.PythonExpressionRenderer
+    label: sldb.core.renderer_engine.python_expr
+    description: 'File: sldb/core/renderer_engine/python_expr.py'
+  - id: class.sldb.core.renderer_engine.python_expr.PythonExpressionRenderer
     kind: class
     label: PythonExpressionRenderer
-  - id: module.core.renderer_engine.yaml
+    description: Class in sldb.core.renderer_engine.python_expr
+  - id: module.sldb.core.renderer_engine.table
     kind: module
-    label: core.renderer_engine.yaml
-    description: 'File: core/renderer_engine/yaml.py'
-  - id: class.core.renderer_engine.yaml.YamlRenderer
+    label: sldb.core.renderer_engine.table
+    description: 'File: sldb/core/renderer_engine/table.py'
+  - id: class.sldb.core.renderer_engine.table.TableRenderer
+    kind: class
+    label: TableRenderer
+    description: Class in sldb.core.renderer_engine.table
+  - id: module.sldb.core.renderer_engine.yaml
+    kind: module
+    label: sldb.core.renderer_engine.yaml
+    description: 'File: sldb/core/renderer_engine/yaml.py'
+  - id: class.sldb.core.renderer_engine.yaml.YamlRenderer
     kind: class
     label: YamlRenderer
-  - id: module.core.ingest.scanner
+    description: Class in sldb.core.renderer_engine.yaml
+  - id: module.sldb.core.template_extractor
     kind: module
-    label: core.ingest.scanner
-    description: 'File: core/ingest/scanner.py'
-  - id: module.wiki_compiler.adapters.ontology_facets
-    kind: external
-    label: wiki_compiler.adapters.ontology_facets
-  - id: class.core.ingest.scanner.IgnoreRule
+    label: sldb.core.template_extractor
+    description: 'File: sldb/core/template_extractor.py'
+  - id: class.sldb.core.template_extractor.TemplateExtractor
     kind: class
-    label: IgnoreRule
-  - id: class.core.ingest.scanner.PythonScanner
-    kind: class
-    label: PythonScanner
-  - id: class.core.ingest.scanner.TypeScriptScanner
-    kind: class
-    label: TypeScriptScanner
-  - id: module.core.ingest.engine
+    label: TemplateExtractor
+    description: Class in sldb.core.template_extractor
+  - id: module.sldb.examples.pandoc_cv.cv_model
     kind: module
-    label: core.ingest.engine
-    description: 'File: core/ingest/engine.py'
-  - id: module.core.ingest.manifest
+    label: sldb.examples.pandoc_cv.cv_model
+    description: 'File: sldb/examples/pandoc_cv/cv_model.py'
+  - id: class.sldb.examples.pandoc_cv.cv_model.PandocCVDoc
+    kind: class
+    label: PandocCVDoc
+    description: Class in sldb.examples.pandoc_cv.cv_model
+  - id: module.sldb.examples.reference_bundle.guide_model
     kind: module
-    label: core.ingest.manifest
-    description: 'File: core/ingest/manifest.py'
-  - id: module.csv
-    kind: external
-    label: csv
+    label: sldb.examples.reference_bundle.guide_model
+    description: 'File: sldb/examples/reference_bundle/guide_model.py'
+  - id: class.sldb.examples.reference_bundle.guide_model.SLDBGuide
+    kind: class
+    label: SLDBGuide
+    description: Class in sldb.examples.reference_bundle.guide_model
+  - id: module.sldb.links.composer
+    kind: module
+    label: sldb.links.composer
+    description: 'File: sldb/links/composer.py'
+  - id: module.sldb.links.parsed_link
+    kind: module
+    label: sldb.links.parsed_link
+    description: 'File: sldb/links/parsed_link.py'
+  - id: class.sldb.links.parsed_link.ParsedLink
+    kind: class
+    label: ParsedLink
+    description: Class in sldb.links.parsed_link
+  - id: module.sldb.links.parser
+    kind: module
+    label: sldb.links.parser
+    description: 'File: sldb/links/parser.py'
+  - id: module.sldb.links.recovery
+    kind: module
+    label: sldb.links.recovery
+    description: 'File: sldb/links/recovery.py'
+  - id: module.sldb.links.resolved_link
+    kind: module
+    label: sldb.links.resolved_link
+    description: 'File: sldb/links/resolved_link.py'
+  - id: class.sldb.links.resolved_link.ResolvedLink
+    kind: class
+    label: ResolvedLink
+    description: Class in sldb.links.resolved_link
+  - id: module.sldb.links.resolver
+    kind: module
+    label: sldb.links.resolver
+    description: 'File: sldb/links/resolver.py'
+  - id: module.sldb.models.structured_doc
+    kind: module
+    label: sldb.models.structured_doc
+    description: 'File: sldb/models/structured_doc.py'
+  - id: class.sldb.models.structured_doc.StructuredNLDoc
+    kind: class
+    label: StructuredNLDoc
+    description: Class in sldb.models.structured_doc
+  - id: module.sldb.runtime.config
+    kind: module
+    label: sldb.runtime.config
+    description: 'File: sldb/runtime/config.py'
+  - id: class.sldb.runtime.config.SLDBConfig
+    kind: class
+    label: SLDBConfig
+    description: Class in sldb.runtime.config
+  - id: module.sldb.runtime.validation
+    kind: module
+    label: sldb.runtime.validation
+    description: 'File: sldb/runtime/validation.py'
+  - id: class.sldb.runtime.validation.Validator
+    kind: class
+    label: Validator
+    description: Class in sldb.runtime.validation
+  - id: module.sldb.store.diagnostics
+    kind: module
+    label: sldb.store.diagnostics
+    description: 'File: sldb/store/diagnostics.py'
+  - id: module.sldb.store.diagnostics_models.diagnosis_note
+    kind: module
+    label: sldb.store.diagnostics_models.diagnosis_note
+    description: 'File: sldb/store/diagnostics_models/diagnosis_note.py'
+  - id: class.sldb.store.diagnostics_models.diagnosis_note.DiagnosisNote
+    kind: class
+    label: DiagnosisNote
+    description: Class in sldb.store.diagnostics_models.diagnosis_note
+  - id: module.sldb.store.diagnostics_models.document_diagnosis
+    kind: module
+    label: sldb.store.diagnostics_models.document_diagnosis
+    description: 'File: sldb/store/diagnostics_models/document_diagnosis.py'
+  - id: class.sldb.store.diagnostics_models.document_diagnosis.DocumentDiagnosis
+    kind: class
+    label: DocumentDiagnosis
+    description: Class in sldb.store.diagnostics_models.document_diagnosis
+  - id: module.sldb.store.diagnostics_models.model_diagnosis
+    kind: module
+    label: sldb.store.diagnostics_models.model_diagnosis
+    description: 'File: sldb/store/diagnostics_models/model_diagnosis.py'
+  - id: class.sldb.store.diagnostics_models.model_diagnosis.ModelDiagnosis
+    kind: class
+    label: ModelDiagnosis
+    description: Class in sldb.store.diagnostics_models.model_diagnosis
+  - id: module.sldb.store.diagnostics_models.store_diagnosis
+    kind: module
+    label: sldb.store.diagnostics_models.store_diagnosis
+    description: 'File: sldb/store/diagnostics_models/store_diagnosis.py'
+  - id: class.sldb.store.diagnostics_models.store_diagnosis.StoreDiagnosis
+    kind: class
+    label: StoreDiagnosis
+    description: Class in sldb.store.diagnostics_models.store_diagnosis
+  - id: module.sldb.store.export
+    kind: module
+    label: sldb.store.export
+    description: 'File: sldb/store/export.py'
+  - id: class.sldb.store.export.SemanticExporter
+    kind: class
+    label: SemanticExporter
+    description: Class in sldb.store.export
+  - id: module.sldb.store.facade
+    kind: module
+    label: sldb.store.facade
+    description: 'File: sldb/store/facade.py'
+  - id: module.sldb.store.hashing
+    kind: module
+    label: sldb.store.hashing
+    description: 'File: sldb/store/hashing.py'
+  - id: module.sldb.store.io.documents_index
+    kind: module
+    label: sldb.store.io.documents_index
+    description: 'File: sldb/store/io/documents_index.py'
+  - id: class.sldb.store.io.documents_index.DocumentsIndexIO
+    kind: class
+    label: DocumentsIndexIO
+    description: Class in sldb.store.io.documents_index
+  - id: module.sldb.store.io.lock
+    kind: module
+    label: sldb.store.io.lock
+    description: 'File: sldb/store/io/lock.py'
+  - id: class.sldb.store.io.lock.StoreIOLock
+    kind: class
+    label: StoreIOLock
+    description: Class in sldb.store.io.lock
+  - id: module.sldb.store.io.models_index
+    kind: module
+    label: sldb.store.io.models_index
+    description: 'File: sldb/store/io/models_index.py'
+  - id: class.sldb.store.io.models_index.ModelsIndexIO
+    kind: class
+    label: ModelsIndexIO
+    description: Class in sldb.store.io.models_index
+  - id: module.sldb.store.io.sections_index
+    kind: module
+    label: sldb.store.io.sections_index
+    description: 'File: sldb/store/io/sections_index.py'
+  - id: class.sldb.store.io.sections_index.SectionsIndexIO
+    kind: class
+    label: SectionsIndexIO
+    description: Class in sldb.store.io.sections_index
+  - id: module.sldb.store.io.semantic_dag
+    kind: module
+    label: sldb.store.io.semantic_dag
+    description: 'File: sldb/store/io/semantic_dag.py'
+  - id: class.sldb.store.io.semantic_dag.SemanticDAGIO
+    kind: class
+    label: SemanticDAGIO
+    description: Class in sldb.store.io.semantic_dag
+  - id: module.sldb.store.io.semantic_index
+    kind: module
+    label: sldb.store.io.semantic_index
+    description: 'File: sldb/store/io/semantic_index.py'
+  - id: class.sldb.store.io.semantic_index.SemanticIndexIO
+    kind: class
+    label: SemanticIndexIO
+    description: Class in sldb.store.io.semantic_index
+  - id: module.sldb.store.io.store_index
+    kind: module
+    label: sldb.store.io.store_index
+    description: 'File: sldb/store/io/store_index.py'
+  - id: class.sldb.store.io.store_index.StoreIndexIO
+    kind: class
+    label: StoreIndexIO
+    description: Class in sldb.store.io.store_index
+  - id: module.sldb.store.io.utils
+    kind: module
+    label: sldb.store.io.utils
+    description: 'File: sldb/store/io/utils.py'
+  - id: class.sldb.store.io.utils.StoreIOUtils
+    kind: class
+    label: StoreIOUtils
+    description: Class in sldb.store.io.utils
+  - id: module.sldb.store.layout
+    kind: module
+    label: sldb.store.layout
+    description: 'File: sldb/store/layout.py'
+  - id: module.sldb.store.migration
+    kind: module
+    label: sldb.store.migration
+    description: 'File: sldb/store/migration.py'
+  - id: module.sldb.store.models.doc_sections
+    kind: module
+    label: sldb.store.models.doc_sections
+    description: 'File: sldb/store/models/doc_sections.py'
+  - id: class.sldb.store.models.doc_sections.DocSections
+    kind: class
+    label: DocSections
+    description: Class in sldb.store.models.doc_sections
+  - id: module.sldb.store.models.document_entry
+    kind: module
+    label: sldb.store.models.document_entry
+    description: 'File: sldb/store/models/document_entry.py'
+  - id: class.sldb.store.models.document_entry.DocumentEntry
+    kind: class
+    label: DocumentEntry
+    description: Class in sldb.store.models.document_entry
+  - id: module.sldb.store.models.documents_index
+    kind: module
+    label: sldb.store.models.documents_index
+    description: 'File: sldb/store/models/documents_index.py'
+  - id: class.sldb.store.models.documents_index.DocumentsIndex
+    kind: class
+    label: DocumentsIndex
+    description: Class in sldb.store.models.documents_index
+  - id: module.sldb.store.models.model_entry
+    kind: module
+    label: sldb.store.models.model_entry
+    description: 'File: sldb/store/models/model_entry.py'
+  - id: class.sldb.store.models.model_entry.ModelEntry
+    kind: class
+    label: ModelEntry
+    description: Class in sldb.store.models.model_entry
+  - id: module.sldb.store.models.models_index
+    kind: module
+    label: sldb.store.models.models_index
+    description: 'File: sldb/store/models/models_index.py'
+  - id: class.sldb.store.models.models_index.ModelsIndex
+    kind: class
+    label: ModelsIndex
+    description: Class in sldb.store.models.models_index
+  - id: module.sldb.store.models.predicate_entry
+    kind: module
+    label: sldb.store.models.predicate_entry
+    description: 'File: sldb/store/models/predicate_entry.py'
+  - id: class.sldb.store.models.predicate_entry.PredicateEntry
+    kind: class
+    label: PredicateEntry
+    description: Class in sldb.store.models.predicate_entry
+  - id: module.sldb.store.models.section_context_record
+    kind: module
+    label: sldb.store.models.section_context_record
+    description: 'File: sldb/store/models/section_context_record.py'
+  - id: class.sldb.store.models.section_context_record.SectionContextRecord
+    kind: class
+    label: SectionContextRecord
+    description: Class in sldb.store.models.section_context_record
+  - id: module.sldb.store.models.sections_index
+    kind: module
+    label: sldb.store.models.sections_index
+    description: 'File: sldb/store/models/sections_index.py'
+  - id: class.sldb.store.models.sections_index.SectionsIndex
+    kind: class
+    label: SectionsIndex
+    description: Class in sldb.store.models.sections_index
+  - id: module.sldb.store.models.semantic_d_a_g
+    kind: module
+    label: sldb.store.models.semantic_d_a_g
+    description: 'File: sldb/store/models/semantic_d_a_g.py'
+  - id: class.sldb.store.models.semantic_d_a_g.SemanticDAG
+    kind: class
+    label: SemanticDAG
+    description: Class in sldb.store.models.semantic_d_a_g
+  - id: module.sldb.store.models.semantic_document_record
+    kind: module
+    label: sldb.store.models.semantic_document_record
+    description: 'File: sldb/store/models/semantic_document_record.py'
+  - id: class.sldb.store.models.semantic_document_record.SemanticDocumentRecord
+    kind: class
+    label: SemanticDocumentRecord
+    description: Class in sldb.store.models.semantic_document_record
+  - id: module.sldb.store.models.semantic_index
+    kind: module
+    label: sldb.store.models.semantic_index
+    description: 'File: sldb/store/models/semantic_index.py'
+  - id: class.sldb.store.models.semantic_index.SemanticIndex
+    kind: class
+    label: SemanticIndex
+    description: Class in sldb.store.models.semantic_index
+  - id: module.sldb.store.models.semantic_node
+    kind: module
+    label: sldb.store.models.semantic_node
+    description: 'File: sldb/store/models/semantic_node.py'
+  - id: class.sldb.store.models.semantic_node.SemanticNode
+    kind: class
+    label: SemanticNode
+    description: Class in sldb.store.models.semantic_node
+  - id: module.sldb.store.models.store_entry
+    kind: module
+    label: sldb.store.models.store_entry
+    description: 'File: sldb/store/models/store_entry.py'
+  - id: class.sldb.store.models.store_entry.StoreEntry
+    kind: class
+    label: StoreEntry
+    description: Class in sldb.store.models.store_entry
+  - id: module.sldb.store.models.store_index
+    kind: module
+    label: sldb.store.models.store_index
+    description: 'File: sldb/store/models/store_index.py'
+  - id: class.sldb.store.models.store_index.StoreIndex
+    kind: class
+    label: StoreIndex
+    description: Class in sldb.store.models.store_index
+  - id: module.sldb.store.ops
+    kind: module
+    label: sldb.store.ops
+    description: 'File: sldb/store/ops.py'
+  - id: class.sldb.store.ops.StoreOperations
+    kind: class
+    label: StoreOperations
+    description: Class in sldb.store.ops
+  - id: module.sldb.store.predicates
+    kind: module
+    label: sldb.store.predicates
+    description: 'File: sldb/store/predicates.py'
+  - id: module.sldb.store.query
+    kind: module
+    label: sldb.store.query
+    description: 'File: sldb/store/query.py'
+  - id: module.sldb.store.query_engine.filter
+    kind: module
+    label: sldb.store.query_engine.filter
+    description: 'File: sldb/store/query_engine/filter.py'
+  - id: class.sldb.store.query_engine.filter.DocumentFilter
+    kind: class
+    label: DocumentFilter
+    description: Class in sldb.store.query_engine.filter
+  - id: module.sldb.store.query_engine.global_semantic
+    kind: module
+    label: sldb.store.query_engine.global_semantic
+    description: 'File: sldb/store/query_engine/global_semantic.py'
+  - id: class.sldb.store.query_engine.global_semantic.GlobalSemanticEngine
+    kind: class
+    label: GlobalSemanticEngine
+    description: Class in sldb.store.query_engine.global_semantic
+  - id: module.sldb.store.query_engine.models
+    kind: module
+    label: sldb.store.query_engine.models
+    description: 'File: sldb/store/query_engine/models.py'
+  - id: class.sldb.store.query_engine.models.RuntimeDocument
+    kind: class
+    label: RuntimeDocument
+    description: Class in sldb.store.query_engine.models
+  - id: module.sldb.store.query_engine.semantic
+    kind: module
+    label: sldb.store.query_engine.semantic
+    description: 'File: sldb/store/query_engine/semantic.py'
+  - id: class.sldb.store.query_engine.semantic.SemanticEngine
+    kind: class
+    label: SemanticEngine
+    description: Class in sldb.store.query_engine.semantic
+  - id: module.sldb.store.query_engine.semantic_utils
+    kind: module
+    label: sldb.store.query_engine.semantic_utils
+    description: 'File: sldb/store/query_engine/semantic_utils.py'
+  - id: class.sldb.store.query_engine.semantic_utils.SemanticUtils
+    kind: class
+    label: SemanticUtils
+    description: Class in sldb.store.query_engine.semantic_utils
+  - id: module.sldb.store.query_engine.structural
+    kind: module
+    label: sldb.store.query_engine.structural
+    description: 'File: sldb/store/query_engine/structural.py'
+  - id: class.sldb.store.query_engine.structural.StructuralEngine
+    kind: class
+    label: StructuralEngine
+    description: Class in sldb.store.query_engine.structural
+  - id: module.sldb.store.query_engine.structural_queries
+    kind: module
+    label: sldb.store.query_engine.structural_queries
+    description: 'File: sldb/store/query_engine/structural_queries.py'
+  - id: class.sldb.store.query_engine.structural_queries.StructuralQueryEngine
+    kind: class
+    label: StructuralQueryEngine
+    description: Class in sldb.store.query_engine.structural_queries
+  - id: module.sldb.store.resolver
+    kind: module
+    label: sldb.store.resolver
+    description: 'File: sldb/store/resolver.py'
+  - id: module.sldb.store.section_rebuild
+    kind: module
+    label: sldb.store.section_rebuild
+    description: 'File: sldb/store/section_rebuild.py'
+  - id: module.sldb.store.semantic
+    kind: module
+    label: sldb.store.semantic
+    description: 'File: sldb/store/semantic.py'
+  - id: class.sldb.store.semantic.RebuildReport
+    kind: class
+    label: RebuildReport
+    description: Class in sldb.store.semantic
+  - id: module.sldb.store.semantic_tags
+    kind: module
+    label: sldb.store.semantic_tags
+    description: 'File: sldb/store/semantic_tags.py'
   relations:
-  - source: system.sldb
-    target: module.links
-    kind: contains
-  - source: module.links
-    target: module.sldb.store.layout
-    kind: imports
-  - source: module.links
-    target: module.sldb.store.io
-    kind: imports
-  - source: module.links
-    target: module.sldb.store.predicates
-    kind: imports
-  - source: module.links
-    target: class.links.ParsedLink
-    kind: contains
-  - source: module.links
-    target: class.links.ResolvedLink
-    kind: contains
-  - source: system.sldb
-    target: module.__init__
-    kind: contains
-  - source: module.__init__
-    target: module.sldb.core.ast
-    kind: imports
-  - source: module.__init__
-    target: module.sldb.core.data_extractor
-    kind: imports
-  - source: module.__init__
-    target: module.sldb.core.renderer
-    kind: imports
-  - source: module.__init__
-    target: module.sldb.core.template_extractor
-    kind: imports
-  - source: module.__init__
-    target: module.sldb.models.structured_doc
-    kind: imports
-  - source: module.__init__
-    target: module.sldb.runtime.config
-    kind: imports
-  - source: system.sldb
-    target: module.__main__
-    kind: contains
-  - source: module.__main__
+  - source: module.sldb.__main__
     target: module.sldb.cli
     kind: imports
-  - source: system.sldb
-    target: module.core.renderer
-    kind: contains
-  - source: module.core.renderer
-    target: module.jinja2
+  - source: module.sldb.cli.commands.ast
+    target: class.sldb.cli.commands.ast.ASTCLI
+    kind: defines
+  - source: module.sldb.cli.commands.ast
+    target: module.sldb.cli.graph_ops
     kind: imports
-  - source: module.core.renderer
-    target: module.sldb.core.ast
+  - source: module.sldb.cli.commands.basic
+    target: class.sldb.cli.commands.basic.BasicCLI
+    kind: defines
+  - source: module.sldb.cli.commands.basic
+    target: module.sldb.cli.utils
     kind: imports
-  - source: module.core.renderer
-    target: module.sldb.core.handlers.router
+  - source: module.sldb.cli.commands.basic
+    target: module.sldb.cli.model_utils
     kind: imports
-  - source: module.core.renderer
-    target: module.sldb.core.renderer_engine.list
+  - source: module.sldb.cli.commands.basic
+    target: module.sldb.runtime.validation
     kind: imports
-  - source: module.core.renderer
-    target: module.sldb.core.renderer_engine.table
+  - source: module.sldb.cli.commands.doc
+    target: class.sldb.cli.commands.doc.DocCLI
+    kind: defines
+  - source: module.sldb.cli.commands.doc
+    target: module.sldb.cli.store_context
     kind: imports
-  - source: module.core.renderer
-    target: module.sldb.core.renderer_engine.yaml
+  - source: module.sldb.cli.commands.doc
+    target: module.sldb.cli.model_utils
     kind: imports
-  - source: module.core.renderer
-    target: module.sldb.models.structured_doc
+  - source: module.sldb.cli.commands.doc
+    target: module.sldb.runtime.validation
     kind: imports
-  - source: module.core.renderer
-    target: class.core.renderer.SLDBRenderer
-    kind: contains
-  - source: system.sldb
-    target: module.core.template_extractor
-    kind: contains
-  - source: module.core.template_extractor
-    target: module.sldb.core.exceptions
-    kind: imports
-  - source: module.core.template_extractor
-    target: module.sldb.core.node
-    kind: imports
-  - source: module.core.template_extractor
-    target: module.sldb.core.node_handler
-    kind: imports
-  - source: module.core.template_extractor
-    target: class.core.template_extractor.TemplateExtractor
-    kind: contains
-  - source: system.sldb
-    target: module.core.ast
-    kind: contains
-  - source: module.core.ast
-    target: module.markdown_it
-    kind: imports
-  - source: module.core.ast
-    target: module.markdown_it.tree
-    kind: imports
-  - source: module.core.ast
-    target: module.sldb.core.node
-    kind: imports
-  - source: module.core.ast
-    target: class.core.ast.BaseASTHandler
-    kind: contains
-  - source: class.core.ast.BaseASTHandler
-    target: class.unknown.ABC
-    kind: inherits
-  - source: module.core.ast
-    target: class.core.ast.MarkdownASTHandler
-    kind: contains
-  - source: class.core.ast.MarkdownASTHandler
-    target: class.unknown.BaseASTHandler
-    kind: inherits
-  - source: module.core.ast
-    target: module.mdit_py_plugins.front_matter
-    kind: imports
-  - source: system.sldb
-    target: module.core.ir
-    kind: contains
-  - source: module.core.ir
-    target: class.core.ir.SourceSpan
-    kind: contains
-  - source: module.core.ir
-    target: class.core.ir.SurfaceNode
-    kind: contains
-  - source: module.core.ir
-    target: class.core.ir.DocumentContext
-    kind: contains
-  - source: module.core.ir
-    target: class.core.ir.MeaningNode
-    kind: contains
-  - source: module.core.ir
-    target: class.core.ir.GraphEdge
-    kind: contains
-  - source: module.core.ir
-    target: class.core.ir.GraphView
-    kind: contains
-  - source: module.core.ir
-    target: class.core.ir.SectionContextEntry
-    kind: contains
-  - source: module.core.ir
-    target: class.core.ir.DocumentIR
-    kind: contains
-  - source: system.sldb
-    target: module.core.node_handler
-    kind: contains
-  - source: module.core.node_handler
-    target: module.sldb.core.handlers.router
-    kind: imports
-  - source: system.sldb
-    target: module.core
-    kind: contains
-  - source: system.sldb
-    target: module.core.data_extractor
-    kind: contains
-  - source: module.core.data_extractor
-    target: module.sldb.core.node
-    kind: imports
-  - source: module.core.data_extractor
-    target: module.sldb.core.node_handler
-    kind: imports
-  - source: module.core.data_extractor
-    target: class.core.data_extractor.DataExtractor
-    kind: contains
-  - source: system.sldb
-    target: module.core.node
-    kind: contains
-  - source: module.core.node
-    target: class.core.node.SLDBNode
-    kind: contains
-  - source: system.sldb
-    target: module.core.exceptions
-    kind: contains
-  - source: module.core.exceptions
-    target: class.core.exceptions.SLDBError
-    kind: contains
-  - source: module.core.exceptions
-    target: class.core.exceptions.SLDBModelError
-    kind: contains
-  - source: class.core.exceptions.SLDBModelError
-    target: class.unknown.SLDBError
-    kind: inherits
-  - source: module.core.exceptions
-    target: class.core.exceptions.SLDBModelDraftError
-    kind: contains
-  - source: class.core.exceptions.SLDBModelDraftError
-    target: class.unknown.SLDBModelError
-    kind: inherits
-  - source: module.core.exceptions
-    target: class.core.exceptions.SLDBModelEditError
-    kind: contains
-  - source: class.core.exceptions.SLDBModelEditError
-    target: class.unknown.SLDBModelError
-    kind: inherits
-  - source: module.core.exceptions
-    target: class.core.exceptions.SLDBValidationError
-    kind: contains
-  - source: class.core.exceptions.SLDBValidationError
-    target: class.unknown.SLDBError
-    kind: inherits
-  - source: module.core.exceptions
-    target: class.core.exceptions.SLDBStoreError
-    kind: contains
-  - source: class.core.exceptions.SLDBStoreError
-    target: class.unknown.SLDBError
-    kind: inherits
-  - source: module.core.exceptions
-    target: class.core.exceptions.SLDBASTError
-    kind: contains
-  - source: class.core.exceptions.SLDBASTError
-    target: class.unknown.SLDBError
-    kind: inherits
-  - source: module.core.exceptions
-    target: class.core.exceptions.SLDBLinkError
-    kind: contains
-  - source: class.core.exceptions.SLDBLinkError
-    target: class.unknown.SLDBError
-    kind: inherits
-  - source: system.sldb
-    target: module.core.contracts
-    kind: contains
-  - source: module.core.contracts
-    target: class.core.contracts.Marker
-    kind: contains
-  - source: module.core.contracts
-    target: class.core.contracts.NodeData
-    kind: contains
-  - source: module.core.contracts
-    target: class.core.contracts.RenderContext
-    kind: contains
-  - source: system.sldb
-    target: module.assets
-    kind: contains
-  - source: system.sldb
-    target: module.cli.utils
-    kind: contains
-  - source: module.cli.utils
-    target: module.importlib
-    kind: imports
-  - source: module.cli.utils
-    target: module.sldb.core.exceptions
-    kind: imports
-  - source: module.cli.utils
-    target: module.sldb.models.structured_doc
-    kind: imports
-  - source: module.cli.utils
-    target: module.sldb.store.resolver
-    kind: imports
-  - source: module.cli.utils
-    target: module.sldb.store.layout
-    kind: imports
-  - source: module.cli.utils
-    target: module.sldb.store.migration
-    kind: imports
-  - source: module.cli.utils
+  - source: module.sldb.cli.commands.doc
     target: module.sldb.store.io
     kind: imports
-  - source: module.cli.utils
-    target: module.sldb.store.models
+  - source: module.sldb.cli.commands.doc
+    target: module.sldb.store.hashing
     kind: imports
-  - source: module.cli.utils
+  - source: module.sldb.cli.commands.doc
+    target: module.sldb.store.section_rebuild
+    kind: imports
+  - source: module.sldb.cli.commands.doc
+    target: module.sldb.store.semantic
+    kind: imports
+  - source: module.sldb.cli.commands.doc
     target: module.sldb.store.ops
     kind: imports
-  - source: module.cli.utils
-    target: module.sldb.store.semantic_tags
-    kind: imports
-  - source: system.sldb
-    target: module.cli.parser
-    kind: contains
-  - source: system.sldb
-    target: module.cli
-    kind: contains
-  - source: module.cli
-    target: module.sldb.cli.main
-    kind: imports
-  - source: module.cli
-    target: module.sldb.cli.parser
-    kind: imports
-  - source: system.sldb
-    target: module.cli.main
-    kind: contains
-  - source: module.cli.main
-    target: module.sldb.cli.parser
-    kind: imports
-  - source: module.cli.main
-    target: module.sldb.cli.commands.help
-    kind: imports
-  - source: module.cli.main
+  - source: module.sldb.cli.commands.doc
     target: module.sldb.core.exceptions
     kind: imports
-  - source: module.cli.main
-    target: class.cli.main.CLI
-    kind: contains
-  - source: module.cli.main
-    target: module.sldb.cli.commands.ast
+  - source: module.sldb.cli.commands.doc_helpers
+    target: module.sldb.cli.store_context
     kind: imports
-  - source: module.cli.main
-    target: module.sldb.cli.commands.basic
+  - source: module.sldb.cli.commands.doc_helpers
+    target: module.sldb.runtime.validation
     kind: imports
-  - source: module.cli.main
-    target: module.sldb.cli.commands.docs
+  - source: module.sldb.cli.commands.doc_helpers
+    target: module.sldb.core.exceptions
     kind: imports
-  - source: module.cli.main
-    target: module.sldb.cli.commands.explore
+  - source: module.sldb.cli.commands.doc_helpers
+    target: module.sldb.cli.model_utils
     kind: imports
-  - source: module.cli.main
-    target: module.sldb.cli.commands.fields
+  - source: module.sldb.cli.commands.doc_helpers
+    target: module.sldb.store.io
     kind: imports
-  - source: module.cli.main
-    target: module.sldb.cli.commands.find
+  - source: module.sldb.cli.commands.doc_helpers
+    target: module.sldb.store.section_rebuild
     kind: imports
-  - source: module.cli.main
-    target: module.sldb.cli.commands.faq
+  - source: module.sldb.cli.commands.doc_helpers
+    target: module.sldb.store.ops
     kind: imports
-  - source: module.cli.main
-    target: module.sldb.cli.commands.init
+  - source: module.sldb.cli.commands.doc_helpers
+    target: module.sldb.store.hashing
     kind: imports
-  - source: module.cli.main
-    target: module.sldb.cli.commands.inbox
+  - source: module.sldb.cli.commands.doc_helpers
+    target: module.sldb.store.section_rebuild
     kind: imports
-  - source: module.cli.main
-    target: module.sldb.cli.commands.legacy
+  - source: module.sldb.cli.commands.doc_helpers
+    target: module.sldb.store.section_rebuild
     kind: imports
-  - source: module.cli.main
-    target: module.sldb.cli.commands.links
-    kind: imports
-  - source: module.cli.main
-    target: module.sldb.cli.commands.models
-    kind: imports
-  - source: module.cli.main
-    target: module.sldb.cli.commands.predicates
-    kind: imports
-  - source: module.cli.main
-    target: module.sldb.cli.commands.query
-    kind: imports
-  - source: module.cli.main
-    target: module.sldb.cli.commands.sections
-    kind: imports
-  - source: module.cli.main
-    target: module.sldb.cli.commands.stores
-    kind: imports
-  - source: module.cli.main
-    target: module.sldb.cli.commands.store
-    kind: imports
-  - source: module.cli.main
-    target: module.sldb.cli.commands.model
-    kind: imports
-  - source: module.cli.main
+  - source: module.sldb.cli.commands.docs
+    target: class.sldb.cli.commands.docs.DocsCLI
+    kind: defines
+  - source: module.sldb.cli.commands.docs
     target: module.sldb.cli.commands.doc
     kind: imports
-  - source: system.sldb
-    target: module.cli.graph
-    kind: contains
-  - source: module.cli.graph
-    target: module.difflib
-    kind: imports
-  - source: module.cli.graph
-    target: module.sldb.cli.utils
-    kind: imports
-  - source: module.cli.graph
-    target: module.sldb.store.layout
-    kind: imports
-  - source: module.cli.graph
-    target: module.sldb.core.ast
-    kind: imports
-  - source: module.cli.graph
-    target: module.sldb.core.contracts
-    kind: imports
-  - source: module.cli.graph
-    target: module.sldb.core.ir
-    kind: imports
-  - source: module.cli.graph
-    target: module.sldb.store.io
-    kind: imports
-  - source: module.cli.graph
-    target: module.sldb.store.models
-    kind: imports
-  - source: module.cli.graph
-    target: module.sldb.store.query
-    kind: imports
-  - source: module.cli.graph
-    target: class.cli.graph.SectionRecord
-    kind: contains
-  - source: module.cli.graph
-    target: class.cli.graph.SearchRecord
-    kind: contains
-  - source: system.sldb
-    target: module.runtime.config
-    kind: contains
-  - source: module.runtime.config
-    target: class.runtime.config.SLDBConfig
-    kind: contains
-  - source: system.sldb
-    target: module.runtime
-    kind: contains
-  - source: system.sldb
-    target: module.runtime.validation
-    kind: contains
-  - source: module.runtime.validation
-    target: module.sldb.core.ast
-    kind: imports
-  - source: module.runtime.validation
-    target: module.sldb.core.data_extractor
-    kind: imports
-  - source: module.runtime.validation
-    target: module.sldb.core.renderer
-    kind: imports
-  - source: module.runtime.validation
-    target: module.sldb.core.template_extractor
-    kind: imports
-  - source: module.runtime.validation
-    target: module.sldb.models.structured_doc
-    kind: imports
-  - source: module.runtime.validation
-    target: class.runtime.validation.Validator
-    kind: contains
-  - source: system.sldb
-    target: module.store.export
-    kind: contains
-  - source: module.store.export
-    target: module.importlib.metadata
-    kind: imports
-  - source: module.store.export
-    target: module.sldb.store.io
-    kind: imports
-  - source: module.store.export
-    target: module.sldb.store.layout
-    kind: imports
-  - source: module.store.export
-    target: module.sldb.store.semantic
-    kind: imports
-  - source: system.sldb
-    target: module.store.ops
-    kind: contains
-  - source: module.store.ops
-    target: module.sldb.store.hashing
-    kind: imports
-  - source: module.store.ops
-    target: module.sldb.store.io
-    kind: imports
-  - source: module.store.ops
-    target: module.sldb.store.models
-    kind: imports
-  - source: module.store.ops
-    target: module.sldb.store.semantic
-    kind: imports
-  - source: module.store.ops
-    target: module.sldb.core.exceptions
-    kind: imports
-  - source: system.sldb
-    target: module.store.hashing
-    kind: contains
-  - source: module.store.hashing
-    target: module.sldb.models.structured_doc
-    kind: imports
-  - source: module.store.hashing
-    target: module.sldb.runtime.validation
-    kind: imports
-  - source: module.store.hashing
-    target: module.sldb.store.models
-    kind: imports
-  - source: system.sldb
-    target: module.store.resolver
-    kind: contains
-  - source: module.store.resolver
-    target: module.sldb.store.layout
-    kind: imports
-  - source: system.sldb
-    target: module.store.models
-    kind: contains
-  - source: module.store.models
-    target: class.store.models.StoreEntry
-    kind: contains
-  - source: module.store.models
-    target: class.store.models.ModelEntry
-    kind: contains
-  - source: module.store.models
-    target: class.store.models.PredicateEntry
-    kind: contains
-  - source: module.store.models
-    target: class.store.models.StoreIndex
-    kind: contains
-  - source: module.store.models
-    target: class.store.models.ModelsIndex
-    kind: contains
-  - source: module.store.models
-    target: class.store.models.DocumentEntry
-    kind: contains
-  - source: module.store.models
-    target: class.store.models.DocumentsIndex
-    kind: contains
-  - source: module.store.models
-    target: class.store.models.SemanticNode
-    kind: contains
-  - source: module.store.models
-    target: class.store.models.SectionContextRecord
-    kind: contains
-  - source: module.store.models
-    target: class.store.models.DocSections
-    kind: contains
-  - source: module.store.models
-    target: class.store.models.SectionsIndex
-    kind: contains
-  - source: module.store.models
-    target: class.store.models.SemanticDAG
-    kind: contains
-  - source: module.store.models
-    target: class.store.models.SemanticDocumentRecord
-    kind: contains
-  - source: module.store.models
-    target: class.store.models.SemanticIndex
-    kind: contains
-  - source: system.sldb
-    target: module.store.layout
-    kind: contains
-  - source: system.sldb
-    target: module.store.diagnostics
-    kind: contains
-  - source: module.store.diagnostics
-    target: module.sldb.models.structured_doc
-    kind: imports
-  - source: module.store.diagnostics
-    target: module.sldb.store.layout
-    kind: imports
-  - source: module.store.diagnostics
-    target: module.sldb.store.hashing
-    kind: imports
-  - source: module.store.diagnostics
-    target: module.sldb.store.io
-    kind: imports
-  - source: module.store.diagnostics
-    target: module.sldb.store.models
-    kind: imports
-  - source: module.store.diagnostics
-    target: module.sldb.store.diagnostics_models
-    kind: imports
-  - source: module.store.diagnostics
-    target: module.sldb.cli.utils
-    kind: imports
-  - source: system.sldb
-    target: module.store.query
-    kind: contains
-  - source: module.store.query
-    target: module.sldb.runtime.validation
-    kind: imports
-  - source: module.store.query
-    target: module.sldb.store.layout
-    kind: imports
-  - source: module.store.query
-    target: module.sldb.store.io
-    kind: imports
-  - source: module.store.query
-    target: module.sldb.store.query_engine.models
-    kind: imports
-  - source: module.store.query
-    target: module.sldb.store.query_engine.structural
-    kind: imports
-  - source: module.store.query
-    target: module.sldb.store.query_engine.structural_queries
-    kind: imports
-  - source: module.store.query
-    target: module.sldb.store.query_engine.semantic
-    kind: imports
-  - source: module.store.query
-    target: module.sldb.store.query_engine.global_semantic
-    kind: imports
-  - source: system.sldb
-    target: module.store.semantic_tags
-    kind: contains
-  - source: system.sldb
-    target: module.store
-    kind: contains
-  - source: module.store
-    target: module.sldb.store.models
-    kind: imports
-  - source: module.store
-    target: module.sldb.store.io
-    kind: imports
-  - source: module.store
-    target: module.sldb.store.hashing
-    kind: imports
-  - source: module.store
-    target: module.sldb.store.resolver
-    kind: imports
-  - source: module.store
-    target: module.sldb.store.diagnostics
-    kind: imports
-  - source: system.sldb
-    target: module.store.diagnostics_models
-    kind: contains
-  - source: module.store.diagnostics_models
-    target: class.store.diagnostics_models.DiagnosisNote
-    kind: contains
-  - source: class.store.diagnostics_models.DiagnosisNote
-    target: class.unknown.str
-    kind: inherits
-  - source: module.store.diagnostics_models
-    target: class.store.diagnostics_models.DocumentDiagnosis
-    kind: contains
-  - source: module.store.diagnostics_models
-    target: class.store.diagnostics_models.ModelDiagnosis
-    kind: contains
-  - source: module.store.diagnostics_models
-    target: class.store.diagnostics_models.StoreDiagnosis
-    kind: contains
-  - source: system.sldb
-    target: module.store.migration
-    kind: contains
-  - source: module.store.migration
-    target: module.sldb.store.io
-    kind: imports
-  - source: module.store.migration
-    target: module.sldb.store.layout
-    kind: imports
-  - source: system.sldb
-    target: module.store.semantic
-    kind: contains
-  - source: module.store.semantic
-    target: module.sldb.runtime.validation
-    kind: imports
-  - source: module.store.semantic
-    target: module.sldb.store.io
-    kind: imports
-  - source: module.store.semantic
-    target: module.sldb.store.layout
-    kind: imports
-  - source: module.store.semantic
-    target: module.sldb.store.models
-    kind: imports
-  - source: module.store.semantic
-    target: module.sldb.store.semantic_tags
-    kind: imports
-  - source: module.store.semantic
-    target: class.store.semantic.RebuildReport
-    kind: contains
-  - source: module.store.semantic
-    target: module.markdown_it
-    kind: imports
-  - source: module.store.semantic
-    target: module.markdown_it.tree
-    kind: imports
-  - source: system.sldb
-    target: module.store.predicates
-    kind: contains
-  - source: module.store.predicates
-    target: module.sldb.store.models
-    kind: imports
-  - source: system.sldb
-    target: module.store.io
-    kind: contains
-  - source: module.store.io
-    target: module.contextlib
-    kind: imports
-  - source: module.store.io
-    target: module.fcntl
-    kind: imports
-  - source: module.store.io
-    target: module.tempfile
-    kind: imports
-  - source: module.store.io
-    target: module.sldb.core.exceptions
-    kind: imports
-  - source: module.store.io
-    target: module.sldb.store.layout
-    kind: imports
-  - source: module.store.io
-    target: module.sldb.store.models
-    kind: imports
-  - source: system.sldb
-    target: module.models
-    kind: contains
-  - source: module.models
-    target: module.sldb.models.structured_doc
-    kind: imports
-  - source: system.sldb
-    target: module.models.structured_doc
-    kind: contains
-  - source: module.models.structured_doc
-    target: module.importlib
-    kind: imports
-  - source: module.models.structured_doc
-    target: class.models.structured_doc.StructuredNLDoc
-    kind: contains
-  - source: module.models.structured_doc
-    target: module.sldb.runtime.validation
-    kind: imports
-  - source: system.sldb
-    target: module.examples
-    kind: contains
-  - source: system.sldb
-    target: module.examples.reference_bundle.guide_model
-    kind: contains
-  - source: module.examples.reference_bundle.guide_model
-    target: module.sldb
-    kind: imports
-  - source: module.examples.reference_bundle.guide_model
-    target: class.examples.reference_bundle.guide_model.SLDBGuide
-    kind: contains
-  - source: class.examples.reference_bundle.guide_model.SLDBGuide
-    target: class.unknown.StructuredNLDoc
-    kind: inherits
-  - source: system.sldb
-    target: module.examples.reference_bundle
-    kind: contains
-  - source: system.sldb
-    target: module.examples.pandoc_cv.cv_model
-    kind: contains
-  - source: module.examples.pandoc_cv.cv_model
-    target: module.sldb
-    kind: imports
-  - source: module.examples.pandoc_cv.cv_model
-    target: class.examples.pandoc_cv.cv_model.PandocCVDoc
-    kind: contains
-  - source: class.examples.pandoc_cv.cv_model.PandocCVDoc
-    target: class.unknown.StructuredNLDoc
-    kind: inherits
-  - source: system.sldb
-    target: module.store.query_engine.structural_queries
-    kind: contains
-  - source: module.store.query_engine.structural_queries
-    target: module.fnmatch
-    kind: imports
-  - source: module.store.query_engine.structural_queries
-    target: module.sldb.store.query_engine.structural
-    kind: imports
-  - source: module.store.query_engine.structural_queries
-    target: module.sldb.store.query_engine.filter
-    kind: imports
-  - source: system.sldb
-    target: module.store.query_engine.models
-    kind: contains
-  - source: module.store.query_engine.models
-    target: class.store.query_engine.models.RuntimeDocument
-    kind: contains
-  - source: system.sldb
-    target: module.store.query_engine.semantic_utils
-    kind: contains
-  - source: module.store.query_engine.semantic_utils
-    target: module.sldb.store.layout
-    kind: imports
-  - source: module.store.query_engine.semantic_utils
-    target: module.sldb.store.io
-    kind: imports
-  - source: module.store.query_engine.semantic_utils
-    target: module.sldb.store.query
-    kind: imports
-  - source: module.store.query_engine.semantic_utils
-    target: module.sldb.store.query_engine.models
-    kind: imports
-  - source: module.store.query_engine.semantic_utils
-    target: module.sldb.store.semantic
-    kind: imports
-  - source: system.sldb
-    target: module.store.query_engine.structural
-    kind: contains
-  - source: module.store.query_engine.structural
-    target: module.sldb.store.io
-    kind: imports
-  - source: module.store.query_engine.structural
-    target: module.sldb.store.query
-    kind: imports
-  - source: system.sldb
-    target: module.store.query_engine.global_semantic
-    kind: contains
-  - source: module.store.query_engine.global_semantic
-    target: module.sldb.store.io
-    kind: imports
-  - source: module.store.query_engine.global_semantic
-    target: module.sldb.store.query
-    kind: imports
-  - source: system.sldb
-    target: module.store.query_engine
-    kind: contains
-  - source: system.sldb
-    target: module.store.query_engine.filter
-    kind: contains
-  - source: module.store.query_engine.filter
-    target: module.sldb.store.query_engine.models
-    kind: imports
-  - source: system.sldb
-    target: module.store.query_engine.semantic
-    kind: contains
-  - source: module.store.query_engine.semantic
-    target: module.sldb.store.query_engine.semantic_utils
-    kind: imports
-  - source: module.store.query_engine.semantic
-    target: module.sldb.store.query_engine.filter
-    kind: imports
-  - source: system.sldb
-    target: module.cli.commands.help
-    kind: contains
-  - source: module.cli.commands.help
-    target: class.cli.commands.help.HelpCLI
-    kind: contains
-  - source: system.sldb
-    target: module.cli.commands.sections
-    kind: contains
-  - source: module.cli.commands.sections
-    target: module.sldb.cli.graph
-    kind: imports
-  - source: module.cli.commands.sections
-    target: module.sldb.cli.utils
-    kind: imports
-  - source: module.cli.commands.sections
-    target: module.sldb.store.io
-    kind: imports
-  - source: module.cli.commands.sections
-    target: module.sldb.store.models
-    kind: imports
-  - source: module.cli.commands.sections
-    target: class.cli.commands.sections.SectionsCLI
-    kind: contains
-  - source: module.cli.commands.sections
-    target: module.sldb.cli.commands.find
-    kind: imports
-  - source: system.sldb
-    target: module.cli.commands.legacy
-    kind: contains
-  - source: module.cli.commands.legacy
-    target: module.sldb.cli.commands.links
-    kind: imports
-  - source: module.cli.commands.legacy
-    target: module.sldb.cli.commands.query
-    kind: imports
-  - source: module.cli.commands.legacy
-    target: class.cli.commands.legacy.LegacyCLI
-    kind: contains
-  - source: system.sldb
-    target: module.cli.commands.init
-    kind: contains
-  - source: module.cli.commands.init
-    target: module.importlib.resources
-    kind: imports
-  - source: module.cli.commands.init
-    target: class.cli.commands.init.InitCLI
-    kind: contains
-  - source: module.cli.commands.init
-    target: module.sldb.core.exceptions
-    kind: imports
-  - source: system.sldb
-    target: module.cli.commands.fields
-    kind: contains
-  - source: module.cli.commands.fields
-    target: module.sldb.cli.graph
-    kind: imports
-  - source: module.cli.commands.fields
-    target: module.sldb.cli.utils
-    kind: imports
-  - source: module.cli.commands.fields
-    target: module.sldb.runtime.validation
-    kind: imports
-  - source: module.cli.commands.fields
-    target: module.sldb.store.hashing
-    kind: imports
-  - source: module.cli.commands.fields
-    target: module.sldb.store.io
-    kind: imports
-  - source: module.cli.commands.fields
-    target: module.sldb.store.ops
-    kind: imports
-  - source: module.cli.commands.fields
-    target: module.sldb.store.query
-    kind: imports
-  - source: module.cli.commands.fields
-    target: module.sldb.store.semantic
-    kind: imports
-  - source: module.cli.commands.fields
-    target: class.cli.commands.fields.FieldsCLI
-    kind: contains
-  - source: system.sldb
-    target: module.cli.commands.find
-    kind: contains
-  - source: module.cli.commands.find
-    target: module.sldb.cli.graph
-    kind: imports
-  - source: module.cli.commands.find
-    target: module.sldb.store.query_engine.filter
-    kind: imports
-  - source: module.cli.commands.find
-    target: class.cli.commands.find.FindCLI
-    kind: contains
-  - source: module.cli.commands.find
-    target: module.sldb.cli.utils
-    kind: imports
-  - source: system.sldb
-    target: module.cli.commands.models
-    kind: contains
-  - source: module.cli.commands.models
-    target: module.ast
-    kind: imports
-  - source: module.cli.commands.models
-    target: module.importlib.util
-    kind: imports
-  - source: module.cli.commands.models
-    target: module.importlib.machinery
-    kind: imports
-  - source: module.cli.commands.models
-    target: module.sldb.cli.commands.model
-    kind: imports
-  - source: module.cli.commands.models
-    target: module.sldb.cli.graph
-    kind: imports
-  - source: module.cli.commands.models
-    target: module.sldb.cli.utils
-    kind: imports
-  - source: module.cli.commands.models
-    target: module.sldb.core.exceptions
-    kind: imports
-  - source: module.cli.commands.models
-    target: module.sldb.runtime.validation
-    kind: imports
-  - source: module.cli.commands.models
-    target: module.sldb.store.io
-    kind: imports
-  - source: module.cli.commands.models
-    target: class.cli.commands.models.ModelsCLI
-    kind: contains
-  - source: system.sldb
-    target: module.cli.commands.model
-    kind: contains
-  - source: module.cli.commands.model
-    target: module.inspect
-    kind: imports
-  - source: module.cli.commands.model
-    target: module.sldb.cli.utils
-    kind: imports
-  - source: module.cli.commands.model
-    target: module.sldb.store.hashing
-    kind: imports
-  - source: module.cli.commands.model
-    target: module.sldb.store.io
-    kind: imports
-  - source: module.cli.commands.model
-    target: module.sldb.store.layout
-    kind: imports
-  - source: module.cli.commands.model
-    target: module.sldb.store.models
-    kind: imports
-  - source: module.cli.commands.model
-    target: module.sldb.store.ops
-    kind: imports
-  - source: module.cli.commands.model
-    target: module.sldb.store.semantic
-    kind: imports
-  - source: module.cli.commands.model
-    target: module.sldb.store.semantic_tags
-    kind: imports
-  - source: module.cli.commands.model
-    target: module.sldb.core.exceptions
-    kind: imports
-  - source: module.cli.commands.model
-    target: class.cli.commands.model.ModelCLI
-    kind: contains
-  - source: system.sldb
-    target: module.cli.commands.docs
-    kind: contains
-  - source: module.cli.commands.docs
-    target: module.sldb.cli.commands.doc
-    kind: imports
-  - source: module.cli.commands.docs
+  - source: module.sldb.cli.commands.docs
     target: module.sldb.cli.commands.explore
     kind: imports
-  - source: module.cli.commands.docs
+  - source: module.sldb.cli.commands.docs
     target: module.sldb.cli.commands.links
     kind: imports
-  - source: module.cli.commands.docs
-    target: module.sldb.cli.graph
+  - source: module.sldb.cli.commands.docs
+    target: module.sldb.cli.graph_ops
     kind: imports
-  - source: module.cli.commands.docs
-    target: module.sldb.cli.utils
+  - source: module.sldb.cli.commands.docs
+    target: module.sldb.cli.store_context
     kind: imports
-  - source: module.cli.commands.docs
+  - source: module.sldb.cli.commands.docs
     target: module.sldb.store.io
     kind: imports
-  - source: module.cli.commands.docs
-    target: class.cli.commands.docs.DocsCLI
-    kind: contains
-  - source: system.sldb
-    target: module.cli.commands.doc
-    kind: contains
-  - source: module.cli.commands.doc
+  - source: module.sldb.cli.commands.explore
+    target: class.sldb.cli.commands.explore.ExploreCLI
+    kind: defines
+  - source: module.sldb.cli.commands.explore
+    target: module.sldb.cli.commands.explore_hit
+    kind: imports
+  - source: module.sldb.cli.commands.explore
+    target: module.sldb.cli.commands.explore_docs
+    kind: imports
+  - source: module.sldb.cli.commands.explore
+    target: module.sldb.cli.commands.explore_code
+    kind: imports
+  - source: module.sldb.cli.commands.explore_code
+    target: class.sldb.cli.commands.explore_code.ExploreCode
+    kind: defines
+  - source: module.sldb.cli.commands.explore_docs
+    target: class.sldb.cli.commands.explore_docs.ExploreDocs
+    kind: defines
+  - source: module.sldb.cli.commands.explore_hit
+    target: class.sldb.cli.commands.explore_hit.ExploreHit
+    kind: defines
+  - source: module.sldb.cli.commands.faq
+    target: class.sldb.cli.commands.faq.FAQCLI
+    kind: defines
+  - source: module.sldb.cli.commands.faq
+    target: module.sldb.cli.commands.faq_entry
+    kind: imports
+  - source: module.sldb.cli.commands.faq_entry
+    target: class.sldb.cli.commands.faq_entry.FAQEntry
+    kind: defines
+  - source: module.sldb.cli.commands.fields
+    target: class.sldb.cli.commands.fields.FieldsCLI
+    kind: defines
+  - source: module.sldb.cli.commands.fields
+    target: module.sldb.cli.commands.fields_show
+    kind: imports
+  - source: module.sldb.cli.commands.fields
+    target: module.sldb.cli.commands.fields_mutate
+    kind: imports
+  - source: module.sldb.cli.commands.fields_mutate
+    target: module.sldb.cli.dict_utils
+    kind: imports
+  - source: module.sldb.cli.commands.fields_mutate
     target: module.sldb.cli.utils
     kind: imports
-  - source: module.cli.commands.doc
+  - source: module.sldb.cli.commands.fields_mutate
+    target: module.sldb.cli.commands.fields_target
+    kind: imports
+  - source: module.sldb.cli.commands.fields_mutate
+    target: module.sldb.cli.commands.fields_save
+    kind: imports
+  - source: module.sldb.cli.commands.fields_save
+    target: module.sldb.cli.store_context
+    kind: imports
+  - source: module.sldb.cli.commands.fields_save
+    target: module.sldb.cli.model_utils
+    kind: imports
+  - source: module.sldb.cli.commands.fields_save
     target: module.sldb.runtime.validation
     kind: imports
-  - source: module.cli.commands.doc
-    target: module.sldb.store.ops
-    kind: imports
-  - source: module.cli.commands.doc
-    target: module.sldb.core.exceptions
-    kind: imports
-  - source: module.cli.commands.doc
-    target: class.cli.commands.doc.DocCLI
-    kind: contains
-  - source: module.cli.commands.doc
-    target: module.sldb.store.io
-    kind: imports
-  - source: module.cli.commands.doc
+  - source: module.sldb.cli.commands.fields_save
     target: module.sldb.store.hashing
     kind: imports
-  - source: module.cli.commands.doc
-    target: module.sldb.store.semantic
-    kind: imports
-  - source: system.sldb
-    target: module.cli.commands.store
-    kind: contains
-  - source: module.cli.commands.store
-    target: module.sldb.cli.utils
-    kind: imports
-  - source: module.cli.commands.store
-    target: module.sldb.core.exceptions
-    kind: imports
-  - source: module.cli.commands.store
-    target: module.sldb.store.hashing
-    kind: imports
-  - source: module.cli.commands.store
+  - source: module.sldb.cli.commands.fields_save
     target: module.sldb.store.io
     kind: imports
-  - source: module.cli.commands.store
-    target: module.sldb.store.layout
-    kind: imports
-  - source: module.cli.commands.store
-    target: module.sldb.store.models
-    kind: imports
-  - source: module.cli.commands.store
-    target: module.sldb.store.predicates
-    kind: imports
-  - source: module.cli.commands.store
+  - source: module.sldb.cli.commands.fields_save
     target: module.sldb.store.ops
     kind: imports
-  - source: module.cli.commands.store
+  - source: module.sldb.cli.commands.fields_save
     target: module.sldb.store.semantic
     kind: imports
-  - source: module.cli.commands.store
-    target: class.cli.commands.store.StoreCLI
-    kind: contains
-  - source: module.cli.commands.store
-    target: module.sldb.store.diagnostics
+  - source: module.sldb.cli.commands.fields_show
+    target: module.sldb.cli.dict_utils
     kind: imports
-  - source: system.sldb
-    target: module.cli.commands.ast
-    kind: contains
-  - source: module.cli.commands.ast
-    target: module.sldb.cli.graph
+  - source: module.sldb.cli.commands.fields_show
+    target: module.sldb.cli.store_context
     kind: imports
-  - source: module.cli.commands.ast
-    target: class.cli.commands.ast.ASTCLI
-    kind: contains
-  - source: system.sldb
-    target: module.cli.commands.inbox
-    kind: contains
-  - source: module.cli.commands.inbox
-    target: module.sldb.cli.utils
+  - source: module.sldb.cli.commands.fields_show
+    target: module.sldb.cli.model_utils
     kind: imports
-  - source: module.cli.commands.inbox
-    target: module.sldb.core.exceptions
+  - source: module.sldb.cli.commands.fields_show
+    target: module.sldb.cli.commands.fields_target
     kind: imports
-  - source: module.cli.commands.inbox
-    target: module.sldb.runtime.validation
+  - source: module.sldb.cli.commands.fields_show
+    target: module.sldb.cli.graph_ops
     kind: imports
-  - source: module.cli.commands.inbox
-    target: module.sldb.store.layout
+  - source: module.sldb.cli.commands.fields_target
+    target: module.sldb.cli.store_context
     kind: imports
-  - source: module.cli.commands.inbox
-    target: module.sldb.store.ops
+  - source: module.sldb.cli.commands.fields_target
+    target: module.sldb.cli.model_utils
     kind: imports
-  - source: module.cli.commands.inbox
-    target: module.sldb.store.resolver
-    kind: imports
-  - source: module.cli.commands.inbox
-    target: class.cli.commands.inbox.InboxCLI
-    kind: contains
-  - source: system.sldb
-    target: module.cli.commands.explore
-    kind: contains
-  - source: module.cli.commands.explore
-    target: module.ast
-    kind: imports
-  - source: module.cli.commands.explore
-    target: class.cli.commands.explore.ExploreHit
-    kind: contains
-  - source: module.cli.commands.explore
-    target: class.cli.commands.explore.ExploreCLI
-    kind: contains
-  - source: system.sldb
-    target: module.cli.commands.query
-    kind: contains
-  - source: module.cli.commands.query
-    target: module.sldb.cli.utils
-    kind: imports
-  - source: module.cli.commands.query
+  - source: module.sldb.cli.commands.fields_target
     target: module.sldb.store.query
     kind: imports
-  - source: module.cli.commands.query
+  - source: module.sldb.cli.commands.find
+    target: class.sldb.cli.commands.find.FindCLI
+    kind: defines
+  - source: module.sldb.cli.commands.find
+    target: module.sldb.cli.graph_ops
+    kind: imports
+  - source: module.sldb.cli.commands.find
+    target: module.sldb.cli.commands.find_filters
+    kind: imports
+  - source: module.sldb.cli.commands.find
+    target: module.sldb.cli.commands.find_format
+    kind: imports
+  - source: module.sldb.cli.commands.find_filter
+    target: module.sldb.cli.commands.find_proxy
+    kind: imports
+  - source: module.sldb.cli.commands.find_filter
+    target: module.sldb.cli.graph_ops
+    kind: imports
+  - source: module.sldb.cli.commands.find_filter
+    target: module.sldb.cli.model_utils
+    kind: imports
+  - source: module.sldb.cli.commands.find_filter
+    target: module.sldb.store.query_engine.filter
+    kind: imports
+  - source: module.sldb.cli.commands.find_filters
+    target: class.sldb.cli.commands.find_filters.FindFilters
+    kind: defines
+  - source: module.sldb.cli.commands.find_filters
+    target: module.sldb.cli.graph_ops
+    kind: imports
+  - source: module.sldb.cli.commands.find_filters
+    target: module.sldb.store.query_engine.filter
+    kind: imports
+  - source: module.sldb.cli.commands.find_filters
+    target: module.sldb.cli.commands.find_utils
+    kind: imports
+  - source: module.sldb.cli.commands.find_filters
+    target: module.sldb.cli.model_utils
+    kind: imports
+  - source: module.sldb.cli.commands.find_format
+    target: class.sldb.cli.commands.find_format.FindFormatter
+    kind: defines
+  - source: module.sldb.cli.commands.find_format
+    target: module.sldb.cli.graph_ops
+    kind: imports
+  - source: module.sldb.cli.commands.find_proxy
+    target: class.sldb.cli.commands.find_proxy._RuntimeDocProxy
+    kind: defines
+  - source: module.sldb.cli.commands.find_utils
+    target: class.sldb.cli.commands.find_utils.RuntimeDocProxy
+    kind: defines
+  - source: module.sldb.cli.commands.help
+    target: class.sldb.cli.commands.help.HelpCLI
+    kind: defines
+  - source: module.sldb.cli.commands.help
+    target: module.sldb.cli.commands.help_texts
+    kind: imports
+  - source: module.sldb.cli.commands.inbox
+    target: class.sldb.cli.commands.inbox.InboxCLI
+    kind: defines
+  - source: module.sldb.cli.commands.inbox
+    target: module.sldb.cli.commands.inbox_list
+    kind: imports
+  - source: module.sldb.cli.commands.inbox
+    target: module.sldb.cli.commands.inbox_show
+    kind: imports
+  - source: module.sldb.cli.commands.inbox
+    target: module.sldb.cli.commands.inbox_create
+    kind: imports
+  - source: module.sldb.cli.commands.inbox_core
+    target: module.sldb.cli.store_context
+    kind: imports
+  - source: module.sldb.cli.commands.inbox_core
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.cli.commands.inbox_core
+    target: module.sldb.store.resolver
+    kind: imports
+  - source: module.sldb.cli.commands.inbox_create
     target: module.sldb.core.exceptions
     kind: imports
-  - source: module.cli.commands.query
-    target: class.cli.commands.query.QueryCLI
-    kind: contains
-  - source: system.sldb
-    target: module.cli.commands.links
-    kind: contains
-  - source: module.cli.commands.links
+  - source: module.sldb.cli.commands.inbox_create
+    target: module.sldb.cli.model_utils
+    kind: imports
+  - source: module.sldb.cli.commands.inbox_create
+    target: module.sldb.runtime.validation
+    kind: imports
+  - source: module.sldb.cli.commands.inbox_create
+    target: module.sldb.store.ops
+    kind: imports
+  - source: module.sldb.cli.commands.inbox_create
+    target: module.sldb.cli.commands.inbox_core
+    kind: imports
+  - source: module.sldb.cli.commands.inbox_list
+    target: module.sldb.cli.commands.inbox_core
+    kind: imports
+  - source: module.sldb.cli.commands.inbox_list
+    target: module.sldb.cli.commands.inbox_parse
+    kind: imports
+  - source: module.sldb.cli.commands.inbox_show
+    target: module.sldb.cli.commands.inbox_core
+    kind: imports
+  - source: module.sldb.cli.commands.inbox_show
+    target: module.sldb.cli.commands.inbox_parse
+    kind: imports
+  - source: module.sldb.cli.commands.init
+    target: class.sldb.cli.commands.init.InitCLI
+    kind: defines
+  - source: module.sldb.cli.commands.init
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.cli.commands.legacy
+    target: class.sldb.cli.commands.legacy.LegacyCLI
+    kind: defines
+  - source: module.sldb.cli.commands.legacy
+    target: module.sldb.cli.commands.links
+    kind: imports
+  - source: module.sldb.cli.commands.legacy
+    target: module.sldb.cli.commands.query
+    kind: imports
+  - source: module.sldb.cli.commands.links
+    target: class.sldb.cli.commands.links.LinkCLI
+    kind: defines
+  - source: module.sldb.cli.commands.links
+    target: module.sldb.cli.store_context
+    kind: imports
+  - source: module.sldb.cli.commands.links
     target: module.sldb.cli.utils
     kind: imports
-  - source: module.cli.commands.links
+  - source: module.sldb.cli.commands.links
     target: module.sldb.links
     kind: imports
-  - source: module.cli.commands.links
-    target: class.cli.commands.links.LinkCLI
-    kind: contains
-  - source: system.sldb
-    target: module.cli.commands.basic
-    kind: contains
-  - source: module.cli.commands.basic
-    target: module.sldb.cli.utils
+  - source: module.sldb.cli.commands.model
+    target: class.sldb.cli.commands.model.ModelCLI
+    kind: defines
+  - source: module.sldb.cli.commands.model
+    target: module.sldb.cli.store_context
     kind: imports
-  - source: module.cli.commands.basic
-    target: module.sldb.runtime.validation
+  - source: module.sldb.cli.commands.model
+    target: module.sldb.cli.model_utils
     kind: imports
-  - source: module.cli.commands.basic
-    target: class.cli.commands.basic.BasicCLI
-    kind: contains
-  - source: system.sldb
-    target: module.cli.commands
-    kind: contains
-  - source: system.sldb
-    target: module.cli.commands.faq
-    kind: contains
-  - source: module.cli.commands.faq
-    target: class.cli.commands.faq.FAQEntry
-    kind: contains
-  - source: module.cli.commands.faq
-    target: class.cli.commands.faq.FAQCLI
-    kind: contains
-  - source: system.sldb
-    target: module.cli.commands.stores
-    kind: contains
-  - source: module.cli.commands.stores
-    target: module.sldb.cli.commands.store
+  - source: module.sldb.cli.commands.model
+    target: module.sldb.store.hashing
     kind: imports
-  - source: module.cli.commands.stores
-    target: module.sldb.cli.utils
-    kind: imports
-  - source: module.cli.commands.stores
-    target: module.sldb.store.export
-    kind: imports
-  - source: module.cli.commands.stores
+  - source: module.sldb.cli.commands.model
     target: module.sldb.store.io
     kind: imports
-  - source: module.cli.commands.stores
-    target: class.cli.commands.stores.StoresCLI
-    kind: contains
-  - source: system.sldb
-    target: module.cli.commands.predicates
-    kind: contains
-  - source: module.cli.commands.predicates
-    target: module.sldb.cli.utils
+  - source: module.sldb.cli.commands.model
+    target: module.sldb.store.layout
     kind: imports
-  - source: module.cli.commands.predicates
-    target: module.sldb.core.exceptions
-    kind: imports
-  - source: module.cli.commands.predicates
-    target: module.sldb.store.io
-    kind: imports
-  - source: module.cli.commands.predicates
+  - source: module.sldb.cli.commands.model
     target: module.sldb.store.models
     kind: imports
-  - source: module.cli.commands.predicates
-    target: module.sldb.store.predicates
+  - source: module.sldb.cli.commands.model
+    target: module.sldb.store.ops
     kind: imports
-  - source: module.cli.commands.predicates
-    target: class.cli.commands.predicates.PredicatesCLI
-    kind: contains
-  - source: system.sldb
-    target: module.assets.skills
-    kind: contains
-  - source: system.sldb
-    target: module.core.handlers.text
-    kind: contains
-  - source: module.core.handlers.text
-    target: module.sldb.core.handlers.base
+  - source: module.sldb.cli.commands.model
+    target: module.sldb.store.semantic
     kind: imports
-  - source: module.core.handlers.text
-    target: module.sldb.core.handlers.utils
+  - source: module.sldb.cli.commands.model
+    target: module.sldb.store.semantic_tags
     kind: imports
-  - source: module.core.handlers.text
-    target: module.sldb.core.node
-    kind: imports
-  - source: module.core.handlers.text
-    target: class.core.handlers.text.TextNodeHandler
-    kind: contains
-  - source: class.core.handlers.text.TextNodeHandler
-    target: class.unknown.BaseNodeHandler
-    kind: inherits
-  - source: system.sldb
-    target: module.core.handlers.router
-    kind: contains
-  - source: module.core.handlers.router
-    target: module.sldb.core.handlers.list
-    kind: imports
-  - source: module.core.handlers.router
-    target: module.sldb.core.handlers.table
-    kind: imports
-  - source: module.core.handlers.router
-    target: module.sldb.core.handlers.text
-    kind: imports
-  - source: module.core.handlers.router
-    target: module.sldb.core.handlers.yaml
-    kind: imports
-  - source: module.core.handlers.router
-    target: module.sldb.core.node
-    kind: imports
-  - source: module.core.handlers.router
-    target: class.core.handlers.router.SharedNodeHandler
-    kind: contains
-  - source: system.sldb
-    target: module.core.handlers.utils
-    kind: contains
-  - source: module.core.handlers.utils
-    target: module.sldb.core.contracts
-    kind: imports
-  - source: system.sldb
-    target: module.core.handlers
-    kind: contains
-  - source: system.sldb
-    target: module.core.handlers.base
-    kind: contains
-  - source: module.core.handlers.base
-    target: module.sldb.core.node
-    kind: imports
-  - source: module.core.handlers.base
-    target: class.core.handlers.base.BaseNodeHandler
-    kind: contains
-  - source: class.core.handlers.base.BaseNodeHandler
-    target: class.unknown.ABC
-    kind: inherits
-  - source: system.sldb
-    target: module.core.handlers.table
-    kind: contains
-  - source: module.core.handlers.table
-    target: module.sldb.core.handlers.base
-    kind: imports
-  - source: module.core.handlers.table
-    target: module.sldb.core.handlers.utils
-    kind: imports
-  - source: module.core.handlers.table
-    target: module.sldb.core.node
-    kind: imports
-  - source: module.core.handlers.table
-    target: class.core.handlers.table.TableNodeHandler
-    kind: contains
-  - source: class.core.handlers.table.TableNodeHandler
-    target: class.unknown.BaseNodeHandler
-    kind: inherits
-  - source: module.core.handlers.table
-    target: module.sldb.core.handlers.text
-    kind: imports
-  - source: system.sldb
-    target: module.core.handlers.list
-    kind: contains
-  - source: module.core.handlers.list
-    target: module.sldb.core.handlers.base
-    kind: imports
-  - source: module.core.handlers.list
-    target: module.sldb.core.handlers.utils
-    kind: imports
-  - source: module.core.handlers.list
-    target: module.sldb.core.node
-    kind: imports
-  - source: module.core.handlers.list
-    target: class.core.handlers.list.ListNodeHandler
-    kind: contains
-  - source: class.core.handlers.list.ListNodeHandler
-    target: class.unknown.BaseNodeHandler
-    kind: inherits
-  - source: system.sldb
-    target: module.core.handlers.yaml
-    kind: contains
-  - source: module.core.handlers.yaml
+  - source: module.sldb.cli.commands.model
     target: module.sldb.core.exceptions
     kind: imports
-  - source: module.core.handlers.yaml
-    target: module.sldb.core.handlers.base
+  - source: module.sldb.cli.commands.model_add
+    target: module.sldb.cli.store_context
     kind: imports
-  - source: module.core.handlers.yaml
-    target: module.sldb.core.handlers.utils
+  - source: module.sldb.cli.commands.model_add
+    target: module.sldb.cli.model_utils
     kind: imports
-  - source: module.core.handlers.yaml
+  - source: module.sldb.cli.commands.model_add
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.cli.commands.model_add
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.cli.commands.model_add
+    target: module.sldb.store.models
+    kind: imports
+  - source: module.sldb.cli.commands.model_add
+    target: module.sldb.store.ops
+    kind: imports
+  - source: module.sldb.cli.commands.model_add
+    target: module.sldb.store.semantic
+    kind: imports
+  - source: module.sldb.cli.commands.model_add
+    target: module.sldb.store.semantic_tags
+    kind: imports
+  - source: module.sldb.cli.commands.model_add
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.cli.commands.model_update
+    target: module.sldb.cli.store_context
+    kind: imports
+  - source: module.sldb.cli.commands.model_update
+    target: module.sldb.cli.model_utils
+    kind: imports
+  - source: module.sldb.cli.commands.model_update
+    target: module.sldb.store.hashing
+    kind: imports
+  - source: module.sldb.cli.commands.model_update
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.cli.commands.model_update
+    target: module.sldb.store.ops
+    kind: imports
+  - source: module.sldb.cli.commands.model_update
+    target: module.sldb.store.semantic
+    kind: imports
+  - source: module.sldb.cli.commands.model_update
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.cli.commands.models
+    target: class.sldb.cli.commands.models.ModelsCLI
+    kind: defines
+  - source: module.sldb.cli.commands.models
+    target: module.sldb.cli.commands.model
+    kind: imports
+  - source: module.sldb.cli.commands.models
+    target: module.sldb.cli.graph_ops
+    kind: imports
+  - source: module.sldb.cli.commands.models
+    target: module.sldb.cli.commands.models_list
+    kind: imports
+  - source: module.sldb.cli.commands.models
+    target: module.sldb.cli.commands.models_create
+    kind: imports
+  - source: module.sldb.cli.commands.models
+    target: module.sldb.cli.commands.models_validate
+    kind: imports
+  - source: module.sldb.cli.commands.models
+    target: module.sldb.cli.commands.models_template
+    kind: imports
+  - source: module.sldb.cli.commands.models
+    target: module.sldb.cli.commands.models_fields
+    kind: imports
+  - source: module.sldb.cli.commands.models_create
+    target: class.sldb.cli.commands.models_create.ModelsCreateCLI
+    kind: defines
+  - source: module.sldb.cli.commands.models_create
+    target: module.sldb.cli.utils
+    kind: imports
+  - source: module.sldb.cli.commands.models_fields
+    target: class.sldb.cli.commands.models_fields.ModelsFieldsCLI
+    kind: defines
+  - source: module.sldb.cli.commands.models_fields
+    target: module.sldb.cli.utils
+    kind: imports
+  - source: module.sldb.cli.commands.models_fields
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.cli.commands.models_fields
+    target: module.sldb.cli.commands.models_utils
+    kind: imports
+  - source: module.sldb.cli.commands.models_list
+    target: class.sldb.cli.commands.models_list.ModelsListCLI
+    kind: defines
+  - source: module.sldb.cli.commands.models_list
+    target: module.sldb.cli.store_context
+    kind: imports
+  - source: module.sldb.cli.commands.models_list
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.cli.commands.models_template
+    target: class.sldb.cli.commands.models_template.ModelsTemplateCLI
+    kind: defines
+  - source: module.sldb.cli.commands.models_template
+    target: module.sldb.cli.utils
+    kind: imports
+  - source: module.sldb.cli.commands.models_template
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.cli.commands.models_template
+    target: module.sldb.cli.commands.models_utils
+    kind: imports
+  - source: module.sldb.cli.commands.models_utils
+    target: module.sldb.cli.store_context
+    kind: imports
+  - source: module.sldb.cli.commands.models_utils
+    target: module.sldb.cli.utils
+    kind: imports
+  - source: module.sldb.cli.commands.models_utils
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.cli.commands.models_utils
+    target: module.sldb.runtime.validation
+    kind: imports
+  - source: module.sldb.cli.commands.models_utils
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.cli.commands.models_utils
+    target: module.sldb.store.facade
+    kind: imports
+  - source: module.sldb.cli.commands.models_validate
+    target: class.sldb.cli.commands.models_validate.ModelsValidateCLI
+    kind: defines
+  - source: module.sldb.cli.commands.models_validate
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.cli.commands.models_validate
+    target: module.sldb.runtime.validation
+    kind: imports
+  - source: module.sldb.cli.commands.models_validate
+    target: module.sldb.cli.commands.models_utils
+    kind: imports
+  - source: module.sldb.cli.commands.models_validate
+    target: module.sldb.cli.commands.models_validate_utils
+    kind: imports
+  - source: module.sldb.cli.commands.models_validate_utils
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.cli.commands.models_validate_utils
+    target: module.sldb.runtime.validation
+    kind: imports
+  - source: module.sldb.cli.commands.predicates
+    target: class.sldb.cli.commands.predicates.PredicatesCLI
+    kind: defines
+  - source: module.sldb.cli.commands.predicates
+    target: module.sldb.cli.store_context
+    kind: imports
+  - source: module.sldb.cli.commands.predicates
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.cli.commands.predicates
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.cli.commands.predicates
+    target: module.sldb.store.models
+    kind: imports
+  - source: module.sldb.cli.commands.predicates
+    target: module.sldb.store.predicates
+    kind: imports
+  - source: module.sldb.cli.commands.query
+    target: class.sldb.cli.commands.query.QueryCLI
+    kind: defines
+  - source: module.sldb.cli.commands.query
+    target: module.sldb.cli.store_context
+    kind: imports
+  - source: module.sldb.cli.commands.query
+    target: module.sldb.cli.model_utils
+    kind: imports
+  - source: module.sldb.cli.commands.query
+    target: module.sldb.store.query
+    kind: imports
+  - source: module.sldb.cli.commands.query
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.cli.commands.sections
+    target: class.sldb.cli.commands.sections.SectionsCLI
+    kind: defines
+  - source: module.sldb.cli.commands.sections
+    target: module.sldb.cli.commands.sections_show
+    kind: imports
+  - source: module.sldb.cli.commands.sections
+    target: module.sldb.cli.commands.sections_find
+    kind: imports
+  - source: module.sldb.cli.commands.sections
+    target: module.sldb.cli.commands.sections_fields
+    kind: imports
+  - source: module.sldb.cli.commands.sections_common
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.cli.commands.sections_common
+    target: module.sldb.store.models
+    kind: imports
+  - source: module.sldb.cli.commands.sections_fields
+    target: class.sldb.cli.commands.sections_fields.FieldsSectionsCLI
+    kind: defines
+  - source: module.sldb.cli.commands.sections_fields
+    target: module.sldb.cli.graph_ops
+    kind: imports
+  - source: module.sldb.cli.commands.sections_fields
+    target: module.sldb.cli.store_context
+    kind: imports
+  - source: module.sldb.cli.commands.sections_fields
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.cli.commands.sections_fields
+    target: module.sldb.cli.commands.sections_common
+    kind: imports
+  - source: module.sldb.cli.commands.sections_find
+    target: class.sldb.cli.commands.sections_find.FindSectionsCLI
+    kind: defines
+  - source: module.sldb.cli.commands.sections_find
+    target: module.sldb.cli.commands.find_filter
+    kind: imports
+  - source: module.sldb.cli.commands.sections_find
+    target: module.sldb.cli.graph_ops
+    kind: imports
+  - source: module.sldb.cli.commands.sections_find
+    target: module.sldb.cli.commands.find
+    kind: imports
+  - source: module.sldb.cli.commands.sections_show
+    target: class.sldb.cli.commands.sections_show.ShowSectionsCLI
+    kind: defines
+  - source: module.sldb.cli.commands.sections_show
+    target: module.sldb.cli.graph_ops
+    kind: imports
+  - source: module.sldb.cli.commands.sections_show
+    target: module.sldb.cli.store_context
+    kind: imports
+  - source: module.sldb.cli.commands.sections_show
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.cli.commands.sections_show
+    target: module.sldb.cli.commands.sections_common
+    kind: imports
+  - source: module.sldb.cli.commands.store
+    target: class.sldb.cli.commands.store.StoreCLI
+    kind: defines
+  - source: module.sldb.cli.commands.store
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.cli.commands.store
+    target: module.sldb.cli.commands.store_init
+    kind: imports
+  - source: module.sldb.cli.commands.store
+    target: module.sldb.cli.commands.store_add
+    kind: imports
+  - source: module.sldb.cli.commands.store
+    target: module.sldb.cli.commands.store_check
+    kind: imports
+  - source: module.sldb.cli.commands.store
+    target: module.sldb.cli.commands.store_update
+    kind: imports
+  - source: module.sldb.cli.commands.store
+    target: module.sldb.cli.commands.store_semantic_map
+    kind: imports
+  - source: module.sldb.cli.commands.store_add
+    target: module.sldb.cli.store_context
+    kind: imports
+  - source: module.sldb.cli.commands.store_add
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.cli.commands.store_add
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.cli.commands.store_add
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.cli.commands.store_add
+    target: module.sldb.store.models
+    kind: imports
+  - source: module.sldb.cli.commands.store_check
+    target: module.sldb.cli.store_context
+    kind: imports
+  - source: module.sldb.cli.commands.store_check
+    target: module.sldb.store.diagnostics
+    kind: imports
+  - source: module.sldb.cli.commands.store_init
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.cli.commands.store_init
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.cli.commands.store_init
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.cli.commands.store_init
+    target: module.sldb.store.models
+    kind: imports
+  - source: module.sldb.cli.commands.store_init
+    target: module.sldb.store.predicates
+    kind: imports
+  - source: module.sldb.cli.commands.store_semantic_map
+    target: module.sldb.cli.store_context
+    kind: imports
+  - source: module.sldb.cli.commands.store_semantic_map
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.cli.commands.store_semantic_map
+    target: module.sldb.store.models
+    kind: imports
+  - source: module.sldb.cli.commands.store_update
+    target: module.sldb.cli.store_context
+    kind: imports
+  - source: module.sldb.cli.commands.store_update
+    target: module.sldb.cli.model_utils
+    kind: imports
+  - source: module.sldb.cli.commands.store_update
+    target: module.sldb.store.hashing
+    kind: imports
+  - source: module.sldb.cli.commands.store_update
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.cli.commands.store_update
+    target: module.sldb.store.models
+    kind: imports
+  - source: module.sldb.cli.commands.store_update
+    target: module.sldb.store.ops
+    kind: imports
+  - source: module.sldb.cli.commands.store_update
+    target: module.sldb.store.section_rebuild
+    kind: imports
+  - source: module.sldb.cli.commands.store_update
+    target: module.sldb.store.semantic
+    kind: imports
+  - source: module.sldb.cli.commands.stores
+    target: class.sldb.cli.commands.stores.StoresCLI
+    kind: defines
+  - source: module.sldb.cli.commands.stores
+    target: module.sldb.cli.commands.store
+    kind: imports
+  - source: module.sldb.cli.commands.stores
+    target: module.sldb.cli.store_context
+    kind: imports
+  - source: module.sldb.cli.commands.stores
+    target: module.sldb.cli.model_utils
+    kind: imports
+  - source: module.sldb.cli.commands.stores
+    target: module.sldb.cli.utils
+    kind: imports
+  - source: module.sldb.cli.commands.stores
+    target: module.sldb.store.export
+    kind: imports
+  - source: module.sldb.cli.commands.stores
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.cli.dispatcher
+    target: class.sldb.cli.dispatcher.CLI
+    kind: defines
+  - source: module.sldb.cli.dispatcher
+    target: module.sldb.cli.parser
+    kind: imports
+  - source: module.sldb.cli.dispatcher
+    target: module.sldb.cli.commands.help_texts
+    kind: imports
+  - source: module.sldb.cli.dispatcher
+    target: module.sldb.cli.commands.basic
+    kind: imports
+  - source: module.sldb.cli.dispatcher
+    target: module.sldb.cli.commands.init
+    kind: imports
+  - source: module.sldb.cli.dispatcher
+    target: module.sldb.cli.commands.help
+    kind: imports
+  - source: module.sldb.cli.dispatcher
+    target: module.sldb.cli.commands.faq
+    kind: imports
+  - source: module.sldb.cli.dispatcher
+    target: module.sldb.cli.commands.inbox
+    kind: imports
+  - source: module.sldb.cli.dispatcher
+    target: module.sldb.cli.commands.explore
+    kind: imports
+  - source: module.sldb.cli.dispatcher
+    target: module.sldb.cli.commands.ast
+    kind: imports
+  - source: module.sldb.cli.dispatcher
+    target: module.sldb.cli.commands.find
+    kind: imports
+  - source: module.sldb.cli.dispatcher
+    target: module.sldb.cli.commands.stores
+    kind: imports
+  - source: module.sldb.cli.dispatcher
+    target: module.sldb.cli.commands.models
+    kind: imports
+  - source: module.sldb.cli.dispatcher
+    target: module.sldb.cli.commands.predicates
+    kind: imports
+  - source: module.sldb.cli.dispatcher
+    target: module.sldb.cli.commands.docs
+    kind: imports
+  - source: module.sldb.cli.dispatcher
+    target: module.sldb.cli.commands.fields
+    kind: imports
+  - source: module.sldb.cli.dispatcher
+    target: module.sldb.cli.commands.sections
+    kind: imports
+  - source: module.sldb.cli.federated_utils
+    target: module.sldb.models.structured_doc
+    kind: imports
+  - source: module.sldb.cli.federated_utils
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.cli.federated_utils
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.cli.federated_utils
+    target: module.sldb.cli.model_utils
+    kind: imports
+  - source: module.sldb.cli.federated_utils
+    target: module.sldb.store.resolver
+    kind: imports
+  - source: module.sldb.cli.federated_utils
+    target: module.sldb.store.models
+    kind: imports
+  - source: module.sldb.cli.federated_utils
+    target: module.sldb.store.semantic_tags
+    kind: imports
+  - source: module.sldb.cli.federated_utils
+    target: module.sldb.store.ops
+    kind: imports
+  - source: module.sldb.cli.graph.models_section
+    target: class.sldb.cli.graph.models_section.SectionRecord
+    kind: defines
+  - source: module.sldb.cli.graph.search_record
+    target: class.sldb.cli.graph.search_record.SearchRecord
+    kind: defines
+  - source: module.sldb.cli.graph.section_record
+    target: class.sldb.cli.graph.section_record.SectionRecord
+    kind: defines
+  - source: module.sldb.cli.graph.sections
+    target: module.sldb.core.ast
+    kind: imports
+  - source: module.sldb.cli.graph.sections
+    target: module.sldb.core.contracts
+    kind: imports
+  - source: module.sldb.cli.graph.store_ast
+    target: module.sldb.cli.store_context
+    kind: imports
+  - source: module.sldb.cli.graph.store_ast
+    target: module.sldb.cli.model_utils
+    kind: imports
+  - source: module.sldb.cli.graph.store_ast
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.cli.graph.store_ast
+    target: module.sldb.store.query
+    kind: imports
+  - source: module.sldb.cli.graph_old.search_record
+    target: class.sldb.cli.graph_old.search_record.SearchRecord
+    kind: defines
+  - source: module.sldb.cli.graph_old.section_record
+    target: class.sldb.cli.graph_old.section_record.SectionRecord
+    kind: defines
+  - source: module.sldb.cli.graph_ops.build_ast
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.cli.graph_ops.build_ast
+    target: module.sldb.store.query
+    kind: imports
+  - source: module.sldb.cli.graph_ops.build_ast
+    target: module.sldb.cli.store_context
+    kind: imports
+  - source: module.sldb.cli.graph_ops.build_ast
+    target: module.sldb.cli.model_utils
+    kind: imports
+  - source: module.sldb.cli.graph_ops.build_ir
+    target: module.sldb.core.ir
+    kind: imports
+  - source: module.sldb.cli.graph_ops.build_ir
+    target: module.sldb.core.ast
+    kind: imports
+  - source: module.sldb.cli.graph_ops.extract
+    target: module.sldb.core.ast
+    kind: imports
+  - source: module.sldb.cli.graph_ops.extract
+    target: module.sldb.cli.section_record_cls
+    kind: imports
+  - source: module.sldb.cli.graph_ops.fields
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.cli.graph_ops.fields
+    target: module.sldb.store.query
+    kind: imports
+  - source: module.sldb.cli.graph_ops.fields
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.cli.graph_ops.fields
+    target: module.sldb.cli.store_context
+    kind: imports
+  - source: module.sldb.cli.graph_ops.fields
+    target: module.sldb.cli.model_utils
+    kind: imports
+  - source: module.sldb.cli.graph_ops.iter_records
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.cli.graph_ops.iter_records
+    target: module.sldb.store.query
+    kind: imports
+  - source: module.sldb.cli.graph_ops.iter_records
+    target: module.sldb.cli.store_context
+    kind: imports
+  - source: module.sldb.cli.graph_ops.iter_records
+    target: module.sldb.cli.model_utils
+    kind: imports
+  - source: module.sldb.cli.graph_ops.iter_records
+    target: module.sldb.cli.search_record
+    kind: imports
+  - source: module.sldb.cli.graph_ops.iter_records_docs
+    target: module.sldb.cli.search_record
+    kind: imports
+  - source: module.sldb.cli.graph_ops.iter_records_helpers
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.cli.graph_ops.iter_records_helpers
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.cli.graph_ops.iter_records_helpers
+    target: module.sldb.cli.search_record
+    kind: imports
+  - source: module.sldb.cli.graph_ops.map_fields
+    target: module.sldb.core.contracts
+    kind: imports
+  - source: module.sldb.cli.graph_ops.matches
+    target: module.sldb.cli.search_record
+    kind: imports
+  - source: module.sldb.cli.graph_ops.resolve
+    target: module.sldb.store.query
+    kind: imports
+  - source: module.sldb.cli.graph_ops.resolve
+    target: module.sldb.cli.store_context
+    kind: imports
+  - source: module.sldb.cli.graph_ops.resolve
+    target: module.sldb.cli.model_utils
+    kind: imports
+  - source: module.sldb.cli.graph_ops.utils
+    target: module.sldb.core.ir
+    kind: imports
+  - source: module.sldb.cli.main
+    target: module.sldb.cli.commands.help_texts
+    kind: imports
+  - source: module.sldb.cli.main
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.cli.main
+    target: module.sldb.cli.dispatcher
+    kind: imports
+  - source: module.sldb.cli.model_utils
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.cli.model_utils
+    target: module.sldb.models.structured_doc
+    kind: imports
+  - source: module.sldb.cli.model_utils
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.cli.model_utils
+    target: module.sldb.cli.federated_utils
+    kind: imports
+  - source: module.sldb.cli.parser
+    target: module.sldb.cli.parsers.core
+    kind: imports
+  - source: module.sldb.cli.search_record
+    target: class.sldb.cli.search_record.SearchRecord
+    kind: defines
+  - source: module.sldb.cli.section_record_cls
+    target: class.sldb.cli.section_record_cls.SectionRecord
+    kind: defines
+  - source: module.sldb.cli.store_context
+    target: module.sldb.store.resolver
+    kind: imports
+  - source: module.sldb.cli.store_context
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.cli.store_context
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.cli.store_context
+    target: module.sldb.store.migration
+    kind: imports
+  - source: module.sldb.cli.store_context
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.core.ast.base_ast_handler
+    target: class.sldb.core.ast.base_ast_handler.BaseASTHandler
+    kind: defines
+  - source: module.sldb.core.ast.base_ast_handler
     target: module.sldb.core.node
     kind: imports
-  - source: module.core.handlers.yaml
-    target: class.core.handlers.yaml.YamlNodeHandler
-    kind: contains
-  - source: class.core.handlers.yaml.YamlNodeHandler
-    target: class.unknown.BaseNodeHandler
-    kind: inherits
-  - source: system.sldb
-    target: module.core.renderer_engine
-    kind: contains
-  - source: system.sldb
-    target: module.core.renderer_engine.base
-    kind: contains
-  - source: module.core.renderer_engine.base
-    target: module.jinja2
+  - source: module.sldb.core.ast.markdown_ast_handler
+    target: class.sldb.core.ast.markdown_ast_handler.MarkdownASTHandler
+    kind: defines
+  - source: module.sldb.core.ast.markdown_ast_handler
+    target: module.sldb.core.node
     kind: imports
-  - source: module.core.renderer_engine.base
+  - source: module.sldb.core.contracts.marker
+    target: class.sldb.core.contracts.marker.Marker
+    kind: defines
+  - source: module.sldb.core.contracts.node_data
+    target: class.sldb.core.contracts.node_data.NodeData
+    kind: defines
+  - source: module.sldb.core.contracts.render_context
+    target: class.sldb.core.contracts.render_context.RenderContext
+    kind: defines
+  - source: module.sldb.core.data_extractor
+    target: class.sldb.core.data_extractor.DataExtractor
+    kind: defines
+  - source: module.sldb.core.data_extractor
+    target: module.sldb.core.node
+    kind: imports
+  - source: module.sldb.core.data_extractor
+    target: module.sldb.core.extractor.recipe_matcher
+    kind: imports
+  - source: module.sldb.core.data_extractor
+    target: module.sldb.core.node_handler
+    kind: imports
+  - source: module.sldb.core.exceptions.sldb_ast_error
+    target: class.sldb.core.exceptions.sldb_ast_error.SLDBASTError
+    kind: defines
+  - source: module.sldb.core.exceptions.sldb_ast_error
+    target: module.sldb_error
+    kind: imports
+  - source: module.sldb.core.exceptions.sldb_error
+    target: class.sldb.core.exceptions.sldb_error.SLDBError
+    kind: defines
+  - source: module.sldb.core.exceptions.sldb_link_error
+    target: class.sldb.core.exceptions.sldb_link_error.SLDBLinkError
+    kind: defines
+  - source: module.sldb.core.exceptions.sldb_link_error
+    target: module.sldb_error
+    kind: imports
+  - source: module.sldb.core.exceptions.sldb_model_draft_error
+    target: class.sldb.core.exceptions.sldb_model_draft_error.SLDBModelDraftError
+    kind: defines
+  - source: module.sldb.core.exceptions.sldb_model_draft_error
+    target: module.sldb_model_error
+    kind: imports
+  - source: module.sldb.core.exceptions.sldb_model_edit_error
+    target: class.sldb.core.exceptions.sldb_model_edit_error.SLDBModelEditError
+    kind: defines
+  - source: module.sldb.core.exceptions.sldb_model_edit_error
+    target: module.sldb_model_error
+    kind: imports
+  - source: module.sldb.core.exceptions.sldb_model_error
+    target: class.sldb.core.exceptions.sldb_model_error.SLDBModelError
+    kind: defines
+  - source: module.sldb.core.exceptions.sldb_model_error
+    target: module.sldb_error
+    kind: imports
+  - source: module.sldb.core.exceptions.sldb_store_error
+    target: class.sldb.core.exceptions.sldb_store_error.SLDBStoreError
+    kind: defines
+  - source: module.sldb.core.exceptions.sldb_store_error
+    target: module.sldb_error
+    kind: imports
+  - source: module.sldb.core.exceptions.sldb_validation_error
+    target: class.sldb.core.exceptions.sldb_validation_error.SLDBValidationError
+    kind: defines
+  - source: module.sldb.core.exceptions.sldb_validation_error
+    target: module.sldb_error
+    kind: imports
+  - source: module.sldb.core.extractor.recipe_matcher
+    target: class.sldb.core.extractor.recipe_matcher.RecipeMatcher
+    kind: defines
+  - source: module.sldb.core.extractor.recipe_matcher
+    target: module.sldb.core.node
+    kind: imports
+  - source: module.sldb.core.extractor.recipe_matcher
+    target: module.sldb.core.node_handler
+    kind: imports
+  - source: module.sldb.core.handlers.base
+    target: class.sldb.core.handlers.base.BaseNodeHandler
+    kind: defines
+  - source: module.sldb.core.handlers.base
+    target: module.sldb.core.node
+    kind: imports
+  - source: module.sldb.core.handlers.list
+    target: class.sldb.core.handlers.list.ListNodeHandler
+    kind: defines
+  - source: module.sldb.core.handlers.list
+    target: module.sldb.core.handlers.base
+    kind: imports
+  - source: module.sldb.core.handlers.list
     target: module.sldb.core.handlers.utils
     kind: imports
-  - source: module.core.renderer_engine.base
+  - source: module.sldb.core.handlers.list
+    target: module.sldb.core.node
+    kind: imports
+  - source: module.sldb.core.handlers.router
+    target: class.sldb.core.handlers.router.SharedNodeHandler
+    kind: defines
+  - source: module.sldb.core.handlers.router
+    target: module.sldb.core.handlers.list
+    kind: imports
+  - source: module.sldb.core.handlers.router
+    target: module.sldb.core.handlers.table
+    kind: imports
+  - source: module.sldb.core.handlers.router
+    target: module.sldb.core.handlers.text
+    kind: imports
+  - source: module.sldb.core.handlers.router
+    target: module.sldb.core.handlers.yaml
+    kind: imports
+  - source: module.sldb.core.handlers.router
+    target: module.sldb.core.node
+    kind: imports
+  - source: module.sldb.core.handlers.table
+    target: class.sldb.core.handlers.table.TableNodeHandler
+    kind: defines
+  - source: module.sldb.core.handlers.table
+    target: module.sldb.core.handlers.base
+    kind: imports
+  - source: module.sldb.core.handlers.table
+    target: module.sldb.core.handlers.utils
+    kind: imports
+  - source: module.sldb.core.handlers.table
+    target: module.sldb.core.node
+    kind: imports
+  - source: module.sldb.core.handlers.table
+    target: module.sldb.core.handlers.text
+    kind: imports
+  - source: module.sldb.core.handlers.text
+    target: class.sldb.core.handlers.text.TextNodeHandler
+    kind: defines
+  - source: module.sldb.core.handlers.text
+    target: module.sldb.core.handlers.base
+    kind: imports
+  - source: module.sldb.core.handlers.text
+    target: module.sldb.core.handlers.utils
+    kind: imports
+  - source: module.sldb.core.handlers.text
+    target: module.sldb.core.node
+    kind: imports
+  - source: module.sldb.core.handlers.utils
+    target: module.sldb.core.contracts
+    kind: imports
+  - source: module.sldb.core.handlers.yaml
+    target: class.sldb.core.handlers.yaml.YamlNodeHandler
+    kind: defines
+  - source: module.sldb.core.handlers.yaml
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.core.handlers.yaml
+    target: module.sldb.core.handlers.base
+    kind: imports
+  - source: module.sldb.core.handlers.yaml
+    target: module.sldb.core.handlers.utils
+    kind: imports
+  - source: module.sldb.core.handlers.yaml
+    target: module.sldb.core.node
+    kind: imports
+  - source: module.sldb.core.ingest.ignore_rule
+    target: class.sldb.core.ingest.ignore_rule.IgnoreRule
+    kind: defines
+  - source: module.sldb.core.ingest.python_scanner
+    target: class.sldb.core.ingest.python_scanner.PythonScanner
+    kind: defines
+  - source: module.sldb.core.ingest.typescript_scanner
+    target: class.sldb.core.ingest.typescript_scanner.TypeScriptScanner
+    kind: defines
+  - source: module.sldb.core.ir.document_context
+    target: class.sldb.core.ir.document_context.DocumentContext
+    kind: defines
+  - source: module.sldb.core.ir.document_ir
+    target: class.sldb.core.ir.document_ir.DocumentIR
+    kind: defines
+  - source: module.sldb.core.ir.graph_edge
+    target: class.sldb.core.ir.graph_edge.GraphEdge
+    kind: defines
+  - source: module.sldb.core.ir.graph_view
+    target: class.sldb.core.ir.graph_view.GraphView
+    kind: defines
+  - source: module.sldb.core.ir.meaning_node
+    target: class.sldb.core.ir.meaning_node.MeaningNode
+    kind: defines
+  - source: module.sldb.core.ir.section_context_entry
+    target: class.sldb.core.ir.section_context_entry.SectionContextEntry
+    kind: defines
+  - source: module.sldb.core.ir.source_span
+    target: class.sldb.core.ir.source_span.SourceSpan
+    kind: defines
+  - source: module.sldb.core.ir.surface_node
+    target: class.sldb.core.ir.surface_node.SurfaceNode
+    kind: defines
+  - source: module.sldb.core.node
+    target: class.sldb.core.node.SLDBNode
+    kind: defines
+  - source: module.sldb.core.node_handler
+    target: module.sldb.core.handlers.router
+    kind: imports
+  - source: module.sldb.core.renderer
+    target: class.sldb.core.renderer.SLDBRenderer
+    kind: defines
+  - source: module.sldb.core.renderer
+    target: module.sldb.core.ast
+    kind: imports
+  - source: module.sldb.core.renderer
+    target: module.sldb.core.handlers.router
+    kind: imports
+  - source: module.sldb.core.renderer
+    target: module.sldb.core.renderer_engine.list
+    kind: imports
+  - source: module.sldb.core.renderer
+    target: module.sldb.core.renderer_engine.table
+    kind: imports
+  - source: module.sldb.core.renderer
+    target: module.sldb.core.renderer_engine.yaml
+    kind: imports
+  - source: module.sldb.core.renderer
+    target: module.sldb.models.structured_doc
+    kind: imports
+  - source: module.sldb.core.renderer
+    target: module.sldb.core.node
+    kind: imports
+  - source: module.sldb.core.renderer_engine.base
+    target: class.sldb.core.renderer_engine.base.BaseRenderer
+    kind: defines
+  - source: module.sldb.core.renderer_engine.base
+    target: module.sldb.core.handlers.utils
+    kind: imports
+  - source: module.sldb.core.renderer_engine.base
     target: module.sldb.core.renderer_engine.python_expr
     kind: imports
-  - source: module.core.renderer_engine.base
-    target: class.core.renderer_engine.base.BaseRenderer
-    kind: contains
-  - source: system.sldb
-    target: module.core.renderer_engine.table
-    kind: contains
-  - source: module.core.renderer_engine.table
+  - source: module.sldb.core.renderer_engine.list
+    target: class.sldb.core.renderer_engine.list.ListRenderer
+    kind: defines
+  - source: module.sldb.core.renderer_engine.list
     target: module.sldb.core.renderer_engine.base
     kind: imports
-  - source: module.core.renderer_engine.table
-    target: class.core.renderer_engine.table.TableRenderer
-    kind: contains
-  - source: class.core.renderer_engine.table.TableRenderer
-    target: class.unknown.BaseRenderer
-    kind: inherits
-  - source: system.sldb
-    target: module.core.renderer_engine.list
-    kind: contains
-  - source: module.core.renderer_engine.list
-    target: module.sldb.core.renderer_engine.base
-    kind: imports
-  - source: module.core.renderer_engine.list
-    target: class.core.renderer_engine.list.ListRenderer
-    kind: contains
-  - source: class.core.renderer_engine.list.ListRenderer
-    target: class.unknown.BaseRenderer
-    kind: inherits
-  - source: system.sldb
-    target: module.core.renderer_engine.python_expr
-    kind: contains
-  - source: module.core.renderer_engine.python_expr
+  - source: module.sldb.core.renderer_engine.python_expr
+    target: class.sldb.core.renderer_engine.python_expr.PythonExpressionRenderer
+    kind: defines
+  - source: module.sldb.core.renderer_engine.python_expr
     target: module.sldb.runtime.config
     kind: imports
-  - source: module.core.renderer_engine.python_expr
-    target: class.core.renderer_engine.python_expr.PythonExpressionRenderer
-    kind: contains
-  - source: system.sldb
-    target: module.core.renderer_engine.yaml
-    kind: contains
-  - source: module.core.renderer_engine.yaml
+  - source: module.sldb.core.renderer_engine.table
+    target: class.sldb.core.renderer_engine.table.TableRenderer
+    kind: defines
+  - source: module.sldb.core.renderer_engine.table
     target: module.sldb.core.renderer_engine.base
     kind: imports
-  - source: module.core.renderer_engine.yaml
+  - source: module.sldb.core.renderer_engine.yaml
+    target: class.sldb.core.renderer_engine.yaml.YamlRenderer
+    kind: defines
+  - source: module.sldb.core.renderer_engine.yaml
+    target: module.sldb.core.renderer_engine.base
+    kind: imports
+  - source: module.sldb.core.renderer_engine.yaml
     target: module.sldb.core.handlers.utils
     kind: imports
-  - source: module.core.renderer_engine.yaml
-    target: class.core.renderer_engine.yaml.YamlRenderer
-    kind: contains
-  - source: class.core.renderer_engine.yaml.YamlRenderer
-    target: class.unknown.BaseRenderer
-    kind: inherits
-  - source: system.sldb
-    target: module.core.ingest.scanner
-    kind: contains
-  - source: module.core.ingest.scanner
-    target: module.ast
+  - source: module.sldb.core.template_extractor
+    target: class.sldb.core.template_extractor.TemplateExtractor
+    kind: defines
+  - source: module.sldb.core.template_extractor
+    target: module.sldb.core.exceptions
     kind: imports
-  - source: module.core.ingest.scanner
-    target: module.fnmatch
+  - source: module.sldb.core.template_extractor
+    target: module.sldb.core.node
     kind: imports
-  - source: module.core.ingest.scanner
-    target: module.internal_dependency
+  - source: module.sldb.core.template_extractor
+    target: module.sldb.core.node_handler
     kind: imports
-  - source: module.core.ingest.scanner
-    target: module.wiki_compiler.adapters.ontology_facets
+  - source: module.sldb.examples.pandoc_cv.cv_model
+    target: class.sldb.examples.pandoc_cv.cv_model.PandocCVDoc
+    kind: defines
+  - source: module.sldb.examples.pandoc_cv.cv_model
+    target: module.sldb
     kind: imports
-  - source: module.core.ingest.scanner
-    target: class.core.ingest.scanner.IgnoreRule
-    kind: contains
-  - source: module.core.ingest.scanner
-    target: class.core.ingest.scanner.PythonScanner
-    kind: contains
-  - source: module.core.ingest.scanner
-    target: class.core.ingest.scanner.TypeScriptScanner
-    kind: contains
-  - source: system.sldb
-    target: module.core.ingest.engine
-    kind: contains
-  - source: module.core.ingest.engine
-    target: module.internal_dependency
+  - source: module.sldb.examples.reference_bundle.guide_model
+    target: class.sldb.examples.reference_bundle.guide_model.SLDBGuide
+    kind: defines
+  - source: module.sldb.examples.reference_bundle.guide_model
+    target: module.sldb
     kind: imports
-  - source: system.sldb
-    target: module.core.ingest.manifest
-    kind: contains
-  - source: module.core.ingest.manifest
-    target: module.csv
+  - source: module.sldb.links.parsed_link
+    target: class.sldb.links.parsed_link.ParsedLink
+    kind: defines
+  - source: module.sldb.links.recovery
+    target: module.sldb.store.io
     kind: imports
-  - source: module.core.ingest.manifest
-    target: module.internal_dependency
+  - source: module.sldb.links.recovery
+    target: module.sldb.store.predicates
+    kind: imports
+  - source: module.sldb.links.resolved_link
+    target: class.sldb.links.resolved_link.ResolvedLink
+    kind: defines
+  - source: module.sldb.links.resolver
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.links.resolver
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.models.structured_doc
+    target: class.sldb.models.structured_doc.StructuredNLDoc
+    kind: defines
+  - source: module.sldb.models.structured_doc
+    target: module.sldb.runtime.validation
+    kind: imports
+  - source: module.sldb.runtime.config
+    target: class.sldb.runtime.config.SLDBConfig
+    kind: defines
+  - source: module.sldb.runtime.validation
+    target: class.sldb.runtime.validation.Validator
+    kind: defines
+  - source: module.sldb.runtime.validation
+    target: module.sldb.core.ast
+    kind: imports
+  - source: module.sldb.runtime.validation
+    target: module.sldb.core.data_extractor
+    kind: imports
+  - source: module.sldb.runtime.validation
+    target: module.sldb.core.renderer
+    kind: imports
+  - source: module.sldb.runtime.validation
+    target: module.sldb.core.template_extractor
+    kind: imports
+  - source: module.sldb.runtime.validation
+    target: module.sldb.models.structured_doc
+    kind: imports
+  - source: module.sldb.store.diagnostics
+    target: module.sldb.models.structured_doc
+    kind: imports
+  - source: module.sldb.store.diagnostics
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.store.diagnostics
+    target: module.sldb.store.hashing
+    kind: imports
+  - source: module.sldb.store.diagnostics
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.store.diagnostics
+    target: module.sldb.store.models
+    kind: imports
+  - source: module.sldb.store.diagnostics
+    target: module.sldb.store.diagnostics_models
+    kind: imports
+  - source: module.sldb.store.diagnostics
+    target: module.sldb.cli.model_utils
+    kind: imports
+  - source: module.sldb.store.diagnostics_models.diagnosis_note
+    target: class.sldb.store.diagnostics_models.diagnosis_note.DiagnosisNote
+    kind: defines
+  - source: module.sldb.store.diagnostics_models.document_diagnosis
+    target: class.sldb.store.diagnostics_models.document_diagnosis.DocumentDiagnosis
+    kind: defines
+  - source: module.sldb.store.diagnostics_models.document_diagnosis
+    target: module.sldb.store.diagnostics_models.diagnosis_note
+    kind: imports
+  - source: module.sldb.store.diagnostics_models.model_diagnosis
+    target: class.sldb.store.diagnostics_models.model_diagnosis.ModelDiagnosis
+    kind: defines
+  - source: module.sldb.store.diagnostics_models.model_diagnosis
+    target: module.sldb.store.diagnostics_models.document_diagnosis
+    kind: imports
+  - source: module.sldb.store.diagnostics_models.store_diagnosis
+    target: class.sldb.store.diagnostics_models.store_diagnosis.StoreDiagnosis
+    kind: defines
+  - source: module.sldb.store.diagnostics_models.store_diagnosis
+    target: module.sldb.store.diagnostics_models.model_diagnosis
+    kind: imports
+  - source: module.sldb.store.diagnostics_models.store_diagnosis
+    target: module.sldb.store.diagnostics_models.diagnosis_note
+    kind: imports
+  - source: module.sldb.store.export
+    target: class.sldb.store.export.SemanticExporter
+    kind: defines
+  - source: module.sldb.store.export
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.store.export
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.store.export
+    target: module.sldb.store.section_rebuild
+    kind: imports
+  - source: module.sldb.store.export
+    target: module.sldb.store.semantic
+    kind: imports
+  - source: module.sldb.store.facade
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.store.facade
+    target: module.sldb.cli.store_context
+    kind: imports
+  - source: module.sldb.store.facade
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.store.hashing
+    target: module.sldb.models.structured_doc
+    kind: imports
+  - source: module.sldb.store.hashing
+    target: module.sldb.runtime.validation
+    kind: imports
+  - source: module.sldb.store.hashing
+    target: module.sldb.store.models
+    kind: imports
+  - source: module.sldb.store.io.documents_index
+    target: class.sldb.store.io.documents_index.DocumentsIndexIO
+    kind: defines
+  - source: module.sldb.store.io.documents_index
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.store.io.documents_index
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.store.io.documents_index
+    target: module.sldb.store.models
+    kind: imports
+  - source: module.sldb.store.io.documents_index
+    target: module.sldb.store.io.utils
+    kind: imports
+  - source: module.sldb.store.io.lock
+    target: class.sldb.store.io.lock.StoreIOLock
+    kind: defines
+  - source: module.sldb.store.io.lock
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.store.io.lock
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.store.io.lock
+    target: module.sldb.store.models
+    kind: imports
+  - source: module.sldb.store.io.models_index
+    target: class.sldb.store.io.models_index.ModelsIndexIO
+    kind: defines
+  - source: module.sldb.store.io.models_index
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.store.io.models_index
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.store.io.models_index
+    target: module.sldb.store.models
+    kind: imports
+  - source: module.sldb.store.io.models_index
+    target: module.sldb.store.io.utils
+    kind: imports
+  - source: module.sldb.store.io.sections_index
+    target: class.sldb.store.io.sections_index.SectionsIndexIO
+    kind: defines
+  - source: module.sldb.store.io.sections_index
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.store.io.sections_index
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.store.io.sections_index
+    target: module.sldb.store.models
+    kind: imports
+  - source: module.sldb.store.io.sections_index
+    target: module.sldb.store.io.utils
+    kind: imports
+  - source: module.sldb.store.io.semantic_dag
+    target: class.sldb.store.io.semantic_dag.SemanticDAGIO
+    kind: defines
+  - source: module.sldb.store.io.semantic_dag
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.store.io.semantic_dag
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.store.io.semantic_dag
+    target: module.sldb.store.models
+    kind: imports
+  - source: module.sldb.store.io.semantic_dag
+    target: module.sldb.store.io.utils
+    kind: imports
+  - source: module.sldb.store.io.semantic_index
+    target: class.sldb.store.io.semantic_index.SemanticIndexIO
+    kind: defines
+  - source: module.sldb.store.io.semantic_index
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.store.io.semantic_index
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.store.io.semantic_index
+    target: module.sldb.store.models
+    kind: imports
+  - source: module.sldb.store.io.semantic_index
+    target: module.sldb.store.io.utils
+    kind: imports
+  - source: module.sldb.store.io.store_index
+    target: class.sldb.store.io.store_index.StoreIndexIO
+    kind: defines
+  - source: module.sldb.store.io.store_index
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.store.io.store_index
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.store.io.store_index
+    target: module.sldb.store.models
+    kind: imports
+  - source: module.sldb.store.io.store_index
+    target: module.sldb.store.io.utils
+    kind: imports
+  - source: module.sldb.store.io.utils
+    target: class.sldb.store.io.utils.StoreIOUtils
+    kind: defines
+  - source: module.sldb.store.io.utils
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.store.io.utils
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.store.io.utils
+    target: module.sldb.store.models
+    kind: imports
+  - source: module.sldb.store.migration
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.store.migration
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.store.models.doc_sections
+    target: class.sldb.store.models.doc_sections.DocSections
+    kind: defines
+  - source: module.sldb.store.models.doc_sections
+    target: module.sldb.store.models.section_context_record
+    kind: imports
+  - source: module.sldb.store.models.document_entry
+    target: class.sldb.store.models.document_entry.DocumentEntry
+    kind: defines
+  - source: module.sldb.store.models.documents_index
+    target: class.sldb.store.models.documents_index.DocumentsIndex
+    kind: defines
+  - source: module.sldb.store.models.documents_index
+    target: module.sldb.store.models.document_entry
+    kind: imports
+  - source: module.sldb.store.models.model_entry
+    target: class.sldb.store.models.model_entry.ModelEntry
+    kind: defines
+  - source: module.sldb.store.models.models_index
+    target: class.sldb.store.models.models_index.ModelsIndex
+    kind: defines
+  - source: module.sldb.store.models.predicate_entry
+    target: class.sldb.store.models.predicate_entry.PredicateEntry
+    kind: defines
+  - source: module.sldb.store.models.section_context_record
+    target: class.sldb.store.models.section_context_record.SectionContextRecord
+    kind: defines
+  - source: module.sldb.store.models.sections_index
+    target: class.sldb.store.models.sections_index.SectionsIndex
+    kind: defines
+  - source: module.sldb.store.models.sections_index
+    target: module.sldb.store.models.doc_sections
+    kind: imports
+  - source: module.sldb.store.models.semantic_d_a_g
+    target: class.sldb.store.models.semantic_d_a_g.SemanticDAG
+    kind: defines
+  - source: module.sldb.store.models.semantic_d_a_g
+    target: module.sldb.store.models.semantic_node
+    kind: imports
+  - source: module.sldb.store.models.semantic_document_record
+    target: class.sldb.store.models.semantic_document_record.SemanticDocumentRecord
+    kind: defines
+  - source: module.sldb.store.models.semantic_index
+    target: class.sldb.store.models.semantic_index.SemanticIndex
+    kind: defines
+  - source: module.sldb.store.models.semantic_index
+    target: module.sldb.store.models.semantic_document_record
+    kind: imports
+  - source: module.sldb.store.models.semantic_node
+    target: class.sldb.store.models.semantic_node.SemanticNode
+    kind: defines
+  - source: module.sldb.store.models.store_entry
+    target: class.sldb.store.models.store_entry.StoreEntry
+    kind: defines
+  - source: module.sldb.store.models.store_index
+    target: class.sldb.store.models.store_index.StoreIndex
+    kind: defines
+  - source: module.sldb.store.models.store_index
+    target: module.sldb.store.models.model_entry
+    kind: imports
+  - source: module.sldb.store.models.store_index
+    target: module.sldb.store.models.store_entry
+    kind: imports
+  - source: module.sldb.store.models.store_index
+    target: module.sldb.store.models.predicate_entry
+    kind: imports
+  - source: module.sldb.store.ops
+    target: class.sldb.store.ops.StoreOperations
+    kind: defines
+  - source: module.sldb.store.ops
+    target: module.sldb.store.hashing
+    kind: imports
+  - source: module.sldb.store.ops
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.store.ops
+    target: module.sldb.store.models
+    kind: imports
+  - source: module.sldb.store.ops
+    target: module.sldb.store.semantic
+    kind: imports
+  - source: module.sldb.store.ops
+    target: module.sldb.core.exceptions
+    kind: imports
+  - source: module.sldb.store.predicates
+    target: module.sldb.store.models
+    kind: imports
+  - source: module.sldb.store.query
+    target: module.sldb.runtime.validation
+    kind: imports
+  - source: module.sldb.store.query
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.store.query
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.store.query
+    target: module.sldb.store.query_engine.models
+    kind: imports
+  - source: module.sldb.store.query
+    target: module.sldb.store.query_engine.structural
+    kind: imports
+  - source: module.sldb.store.query
+    target: module.sldb.store.query_engine.structural_queries
+    kind: imports
+  - source: module.sldb.store.query
+    target: module.sldb.store.query_engine.semantic
+    kind: imports
+  - source: module.sldb.store.query
+    target: module.sldb.store.query_engine.global_semantic
+    kind: imports
+  - source: module.sldb.store.query_engine.filter
+    target: class.sldb.store.query_engine.filter.DocumentFilter
+    kind: defines
+  - source: module.sldb.store.query_engine.filter
+    target: module.sldb.store.query_engine.models
+    kind: imports
+  - source: module.sldb.store.query_engine.global_semantic
+    target: class.sldb.store.query_engine.global_semantic.GlobalSemanticEngine
+    kind: defines
+  - source: module.sldb.store.query_engine.global_semantic
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.store.query_engine.global_semantic
+    target: module.sldb.store.query
+    kind: imports
+  - source: module.sldb.store.query_engine.models
+    target: class.sldb.store.query_engine.models.RuntimeDocument
+    kind: defines
+  - source: module.sldb.store.query_engine.semantic
+    target: class.sldb.store.query_engine.semantic.SemanticEngine
+    kind: defines
+  - source: module.sldb.store.query_engine.semantic
+    target: module.sldb.store.query_engine.semantic_utils
+    kind: imports
+  - source: module.sldb.store.query_engine.semantic
+    target: module.sldb.store.query_engine.filter
+    kind: imports
+  - source: module.sldb.store.query_engine.semantic_utils
+    target: class.sldb.store.query_engine.semantic_utils.SemanticUtils
+    kind: defines
+  - source: module.sldb.store.query_engine.semantic_utils
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.store.query_engine.semantic_utils
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.store.query_engine.semantic_utils
+    target: module.sldb.store.query
+    kind: imports
+  - source: module.sldb.store.query_engine.semantic_utils
+    target: module.sldb.store.query_engine.models
+    kind: imports
+  - source: module.sldb.store.query_engine.semantic_utils
+    target: module.sldb.store.semantic
+    kind: imports
+  - source: module.sldb.store.query_engine.structural
+    target: class.sldb.store.query_engine.structural.StructuralEngine
+    kind: defines
+  - source: module.sldb.store.query_engine.structural
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.store.query_engine.structural
+    target: module.sldb.store.query
+    kind: imports
+  - source: module.sldb.store.query_engine.structural_queries
+    target: class.sldb.store.query_engine.structural_queries.StructuralQueryEngine
+    kind: defines
+  - source: module.sldb.store.query_engine.structural_queries
+    target: module.sldb.store.query_engine.structural
+    kind: imports
+  - source: module.sldb.store.query_engine.structural_queries
+    target: module.sldb.store.query_engine.filter
+    kind: imports
+  - source: module.sldb.store.resolver
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.store.section_rebuild
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.store.section_rebuild
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.store.section_rebuild
+    target: module.sldb.store.models
+    kind: imports
+  - source: module.sldb.store.section_rebuild
+    target: module.sldb.store.semantic
+    kind: imports
+  - source: module.sldb.store.semantic
+    target: class.sldb.store.semantic.RebuildReport
+    kind: defines
+  - source: module.sldb.store.semantic
+    target: module.sldb.runtime.validation
+    kind: imports
+  - source: module.sldb.store.semantic
+    target: module.sldb.store.io
+    kind: imports
+  - source: module.sldb.store.semantic
+    target: module.sldb.store.layout
+    kind: imports
+  - source: module.sldb.store.semantic
+    target: module.sldb.store.models
+    kind: imports
+  - source: module.sldb.store.semantic
+    target: module.sldb.store.semantic_tags
     kind: imports
