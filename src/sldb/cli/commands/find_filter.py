@@ -2,7 +2,7 @@ import re
 from typing import Any
 
 from sldb.cli.commands.find_proxy import _RuntimeDocProxy
-from sldb.cli.graph import SearchRecord
+from sldb.cli.graph_ops import SearchRecord
 from sldb.cli.model_utils import resolve_model_ref
 from sldb.store.query_engine.filter import _where_matches as core_where_matches
 

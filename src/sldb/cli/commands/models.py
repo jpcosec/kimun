@@ -5,7 +5,7 @@ from typing import Any
 import yaml
 
 from sldb.cli.commands.model import ModelCLI
-from sldb.cli.graph import ast_for_target
+from sldb.cli.graph_ops import ast_for_target
 from sldb.cli.commands.models_list import ModelsListCLI
 from sldb.cli.commands.models_create import ModelsCreateCLI
 from sldb.cli.commands.models_validate import ModelsValidateCLI

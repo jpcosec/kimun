@@ -4,7 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from sldb.store.semantic import RebuildReport, _extract_sections
+from sldb.store.semantic import RebuildReport
+from sldb.store.section_rebuild import _extract_sections
 
 
 class TestExtractSectionsEdgeCases:

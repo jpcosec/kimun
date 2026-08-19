@@ -5,7 +5,7 @@ def _add_docs_part2(sub):
     _recover(sub); _list(sub); _compose(sub); _explore(sub)
 
 def _recover(s):
-    r = s.add_parser("recover", help="Resolve [[links]] and report their targets.")
+    r = s.add_parser("recover", help="Resolve [[links]] and report their targets.", epilog="Example:\n  sldb docs recover roadmap --store .sldb")
     r.add_argument("doc", help="Doc name or path")
     r.add_argument("--store", help="Store path")
     r.add_argument("--format", choices=("text", "json", "yaml"), default="text")

@@ -6,7 +6,7 @@ import csv
 import hashlib
 from datetime import datetime
 from pathlib import Path
-from .contracts import RawSourceEntry
+from wiki_compiler.contracts import RawSourceEntry
 
 def compute_content_hash(path: Path) -> str:
     sha256 = hashlib.sha256()

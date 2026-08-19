@@ -3,7 +3,7 @@ import argparse
 from .docs2 import _add_docs_part2
 
 def add_docs_group(s: argparse._SubParsersAction) -> None:
-    p = s.add_parser("docs", help="Tracked document workflows.")
+    p = s.add_parser("docs", help="Tracked document workflows.", epilog="Note: `recover` and `compose` work on explicit Markdown links and transclusions.")
     sub = p.add_subparsers(dest="docs_command", required=True)
     _create(sub); _track(sub); _update(sub); _untrack(sub); _show(sub)
     _add_docs_part2(sub)

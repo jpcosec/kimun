@@ -5,7 +5,7 @@ from sldb.cli.dict_utils import deep_get
 from sldb.cli.store_context import get_store_context
 from sldb.cli.model_utils import registered_model
 from sldb.cli.commands.fields_target import parse_model_target, resolve_doc_target
-from sldb.cli.graph import query_field_records
+from sldb.cli.graph_ops import query_field_records
 
 def show_field(args: Any) -> int:
     target = args.target.strip("/")

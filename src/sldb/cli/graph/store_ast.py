@@ -1,5 +1,6 @@
 from typing import Any
-from sldb.cli.utils import get_store_context, resolve_model_ref
+from sldb.cli.store_context import get_store_context
+from sldb.cli.model_utils import resolve_model_ref
 from sldb.store.io import load_documents_index, load_models_index, load_store_index
 from sldb.store.query import load_runtime_documents
 from .utils import _annotation_name

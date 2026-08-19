@@ -2,7 +2,7 @@ from __future__ import annotations
 import json
 import yaml
 from typing import Any
-from sldb.cli.graph import SearchRecord
+from sldb.cli.graph_ops import SearchRecord
 
 class FindFormatter:
     """Formats search results."""

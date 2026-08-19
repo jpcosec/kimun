@@ -1,6 +1,8 @@
 from __future__ import annotations
 from pathlib import Path
-from .contracts import KnowledgeNode, SystemIdentity, SemanticFacet, ComplianceFacet
+from kgdb.contracts.node import KnowledgeNode
+from kgdb.contracts.base import SystemIdentity
+from ontology.contracts.facets import SemanticFacet, ComplianceFacet
 
 class TypeScriptScanner:
     @property

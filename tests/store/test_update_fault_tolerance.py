@@ -151,7 +151,8 @@ def test_store_lock_wait_blocks_until_released(tmp_path):
 
 def test_atomic_write_cleans_up_temp_file(tmp_path):
     """_atomic_write leaves no .tmp file behind after success."""
-    from sldb.store.io import _atomic_write
+    from sldb.store.io.utils import StoreIOUtils
+    _atomic_write = StoreIOUtils._atomic_write
 
     target = tmp_path / "test.yaml"
     _atomic_write(target, "hello: world\n")
@@ -163,7 +164,8 @@ def test_atomic_write_cleans_up_temp_file(tmp_path):
 
 def test_atomic_write_creates_parent_dirs(tmp_path):
     """_atomic_write creates intermediate directories."""
-    from sldb.store.io import _atomic_write
+    from sldb.store.io.utils import StoreIOUtils
+    _atomic_write = StoreIOUtils._atomic_write
 
     target = tmp_path / "a" / "b" / "c.yaml"
     _atomic_write(target, "key: val\n")

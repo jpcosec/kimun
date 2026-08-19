@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sldb.cli.graph import _field_template_line_map
+from sldb.cli.graph_ops.map_fields import _field_template_line_map
 
 
 def test_normal_marker():

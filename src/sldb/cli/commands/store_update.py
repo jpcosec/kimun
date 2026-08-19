@@ -7,7 +7,8 @@ from sldb.store.hashing import hash_documents_index, hash_fields, hash_text
 from sldb.store.io import load_documents_index, load_models_index, load_store_index, save_documents_index, save_models_index, store_lock
 from sldb.store.models import StoreIndex
 from sldb.store.ops import cascade_hash_a
-from sldb.store.semantic import RebuildReport, rebuild_sections_indexes, rebuild_semantic_indexes
+from sldb.store.section_rebuild import rebuild_sections_indexes
+from sldb.store.semantic import RebuildReport, rebuild_semantic_indexes
 
 def update_store(args: Any) -> int:
     sp, root = get_store_context(args.store)

@@ -1,26 +1,22 @@
-"""Doc CLI commands module."""
 from __future__ import annotations
 
 from pathlib import Path
 from typing import Any
 import yaml
 
-from sldb.cli.utils import get_store_context, registered_model, resolve_model_ref
+from sldb.cli.store_context import get_store_context
+from sldb.cli.model_utils import registered_model, resolve_model_ref
 from sldb.runtime.validation import render_model_markdown, validate_model_input_roundtrip
 from sldb.store.io import load_store_index, load_models_index, load_documents_index, save_documents_index, save_models_index, store_lock
 from sldb.store.hashing import hash_text, hash_fields, hash_documents_index
-from sldb.store.semantic import rebuild_semantic_indexes, rebuild_sections_indexes
+from sldb.store.section_rebuild import rebuild_sections_indexes
+from sldb.store.semantic import rebuild_semantic_indexes
 from sldb.store.ops import cascade_hash_a, track_document
 from sldb.core.exceptions import SLDBValidationError, SLDBASTError, SLDBError
 
 class DocCLI:
-    """Handles document management: add, track, update."""
 
     def run(self, args: Any) -> int:
-        """Dispatch doc subcommands.
-        Args: args (Any): CLI args.
-        Returns: int: Exit code.
-        """
         cmd_map = {"add": self.add, "track": self.track, "update": self.update, "untrack": self.untrack}
         if args.doc_command not in cmd_map: raise SLDBError(f"Unknown doc command: {args.doc_command}")
         return cmd_map[args.doc_command](args)
@@ -36,10 +32,6 @@ class DocCLI:
         except yaml.YAMLError as e: raise SLDBASTError(f"Parse error: {e}")
 
     def add(self, args: Any) -> int:
-        """Add a doc.
-        Args: args (Any): CLI args.
-        Returns: int: Exit code.
-        """
         sp, root = get_store_context(args.store)
         model_type, entry, idx = registered_model(sp, args.model, args.pythonpath)
         rendered = render_model_markdown(model_type, self._parse_payload(args.payload))
@@ -52,10 +44,6 @@ class DocCLI:
         return 0
 
     def track(self, args: Any) -> int:
-        """Track a doc.
-        Args: args (Any): CLI args.
-        Returns: int: Exit code.
-        """
         sp, root = get_store_context(args.store)
         model_type, entry, idx = registered_model(sp, args.model, args.pythonpath)
         path = self._resolve_doc_path(args.path, root)
@@ -72,19 +60,14 @@ class DocCLI:
         raise SLDBError(f"Doc '{doc_ref}' not found.")
 
     def update(self, args: Any) -> int:
-        """Update a doc.
-        Args: args (Any): CLI args.
-        Returns: int: Exit code.
-        """
         sp, root = get_store_context(args.store)
-        idx = load_store_index(sp)
-        m_entry, m_idx, d_idx, doc = self._find_doc(root, idx, args.doc)
+        m_entry, m_idx, d_idx, doc = self._find_doc(root, load_store_index(sp), args.doc)
         model_type = resolve_model_ref(m_entry.model_ref, args.pythonpath)
         rendered = render_model_markdown(model_type, self._parse_payload(args.payload))
         if not validate_model_input_roundtrip(model_type, rendered)[0]: raise SLDBValidationError("Update fail", validate_model_input_roundtrip(model_type, rendered)[1])
         (root / doc.path).write_text(rendered + "\n", encoding="utf-8")
         doc.hash_c, doc.hash_d = hash_text(rendered + "\n"), hash_fields(model_type, rendered + "\n")
-        self._save_updated(sp, root, idx, m_entry, m_idx, d_idx, args)
+        self._save_updated(sp, root, load_store_index(sp), m_entry, m_idx, d_idx, args)
         print(f"Updated '{doc.name}'")
         return 0
 
@@ -96,15 +79,7 @@ class DocCLI:
             rebuild_semantic_indexes(sp, root, resolve_model_ref, args.pythonpath)
             cascade_hash_a(sp, root, idx)
 
-    def untrack(self, args: Any) -> int:
-        """Untrack a doc.
-        Args: args (Any): CLI args.
-        Returns: int: Exit code.
-        """
-        sp, root = get_store_context(args.store)
-        idx = load_store_index(sp)
-        m_entry, m_idx, d_idx, doc = self._find_doc(root, idx, args.doc)
-        d_idx.documents = [e for e in d_idx.documents if e.name != doc.name]
+    def _save_untracked(self, sp: Any, root: Path, idx: Any, args: Any, m_entry: Any, m_idx: Any, d_idx: Any) -> None:
         with store_lock(sp):
             save_documents_index(root / m_idx.documents_index, d_idx)
             m_idx.hash_b = hash_documents_index(d_idx)
@@ -112,6 +87,13 @@ class DocCLI:
             rebuild_semantic_indexes(sp, root, resolve_model_ref, args.pythonpath)
             rebuild_sections_indexes(sp, root, resolve_model_ref, args.pythonpath)
             cascade_hash_a(sp, root, idx)
+
+    def untrack(self, args: Any) -> int:
+        sp, root = get_store_context(args.store)
+        idx = load_store_index(sp)
+        m_entry, m_idx, d_idx, doc = self._find_doc(root, idx, args.doc)
+        d_idx.documents = [e for e in d_idx.documents if e.name != doc.name]
+        self._save_untracked(sp, root, idx, args, m_entry, m_idx, d_idx)
         print(f"Untracked '{doc.name}'")
         return 0
 

@@ -1,7 +1,7 @@
 from __future__ import annotations
 import re
 from typing import Any
-from sldb.cli.graph import SearchRecord
+from sldb.cli.graph_ops import SearchRecord
 from sldb.store.query_engine.filter import _where_matches as _core_where_matches
 from sldb.cli.commands.find_utils import RuntimeDocProxy
 

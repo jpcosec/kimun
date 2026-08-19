@@ -1,11 +1,13 @@
 from __future__ import annotations
 import re
 from pathlib import Path
-from .contracts import ASTFacet, ComplianceFacet, KnowledgeNode, SemanticFacet, SystemIdentity
+from ontology.contracts.facets import ASTFacet, ComplianceFacet, SemanticFacet
+from kgdb.contracts.node import KnowledgeNode
+from kgdb.contracts.base import SystemIdentity
 from .ignore_rule import IgnoreRule
 from .python_scanner import PythonScanner
 from .typescript_scanner import TypeScriptScanner
-from .protocols import ScannerPlugin
+from wiki_compiler.protocols import ScannerPlugin
 
 IO_LINE_RE = re.compile(r"^(?:input|inputs|output|outputs|i/o):\s*(?P<medium>memory|disk|network)\s*\|\s*(?P<path>[^|]+?)\s*(?:\|\s*(?P<schema>.+))?$", re.IGNORECASE)
 

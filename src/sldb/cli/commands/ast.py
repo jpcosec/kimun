@@ -5,7 +5,7 @@ from typing import Any
 
 import yaml
 
-from sldb.cli.graph import ast_for_target
+from sldb.cli.graph_ops import ast_for_target
 
 
 SCHEMA = {

@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 from typing import Any
 import yaml
-from sldb.cli.graph import build_document_ir, resolve_runtime_doc
+from sldb.cli.graph_ops import build_document_ir, resolve_runtime_doc
 from sldb.cli.store_context import get_store_context
 from sldb.store.io import load_store_index
 from sldb.cli.commands.sections_common import load_persisted_sections, section_record_to_entry

@@ -1,8 +1,9 @@
 from __future__ import annotations
 import json
+from sldb.cli.commands.find_filter import where_matches
 from typing import Any
 import yaml
-from sldb.cli.graph import iter_search_records, search_records
+from sldb.cli.graph_ops import iter_search_records, search_records
 
 class FindSectionsCLI:
     def run(self, args: Any) -> int:
@@ -25,8 +26,8 @@ class FindSectionsCLI:
         if not hasattr(args, "where") or not args.where:
             return matched
         from sldb.cli.commands.find import FindCLI
-        find_cli = FindCLI()
-        return [r for r in matched if find_cli._where_matches(r, args.where, args.pythonpath)]
+
+        return [r for r in matched if where_matches(r, args.where, args.pythonpath)]
 
     def _format_find_payload(self, payload: list[dict], fmt: str) -> int:
         if fmt == "text":

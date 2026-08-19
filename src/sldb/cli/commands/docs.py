@@ -6,7 +6,7 @@ import yaml
 from sldb.cli.commands.doc import DocCLI
 from sldb.cli.commands.explore import ExploreCLI
 from sldb.cli.commands.links import LinkCLI
-from sldb.cli.graph import ast_for_target
+from sldb.cli.graph_ops import ast_for_target
 from sldb.cli.store_context import get_store_context
 from sldb.store.io import load_documents_index, load_models_index, load_store_index
 

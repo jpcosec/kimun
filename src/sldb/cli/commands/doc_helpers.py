@@ -41,6 +41,7 @@ def get_store_and_index(args: Any) -> tuple[Any, Any, Any]:
 
 def find_doc_in_store(root: Path, idx: Any, doc_ref: str) -> tuple[Any, Any, Any, Any]:
     import sldb.store.io as sio
+    from sldb.store.section_rebuild import rebuild_sections_indexes
     for m_entry in idx.models:
         m_idx = sio.load_models_index(root / m_entry.models_index)
         d_idx = sio.load_documents_index(root / m_idx.documents_index)
@@ -79,6 +80,7 @@ def write_doc_and_update_hashes(root: Path, doc: Any, model_type: Any, rendered:
 
 def save_update_indexes(sp: Path, root: Path, idx: Any, m_entry: Any, m_idx: Any, d_idx: Any, pythonpath: str) -> None:
     import sldb.store.io as sio, sldb.store.semantic as ssem, sldb.store.ops as so
+    from sldb.store.section_rebuild import rebuild_sections_indexes
     with sio.store_lock(sp):
         sio.save_documents_index(root / m_idx.documents_index, d_idx)
         m_idx.hash_b = ""
@@ -88,10 +90,11 @@ def save_update_indexes(sp: Path, root: Path, idx: Any, m_entry: Any, m_idx: Any
 
 def save_untrack_indexes(sp: Path, root: Path, idx: Any, m_entry: Any, m_idx: Any, d_idx: Any, pythonpath: str) -> None:
     import sldb.store.io as sio, sldb.store.hashing as sh, sldb.store.ops as so, sldb.store.semantic as ssem
+    from sldb.store.section_rebuild import rebuild_sections_indexes
     with sio.store_lock(sp):
         sio.save_documents_index(root / m_idx.documents_index, d_idx)
         m_idx.hash_b = sh.hash_documents_index(d_idx)
         sio.save_models_index(root / m_entry.models_index, m_idx)
         ssem.rebuild_semantic_indexes(sp, root, resolve_model_ref, pythonpath)
-        ssem.rebuild_sections_indexes(sp, root, resolve_model_ref, pythonpath)
+        rebuild_sections_indexes(sp, root, resolve_model_ref, pythonpath)
         so.cascade_hash_a(sp, root, idx)

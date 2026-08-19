@@ -1,7 +1,7 @@
 from __future__ import annotations
 from pathlib import Path
 from wiki_compiler.adapters.ontology_facets import scan_python_file
-from .contracts import KnowledgeNode
+from kgdb.contracts.node import KnowledgeNode
 
 class PythonScanner:
     @property

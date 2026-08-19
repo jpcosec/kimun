@@ -26,9 +26,10 @@ def mock_resolve_model_ref(model_ref, pythonpath=None):
 def populated_store(tmp_path):
     store_path = tmp_path / ".sldb"
     store_path.mkdir()
+    (store_path / "core").mkdir()
 
     # Create a minimal store structure
-    (store_path / "store_index.yaml").write_text("models: []\nstores: []\n")
+    (store_path / "core" / "store_index.yaml").write_text("models: []\nstores: []\n")
     (store_path / "semantic_index.yaml").write_text("tags: {}\ndocuments: {}\n")
     (store_path / "semantic_dag.yaml").write_text("equivalences: {}\n")
 
@@ -93,9 +94,10 @@ def test_model_inheritance_query(tmp_path):
     project_root = tmp_path
     store_path = project_root / ".sldb"
     store_path.mkdir()
+    (store_path / "core").mkdir()
 
     # Mocking necessary files for store to function
-    (store_path / "store_index.yaml").write_text("models: []\nstores: []\n")
+    (store_path / "core" / "store_index.yaml").write_text("models: []\nstores: []\n")
     (store_path / "semantic_index.yaml").write_text("tags: {}\ndocuments: {}\n")
     (store_path / "semantic_dag.yaml").write_text("equivalences: {}\n")
 
