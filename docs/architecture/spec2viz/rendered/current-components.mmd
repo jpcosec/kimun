@@ -1,57 +1,125 @@
 graph TD
     SLDBCLI["sldb CLI"]
-    SLDBCLI --> DirectCommands
-    SLDBCLI --> StoreCommands
-    DirectCommands["Direct Commands"]
-    DirectCommands --> ExtractRenderValidate
-    DirectCommands --> InitExample
-    ExtractRenderValidate["extract / render / validate"]
-    InitExample["init / example"]
-    StoreCommands["store / model / doc Commands"]
-    StoreCommands --> StoreRegistryOps
-    StoreCommands --> ModelRegistryOps
-    StoreCommands --> DocumentTrackingOps
-    StoreRegistryOps["store init/add/check/update"]
-    ModelRegistryOps["model add/update"]
-    DocumentTrackingOps["doc add/track/update"]
-    ModelContract["StructuredNLDoc Models"]
-    ModelContract --> StructuredNLDocBase
-    ModelContract --> ValidationLayer
-    StructuredNLDocBase["StructuredNLDoc base"]
-    ValidationLayer["validation helpers"]
-    MarkdownEngine["Markdown Engine"]
-    MarkdownEngine --> ASTHandler
-    MarkdownEngine --> TemplateExtractor
-    MarkdownEngine --> DataExtractor
-    MarkdownEngine --> Renderer
-    ASTHandler["ast_handler"]
-    TemplateExtractor["template_extractor"]
-    DataExtractor["data_extractor"]
-    Renderer["renderer"]
+    SLDBCLI --> CLIDispatcher
+    SLDBCLI --> CLIParsers
+    SLDBCLI --> CLICommands
+    SLDBCLI --> CLIGraphOps
+    CLIDispatcher["cli.dispatcher"]
+    CLIParsers["cli.parsers.*"]
+    CLIParsers --> ParsersCore
+    CLIParsers --> ParsersModels
+    CLIParsers --> ParsersDocs
+    CLIParsers --> ParsersFind
+    ParsersCore["parsers.core"]
+    ParsersModels["parsers.models"]
+    ParsersDocs["parsers.docs"]
+    ParsersFind["parsers.find"]
+    CLICommands["cli.commands.*"]
+    CLICommands --> DirectCommands
+    CLICommands --> StoreCommands
+    CLICommands --> QueryCommands
+    DirectCommands["basic / init / help / faq"]
+    StoreCommands["store / model / doc / inbox"]
+    QueryCommands["find / sections / fields / explore"]
+    CLIGraphOps["cli.graph_ops.*"]
+    CLIGraphOps --> GraphBuildAST
+    CLIGraphOps --> GraphBuildIR
+    CLIGraphOps --> GraphIterRecords
+    GraphBuildAST["graph_ops.build_ast"]
+    GraphBuildIR["graph_ops.build_ir"]
+    GraphIterRecords["graph_ops.iter_records"]
+    StoreFacade["store.facade"]
+    CoreRuntime["Core Runtime"]
+    CoreRuntime --> ASTPackage
+    CoreRuntime --> ContractsPackage
+    CoreRuntime --> IRPackage
+    CoreRuntime --> DataExtractor
+    CoreRuntime --> TemplateExtractor
+    CoreRuntime --> Renderer
+    ASTPackage["core.ast.*"]
+    ContractsPackage["core.contracts.*"]
+    IRPackage["core.ir.*"]
+    DataExtractor["core.data_extractor"]
+    TemplateExtractor["core.template_extractor"]
+    Renderer["core.renderer"]
+    Handlers["core.handlers.*"]
+    Handlers --> TextHandler
+    Handlers --> ListHandler
+    Handlers --> TableHandler
+    Handlers --> YamlHandler
+    TextHandler["handlers.text"]
+    ListHandler["handlers.list"]
+    TableHandler["handlers.table"]
+    YamlHandler["handlers.yaml"]
+    RendererEngines["core.renderer_engine.*"]
+    ExceptionsPackage["core.exceptions.*"]
+    ModelContract["models.structured_doc"]
+    ValidationRuntime["runtime.validation"]
     StoreSubsystem["Store Subsystem"]
     StoreSubsystem --> StoreModels
     StoreSubsystem --> StoreIO
     StoreSubsystem --> StoreHashing
+    StoreSubsystem --> StoreOps
     StoreSubsystem --> StoreDiagnostics
     StoreSubsystem --> StoreResolver
-    StoreModels["store.models"]
-    StoreIO["store.io"]
+    StoreSubsystem --> StoreSemantic
+    StoreSubsystem --> StoreExport
+    StoreSubsystem --> StoreMigration
+    StoreModels["store.models.*"]
+    StoreIO["store.io.*"]
+    StoreIO --> IODocuments
+    StoreIO --> IOModels
+    StoreIO --> IOLock
+    StoreIO --> IOStoreIndex
+    StoreIO --> IOSemanticDAG
+    IODocuments["io.documents_index"]
+    IOModels["io.models_index"]
+    IOLock["io.lock"]
+    IOStoreIndex["io.store_index"]
+    IOSemanticDAG["io.semantic_dag"]
     StoreHashing["store.hashing"]
+    StoreOps["store.ops"]
     StoreDiagnostics["store.diagnostics"]
     StoreResolver["store.resolver"]
+    StoreSemantic["store.semantic"]
+    StoreExport["store.export"]
+    StoreMigration["store.migration"]
+    QueryEngine["Query Engine"]
+    QueryEngine --> QEStructural
+    QueryEngine --> QESemantic
+    QueryEngine --> QEGlobalSemantic
+    QueryEngine --> QEFilter
+    QEStructural["query_engine.structural"]
+    QESemantic["query_engine.semantic"]
+    QEGlobalSemantic["query_engine.global_semantic"]
+    QEFilter["query_engine.filter"]
+    LinksPackage["links.*"]
+    LinksPackage --> LinkParser
+    LinksPackage --> LinkResolver
+    LinksPackage --> LinkComposer
+    LinksPackage --> LinkRecovery
+    LinkParser["links.parser"]
+    LinkResolver["links.resolver"]
+    LinkComposer["links.composer"]
+    LinkRecovery["links.recovery"]
     Filesystem["Filesystem"]
     Filesystem --> MarkdownDocs
     Filesystem --> StoreFiles
-    Filesystem --> Templates
     MarkdownDocs["Markdown docs"]
     StoreFiles[".sldb YAML indexes"]
-    Templates["bundled templates/examples"]
-    SLDBCLI -->|import models| ModelContract
-    SLDBCLI -->|roundtrip/extract/render| ValidationLayer
-    ValidationLayer -->|parse and render| MarkdownEngine
-    StoreCommands -->|manage store| StoreSubsystem
-    StoreDiagnostics -->|hash_d from extracted fields| ValidationLayer
-    StoreHashing -->|field hashing| ValidationLayer
+    CLICommands -->|domain operations| StoreFacade
+    StoreFacade -->|store operations| StoreSubsystem
+    CLICommands -->|roundtrip/extract/render| ValidationRuntime
+    ValidationRuntime -->|parse and render| CoreRuntime
+    CoreRuntime -->|node handling| Handlers
+    Renderer -->|format output| RendererEngines
+    CLIGraphOps -->|AST + IR| CoreRuntime
+    CLIGraphOps -->|search records| QueryEngine
+    QueryEngine -->|load indexes| StoreIO
+    StoreDiagnostics -->|hash verification| ValidationRuntime
+    StoreHashing -->|field hashing| ValidationRuntime
     StoreSubsystem -->|YAML indexes| StoreFiles
-    SLDBCLI -->|documents and outputs| MarkdownDocs
-    InitExample -->|SKILL/example bundle| Templates
+    SLDBCLI -->|documents| MarkdownDocs
+    LinksPackage -->|resolve links| StoreIO
+    StoreExport -->|rebuild + export| StoreSemantic
+    CLICommands -->|recover/compose| LinksPackage

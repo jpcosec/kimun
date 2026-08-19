@@ -1,7 +1,7 @@
 id: sldb.current.components
-title: SLDB Current System Components
+title: "SLDB System Components (Post-Refactor)"
 type: component
-version: "0.1"
+version: "2.0"
 
 data:
   nodes:
@@ -9,82 +9,158 @@ data:
       label: sldb CLI
       kind: core
       contains:
-        - DirectCommands
-        - StoreCommands
+        - CLIDispatcher
+        - CLIParsers
+        - CLICommands
+        - CLIGraphOps
 
-    DirectCommands:
-      label: Direct Commands
+    CLIDispatcher:
+      label: cli.dispatcher
+      kind: core
+
+    CLIParsers:
+      label: cli.parsers.*
       kind: core
       contains:
-        - ExtractRenderValidate
-        - InitExample
+        - ParsersCore
+        - ParsersModels
+        - ParsersDocs
+        - ParsersFind
 
-    ExtractRenderValidate:
-      label: extract / render / validate
+    ParsersCore:
+      label: parsers.core
       kind: core
 
-    InitExample:
-      label: init / example
+    ParsersModels:
+      label: parsers.models
+      kind: core
+
+    ParsersDocs:
+      label: parsers.docs
+      kind: core
+
+    ParsersFind:
+      label: parsers.find
+      kind: core
+
+    CLICommands:
+      label: cli.commands.*
+      kind: core
+      contains:
+        - DirectCommands
+        - StoreCommands
+        - QueryCommands
+
+    DirectCommands:
+      label: basic / init / help / faq
       kind: core
 
     StoreCommands:
-      label: store / model / doc Commands
+      label: store / model / doc / inbox
+      kind: core
+
+    QueryCommands:
+      label: find / sections / fields / explore
+      kind: core
+
+    CLIGraphOps:
+      label: cli.graph_ops.*
       kind: core
       contains:
-        - StoreRegistryOps
-        - ModelRegistryOps
-        - DocumentTrackingOps
+        - GraphBuildAST
+        - GraphBuildIR
+        - GraphIterRecords
 
-    StoreRegistryOps:
-      label: store init/add/check/update
+    GraphBuildAST:
+      label: graph_ops.build_ast
       kind: core
 
-    ModelRegistryOps:
-      label: model add/update
+    GraphBuildIR:
+      label: graph_ops.build_ir
       kind: core
 
-    DocumentTrackingOps:
-      label: doc add/track/update
+    GraphIterRecords:
+      label: graph_ops.iter_records
       kind: core
 
-    ModelContract:
-      label: StructuredNLDoc Models
-      kind: core
-      contains:
-        - StructuredNLDocBase
-        - ValidationLayer
+    StoreFacade:
+      label: store.facade
+      kind: interface
 
-    StructuredNLDocBase:
-      label: StructuredNLDoc base
-      kind: core
-
-    ValidationLayer:
-      label: validation helpers
-      kind: core
-
-    MarkdownEngine:
-      label: Markdown Engine
+    CoreRuntime:
+      label: Core Runtime
       kind: core
       contains:
-        - ASTHandler
-        - TemplateExtractor
+        - ASTPackage
+        - ContractsPackage
+        - IRPackage
         - DataExtractor
+        - TemplateExtractor
         - Renderer
 
-    ASTHandler:
-      label: ast_handler
+    ASTPackage:
+      label: core.ast.*
       kind: core
 
-    TemplateExtractor:
-      label: template_extractor
+    ContractsPackage:
+      label: core.contracts.*
+      kind: core
+
+    IRPackage:
+      label: core.ir.*
       kind: core
 
     DataExtractor:
-      label: data_extractor
+      label: core.data_extractor
+      kind: core
+
+    TemplateExtractor:
+      label: core.template_extractor
       kind: core
 
     Renderer:
-      label: renderer
+      label: core.renderer
+      kind: core
+
+    Handlers:
+      label: core.handlers.*
+      kind: core
+      contains:
+        - TextHandler
+        - ListHandler
+        - TableHandler
+        - YamlHandler
+
+    TextHandler:
+      label: handlers.text
+      kind: core
+
+    ListHandler:
+      label: handlers.list
+      kind: core
+
+    TableHandler:
+      label: handlers.table
+      kind: core
+
+    YamlHandler:
+      label: handlers.yaml
+      kind: core
+
+    RendererEngines:
+      label: core.renderer_engine.*
+      kind: core
+
+    ExceptionsPackage:
+      label: core.exceptions.*
+      kind: core
+
+    ModelContract:
+      label: models.structured_doc
+      kind: core
+
+    ValidationRuntime:
+      label: runtime.validation
       kind: core
 
     StoreSubsystem:
@@ -94,19 +170,53 @@ data:
         - StoreModels
         - StoreIO
         - StoreHashing
+        - StoreOps
         - StoreDiagnostics
         - StoreResolver
+        - StoreSemantic
+        - StoreExport
+        - StoreMigration
 
     StoreModels:
-      label: store.models
+      label: store.models.*
       kind: core
 
     StoreIO:
-      label: store.io
+      label: store.io.*
+      kind: core
+      contains:
+        - IODocuments
+        - IOModels
+        - IOLock
+        - IOStoreIndex
+        - IOSemanticDAG
+
+    IODocuments:
+      label: io.documents_index
+      kind: core
+
+    IOModels:
+      label: io.models_index
+      kind: core
+
+    IOLock:
+      label: io.lock
+      kind: core
+
+    IOStoreIndex:
+      label: io.store_index
+      kind: core
+
+    IOSemanticDAG:
+      label: io.semantic_dag
       kind: core
 
     StoreHashing:
       label: store.hashing
+      kind: core
+
+    StoreOps:
+      label: store.ops
       kind: core
 
     StoreDiagnostics:
@@ -117,13 +227,74 @@ data:
       label: store.resolver
       kind: core
 
+    StoreSemantic:
+      label: store.semantic
+      kind: core
+
+    StoreExport:
+      label: store.export
+      kind: core
+
+    StoreMigration:
+      label: store.migration
+      kind: core
+
+    QueryEngine:
+      label: Query Engine
+      kind: core
+      contains:
+        - QEStructural
+        - QESemantic
+        - QEGlobalSemantic
+        - QEFilter
+
+    QEStructural:
+      label: query_engine.structural
+      kind: core
+
+    QESemantic:
+      label: query_engine.semantic
+      kind: core
+
+    QEGlobalSemantic:
+      label: query_engine.global_semantic
+      kind: core
+
+    QEFilter:
+      label: query_engine.filter
+      kind: core
+
+    LinksPackage:
+      label: links.*
+      kind: core
+      contains:
+        - LinkParser
+        - LinkResolver
+        - LinkComposer
+        - LinkRecovery
+
+    LinkParser:
+      label: links.parser
+      kind: core
+
+    LinkResolver:
+      label: links.resolver
+      kind: core
+
+    LinkComposer:
+      label: links.composer
+      kind: core
+
+    LinkRecovery:
+      label: links.recovery
+      kind: core
+
     Filesystem:
       label: Filesystem
       kind: boundary
       contains:
         - MarkdownDocs
         - StoreFiles
-        - Templates
 
     MarkdownDocs:
       label: Markdown docs
@@ -133,38 +304,59 @@ data:
       label: .sldb YAML indexes
       kind: database
 
-    Templates:
-      label: bundled templates/examples
-      kind: boundary
-
   edges:
-    - from: SLDBCLI
-      to: ModelContract
+    - from: CLICommands
+      to: StoreFacade
       relation: uses
-      label: import models
+      label: domain operations
 
-    - from: SLDBCLI
-      to: ValidationLayer
+    - from: StoreFacade
+      to: StoreSubsystem
+      relation: delegates
+      label: store operations
+
+    - from: CLICommands
+      to: ValidationRuntime
       relation: uses
       label: roundtrip/extract/render
 
-    - from: ValidationLayer
-      to: MarkdownEngine
+    - from: ValidationRuntime
+      to: CoreRuntime
       relation: uses
       label: parse and render
 
-    - from: StoreCommands
-      to: StoreSubsystem
+    - from: CoreRuntime
+      to: Handlers
       relation: uses
-      label: manage store
+      label: node handling
+
+    - from: Renderer
+      to: RendererEngines
+      relation: uses
+      label: format output
+
+    - from: CLIGraphOps
+      to: CoreRuntime
+      relation: uses
+      label: AST + IR
+
+    - from: CLIGraphOps
+      to: QueryEngine
+      relation: uses
+      label: search records
+
+    - from: QueryEngine
+      to: StoreIO
+      relation: reads
+      label: load indexes
 
     - from: StoreDiagnostics
-      to: ValidationLayer
+      to: ValidationRuntime
       relation: uses
-      label: hash_d from extracted fields
+      label: hash verification
 
     - from: StoreHashing
-      to: ValidationLayer
+      to: ValidationRuntime
       relation: uses
       label: field hashing
 
@@ -176,9 +368,19 @@ data:
     - from: SLDBCLI
       to: MarkdownDocs
       relation: reads_writes
-      label: documents and outputs
+      label: documents
 
-    - from: InitExample
-      to: Templates
+    - from: LinksPackage
+      to: StoreIO
       relation: reads
-      label: SKILL/example bundle
+      label: resolve links
+
+    - from: StoreExport
+      to: StoreSemantic
+      relation: uses
+      label: rebuild + export
+
+    - from: CLICommands
+      to: LinksPackage
+      relation: uses
+      label: recover/compose
