@@ -25,24 +25,13 @@ class YamlRenderer(BaseRenderer):
         return content
 
     def _render_frontmatter_body(self, body: str, data: dict[str, Any]) -> str:
-        rendered_lines: list[str] = []
-        inline_field_pattern = re.compile(r"^\s*([A-Za-z0-9_-]+)\s*:\s*⸢([^⸥]+)⸥\s*$")
+        lines, pat = [], re.compile(r"^\s*([A-Za-z0-9_-]+)\s*:\s*⸢([^⸥]+)⸥\s*$")
         for line in body.splitlines():
-            match = inline_field_pattern.match(line)
-            if not match:
-                rendered_lines.append(self.replace_markers(line, data))
-                continue
-
-            key = match.group(1)
-            marker = parse_marker(match.group(2))
-            value = data.get(marker.name)
-            if value is None and (marker.is_optional or marker.kind == "render"):
-                value = None
-            elif value is None:
-                rendered_lines.append(self.replace_markers(line, data))
-                continue
-
-            rendered_lines.append(
-                yaml.safe_dump({key: value}, allow_unicode=True, sort_keys=False).strip()
-            )
-        return "\n".join(rendered_lines)
+            m = pat.match(line)
+            if not m: lines.append(self.replace_markers(line, data)); continue
+            k, marker = m.group(1), parse_marker(m.group(2))
+            v = data.get(marker.name)
+            if v is None and not (marker.is_optional or marker.kind == "render"):
+                lines.append(self.replace_markers(line, data)); continue
+            lines.append(yaml.safe_dump({k: v}, allow_unicode=True, sort_keys=False).strip())
+        return "\n".join(lines)

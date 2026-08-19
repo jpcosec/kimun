@@ -6,7 +6,9 @@ from typing import Any
 import yaml
 
 from sldb.cli.commands.store import StoreCLI
-from sldb.cli.utils import get_store_context, resolve_model_ref, write_text
+from sldb.cli.store_context import get_store_context
+from sldb.cli.model_utils import resolve_model_ref
+from sldb.cli.utils import write_text
 from sldb.store.export import export_kgdb_semantic_payload
 from sldb.store.io import load_store_index
 
@@ -28,34 +30,31 @@ class StoresCLI:
     def semantic_export(self, args: Any) -> int:
         sp, root = get_store_context(args.store, mode="readonly")
         payload = export_kgdb_semantic_payload(
-            sp,
-            root,
-            resolve_model_ref,
-            args.pythonpath,
-            rebuild=args.rebuild,
+            sp, root, resolve_model_ref, args.pythonpath, rebuild=args.rebuild,
             command=["sldb", "stores", "semantic-export", "--format", args.format],
         )
-        if args.encoding == "json":
-            content = json.dumps(payload, indent=2) + "\n"
-        else:
-            content = yaml.safe_dump(payload, sort_keys=False, allow_unicode=True)
+        content = self._format_payload(payload, args.encoding)
         write_text(args.output, content)
         return 0
 
+    def _format_payload(self, payload: Any, encoding: str) -> str:
+        if encoding == "json":
+            return json.dumps(payload, indent=2) + "\n"
+        return yaml.safe_dump(payload, sort_keys=False, allow_unicode=True)
+
     def list(self, args: Any) -> int:
-        sp, root = get_store_context(args.store, mode="readonly")
+        sp, _root = get_store_context(args.store, mode="readonly")
         idx = load_store_index(sp)
-        stores = [
-            {"name": entry.name, "path": entry.path}
-            for entry in sorted(idx.stores, key=lambda item: item.name)
-        ]
+        stores = [{"name": e.name, "path": e.path} for e in sorted(idx.stores, key=lambda i: i.name)]
         payload = {"store": str(sp), "stores": stores}
-        if args.format == "json":
-            print(json.dumps(payload, indent=2))
+        
+        if args.format in ("json", "yaml"):
+            print(self._format_payload(payload, args.format).strip())
             return 0
-        if args.format == "yaml":
-            print(yaml.safe_dump(payload, sort_keys=False, allow_unicode=True))
-            return 0
+        
+        return self._print_text_list(sp, stores)
+
+    def _print_text_list(self, sp: Any, stores: list[dict[str, str]]) -> int:
         if not stores:
             print(f"No federated stores linked in {sp}")
             return 0

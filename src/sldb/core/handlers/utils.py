@@ -1,45 +1,34 @@
 from __future__ import annotations
-
 from sldb.core.contracts import Marker
 
-
 def parse_marker(inner: str) -> Marker:
-    """
-    Parses a marker string into its components.
-
-    Args:
-        inner: The content inside ⸢...⸥.
-
-    Returns:
-        A Marker model instance.
-    """
     head, _, prop = inner.partition("•")
     parts = _split_marker_head(head)
-    kind = parts[0] if parts else "rev"
-    traits = parts[1:] if parts else []
-    name = prop.strip() if prop else ""
-    return Marker(kind=kind, traits=traits, name=name)
-
+    return Marker(
+        kind=parts[0] if parts else "rev",
+        traits=parts[1:] if parts else [],
+        name=prop.strip() if prop else ""
+    )
 
 def _split_marker_head(head: str) -> list[str]:
-    parts: list[str] = []
-    current: list[str] = []
-    bracket_depth = 0
+    parts, current, depth = [], [], 0
     for char in head:
-        if char == "[":
-            bracket_depth += 1
-        elif char == "]" and bracket_depth:
-            bracket_depth -= 1
-
-        if char == "," and bracket_depth == 0:
-            part = "".join(current).strip()
-            if part:
-                parts.append(part)
-            current = []
+        depth = _process_char(char, depth)
+        if char == "," and depth == 0:
+            current = _append_part(current, parts)
             continue
         current.append(char)
-
-    part = "".join(current).strip()
-    if part:
-        parts.append(part)
+    _append_part(current, parts)
     return parts
+
+def _process_char(char: str, depth: int) -> int:
+    if char == "[":
+        return depth + 1
+    if char == "]" and depth > 0:
+        return depth - 1
+    return depth
+
+def _append_part(current: list[str], parts: list[str]) -> list[str]:
+    if part := "".join(current).strip():
+        parts.append(part)
+    return []

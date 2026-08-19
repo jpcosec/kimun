@@ -1,8 +1,6 @@
 from __future__ import annotations
-
 import re
 from typing import Any
-
 from sldb.core.handlers.base import BaseNodeHandler
 from sldb.core.handlers.utils import parse_marker
 from sldb.core.node import SLDBNode
@@ -10,100 +8,60 @@ from sldb.core.node import SLDBNode
 MARKER_PATTERN = r"⸢([^⸥]+)⸥"
 INLINE_RENDER_PATTERN = r"{{\s*.*?\s*}}"
 
-
 def build_text_pattern(content: str) -> dict[str, Any]:
-    """
-    Builds a regex pattern and metadata for text extraction.
-    """
-    props_info = []
-    regex_parts = []
-    cursor = 0
-    dynamic_found = False
+    props, regex, cursor, dynamic = [], [], 0, False
+    for m in re.finditer(f"{MARKER_PATTERN}|{INLINE_RENDER_PATTERN}", content):
+        regex.append(re.escape(content[cursor : m.start()]))
+        dynamic = _process_token(m.group(0), m, regex, props) or dynamic
+        cursor = m.end()
+    regex.append(re.escape(content[cursor:]))
+    return {"props_info": props, "regex": f"^{''.join(regex)}$", "dynamic_found": dynamic}
 
-    token_pattern = re.compile(f"{MARKER_PATTERN}|{INLINE_RENDER_PATTERN}")
-    for match in token_pattern.finditer(content):
-        regex_parts.append(re.escape(content[cursor : match.start()]))
-        token = match.group(0)
-
-        if token.startswith("{{"):
-            regex_parts.append(".*?")
-            dynamic_found = True
-        else:
-            marker = parse_marker(match.group(1))
-            if marker.is_reversible or marker.is_optional:
-                regex_parts.append("(.*?)")
-                props_info.append(marker)
-                dynamic_found = True
-                dynamic_found = True
-            else:
-                regex_parts.append(".*?")
-                dynamic_found = True
-
-        cursor = match.end()
-
-    regex_parts.append(re.escape(content[cursor:]))
-    return {
-        "props_info": props_info,
-        "regex": f"^{''.join(regex_parts)}$",
-        "dynamic_found": dynamic_found,
-    }
-
+def _process_token(token: str, match: re.Match, regex_parts: list[str], props_info: list[Any]) -> bool:
+    if token.startswith("{{"):
+        regex_parts.append(".*?")
+        return True
+    marker = parse_marker(match.group(1))
+    if marker.is_reversible or marker.is_optional:
+        regex_parts.append("(.*?)")
+        props_info.append(marker)
+        return True
+    regex_parts.append(".*?")
+    return True
 
 class TextNodeHandler(BaseNodeHandler):
-    """
-    Handler for extracting data from plain text nodes.
-    """
-
     def compile_recipe(self, node: SLDBNode) -> list[dict[str, Any]]:
         content = self.get_text(node).strip()
         if not content or ("⸢" not in content and "{{" not in content):
             return []
-
-        pattern_data = build_text_pattern(content)
-        if not pattern_data["dynamic_found"]:
+        pd = build_text_pattern(content)
+        if not pd["dynamic_found"]:
             return []
+        if (tbl := self._try_build_table_recipe(content, pd)):
+            return tbl
+        return [self._build_text_recipe(content, pd)]
 
-        if (
-            len(pattern_data["props_info"]) == 1
-            and content.startswith("⸢")
-            and content.endswith("⸥")
-        ):
+    def _try_build_table_recipe(self, content: str, pattern_data: dict[str, Any]) -> list[dict[str, Any]] | None:
+        if len(pattern_data["props_info"]) == 1 and content.startswith("⸢") and content.endswith("⸥"):
             marker = pattern_data["props_info"][0]
-            table_columns = self._table_columns(marker)
-            if table_columns is not None:
-                return [
-                    {
-                        "name": marker.name,
-                        "marker": marker,
-                        "table_columns": table_columns,
-                        "props": [marker.name],
-                        "handler": "table",
-                        "match_outer_type": "table",
-                        "match_outer_tag": "table",
-                    }
-                ]
+            if (table_columns := self._table_columns(marker)) is not None:
+                return [{"name": marker.name, "marker": marker, "table_columns": table_columns, "props": [marker.name], "handler": "table", "match_outer_type": "table", "match_outer_tag": "table"}]
+        return None
 
-        recipe = {
-            "props": [m.name for m in pattern_data["props_info"]],
-            "props_info": pattern_data["props_info"],
-            "regex": pattern_data["regex"],
-            "handler": "text",
-        }
-        if pattern_data["props_info"] and all(
-            marker.is_optional for marker in pattern_data["props_info"]
-        ):
+    def _build_text_recipe(self, content: str, pd: dict[str, Any]) -> dict[str, Any]:
+        props = pd["props_info"]
+        recipe = {"props": [m.name for m in props], "props_info": props, "regex": pd["regex"], "handler": "text"}
+        if props and all(m.is_optional for m in props):
             recipe["all_optional"] = True
-        if (
-            len(pattern_data["props_info"]) == 1
-            and pattern_data["props_info"][0].is_optional
-            and content.startswith("⸢")
-            and content.endswith("⸥")
-        ):
+        if self._is_optional_block(content, pd):
             recipe["optional_block"] = True
-        if not pattern_data["props_info"]:
+        if not props:
             recipe["anchor"] = True
+        return recipe
 
-        return [recipe]
+    def _is_optional_block(self, content: str, pattern_data: dict[str, Any]) -> bool:
+        props = pattern_data["props_info"]
+        return len(props) == 1 and props[0].is_optional and content.startswith("⸢") and content.endswith("⸥")
 
     def _table_columns(self, marker: Any) -> list[str] | None:
         for trait in marker.traits:
@@ -114,14 +72,7 @@ class TextNodeHandler(BaseNodeHandler):
         return None
 
     def extract_data(self, node: SLDBNode, recipe: dict[str, Any]) -> Any:
-        content = self.get_text(node).strip()
-        match = re.fullmatch(recipe["regex"], content)
+        match = re.fullmatch(recipe["regex"], self.get_text(node).strip())
         if not match:
             return None
-
-        results = {}
-        for idx, val in enumerate(match.groups()):
-            marker = recipe["props_info"][idx]
-            results[marker.name] = val
-
-        return results
+        return {recipe["props_info"][idx].name: val for idx, val in enumerate(match.groups())}

@@ -4,7 +4,8 @@ import inspect
 from pathlib import Path
 from typing import Any
 
-from sldb.cli.utils import get_store_context, resolve_model_ref
+from sldb.cli.store_context import get_store_context
+from sldb.cli.model_utils import resolve_model_ref
 from sldb.store.hashing import hash_documents_index, hash_fields, hash_text
 from sldb.store.io import (
     load_documents_index,

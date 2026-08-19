@@ -10,7 +10,8 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
-from sldb.cli.utils import get_store_context, resolve_model_ref
+from sldb.cli.store_context import get_store_context
+from sldb.cli.model_utils import resolve_model_ref
 from sldb.store.layout import project_root
 from sldb.core.ast import AST_Handler
 from sldb.core.contracts import MARKER_PATTERN, parse_marker

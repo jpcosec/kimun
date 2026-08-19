@@ -18,52 +18,27 @@ def _resolve_path(base: Path, maybe_relative: str) -> Path:
     return path if path.is_absolute() else (base / path).resolve()
 
 
-def load_runtime_documents(
-    store_path: Path,
-    resolve_model_ref,
-    pythonpath: str | None = None,
-    include_linked: bool = False,
-) -> list[RuntimeDocument]:
-    """
-    Loads tracked documents into memory for querying.
-    """
+def _load_doc(doc, root, model_type, m_entry, s_name, s_path) -> RuntimeDocument | None:
+    d_path = root / doc.path
+    if not d_path.exists():
+        return None
+    return RuntimeDocument(store_name=s_name, store_path=s_path, model_name=m_entry.name, model_type=model_type, name=doc.name, path=doc.path, payload=extract_model_data(model_type, d_path.read_text(encoding="utf-8")), semantic_tags=list(doc.semantic_tags))
 
-    def _load_one(current_store_path: Path, store_name: str) -> list[RuntimeDocument]:
-        root = project_root(current_store_path)
-        store_index = load_store_index(current_store_path)
-        runtime_docs: list[RuntimeDocument] = []
-        for model_entry in store_index.models:
-            model_type = resolve_model_ref(model_entry.model_ref, pythonpath)
-            models_idx = load_models_index(root / model_entry.models_index)
-            docs_idx = load_documents_index(root / models_idx.documents_index)
-            for doc in docs_idx.documents:
-                doc_path = root / doc.path
-                if not doc_path.exists():
-                    continue
-                payload = extract_model_data(
-                    model_type, doc_path.read_text(encoding="utf-8")
-                )
-                runtime_docs.append(
-                    RuntimeDocument(
-                        store_name=store_name,
-                        store_path=current_store_path,
-                        model_name=model_entry.name,
-                        model_type=model_type,
-                        name=doc.name,
-                        path=doc.path,
-                        payload=payload,
-                        semantic_tags=list(doc.semantic_tags),
-                    )
-                )
-        return runtime_docs
+def _load_one(s_path: Path, s_name: str, resolver, p_path) -> list[RuntimeDocument]:
+    root = project_root(s_path)
+    docs = []
+    for m in load_store_index(s_path).models:
+        m_type = resolver(m.model_ref, p_path)
+        d_idx = load_documents_index(root / load_models_index(root / m.models_index).documents_index)
+        docs.extend([d for doc in d_idx.documents if (d := _load_doc(doc, root, m_type, m, s_name, s_path))])
+    return docs
 
-    docs = _load_one(store_path, "local")
+def load_runtime_documents(store_path: Path, resolve_model_ref, pythonpath: str | None = None, include_linked: bool = False) -> list[RuntimeDocument]:
+    docs = _load_one(store_path, "local", resolve_model_ref, pythonpath)
     if include_linked:
-        store_index = load_store_index(store_path)
-        for linked in store_index.stores:
-            linked_store = _resolve_path(project_root(store_path), linked.path)
-            if store_exists(linked_store):
-                docs.extend(_load_one(linked_store, linked.name))
+        for linked in load_store_index(store_path).stores:
+            if store_exists(linked_store := _resolve_path(project_root(store_path), linked.path)):
+                docs.extend(_load_one(linked_store, linked.name, resolve_model_ref, pythonpath))
     return docs
 
 

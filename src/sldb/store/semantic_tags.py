@@ -2,26 +2,12 @@ from __future__ import annotations
 
 
 def flatten_model_semantics(model_type: type) -> list[str]:
-    """
-    Flattens model-level semantic metadata into a list of dotted tags.
-    """
-    semantics = getattr(model_type, "__semantics__", {}) or {}
-    tags: list[str] = []
-    for key, value in semantics.items():
-        if isinstance(value, str):
-            tags.append(f"{key}.{value}")
-        elif isinstance(value, (list, tuple)):
-            if value:
-                tags.append(".".join([key, *[str(part) for part in value]]))
-        elif isinstance(value, dict):
-            for child_key, child_value in value.items():
-                if isinstance(child_value, (list, tuple)):
-                    tags.append(
-                        ".".join([key, child_key, *[str(p) for p in child_value]])
-                    )
-                else:
-                    tags.append(f"{key}.{child_key}.{child_value}")
-    return sorted(set(tag for tag in tags if tag))
+    tags = []
+    for k, v in (getattr(model_type, "__semantics__", {}) or {}).items():
+        if isinstance(v, str): tags.append(f"{k}.{v}")
+        elif isinstance(v, (list, tuple)): tags.extend([".".join([k, *[str(p) for p in v]])] if v else [])
+        elif isinstance(v, dict): tags.extend([".".join([k, ck, *([str(p) for p in cv] if isinstance(cv, (list, tuple)) else [str(cv)])]) for ck, cv in v.items()])
+    return sorted(set(t for t in tags if t))
 
 
 def collect_document_semantic_tags(model_type: type, payload: dict) -> list[str]:

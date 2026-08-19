@@ -40,19 +40,9 @@ def configure(
     *, python_execution_mode: str | None = None, python_expression_filter: Any = _UNSET
 ) -> SLDBConfig:
     global _active_config
-
-    mode = _active_config.python_execution_mode
-    if python_execution_mode is not None:
-        mode = _normalize_python_execution_mode(python_execution_mode)
-
-    expression_filter = _active_config.python_expression_filter
-    if python_expression_filter is not _UNSET:
-        expression_filter = python_expression_filter
-
-    _active_config = SLDBConfig(
-        python_execution_mode=mode,
-        python_expression_filter=expression_filter,
-    )
+    mode = _normalize_python_execution_mode(python_execution_mode) if python_execution_mode is not None else _active_config.python_execution_mode
+    filt = python_expression_filter if python_expression_filter is not _UNSET else _active_config.python_expression_filter
+    _active_config = SLDBConfig(python_execution_mode=mode, python_expression_filter=filt)
     return _active_config
 
 

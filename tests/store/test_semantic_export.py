@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 from sldb.cli import main as cli_main
-from sldb.cli.utils import resolve_model_ref
+from sldb.cli.model_utils import resolve_model_ref
 from sldb.store.export import export_kgdb_semantic_payload
 
 
