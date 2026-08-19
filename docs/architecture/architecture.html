@@ -1,0 +1,342 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>spec2viz Catalog</title>
+  </head>
+  <body>
+    <aside><div class="nav-category"><span>Arquitectura</span><a href="#current-components-a2fedcb2">Componentes</a><a href="#current-onboarding-surface-a2fedcb2">Onboarding</a></div>
+<div class="nav-category"><span>Runtime</span><a href="#current-runtime-a2fedcb2">Runtime</a><a href="#current-store-lifecycle-a2fedcb2">Store Lifecycle</a></div>
+<div class="nav-category"><span>Propuestas</span><a href="#proposed-deskops-components-a2fedcb2">Deskops</a></div></aside>
+    <main>
+      <div class="catalog-toolbar"><div class="catalog-toolbar-row"><label>Tipo<select data-filter="tipo"><option value="">Todos</option><option value="activity">activity</option><option value="component">component</option><option value="deployment">deployment</option></select></label><label>Proyecto<select data-filter="proyecto"><option value="">Todos</option></select></label><label>Categoría<select data-filter="categoría"><option value="">Todos</option><option value="Arquitectura">Arquitectura</option><option value="Propuestas">Propuestas</option><option value="Runtime">Runtime</option></select></label><label>Búsqueda<input type="search" id="catalog-search" placeholder="Título, tag o descripción"></label></div><div class="catalog-tags"><button type="button" class="tag-chip" data-tag="type:activity">type:activity</button><button type="button" class="tag-chip" data-tag="type:component">type:component</button><button type="button" class="tag-chip" data-tag="type:deployment">type:deployment</button></div></div>
+      <div class="category-block" data-category-block="Arquitectura"><div class="macro-separator"><h2>— Arquitectura —</h2></div><section id="current-components-a2fedcb2" data-spec="current-components.yml" data-type="component" data-project="" data-category="Arquitectura" data-tags="type:component" data-view-id="current-components" class="catalog-item">
+  <div class="lbl"></div>
+  <h2>SLDB System Components (Post-Refactor)</h2>
+  <p class="desc">Vista de componentes del sistema SLDB después de la refactorización modular.</p>
+  <div class="section-meta"><span class="meta-badge">component</span><span class="meta-badge subtle">type:component</span></div>
+  <div class="board">
+    <div class="mermaid">
+      graph TD
+          SLDBCLI["sldb CLI"]
+          SLDBCLI --> CLIDispatcher
+          SLDBCLI --> CLIParsers
+          SLDBCLI --> CLICommands
+          SLDBCLI --> CLIGraphOps
+          CLIDispatcher["cli.dispatcher"]
+          CLIParsers["cli.parsers.*"]
+          CLIParsers --> ParsersCore
+          CLIParsers --> ParsersModels
+          CLIParsers --> ParsersDocs
+          CLIParsers --> ParsersFind
+          ParsersCore["parsers.core"]
+          ParsersModels["parsers.models"]
+          ParsersDocs["parsers.docs"]
+          ParsersFind["parsers.find"]
+          CLICommands["cli.commands.*"]
+          CLICommands --> DirectCommands
+          CLICommands --> StoreCommands
+          CLICommands --> QueryCommands
+          DirectCommands["basic / init / help / faq"]
+          StoreCommands["store / model / doc / inbox"]
+          QueryCommands["find / sections / fields / explore"]
+          CLIGraphOps["cli.graph_ops.*"]
+          CLIGraphOps --> GraphBuildAST
+          CLIGraphOps --> GraphBuildIR
+          CLIGraphOps --> GraphIterRecords
+          GraphBuildAST["graph_ops.build_ast"]
+          GraphBuildIR["graph_ops.build_ir"]
+          GraphIterRecords["graph_ops.iter_records"]
+          StoreFacade["store.facade"]
+          CoreRuntime["Core Runtime"]
+          CoreRuntime --> ASTPackage
+          CoreRuntime --> ContractsPackage
+          CoreRuntime --> IRPackage
+          CoreRuntime --> DataExtractor
+          CoreRuntime --> TemplateExtractor
+          CoreRuntime --> Renderer
+          ASTPackage["core.ast.*"]
+          ContractsPackage["core.contracts.*"]
+          IRPackage["core.ir.*"]
+          DataExtractor["core.data_extractor"]
+          TemplateExtractor["core.template_extractor"]
+          Renderer["core.renderer"]
+          Handlers["core.handlers.*"]
+          Handlers --> TextHandler
+          Handlers --> ListHandler
+          Handlers --> TableHandler
+          Handlers --> YamlHandler
+          TextHandler["handlers.text"]
+          ListHandler["handlers.list"]
+          TableHandler["handlers.table"]
+          YamlHandler["handlers.yaml"]
+          RendererEngines["core.renderer_engine.*"]
+          ExceptionsPackage["core.exceptions.*"]
+          ModelContract["models.structured_doc"]
+          ValidationRuntime["runtime.validation"]
+          StoreSubsystem["Store Subsystem"]
+          StoreSubsystem --> StoreModels
+          StoreSubsystem --> StoreIO
+          StoreSubsystem --> StoreHashing
+          StoreSubsystem --> StoreOps
+          StoreSubsystem --> StoreDiagnostics
+          StoreSubsystem --> StoreResolver
+          StoreSubsystem --> StoreSemantic
+          StoreSubsystem --> StoreExport
+          StoreSubsystem --> StoreMigration
+          StoreModels["store.models.*"]
+          StoreIO["store.io.*"]
+          StoreIO --> IODocuments
+          StoreIO --> IOModels
+          StoreIO --> IOLock
+          StoreIO --> IOStoreIndex
+          StoreIO --> IOSemanticDAG
+          IODocuments["io.documents_index"]
+          IOModels["io.models_index"]
+          IOLock["io.lock"]
+          IOStoreIndex["io.store_index"]
+          IOSemanticDAG["io.semantic_dag"]
+          StoreHashing["store.hashing"]
+          StoreOps["store.ops"]
+          StoreDiagnostics["store.diagnostics"]
+          StoreResolver["store.resolver"]
+          StoreSemantic["store.semantic"]
+          StoreExport["store.export"]
+          StoreMigration["store.migration"]
+          QueryEngine["Query Engine"]
+          QueryEngine --> QEStructural
+          QueryEngine --> QESemantic
+          QueryEngine --> QEGlobalSemantic
+          QueryEngine --> QEFilter
+          QEStructural["query_engine.structural"]
+          QESemantic["query_engine.semantic"]
+          QEGlobalSemantic["query_engine.global_semantic"]
+          QEFilter["query_engine.filter"]
+          LinksPackage["links.*"]
+          LinksPackage --> LinkParser
+          LinksPackage --> LinkResolver
+          LinksPackage --> LinkComposer
+          LinksPackage --> LinkRecovery
+          LinkParser["links.parser"]
+          LinkResolver["links.resolver"]
+          LinkComposer["links.composer"]
+          LinkRecovery["links.recovery"]
+          Filesystem["Filesystem"]
+          Filesystem --> MarkdownDocs
+          Filesystem --> StoreFiles
+          MarkdownDocs["Markdown docs"]
+          StoreFiles[".sldb YAML indexes"]
+          CLICommands -->|domain operations| StoreFacade
+          StoreFacade -->|store operations| StoreSubsystem
+          CLICommands -->|roundtrip/extract/render| ValidationRuntime
+          ValidationRuntime -->|parse and render| CoreRuntime
+          CoreRuntime -->|node handling| Handlers
+          Renderer -->|format output| RendererEngines
+          CLIGraphOps -->|AST + IR| CoreRuntime
+          CLIGraphOps -->|search records| QueryEngine
+          QueryEngine -->|load indexes| StoreIO
+          StoreDiagnostics -->|hash verification| ValidationRuntime
+          StoreHashing -->|field hashing| ValidationRuntime
+          StoreSubsystem -->|YAML indexes| StoreFiles
+          SLDBCLI -->|documents| MarkdownDocs
+          LinksPackage -->|resolve links| StoreIO
+          StoreExport -->|rebuild + export| StoreSemantic
+          CLICommands -->|recover/compose| LinksPackage
+    </div>
+  </div>
+</section><section id="current-onboarding-surface-a2fedcb2" data-spec="current-onboarding-surface.yml" data-type="component" data-project="" data-category="Arquitectura" data-tags="type:component" data-view-id="current-onboarding-surface" class="catalog-item">
+  <div class="lbl"></div>
+  <h2>SLDB Onboarding Surface</h2>
+  <p class="desc">Vista de la superficie de onboarding del CLI de SLDB.</p>
+  <div class="section-meta"><span class="meta-badge">component</span><span class="meta-badge subtle">type:component</span></div>
+  <div class="board">
+    <div class="mermaid">
+      graph TD
+          OnboardingEntry["Onboarding Entry Surface"]
+          OnboardingEntry --> PortadaHelp
+          OnboardingEntry --> CuratedHelp
+          OnboardingEntry --> FAQSurface
+          OnboardingEntry --> ExploreSurface
+          OnboardingEntry --> InboxSurface
+          PortadaHelp["sldb --help"]
+          CuratedHelp["sldb help / help <topic>"]
+          FAQSurface["sldb faq"]
+          ExploreSurface["sldb explore"]
+          InboxSurface["sldb inbox"]
+          DocumentationCorpus["Documentation Corpus"]
+          DocumentationCorpus --> ReadmeDoc
+          DocumentationCorpus --> FAQDoc
+          DocumentationCorpus --> AtomDocs
+          DocumentationCorpus --> ArchitectureDocs
+          ReadmeDoc["README.md"]
+          FAQDoc["docs/faq.md"]
+          AtomDocs["docs/atoms/*.atom.md"]
+          ArchitectureDocs["docs/architecture/*.md"]
+          ModelAndStoreLayer["Model + Store Layer"]
+          ModelAndStoreLayer --> StructuredModels
+          ModelAndStoreLayer --> LocalStore
+          ModelAndStoreLayer --> QuerySurfaces
+          StructuredModels["StructuredNLDoc models"]
+          LocalStore[".sldb store"]
+          QuerySurfaces["find / sections / ast / fields"]
+          DeskBridge["desk/inbox bridge"]
+          PortadaHelp -->|deeper guidance| CuratedHelp
+          CuratedHelp -->|question-oriented answers| FAQSurface
+          CuratedHelp -->|deep written search| ExploreSurface
+          FAQSurface -->|parse questions| FAQDoc
+          ExploreSurface -->|markdown docs| DocumentationCorpus
+          ExploreSurface -->|Python docstrings| StructuredModels
+          CuratedHelp -->|concepts and workflows| DocumentationCorpus
+          DocumentationCorpus -->|current behavior| ModelAndStoreLayer
+          QuerySurfaces -->|tracked docs and indexes| LocalStore
+          InboxSurface -->|unclear/suggestion notes| DeskBridge
+    </div>
+  </div>
+</section></div>
+<div class="category-block" data-category-block="Runtime"><div class="macro-separator"><h2>— Runtime —</h2></div><section id="current-runtime-a2fedcb2" data-spec="current-runtime.yml" data-type="deployment" data-project="" data-category="Runtime" data-tags="type:deployment" data-view-id="current-runtime" class="catalog-item">
+  <div class="lbl"></div>
+  <h2>SLDB Runtime Deployment</h2>
+  <p class="desc">Vista de deployment del runtime de SLDB: shell, proyecto, Python, store global.</p>
+  <div class="section-meta"><span class="meta-badge">deployment</span><span class="meta-badge subtle">type:deployment</span></div>
+  <div class="board">
+    <div class="mermaid">
+      graph TD
+          subgraph user_shell ["Developer Shell"]
+              sldb_cli["sldb CLI entrypoint"]
+          end
+          subgraph project_repo ["Project Repository"]
+              project_models["StructuredNLDoc models"]
+              markdown_docs["tracked markdown docs"]
+              local_store[".sldb local store"]
+          end
+          subgraph python_runtime ["Python Runtime"]
+              sldb_library["sldb package"]
+              markdown_stack["parser + renderer helpers"]
+          end
+          subgraph home_space ["Home Directory"]
+              global_store["~/.sldb store path"]
+          end
+          sldb_cli -->|Python import| sldb_library
+          sldb_library -->|internal API| markdown_stack
+          sldb_library -->|dynamic import| project_models
+          sldb_cli -->|filesystem| markdown_docs
+          sldb_cli -->|filesystem| local_store
+          sldb_cli -->|filesystem| global_store
+    </div>
+  </div>
+</section><section id="current-store-lifecycle-a2fedcb2" data-spec="current-store-lifecycle.yml" data-type="activity" data-project="" data-category="Runtime" data-tags="type:activity" data-view-id="current-store-lifecycle" class="catalog-item">
+  <div class="lbl"></div>
+  <h2>SLDB Store Lifecycle</h2>
+  <p class="desc">Flujo de actividad del ciclo de vida del store: init, model add, doc track/add, check, update.</p>
+  <div class="section-meta"><span class="meta-badge">activity</span><span class="meta-badge subtle">type:activity</span></div>
+  <div class="board">
+    <div class="mermaid">
+      flowchart TD
+          __start([Start])
+          init_store["sldb store init"]
+          add_model["sldb model add"]
+          choose_doc_flow{"Create new doc or track existing?"}
+          doc_add["Render from payload and validate roundtrip"]
+          doc_track["Validate existing markdown idempotency"]
+          check_track_validity{"Did idempotency pass?"}
+          force_or_fail{"Force tracking?"}
+          abort_track["Abort tracking"]
+          track_doc["Save document hashes and update indexes"]
+          check_store["sldb store check"]
+          mutate_contract_or_doc{"Did model contract or doc content change?"}
+          model_update["Reindex model documents and cascade hashes"]
+          doc_update["Re-render tracked doc and cascade hashes"]
+          store_update["Full store reindex"]
+          __end([End])
+          __start --> init_store
+          init_store --> add_model
+          add_model --> choose_doc_flow
+          choose_doc_flow -->|create| doc_add
+          choose_doc_flow -->|track| doc_track
+          doc_add --> track_doc
+          doc_track --> check_track_validity
+          check_track_validity -->|yes| track_doc
+          check_track_validity -->|no| force_or_fail
+          force_or_fail -->|yes| track_doc
+          force_or_fail -->|no| abort_track
+          abort_track --> __end
+          track_doc --> check_store
+          check_store --> mutate_contract_or_doc
+          mutate_contract_or_doc -->|model| model_update
+          mutate_contract_or_doc -->|doc| doc_update
+          mutate_contract_or_doc -->|bulk| store_update
+          mutate_contract_or_doc -->|none| __end
+          model_update --> __end
+          doc_update --> __end
+          store_update --> __end
+    </div>
+  </div>
+</section></div>
+<div class="category-block" data-category-block="Propuestas"><div class="macro-separator"><h2>— Propuestas —</h2></div><section id="proposed-deskops-components-a2fedcb2" data-spec="proposed-deskops-components.yml" data-type="component" data-project="" data-category="Propuestas" data-tags="type:component" data-view-id="proposed-deskops-components" class="catalog-item">
+  <div class="lbl"></div>
+  <h2>Proposed Deskops Integration</h2>
+  <p class="desc">Vista propuesta de integración con deskops.</p>
+  <div class="section-meta"><span class="meta-badge">component</span><span class="meta-badge subtle">type:component</span></div>
+  <div class="board">
+    <div class="mermaid">
+      graph TD
+          DeskopsRuntime["deskops runtime"]
+          DeskopsRuntime --> ExistingDeskDocs
+          DeskopsRuntime --> DeskWorkspace
+          DeskopsRuntime --> WorkflowEngine
+          DeskopsRuntime --> RitualAutomation
+          DeskopsRuntime --> InterRepoMessaging
+          DeskopsRuntime --> DocumentationPolicy
+          ExistingDeskDocs["existing desk doc layer"]
+          ExistingDeskDocs --> ExistingTasks
+          ExistingDeskDocs --> ExistingPills
+          ExistingDeskDocs --> ExistingBoards
+          ExistingDeskDocs --> ExistingSpecs
+          ExistingDeskDocs --> ExistingDeskProfiles
+          ExistingTasks["TaskDoc / DeskTaskDoc"]
+          ExistingPills["PillDoc"]
+          ExistingBoards["DeskBoardDoc"]
+          ExistingSpecs["DeskSpecDoc"]
+          ExistingDeskProfiles["DeskProfile"]
+          DeskWorkspace["desk workspace"]
+          DeskWorkspace --> Inbox
+          DeskWorkspace --> Tasks
+          DeskWorkspace --> Pills
+          DeskWorkspace --> FutureWork
+          DeskWorkspace --> Atoms
+          Inbox["inbox notes"]
+          Tasks["task docs"]
+          Pills["pill docs"]
+          FutureWork["future-work docs"]
+          Atoms["desk atoms"]
+          WorkflowEngine["lifecycle + routing engine"]
+          RitualAutomation["ritual automation"]
+          InterRepoMessaging["inter-repo messaging"]
+          DocumentationPolicy["documentation linter/policy"]
+          SLDBInfra["SLDB infrastructure"]
+          SLDBInfra --> StructuredMarkdown
+          SLDBInfra --> StoreLayer
+          SLDBInfra --> QueryLayer
+          StructuredMarkdown["StructuredNLDoc + templates"]
+          StoreLayer["stores + hashes + indexes"]
+          QueryLayer["find / sections / ast / explore"]
+          RepoBoundaries["Multiple Project Repos"]
+          DeskWorkspace -->|tracked docs and stores| SLDBInfra
+          ExistingDeskDocs -->|current document surfaces| DeskWorkspace
+          WorkflowEngine -->|status and routing| DeskWorkspace
+          RitualAutomation -->|close-loop routines| DeskWorkspace
+          RitualAutomation -->|commits and repo ops| RepoBoundaries
+          DocumentationPolicy -->|structure and completeness| DeskWorkspace
+          InterRepoMessaging -->|inbox/task messages across repos| RepoBoundaries
+          InterRepoMessaging -->|durable message docs| Inbox
+          Atoms -->|canonical knowledge| Tasks
+          FutureWork -->|actionable work| Tasks
+          SLDBInfra -->|reusable navigation| QueryLayer
+    </div>
+  </div>
+</section></div>
+    </main>
+    <script>window.ATOMS_DB = {};</script>
+  
+<script>window.ATOMS_DB = {}; window.ATOMS_BY_VIEW = {"current-components-a2fedcb2": {}, "current-onboarding-surface-a2fedcb2": {}, "current-runtime-a2fedcb2": {}, "current-store-lifecycle-a2fedcb2": {}, "proposed-deskops-components-a2fedcb2": {}}; window.SPEC2VIZ_ATOM_WARNINGS = []; window.SPEC2VIZ_CATALOG = {"title": "spec2viz Catalog", "brand_name": "spec2viz Catalog", "project_name": "spec2viz", "item_count": 5};</script>
+</body>
+</html>

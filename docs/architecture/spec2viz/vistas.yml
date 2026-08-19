@@ -1,0 +1,46 @@
+template: template.html
+vistas:
+  - id: current-components
+    category: Arquitectura
+    title: "SLDB System Components (Post-Refactor)"
+    nav: Componentes
+    desc: "Vista de componentes del sistema SLDB después de la refactorización modular."
+    src: rendered/current-components.mmd
+    specs:
+      - current-components.yml
+
+  - id: current-onboarding-surface
+    category: Arquitectura
+    title: "SLDB Onboarding Surface"
+    nav: Onboarding
+    desc: "Vista de la superficie de onboarding del CLI de SLDB."
+    src: rendered/current-onboarding-surface.mmd
+    specs:
+      - current-onboarding-surface.yml
+
+  - id: current-runtime
+    category: Runtime
+    title: "SLDB Runtime Deployment"
+    nav: Runtime
+    desc: "Vista de deployment del runtime de SLDB: shell, proyecto, Python, store global."
+    src: rendered/current-runtime.mmd
+    specs:
+      - current-runtime.yml
+
+  - id: current-store-lifecycle
+    category: Runtime
+    title: "SLDB Store Lifecycle"
+    nav: Store Lifecycle
+    desc: "Flujo de actividad del ciclo de vida del store: init, model add, doc track/add, check, update."
+    src: rendered/current-store-lifecycle.mmd
+    specs:
+      - current-store-lifecycle.yml
+
+  - id: proposed-deskops-components
+    category: Propuestas
+    title: "Proposed Deskops Integration"
+    nav: Deskops
+    desc: "Vista propuesta de integración con deskops."
+    src: rendered/proposed-deskops-components.mmd
+    specs:
+      - proposed-deskops-components.yml
