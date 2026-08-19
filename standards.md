@@ -4,16 +4,19 @@ This document defines the architectural and stylistic rules for the SLDB project
 
 ## Layer 0: System Integrity & Visual Health
 
-1.  **Code as Truth:** The code must be self-documenting. Class and method names must be verbose and accurately reflect their purpose.
+1.  **No Legacy Code / Zero Noise:** The system does not tolerate legacy code or "compat" folders. Code that is no longer used must be completely deleted; Git will persist it if needed. Misplaced code must be relocated, and mixed code must be separated.
+2.  **Code as Truth:** The code must be self-documenting. Class and method names must be verbose and accurately reflect their purpose.
 2.  **Structural Visualizability:** A health check for the codebase is its ability to be parsed into a readable component diagram. If the resulting diagram is a "spaghetti" mess, the code must be refactored.
 3.  **Step 0 - Compliance:** Every task must begin with a compliance check against these standards.
 
 ## Layer 1: Modularity & Scale
 
-1.  **The 100-Line Rule:** No file should exceed 100 lines of code (excluding docstrings and imports). Files exceeding this limit must be refactored into classes, with methods potentially moved to separate modules.
-2.  **The 15-Line Rule:** No function or method should exceed 15 lines of logic. Complex functions must be divided into smaller, discrete steps.
-3.  **Single Class Per File:** Each file should contain exactly one class.
-4.  **Single Responsibility (SRP):** No class should perform more than one distinct function. If a class accumulates multiple responsibilities, extract a primitive abstract class or delegate to sibling services.
+1.  **AST-First Refactoring:** Before any major refactoring, generate a current AST and a Target AST to visually map how pieces of code relate and where they belong.
+2.  **The 100-Line Rule:** No file should exceed 100 lines of code (excluding docstrings and imports). Files exceeding this limit must be refactored into classes.
+3.  **The 10-Line Rule:** No function or method should exceed 10 lines of logic. Functions must be short and verbose. If a function is longer, it must be split into smaller functions, use internal helper functions, or be transformed into a class.
+4.  **Single Purpose Per File:** A file must serve only ONE purpose. If a file does two things, it must be split into two separate files.
+5.  **Single Class Per File:** Each file should contain exactly one class. Prefer using abstract classes (ABC) and classes for each logical "module" to keep boundaries clear.
+6.  **Single Responsibility (SRP):** No class should perform more than one distinct function. If a class does more than one thing, use inheritance, a mother class, or delegate to sibling services.
 5.  **Utilitary Consolidation:** If two functions perform essentially the same logic, they must be merged into a separate utility service or base class.
 6.  **Complex Functions as Classes:** If a function accumulates more than 4 local variables or requires multiple passes over the same data, transform it into a class with a `__call__` method or discrete stage methods (CS-9).
 
