@@ -473,93 +473,93 @@
   <div class="board">
     <pre class="mermaid">
       graph TD
-          subgraph SLDBCLI ["sldb CLI"]
-              CLIDispatcher["cli.dispatcher"]
-              subgraph CLIParsers ["cli.parsers.*"]
-                  ParsersCore["parsers.core"]
-                  ParsersModels["parsers.models"]
-                  ParsersDocs["parsers.docs"]
-                  ParsersFind["parsers.find"]
+          subgraph SLDBCLI [&quot;sldb CLI&quot;]
+              CLIDispatcher[&quot;cli.dispatcher&quot;]
+              subgraph CLIParsers [&quot;cli.parsers.*&quot;]
+                  ParsersCore[&quot;parsers.core&quot;]
+                  ParsersModels[&quot;parsers.models&quot;]
+                  ParsersDocs[&quot;parsers.docs&quot;]
+                  ParsersFind[&quot;parsers.find&quot;]
               end
-              subgraph CLICommands ["cli.commands.*"]
-                  DirectCommands["basic / init / help / faq"]
-                  StoreCommands["store / model / doc / inbox"]
-                  QueryCommands["find / sections / fields / explore"]
+              subgraph CLICommands [&quot;cli.commands.*&quot;]
+                  DirectCommands[&quot;basic / init / help / faq&quot;]
+                  StoreCommands[&quot;store / model / doc / inbox&quot;]
+                  QueryCommands[&quot;find / sections / fields / explore&quot;]
               end
-              subgraph CLIGraphOps ["cli.graph_ops.*"]
-                  GraphBuildAST["graph_ops.build_ast"]
-                  GraphBuildIR["graph_ops.build_ir"]
-                  GraphIterRecords["graph_ops.iter_records"]
+              subgraph CLIGraphOps [&quot;cli.graph_ops.*&quot;]
+                  GraphBuildAST[&quot;graph_ops.build_ast&quot;]
+                  GraphBuildIR[&quot;graph_ops.build_ir&quot;]
+                  GraphIterRecords[&quot;graph_ops.iter_records&quot;]
               end
           end
-          StoreFacade["store.facade"]
-          subgraph CoreRuntime ["Core Runtime"]
-              ASTPackage["core.ast.*"]
-              ContractsPackage["core.contracts.*"]
-              IRPackage["core.ir.*"]
-              DataExtractor["core.data_extractor"]
-              TemplateExtractor["core.template_extractor"]
-              Renderer["core.renderer"]
+          StoreFacade[&quot;store.facade&quot;]
+          subgraph CoreRuntime [&quot;Core Runtime&quot;]
+              ASTPackage[&quot;core.ast.*&quot;]
+              ContractsPackage[&quot;core.contracts.*&quot;]
+              IRPackage[&quot;core.ir.*&quot;]
+              DataExtractor[&quot;core.data_extractor&quot;]
+              TemplateExtractor[&quot;core.template_extractor&quot;]
+              Renderer[&quot;core.renderer&quot;]
           end
-          subgraph Handlers ["core.handlers.*"]
-              TextHandler["handlers.text"]
-              ListHandler["handlers.list"]
-              TableHandler["handlers.table"]
-              YamlHandler["handlers.yaml"]
+          subgraph Handlers [&quot;core.handlers.*&quot;]
+              TextHandler[&quot;handlers.text&quot;]
+              ListHandler[&quot;handlers.list&quot;]
+              TableHandler[&quot;handlers.table&quot;]
+              YamlHandler[&quot;handlers.yaml&quot;]
           end
-          RendererEngines["core.renderer_engine.*"]
-          ExceptionsPackage["core.exceptions.*"]
-          ModelContract["models.structured_doc"]
-          ValidationRuntime["runtime.validation"]
-          subgraph StoreSubsystem ["Store Subsystem"]
-              StoreModels["store.models.*"]
-              subgraph StoreIO ["store.io.*"]
-                  IODocuments["io.documents_index"]
-                  IOModels["io.models_index"]
-                  IOLock["io.lock"]
-                  IOStoreIndex["io.store_index"]
-                  IOSemanticDAG["io.semantic_dag"]
+          RendererEngines[&quot;core.renderer_engine.*&quot;]
+          ExceptionsPackage[&quot;core.exceptions.*&quot;]
+          ModelContract[&quot;models.structured_doc&quot;]
+          ValidationRuntime[&quot;runtime.validation&quot;]
+          subgraph StoreSubsystem [&quot;Store Subsystem&quot;]
+              StoreModels[&quot;store.models.*&quot;]
+              subgraph StoreIO [&quot;store.io.*&quot;]
+                  IODocuments[&quot;io.documents_index&quot;]
+                  IOModels[&quot;io.models_index&quot;]
+                  IOLock[&quot;io.lock&quot;]
+                  IOStoreIndex[&quot;io.store_index&quot;]
+                  IOSemanticDAG[&quot;io.semantic_dag&quot;]
               end
-              StoreHashing["store.hashing"]
-              StoreOps["store.ops"]
-              StoreDiagnostics["store.diagnostics"]
-              StoreResolver["store.resolver"]
-              StoreSemantic["store.semantic"]
-              StoreExport["store.export"]
-              StoreMigration["store.migration"]
+              StoreHashing[&quot;store.hashing&quot;]
+              StoreOps[&quot;store.ops&quot;]
+              StoreDiagnostics[&quot;store.diagnostics&quot;]
+              StoreResolver[&quot;store.resolver&quot;]
+              StoreSemantic[&quot;store.semantic&quot;]
+              StoreExport[&quot;store.export&quot;]
+              StoreMigration[&quot;store.migration&quot;]
           end
-          subgraph QueryEngine ["Query Engine"]
-              QEStructural["query_engine.structural"]
-              QESemantic["query_engine.semantic"]
-              QEGlobalSemantic["query_engine.global_semantic"]
-              QEFilter["query_engine.filter"]
+          subgraph QueryEngine [&quot;Query Engine&quot;]
+              QEStructural[&quot;query_engine.structural&quot;]
+              QESemantic[&quot;query_engine.semantic&quot;]
+              QEGlobalSemantic[&quot;query_engine.global_semantic&quot;]
+              QEFilter[&quot;query_engine.filter&quot;]
           end
-          subgraph LinksPackage ["links.*"]
-              LinkParser["links.parser"]
-              LinkResolver["links.resolver"]
-              LinkComposer["links.composer"]
-              LinkRecovery["links.recovery"]
+          subgraph LinksPackage [&quot;links.*&quot;]
+              LinkParser[&quot;links.parser&quot;]
+              LinkResolver[&quot;links.resolver&quot;]
+              LinkComposer[&quot;links.composer&quot;]
+              LinkRecovery[&quot;links.recovery&quot;]
           end
-          subgraph Filesystem ["Filesystem"]
-              MarkdownDocs["Markdown docs"]
-              StoreFiles[".sldb YAML indexes"]
+          subgraph Filesystem [&quot;Filesystem&quot;]
+              MarkdownDocs[&quot;Markdown docs&quot;]
+              StoreFiles[&quot;.sldb YAML indexes&quot;]
           end
-          CLICommands -->|domain operations| StoreFacade
-          StoreFacade -->|store operations| StoreSubsystem
-          CLICommands -->|roundtrip/extract/render| ValidationRuntime
-          ValidationRuntime -->|parse and render| CoreRuntime
-          CoreRuntime -->|node handling| Handlers
-          Renderer -->|format output| RendererEngines
-          CLIGraphOps -->|AST + IR| CoreRuntime
-          CLIGraphOps -->|search records| QueryEngine
-          QueryEngine -->|load indexes| StoreIO
-          StoreDiagnostics -->|hash verification| ValidationRuntime
-          StoreHashing -->|field hashing| ValidationRuntime
-          StoreSubsystem -->|YAML indexes| StoreFiles
-          SLDBCLI -->|documents| MarkdownDocs
-          LinksPackage -->|resolve links| StoreIO
-          StoreExport -->|rebuild + export| StoreSemantic
-          CLICommands -->|recover/compose| LinksPackage
+          CLICommands --&gt;|domain operations| StoreFacade
+          StoreFacade --&gt;|store operations| StoreSubsystem
+          CLICommands --&gt;|roundtrip/extract/render| ValidationRuntime
+          ValidationRuntime --&gt;|parse and render| CoreRuntime
+          CoreRuntime --&gt;|node handling| Handlers
+          Renderer --&gt;|format output| RendererEngines
+          CLIGraphOps --&gt;|AST + IR| CoreRuntime
+          CLIGraphOps --&gt;|search records| QueryEngine
+          QueryEngine --&gt;|load indexes| StoreIO
+          StoreDiagnostics --&gt;|hash verification| ValidationRuntime
+          StoreHashing --&gt;|field hashing| ValidationRuntime
+          StoreSubsystem --&gt;|YAML indexes| StoreFiles
+          SLDBCLI --&gt;|documents| MarkdownDocs
+          LinksPackage --&gt;|resolve links| StoreIO
+          StoreExport --&gt;|rebuild + export| StoreSemantic
+          CLICommands --&gt;|recover/compose| LinksPackage
     </pre>
   </div>
 </section><section id="current-onboarding-surface-a2fedcb2" data-spec="current-onboarding-surface.yml" data-type="component" data-project="" data-category="Arquitectura" data-tags="type:component" data-view-id="current-onboarding-surface" class="catalog-item">
@@ -570,35 +570,35 @@
   <div class="board">
     <pre class="mermaid">
       graph TD
-          subgraph OnboardingEntry ["Onboarding Entry Surface"]
-              PortadaHelp["sldb --help"]
-              CuratedHelp["sldb help / help <topic>"]
-              FAQSurface["sldb faq"]
-              ExploreSurface["sldb explore"]
-              InboxSurface["sldb inbox"]
+          subgraph OnboardingEntry [&quot;Onboarding Entry Surface&quot;]
+              PortadaHelp[&quot;sldb --help&quot;]
+              CuratedHelp[&quot;sldb help / help &lt;topic&gt;&quot;]
+              FAQSurface[&quot;sldb faq&quot;]
+              ExploreSurface[&quot;sldb explore&quot;]
+              InboxSurface[&quot;sldb inbox&quot;]
           end
-          subgraph DocumentationCorpus ["Documentation Corpus"]
-              ReadmeDoc["README.md"]
-              FAQDoc["docs/faq.md"]
-              AtomDocs["docs/atoms/*.atom.md"]
-              ArchitectureDocs["docs/architecture/*.md"]
+          subgraph DocumentationCorpus [&quot;Documentation Corpus&quot;]
+              ReadmeDoc[&quot;README.md&quot;]
+              FAQDoc[&quot;docs/faq.md&quot;]
+              AtomDocs[&quot;docs/atoms/*.atom.md&quot;]
+              ArchitectureDocs[&quot;docs/architecture/*.md&quot;]
           end
-          subgraph ModelAndStoreLayer ["Model + Store Layer"]
-              StructuredModels["StructuredNLDoc models"]
-              LocalStore[".sldb store"]
-              QuerySurfaces["find / sections / ast / fields"]
+          subgraph ModelAndStoreLayer [&quot;Model + Store Layer&quot;]
+              StructuredModels[&quot;StructuredNLDoc models&quot;]
+              LocalStore[&quot;.sldb store&quot;]
+              QuerySurfaces[&quot;find / sections / ast / fields&quot;]
           end
-          DeskBridge["desk/inbox bridge"]
-          PortadaHelp -->|deeper guidance| CuratedHelp
-          CuratedHelp -->|question-oriented answers| FAQSurface
-          CuratedHelp -->|deep written search| ExploreSurface
-          FAQSurface -->|parse questions| FAQDoc
-          ExploreSurface -->|markdown docs| DocumentationCorpus
-          ExploreSurface -->|Python docstrings| StructuredModels
-          CuratedHelp -->|concepts and workflows| DocumentationCorpus
-          DocumentationCorpus -->|current behavior| ModelAndStoreLayer
-          QuerySurfaces -->|tracked docs and indexes| LocalStore
-          InboxSurface -->|unclear/suggestion notes| DeskBridge
+          DeskBridge[&quot;desk/inbox bridge&quot;]
+          PortadaHelp --&gt;|deeper guidance| CuratedHelp
+          CuratedHelp --&gt;|question-oriented answers| FAQSurface
+          CuratedHelp --&gt;|deep written search| ExploreSurface
+          FAQSurface --&gt;|parse questions| FAQDoc
+          ExploreSurface --&gt;|markdown docs| DocumentationCorpus
+          ExploreSurface --&gt;|Python docstrings| StructuredModels
+          CuratedHelp --&gt;|concepts and workflows| DocumentationCorpus
+          DocumentationCorpus --&gt;|current behavior| ModelAndStoreLayer
+          QuerySurfaces --&gt;|tracked docs and indexes| LocalStore
+          InboxSurface --&gt;|unclear/suggestion notes| DeskBridge
     </pre>
   </div>
 </section></div>
@@ -610,27 +610,27 @@
   <div class="board">
     <pre class="mermaid">
       graph TD
-          subgraph user_shell ["Developer Shell"]
-              sldb_cli["sldb CLI entrypoint"]
+          subgraph user_shell [&quot;Developer Shell&quot;]
+              sldb_cli[&quot;sldb CLI entrypoint&quot;]
           end
-          subgraph project_repo ["Project Repository"]
-              project_models["StructuredNLDoc models"]
-              markdown_docs["tracked markdown docs"]
-              local_store[".sldb local store"]
+          subgraph project_repo [&quot;Project Repository&quot;]
+              project_models[&quot;StructuredNLDoc models&quot;]
+              markdown_docs[&quot;tracked markdown docs&quot;]
+              local_store[&quot;.sldb local store&quot;]
           end
-          subgraph python_runtime ["Python Runtime"]
-              sldb_library["sldb package"]
-              markdown_stack["parser + renderer helpers"]
+          subgraph python_runtime [&quot;Python Runtime&quot;]
+              sldb_library[&quot;sldb package&quot;]
+              markdown_stack[&quot;parser + renderer helpers&quot;]
           end
-          subgraph home_space ["Home Directory"]
-              global_store["~/.sldb store path"]
+          subgraph home_space [&quot;Home Directory&quot;]
+              global_store[&quot;~/.sldb store path&quot;]
           end
-          sldb_cli -->|Python import| sldb_library
-          sldb_library -->|internal API| markdown_stack
-          sldb_library -->|dynamic import| project_models
-          sldb_cli -->|filesystem| markdown_docs
-          sldb_cli -->|filesystem| local_store
-          sldb_cli -->|filesystem| global_store
+          sldb_cli --&gt;|Python import| sldb_library
+          sldb_library --&gt;|internal API| markdown_stack
+          sldb_library --&gt;|dynamic import| project_models
+          sldb_cli --&gt;|filesystem| markdown_docs
+          sldb_cli --&gt;|filesystem| local_store
+          sldb_cli --&gt;|filesystem| global_store
     </pre>
   </div>
 </section><section id="current-store-lifecycle-a2fedcb2" data-spec="current-store-lifecycle.yml" data-type="activity" data-project="" data-category="Runtime" data-tags="type:activity" data-view-id="current-store-lifecycle" class="catalog-item">
@@ -642,42 +642,42 @@
     <pre class="mermaid">
       flowchart TD
           __start([Start])
-          init_store["sldb store init"]
-          add_model["sldb model add"]
-          choose_doc_flow{"Create new doc or track existing?"}
-          doc_add["Render from payload and validate roundtrip"]
-          doc_track["Validate existing markdown idempotency"]
-          check_track_validity{"Did idempotency pass?"}
-          force_or_fail{"Force tracking?"}
-          abort_track["Abort tracking"]
-          track_doc["Save document hashes and update indexes"]
-          check_store["sldb store check"]
-          mutate_contract_or_doc{"Did model contract or doc content change?"}
-          model_update["Reindex model documents and cascade hashes"]
-          doc_update["Re-render tracked doc and cascade hashes"]
-          store_update["Full store reindex"]
+          init_store[&quot;sldb store init&quot;]
+          add_model[&quot;sldb model add&quot;]
+          choose_doc_flow{&quot;Create new doc or track existing?&quot;}
+          doc_add[&quot;Render from payload and validate roundtrip&quot;]
+          doc_track[&quot;Validate existing markdown idempotency&quot;]
+          check_track_validity{&quot;Did idempotency pass?&quot;}
+          force_or_fail{&quot;Force tracking?&quot;}
+          abort_track[&quot;Abort tracking&quot;]
+          track_doc[&quot;Save document hashes and update indexes&quot;]
+          check_store[&quot;sldb store check&quot;]
+          mutate_contract_or_doc{&quot;Did model contract or doc content change?&quot;}
+          model_update[&quot;Reindex model documents and cascade hashes&quot;]
+          doc_update[&quot;Re-render tracked doc and cascade hashes&quot;]
+          store_update[&quot;Full store reindex&quot;]
           __end([End])
-          __start --> init_store
-          init_store --> add_model
-          add_model --> choose_doc_flow
-          choose_doc_flow -->|create| doc_add
-          choose_doc_flow -->|track| doc_track
-          doc_add --> track_doc
-          doc_track --> check_track_validity
-          check_track_validity -->|yes| track_doc
-          check_track_validity -->|no| force_or_fail
-          force_or_fail -->|yes| track_doc
-          force_or_fail -->|no| abort_track
-          abort_track --> __end
-          track_doc --> check_store
-          check_store --> mutate_contract_or_doc
-          mutate_contract_or_doc -->|model| model_update
-          mutate_contract_or_doc -->|doc| doc_update
-          mutate_contract_or_doc -->|bulk| store_update
-          mutate_contract_or_doc -->|none| __end
-          model_update --> __end
-          doc_update --> __end
-          store_update --> __end
+          __start --&gt; init_store
+          init_store --&gt; add_model
+          add_model --&gt; choose_doc_flow
+          choose_doc_flow --&gt;|create| doc_add
+          choose_doc_flow --&gt;|track| doc_track
+          doc_add --&gt; track_doc
+          doc_track --&gt; check_track_validity
+          check_track_validity --&gt;|yes| track_doc
+          check_track_validity --&gt;|no| force_or_fail
+          force_or_fail --&gt;|yes| track_doc
+          force_or_fail --&gt;|no| abort_track
+          abort_track --&gt; __end
+          track_doc --&gt; check_store
+          check_store --&gt; mutate_contract_or_doc
+          mutate_contract_or_doc --&gt;|model| model_update
+          mutate_contract_or_doc --&gt;|doc| doc_update
+          mutate_contract_or_doc --&gt;|bulk| store_update
+          mutate_contract_or_doc --&gt;|none| __end
+          model_update --&gt; __end
+          doc_update --&gt; __end
+          store_update --&gt; __end
     </pre>
   </div>
 </section></div>
@@ -689,43 +689,43 @@
   <div class="board">
     <pre class="mermaid">
       graph TD
-          subgraph DeskopsRuntime ["deskops runtime"]
-              subgraph ExistingDeskDocs ["existing desk doc layer"]
-                  ExistingTasks["TaskDoc / DeskTaskDoc"]
-                  ExistingPills["PillDoc"]
-                  ExistingBoards["DeskBoardDoc"]
-                  ExistingSpecs["DeskSpecDoc"]
-                  ExistingDeskProfiles["DeskProfile"]
+          subgraph DeskopsRuntime [&quot;deskops runtime&quot;]
+              subgraph ExistingDeskDocs [&quot;existing desk doc layer&quot;]
+                  ExistingTasks[&quot;TaskDoc / DeskTaskDoc&quot;]
+                  ExistingPills[&quot;PillDoc&quot;]
+                  ExistingBoards[&quot;DeskBoardDoc&quot;]
+                  ExistingSpecs[&quot;DeskSpecDoc&quot;]
+                  ExistingDeskProfiles[&quot;DeskProfile&quot;]
               end
-              subgraph DeskWorkspace ["desk workspace"]
-                  Inbox["inbox notes"]
-                  Tasks["task docs"]
-                  Pills["pill docs"]
-                  FutureWork["future-work docs"]
-                  Atoms["desk atoms"]
+              subgraph DeskWorkspace [&quot;desk workspace&quot;]
+                  Inbox[&quot;inbox notes&quot;]
+                  Tasks[&quot;task docs&quot;]
+                  Pills[&quot;pill docs&quot;]
+                  FutureWork[&quot;future-work docs&quot;]
+                  Atoms[&quot;desk atoms&quot;]
               end
-              WorkflowEngine["lifecycle + routing engine"]
-              RitualAutomation["ritual automation"]
-              InterRepoMessaging["inter-repo messaging"]
-              DocumentationPolicy["documentation linter/policy"]
+              WorkflowEngine[&quot;lifecycle + routing engine&quot;]
+              RitualAutomation[&quot;ritual automation&quot;]
+              InterRepoMessaging[&quot;inter-repo messaging&quot;]
+              DocumentationPolicy[&quot;documentation linter/policy&quot;]
           end
-          subgraph SLDBInfra ["SLDB infrastructure"]
-              StructuredMarkdown["StructuredNLDoc + templates"]
-              StoreLayer["stores + hashes + indexes"]
-              QueryLayer["find / sections / ast / explore"]
+          subgraph SLDBInfra [&quot;SLDB infrastructure&quot;]
+              StructuredMarkdown[&quot;StructuredNLDoc + templates&quot;]
+              StoreLayer[&quot;stores + hashes + indexes&quot;]
+              QueryLayer[&quot;find / sections / ast / explore&quot;]
           end
-          RepoBoundaries["Multiple Project Repos"]
-          DeskWorkspace -->|tracked docs and stores| SLDBInfra
-          ExistingDeskDocs -->|current document surfaces| DeskWorkspace
-          WorkflowEngine -->|status and routing| DeskWorkspace
-          RitualAutomation -->|close-loop routines| DeskWorkspace
-          RitualAutomation -->|commits and repo ops| RepoBoundaries
-          DocumentationPolicy -->|structure and completeness| DeskWorkspace
-          InterRepoMessaging -->|inbox/task messages across repos| RepoBoundaries
-          InterRepoMessaging -->|durable message docs| Inbox
-          Atoms -->|canonical knowledge| Tasks
-          FutureWork -->|actionable work| Tasks
-          SLDBInfra -->|reusable navigation| QueryLayer
+          RepoBoundaries[&quot;Multiple Project Repos&quot;]
+          DeskWorkspace --&gt;|tracked docs and stores| SLDBInfra
+          ExistingDeskDocs --&gt;|current document surfaces| DeskWorkspace
+          WorkflowEngine --&gt;|status and routing| DeskWorkspace
+          RitualAutomation --&gt;|close-loop routines| DeskWorkspace
+          RitualAutomation --&gt;|commits and repo ops| RepoBoundaries
+          DocumentationPolicy --&gt;|structure and completeness| DeskWorkspace
+          InterRepoMessaging --&gt;|inbox/task messages across repos| RepoBoundaries
+          InterRepoMessaging --&gt;|durable message docs| Inbox
+          Atoms --&gt;|canonical knowledge| Tasks
+          FutureWork --&gt;|actionable work| Tasks
+          SLDBInfra --&gt;|reusable navigation| QueryLayer
     </pre>
   </div>
 </section></div>
