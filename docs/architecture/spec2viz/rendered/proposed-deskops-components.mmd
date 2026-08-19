@@ -1,44 +1,29 @@
 graph TD
-    DeskopsRuntime["deskops runtime"]
-    DeskopsRuntime --> ExistingDeskDocs
-    DeskopsRuntime --> DeskWorkspace
-    DeskopsRuntime --> WorkflowEngine
-    DeskopsRuntime --> RitualAutomation
-    DeskopsRuntime --> InterRepoMessaging
-    DeskopsRuntime --> DocumentationPolicy
-    ExistingDeskDocs["existing desk doc layer"]
-    ExistingDeskDocs --> ExistingTasks
-    ExistingDeskDocs --> ExistingPills
-    ExistingDeskDocs --> ExistingBoards
-    ExistingDeskDocs --> ExistingSpecs
-    ExistingDeskDocs --> ExistingDeskProfiles
-    ExistingTasks["TaskDoc / DeskTaskDoc"]
-    ExistingPills["PillDoc"]
-    ExistingBoards["DeskBoardDoc"]
-    ExistingSpecs["DeskSpecDoc"]
-    ExistingDeskProfiles["DeskProfile"]
-    DeskWorkspace["desk workspace"]
-    DeskWorkspace --> Inbox
-    DeskWorkspace --> Tasks
-    DeskWorkspace --> Pills
-    DeskWorkspace --> FutureWork
-    DeskWorkspace --> Atoms
-    Inbox["inbox notes"]
-    Tasks["task docs"]
-    Pills["pill docs"]
-    FutureWork["future-work docs"]
-    Atoms["desk atoms"]
-    WorkflowEngine["lifecycle + routing engine"]
-    RitualAutomation["ritual automation"]
-    InterRepoMessaging["inter-repo messaging"]
-    DocumentationPolicy["documentation linter/policy"]
-    SLDBInfra["SLDB infrastructure"]
-    SLDBInfra --> StructuredMarkdown
-    SLDBInfra --> StoreLayer
-    SLDBInfra --> QueryLayer
-    StructuredMarkdown["StructuredNLDoc + templates"]
-    StoreLayer["stores + hashes + indexes"]
-    QueryLayer["find / sections / ast / explore"]
+    subgraph DeskopsRuntime ["deskops runtime"]
+        subgraph ExistingDeskDocs ["existing desk doc layer"]
+            ExistingTasks["TaskDoc / DeskTaskDoc"]
+            ExistingPills["PillDoc"]
+            ExistingBoards["DeskBoardDoc"]
+            ExistingSpecs["DeskSpecDoc"]
+            ExistingDeskProfiles["DeskProfile"]
+        end
+        subgraph DeskWorkspace ["desk workspace"]
+            Inbox["inbox notes"]
+            Tasks["task docs"]
+            Pills["pill docs"]
+            FutureWork["future-work docs"]
+            Atoms["desk atoms"]
+        end
+        WorkflowEngine["lifecycle + routing engine"]
+        RitualAutomation["ritual automation"]
+        InterRepoMessaging["inter-repo messaging"]
+        DocumentationPolicy["documentation linter/policy"]
+    end
+    subgraph SLDBInfra ["SLDB infrastructure"]
+        StructuredMarkdown["StructuredNLDoc + templates"]
+        StoreLayer["stores + hashes + indexes"]
+        QueryLayer["find / sections / ast / explore"]
+    end
     RepoBoundaries["Multiple Project Repos"]
     DeskWorkspace -->|tracked docs and stores| SLDBInfra
     ExistingDeskDocs -->|current document surfaces| DeskWorkspace

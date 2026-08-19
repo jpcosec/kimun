@@ -1,31 +1,22 @@
 graph TD
-    OnboardingEntry["Onboarding Entry Surface"]
-    OnboardingEntry --> PortadaHelp
-    OnboardingEntry --> CuratedHelp
-    OnboardingEntry --> FAQSurface
-    OnboardingEntry --> ExploreSurface
-    OnboardingEntry --> InboxSurface
-    PortadaHelp["sldb --help"]
-    CuratedHelp["sldb help / help <topic>"]
-    FAQSurface["sldb faq"]
-    ExploreSurface["sldb explore"]
-    InboxSurface["sldb inbox"]
-    DocumentationCorpus["Documentation Corpus"]
-    DocumentationCorpus --> ReadmeDoc
-    DocumentationCorpus --> FAQDoc
-    DocumentationCorpus --> AtomDocs
-    DocumentationCorpus --> ArchitectureDocs
-    ReadmeDoc["README.md"]
-    FAQDoc["docs/faq.md"]
-    AtomDocs["docs/atoms/*.atom.md"]
-    ArchitectureDocs["docs/architecture/*.md"]
-    ModelAndStoreLayer["Model + Store Layer"]
-    ModelAndStoreLayer --> StructuredModels
-    ModelAndStoreLayer --> LocalStore
-    ModelAndStoreLayer --> QuerySurfaces
-    StructuredModels["StructuredNLDoc models"]
-    LocalStore[".sldb store"]
-    QuerySurfaces["find / sections / ast / fields"]
+    subgraph OnboardingEntry ["Onboarding Entry Surface"]
+        PortadaHelp["sldb --help"]
+        CuratedHelp["sldb help / help <topic>"]
+        FAQSurface["sldb faq"]
+        ExploreSurface["sldb explore"]
+        InboxSurface["sldb inbox"]
+    end
+    subgraph DocumentationCorpus ["Documentation Corpus"]
+        ReadmeDoc["README.md"]
+        FAQDoc["docs/faq.md"]
+        AtomDocs["docs/atoms/*.atom.md"]
+        ArchitectureDocs["docs/architecture/*.md"]
+    end
+    subgraph ModelAndStoreLayer ["Model + Store Layer"]
+        StructuredModels["StructuredNLDoc models"]
+        LocalStore[".sldb store"]
+        QuerySurfaces["find / sections / ast / fields"]
+    end
     DeskBridge["desk/inbox bridge"]
     PortadaHelp -->|deeper guidance| CuratedHelp
     CuratedHelp -->|question-oriented answers| FAQSurface
