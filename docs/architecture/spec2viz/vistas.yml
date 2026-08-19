@@ -1,4 +1,3 @@
-template: template.html
 vistas:
   - id: current-components
     category: Arquitectura
