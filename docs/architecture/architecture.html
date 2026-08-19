@@ -471,7 +471,7 @@
   <p class="desc">Vista de componentes del sistema SLDB después de la refactorización modular.</p>
   <div class="section-meta"><span class="meta-badge">component</span><span class="meta-badge subtle">type:component</span></div>
   <div class="board">
-    <div class="mermaid">
+    <pre class="mermaid">
       graph TD
           subgraph SLDBCLI ["sldb CLI"]
               CLIDispatcher["cli.dispatcher"]
@@ -560,7 +560,7 @@
           LinksPackage -->|resolve links| StoreIO
           StoreExport -->|rebuild + export| StoreSemantic
           CLICommands -->|recover/compose| LinksPackage
-    </div>
+    </pre>
   </div>
 </section><section id="current-onboarding-surface-a2fedcb2" data-spec="current-onboarding-surface.yml" data-type="component" data-project="" data-category="Arquitectura" data-tags="type:component" data-view-id="current-onboarding-surface" class="catalog-item">
   <div class="lbl"></div>
@@ -568,7 +568,7 @@
   <p class="desc">Vista de la superficie de onboarding del CLI de SLDB.</p>
   <div class="section-meta"><span class="meta-badge">component</span><span class="meta-badge subtle">type:component</span></div>
   <div class="board">
-    <div class="mermaid">
+    <pre class="mermaid">
       graph TD
           subgraph OnboardingEntry ["Onboarding Entry Surface"]
               PortadaHelp["sldb --help"]
@@ -599,7 +599,7 @@
           DocumentationCorpus -->|current behavior| ModelAndStoreLayer
           QuerySurfaces -->|tracked docs and indexes| LocalStore
           InboxSurface -->|unclear/suggestion notes| DeskBridge
-    </div>
+    </pre>
   </div>
 </section></div>
 <div class="category-block" data-category-block="Runtime"><div class="macro-separator"><h2>— Runtime —</h2></div><section id="current-runtime-a2fedcb2" data-spec="current-runtime.yml" data-type="deployment" data-project="" data-category="Runtime" data-tags="type:deployment" data-view-id="current-runtime" class="catalog-item">
@@ -608,7 +608,7 @@
   <p class="desc">Vista de deployment del runtime de SLDB: shell, proyecto, Python, store global.</p>
   <div class="section-meta"><span class="meta-badge">deployment</span><span class="meta-badge subtle">type:deployment</span></div>
   <div class="board">
-    <div class="mermaid">
+    <pre class="mermaid">
       graph TD
           subgraph user_shell ["Developer Shell"]
               sldb_cli["sldb CLI entrypoint"]
@@ -631,7 +631,7 @@
           sldb_cli -->|filesystem| markdown_docs
           sldb_cli -->|filesystem| local_store
           sldb_cli -->|filesystem| global_store
-    </div>
+    </pre>
   </div>
 </section><section id="current-store-lifecycle-a2fedcb2" data-spec="current-store-lifecycle.yml" data-type="activity" data-project="" data-category="Runtime" data-tags="type:activity" data-view-id="current-store-lifecycle" class="catalog-item">
   <div class="lbl"></div>
@@ -639,7 +639,7 @@
   <p class="desc">Flujo de actividad del ciclo de vida del store: init, model add, doc track/add, check, update.</p>
   <div class="section-meta"><span class="meta-badge">activity</span><span class="meta-badge subtle">type:activity</span></div>
   <div class="board">
-    <div class="mermaid">
+    <pre class="mermaid">
       flowchart TD
           __start([Start])
           init_store["sldb store init"]
@@ -678,7 +678,7 @@
           model_update --> __end
           doc_update --> __end
           store_update --> __end
-    </div>
+    </pre>
   </div>
 </section></div>
 <div class="category-block" data-category-block="Propuestas"><div class="macro-separator"><h2>— Propuestas —</h2></div><section id="proposed-deskops-components-a2fedcb2" data-spec="proposed-deskops-components.yml" data-type="component" data-project="" data-category="Propuestas" data-tags="type:component" data-view-id="proposed-deskops-components" class="catalog-item">
@@ -687,7 +687,7 @@
   <p class="desc">Vista propuesta de integración con deskops.</p>
   <div class="section-meta"><span class="meta-badge">component</span><span class="meta-badge subtle">type:component</span></div>
   <div class="board">
-    <div class="mermaid">
+    <pre class="mermaid">
       graph TD
           subgraph DeskopsRuntime ["deskops runtime"]
               subgraph ExistingDeskDocs ["existing desk doc layer"]
@@ -726,7 +726,7 @@
           Atoms -->|canonical knowledge| Tasks
           FutureWork -->|actionable work| Tasks
           SLDBInfra -->|reusable navigation| QueryLayer
-    </div>
+    </pre>
   </div>
 </section></div>
   </main>
