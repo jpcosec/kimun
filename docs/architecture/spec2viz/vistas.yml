@@ -1,3 +1,6 @@
+title: "SLDB · Catálogo de Arquitectura"
+brand_name: "SLDB"
+project_name: "sldb"
 vistas:
   - id: current-components
     category: Arquitectura
