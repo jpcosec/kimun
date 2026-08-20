@@ -38,11 +38,3 @@ vistas:
     specs:
       - current-store-lifecycle.yml
 
-  - id: proposed-deskops-components
-    category: Propuestas
-    title: "Proposed Deskops Integration"
-    nav: Deskops
-    desc: "Vista propuesta de integración con deskops."
-    src: rendered/proposed-deskops-components.mmd
-    specs:
-      - proposed-deskops-components.yml

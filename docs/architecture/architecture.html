@@ -434,7 +434,7 @@
     <div class="sidebar-scroll">
       <div class="sidebar-card">
         <div class="sidebar-card-title">Controles</div>
-        <div class="catalog-toolbar"><div class="catalog-toolbar-row"><label>Tipo<select data-filter="tipo"><option value="">Todos</option><option value="activity">activity</option><option value="component">component</option><option value="deployment">deployment</option></select></label><label>Proyecto<select data-filter="proyecto"><option value="">Todos</option></select></label><label>Categoría<select data-filter="categoría"><option value="">Todos</option><option value="Arquitectura">Arquitectura</option><option value="Propuestas">Propuestas</option><option value="Runtime">Runtime</option></select></label><label>Búsqueda<input type="search" id="catalog-search" placeholder="Título, tag o descripción"></label></div><div class="catalog-tags"><button type="button" class="tag-chip" data-tag="type:activity">type:activity</button><button type="button" class="tag-chip" data-tag="type:component">type:component</button><button type="button" class="tag-chip" data-tag="type:deployment">type:deployment</button></div></div>
+        <div class="catalog-toolbar"><div class="catalog-toolbar-row"><label>Tipo<select data-filter="tipo"><option value="">Todos</option><option value="activity">activity</option><option value="component">component</option><option value="deployment">deployment</option></select></label><label>Proyecto<select data-filter="proyecto"><option value="">Todos</option></select></label><label>Categoría<select data-filter="categoría"><option value="">Todos</option><option value="Arquitectura">Arquitectura</option><option value="Runtime">Runtime</option></select></label><label>Búsqueda<input type="search" id="catalog-search" placeholder="Título, tag o descripción"></label></div><div class="catalog-tags"><button type="button" class="tag-chip" data-tag="type:activity">type:activity</button><button type="button" class="tag-chip" data-tag="type:component">type:component</button><button type="button" class="tag-chip" data-tag="type:deployment">type:deployment</button></div></div>
       </div>
 
       <div class="sidebar-sticky-actions">
@@ -453,7 +453,6 @@
         <nav>
           <div class="nav-category"><span>Arquitectura</span><a href="#current-components-a2fedcb2">Componentes</a><a href="#current-onboarding-surface-a2fedcb2">Onboarding</a></div>
 <div class="nav-category"><span>Runtime</span><a href="#current-runtime-a2fedcb2">Runtime</a><a href="#current-store-lifecycle-a2fedcb2">Store Lifecycle</a></div>
-<div class="nav-category"><span>Propuestas</span><a href="#proposed-deskops-components-a2fedcb2">Deskops</a></div>
         </nav>
       </div>
     </div>
@@ -681,54 +680,6 @@
     </pre>
   </div>
 </section></div>
-<div class="category-block" data-category-block="Propuestas"><div class="macro-separator"><h2>— Propuestas —</h2></div><section id="proposed-deskops-components-a2fedcb2" data-spec="proposed-deskops-components.yml" data-type="component" data-project="" data-category="Propuestas" data-tags="type:component" data-view-id="proposed-deskops-components" class="catalog-item">
-  <div class="lbl"></div>
-  <h2>Proposed Deskops Integration</h2>
-  <p class="desc">Vista propuesta de integración con deskops.</p>
-  <div class="section-meta"><span class="meta-badge">component</span><span class="meta-badge subtle">type:component</span></div>
-  <div class="board">
-    <pre class="mermaid">
-      graph TD
-          subgraph DeskopsRuntime [&quot;deskops runtime&quot;]
-              subgraph ExistingDeskDocs [&quot;existing desk doc layer&quot;]
-                  ExistingTasks[&quot;TaskDoc / DeskTaskDoc&quot;]
-                  ExistingPills[&quot;PillDoc&quot;]
-                  ExistingBoards[&quot;DeskBoardDoc&quot;]
-                  ExistingSpecs[&quot;DeskSpecDoc&quot;]
-                  ExistingDeskProfiles[&quot;DeskProfile&quot;]
-              end
-              subgraph DeskWorkspace [&quot;desk workspace&quot;]
-                  Inbox[&quot;inbox notes&quot;]
-                  Tasks[&quot;task docs&quot;]
-                  Pills[&quot;pill docs&quot;]
-                  FutureWork[&quot;future-work docs&quot;]
-                  Atoms[&quot;desk atoms&quot;]
-              end
-              WorkflowEngine[&quot;lifecycle + routing engine&quot;]
-              RitualAutomation[&quot;ritual automation&quot;]
-              InterRepoMessaging[&quot;inter-repo messaging&quot;]
-              DocumentationPolicy[&quot;documentation linter/policy&quot;]
-          end
-          subgraph SLDBInfra [&quot;SLDB infrastructure&quot;]
-              StructuredMarkdown[&quot;StructuredNLDoc + templates&quot;]
-              StoreLayer[&quot;stores + hashes + indexes&quot;]
-              QueryLayer[&quot;find / sections / ast / explore&quot;]
-          end
-          RepoBoundaries[&quot;Multiple Project Repos&quot;]
-          DeskWorkspace --&gt;|tracked docs and stores| SLDBInfra
-          ExistingDeskDocs --&gt;|current document surfaces| DeskWorkspace
-          WorkflowEngine --&gt;|status and routing| DeskWorkspace
-          RitualAutomation --&gt;|close-loop routines| DeskWorkspace
-          RitualAutomation --&gt;|commits and repo ops| RepoBoundaries
-          DocumentationPolicy --&gt;|structure and completeness| DeskWorkspace
-          InterRepoMessaging --&gt;|inbox/task messages across repos| RepoBoundaries
-          InterRepoMessaging --&gt;|durable message docs| Inbox
-          Atoms --&gt;|canonical knowledge| Tasks
-          FutureWork --&gt;|actionable work| Tasks
-          SLDBInfra --&gt;|reusable navigation| QueryLayer
-    </pre>
-  </div>
-</section></div>
   </main>
 
   <div id="hover-popover">
@@ -762,7 +713,7 @@
       },
       flowchart: { htmlLabels: true, curve: 'basis', subGraphTitleMargin: { top: 0, bottom: 32 } }
     });
-    window.SPEC2VIZ_CATALOG = {"title": "SLDB \u00b7 Cat\u00e1logo de Arquitectura", "brand_name": "SLDB", "project_name": "sldb", "item_count": 5};
+    window.SPEC2VIZ_CATALOG = {"title": "SLDB \u00b7 Cat\u00e1logo de Arquitectura", "brand_name": "SLDB", "project_name": "sldb", "item_count": 4};
 
     const popover = document.getElementById('hover-popover');
     const popoverTitle = document.getElementById('popover-title');
@@ -1299,6 +1250,6 @@
     });
   </script>
 
-<script>window.ATOMS_DB = {}; window.ATOMS_BY_VIEW = {"current-components-a2fedcb2": {}, "current-onboarding-surface-a2fedcb2": {}, "current-runtime-a2fedcb2": {}, "current-store-lifecycle-a2fedcb2": {}, "proposed-deskops-components-a2fedcb2": {}}; window.SPEC2VIZ_ATOM_WARNINGS = []; window.SPEC2VIZ_CATALOG = {"title": "SLDB \u00b7 Cat\u00e1logo de Arquitectura", "brand_name": "SLDB", "project_name": "sldb", "item_count": 5};</script>
+<script>window.ATOMS_DB = {}; window.ATOMS_BY_VIEW = {"current-components-a2fedcb2": {}, "current-onboarding-surface-a2fedcb2": {}, "current-runtime-a2fedcb2": {}, "current-store-lifecycle-a2fedcb2": {}}; window.SPEC2VIZ_ATOM_WARNINGS = []; window.SPEC2VIZ_CATALOG = {"title": "SLDB \u00b7 Cat\u00e1logo de Arquitectura", "brand_name": "SLDB", "project_name": "sldb", "item_count": 4};</script>
 </body>
 </html>
