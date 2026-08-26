@@ -1,7 +1,7 @@
 id: sldb.current.onboarding_surface
 title: SLDB Current Onboarding Surface
 type: component
-version: "0.1"
+version: "0.2"
 
 data:
   nodes:
@@ -14,6 +14,8 @@ data:
         - FAQSurface
         - ExploreSurface
         - InboxSurface
+        - ASTSurface
+        - LintSurface
 
     PortadaHelp:
       label: sldb --help
@@ -28,11 +30,19 @@ data:
       kind: core
 
     ExploreSurface:
-      label: sldb explore
+      label: sldb explore (docs + docstrings)
       kind: core
 
     InboxSurface:
-      label: sldb inbox
+      label: sldb inbox (log unclear/suggestion)
+      kind: core
+
+    ASTSurface:
+      label: sldb ast show / ast schema
+      kind: core
+
+    LintSurface:
+      label: sldb lint (canonical path validation)
       kind: core
 
     DocumentationCorpus:
@@ -43,6 +53,7 @@ data:
         - FAQDoc
         - AtomDocs
         - ArchitectureDocs
+        - StandardsDoc
 
     ReadmeDoc:
       label: README.md
@@ -57,7 +68,11 @@ data:
       kind: boundary
 
     ArchitectureDocs:
-      label: docs/architecture/*.md
+      label: docs/architecture/* (spec2viz catalog)
+      kind: boundary
+
+    StandardsDoc:
+      label: standards.md
       kind: boundary
 
     ModelAndStoreLayer:
@@ -67,6 +82,7 @@ data:
         - StructuredModels
         - LocalStore
         - QuerySurfaces
+        - PredicateSurface
 
     StructuredModels:
       label: StructuredNLDoc models
@@ -77,7 +93,11 @@ data:
       kind: database
 
     QuerySurfaces:
-      label: find / sections / ast / fields
+      label: find / sections / ast / fields / query
+      kind: core
+
+    PredicateSurface:
+      label: predicates
       kind: core
 
     DeskBridge:
@@ -99,6 +119,16 @@ data:
       to: ExploreSurface
       relation: points_to
       label: deep written search
+
+    - from: CuratedHelp
+      to: ASTSurface
+      relation: points_to
+      label: AST introspection
+
+    - from: CuratedHelp
+      to: LintSurface
+      relation: points_to
+      label: path validation
 
     - from: FAQSurface
       to: FAQDoc
@@ -129,6 +159,16 @@ data:
       to: LocalStore
       relation: uses
       label: tracked docs and indexes
+
+    - from: PredicateSurface
+      to: LocalStore
+      relation: uses
+      label: predicate exploration
+
+    - from: ASTSurface
+      to: LocalStore
+      relation: inspects
+      label: store AST view
 
     - from: InboxSurface
       to: DeskBridge

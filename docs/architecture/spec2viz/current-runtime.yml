@@ -1,7 +1,7 @@
 id: sldb.current.runtime
 title: SLDB Current Runtime View
 type: deployment
-version: "0.1"
+version: "0.2"
 
 data:
   nodes:
@@ -17,12 +17,14 @@ data:
         - project_models
         - markdown_docs
         - local_store
+        - desk_context
     python_runtime:
       label: Python Runtime
       kind: server
       contains:
         - sldb_library
         - markdown_stack
+        - spec2viz_bridge
     home_space:
       label: Home Directory
       kind: storage
@@ -31,25 +33,31 @@ data:
 
   artifacts:
     sldb_cli:
-      label: sldb CLI entrypoint
+      label: sldb CLI entrypoint (cli.main)
       kind: backend
     sldb_library:
-      label: sldb package
+      label: sldb package (core + store + links + models + runtime + assets)
       kind: backend
     markdown_stack:
-      label: parser + renderer helpers
+      label: markdown-it-py + mdit-plugins
+      kind: backend
+    spec2viz_bridge:
+      label: spec2viz (diagram rendering, catalog build)
       kind: backend
     project_models:
-      label: StructuredNLDoc models
+      label: StructuredNLDoc model subclasses
       kind: backend
     markdown_docs:
       label: tracked markdown docs
       kind: backend
     local_store:
-      label: .sldb local store
+      label: .sldb local store (YAML indexes)
       kind: database
     global_store:
       label: ~/.sldb store path
+      kind: database
+    desk_context:
+      label: desk/ (atoms, pills, rituals, inbox, tasks)
       kind: database
 
   connections:
@@ -58,16 +66,22 @@ data:
       protocol: Python import
     - from: sldb_library
       to: markdown_stack
-      protocol: internal API
+      protocol: internal API (markdown-it-py)
+    - from: sldb_library
+      to: spec2viz_bridge
+      protocol: optional integration
     - from: sldb_library
       to: project_models
-      protocol: dynamic import
+      protocol: dynamic import via model_ref
     - from: sldb_cli
       to: markdown_docs
-      protocol: filesystem
+      protocol: filesystem (read/write)
     - from: sldb_cli
       to: local_store
-      protocol: filesystem
+      protocol: filesystem (YAML)
     - from: sldb_cli
       to: global_store
-      protocol: filesystem
+      protocol: filesystem (YAML)
+    - from: sldb_cli
+      to: desk_context
+      protocol: filesystem (inbox, atoms)

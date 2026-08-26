@@ -1,0 +1,77 @@
+@startuml
+skinparam component<<boundary>> BackgroundColor #FCECC9
+skinparam component<<boundary>> BorderColor #D4A73C
+skinparam component<<boundary>> FontColor #5E450B
+skinparam rectangle<<boundary>> BackgroundColor #FCECC9
+skinparam rectangle<<boundary>> BorderColor #D4A73C
+skinparam rectangle<<boundary>> FontColor #5E450B
+skinparam database<<boundary>> BackgroundColor #FCECC9
+skinparam database<<boundary>> BorderColor #D4A73C
+skinparam database<<boundary>> FontColor #5E450B
+skinparam package<<boundary>> BackgroundColor #FCECC9
+skinparam package<<boundary>> BorderColor #D4A73C
+skinparam package<<boundary>> FontColor #5E450B
+skinparam component<<core>> BackgroundColor #D8ECFF
+skinparam component<<core>> BorderColor #4C78A8
+skinparam component<<core>> FontColor #16324F
+skinparam rectangle<<core>> BackgroundColor #D8ECFF
+skinparam rectangle<<core>> BorderColor #4C78A8
+skinparam rectangle<<core>> FontColor #16324F
+skinparam database<<core>> BackgroundColor #D8ECFF
+skinparam database<<core>> BorderColor #4C78A8
+skinparam database<<core>> FontColor #16324F
+skinparam package<<core>> BackgroundColor #D8ECFF
+skinparam package<<core>> BorderColor #4C78A8
+skinparam package<<core>> FontColor #16324F
+skinparam component<<database>> BackgroundColor #DCEFD8
+skinparam component<<database>> BorderColor #5A9B5A
+skinparam component<<database>> FontColor #1F4F1F
+skinparam rectangle<<database>> BackgroundColor #DCEFD8
+skinparam rectangle<<database>> BorderColor #5A9B5A
+skinparam rectangle<<database>> FontColor #1F4F1F
+skinparam database<<database>> BackgroundColor #DCEFD8
+skinparam database<<database>> BorderColor #5A9B5A
+skinparam database<<database>> FontColor #1F4F1F
+skinparam package<<database>> BackgroundColor #DCEFD8
+skinparam package<<database>> BorderColor #5A9B5A
+skinparam package<<database>> FontColor #1F4F1F
+
+package "Onboarding Entry Surface" as OnboardingEntry <<core>> {
+  component "sldb --help" as PortadaHelp <<core>>
+  component "sldb help / help <topic>" as CuratedHelp <<core>>
+  component "sldb faq" as FAQSurface <<core>>
+  component "sldb explore (docs + docstrings)" as ExploreSurface <<core>>
+  component "sldb inbox (log unclear/suggestion)" as InboxSurface <<core>>
+  component "sldb ast show / ast schema" as ASTSurface <<core>>
+  component "sldb lint (canonical path validation)" as LintSurface <<core>>
+}
+package "Documentation Corpus" as DocumentationCorpus <<boundary>> {
+  rectangle "README.md" as ReadmeDoc <<boundary>>
+  rectangle "docs/faq.md" as FAQDoc <<boundary>>
+  rectangle "docs/atoms/*.atom.md" as AtomDocs <<boundary>>
+  rectangle "docs/architecture/* (spec2viz catalog)" as ArchitectureDocs <<boundary>>
+  rectangle "standards.md" as StandardsDoc <<boundary>>
+}
+package "Model + Store Layer" as ModelAndStoreLayer <<core>> {
+  component "StructuredNLDoc models" as StructuredModels <<core>>
+  database ".sldb store" as LocalStore <<database>>
+  component "find / sections / ast / fields / query" as QuerySurfaces <<core>>
+  component "predicates" as PredicateSurface <<core>>
+}
+rectangle "desk/inbox bridge" as DeskBridge <<boundary>>
+
+PortadaHelp --> CuratedHelp : deeper guidance
+CuratedHelp --> FAQSurface : question-oriented answers
+CuratedHelp --> ExploreSurface : deep written search
+CuratedHelp --> ASTSurface : AST introspection
+CuratedHelp --> LintSurface : path validation
+FAQSurface --> FAQDoc : parse questions
+ExploreSurface --> DocumentationCorpus : markdown docs
+ExploreSurface --> StructuredModels : Python docstrings
+CuratedHelp --> DocumentationCorpus : concepts and workflows
+DocumentationCorpus --> ModelAndStoreLayer : current behavior
+QuerySurfaces --> LocalStore : tracked docs and indexes
+PredicateSurface --> LocalStore : predicate exploration
+ASTSurface --> LocalStore : store AST view
+InboxSurface --> DeskBridge : unclear/suggestion notes
+@enduml

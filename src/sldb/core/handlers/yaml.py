@@ -63,7 +63,7 @@ class YamlNodeHandler(BaseNodeHandler):
         try:
             return self._parse_and_extract_yaml(node.content.strip(), recipe)
         except Exception as e:
-            raise SLDBASTError(f"Failed to parse YAML content for {recipe['name']}") from e
+            raise SLDBASTError(f"Failed to parse YAML content for {recipe.get('name', recipe.get('key', '<unknown>'))}: {e}") from e
 
     def _parse_and_extract_yaml(self, content: str, recipe: dict[str, Any]) -> Any:
         clean_content = re.sub(MARKER_PATTERN, "", content).strip() or content

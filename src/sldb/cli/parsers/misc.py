@@ -2,7 +2,7 @@ from __future__ import annotations
 import argparse
 
 def add_misc_commands(s: argparse._SubParsersAction) -> None:
-    _help(s); _faq(s); _inbox(s); _explore(s); _ast(s)
+    _help(s); _faq(s); _inbox(s); _explore(s); _ast(s); _lint(s)
 
 def _help(s):
     p = s.add_parser("help", help="Curated CLI help.")
@@ -51,3 +51,9 @@ def _ast(s):
     sh.add_argument("--format", choices=("json", "yaml", "text"), default="json")
     sch = sub.add_parser("schema", help="Show node and edge schema.")
     sch.add_argument("--format", choices=("json", "yaml", "text"), default="json")
+
+def _lint(s):
+    p = s.add_parser("lint", help="Lint knowledge references for canonical paths.")
+    p.add_argument("target", nargs="?", help="File or directory to lint (default: recursive scan of repo)")
+    p.add_argument("--repo-root", help="Repository root path (default: auto-detect from cwd)")
+    p.add_argument("--format", choices=("text", "json", "yaml"), default="text")

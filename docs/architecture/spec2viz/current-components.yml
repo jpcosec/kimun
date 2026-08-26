@@ -1,7 +1,7 @@
 id: sldb.current.components
-title: "SLDB System Components (Post-Refactor)"
+title: "SLDB System Components (Current Codebase)"
 type: component
-version: "2.0"
+version: "2.1"
 
 data:
   nodes:
@@ -13,6 +13,7 @@ data:
         - CLIParsers
         - CLICommands
         - CLIGraphOps
+        - CLIGraph
 
     CLIDispatcher:
       label: cli.dispatcher
@@ -23,24 +24,61 @@ data:
       kind: core
       contains:
         - ParsersCore
+        - ParsersBasic
         - ParsersModels
         - ParsersDocs
         - ParsersFind
+        - ParsersStores
+        - ParsersSections
+        - ParsersFields
+        - ParsersPredicates
+        - ParsersLegacy
+        - ParsersMisc
+        - ParsersProject
+        - ParsersPublic
+        - ParsersHidden
 
     ParsersCore:
       label: parsers.core
       kind: core
-
+    ParsersBasic:
+      label: parsers.basic
+      kind: core
     ParsersModels:
-      label: parsers.models
+      label: parsers.models1 / models2
       kind: core
-
     ParsersDocs:
-      label: parsers.docs
+      label: parsers.docs1 / docs2
       kind: core
-
     ParsersFind:
       label: parsers.find
+      kind: core
+    ParsersStores:
+      label: parsers.stores
+      kind: core
+    ParsersSections:
+      label: parsers.sections
+      kind: core
+    ParsersFields:
+      label: parsers.fields
+      kind: core
+    ParsersPredicates:
+      label: parsers.predicates
+      kind: core
+    ParsersLegacy:
+      label: parsers.legacy
+      kind: core
+    ParsersMisc:
+      label: parsers.misc
+      kind: core
+    ParsersProject:
+      label: parsers.project
+      kind: core
+    ParsersPublic:
+      label: parsers.public
+      kind: core
+    ParsersHidden:
+      label: parsers.hidden
       kind: core
 
     CLICommands:
@@ -49,18 +87,48 @@ data:
       contains:
         - DirectCommands
         - StoreCommands
+        - ModelCommands
+        - DocCommands
         - QueryCommands
+        - LinksCommands
+        - PredicatesCommands
+        - ASTCommands
+        - LintCommands
+        - InboxCommands
+        - ExploreCommands
 
     DirectCommands:
       label: basic / init / help / faq
       kind: core
-
     StoreCommands:
-      label: store / model / doc / inbox
+      label: store/add/check/init/update / semantic_map / stores
       kind: core
-
+    ModelCommands:
+      label: model/add/update / models/create/list/validate/template/fields
+      kind: core
+    DocCommands:
+      label: doc / docs
+      kind: core
     QueryCommands:
-      label: find / sections / fields / explore
+      label: find / sections / fields / query
+      kind: core
+    LinksCommands:
+      label: links
+      kind: core
+    PredicatesCommands:
+      label: predicates
+      kind: core
+    ASTCommands:
+      label: ast
+      kind: core
+    LintCommands:
+      label: lint
+      kind: core
+    InboxCommands:
+      label: inbox
+      kind: core
+    ExploreCommands:
+      label: explore
       kind: core
 
     CLIGraphOps:
@@ -70,17 +138,57 @@ data:
         - GraphBuildAST
         - GraphBuildIR
         - GraphIterRecords
+        - GraphExtract
+        - GraphFields
+        - GraphMatches
+        - GraphResolve
 
     GraphBuildAST:
       label: graph_ops.build_ast
       kind: core
-
     GraphBuildIR:
       label: graph_ops.build_ir
       kind: core
-
     GraphIterRecords:
       label: graph_ops.iter_records
+      kind: core
+    GraphExtract:
+      label: graph_ops.extract
+      kind: core
+    GraphFields:
+      label: graph_ops.fields / map_fields
+      kind: core
+    GraphMatches:
+      label: graph_ops.matches
+      kind: core
+    GraphResolve:
+      label: graph_ops.resolve
+      kind: core
+
+    CLIGraph:
+      label: cli.graph.*
+      kind: core
+      contains:
+        - GraphModelsSection
+        - GraphSearchRecord
+        - GraphSectionRecord
+        - GraphSections
+        - GraphStoreAST
+
+    GraphModelsSection:
+      label: graph.models_section
+      kind: core
+    GraphSearchRecord:
+      label: graph.search_record
+      kind: core
+    GraphSectionRecord:
+      label: graph.section_record
+      kind: core
+    GraphSections:
+      label: graph.sections
+      kind: core
+    GraphStoreAST:
+      label: graph.store_ast
       kind: core
 
     StoreFacade:
@@ -96,32 +204,40 @@ data:
         - IRPackage
         - DataExtractor
         - TemplateExtractor
+        - ExtractorPackage
         - Renderer
+        - RendererEngine
+        - Handlers
+        - ExceptionsPackage
+        - ModelContract
+        - SLDBNode
+        - NodeHandler
+        - IngestEngine
 
     ASTPackage:
-      label: core.ast.*
+      label: core.ast.* (base / markdown_ast_handler)
       kind: core
-
     ContractsPackage:
-      label: core.contracts.*
+      label: core.contracts.* (marker / node_data / render_context)
       kind: core
-
     IRPackage:
-      label: core.ir.*
+      label: core.ir.* (document_ir / graph_view / surface_node / meaning_node)
       kind: core
-
     DataExtractor:
       label: core.data_extractor
       kind: core
-
     TemplateExtractor:
       label: core.template_extractor
       kind: core
-
+    ExtractorPackage:
+      label: core.extractor.recipe_matcher
+      kind: core
     Renderer:
       label: core.renderer
       kind: core
-
+    RendererEngine:
+      label: core.renderer_engine.* (base / list / table / yaml / python_expr)
+      kind: core
     Handlers:
       label: core.handlers.*
       kind: core
@@ -130,25 +246,22 @@ data:
         - ListHandler
         - TableHandler
         - YamlHandler
+        - RouterHandler
 
     TextHandler:
       label: handlers.text
       kind: core
-
     ListHandler:
       label: handlers.list
       kind: core
-
     TableHandler:
       label: handlers.table
       kind: core
-
     YamlHandler:
       label: handlers.yaml
       kind: core
-
-    RendererEngines:
-      label: core.renderer_engine.*
+    RouterHandler:
+      label: handlers.router
       kind: core
 
     ExceptionsPackage:
@@ -159,8 +272,24 @@ data:
       label: models.structured_doc
       kind: core
 
+    SLDBNode:
+      label: core.node (SLDBNode dataclass)
+      kind: core
+
+    NodeHandler:
+      label: core.node_handler
+      kind: core
+
+    IngestEngine:
+      label: core.ingest.* (engine / scanner / manifest / renderer / source_parser)
+      kind: core
+
     ValidationRuntime:
       label: runtime.validation
+      kind: core
+
+    RuntimeConfig:
+      label: runtime.config
       kind: core
 
     StoreSubsystem:
@@ -168,7 +297,7 @@ data:
       kind: core
       contains:
         - StoreModels
-        - StoreIO
+        - StoreIOPackage
         - StoreHashing
         - StoreOps
         - StoreDiagnostics
@@ -176,12 +305,38 @@ data:
         - StoreSemantic
         - StoreExport
         - StoreMigration
+        - StorePredicates
+        - StoreQuery
+        - StoreSectionRebuild
+        - StoreFacadePkg
 
     StoreModels:
       label: store.models.*
       kind: core
+      contains:
+        - StoreModelEntries
+        - StoreModelDocSections
+        - StoreModelSemantic
+        - StoreModelSections
+        - StoreModelPredicates
 
-    StoreIO:
+    StoreModelEntries:
+      label: document_entry / model_entry / store_entry
+      kind: core
+    StoreModelDocSections:
+      label: doc_sections
+      kind: core
+    StoreModelSemantic:
+      label: semantic_d_a_g / semantic_node / semantic_document_record / semantic_index
+      kind: core
+    StoreModelSections:
+      label: sections_index / section_context_record
+      kind: core
+    StoreModelPredicates:
+      label: predicate_entry
+      kind: core
+
+    StoreIOPackage:
       label: store.io.*
       kind: core
       contains:
@@ -189,54 +344,74 @@ data:
         - IOModels
         - IOLock
         - IOStoreIndex
+        - IOSectionsIndex
         - IOSemanticDAG
+        - IOSemanticIndex
+        - IOUtils
 
     IODocuments:
       label: io.documents_index
       kind: core
-
     IOModels:
       label: io.models_index
       kind: core
-
     IOLock:
       label: io.lock
       kind: core
-
     IOStoreIndex:
       label: io.store_index
       kind: core
-
+    IOSectionsIndex:
+      label: io.sections_index
+      kind: core
     IOSemanticDAG:
       label: io.semantic_dag
+      kind: core
+    IOSemanticIndex:
+      label: io.semantic_index
+      kind: core
+    IOUtils:
+      label: io.utils
       kind: core
 
     StoreHashing:
       label: store.hashing
       kind: core
-
     StoreOps:
       label: store.ops
       kind: core
-
     StoreDiagnostics:
       label: store.diagnostics
       kind: core
-
+    StoreDiagnosticsModels:
+      label: diagnostics_models.* (store/model/document/diagnosis_note)
+      kind: core
     StoreResolver:
       label: store.resolver
       kind: core
-
     StoreSemantic:
       label: store.semantic
       kind: core
-
+    StoreSemanticTags:
+      label: store.semantic_tags
+      kind: core
     StoreExport:
       label: store.export
       kind: core
-
     StoreMigration:
       label: store.migration
+      kind: core
+    StorePredicates:
+      label: store.predicates
+      kind: core
+    StoreQuery:
+      label: store.query
+      kind: core
+    StoreSectionRebuild:
+      label: store.section_rebuild
+      kind: core
+    StoreFacadePkg:
+      label: store.facade
       kind: core
 
     QueryEngine:
@@ -247,21 +422,30 @@ data:
         - QESemantic
         - QEGlobalSemantic
         - QEFilter
+        - QEModels
+        - QESemanticUtils
+        - QEStructuralQueries
 
     QEStructural:
       label: query_engine.structural
       kind: core
-
     QESemantic:
       label: query_engine.semantic
       kind: core
-
     QEGlobalSemantic:
       label: query_engine.global_semantic
       kind: core
-
     QEFilter:
       label: query_engine.filter
+      kind: core
+    QEModels:
+      label: query_engine.models
+      kind: core
+    QESemanticUtils:
+      label: query_engine.semantic_utils
+      kind: core
+    QEStructuralQueries:
+      label: query_engine.structural_queries
       kind: core
 
     LinksPackage:
@@ -272,21 +456,26 @@ data:
         - LinkResolver
         - LinkComposer
         - LinkRecovery
+        - ParsedLink
+        - ResolvedLink
 
     LinkParser:
       label: links.parser
       kind: core
-
     LinkResolver:
       label: links.resolver
       kind: core
-
     LinkComposer:
       label: links.composer
       kind: core
-
     LinkRecovery:
       label: links.recovery
+      kind: core
+    ParsedLink:
+      label: links.parsed_link
+      kind: core
+    ResolvedLink:
+      label: links.resolved_link
       kind: core
 
     Filesystem:
@@ -299,10 +488,13 @@ data:
     MarkdownDocs:
       label: Markdown docs
       kind: boundary
-
     StoreFiles:
       label: .sldb YAML indexes
       kind: database
+
+    AssetsPackage:
+      label: assets (skills)
+      kind: core
 
   edges:
     - from: CLICommands
@@ -320,6 +512,16 @@ data:
       relation: uses
       label: roundtrip/extract/render
 
+    - from: CLICommands
+      to: LinksPackage
+      relation: uses
+      label: recover/compose
+
+    - from: CLICommands
+      to: RuntimeConfig
+      relation: uses
+      label: config
+
     - from: ValidationRuntime
       to: CoreRuntime
       relation: uses
@@ -331,7 +533,7 @@ data:
       label: node handling
 
     - from: Renderer
-      to: RendererEngines
+      to: RendererEngine
       relation: uses
       label: format output
 
@@ -345,8 +547,13 @@ data:
       relation: uses
       label: search records
 
+    - from: CLIGraph
+      to: CoreRuntime
+      relation: uses
+      label: AST store mapping
+
     - from: QueryEngine
-      to: StoreIO
+      to: StoreIOPackage
       relation: reads
       label: load indexes
 
@@ -354,6 +561,11 @@ data:
       to: ValidationRuntime
       relation: uses
       label: hash verification
+
+    - from: StoreDiagnostics
+      to: StoreDiagnosticsModels
+      relation: uses
+      label: structured results
 
     - from: StoreHashing
       to: ValidationRuntime
@@ -371,7 +583,7 @@ data:
       label: documents
 
     - from: LinksPackage
-      to: StoreIO
+      to: StoreIOPackage
       relation: reads
       label: resolve links
 
@@ -380,7 +592,17 @@ data:
       relation: uses
       label: rebuild + export
 
-    - from: CLICommands
-      to: LinksPackage
+    - from: StoreSemantic
+      to: StoreSemanticTags
       relation: uses
-      label: recover/compose
+      label: model flatten
+
+    - from: StoreSectionRebuild
+      to: StoreIOPackage
+      relation: reads
+      label: section indexing
+
+    - from: StorePredicates
+      to: StoreIOPackage
+      relation: reads
+      label: predicate indexing

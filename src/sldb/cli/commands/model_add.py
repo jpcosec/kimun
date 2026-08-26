@@ -19,7 +19,9 @@ def add_model(args: Any) -> int:
     sp, root = get_store_context(args.store)
     model_type = resolve_model_ref(args.model, args.pythonpath)
     idx = load_store_index(sp)
-    _ensure_model_new(idx, model_type.__name__)
+    if _model_exists(idx, model_type.__name__):
+        print(f"Model '{model_type.__name__}' already registered.")
+        return 0
     _register_model(args, sp, root, idx, model_type)
     return 0
 
@@ -29,9 +31,8 @@ def _get_rel_path(path: Path, root: Path) -> str:
     except ValueError:
         return str(path.resolve())
 
-def _ensure_model_new(idx: Any, name: str) -> None:
-    if any(m.name == name for m in idx.models):
-        raise SLDBModelError(f"Model '{name}' exists.")
+def _model_exists(idx: Any, name: str) -> bool:
+    return any(m.name == name for m in idx.models)
 
 def _register_model(args: Any, sp: Path, root: Path, idx: Any, model_type: type) -> None:
     with store_lock(sp):

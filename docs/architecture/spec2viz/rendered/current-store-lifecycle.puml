@@ -1,0 +1,9 @@
+@startuml
+start
+:sldb store init;
+:sldb model add;
+if (Create new doc or track existing??) then (yes)
+else (no)
+endif
+stop
+@enduml

@@ -62,8 +62,9 @@ def test_store_init_creates_index(tmp_path):
 
 def test_store_init_fails_if_exists(tmp_path):
     _init(tmp_path)
-    with pytest.raises(SystemExit):
-        cli_main(["stores", "init", "--path", str(tmp_path)])
+    # Idempotent: second init exits 0 with info message
+    rc = cli_main(["stores", "init", "--path", str(tmp_path)])
+    assert rc == 0
 
 
 def test_store_init_force_overwrites(tmp_path):

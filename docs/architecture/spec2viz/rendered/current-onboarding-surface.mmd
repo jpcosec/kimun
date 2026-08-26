@@ -3,28 +3,36 @@ graph TD
         PortadaHelp["sldb --help"]
         CuratedHelp["sldb help / help <topic>"]
         FAQSurface["sldb faq"]
-        ExploreSurface["sldb explore"]
-        InboxSurface["sldb inbox"]
+        ExploreSurface["sldb explore (docs + docstrings)"]
+        InboxSurface["sldb inbox (log unclear/suggestion)"]
+        ASTSurface["sldb ast show / ast schema"]
+        LintSurface["sldb lint (canonical path validation)"]
     end
     subgraph DocumentationCorpus ["Documentation Corpus"]
         ReadmeDoc["README.md"]
         FAQDoc["docs/faq.md"]
         AtomDocs["docs/atoms/*.atom.md"]
-        ArchitectureDocs["docs/architecture/*.md"]
+        ArchitectureDocs["docs/architecture/* (spec2viz catalog)"]
+        StandardsDoc["standards.md"]
     end
     subgraph ModelAndStoreLayer ["Model + Store Layer"]
         StructuredModels["StructuredNLDoc models"]
         LocalStore[".sldb store"]
-        QuerySurfaces["find / sections / ast / fields"]
+        QuerySurfaces["find / sections / ast / fields / query"]
+        PredicateSurface["predicates"]
     end
     DeskBridge["desk/inbox bridge"]
     PortadaHelp -->|deeper guidance| CuratedHelp
     CuratedHelp -->|question-oriented answers| FAQSurface
     CuratedHelp -->|deep written search| ExploreSurface
+    CuratedHelp -->|AST introspection| ASTSurface
+    CuratedHelp -->|path validation| LintSurface
     FAQSurface -->|parse questions| FAQDoc
     ExploreSurface -->|markdown docs| DocumentationCorpus
     ExploreSurface -->|Python docstrings| StructuredModels
     CuratedHelp -->|concepts and workflows| DocumentationCorpus
     DocumentationCorpus -->|current behavior| ModelAndStoreLayer
     QuerySurfaces -->|tracked docs and indexes| LocalStore
+    PredicateSurface -->|predicate exploration| LocalStore
+    ASTSurface -->|store AST view| LocalStore
     InboxSurface -->|unclear/suggestion notes| DeskBridge

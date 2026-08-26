@@ -85,6 +85,25 @@
       text-transform:uppercase;
       color:var(--amber);
       margin-bottom:12px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+    .sidebar-card-title::after {
+      content: '▾';
+      font-size: 12px;
+      transition: transform 0.2s ease;
+    }
+    .sidebar-card.collapsed .sidebar-card-title {
+      margin-bottom: 0;
+    }
+    .sidebar-card.collapsed .sidebar-card-title::after {
+      transform: rotate(-90deg);
+    }
+    .sidebar-card.collapsed > :not(.sidebar-card-title) {
+      display: none !important;
     }
 
     nav{display:flex;flex-direction:column;gap:10px}
@@ -428,7 +447,7 @@
     <div class="brand">
       <div class="brand-kicker">Spec2viz · catálogo real</div>
       <div class="brand-title">SLDB <em>diagram viewer</em></div>
-      <div class="brand-sub">Visor transversal de diagramas de arquitectura del repo AntonIA</div>
+      <div class="brand-sub">Visor transversal de diagramas de spec2viz</div>
     </div>
 
     <div class="sidebar-scroll">
@@ -442,6 +461,11 @@
           <div class="sidebar-card-title">Marcado</div>
           <div class="sidebar-actions">
             <button id="anno-btn" class="sidebar-btn">✎ Marcar comentarios</button>
+            <button id="explore-anno-btn" class="sidebar-btn">Explorar comentarios</button>
+            <div style="display:flex;gap:4px">
+              <button id="export-anno-btn" class="sidebar-btn ghost" style="flex:1">Exportar</button>
+              <button id="import-anno-btn" class="sidebar-btn ghost" style="flex:1">Importar</button>
+            </div>
             <button id="clear-anno-btn" class="sidebar-btn ghost">Borrar comentarios</button>
             <div class="sidebar-note">Activa marcar y haz click sobre cualquier elemento del diagrama para dejar comentarios persistidos en este navegador.</div>
           </div>
@@ -458,6 +482,16 @@
     </div>
   </aside>
 
+  <div id="anno-explorer-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:#12121a;border:1px solid #d4a574;border-radius:8px;width:600px;max-width:90%;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 18px 48px rgba(0,0,0,.45);">
+      <div style="padding:16px;border-bottom:1px solid rgba(212,165,116,.2);display:flex;justify-content:space-between;align-items:center;">
+        <h2 style="margin:0;font-size:16px;color:#d4a574;text-transform:uppercase;letter-spacing:0.1em;">Explorador de Comentarios</h2>
+        <button id="close-explorer-btn" style="background:transparent;border:none;color:#f5f0e8;cursor:pointer;font-size:18px;">✕</button>
+      </div>
+      <div id="anno-explorer-list" style="padding:16px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:12px;"></div>
+    </div>
+  </div>
+
   <main>
     <div class="catalog-header">
       <div class="catalog-kicker">Viewer global</div>
@@ -466,8 +500,8 @@
     </div>
     <div class="category-block" data-category-block="Arquitectura"><div class="macro-separator"><h2>— Arquitectura —</h2></div><section id="current-components-a2fedcb2" data-spec="current-components.yml" data-type="component" data-project="" data-category="Arquitectura" data-tags="type:component" data-view-id="current-components" class="catalog-item">
   <div class="lbl"></div>
-  <h2>SLDB System Components (Post-Refactor)</h2>
-  <p class="desc">Vista de componentes del sistema SLDB después de la refactorización modular.</p>
+  <h2>SLDB System Components (Current Codebase v2.1)</h2>
+  <p class="desc">Vista completa de componentes del sistema SLDB: CLI, parsers, comandos, core runtime, store subsystem, query engine, links y assets.</p>
   <div class="section-meta"><span class="meta-badge">component</span><span class="meta-badge subtle">type:component</span></div>
   <div class="board">
     <pre class="mermaid">
@@ -476,48 +510,92 @@
               CLIDispatcher[&quot;cli.dispatcher&quot;]
               subgraph CLIParsers [&quot;cli.parsers.*&quot;]
                   ParsersCore[&quot;parsers.core&quot;]
-                  ParsersModels[&quot;parsers.models&quot;]
-                  ParsersDocs[&quot;parsers.docs&quot;]
+                  ParsersBasic[&quot;parsers.basic&quot;]
+                  ParsersModels[&quot;parsers.models1 / models2&quot;]
+                  ParsersDocs[&quot;parsers.docs1 / docs2&quot;]
                   ParsersFind[&quot;parsers.find&quot;]
+                  ParsersStores[&quot;parsers.stores&quot;]
+                  ParsersSections[&quot;parsers.sections&quot;]
+                  ParsersFields[&quot;parsers.fields&quot;]
+                  ParsersPredicates[&quot;parsers.predicates&quot;]
+                  ParsersLegacy[&quot;parsers.legacy&quot;]
+                  ParsersMisc[&quot;parsers.misc&quot;]
+                  ParsersProject[&quot;parsers.project&quot;]
+                  ParsersPublic[&quot;parsers.public&quot;]
+                  ParsersHidden[&quot;parsers.hidden&quot;]
               end
               subgraph CLICommands [&quot;cli.commands.*&quot;]
                   DirectCommands[&quot;basic / init / help / faq&quot;]
-                  StoreCommands[&quot;store / model / doc / inbox&quot;]
-                  QueryCommands[&quot;find / sections / fields / explore&quot;]
+                  StoreCommands[&quot;store/add/check/init/update / semantic_map / stores&quot;]
+                  ModelCommands[&quot;model/add/update / models/create/list/validate/template/fields&quot;]
+                  DocCommands[&quot;doc / docs&quot;]
+                  QueryCommands[&quot;find / sections / fields / query&quot;]
+                  LinksCommands[&quot;links&quot;]
+                  PredicatesCommands[&quot;predicates&quot;]
+                  ASTCommands[&quot;ast&quot;]
+                  LintCommands[&quot;lint&quot;]
+                  InboxCommands[&quot;inbox&quot;]
+                  ExploreCommands[&quot;explore&quot;]
               end
               subgraph CLIGraphOps [&quot;cli.graph_ops.*&quot;]
                   GraphBuildAST[&quot;graph_ops.build_ast&quot;]
                   GraphBuildIR[&quot;graph_ops.build_ir&quot;]
                   GraphIterRecords[&quot;graph_ops.iter_records&quot;]
+                  GraphExtract[&quot;graph_ops.extract&quot;]
+                  GraphFields[&quot;graph_ops.fields / map_fields&quot;]
+                  GraphMatches[&quot;graph_ops.matches&quot;]
+                  GraphResolve[&quot;graph_ops.resolve&quot;]
+              end
+              subgraph CLIGraph [&quot;cli.graph.*&quot;]
+                  GraphModelsSection[&quot;graph.models_section&quot;]
+                  GraphSearchRecord[&quot;graph.search_record&quot;]
+                  GraphSectionRecord[&quot;graph.section_record&quot;]
+                  GraphSections[&quot;graph.sections&quot;]
+                  GraphStoreAST[&quot;graph.store_ast&quot;]
               end
           end
           StoreFacade[&quot;store.facade&quot;]
           subgraph CoreRuntime [&quot;Core Runtime&quot;]
-              ASTPackage[&quot;core.ast.*&quot;]
-              ContractsPackage[&quot;core.contracts.*&quot;]
-              IRPackage[&quot;core.ir.*&quot;]
+              ASTPackage[&quot;core.ast.* (base / markdown_ast_handler)&quot;]
+              ContractsPackage[&quot;core.contracts.* (marker / node_data / render_context)&quot;]
+              IRPackage[&quot;core.ir.* (document_ir / graph_view / surface_node / meaning_node)&quot;]
               DataExtractor[&quot;core.data_extractor&quot;]
               TemplateExtractor[&quot;core.template_extractor&quot;]
+              ExtractorPackage[&quot;core.extractor.recipe_matcher&quot;]
               Renderer[&quot;core.renderer&quot;]
+              RendererEngine[&quot;core.renderer_engine.* (base / list / table / yaml / python_expr)&quot;]
+              subgraph Handlers [&quot;core.handlers.*&quot;]
+                  TextHandler[&quot;handlers.text&quot;]
+                  ListHandler[&quot;handlers.list&quot;]
+                  TableHandler[&quot;handlers.table&quot;]
+                  YamlHandler[&quot;handlers.yaml&quot;]
+                  RouterHandler[&quot;handlers.router&quot;]
+              end
+              ExceptionsPackage[&quot;core.exceptions.*&quot;]
+              ModelContract[&quot;models.structured_doc&quot;]
+              SLDBNode[&quot;core.node (SLDBNode dataclass)&quot;]
+              NodeHandler[&quot;core.node_handler&quot;]
+              IngestEngine[&quot;core.ingest.* (engine / scanner / manifest / renderer / source_parser)&quot;]
           end
-          subgraph Handlers [&quot;core.handlers.*&quot;]
-              TextHandler[&quot;handlers.text&quot;]
-              ListHandler[&quot;handlers.list&quot;]
-              TableHandler[&quot;handlers.table&quot;]
-              YamlHandler[&quot;handlers.yaml&quot;]
-          end
-          RendererEngines[&quot;core.renderer_engine.*&quot;]
-          ExceptionsPackage[&quot;core.exceptions.*&quot;]
-          ModelContract[&quot;models.structured_doc&quot;]
           ValidationRuntime[&quot;runtime.validation&quot;]
+          RuntimeConfig[&quot;runtime.config&quot;]
           subgraph StoreSubsystem [&quot;Store Subsystem&quot;]
-              StoreModels[&quot;store.models.*&quot;]
-              subgraph StoreIO [&quot;store.io.*&quot;]
+              subgraph StoreModels [&quot;store.models.*&quot;]
+                  StoreModelEntries[&quot;document_entry / model_entry / store_entry&quot;]
+                  StoreModelDocSections[&quot;doc_sections&quot;]
+                  StoreModelSemantic[&quot;semantic_d_a_g / semantic_node / semantic_document_record / semantic_index&quot;]
+                  StoreModelSections[&quot;sections_index / section_context_record&quot;]
+                  StoreModelPredicates[&quot;predicate_entry&quot;]
+              end
+              subgraph StoreIOPackage [&quot;store.io.*&quot;]
                   IODocuments[&quot;io.documents_index&quot;]
                   IOModels[&quot;io.models_index&quot;]
                   IOLock[&quot;io.lock&quot;]
                   IOStoreIndex[&quot;io.store_index&quot;]
+                  IOSectionsIndex[&quot;io.sections_index&quot;]
                   IOSemanticDAG[&quot;io.semantic_dag&quot;]
+                  IOSemanticIndex[&quot;io.semantic_index&quot;]
+                  IOUtils[&quot;io.utils&quot;]
               end
               StoreHashing[&quot;store.hashing&quot;]
               StoreOps[&quot;store.ops&quot;]
@@ -526,45 +604,63 @@
               StoreSemantic[&quot;store.semantic&quot;]
               StoreExport[&quot;store.export&quot;]
               StoreMigration[&quot;store.migration&quot;]
+              StorePredicates[&quot;store.predicates&quot;]
+              StoreQuery[&quot;store.query&quot;]
+              StoreSectionRebuild[&quot;store.section_rebuild&quot;]
+              StoreFacadePkg[&quot;store.facade&quot;]
           end
+          StoreDiagnosticsModels[&quot;diagnostics_models.* (store/model/document/diagnosis_note)&quot;]
+          StoreSemanticTags[&quot;store.semantic_tags&quot;]
           subgraph QueryEngine [&quot;Query Engine&quot;]
               QEStructural[&quot;query_engine.structural&quot;]
               QESemantic[&quot;query_engine.semantic&quot;]
               QEGlobalSemantic[&quot;query_engine.global_semantic&quot;]
               QEFilter[&quot;query_engine.filter&quot;]
+              QEModels[&quot;query_engine.models&quot;]
+              QESemanticUtils[&quot;query_engine.semantic_utils&quot;]
+              QEStructuralQueries[&quot;query_engine.structural_queries&quot;]
           end
           subgraph LinksPackage [&quot;links.*&quot;]
               LinkParser[&quot;links.parser&quot;]
               LinkResolver[&quot;links.resolver&quot;]
               LinkComposer[&quot;links.composer&quot;]
               LinkRecovery[&quot;links.recovery&quot;]
+              ParsedLink[&quot;links.parsed_link&quot;]
+              ResolvedLink[&quot;links.resolved_link&quot;]
           end
           subgraph Filesystem [&quot;Filesystem&quot;]
               MarkdownDocs[&quot;Markdown docs&quot;]
               StoreFiles[&quot;.sldb YAML indexes&quot;]
           end
+          AssetsPackage[&quot;assets (skills)&quot;]
           CLICommands --&gt;|domain operations| StoreFacade
           StoreFacade --&gt;|store operations| StoreSubsystem
           CLICommands --&gt;|roundtrip/extract/render| ValidationRuntime
+          CLICommands --&gt;|recover/compose| LinksPackage
+          CLICommands --&gt;|config| RuntimeConfig
           ValidationRuntime --&gt;|parse and render| CoreRuntime
           CoreRuntime --&gt;|node handling| Handlers
-          Renderer --&gt;|format output| RendererEngines
+          Renderer --&gt;|format output| RendererEngine
           CLIGraphOps --&gt;|AST + IR| CoreRuntime
           CLIGraphOps --&gt;|search records| QueryEngine
-          QueryEngine --&gt;|load indexes| StoreIO
+          CLIGraph --&gt;|AST store mapping| CoreRuntime
+          QueryEngine --&gt;|load indexes| StoreIOPackage
           StoreDiagnostics --&gt;|hash verification| ValidationRuntime
+          StoreDiagnostics --&gt;|structured results| StoreDiagnosticsModels
           StoreHashing --&gt;|field hashing| ValidationRuntime
           StoreSubsystem --&gt;|YAML indexes| StoreFiles
           SLDBCLI --&gt;|documents| MarkdownDocs
-          LinksPackage --&gt;|resolve links| StoreIO
+          LinksPackage --&gt;|resolve links| StoreIOPackage
           StoreExport --&gt;|rebuild + export| StoreSemantic
-          CLICommands --&gt;|recover/compose| LinksPackage
+          StoreSemantic --&gt;|model flatten| StoreSemanticTags
+          StoreSectionRebuild --&gt;|section indexing| StoreIOPackage
+          StorePredicates --&gt;|predicate indexing| StoreIOPackage
     </pre>
   </div>
 </section><section id="current-onboarding-surface-a2fedcb2" data-spec="current-onboarding-surface.yml" data-type="component" data-project="" data-category="Arquitectura" data-tags="type:component" data-view-id="current-onboarding-surface" class="catalog-item">
   <div class="lbl"></div>
   <h2>SLDB Onboarding Surface</h2>
-  <p class="desc">Vista de la superficie de onboarding del CLI de SLDB.</p>
+  <p class="desc">Vista de la superficie de onboarding del CLI de SLDB: help, faq, explore, inbox, ast, lint.</p>
   <div class="section-meta"><span class="meta-badge">component</span><span class="meta-badge subtle">type:component</span></div>
   <div class="board">
     <pre class="mermaid">
@@ -573,30 +669,38 @@
               PortadaHelp[&quot;sldb --help&quot;]
               CuratedHelp[&quot;sldb help / help &lt;topic&gt;&quot;]
               FAQSurface[&quot;sldb faq&quot;]
-              ExploreSurface[&quot;sldb explore&quot;]
-              InboxSurface[&quot;sldb inbox&quot;]
+              ExploreSurface[&quot;sldb explore (docs + docstrings)&quot;]
+              InboxSurface[&quot;sldb inbox (log unclear/suggestion)&quot;]
+              ASTSurface[&quot;sldb ast show / ast schema&quot;]
+              LintSurface[&quot;sldb lint (canonical path validation)&quot;]
           end
           subgraph DocumentationCorpus [&quot;Documentation Corpus&quot;]
               ReadmeDoc[&quot;README.md&quot;]
               FAQDoc[&quot;docs/faq.md&quot;]
               AtomDocs[&quot;docs/atoms/*.atom.md&quot;]
-              ArchitectureDocs[&quot;docs/architecture/*.md&quot;]
+              ArchitectureDocs[&quot;docs/architecture/* (spec2viz catalog)&quot;]
+              StandardsDoc[&quot;standards.md&quot;]
           end
           subgraph ModelAndStoreLayer [&quot;Model + Store Layer&quot;]
               StructuredModels[&quot;StructuredNLDoc models&quot;]
               LocalStore[&quot;.sldb store&quot;]
-              QuerySurfaces[&quot;find / sections / ast / fields&quot;]
+              QuerySurfaces[&quot;find / sections / ast / fields / query&quot;]
+              PredicateSurface[&quot;predicates&quot;]
           end
           DeskBridge[&quot;desk/inbox bridge&quot;]
           PortadaHelp --&gt;|deeper guidance| CuratedHelp
           CuratedHelp --&gt;|question-oriented answers| FAQSurface
           CuratedHelp --&gt;|deep written search| ExploreSurface
+          CuratedHelp --&gt;|AST introspection| ASTSurface
+          CuratedHelp --&gt;|path validation| LintSurface
           FAQSurface --&gt;|parse questions| FAQDoc
           ExploreSurface --&gt;|markdown docs| DocumentationCorpus
           ExploreSurface --&gt;|Python docstrings| StructuredModels
           CuratedHelp --&gt;|concepts and workflows| DocumentationCorpus
           DocumentationCorpus --&gt;|current behavior| ModelAndStoreLayer
           QuerySurfaces --&gt;|tracked docs and indexes| LocalStore
+          PredicateSurface --&gt;|predicate exploration| LocalStore
+          ASTSurface --&gt;|store AST view| LocalStore
           InboxSurface --&gt;|unclear/suggestion notes| DeskBridge
     </pre>
   </div>
@@ -604,32 +708,36 @@
 <div class="category-block" data-category-block="Runtime"><div class="macro-separator"><h2>— Runtime —</h2></div><section id="current-runtime-a2fedcb2" data-spec="current-runtime.yml" data-type="deployment" data-project="" data-category="Runtime" data-tags="type:deployment" data-view-id="current-runtime" class="catalog-item">
   <div class="lbl"></div>
   <h2>SLDB Runtime Deployment</h2>
-  <p class="desc">Vista de deployment del runtime de SLDB: shell, proyecto, Python, store global.</p>
+  <p class="desc">Vista de deployment del runtime de SLDB: shell, proyecto, Python, store global, desk context y conexión spec2viz.</p>
   <div class="section-meta"><span class="meta-badge">deployment</span><span class="meta-badge subtle">type:deployment</span></div>
   <div class="board">
     <pre class="mermaid">
       graph TD
           subgraph user_shell [&quot;Developer Shell&quot;]
-              sldb_cli[&quot;sldb CLI entrypoint&quot;]
+              sldb_cli[&quot;sldb CLI entrypoint (cli.main)&quot;]
           end
           subgraph project_repo [&quot;Project Repository&quot;]
-              project_models[&quot;StructuredNLDoc models&quot;]
+              project_models[&quot;StructuredNLDoc model subclasses&quot;]
               markdown_docs[&quot;tracked markdown docs&quot;]
-              local_store[&quot;.sldb local store&quot;]
+              local_store[&quot;.sldb local store (YAML indexes)&quot;]
+              desk_context[&quot;desk/ (atoms, pills, rituals, inbox, tasks)&quot;]
           end
           subgraph python_runtime [&quot;Python Runtime&quot;]
-              sldb_library[&quot;sldb package&quot;]
-              markdown_stack[&quot;parser + renderer helpers&quot;]
+              sldb_library[&quot;sldb package (core + store + links + models + runtime + assets)&quot;]
+              markdown_stack[&quot;markdown-it-py + mdit-plugins&quot;]
+              spec2viz_bridge[&quot;spec2viz (diagram rendering, catalog build)&quot;]
           end
           subgraph home_space [&quot;Home Directory&quot;]
               global_store[&quot;~/.sldb store path&quot;]
           end
           sldb_cli --&gt;|Python import| sldb_library
-          sldb_library --&gt;|internal API| markdown_stack
-          sldb_library --&gt;|dynamic import| project_models
-          sldb_cli --&gt;|filesystem| markdown_docs
-          sldb_cli --&gt;|filesystem| local_store
-          sldb_cli --&gt;|filesystem| global_store
+          sldb_library --&gt;|&quot;internal API (markdown-it-py)&quot;| markdown_stack
+          sldb_library --&gt;|optional integration| spec2viz_bridge
+          sldb_library --&gt;|dynamic import via model_ref| project_models
+          sldb_cli --&gt;|&quot;filesystem (read/write)&quot;| markdown_docs
+          sldb_cli --&gt;|&quot;filesystem (YAML)&quot;| local_store
+          sldb_cli --&gt;|&quot;filesystem (YAML)&quot;| global_store
+          sldb_cli --&gt;|&quot;filesystem (inbox, atoms)&quot;| desk_context
     </pre>
   </div>
 </section><section id="current-store-lifecycle-a2fedcb2" data-spec="current-store-lifecycle.yml" data-type="activity" data-project="" data-category="Runtime" data-tags="type:activity" data-view-id="current-store-lifecycle" class="catalog-item">
@@ -713,7 +821,7 @@
       },
       flowchart: { htmlLabels: true, curve: 'basis', subGraphTitleMargin: { top: 0, bottom: 32 } }
     });
-    window.SPEC2VIZ_CATALOG = {"title": "SLDB \u00b7 Cat\u00e1logo de Arquitectura", "brand_name": "SLDB", "project_name": "sldb", "item_count": 4};
+    window.SPEC2VIZ_CATALOG = {"title": "SLDB \u00b7 Cat\u00e1logo de Arquitectura", "brand_name": "SLDB", "brand_subtitle": "Visor transversal de diagramas de spec2viz", "project_name": "sldb", "item_count": 4};
 
     const popover = document.getElementById('hover-popover');
     const popoverTitle = document.getElementById('popover-title');
@@ -721,7 +829,7 @@
     const popoverSnippet = document.getElementById('popover-snippet');
     const annoBtn = document.getElementById('anno-btn');
     const clearAnnoBtn = document.getElementById('clear-anno-btn');
-    const ANNO_SEL = '.mermaid .node, .mermaid g.classGroup, .mermaid g.stateGroup, .mermaid rect.actor, .mermaid g.cluster';
+    const ANNO_SEL = '.mermaid .node, .mermaid g.classGroup, .mermaid g.stateGroup, .mermaid rect.actor, .mermaid g.actor, .mermaid .messageText, .mermaid .noteText, .mermaid g.cluster';
     const ANNO_STORE_KEY = 'spec2viz.catalog.annotations.v1';
     let annoMode = false;
     let annoCache = [];
@@ -907,9 +1015,12 @@
       if (el.matches('g.cluster')) {
         return el.id || (el.querySelector('.cluster-label')?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 120);
       }
-      if (el.matches('rect.actor')) {
-        const t = el.parentElement.querySelector('text.actor');
-        if (t) return t.textContent.replace(/\s+/g, ' ').trim().slice(0, 120);
+      if (el.matches('.actor')) {
+        const textEl = el.tagName === 'rect' ? el.parentElement.querySelector('text.actor') : el;
+        if (textEl) return textEl.textContent.replace(/\s+/g, ' ').trim().slice(0, 120);
+      }
+      if (el.matches('.messageText, .noteText')) {
+        return el.textContent.replace(/\s+/g, ' ').trim().slice(0, 120);
       }
       const t = el.querySelector('.nodeLabel, .label, foreignObject, text');
       return ((t ? (t.innerText || t.textContent) : (el.innerText || el.textContent)) || '').replace(/\s+/g, ' ').trim().slice(0, 120);
@@ -954,14 +1065,14 @@
         sec.querySelectorAll(ANNO_SEL).forEach(el => {
           if (annoLabel(el) !== a.label) return;
           el.classList.add('anno-marked');
-          if (!el.matches('g.node, g.classGroup, g.stateGroup, g.cluster, rect.actor')) return;
-          const svg = el.ownerSVGElement;
+          if (!el.matches('g.node, g.classGroup, g.stateGroup, g.cluster, .actor, .messageText, .noteText')) return;
+          const svg = el.ownerSVGElement || el.closest('svg');
           if (!svg || !el.getBBox) return;
           const bbox = el.getBBox();
           const warn = document.createElementNS('http://www.w3.org/2000/svg', 'text');
           warn.textContent = '✎';
-          warn.setAttribute('x', bbox.x - 8);
-          warn.setAttribute('y', bbox.y + 10);
+          warn.setAttribute('x', bbox.x - (el.matches('.messageText') ? 0 : 8));
+          warn.setAttribute('y', bbox.y + (el.matches('.messageText') ? 0 : 10));
           warn.setAttribute('fill', '#d4a574');
           warn.setAttribute('font-size', '14');
           warn.setAttribute('class', 'anno-pin');
@@ -1022,10 +1133,84 @@
         if (!annoMode) annoClose();
       });
       clearAnnoBtn.addEventListener('click', () => {
-        annoWriteStore([]);
-        annoClose();
-        annoRender();
+        if(confirm('¿Borrar todos los comentarios locales?')) {
+          annoWriteStore([]);
+          annoClose();
+          annoRender();
+        }
       });
+
+      document.getElementById('export-anno-btn').addEventListener('click', () => {
+        const data = annoReadStore();
+        if (data.length === 0) return alert('No hay comentarios para exportar.');
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'comentarios-arquitectura.json';
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      document.getElementById('import-anno-btn').addEventListener('click', () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/json';
+        input.onchange = e => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = ev => {
+            try {
+              const data = JSON.parse(ev.target.result);
+              if (!Array.isArray(data)) throw new Error('Formato inválido');
+              const merged = [...annoReadStore(), ...data];
+              const unique = Array.from(new Map(merged.map(item => [item.key + item.ts, item])).values());
+              annoWriteStore(unique);
+              annoRender();
+              alert('Comentarios importados correctamente.');
+            } catch (err) {
+              alert('Error leyendo JSON de comentarios.');
+            }
+          };
+          reader.readAsText(file);
+        };
+        input.click();
+      });
+
+      const explorerModal = document.getElementById('anno-explorer-modal');
+      const explorerList = document.getElementById('anno-explorer-list');
+      
+      document.getElementById('explore-anno-btn').addEventListener('click', () => {
+        const data = annoReadStore();
+        explorerList.innerHTML = '';
+        if (data.length === 0) {
+          explorerList.innerHTML = '<div style="color:#888;font-size:13px;text-align:center;">No hay comentarios guardados.</div>';
+        } else {
+          data.forEach(item => {
+            const div = document.createElement('div');
+            div.style = 'background:#161621;border:1px solid rgba(212,165,116,0.2);padding:12px;border-radius:6px;cursor:pointer;';
+            div.innerHTML = `
+              <div style="font-size:11px;color:#d4a574;margin-bottom:4px;text-transform:uppercase;">${item.vista} &nbsp;▸&nbsp; ${item.label} <span style="float:right;color:#888;">${item.ts}</span></div>
+              <div style="font-size:13px;line-height:1.4;">${item.comentario.replace(/</g,'&lt;')}</div>
+            `;
+            div.onclick = () => {
+              explorerModal.style.display = 'none';
+              const target = document.getElementById(item.vista);
+              if(target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+              }
+            };
+            explorerList.appendChild(div);
+          });
+        }
+        explorerModal.style.display = 'flex';
+      });
+
+      document.getElementById('close-explorer-btn').addEventListener('click', () => {
+        explorerModal.style.display = 'none';
+      });
+
       document.addEventListener('click', e => {
         if (!annoMode || e.target.closest('.anno-popup')) return;
         const el = e.target.closest(ANNO_SEL);
@@ -1228,7 +1413,16 @@
       }
     }
 
+    function initSidebarAccordions() {
+      document.querySelectorAll('.sidebar-card-title').forEach(title => {
+        title.addEventListener('click', () => {
+          title.parentElement.classList.toggle('collapsed');
+        });
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', async () => {
+      initSidebarAccordions();
       buildNavAccordion();
       initAnnotations();
       document.querySelectorAll('.catalog-toolbar select, #catalog-search').forEach(el => {
@@ -1250,6 +1444,6 @@
     });
   </script>
 
-<script>window.ATOMS_DB = {}; window.ATOMS_BY_VIEW = {"current-components-a2fedcb2": {}, "current-onboarding-surface-a2fedcb2": {}, "current-runtime-a2fedcb2": {}, "current-store-lifecycle-a2fedcb2": {}}; window.SPEC2VIZ_ATOM_WARNINGS = []; window.SPEC2VIZ_CATALOG = {"title": "SLDB \u00b7 Cat\u00e1logo de Arquitectura", "brand_name": "SLDB", "project_name": "sldb", "item_count": 4};</script>
+<script>window.ATOMS_DB = {}; window.ATOMS_BY_VIEW = {"current-components-a2fedcb2": {}, "current-onboarding-surface-a2fedcb2": {}, "current-runtime-a2fedcb2": {}, "current-store-lifecycle-a2fedcb2": {}}; window.COVERAGE_BY_VIEW = {"current-components-a2fedcb2": {"view_id": "current-components-a2fedcb2", "view_node_id": null, "diagram_type": "component", "title": "SLDB System Components (Current Codebase v2.1)", "source_ref": "", "scope": "", "summary": {"total_elements": 0, "elements_fully_covered": 0, "avg_coverage_ratio": 0.0, "expected_facet_count": 0, "covered_facet_count": 0, "missing_facet_count": 0}, "elements": []}, "current-onboarding-surface-a2fedcb2": {"view_id": "current-onboarding-surface-a2fedcb2", "view_node_id": null, "diagram_type": "component", "title": "SLDB Onboarding Surface", "source_ref": "", "scope": "", "summary": {"total_elements": 0, "elements_fully_covered": 0, "avg_coverage_ratio": 0.0, "expected_facet_count": 0, "covered_facet_count": 0, "missing_facet_count": 0}, "elements": []}, "current-runtime-a2fedcb2": {"view_id": "current-runtime-a2fedcb2", "view_node_id": null, "diagram_type": "deployment", "title": "SLDB Runtime Deployment", "source_ref": "", "scope": "", "summary": {"total_elements": 0, "elements_fully_covered": 0, "avg_coverage_ratio": 0.0, "expected_facet_count": 0, "covered_facet_count": 0, "missing_facet_count": 0}, "elements": []}, "current-store-lifecycle-a2fedcb2": {"view_id": "current-store-lifecycle-a2fedcb2", "view_node_id": null, "diagram_type": "activity", "title": "SLDB Store Lifecycle", "source_ref": "", "scope": "", "summary": {"total_elements": 0, "elements_fully_covered": 0, "avg_coverage_ratio": 0.0, "expected_facet_count": 0, "covered_facet_count": 0, "missing_facet_count": 0}, "elements": []}}; window.SPEC2VIZ_ATOM_WARNINGS = []; window.SPEC2VIZ_COVERAGE_WARNINGS = [{"scope": "kgdb", "message": "KGDB snapshot not found; coverage projection is empty."}]; window.SPEC2VIZ_CATALOG = {"title": "SLDB \u00b7 Cat\u00e1logo de Arquitectura", "brand_name": "SLDB", "brand_subtitle": "Visor transversal de diagramas de spec2viz", "project_name": "sldb", "item_count": 4};</script>
 </body>
 </html>

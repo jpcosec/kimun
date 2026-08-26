@@ -1,0 +1,28 @@
+@startuml
+node "Developer Shell" as user_shell {
+  artifact "sldb CLI entrypoint (cli.main)" as sldb_cli
+}
+node "Project Repository" as project_repo {
+  artifact "StructuredNLDoc model subclasses" as project_models
+  artifact "tracked markdown docs" as markdown_docs
+  artifact ".sldb local store (YAML indexes)" as local_store
+  artifact "desk/ (atoms, pills, rituals, inbox, tasks)" as desk_context
+}
+node "Python Runtime" as python_runtime {
+  artifact "sldb package (core + store + links + models + runtime + assets)" as sldb_library
+  artifact "markdown-it-py + mdit-plugins" as markdown_stack
+  artifact "spec2viz (diagram rendering, catalog build)" as spec2viz_bridge
+}
+node "Home Directory" as home_space {
+  artifact "~/.sldb store path" as global_store
+}
+
+sldb_cli --> sldb_library : Python import
+sldb_library --> markdown_stack : internal API (markdown-it-py)
+sldb_library --> spec2viz_bridge : optional integration
+sldb_library --> project_models : dynamic import via model_ref
+sldb_cli --> markdown_docs : filesystem (read/write)
+sldb_cli --> local_store : filesystem (YAML)
+sldb_cli --> global_store : filesystem (YAML)
+sldb_cli --> desk_context : filesystem (inbox, atoms)
+@enduml

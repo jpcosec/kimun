@@ -4,9 +4,9 @@ project_name: "sldb"
 vistas:
   - id: current-components
     category: Arquitectura
-    title: "SLDB System Components (Post-Refactor)"
+    title: "SLDB System Components (Current Codebase v2.1)"
     nav: Componentes
-    desc: "Vista de componentes del sistema SLDB después de la refactorización modular."
+    desc: "Vista completa de componentes del sistema SLDB: CLI, parsers, comandos, core runtime, store subsystem, query engine, links y assets."
     src: rendered/current-components.mmd
     specs:
       - current-components.yml
@@ -15,7 +15,7 @@ vistas:
     category: Arquitectura
     title: "SLDB Onboarding Surface"
     nav: Onboarding
-    desc: "Vista de la superficie de onboarding del CLI de SLDB."
+    desc: "Vista de la superficie de onboarding del CLI de SLDB: help, faq, explore, inbox, ast, lint."
     src: rendered/current-onboarding-surface.mmd
     specs:
       - current-onboarding-surface.yml
@@ -24,7 +24,7 @@ vistas:
     category: Runtime
     title: "SLDB Runtime Deployment"
     nav: Runtime
-    desc: "Vista de deployment del runtime de SLDB: shell, proyecto, Python, store global."
+    desc: "Vista de deployment del runtime de SLDB: shell, proyecto, Python, store global, desk context y conexión spec2viz."
     src: rendered/current-runtime.mmd
     specs:
       - current-runtime.yml

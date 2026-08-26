@@ -3,48 +3,92 @@ graph TD
         CLIDispatcher["cli.dispatcher"]
         subgraph CLIParsers ["cli.parsers.*"]
             ParsersCore["parsers.core"]
-            ParsersModels["parsers.models"]
-            ParsersDocs["parsers.docs"]
+            ParsersBasic["parsers.basic"]
+            ParsersModels["parsers.models1 / models2"]
+            ParsersDocs["parsers.docs1 / docs2"]
             ParsersFind["parsers.find"]
+            ParsersStores["parsers.stores"]
+            ParsersSections["parsers.sections"]
+            ParsersFields["parsers.fields"]
+            ParsersPredicates["parsers.predicates"]
+            ParsersLegacy["parsers.legacy"]
+            ParsersMisc["parsers.misc"]
+            ParsersProject["parsers.project"]
+            ParsersPublic["parsers.public"]
+            ParsersHidden["parsers.hidden"]
         end
         subgraph CLICommands ["cli.commands.*"]
             DirectCommands["basic / init / help / faq"]
-            StoreCommands["store / model / doc / inbox"]
-            QueryCommands["find / sections / fields / explore"]
+            StoreCommands["store/add/check/init/update / semantic_map / stores"]
+            ModelCommands["model/add/update / models/create/list/validate/template/fields"]
+            DocCommands["doc / docs"]
+            QueryCommands["find / sections / fields / query"]
+            LinksCommands["links"]
+            PredicatesCommands["predicates"]
+            ASTCommands["ast"]
+            LintCommands["lint"]
+            InboxCommands["inbox"]
+            ExploreCommands["explore"]
         end
         subgraph CLIGraphOps ["cli.graph_ops.*"]
             GraphBuildAST["graph_ops.build_ast"]
             GraphBuildIR["graph_ops.build_ir"]
             GraphIterRecords["graph_ops.iter_records"]
+            GraphExtract["graph_ops.extract"]
+            GraphFields["graph_ops.fields / map_fields"]
+            GraphMatches["graph_ops.matches"]
+            GraphResolve["graph_ops.resolve"]
+        end
+        subgraph CLIGraph ["cli.graph.*"]
+            GraphModelsSection["graph.models_section"]
+            GraphSearchRecord["graph.search_record"]
+            GraphSectionRecord["graph.section_record"]
+            GraphSections["graph.sections"]
+            GraphStoreAST["graph.store_ast"]
         end
     end
     StoreFacade["store.facade"]
     subgraph CoreRuntime ["Core Runtime"]
-        ASTPackage["core.ast.*"]
-        ContractsPackage["core.contracts.*"]
-        IRPackage["core.ir.*"]
+        ASTPackage["core.ast.* (base / markdown_ast_handler)"]
+        ContractsPackage["core.contracts.* (marker / node_data / render_context)"]
+        IRPackage["core.ir.* (document_ir / graph_view / surface_node / meaning_node)"]
         DataExtractor["core.data_extractor"]
         TemplateExtractor["core.template_extractor"]
+        ExtractorPackage["core.extractor.recipe_matcher"]
         Renderer["core.renderer"]
+        RendererEngine["core.renderer_engine.* (base / list / table / yaml / python_expr)"]
+        subgraph Handlers ["core.handlers.*"]
+            TextHandler["handlers.text"]
+            ListHandler["handlers.list"]
+            TableHandler["handlers.table"]
+            YamlHandler["handlers.yaml"]
+            RouterHandler["handlers.router"]
+        end
+        ExceptionsPackage["core.exceptions.*"]
+        ModelContract["models.structured_doc"]
+        SLDBNode["core.node (SLDBNode dataclass)"]
+        NodeHandler["core.node_handler"]
+        IngestEngine["core.ingest.* (engine / scanner / manifest / renderer / source_parser)"]
     end
-    subgraph Handlers ["core.handlers.*"]
-        TextHandler["handlers.text"]
-        ListHandler["handlers.list"]
-        TableHandler["handlers.table"]
-        YamlHandler["handlers.yaml"]
-    end
-    RendererEngines["core.renderer_engine.*"]
-    ExceptionsPackage["core.exceptions.*"]
-    ModelContract["models.structured_doc"]
     ValidationRuntime["runtime.validation"]
+    RuntimeConfig["runtime.config"]
     subgraph StoreSubsystem ["Store Subsystem"]
-        StoreModels["store.models.*"]
-        subgraph StoreIO ["store.io.*"]
+        subgraph StoreModels ["store.models.*"]
+            StoreModelEntries["document_entry / model_entry / store_entry"]
+            StoreModelDocSections["doc_sections"]
+            StoreModelSemantic["semantic_d_a_g / semantic_node / semantic_document_record / semantic_index"]
+            StoreModelSections["sections_index / section_context_record"]
+            StoreModelPredicates["predicate_entry"]
+        end
+        subgraph StoreIOPackage ["store.io.*"]
             IODocuments["io.documents_index"]
             IOModels["io.models_index"]
             IOLock["io.lock"]
             IOStoreIndex["io.store_index"]
+            IOSectionsIndex["io.sections_index"]
             IOSemanticDAG["io.semantic_dag"]
+            IOSemanticIndex["io.semantic_index"]
+            IOUtils["io.utils"]
         end
         StoreHashing["store.hashing"]
         StoreOps["store.ops"]
@@ -53,36 +97,54 @@ graph TD
         StoreSemantic["store.semantic"]
         StoreExport["store.export"]
         StoreMigration["store.migration"]
+        StorePredicates["store.predicates"]
+        StoreQuery["store.query"]
+        StoreSectionRebuild["store.section_rebuild"]
+        StoreFacadePkg["store.facade"]
     end
+    StoreDiagnosticsModels["diagnostics_models.* (store/model/document/diagnosis_note)"]
+    StoreSemanticTags["store.semantic_tags"]
     subgraph QueryEngine ["Query Engine"]
         QEStructural["query_engine.structural"]
         QESemantic["query_engine.semantic"]
         QEGlobalSemantic["query_engine.global_semantic"]
         QEFilter["query_engine.filter"]
+        QEModels["query_engine.models"]
+        QESemanticUtils["query_engine.semantic_utils"]
+        QEStructuralQueries["query_engine.structural_queries"]
     end
     subgraph LinksPackage ["links.*"]
         LinkParser["links.parser"]
         LinkResolver["links.resolver"]
         LinkComposer["links.composer"]
         LinkRecovery["links.recovery"]
+        ParsedLink["links.parsed_link"]
+        ResolvedLink["links.resolved_link"]
     end
     subgraph Filesystem ["Filesystem"]
         MarkdownDocs["Markdown docs"]
         StoreFiles[".sldb YAML indexes"]
     end
+    AssetsPackage["assets (skills)"]
     CLICommands -->|domain operations| StoreFacade
     StoreFacade -->|store operations| StoreSubsystem
     CLICommands -->|roundtrip/extract/render| ValidationRuntime
+    CLICommands -->|recover/compose| LinksPackage
+    CLICommands -->|config| RuntimeConfig
     ValidationRuntime -->|parse and render| CoreRuntime
     CoreRuntime -->|node handling| Handlers
-    Renderer -->|format output| RendererEngines
+    Renderer -->|format output| RendererEngine
     CLIGraphOps -->|AST + IR| CoreRuntime
     CLIGraphOps -->|search records| QueryEngine
-    QueryEngine -->|load indexes| StoreIO
+    CLIGraph -->|AST store mapping| CoreRuntime
+    QueryEngine -->|load indexes| StoreIOPackage
     StoreDiagnostics -->|hash verification| ValidationRuntime
+    StoreDiagnostics -->|structured results| StoreDiagnosticsModels
     StoreHashing -->|field hashing| ValidationRuntime
     StoreSubsystem -->|YAML indexes| StoreFiles
     SLDBCLI -->|documents| MarkdownDocs
-    LinksPackage -->|resolve links| StoreIO
+    LinksPackage -->|resolve links| StoreIOPackage
     StoreExport -->|rebuild + export| StoreSemantic
-    CLICommands -->|recover/compose| LinksPackage
+    StoreSemantic -->|model flatten| StoreSemanticTags
+    StoreSectionRebuild -->|section indexing| StoreIOPackage
+    StorePredicates -->|predicate indexing| StoreIOPackage

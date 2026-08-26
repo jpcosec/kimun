@@ -1,0 +1,189 @@
+@startuml
+skinparam component<<boundary>> BackgroundColor #FCECC9
+skinparam component<<boundary>> BorderColor #D4A73C
+skinparam component<<boundary>> FontColor #5E450B
+skinparam rectangle<<boundary>> BackgroundColor #FCECC9
+skinparam rectangle<<boundary>> BorderColor #D4A73C
+skinparam rectangle<<boundary>> FontColor #5E450B
+skinparam database<<boundary>> BackgroundColor #FCECC9
+skinparam database<<boundary>> BorderColor #D4A73C
+skinparam database<<boundary>> FontColor #5E450B
+skinparam package<<boundary>> BackgroundColor #FCECC9
+skinparam package<<boundary>> BorderColor #D4A73C
+skinparam package<<boundary>> FontColor #5E450B
+skinparam component<<core>> BackgroundColor #D8ECFF
+skinparam component<<core>> BorderColor #4C78A8
+skinparam component<<core>> FontColor #16324F
+skinparam rectangle<<core>> BackgroundColor #D8ECFF
+skinparam rectangle<<core>> BorderColor #4C78A8
+skinparam rectangle<<core>> FontColor #16324F
+skinparam database<<core>> BackgroundColor #D8ECFF
+skinparam database<<core>> BorderColor #4C78A8
+skinparam database<<core>> FontColor #16324F
+skinparam package<<core>> BackgroundColor #D8ECFF
+skinparam package<<core>> BorderColor #4C78A8
+skinparam package<<core>> FontColor #16324F
+skinparam component<<database>> BackgroundColor #DCEFD8
+skinparam component<<database>> BorderColor #5A9B5A
+skinparam component<<database>> FontColor #1F4F1F
+skinparam rectangle<<database>> BackgroundColor #DCEFD8
+skinparam rectangle<<database>> BorderColor #5A9B5A
+skinparam rectangle<<database>> FontColor #1F4F1F
+skinparam database<<database>> BackgroundColor #DCEFD8
+skinparam database<<database>> BorderColor #5A9B5A
+skinparam database<<database>> FontColor #1F4F1F
+skinparam package<<database>> BackgroundColor #DCEFD8
+skinparam package<<database>> BorderColor #5A9B5A
+skinparam package<<database>> FontColor #1F4F1F
+
+package "sldb CLI" as SLDBCLI <<core>> {
+  component "cli.dispatcher" as CLIDispatcher <<core>>
+  package "cli.parsers.*" as CLIParsers <<core>> {
+    component "parsers.core" as ParsersCore <<core>>
+    component "parsers.basic" as ParsersBasic <<core>>
+    component "parsers.models1 / models2" as ParsersModels <<core>>
+    component "parsers.docs1 / docs2" as ParsersDocs <<core>>
+    component "parsers.find" as ParsersFind <<core>>
+    component "parsers.stores" as ParsersStores <<core>>
+    component "parsers.sections" as ParsersSections <<core>>
+    component "parsers.fields" as ParsersFields <<core>>
+    component "parsers.predicates" as ParsersPredicates <<core>>
+    component "parsers.legacy" as ParsersLegacy <<core>>
+    component "parsers.misc" as ParsersMisc <<core>>
+    component "parsers.project" as ParsersProject <<core>>
+    component "parsers.public" as ParsersPublic <<core>>
+    component "parsers.hidden" as ParsersHidden <<core>>
+  }
+  package "cli.commands.*" as CLICommands <<core>> {
+    component "basic / init / help / faq" as DirectCommands <<core>>
+    component "store/add/check/init/update / semantic_map / stores" as StoreCommands <<core>>
+    component "model/add/update / models/create/list/validate/template/fields" as ModelCommands <<core>>
+    component "doc / docs" as DocCommands <<core>>
+    component "find / sections / fields / query" as QueryCommands <<core>>
+    component "links" as LinksCommands <<core>>
+    component "predicates" as PredicatesCommands <<core>>
+    component "ast" as ASTCommands <<core>>
+    component "lint" as LintCommands <<core>>
+    component "inbox" as InboxCommands <<core>>
+    component "explore" as ExploreCommands <<core>>
+  }
+  package "cli.graph_ops.*" as CLIGraphOps <<core>> {
+    component "graph_ops.build_ast" as GraphBuildAST <<core>>
+    component "graph_ops.build_ir" as GraphBuildIR <<core>>
+    component "graph_ops.iter_records" as GraphIterRecords <<core>>
+    component "graph_ops.extract" as GraphExtract <<core>>
+    component "graph_ops.fields / map_fields" as GraphFields <<core>>
+    component "graph_ops.matches" as GraphMatches <<core>>
+    component "graph_ops.resolve" as GraphResolve <<core>>
+  }
+  package "cli.graph.*" as CLIGraph <<core>> {
+    component "graph.models_section" as GraphModelsSection <<core>>
+    component "graph.search_record" as GraphSearchRecord <<core>>
+    component "graph.section_record" as GraphSectionRecord <<core>>
+    component "graph.sections" as GraphSections <<core>>
+    component "graph.store_ast" as GraphStoreAST <<core>>
+  }
+}
+component "store.facade" as StoreFacade <<interface>>
+package "Core Runtime" as CoreRuntime <<core>> {
+  component "core.ast.* (base / markdown_ast_handler)" as ASTPackage <<core>>
+  component "core.contracts.* (marker / node_data / render_context)" as ContractsPackage <<core>>
+  component "core.ir.* (document_ir / graph_view / surface_node / meaning_node)" as IRPackage <<core>>
+  component "core.data_extractor" as DataExtractor <<core>>
+  component "core.template_extractor" as TemplateExtractor <<core>>
+  component "core.extractor.recipe_matcher" as ExtractorPackage <<core>>
+  component "core.renderer" as Renderer <<core>>
+  component "core.renderer_engine.* (base / list / table / yaml / python_expr)" as RendererEngine <<core>>
+  package "core.handlers.*" as Handlers <<core>> {
+    component "handlers.text" as TextHandler <<core>>
+    component "handlers.list" as ListHandler <<core>>
+    component "handlers.table" as TableHandler <<core>>
+    component "handlers.yaml" as YamlHandler <<core>>
+    component "handlers.router" as RouterHandler <<core>>
+  }
+  component "core.exceptions.*" as ExceptionsPackage <<core>>
+  component "models.structured_doc" as ModelContract <<core>>
+  component "core.node (SLDBNode dataclass)" as SLDBNode <<core>>
+  component "core.node_handler" as NodeHandler <<core>>
+  component "core.ingest.* (engine / scanner / manifest / renderer / source_parser)" as IngestEngine <<core>>
+}
+component "runtime.validation" as ValidationRuntime <<core>>
+component "runtime.config" as RuntimeConfig <<core>>
+package "Store Subsystem" as StoreSubsystem <<core>> {
+  package "store.models.*" as StoreModels <<core>> {
+    component "document_entry / model_entry / store_entry" as StoreModelEntries <<core>>
+    component "doc_sections" as StoreModelDocSections <<core>>
+    component "semantic_d_a_g / semantic_node / semantic_document_record / semantic_index" as StoreModelSemantic <<core>>
+    component "sections_index / section_context_record" as StoreModelSections <<core>>
+    component "predicate_entry" as StoreModelPredicates <<core>>
+  }
+  package "store.io.*" as StoreIOPackage <<core>> {
+    component "io.documents_index" as IODocuments <<core>>
+    component "io.models_index" as IOModels <<core>>
+    component "io.lock" as IOLock <<core>>
+    component "io.store_index" as IOStoreIndex <<core>>
+    component "io.sections_index" as IOSectionsIndex <<core>>
+    component "io.semantic_dag" as IOSemanticDAG <<core>>
+    component "io.semantic_index" as IOSemanticIndex <<core>>
+    component "io.utils" as IOUtils <<core>>
+  }
+  component "store.hashing" as StoreHashing <<core>>
+  component "store.ops" as StoreOps <<core>>
+  component "store.diagnostics" as StoreDiagnostics <<core>>
+  component "store.resolver" as StoreResolver <<core>>
+  component "store.semantic" as StoreSemantic <<core>>
+  component "store.export" as StoreExport <<core>>
+  component "store.migration" as StoreMigration <<core>>
+  component "store.predicates" as StorePredicates <<core>>
+  component "store.query" as StoreQuery <<core>>
+  component "store.section_rebuild" as StoreSectionRebuild <<core>>
+  component "store.facade" as StoreFacadePkg <<core>>
+}
+component "diagnostics_models.* (store/model/document/diagnosis_note)" as StoreDiagnosticsModels <<core>>
+component "store.semantic_tags" as StoreSemanticTags <<core>>
+package "Query Engine" as QueryEngine <<core>> {
+  component "query_engine.structural" as QEStructural <<core>>
+  component "query_engine.semantic" as QESemantic <<core>>
+  component "query_engine.global_semantic" as QEGlobalSemantic <<core>>
+  component "query_engine.filter" as QEFilter <<core>>
+  component "query_engine.models" as QEModels <<core>>
+  component "query_engine.semantic_utils" as QESemanticUtils <<core>>
+  component "query_engine.structural_queries" as QEStructuralQueries <<core>>
+}
+package "links.*" as LinksPackage <<core>> {
+  component "links.parser" as LinkParser <<core>>
+  component "links.resolver" as LinkResolver <<core>>
+  component "links.composer" as LinkComposer <<core>>
+  component "links.recovery" as LinkRecovery <<core>>
+  component "links.parsed_link" as ParsedLink <<core>>
+  component "links.resolved_link" as ResolvedLink <<core>>
+}
+package "Filesystem" as Filesystem <<boundary>> {
+  rectangle "Markdown docs" as MarkdownDocs <<boundary>>
+  database ".sldb YAML indexes" as StoreFiles <<database>>
+}
+component "assets (skills)" as AssetsPackage <<core>>
+
+CLICommands --> StoreFacade : domain operations
+StoreFacade --> StoreSubsystem : store operations
+CLICommands --> ValidationRuntime : roundtrip/extract/render
+CLICommands --> LinksPackage : recover/compose
+CLICommands --> RuntimeConfig : config
+ValidationRuntime --> CoreRuntime : parse and render
+CoreRuntime --> Handlers : node handling
+Renderer --> RendererEngine : format output
+CLIGraphOps --> CoreRuntime : AST + IR
+CLIGraphOps --> QueryEngine : search records
+CLIGraph --> CoreRuntime : AST store mapping
+QueryEngine --> StoreIOPackage : load indexes
+StoreDiagnostics --> ValidationRuntime : hash verification
+StoreDiagnostics --> StoreDiagnosticsModels : structured results
+StoreHashing --> ValidationRuntime : field hashing
+StoreSubsystem --> StoreFiles : YAML indexes
+SLDBCLI --> MarkdownDocs : documents
+LinksPackage --> StoreIOPackage : resolve links
+StoreExport --> StoreSemantic : rebuild + export
+StoreSemantic --> StoreSemanticTags : model flatten
+StoreSectionRebuild --> StoreIOPackage : section indexing
+StorePredicates --> StoreIOPackage : predicate indexing
+@enduml
