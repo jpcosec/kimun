@@ -1,0 +1,10 @@
+Board: board-001
+Title: sldb-refactor-worktree Board
+status: 
+summary: 
+scope: desk
+purpose: 
+tasks: desk/tasks/task-implement-v2-milestone-3-file-persistence-and-reload.md
+pills: desk/contexts/pills.md, desk/contexts/pill-planning-contracts.md
+rituals: desk/rituals/execution.md, desk/rituals/testing.md, desk/rituals/closeout.md
+notes: - Implement v2 milestone 3: file persistence and reload [draft] - A Store protocol with a Babashka file backend per docs/v2/02 section 8.1: objects/<hash> written as UTF-8 canonical EDN so that H(file) == name, log.edn append-only with one Transaction map per line, heads.edn and store.edn written atomically by rename; open = read descriptor and heads then replay (re-apply every logged plan and check each revision id matches the logged one); verify = recompute the hash of every object reachable from the heads and compare with its name. rebuild-indexes is out of scope until derived indexes exist (milestone 4+).

@@ -14,8 +14,7 @@
    Revision {:roots {tree-id merkle-root} :trees tree-set-id :edges edge-set-id
              :parents [rev-id] :tx tx-id :actor :engines :timestamp}
    revision-id = H(canonical-bytes Revision); Transaction {:id H(resolved plan) :plan :revision}."
-  (:require [clojure.walk :as walk]
-            [sldb.kernel.canon :as canon]
+  (:require [sldb.kernel.canon :as canon]
             [sldb.kernel.node :as node]
             [sldb.kernel.edge :as edge]
             [sldb.kernel.tree :as tree]
@@ -252,9 +251,7 @@
         ;; execute ops on the working state (checks 2, 3-partial, 4 raised inline)
         ws (reduce apply-op ws0 (:ops plan))
         aliases (:aliases ws)
-        resolved-ops (mapv (fn [op] (walk/postwalk (fn [v] (if (and (keyword? v) (contains? aliases v)) (aliases v) v))
-                                                   (dissoc op :as)))
-                           (:ops plan))
+        resolved-ops (mapv (fn [op] (plan/substitute-aliases aliases (dissoc op :as))) (:ops plan))
         touched (:touched ws)
         _ (plan/check-capabilities (:capabilities store) (assoc plan :ops resolved-ops) aliases)
         plan' (check-base store (assoc plan :ops resolved-ops) resolved-ops touched)
@@ -285,7 +282,9 @@
         rev-id (canon/digest h rev)
         tx {:id tx-id :plan resolved-plan :revision rev-id}
         store' (-> store
-                   (assoc :objects (-> objects (assoc es-id edge-set) (assoc ts-id ts-entries) (assoc rev-id rev) (assoc tx-id tx)))
+                   ;; every CAS object satisfies H(canonical-bytes object) == id (invariant 17):
+                   ;; the transaction is stored as its resolved plan; the Transaction map lives in the log
+                   (assoc :objects (-> objects (assoc es-id edge-set) (assoc ts-id ts-entries) (assoc rev-id rev) (assoc tx-id resolved-plan)))
                    (assoc :trees trees')
                    (assoc :edges (:edges ws))
                    (assoc :head rev-id)

@@ -226,3 +226,4 @@ Auto-closing task task-implement-v2-milestone-1-trees-as-indexes-with-lazy-merkl
 2026-08-29 17:21:17,047 - deskops - INFO - Committing closure for task-implement-v2-milestone-2-revisions-transactionplan-validation-cas-heads: chore(task): Implement v2 milestone 2: revisions, TransactionPlan validation, CAS heads
 
 Auto-closing task task-implement-v2-milestone-2-revisions-transactionplan-validation-cas-heads
+2026-08-29 17:21:52,922 - deskops - INFO - Advanced task task-implement-v2-milestone-3-file-persistence-and-reload to node checklist-task-implement-v2-milestone-3-file-persistence-and-reload-testing-ready

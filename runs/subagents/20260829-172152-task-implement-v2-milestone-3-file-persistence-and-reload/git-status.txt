@@ -1,0 +1,12 @@
+## refactor-target...origin/refactor-target [ahead 13]
+ M .deskops.log
+ M desk/atoms/atom-re-anchoring-rules-under-succession.md
+ M desk/tasks/task-implement-v2-milestone-3-file-persistence-and-reload.md
+ M src/sldb/kernel/plan.cljc
+ M src/sldb/kernel/revision.cljc
+ M test/fixtures/tx-001.edn
+ M test/fixtures/tx-002-conflict.edn
+?? runs/subagents/20260829-172152-task-implement-v2-milestone-3-file-persistence-and-reload/
+?? src/sldb/host/fs_store.cljc
+?? src/sldb/kernel/store.cljc
+?? test/sldb/kernel/store_test.cljc

@@ -1,14 +1,15 @@
 ---
 id: task-implement-v2-milestone-3-file-persistence-and-reload
-status: draft
+status: active
 summary: 'Milestone 3 of docs/v2/02 section 9: Store protocol, Babashka file backend
   (CAS objects, append-only log, atomic heads), replay, verify.'
 tags:
 - workspace:desk
 - artifact:task
 routine: routine-task-implement-v2-milestone-3-file-persistence-and-reload
-current_node: checklist-task-implement-v2-milestone-3-file-persistence-and-reload-execution-ready
-history: []
+current_node: checklist-task-implement-v2-milestone-3-file-persistence-and-reload-testing-ready
+history:
+- operator-task-implement-v2-milestone-3-file-persistence-and-reload-activate
 references: []
 depends_on:
 - task-implement-v2-milestone-2-revisions-transactionplan-validation-cas-heads
@@ -17,6 +18,8 @@ pills:
 files:
 - src/sldb/kernel/store.cljc
 - src/sldb/host/fs_store.cljc
+- src/sldb/kernel/revision.cljc
+- src/sldb/kernel/plan.cljc
 - test/sldb/kernel/store_test.cljc
 - test/fixtures/tx-001.edn
 - test/fixtures/tx-002-conflict.edn
@@ -32,6 +35,7 @@ atoms:
 - atom-first-slice-runtime-choices
 - atom-git-object-model-as-the-v2-roadmap
 - atom-tree-identity-tree-objects-and-heads
+closeout_evidence_verified: false
 ---
 
 # Implement v2 milestone 3: file persistence and reload

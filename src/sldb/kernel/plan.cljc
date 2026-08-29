@@ -63,6 +63,15 @@
     (if-some [id (get aliases x)] id (reject :ids-exist nil (str "unknown alias " x)))
     x))
 
+(defn substitute-aliases
+  "Replaces declared aliases in map VALUES and vector elements (never map keys)."
+  [aliases v]
+  (cond
+    (map? v)     (into {} (map (fn [[k x]] [k (substitute-aliases aliases x)])) v)
+    (vector? v)  (mapv #(substitute-aliases aliases %) v)
+    (and (alias? v) (contains? aliases v)) (aliases v)
+    :else v))
+
 (defn touched-trees
   "Tree ids (or aliases) of the trees a plan creates or changes by ownership."
   [plan]

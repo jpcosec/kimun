@@ -1,5 +1,5 @@
 ;; Hand-described transaction (docs/v2/02 §8.1): plan + the exact eight-field Revision and id it must yield.
-;; Computed once with sldb.kernel.revision + SHA-256 on 2026-08-29, reviewed, frozen.
+;; Computed with sldb.kernel.revision + SHA-256 on 2026-08-29 (regenerated once after fixing alias substitution in map keys), reviewed, frozen.
 {:store {:capabilities {"jp" :all}},
  :plan
  {:plan/version 1,
@@ -60,9 +60,9 @@
    "a8674ea1a5e7a753c150f1c90d813c7ed653c932ce876aef14402c0bf8bb5ae5",
    :parents [],
    :tx
-   "a8f2640079fc43e0be0e36f7537c80ba81b19f986e29a805ad0ea3b42922d151",
+   "e74e9a16aa0f1ac50b67ec47a6f976f776d4c78a634a544e4b1a56de9a337ed6",
    :actor "jp",
    :engines {},
    :timestamp "2026-08-29T12:00:00.000Z"},
   :revision-id
-  "4d0da4725cb052911c47c9a9ee2fed7d490f3ef903d0cf8d565a04fd6956224f"}}
+  "70e7785bd1d558fec1f22b99af86486baaced8956331e01c98dad948cb6bf93c"}}
