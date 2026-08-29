@@ -1,11 +1,14 @@
----
-kind: suggestion
-sender_project: graph_ui
-created_at: 2026-08-28T22:10:00
-status: open
----
+# Extract store into generic typed-document engine (Document + Codec plugins)
 
-# Extract the store into a generic typed-document engine (Document + Codec plugins)
+ID: task-extract-store-into-generic-typed-document-engine-document-codec-plugins
+Status: deferred
+Priority: medium
+
+## Goal
+
+Triage and resolve the inbox message promoted from `desk/inbox/20260828-220321-suggestion-extract-store-to-generic-typed-document-engine.md`.
+
+## Scope
 
 Origen: análisis de arquitectura en graph_ui. Los specs completos viven en
 `graph_ui/desk/drawer/STORE_EXTRACTION_PROPOSAL.md` y los atoms
@@ -56,3 +59,11 @@ Desbloquea que kgdb, deskops, knowledge y repopackage consuman un mismo núcleo
 en vez de reimplementar persistencia+hash+query (repopackage hoy reinventa un
 store pobre sobre YAML crudo). GUARDRAIL: nada de mocks; si una dependencia real
 no está disponible, detenerse y reportar, no parchear.
+
+## Source
+
+- `desk/inbox/20260828-220321-suggestion-extract-store-to-generic-typed-document-engine.md`
+
+## Done When
+
+- The message is resolved, answered, or promoted into active work.
