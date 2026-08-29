@@ -5,8 +5,9 @@ from sldb.cli.store_context import get_store_context
 
 def check_store(args: Any) -> int:
     from sldb.store.diagnostics import diagnose_store
+    from sldb.cli.model_utils import resolve_model_ref
     sp, root = get_store_context(args.store, mode="readonly")
-    res = diagnose_store(sp, root, pythonpath=args.pythonpath)
+    res = diagnose_store(sp, resolve_model_ref, root, pythonpath=args.pythonpath)
     return _handle_check_res(res, args.format)
 
 def _handle_check_res(res: Any, fmt: str) -> int:

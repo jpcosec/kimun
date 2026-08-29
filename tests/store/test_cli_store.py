@@ -165,8 +165,9 @@ def test_store_update_recomputes_hashes(tmp_path):
     # Update should recompute, making check pass again
     cli_main(["stores", "update"] + _STORE_ARGS(tmp_path) + _PY_ARGS)
     from sldb.store.diagnostics import diagnose_store
+    from sldb.cli.model_utils import resolve_model_ref
 
-    result = diagnose_store(tmp_path / ".sldb", tmp_path, pythonpath=_SRC)
+    result = diagnose_store(tmp_path / ".sldb", resolve_model_ref, tmp_path, pythonpath=_SRC)
     assert result.is_valid
 
 

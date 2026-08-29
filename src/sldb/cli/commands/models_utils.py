@@ -53,7 +53,8 @@ def extract_attr(obj: Any, attr_path: str) -> Any:
 
 def tracked_docs_for_model(args: Any) -> list[tuple[str, str]]:
     from sldb.store.facade import get_tracked_docs
-    return get_tracked_docs(args.model, args.store)
+    sp, root = get_store_context(args.store)
+    return get_tracked_docs(args.model, sp, root)
 
 def find_class_node(tree: ast.AST, class_name: str, path: Path) -> ast.ClassDef:
     for node in tree.body:
