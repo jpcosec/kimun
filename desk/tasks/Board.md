@@ -4,8 +4,7 @@ id: board-001
 # Affected workspace or domain
 scope: desk
 # List of task-xxx paths
-tasks:
-- desk/tasks/task-document-the-v2-kernel-with-spec2viz-diagrams.md
+tasks: []
 # List of pill-xxx paths
 pills:
 - desk/contexts/pills.md
@@ -33,11 +32,8 @@ _Explain what this board routes and why it exists._
 
 _Add short operational notes about the current routed set._
 
-- Harden the first-slice test suite against every spec promise [draft] - A traceability table docs/v2/tests/promises.md mapping every normative statement of docs/v2/02 sections 2.1, 3.1, 3.2, 4.1, 5, 5.1, 5.2, 6.1, 8.1 and invariants 1-17 to the test that proves it, with the gaps found by fresh-context tester lanes closed by new tests (negative cases, contention, cross-implementation oracle for canonical-bytes).
 - Document the v2 kernel with spec2viz diagrams [draft] - spec2viz YAML specs for the v2 kernel (rings and namespaces, CAS object model, transaction flow, store layout, succession/re-anchoring) rendered and cataloged, referenced from docs/v2/README.md.
 
 ## Task Details
 
 _Generated from the task references above._
-
-- Document the v2 kernel with spec2viz diagrams [draft] - spec2viz YAML specs for the v2 kernel (rings and namespaces, CAS object model, transaction flow, store layout, succession/re-anchoring) rendered and cataloged, referenced from docs/v2/README.md.
