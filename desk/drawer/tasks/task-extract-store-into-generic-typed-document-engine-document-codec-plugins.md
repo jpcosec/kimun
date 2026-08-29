@@ -67,3 +67,18 @@ no está disponible, detenerse y reportar, no parchear.
 ## Done When
 
 - The message is resolved, answered, or promoted into active work.
+
+---
+
+## Progress update (2026-08-28)
+
+**Step 1 (cut store->cli coupling spike): DONE** — commit ee37525.
+- store/facade.py + store/diagnostics.py no longer import from sldb.cli.
+- Injection pattern applied; `rg "sldb.cli" src/sldb/store` is empty.
+- Validated in isolated Docker sandbox: sldb 411, kgdb 23, deskops 140 (baseline preserved).
+
+**Remaining (still deferred, NOT started):**
+- Document protocol abstraction (StructuredNLDoc).
+- Codec abstraction (extract_model_data / render).
+- Store's own exceptions (drop sldb.core.exceptions).
+- Physical store separation — explicitly blocked pending approval.
