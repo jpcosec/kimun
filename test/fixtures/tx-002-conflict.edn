@@ -1,0 +1,116 @@
+;; Concurrent edit of the same (tree, parent) after the base revision → ConflictSet (docs/v2/02 §5.2);
+;; a plan on the same stale base touching a disjoint tree rebases automatically.
+{:store {:capabilities {"jp" :all}},
+ :base-plans
+ [{:plan/version 1,
+   :base nil,
+   :actor "jp",
+   :engines {},
+   :timestamp "2026-08-29T12:00:00.000Z",
+   :ops
+   [{:op :add-node,
+     :node
+     {:class :sign,
+      :kind :block,
+      :content {:format :markdown, :type :document, :attrs {}}},
+     :as :root}
+    {:op :add-node,
+     :node
+     {:class :sign, :kind :text, :content {:text "El cielo es azul."}},
+     :as :p1}
+    {:op :add-node,
+     :node
+     {:class :sign,
+      :kind :text,
+      :content {:text "La hierba es verde."}},
+     :as :p2}
+    {:op :add-node,
+     :node
+     {:class :symbol,
+      :kind :term,
+      :content {:name "cielo", :lang "es"}},
+     :as :sym}
+    {:op :add-node,
+     :node {:class :fact, :kind :context, :content {:name "colores"}},
+     :as :w}
+    {:op :new-tree,
+     :tree {:kind :document, :name "doc"},
+     :id "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+     :root :root,
+     :as :t}
+    {:op :add-edge,
+     :edge
+     {:type :ownership, :tree :t, :from :root, :to :p1, :order 0}}
+    {:op :add-edge,
+     :edge
+     {:type :ownership, :tree :t, :from :root, :to :p2, :order 1}}
+    {:op :add-edge,
+     :edge
+     {:type :binding,
+      :from :p1,
+      :to :sym,
+      :evidence {:ref-hash :sym, :actor "jp", :context :w}},
+     :as :b1}]}
+  {:plan/version 1,
+   :base
+   "4d0da4725cb052911c47c9a9ee2fed7d490f3ef903d0cf8d565a04fd6956224f",
+   :actor "jp",
+   :engines {},
+   :timestamp "2026-08-29T12:00:01.000Z",
+   :ops
+   [{:op :add-node,
+     :node {:class :sign, :kind :text, :content {:text "b"}},
+     :as :q}
+    {:op :add-edge,
+     :edge
+     {:type :ownership,
+      :tree "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+      :from
+      "660104826a7cafb9ff5c5dcdf41dc38ccb615e694d280c0082087c9a202a4898",
+      :to :q,
+      :order 1}}]}],
+ :concurrent-plan
+ {:plan/version 1,
+  :base
+  "4d0da4725cb052911c47c9a9ee2fed7d490f3ef903d0cf8d565a04fd6956224f",
+  :actor "jp",
+  :engines {},
+  :timestamp "2026-08-29T12:00:02.000Z",
+  :ops
+  [{:op :add-node,
+    :node {:class :sign, :kind :text, :content {:text "c"}},
+    :as :r}
+   {:op :add-edge,
+    :edge
+    {:type :ownership,
+     :tree "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+     :from
+     "660104826a7cafb9ff5c5dcdf41dc38ccb615e694d280c0082087c9a202a4898",
+     :to :r,
+     :order 0}}]},
+ :disjoint-plan
+ {:plan/version 1,
+  :base
+  "4d0da4725cb052911c47c9a9ee2fed7d490f3ef903d0cf8d565a04fd6956224f",
+  :actor "jp",
+  :engines {},
+  :timestamp "2026-08-29T12:00:03.000Z",
+  :ops
+  [{:op :add-node,
+    :node
+    {:class :sign,
+     :kind :block,
+     :content
+     {:format :markdown, :type :document, :attrs {:name "u"}}},
+    :as :root2}
+   {:op :new-tree,
+    :tree {:kind :document, :name "other"},
+    :id "01ARZ3NDEKTSV4RRFFQ69G5FAW",
+    :root :root2,
+    :as :u}]},
+ :expected
+ {:conflicts
+  [{:tree "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+    :node
+    "660104826a7cafb9ff5c5dcdf41dc38ccb615e694d280c0082087c9a202a4898",
+    :kind :same-parent-edit}]}}

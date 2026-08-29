@@ -417,7 +417,7 @@ por revisión (diff de anclajes), y `drifted`/`orphan` alimentan el bucle autopo
 | arista que apunta a `X` | regla |
 |---|---|
 | `ownership` | la reescribe la propia transacción (es parte de `:replace`) |
-| `reference`, `binding` | **se siguen** al sucesor: se crea una arista nueva hacia `X'` con evidencia nueva; la vieja queda `superseded`, no se borra |
+| `reference`, `binding` | **se siguen** al sucesor en cualquiera de sus dos extremos: se crea una arista nueva con `X'` en el lugar de `X` (y `:ref-hash` = `X'` si `X` era el `:to`); la vieja queda `superseded`, no se borra |
 | `semantic` | **no se siguen**: quedan `superseded` para revisión humana o de agente (el significado puede haber cambiado) |
 | `projection` | quedan `superseded` pendientes de revalidación (el hecho puede dejar de ser sinnvoll) |
 | `derived` | se invalidan: se recomputan bajo demanda |

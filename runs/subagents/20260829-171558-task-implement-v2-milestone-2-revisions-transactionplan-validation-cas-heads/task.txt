@@ -1,0 +1,20 @@
+Task: task-implement-v2-milestone-2-revisions-transactionplan-validation-cas-heads
+Title: Implement v2 milestone 2: revisions, TransactionPlan validation, CAS heads
+Status: active
+Current node: checklist-task-implement-v2-milestone-2-revisions-transactionplan-validation-cas-heads-testing-ready
+Task type: implementation
+Routine: routine-task-implement-v2-milestone-2-revisions-transactionplan-validation-cas-heads
+Effective pills:
+- desk/contexts/pill-guardrail-v2-implementation-gate.md
+Effective atoms:
+- atom-transactionplan-edn-schema-and-validation
+- atom-conflictset-on-failed-compare-and-swap
+- atom-identity-is-the-content-hash-succession-is-a-recorded-edge
+- atom-tree-identity-tree-objects-and-heads
+- atom-revision-id-edge-set-and-diff
+- atom-replace-semantics-inside-a-transaction
+- atom-evidence-required-per-edge-type
+Checklist status:
+- checklist-task-implement-v2-milestone-2-revisions-transactionplan-validation-cas-heads-execution-ready: complete
+- checklist-task-implement-v2-milestone-2-revisions-transactionplan-validation-cas-heads-testing-ready: complete
+- checklist-task-implement-v2-milestone-2-revisions-transactionplan-validation-cas-heads-closeout-ready: pending

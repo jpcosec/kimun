@@ -193,3 +193,4 @@ Auto-closing task task-implement-v2-first-slice-node-pool-trees-revisions-persis
 2026-08-29 17:15:06,737 - deskops - INFO - Committing closure for task-implement-v2-milestone-1-trees-as-indexes-with-lazy-merkle: chore(task): Implement v2 milestone 1: trees as indexes with lazy Merkle
 
 Auto-closing task task-implement-v2-milestone-1-trees-as-indexes-with-lazy-merkle
+2026-08-29 17:15:58,699 - deskops - INFO - Advanced task task-implement-v2-milestone-2-revisions-transactionplan-validation-cas-heads to node checklist-task-implement-v2-milestone-2-revisions-transactionplan-validation-cas-heads-testing-ready

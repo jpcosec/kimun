@@ -102,3 +102,40 @@
             (recur (sldb.kernel.tree/add-child t parent (nth ids i) order)
                    (inc i)
                    (mod (+ (* (mod rng 65536) 1103515245) 12345 i) 4294967296))))))))
+
+;; ---------------------------------------------------------------- milestone 2
+
+(def gen-ulid
+  (gen/fmap (fn [n] (str "01ARZ3NDEKTSV4RRFFQ69" (apply str (map #(nth "0123456789ABCDEFGHJKMNPQRSTVWXYZ" (mod (+ n %) 32)) (range 5)))))
+            gen/nat))
+
+(def gen-valid-plan
+  "A valid first plan on an empty store: one document tree with 1..8 text
+   children under the root and a binding to a term in a context."
+  (gen/let [n (gen/choose 1 8)
+            tid gen-ulid
+            texts (gen/vector gen-text n)
+            actor (gen/elements ["jp" "ana"])]
+    (let [node-ops (map-indexed (fn [i t] {:op :add-node :node {:class :sign :kind :text :content {:text (str i "-" t)}} :as (keyword (str "p" i))}) texts)
+          edge-ops (map (fn [i] {:op :add-edge :edge {:type :ownership :tree :t :from :root :to (keyword (str "p" i)) :order i}}) (range n))]
+      {:plan/version 1 :base nil :actor (if (= actor "ana") "jp" actor) :engines {} :timestamp "2026-08-29T12:00:00.000Z"
+       :ops (-> [{:op :add-node :node {:class :sign :kind :block :content {:format :markdown :type :document :attrs {}}} :as :root}
+                 {:op :add-node :node {:class :symbol :kind :term :content {:name "x" :lang "es"}} :as :sym}
+                 {:op :add-node :node {:class :fact :kind :context :content {:name "w"}} :as :w}]
+                (into node-ops)
+                (conj {:op :new-tree :tree {:kind :document :name "g"} :id tid :root :root :as :t})
+                (into edge-ops)
+                (conj {:op :add-edge :edge {:type :binding :from :p0 :to :sym :evidence {:ref-hash :sym :actor "jp" :context :w}}}))})))
+
+(def gen-plan-sequence
+  "1..4 plans: a first valid plan followed by plans that add a text node under the
+   root of the same tree. :base is filled in by the consumer."
+  (gen/let [first-plan gen-valid-plan
+            extra (gen/vector gen-text 0 3)]
+    (let [tid (some :id (filter #(= :new-tree (:op %)) (:ops first-plan)))]
+      (into [first-plan]
+            (map-indexed (fn [i t] {:plan/version 1 :base nil :actor "jp" :engines {} :timestamp "2026-08-29T12:00:01.000Z"
+                          :ops [{:op :add-node :node {:class :sign :kind :text :content {:text (str "extra-" i "-" t)}} :as :x}
+                                {:op :add-node :node {:class :sign :kind :block :content {:format :markdown :type :document :attrs {}}} :as :root}
+                                {:op :add-edge :edge {:type :ownership :tree tid :from :root :to :x :order 0}}]})
+                 extra)))))

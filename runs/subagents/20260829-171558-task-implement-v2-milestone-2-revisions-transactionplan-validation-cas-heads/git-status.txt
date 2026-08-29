@@ -1,0 +1,14 @@
+## refactor-target...origin/refactor-target [ahead 10]
+ M .deskops.log
+ M desk/tasks/task-implement-v2-milestone-2-revisions-transactionplan-validation-cas-heads.md
+ M docs/v2/02-sustrato-computacional.md
+ M test/sldb/kernel/generators.cljc
+?? runs/subagents/20260829-171558-task-implement-v2-milestone-2-revisions-transactionplan-validation-cas-heads/
+?? src/sldb/kernel/heads.cljc
+?? src/sldb/kernel/plan.cljc
+?? src/sldb/kernel/revision.cljc
+?? test/fixtures/tx-001.edn
+?? test/fixtures/tx-002-conflict.edn
+?? test/sldb/kernel/heads_test.cljc
+?? test/sldb/kernel/plan_test.cljc
+?? test/sldb/kernel/revision_test.cljc

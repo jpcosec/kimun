@@ -1,14 +1,15 @@
 ---
 id: task-implement-v2-milestone-2-revisions-transactionplan-validation-cas-heads
-status: draft
+status: active
 summary: 'Milestone 2 of docs/v2/02 section 9: TransactionPlan validation, immutable
   revisions, supersedes on replace, in-memory CAS heads and ConflictSet.'
 tags:
 - workspace:desk
 - artifact:task
 routine: routine-task-implement-v2-milestone-2-revisions-transactionplan-validation-cas-heads
-current_node: checklist-task-implement-v2-milestone-2-revisions-transactionplan-validation-cas-heads-execution-ready
-history: []
+current_node: checklist-task-implement-v2-milestone-2-revisions-transactionplan-validation-cas-heads-testing-ready
+history:
+- operator-task-implement-v2-milestone-2-revisions-transactionplan-validation-cas-heads-activate
 references: []
 depends_on:
 - task-implement-v2-milestone-1-trees-as-indexes-with-lazy-merkle
@@ -40,6 +41,7 @@ atoms:
 - atom-revision-id-edge-set-and-diff
 - atom-replace-semantics-inside-a-transaction
 - atom-evidence-required-per-edge-type
+closeout_evidence_verified: false
 ---
 
 # Implement v2 milestone 2: revisions, TransactionPlan validation, CAS heads
