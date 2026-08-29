@@ -87,7 +87,7 @@ id(nodo) = H( canonical-bytes( {:class c  :kind k  :content content} ) )
 | class | kind | content |
 |---|---|---|
 | `:sign` | `:text` | `{:text "<texto plano NFC>"}` — hoja; sin offsets (las capas stand-off se derivan) |
-| `:sign` | `:block` | `{:format :markdown :type :heading :attrs {:level 2}}` — nodo del AST neutro; no lleva texto propio, sus hojas `:text` son hijas en el árbol |
+| `:sign` | `:block` | `{:format :markdown :type :heading :attrs {:level 2 :marks [...]}}` — nodo del AST neutro; no lleva texto propio, sus hojas `:text` son hijas en el árbol; las marcas inline viven en `:attrs` (docs/v2/04 §4, §8) |
 | `:sign` | `:opaque` | `{:format "html" :blob "<bytes como string>"}` — el blob completo entra al hash; drift ⇔ cambio de id |
 | `:sign` | `:external` | `{:locator {:kind :file|:url|:pdf-page|... :path "..."} :sample "<texto>" :fingerprint "<hash>"}` — `:locator` es un mapa abierto cuyo único campo obligatorio es `:kind`; `:sample` = los primeros 200 grafemas NFC del texto referido (o `""`); `:fingerprint` = `H` (el mismo algoritmo del store) de los bytes referidos; el fixture usa `{:kind :file :path "docs/x.pdf" :page 3}` |
 | `:sign` | `:span` | `{:leaf <id> :range [inicio fin]}` — se materializa solo cuando algo lo referencia (§4.1) |
@@ -221,15 +221,17 @@ grafema. Sobre ella:
 
 ```
 hoja (texto plano, hash)
- ├─ capa markup inline     spans {kind, range}            determinista (CST)
+ ├─ capa markup inline     spans {kind, range}            almacenada en el bloque padre (04 §8)
  ├─ capa oraciones         spans UAX #29                  determinista
  ├─ capa tokens/palabras   spans UAX #29                  determinista
  ├─ capa sintaxis          árbol de spans, por motor      proyección (motor, versión)
  └─ capa menciones         spans → binding a símbolos     proyección o transacción
 ```
 
-- Las capas deterministas se **derivan bajo demanda** y se cachean por hash de hoja; no
-  son nodos del grafo hasta que algo las referencia.
+- Las capas deterministas (UAX #29) se **derivan bajo demanda** y se cachean por hash de
+  hoja; no son nodos del grafo hasta que algo las referencia. La capa de markup inline
+  **no** es derivable del texto plano: se guarda como `:marks` en los `:attrs` del bloque
+  padre (docs/v2/04 §8) y entra en el hash de ese bloque, no en el de la hoja.
 - Una dirección hasta el símbolo **existe** (`hoja#hash @ offset`) sin que exista un
   nodo: materialización perezosa. Un corpus de 10⁴ documentos tiene 10⁸ grafemas; no
   pueden ser nodos.

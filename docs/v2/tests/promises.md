@@ -104,6 +104,11 @@ Leyenda: `ok` probado · `oracle` probado además por una implementación indepe
 
 1 pool_test/tampered…, store_test/close-and-reopen · 2 node_test/same-content-same-id · 3 revision_test/heads-advance-only… · 4 tree_test/generated-trees-are-valid · 5 tree_test/one-node-in-two-trees · 6 edge_test/evidence-requirements · 7 revision_test/replace-keeps-order… · 8, 9 **deferred** (hito 4) · 10 pool_test/pool-is-rebuildable, store_test/replay… · 11 **deferred** (efectos) · 12 plan_test/opaque-replace-only · 13 tree_test/ulid-ids-are-nominal · 14 tree_test/sibling-order… · 15 revision_test/the-seven-checks · 16 edge_test/timestamp…, hardening/timestamp-enters-the-revision-id · 17 store_test/every-object-file…
 
+## §04 — superficie Markdown (hito 4, pendiente de cierre)
+
+Las filas y nombres de test están fijados en `docs/v2/04-superficie-markdown.md §10`; se
+mueven a este documento con su estado al cerrar `task-milestone-4-markdown-cst-to-neutral-ast`.
+
 ## Deuda aceptada
 
 - Paridad de host (Node): `task-node-host-parity-for-the-v2-kernel`.
