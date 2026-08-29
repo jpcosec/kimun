@@ -1,25 +1,27 @@
 ---
 id: task-implement-v2-milestone-1-trees-as-indexes-with-lazy-merkle
-status: draft
+status: active
 summary: 'Milestone 1 of docs/v2/02 section 9: nominal tree ids, ownership edges with
   sibling order, tree objects, lazy merkle-root per tree.'
 tags:
 - workspace:desk
 - artifact:task
 routine: routine-task-implement-v2-milestone-1-trees-as-indexes-with-lazy-merkle
-current_node: checklist-task-implement-v2-milestone-1-trees-as-indexes-with-lazy-merkle-execution-ready
-history: []
+current_node: checklist-task-implement-v2-milestone-1-trees-as-indexes-with-lazy-merkle-testing-ready
+history:
+- operator-task-implement-v2-milestone-1-trees-as-indexes-with-lazy-merkle-activate
 references: []
 depends_on:
 - task-implement-v2-first-slice-node-pool-trees-revisions-persistence
 pills:
 - desk/contexts/pill-guardrail-v2-implementation-gate.md
 files:
-- src/sldb/kernel/tree.cljc
+- src/sldb/host/ulid.cljc
 - src/sldb/kernel/edge.cljc
+- src/sldb/kernel/tree.cljc
 - test/sldb/kernel/generators.cljc
-- test/sldb/kernel/tree_test.cljc
 - test/sldb/kernel/edge_test.cljc
+- test/sldb/kernel/tree_test.cljc
 - test/fixtures/trees.edn
 - docs/v2/02-sustrato-computacional.md
 checklists:
@@ -35,6 +37,7 @@ atoms:
 - atom-evidence-required-per-edge-type
 - atom-canonical-content-and-node-hashing
 - atom-decision-first-slice-kernel-semantics-confirmed
+closeout_evidence_verified: false
 ---
 
 # Implement v2 milestone 1: trees as indexes with lazy Merkle

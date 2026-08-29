@@ -1,0 +1,18 @@
+Task: task-implement-v2-milestone-1-trees-as-indexes-with-lazy-merkle
+Title: Implement v2 milestone 1: trees as indexes with lazy Merkle
+Status: active
+Current node: checklist-task-implement-v2-milestone-1-trees-as-indexes-with-lazy-merkle-testing-ready
+Task type: implementation
+Routine: routine-task-implement-v2-milestone-1-trees-as-indexes-with-lazy-merkle
+Effective pills:
+- desk/contexts/pill-guardrail-v2-implementation-gate.md
+Effective atoms:
+- atom-tree-as-index
+- atom-tree-identity-tree-objects-and-heads
+- atom-evidence-required-per-edge-type
+- atom-canonical-content-and-node-hashing
+- atom-decision-first-slice-kernel-semantics-confirmed
+Checklist status:
+- checklist-task-implement-v2-milestone-1-trees-as-indexes-with-lazy-merkle-execution-ready: complete
+- checklist-task-implement-v2-milestone-1-trees-as-indexes-with-lazy-merkle-testing-ready: complete
+- checklist-task-implement-v2-milestone-1-trees-as-indexes-with-lazy-merkle-closeout-ready: pending

@@ -1,0 +1,30 @@
+;; Golden tree objects for docs/v2/02 §3.1 — aliases are indexes into :nodes.
+;; Computed once with sldb.kernel.tree + SHA-256 on 2026-08-29, reviewed, frozen.
+{:tree-id "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+ :nodes
+ [{:class :sign,
+   :kind :block,
+   :content {:format :markdown, :type :document, :attrs {}}}
+  {:class :sign,
+   :kind :block,
+   :content {:format :markdown, :type :heading, :attrs {:level 1}}}
+  {:class :sign, :kind :text, :content {:text "Introducción"}}
+  {:class :sign,
+   :kind :block,
+   :content {:format :markdown, :type :paragraph, :attrs {}}}
+  {:class :sign, :kind :text, :content {:text "El cielo es azul."}}],
+ :tree {:kind :document, :root 0, :children {0 [1 3], 1 [2], 3 [4]}},
+ :expected
+ {:objects
+  {0
+   "a5ac2f4cc19f33577ef68fb8b5df42682473f7f5112d1422679c7c30f5ec28cc",
+   1
+   "c8b8773a2127907f50193481501d9f937a783ecff682aedcf4f5bb869cbbd75c",
+   2
+   "2239844f9def1b53eeceab21b2c8e38df19923e6f2d4b0a5e84050a3a4d2f3e7",
+   3
+   "5583a59cc708a1cd64d34ef73da497dfee974a89e74866f7016e6e10e86f233f",
+   4
+   "32bc1994ce28bfc9ab2762f225fe4ff1d4fdbf7ef8aa32285a3948a9e9ad6228"},
+  :root
+  "a5ac2f4cc19f33577ef68fb8b5df42682473f7f5112d1422679c7c30f5ec28cc"}}

@@ -162,3 +162,4 @@
 2026-08-29 16:54:17,985 - deskops - INFO - Committing closure for task-implement-v2-first-slice-node-pool-trees-revisions-persistence: chore(task): Implement v2 milestone 0: content-addressed node pool
 
 Auto-closing task task-implement-v2-first-slice-node-pool-trees-revisions-persistence
+2026-08-29 17:11:45,611 - deskops - INFO - Advanced task task-implement-v2-milestone-1-trees-as-indexes-with-lazy-merkle to node checklist-task-implement-v2-milestone-1-trees-as-indexes-with-lazy-merkle-testing-ready

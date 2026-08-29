@@ -3,7 +3,9 @@
    milestone 0 (`gen-node`), extended by later milestones."
   (:require [clojure.test.check.generators :as gen]
             [sldb.host.hash :as hash]
-            [sldb.kernel.node :as node]))
+            [sldb.kernel.node :as node]
+            [sldb.kernel.edge]
+            [sldb.kernel.tree]))
 
 (def hasher hash/sha-256)
 
@@ -52,3 +54,51 @@
 
 (defn gen-node-of [class kind]
   (gen/fmap #(node/make hasher class kind %) (get gen-content-by-kind [class kind])))
+
+;; ---------------------------------------------------------------- milestone 1
+
+(def gen-hex64 gen-hex)
+
+(def gen-origin
+  (gen/one-of [(gen/fmap (fn [a] {:actor a}) gen/string-alphanumeric)
+               (gen/let [e gen/string-alphanumeric v (gen/elements ["1" "2.0" "3"])] {:engine e :version v})]))
+
+(def gen-edge
+  "A validated non-ownership or ownership edge with the evidence its type requires."
+  (gen/let [type (gen/elements [:ownership :supersedes :reference :binding :projection :semantic :derived])
+            from gen-hex64 to gen-hex64 ctx gen-hex64 origin gen-origin
+            status (gen/elements [:sinnvoll :sinnlos :unsinnig])
+            order gen/nat]
+    (let [ev (case type
+               :ownership  nil
+               :supersedes {:actor (or (:actor origin) "system")}
+               :reference  (merge {:ref-hash to} origin)
+               :binding    (merge {:ref-hash to :context ctx} origin)
+               :projection (merge {:ref-hash to :context ctx :status status} origin)
+               :semantic   (merge {:ref-hash to :context ctx} origin)
+               :derived    {:ref-hash to :engine "parser" :version "1"})
+          e (cond-> {:type type :from from :to to}
+              (= type :ownership) (assoc :tree "01ARZ3NDEKTSV4RRFFQ69G5FAV" :order order)
+              ev (assoc :evidence ev))]
+      (sldb.kernel.edge/make hasher e))))
+
+(defn- text-id [s] (:id (node/make hasher :sign :text {:text s})))
+
+(def gen-tree
+  "A random valid :document tree of 1..12 distinct text nodes (uncommitted)."
+  (gen/let [n (gen/choose 1 12)
+            seed gen/nat]
+    (let [ids (mapv #(text-id (str "n" seed "-" %)) (range n))
+          root (first ids)]
+      (loop [t (sldb.kernel.tree/create hasher :document "gen" root "01ARZ3NDEKTSV4RRFFQ69G5FAV")
+             i 1
+             rng seed]
+        (if (>= i n)
+          t
+          (let [present (vec (take i ids))
+                parent (nth present (mod rng i))
+                siblings (get-in t [:children parent])
+                order (mod (quot rng 7) (inc (count siblings)))]
+            (recur (sldb.kernel.tree/add-child t parent (nth ids i) order)
+                   (inc i)
+                   (mod (+ (* (mod rng 65536) 1103515245) 12345 i) 4294967296))))))))

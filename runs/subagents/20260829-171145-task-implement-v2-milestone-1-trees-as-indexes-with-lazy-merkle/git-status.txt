@@ -1,0 +1,11 @@
+## refactor-target...origin/refactor-target [ahead 7]
+ M .deskops.log
+ M desk/tasks/task-implement-v2-milestone-1-trees-as-indexes-with-lazy-merkle.md
+ M test/sldb/kernel/generators.cljc
+?? runs/subagents/20260829-171145-task-implement-v2-milestone-1-trees-as-indexes-with-lazy-merkle/
+?? src/sldb/host/ulid.cljc
+?? src/sldb/kernel/edge.cljc
+?? src/sldb/kernel/tree.cljc
+?? test/fixtures/trees.edn
+?? test/sldb/kernel/edge_test.cljc
+?? test/sldb/kernel/tree_test.cljc
