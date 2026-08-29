@@ -2,13 +2,14 @@
   "Nodes of the SMG pool (docs/v2/02 §2, §2.1).
 
    A node is {:class c :kind k :content m}. Its id is
-   H(canonical-bytes {:class c :kind k :content m}); class and kind enter the hash,
-   `address` does not (it is derived from class/kind). Provenance, timestamps and
-   evidence never live in a node."
-  (:require [sldb.kernel.canon :as canon]))
+   H(canonical-bytes {:class c :kind k :content m}); class and kind enter the
+   hash, `address` does not (it is derived from class/kind). Provenance,
+   timestamps and evidence never live in a node."
+  (:require [sldb.kernel.canon :as canon]
+            [sldb.kernel.err :as err]))
 
 (def shapes
-  "class → kind → predicate over content. One row per line of the §2.1 table."
+  "class → kind → predicate over content; one row per line of the §2.1 table."
   {:sign   {:text       (fn [c] (string? (:text c)))
             :block      (fn [c] (and (keyword? (:format c)) (keyword? (:type c)) (map? (:attrs c))))
             :opaque     (fn [c] (and (string? (:format c)) (string? (:blob c))))
@@ -26,12 +27,17 @@
                                       (contains? c :object) (string? (:context c))))
             :context     (fn [c] (string? (:name c)))}})
 
-(def classes (set (keys shapes)))
+(def classes
+  "The three node classes: :sign (S), :symbol (M), :fact (G)."
+  (set (keys shapes)))
 
-(defn kinds [class] (set (keys (get shapes class))))
+(defn kinds
+  "Admitted kinds of a class."
+  [class] (set (keys (get shapes class))))
 
 (defn address
-  "Addressability class derived from class/kind (docs/v2/01 §4.7)."
+  "Addressability class derived from kind (docs/v2/01 §4.7): :structural,
+   :opaque or :external."
   [{:keys [kind]}]
   (case kind
     :opaque   :opaque
@@ -39,17 +45,17 @@
     :structural))
 
 (defn- fail [node why]
-  (throw (ex-info (str "invalid node: " why) {:type :node/invalid :node node :why why})))
+  (err/raise :node/invalid (str "invalid node: " why) {:node node :why why}))
 
 (defn validate
-  "Returns the node when its class, kind and content shape are admitted; throws
-   ex-info :node/invalid otherwise. Content must also be canonical-admissible."
-  [{:keys [class kind content] :as node}]
+  "Returns the node when its class, kind and content shape are admitted and the
+   content is canonical-admissible; raises :node/invalid otherwise."
+  [host {:keys [class kind content] :as node}]
   (when-not (contains? shapes class) (fail node (str "unknown class " class)))
   (when-not (contains? (get shapes class) kind) (fail node (str "unknown kind " kind " for class " class)))
   (when-not (map? content) (fail node "content must be a map"))
   (when-not ((get-in shapes [class kind]) content) (fail node (str "content does not match shape " class "/" kind)))
-  (when-not (canon/valid? content) (fail node "content contains a value not admitted in canonical content"))
+  (when-not (canon/valid? host content) (fail node "content contains a value not admitted in canonical content"))
   node)
 
 (defn identity-form
@@ -59,11 +65,11 @@
 
 (defn node-id
   "id(node) = H(canonical-bytes {:class :kind :content})."
-  [hasher node]
-  (canon/digest hasher (identity-form node)))
+  [host node]
+  (canon/digest host (identity-form node)))
 
 (defn make
   "Builds a validated, NFC-normalized node with its :id and derived :address."
-  [hasher class kind content]
-  (let [node (validate {:class class :kind kind :content (canon/normalize content)})]
-    (assoc node :id (node-id hasher node) :address (address node))))
+  [host class kind content]
+  (let [node (validate host {:class class :kind kind :content (canon/normalize host content)})]
+    (assoc node :id (node-id host node) :address (address node))))

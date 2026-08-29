@@ -1,0 +1,67 @@
+## refactor-target...origin/refactor-target [ahead 16]
+ M .deskops.log
+ M .sldb/core/documents/InboxNoteDoc.yaml
+ M .sldb/core/models/InboxNoteDoc.yaml
+ M .sldb/core/store_index.yaml
+ M bb.edn
+ M desk/tasks/Board.md
+ M src/sldb/host/fs_store.cljc
+ M src/sldb/host/hash.cljc
+ M src/sldb/host/text.cljc
+ M src/sldb/host/ulid.cljc
+ M src/sldb/kernel/canon.cljc
+ M src/sldb/kernel/edge.cljc
+ M src/sldb/kernel/heads.cljc
+ M src/sldb/kernel/node.cljc
+ M src/sldb/kernel/plan.cljc
+ M src/sldb/kernel/pool.cljc
+ M src/sldb/kernel/revision.cljc
+ M src/sldb/kernel/store.cljc
+ M src/sldb/kernel/tree.cljc
+ M test/sldb/kernel/canon_test.cljc
+ M test/sldb/kernel/edge_test.cljc
+ M test/sldb/kernel/generators.cljc
+ M test/sldb/kernel/heads_test.cljc
+ M test/sldb/kernel/node_test.cljc
+ M test/sldb/kernel/pool_test.cljc
+ M test/sldb/kernel/revision_test.cljc
+ M test/sldb/kernel/store_test.cljc
+ M test/sldb/kernel/tree_test.cljc
+?? desk/drawer/tasks/task-contention-test-for-heads-commit.md
+?? desk/drawer/tasks/task-external-oracle-for-canonical-bytes.md
+?? desk/drawer/tasks/task-milestone-4-markdown-cst-to-neutral-ast.md
+?? desk/drawer/tasks/task-milestone-5-anchor-states-and-drifted-reconciliation.md
+?? desk/drawer/tasks/task-node-host-parity-for-the-v2-kernel.md
+?? desk/drawer/tasks/task-rewrite-the-pre-v2-spec2viz-specs.md
+?? desk/drawer/tasks/task-test-coverage-and-lint-tooling-for-babashka.md
+?? desk/drawer/tasks/task-ulid-monotonicity-and-clock-adapter.md
+?? desk/drawer/tasks/task-unreachable-objects-report-and-gc-groundwork.md
+?? desk/primitives/checklists/checklist-task-define-and-enforce-code-standards-and-dependency-rings-closeout-ready.md
+?? desk/primitives/checklists/checklist-task-define-and-enforce-code-standards-and-dependency-rings-execution-ready.md
+?? desk/primitives/checklists/checklist-task-define-and-enforce-code-standards-and-dependency-rings-testing-ready.md
+?? desk/primitives/checklists/checklist-task-document-the-v2-kernel-with-spec2viz-diagrams-closeout-ready.md
+?? desk/primitives/checklists/checklist-task-document-the-v2-kernel-with-spec2viz-diagrams-execution-ready.md
+?? desk/primitives/checklists/checklist-task-document-the-v2-kernel-with-spec2viz-diagrams-testing-ready.md
+?? desk/primitives/checklists/checklist-task-harden-the-first-slice-test-suite-against-every-spec-promise-closeout-ready.md
+?? desk/primitives/checklists/checklist-task-harden-the-first-slice-test-suite-against-every-spec-promise-execution-ready.md
+?? desk/primitives/checklists/checklist-task-harden-the-first-slice-test-suite-against-every-spec-promise-testing-ready.md
+?? desk/primitives/conditions/
+?? desk/primitives/edges/
+?? desk/primitives/operators/
+?? desk/routines/
+?? desk/tasks/task-define-and-enforce-code-standards-and-dependency-rings.md
+?? desk/tasks/task-document-the-v2-kernel-with-spec2viz-diagrams.md
+?? desk/tasks/task-harden-the-first-slice-test-suite-against-every-spec-promise.md
+?? docs/architecture/spec2viz/rendered/
+?? docs/architecture/spec2viz/v2-cas-objects.yml
+?? docs/architecture/spec2viz/v2-replace-reanchoring.yml
+?? docs/architecture/spec2viz/v2-rings.yml
+?? docs/architecture/spec2viz/v2-store-layout.yml
+?? docs/architecture/spec2viz/v2-transaction-flow.yml
+?? docs/v2/03-estandares-de-codigo.md
+?? runs/subagents/20260829-174447-task-harden-the-first-slice-test-suite-against-every-spec-promise-testing/
+?? runs/subagents/20260829-174837-task-define-and-enforce-code-standards-and-dependency-rings/
+?? scripts/check_rings.clj
+?? src/sldb/host/default.cljc
+?? src/sldb/kernel/err.cljc
+?? src/sldb/kernel/ports.cljc

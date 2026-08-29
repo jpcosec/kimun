@@ -4,7 +4,7 @@
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
             [clojure.edn :as edn]
-            [sldb.host.hash :as hash]
+            [sldb.host.default :as host]
             [sldb.kernel.revision :as rev]
             [sldb.kernel.store :as store]
             [sldb.host.fs-store :as fs]
@@ -13,7 +13,7 @@
                       [babashka.fs :as bfs]
                       [babashka.process :as p]])))
 
-(def h hash/sha-256)
+(def h host/host)
 
 (defn- read-fixture [f] #?(:clj (edn/read-string (slurp (io/file f)))))
 (defn- tmp-dir [] #?(:clj (str (bfs/create-temp-dir {:prefix "sldb-store-"}))))
@@ -58,10 +58,10 @@
   (let [dir (tmp-dir)
         s (populate! dir)
         b (fs/backend dir)
-        v (store/verify b h s)]
+        v (store/verify b s)]
     (is (:ok? v) (pr-str (:bad v)))
     (is (pos? (:checked v)))
-    (is (every? #(= % (hash/hash-bytes h (hash/utf8-bytes (store/read-object b %)))) (store/object-ids b)))))
+    (is (every? #(= % (sldb.kernel.ports/digest-str (:hasher h) (store/read-object b %))) (store/object-ids b)))))
 
 (deftest corrupting-one-object-makes-verify-fail-naming-it
   (let [dir (tmp-dir)
@@ -69,7 +69,7 @@
         b (fs/backend dir)
         victim (first (sort (store/reachable s)))]
     (spit (str dir "/objects/" victim) "tampered")
-    (let [v (store/verify b h s)]
+    (let [v (store/verify b s)]
       (is (not (:ok? v)))
       (is (= [{:id victim :reason :hash-mismatch}] (:bad v))))))
 
@@ -96,8 +96,8 @@
         before (populate! dir)
         out (-> (p/shell {:out :string :err :string :continue true}
                          "bb" "-cp" "src" "-e"
-                         (str "(require '[sldb.kernel.store :as s] '[sldb.host.fs-store :as fs] '[sldb.host.hash :as h]) "
-                              "(let [st (s/open (fs/backend \"" dir "\") h/sha-256)] (prn [(:head st) (:heads st) (count (:revisions st))]))"))
+                         (str "(require '[sldb.kernel.store :as s] '[sldb.host.fs-store :as fs] '[sldb.host.default :as h]) "
+                              "(let [st (s/open (fs/backend \"" dir "\") h/host)] (prn [(:head st) (:heads st) (count (:revisions st))]))"))
                 :out edn/read-string)]
     (is (= [(:head before) (:heads before) 2] out))))
 
@@ -110,4 +110,4 @@
                     ps)
           reloaded (store/open b h)]
       (and (= (snapshot s) (snapshot reloaded))
-           (:ok? (store/verify b h reloaded))))))
+           (:ok? (store/verify b reloaded))))))

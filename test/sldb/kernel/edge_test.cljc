@@ -3,11 +3,11 @@
             [sldb.kernel.test-util :refer [defspec]]
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
-            [sldb.host.hash :as hash]
+            [sldb.host.default :as host]
             [sldb.kernel.edge :as edge]
             [sldb.kernel.generators :as g]))
 
-(def h hash/sha-256)
+(def h host/host)
 (def a (apply str (repeat 64 "a")))
 (def b (apply str (repeat 64 "b")))
 (def c (apply str (repeat 64 "c")))
@@ -48,4 +48,4 @@
 (defspec generated-edges-validate-and-hash-stably 200
   (prop/for-all [e g/gen-edge]
     (and (= (:id e) (edge/edge-id h e))
-         (= e (edge/validate e)))))
+         (= e (edge/validate h e)))))

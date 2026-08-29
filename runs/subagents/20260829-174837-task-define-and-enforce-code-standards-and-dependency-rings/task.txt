@@ -1,0 +1,13 @@
+Task: task-define-and-enforce-code-standards-and-dependency-rings
+Title: Define and enforce code standards and dependency rings
+Status: active
+Current node: checklist-task-define-and-enforce-code-standards-and-dependency-rings-testing-ready
+Task type: implementation
+Routine: routine-task-define-and-enforce-code-standards-and-dependency-rings
+Effective atoms:
+- atom-decision-pure-cljc-kernel-with-hosts-as-adapters
+- atom-first-slice-runtime-choices
+Checklist status:
+- checklist-task-define-and-enforce-code-standards-and-dependency-rings-execution-ready: complete
+- checklist-task-define-and-enforce-code-standards-and-dependency-rings-testing-ready: complete
+- checklist-task-define-and-enforce-code-standards-and-dependency-rings-closeout-ready: pending

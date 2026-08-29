@@ -4,7 +4,10 @@
  {:requires ([clojure.test :as t]
              [babashka.fs :as fs]
              [clojure.string :as str])
-  test {:doc "Run the kernel test suite on Babashka (clojure.test + test.check). Exit code 1 on any failure."
+  lint {:doc "Dependency rings + docstrings (docs/v2/03 §1, §3): scripts/check_rings.clj."
+        :task (shell "bb" "scripts/check_rings.clj")}
+  test {:doc "Run the kernel test suite on Babashka (clojure.test + test.check) after lint. Exit code 1 on any failure."
+        :depends [lint]
         :task (let [->ns (fn [p]
                            (-> (str (fs/relativize "test" p))
                                (str/replace (re-pattern "\\.cljc$") "")

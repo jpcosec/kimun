@@ -1,0 +1,73 @@
+id: sldb.v2.store_layout
+title: SLDB v2 — Files Backend Layout and Recovery
+type: activity
+version: "1.0"
+# Source of truth: docs/v2/02 §8.1 (backend), §3.1 (reachability); code: sldb.kernel.store, sldb.host.fs-store
+
+data:
+  start: open
+
+  steps:
+    open:
+      label: "open backend host"
+      next: read_descriptor
+
+    read_descriptor:
+      label: "read store.edn {:format-version :hash-alg :capabilities}; hash-alg must match the host Hasher"
+      next: replay
+
+    replay:
+      label: "replay log.edn: for each Transaction line apply-plan(plan) on the rebuilt store"
+      next: check_ids
+
+    check_ids:
+      label: "replayed tx id and revision id equal the logged ones?"
+      kind: decision
+      branches:
+        "yes": heads_present
+        "no": fail_replay
+
+    fail_replay:
+      label: ":store/error — log and objects disagree"
+      kind: end
+
+    heads_present:
+      label: "heads.edn present?"
+      kind: decision
+      branches:
+        "yes": compare_heads
+        "no": ready
+
+    compare_heads:
+      label: "heads.edn == replayed {:head :heads}?"
+      kind: decision
+      branches:
+        "yes": ready
+        "no": fail_heads
+
+    fail_heads:
+      label: ":store/error — heads.edn does not match the log"
+      kind: end
+
+    ready:
+      label: "store value ready (in memory); objects/ never trusted for state"
+      next: verify
+
+    verify:
+      label: "verify: reachable = closure from heads over revision → tree-set/edge-set/roots/tx → tree objects → nodes, edges"
+      next: hash_files
+
+    hash_files:
+      label: "for each reachable id: H(objects/<id> content) == id?"
+      kind: decision
+      branches:
+        "all": ok
+        "some differ or missing": bad
+
+    ok:
+      label: "{:ok? true :checked n}"
+      kind: end
+
+    bad:
+      label: "{:ok? false :bad [{:id :reason :hash-mismatch|:missing}]}"
+      kind: end

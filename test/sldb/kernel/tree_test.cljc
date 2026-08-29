@@ -4,14 +4,14 @@
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
             [clojure.edn :as edn]
-            [sldb.host.hash :as hash]
+            [sldb.host.default :as host]
             [sldb.host.ulid :as ulid]
             [sldb.kernel.node :as node]
             [sldb.kernel.tree :as tree]
             [sldb.kernel.generators :as g]
             #?(:clj [clojure.java.io :as io])))
 
-(def h hash/sha-256)
+(def h host/host)
 (def T "01ARZ3NDEKTSV4RRFFQ69G5FAV")
 
 (defn- text [s] (:id (node/make h :sign :text {:text s})))
@@ -28,7 +28,7 @@
                (->> (tree/commit h)))}))
 
 (deftest ulid-ids-are-nominal-invariant-13
-  (is (ulid/ulid? (ulid/ulid)))
+  (is (tree/ulid? (ulid/ulid)))
   (is (not= (ulid/ulid) (ulid/ulid)))
   (is (= T (:tree (:tree (sample-tree)))))
   (is (thrown? #?(:clj clojure.lang.ExceptionInfo :cljs js/Error) (tree/create h :document "x" (text "r") "not-a-ulid"))))

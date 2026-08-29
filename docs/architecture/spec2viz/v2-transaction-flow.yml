@@ -1,0 +1,77 @@
+id: sldb.v2.transaction_flow
+title: SLDB v2 — Transaction Flow (plan → revision → persistence)
+type: sequence
+version: "1.0"
+# Source of truth: docs/v2/02 §5, §5.1, §5.2, §8.1; code: sldb.kernel.revision/apply-plan, sldb.kernel.store/commit!
+
+data:
+  participants:
+    - id: Author
+      kind: actor
+    - id: Store
+      kind: component
+    - id: Plan
+      kind: component
+    - id: Revision
+      kind: component
+    - id: Tree
+      kind: component
+    - id: Backend
+      kind: boundary
+  messages:
+    - from: Author
+      to: Store
+      message: "commit! backend store-value plan"
+    - from: Store
+      to: Revision
+      message: "apply-plan store plan"
+      kind: sync
+    - from: Revision
+      to: Plan
+      message: "check-schema (pure-data, check 7) · canonical (NFC)"
+      kind: sync
+    - from: Revision
+      to: Plan
+      message: "check-opaque-replace-only (check 6)"
+      kind: sync
+    - from: Revision
+      to: Revision
+      message: "execute ops on working state: new-tree · add-node · add-edge · remove-edge · replace · move (ids-exist, evidence-ref-hash raised inline)"
+    - from: Revision
+      to: Tree
+      message: "add-child / move / replace-node → dirty set"
+      kind: sync
+    - from: Revision
+      to: Plan
+      message: "substitute-aliases → resolved ops · check-capabilities (check 5)"
+      kind: sync
+    - from: Revision
+      to: Revision
+      message: "check-base (check 1): base == head, or delta base→head vs plan → rebase | ConflictSet"
+    - from: Revision
+      to: Tree
+      message: "valid? (check 3) · commit → tree objects (dirty only) · merkle-root"
+      kind: sync
+    - from: Revision
+      to: Revision
+      message: "edge-set · tree-set · Revision (8 fields) · revision-id · Transaction"
+    - from: Revision
+      to: Store
+      message: "{:store' :transaction :revision-id :aliases :edges-added :superseded}"
+      kind: return
+    - from: Store
+      to: Backend
+      message: "write-object! for every new id (H(file) == id)"
+      kind: sync
+    - from: Store
+      to: Backend
+      message: "append-tx! Transaction line"
+      kind: sync
+    - from: Store
+      to: Backend
+      message: "cas-heads! expected → new (atomic rename) · :store/stale on mismatch"
+      kind: sync
+    - from: Store
+      to: Author
+      message: "result or ex-info :plan/rejected | :plan/conflict | :store/stale"
+      kind: return

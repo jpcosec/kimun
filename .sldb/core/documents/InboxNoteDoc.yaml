@@ -27,3 +27,66 @@ documents:
   semantic_tags:
   - type.desk.inbox-note
   - workspace.desk.inbox
+- name: 20260829-174021-suggestion-node-host-parity-for-the-v2-kernel
+  path: desk/inbox/20260829-174021-suggestion-node-host-parity-for-the-v2-kernel.md
+  hash_c: 6becaac8ff294604dce25900e108c75f199262c874a8457c5533faa9198888d9
+  hash_d: 61577ac8b31f6ef8914919d03cb97fa2bc23d4d85b40154b521fda7679753630
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
+- name: 20260829-174022-suggestion-milestone-4-markdown-cst-to-neutral-ast
+  path: desk/inbox/20260829-174022-suggestion-milestone-4-markdown-cst-to-neutral-ast.md
+  hash_c: 6a167b29532ddc973335bf4e2de5ff72d472e84ae467d6835d77dddb74ccb61a
+  hash_d: 346a24d29705ed967796fd44434aca073942061719ac3b2a294ccd0d50be422e
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
+- name: 20260829-174023-suggestion-external-oracle-for-canonical-bytes
+  path: desk/inbox/20260829-174023-suggestion-external-oracle-for-canonical-bytes.md
+  hash_c: 8403cd0722bea6425f81a915ac5f6464d32cd59db14bbc3a7bd41e4cadb8c358
+  hash_d: bc3466da1673a7e9699a9af942be0b2e3460ac8170852ccd14877aec20046c54
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
+- name: 20260829-174024-suggestion-test-coverage-and-lint-tooling-for-babashka
+  path: desk/inbox/20260829-174024-suggestion-test-coverage-and-lint-tooling-for-babashka.md
+  hash_c: 034f8492e1a5a53e9c81bd717627d54f0f743512321fd8ab66826b97ffadb8f6
+  hash_d: 039aee2ce46e407265edbd1cd02f40f4480e885fca8cb9fca4639607bfab458e
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
+- name: 20260829-174024-suggestion-contention-test-for-heads-commit
+  path: desk/inbox/20260829-174024-suggestion-contention-test-for-heads-commit.md
+  hash_c: 6c1cfc68ee20785c7ba1472d19b10649f70b11cdf72222c6e6ad0b8843534238
+  hash_d: 52fa59ef49fa82c6f466ff00b9138d9c79152c80bc83c62436311fb52fe79c89
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
+- name: 20260829-174025-suggestion-ulid-monotonicity-and-clock-adapter
+  path: desk/inbox/20260829-174025-suggestion-ulid-monotonicity-and-clock-adapter.md
+  hash_c: aeba62f6339d27cf624a3170a3b1b63a238b4efb359807ab4cd31bef5625f806
+  hash_d: 5fe46675ce071a5f54df446e5cdd1a36962cb09453be0318cbd02e9f7345e04f
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
+- name: 20260829-174026-suggestion-unreachable-objects-report-and-gc-groundwork
+  path: desk/inbox/20260829-174026-suggestion-unreachable-objects-report-and-gc-groundwork.md
+  hash_c: 46770bb63f7c96b8e2ef23d00fa1053f532c20f77af9129b4e0910cf1c883c7f
+  hash_d: 61ab651550e0041bd3bd4feb2afa706564665a0ed460196b4033c82e5ad753d3
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
+- name: 20260829-174027-suggestion-rewrite-the-pre-v2-spec2viz-specs
+  path: desk/inbox/20260829-174027-suggestion-rewrite-the-pre-v2-spec2viz-specs.md
+  hash_c: 25c54729bed061367378f0f372f84fab2418a9746d33358afd409840978dc718
+  hash_d: b367947822d9219aaead176dc01a7ea8e994751e49877470b8e192812466ee13
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
+- name: 20260829-174028-suggestion-milestone-5-anchor-states-and-drifted-reconciliation
+  path: desk/inbox/20260829-174028-suggestion-milestone-5-anchor-states-and-drifted-reconciliation.md
+  hash_c: e2d43cce23e18b6b9897e81846080c744f308e0997f0ed6e2777d3a5ba4f63e8
+  hash_d: c21a5ce0dc2faa05fd7c81799f421114ca57ccc640cc9e4d0a92f34f9072d662
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox

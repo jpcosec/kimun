@@ -3,12 +3,12 @@
             [sldb.kernel.test-util :refer [defspec]]
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
-            [sldb.host.hash :as hash]
+            [sldb.host.default :as host]
             [sldb.kernel.node :as node]
             [sldb.kernel.pool :as pool]
             [sldb.kernel.generators :as g]))
 
-(def h hash/sha-256)
+(def h host/host)
 
 (deftest put-get-roundtrip
   (let [n (node/make h :sign :text {:text "hola"})

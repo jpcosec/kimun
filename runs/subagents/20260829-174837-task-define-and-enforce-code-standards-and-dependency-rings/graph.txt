@@ -1,0 +1,10 @@
+Missing graph references:
+- missing_declared_target: task:task-harden-the-first-slice-test-suite-against-every-spec-promise -> docs/v2/tests/promises.md
+  provenance: desk/tasks/task-harden-the-first-slice-test-suite-against-every-spec-promise.md:line:41:source-file-reference
+  reason: declared target was not found among extracted graph nodes
+- missing_declared_target: task:task-harden-the-first-slice-test-suite-against-every-spec-promise -> docs/v2/tests/promises.md
+  provenance: desk/tasks/task-harden-the-first-slice-test-suite-against-every-spec-promise.md:line:53:source-file-reference
+  reason: declared target was not found among extracted graph nodes
+- missing_declared_target: task:task-specify-diagram-traceability-contract -> docs/architecture/vistas/vistas.yml
+  provenance: desk/tasks/task-specify-diagram-traceability-contract.md:line:24:source-file-reference
+  reason: declared target was not found among extracted graph nodes

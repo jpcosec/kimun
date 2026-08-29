@@ -1,0 +1,21 @@
+Task: task-define-and-enforce-code-standards-and-dependency-rings
+Title: Define and enforce code standards and dependency rings
+Status: active
+Current node: checklist-task-define-and-enforce-code-standards-and-dependency-rings-testing-ready
+Task type: implementation
+Phase: testing
+Required ritual:
+- desk/rituals/testing.md
+Required pills:
+- desk/contexts/pills.md
+- desk/contexts/pill-planning-contracts.md
+Next actions:
+1. Confirm the handoff names the contract, touched files, and pill guardrails.
+2. Add or update relevant tests.
+3. Run the smallest relevant test scope, then broader validation if shared behavior changed.
+Advance when:
+- Relevant tests pass and the testing-to-closeout handoff is explicit.
+Sources:
+- task: desk/tasks/task-define-and-enforce-code-standards-and-dependency-rings.md
+- board: desk/tasks/Board.md
+- workflow: spec/workflows/task_lifecycle.yaml

@@ -4,13 +4,13 @@
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
             [clojure.edn :as edn]
-            [sldb.host.hash :as hash]
+            [sldb.host.default :as host]
             [sldb.kernel.node :as node]
             [sldb.kernel.revision :as rev]
             [sldb.kernel.generators :as g]
             #?(:clj [clojure.java.io :as io])))
 
-(def h hash/sha-256)
+(def h host/host)
 (def caps {"jp" :all "ana" #{{:op :add-node}}})
 (def T "01ARZ3NDEKTSV4RRFFQ69G5FAV")
 (def TS "2026-08-29T12:00:00.000Z")

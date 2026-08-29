@@ -16,7 +16,9 @@
   (:require [clojure.string :as str]
             [sldb.kernel.canon :as canon]))
 
-(def ops #{:new-tree :add-node :add-edge :remove-edge :replace :move})
+(def ops
+  "The six primitive operations (docs/v2/02 §5)."
+  #{:new-tree :add-node :add-edge :remove-edge :replace :move})
 
 (def ^:private timestamp-re #"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$")
 
@@ -54,7 +56,9 @@
 
 ;; ---------------------------------------------------------------- aliases
 
-(defn alias? [x] (keyword? x))
+(defn alias?
+  "True for a plan alias (a keyword declared with :as)."
+  [x] (keyword? x))
 
 (defn resolve-ref
   "Substitutes an alias by its resolved id; ids pass through."
@@ -107,7 +111,9 @@
                                   (or (nil? t) (= t resolved-tree))))
                            caps)))))
 
-(defn check-capabilities [capabilities plan aliases]
+(defn check-capabilities
+  "Check 5: every op is authorized for the plan actor (per tree when the op carries one)."
+  [capabilities plan aliases]
   (doseq [op (:ops plan)]
     (let [t (some->> (op-tree op) (resolve-ref aliases))]
       (when-not (capability-ok? capabilities (:actor plan) op t)
@@ -128,5 +134,5 @@
 
 (defn canonical
   "The plan with every string NFC-normalized (what gets hashed as the transaction)."
-  [plan]
-  (canon/normalize plan))
+  [host plan]
+  (canon/normalize host plan))

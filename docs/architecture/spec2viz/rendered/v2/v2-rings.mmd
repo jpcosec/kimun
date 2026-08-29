@@ -1,0 +1,40 @@
+graph TD
+    subgraph Ring0 ["ring 0 · sldb.kernel.* (pure: data + functions; requires only clojure.* and kernel)"]
+        ports["ports — Hasher · TextNormalizer · IdMinter (protocols)"]
+        err["err — ex-info contract, rescue (only kernel reader conditional)"]
+        canon["canon — canonical-bytes, digest, normalize (§2.1)"]
+        node["node — 9 class/kind shapes, node-id (§2, §2.1)"]
+        pool["pool — in-memory id → node"]
+        edge["edge — Edge/Evidence shapes, edge-id (§3.2)"]
+        tree["tree — ULID ids, tree objects, dirty set, merkle-root (§3.1)"]
+        plan["plan — schema, aliases, checks 5/6/7 (§5.1)"]
+        revision["revision — apply-plan, Revision, diff, ConflictSet (§5, §5.2)"]
+        heads["heads — CAS per entry, commit! (§3.1)"]
+        store["store — Backend port, init/open/replay/commit!/verify (§8.1)"]
+    end
+    subgraph Ring1 ["ring 1 · sldb.host.* (adapters: implement ports; reader conditionals; I/O)"]
+        host_hash["host.hash — Sha256 (MessageDigest / node crypto)"]
+        host_text["host.text — NFC (java.text.Normalizer / String.normalize)"]
+        host_ulid["host.ulid — ULID minting (SecureRandom / crypto)"]
+        host_fs_store["host.fs-store — files backend (objects/, log.edn, heads.edn, store.edn)"]
+        host_default["host.default — composes the standard host {:hasher :text :ids}"]
+    end
+    Ring3["ring 3 · tests (test/sldb/kernel, fixtures, generators)"]
+    host_hash -->|"implements"| ports
+    host_text -->|"implements"| ports
+    host_ulid -->|"implements"| ports
+    host_fs_store -->|"implements Backend"| store
+    host_default -->|"composes host value"| ports
+    canon -->|"uses host"| ports
+    node -->|"uses"| canon
+    edge -->|"uses"| canon
+    tree -->|"uses"| canon
+    plan -->|"uses"| canon
+    revision -->|"uses"| plan
+    revision -->|"uses"| tree
+    revision -->|"uses"| edge
+    revision -->|"uses"| node
+    heads -->|"uses"| revision
+    store -->|"uses"| revision
+    Ring3 -->|"uses"| Ring1
+    Ring3 -->|"uses"| Ring0

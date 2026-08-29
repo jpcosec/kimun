@@ -1,6 +1,8 @@
 (ns sldb.host.text
-  "Host adapter for text normalization. Only `sldb.host.*` namespaces may use
-   reader conditionals (docs/v2/02 §8.1)."
+  "Host adapter implementing `sldb.kernel.ports/TextNormalizer` (docs/v2/02
+   §2.1 step 1, §8.1): Unicode NFC via java.text.Normalizer on Babashka/JVM and
+   String.prototype.normalize on ClojureScript."
+  (:require [sldb.kernel.ports :as ports])
   #?(:clj (:import [java.text Normalizer Normalizer$Form])))
 
 (defn nfc
@@ -11,7 +13,10 @@
        :cljs (.normalize s "NFC"))
     s))
 
-(defn nfc?
-  "True when `s` is already in NFC form."
-  [s]
-  (= s (nfc s)))
+(defrecord Nfc []
+  ports/TextNormalizer
+  (nfc [_ s] (nfc s)))
+
+(def normalizer
+  "The standard TextNormalizer."
+  (->Nfc))

@@ -4,12 +4,12 @@
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
             [clojure.edn :as edn]
-            [sldb.host.hash :as hash]
+            [sldb.host.default :as host]
             [sldb.kernel.node :as node]
             [sldb.kernel.generators :as g]
             #?(:clj [clojure.java.io :as io])))
 
-(def h hash/sha-256)
+(def h host/host)
 
 (defn- read-fixture []
   #?(:clj  (edn/read-string (slurp (io/file "test/fixtures/nodes.edn")))
@@ -54,7 +54,7 @@
 (defspec every-generated-node-validates-and-hashes-stably 200
   (prop/for-all [n g/gen-node]
     (and (= (:id n) (node/node-id h n))
-         (= n (node/validate n))
+         (= n (node/validate h n))
          (= (:address n) (node/address n)))))
 
 (defspec same-content-same-id-invariant-2 100

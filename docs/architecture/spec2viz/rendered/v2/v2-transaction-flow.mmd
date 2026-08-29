@@ -1,0 +1,22 @@
+sequenceDiagram
+    actor Author
+    participant Store
+    participant Plan
+    participant Revision
+    participant Tree
+    participant Backend
+    Author->>Store: commit! backend store-value plan
+    Store->>Revision: apply-plan store plan
+    Revision->>Plan: check-schema (pure-data, check 7) · canonical (NFC)
+    Revision->>Plan: check-opaque-replace-only (check 6)
+    Revision->>Revision: execute ops on working state: new-tree · add-node · add-edge · remove-edge · replace · move (ids-exist, evidence-ref-hash raised inline)
+    Revision->>Tree: add-child / move / replace-node → dirty set
+    Revision->>Plan: substitute-aliases → resolved ops · check-capabilities (check 5)
+    Revision->>Revision: check-base (check 1): base == head, or delta base→head vs plan → rebase | ConflictSet
+    Revision->>Tree: valid? (check 3) · commit → tree objects (dirty only) · merkle-root
+    Revision->>Revision: edge-set · tree-set · Revision (8 fields) · revision-id · Transaction
+    Revision-->>Store: {:store' :transaction :revision-id :aliases :edges-added :superseded}
+    Store->>Backend: write-object! for every new id (H(file) == id)
+    Store->>Backend: append-tx! Transaction line
+    Store->>Backend: cas-heads! expected → new (atomic rename) · :store/stale on mismatch
+    Store-->>Author: result or ex-info :plan/rejected | :plan/conflict | :store/stale

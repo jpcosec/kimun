@@ -8,9 +8,13 @@
    lost update."
   (:require [sldb.kernel.revision :as revision]))
 
-(defn heads [store] (:heads store))
+(defn heads
+  "{tree-id revision-id}: last revision that touched each tree."
+  [store] (:heads store))
 
-(defn head [store] (:head store))
+(defn head
+  "Latest revision id of the store."
+  [store] (:head store))
 
 (defn cas
   "Pure CAS: returns store' when, for every tree in `expected` (a {tree-id rev-id}

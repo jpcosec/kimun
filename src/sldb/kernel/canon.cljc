@@ -2,48 +2,55 @@
   "Canonical EDN serialization — the reference implementation of
    `canonical-bytes` (docs/v2/02 §2.1).
 
-   Rules:
-   1. every string is NFC-normalized;
-   2. the value is printed as EDN where map entries are sorted by `compare` of the
-      printed form of the key, set elements by `compare` of their canonical printed
-      form, and vectors/lists keep their order; one space between elements, none
-      next to delimiters;
-   3. the resulting string is UTF-8 encoded.
+   1. every string is NFC-normalized (through the host TextNormalizer);
+   2. the value is printed as EDN with map entries sorted by `compare` of the
+      printed key, set elements sorted by `compare` of their canonical printed
+      form, vectors/lists in order; one space between elements, none next to
+      delimiters;
+   3. the host Hasher digests the UTF-8 encoding of that string.
 
-   Only strings, integers, booleans, nil, keywords, symbols, vectors, lists, maps
-   and sets are admitted. Anything else (floats, ratios, #inst, #uuid, chars,
-   records, functions) is rejected with an ex-info of type :canon/invalid-value."
+   Admitted: strings, integers, booleans, nil, keywords, symbols, vectors,
+   lists, maps, sets. Anything else (floats, ratios, #inst, #uuid, chars,
+   records, functions) raises :canon/invalid-value."
   (:require [clojure.string :as str]
-            [sldb.host.text :as text]
-            [sldb.host.hash :as hash]))
+            [sldb.kernel.ports :as ports]
+            [sldb.kernel.err :as err]))
 
 (defn- invalid [v why]
-  (throw (ex-info (str "canonical-bytes: " why)
-                  {:type :canon/invalid-value :value v :why why})))
+  (err/raise :canon/invalid-value (str "canonical-bytes: " why) {:value v :why why}))
 
 (defn- integer-value? [v]
-  #?(:clj  (or (instance? Long v) (instance? Integer v) (instance? java.math.BigInteger v)
-               (instance? clojure.lang.BigInt v) (instance? Short v) (instance? Byte v))
-     :cljs (and (number? v) (js/Number.isInteger v))))
+  (and (number? v) (integer? v)))
+
+(defn normalize
+  "Walks `v` returning the same structure with every string NFC-normalized and
+   every list/seq turned into a vector. This is the form the kernel stores."
+  [host v]
+  (cond
+    (string? v) (ports/nfc (ports/text host) v)
+    (map? v)    (into {} (map (fn [[k val]] [(normalize host k) (normalize host val)])) v)
+    (set? v)    (into #{} (map #(normalize host %)) v)
+    (or (vector? v) (list? v) (seq? v)) (into [] (map #(normalize host %)) v)
+    :else       v))
 
 (defn- atomic-str [v]
   (cond
     (nil? v)            "nil"
     (true? v)           "true"
     (false? v)          "false"
-    (string? v)         (pr-str (text/nfc v))
+    (string? v)         (pr-str v)
     (keyword? v)        (pr-str v)
     (symbol? v)         (pr-str v)
     (integer-value? v)  (str v)
     (number? v)         (invalid v "floats and ratios are not admitted; pre-convert to a string")
     :else               nil))
 
-(declare normalize)
-
 (defn- join [open close parts]
   (str open (str/join " " parts) close))
 
-(defn- print-canon [v]
+(defn- print-canon
+  "Step 2 over an already-normalized value."
+  [v]
   (if-some [s (atomic-str v)]
     s
     (cond
@@ -63,35 +70,17 @@
       (invalid v (str "type not admitted in canonical content: " (type v))))))
 
 (defn canon-str
-  "Canonical printed form of `v` (steps 1–2 of docs/v2/02 §2.1): the value is
-   NFC-normalized first, so a set or map whose elements/keys differ only by
-   normalization collapses before printing."
-  [v]
-  (print-canon (normalize v)))
-
-(defn canonical-bytes
-  "UTF-8 bytes of the canonical printed form of `v`."
-  [v]
-  (hash/utf8-bytes (canon-str v)))
+  "Canonical printed form of `v` (steps 1–2): NFC-normalized first, so sets or
+   maps whose elements/keys differ only by normalization collapse before printing."
+  [host v]
+  (print-canon (normalize host v)))
 
 (defn digest
-  "Lower-case hex digest of `canonical-bytes v` under `hasher`."
-  [hasher v]
-  (hash/hash-bytes hasher (canonical-bytes v)))
-
-(defn normalize
-  "Walks `v` returning the same structure with every string NFC-normalized and
-   every list/seq turned into a vector. This is the form the kernel stores."
-  [v]
-  (cond
-    (string? v) (text/nfc v)
-    (map? v)    (into {} (map (fn [[k val]] [(normalize k) (normalize val)])) v)
-    (set? v)    (into #{} (map normalize) v)
-    (or (vector? v) (list? v) (seq? v)) (into [] (map normalize) v)
-    :else       v))
+  "Lower-case hex digest of the canonical form of `v` under the host Hasher (step 3)."
+  [host v]
+  (ports/digest-str (ports/hasher host) (canon-str host v)))
 
 (defn valid?
-  "True when `v` is admitted in canonical content (no exception from canon-str)."
-  [v]
-  (try (canon-str v) true
-       (catch #?(:clj clojure.lang.ExceptionInfo :cljs :default) _ false)))
+  "True when `v` is admitted in canonical content."
+  [host v]
+  (err/rescue (fn [_] false) (canon-str host v) true))

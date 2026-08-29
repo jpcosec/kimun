@@ -2,12 +2,12 @@
   "Shared test.check generators for the kernel (docs/v2/02 §8.1). Created in
    milestone 0 (`gen-node`), extended by later milestones."
   (:require [clojure.test.check.generators :as gen]
-            [sldb.host.hash :as hash]
+            [sldb.host.default :as host]
             [sldb.kernel.node :as node]
             [sldb.kernel.edge]
             [sldb.kernel.tree]))
 
-(def hasher hash/sha-256)
+(def hasher host/host)
 
 (def gen-text
   "Strings including combining characters, so NFC matters."

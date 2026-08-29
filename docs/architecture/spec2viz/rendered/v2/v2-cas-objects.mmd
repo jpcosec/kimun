@@ -1,0 +1,26 @@
+graph TD
+    subgraph Store ["Store (CAS: objects/#lt;id#gt;)"]
+        Revision["Revision {roots trees edges parents tx actor engines timestamp} · id = H(8 fields)"]
+        TreeSet["tree-set [[tree-id descriptor-id] …] sorted"]
+        EdgeSet["edge-set [edge-id …] sorted"]
+        Descriptor["descriptor {:tree ULID :kind :name :root}"]
+        TreeObject["tree object {:node :children [[child tree-hash] …]} (sibling order in hash)"]
+        Node["Node {:class :kind :content} · S sign / M symbol / G fact"]
+        Edge["Edge {:type :from :to [:tree :order] :evidence} · no timestamp"]
+        ResolvedPlan["resolved plan (tx id = H(plan)) — Transaction map lives in log.edn"]
+    end
+    Heads["heads.edn {:head rev :heads {tree-id rev}} (nominal refs, CAS)"]
+    Log["log.edn — one Transaction {:id :plan :revision} per line"]
+    Heads -->|"points to"| Revision
+    Revision -->|"parents"| Revision
+    Revision -->|"trees"| TreeSet
+    Revision -->|"edges"| EdgeSet
+    Revision -->|"roots (merkle-root per tree)"| TreeObject
+    Revision -->|"tx"| ResolvedPlan
+    TreeSet -->|"lists"| Descriptor
+    Descriptor -->|"root"| Node
+    TreeObject -->|"children (ordered)"| TreeObject
+    TreeObject -->|"node"| Node
+    EdgeSet -->|"lists"| Edge
+    Edge -->|"from / to / evidence.context"| Node
+    Log -->|"replays into"| ResolvedPlan

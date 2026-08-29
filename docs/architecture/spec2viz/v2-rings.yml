@@ -1,0 +1,162 @@
+id: sldb.v2.rings
+title: SLDB v2 — Dependency Rings and Namespaces
+type: component
+version: "1.0"
+# Source of truth: docs/v2/03-estandares-de-codigo.md §1. Arrows point inward only.
+# Enforced by scripts/check_rings.clj (bb lint).
+
+data:
+  nodes:
+    Ring0:
+      label: "ring 0 · sldb.kernel.* (pure: data + functions; requires only clojure.* and kernel)"
+      kind: core
+      atoms:
+        - atom-decision-pure-cljc-kernel-with-hosts-as-adapters
+      contains:
+        - ports
+        - err
+        - canon
+        - node
+        - pool
+        - edge
+        - tree
+        - plan
+        - revision
+        - heads
+        - store
+
+    ports:
+      label: "ports — Hasher · TextNormalizer · IdMinter (protocols)"
+      kind: core
+    err:
+      label: "err — ex-info contract, rescue (only kernel reader conditional)"
+      kind: core
+    canon:
+      label: "canon — canonical-bytes, digest, normalize (§2.1)"
+      kind: core
+      atoms:
+        - atom-canonical-content-and-node-hashing
+    node:
+      label: "node — 9 class/kind shapes, node-id (§2, §2.1)"
+      kind: core
+      atoms:
+        - atom-smg-node-pool
+    pool:
+      label: "pool — in-memory id → node"
+      kind: core
+    edge:
+      label: "edge — Edge/Evidence shapes, edge-id (§3.2)"
+      kind: core
+      atoms:
+        - atom-evidence-required-per-edge-type
+    tree:
+      label: "tree — ULID ids, tree objects, dirty set, merkle-root (§3.1)"
+      kind: core
+      atoms:
+        - atom-tree-as-index
+        - atom-tree-identity-tree-objects-and-heads
+    plan:
+      label: "plan — schema, aliases, checks 5/6/7 (§5.1)"
+      kind: core
+      atoms:
+        - atom-transactionplan-edn-schema-and-validation
+    revision:
+      label: "revision — apply-plan, Revision, diff, ConflictSet (§5, §5.2)"
+      kind: core
+      atoms:
+        - atom-revision-id-edge-set-and-diff
+        - atom-replace-semantics-inside-a-transaction
+        - atom-conflictset-on-failed-compare-and-swap
+    heads:
+      label: "heads — CAS per entry, commit! (§3.1)"
+      kind: core
+    store:
+      label: "store — Backend port, init/open/replay/commit!/verify (§8.1)"
+      kind: core
+      atoms:
+        - atom-first-slice-runtime-choices
+
+    Ring1:
+      label: "ring 1 · sldb.host.* (adapters: implement ports; reader conditionals; I/O)"
+      kind: boundary
+      contains:
+        - host_hash
+        - host_text
+        - host_ulid
+        - host_fs_store
+        - host_default
+    host_hash:
+      label: "host.hash — Sha256 (MessageDigest / node crypto)"
+      kind: service
+    host_text:
+      label: "host.text — NFC (java.text.Normalizer / String.normalize)"
+      kind: service
+    host_ulid:
+      label: "host.ulid — ULID minting (SecureRandom / crypto)"
+      kind: service
+    host_fs_store:
+      label: "host.fs-store — files backend (objects/, log.edn, heads.edn, store.edn)"
+      kind: database
+    host_default:
+      label: "host.default — composes the standard host {:hasher :text :ids}"
+      kind: service
+
+    Ring3:
+      label: "ring 3 · tests (test/sldb/kernel, fixtures, generators)"
+      kind: client
+
+  edges:
+    - from: host_hash
+      to: ports
+      relation: implements
+    - from: host_text
+      to: ports
+      relation: implements
+    - from: host_ulid
+      to: ports
+      relation: implements
+    - from: host_fs_store
+      to: store
+      relation: implements Backend
+    - from: host_default
+      to: ports
+      relation: composes host value
+    - from: canon
+      to: ports
+      relation: uses host
+    - from: node
+      to: canon
+      relation: uses
+    - from: edge
+      to: canon
+      relation: uses
+    - from: tree
+      to: canon
+      relation: uses
+    - from: plan
+      to: canon
+      relation: uses
+    - from: revision
+      to: plan
+      relation: uses
+    - from: revision
+      to: tree
+      relation: uses
+    - from: revision
+      to: edge
+      relation: uses
+    - from: revision
+      to: node
+      relation: uses
+    - from: heads
+      to: revision
+      relation: uses
+    - from: store
+      to: revision
+      relation: uses
+    - from: Ring3
+      to: Ring1
+      relation: uses
+    - from: Ring3
+      to: Ring0
+      relation: uses

@@ -57,4 +57,6 @@
                 (do (write-atomic! p (pr-str new)) true)
                 false)))))
 
-(defn backend [dir] (->FsBackend dir))
+(defn backend
+  "A files backend rooted at `dir`."
+  [dir] (->FsBackend dir))

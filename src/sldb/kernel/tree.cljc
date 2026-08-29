@@ -14,27 +14,40 @@
    Only ownership changes mark the dirty set; commit recomputes dirty objects in
    post-order and reuses every other object from the previous state."
   (:require [sldb.kernel.canon :as canon]
-            [sldb.host.ulid :as ulid]))
+            [sldb.kernel.ports :as ports]
+            [sldb.kernel.err :as err]))
 
-(def kinds #{:document :section-index :taxonomy :syntax :context})
+(def kinds
+  "Admitted tree kinds."
+  #{:document :section-index :taxonomy :syntax :context})
+
+(def ^:private ulid-alphabet "0123456789ABCDEFGHJKMNPQRSTVWXYZ")
+
+(defn ulid?
+  "True for a 26-character Crockford-base32 string (the nominal tree id shape)."
+  [s]
+  (and (string? s) (= 26 (count s)) (every? #(some #{%} ulid-alphabet) s)))
 
 (defn- fail [why data]
-  (throw (ex-info (str "tree: " why) (assoc data :type :tree/invalid))))
+  (err/raise :tree/invalid (str "tree: " why) data))
 
 ;; ---------------------------------------------------------------- descriptor
 
-(defn descriptor-id [hasher descriptor]
-  (canon/digest hasher descriptor))
+(defn descriptor-id
+  "Content-addressed id of a tree descriptor {:tree :kind :name :root} (§3.1)."
+  [host descriptor]
+  (canon/digest host descriptor))
 
 ;; ---------------------------------------------------------------- creation
 
 (defn create
-  "A new tree of `kind` rooted at node `root`, with every node dirty (docs/v2/02 §3.1).
-   `tree-id` defaults to a fresh ULID; pass one explicitly for reproducible fixtures."
-  ([hasher kind name root] (create hasher kind name root (ulid/ulid)))
-  ([_hasher kind name root tree-id]
+  "A new tree of `kind` rooted at node `root`, with every node dirty (§3.1).
+   `tree-id` defaults to a fresh ULID from the host IdMinter; pass one
+   explicitly for reproducible fixtures."
+  ([host kind name root] (create host kind name root (ports/ulid (ports/ids host))))
+  ([_host kind name root tree-id]
    (when-not (contains? kinds kind) (fail "unknown tree kind" {:kind kind}))
-   (when-not (ulid/ulid? tree-id) (fail "tree id must be a ULID" {:tree tree-id}))
+   (when-not (ulid? tree-id) (fail "tree id must be a ULID" {:tree tree-id}))
    {:tree tree-id
     :descriptor {:tree tree-id :kind kind :name name :root root}
     :children {root []}
@@ -42,11 +55,17 @@
     :objects {}
     :dirty #{root}}))
 
-(defn root [tree] (get-in tree [:descriptor :root]))
+(defn root
+  "The root node id of the tree."
+  [tree] (get-in tree [:descriptor :root]))
 
-(defn nodes [tree] (set (keys (:children tree))))
+(defn nodes
+  "Set of node ids in the tree."
+  [tree] (set (keys (:children tree))))
 
-(defn contains-node? [tree node] (contains? (:children tree) node))
+(defn contains-node?
+  "True when `node` is in the tree."
+  [tree node] (contains? (:children tree) node))
 
 (defn ancestors
   "Ancestors of `node` in this tree, nearest first."
@@ -97,10 +116,10 @@
         (mark-dirty parent))))
 
 (defn move
-  "Re-parents `node` (with its subtree) under `new-parent` at `order`."
+  "Re-parents `node` (with its subtree) under `new-parent` at `order`; rejects cycles."
   [tree node new-parent order]
   (when (= node (root tree)) (fail "cannot move the root" {:node node}))
-  (when (some #{new-parent} (cons node (rest (subtree-nodes tree node)))) (fail "cycle" {:node node :parent new-parent}))
+  (when (some #{new-parent} (subtree-nodes tree node)) (fail "cycle" {:node node :parent new-parent}))
   (let [old-parent (get-in tree [:parent node])]
     (when-not old-parent (fail "node not in tree" {:node node}))
     (let [t (-> tree (update-in [:children old-parent] remove-item node) (mark-dirty old-parent))
@@ -113,7 +132,8 @@
           (update :dirty conj node)))))
 
 (defn replace-node
-  "`new` takes the exact position of `old` and inherits its children (§5.1 :replace, structural part)."
+  "`new` takes the exact position of `old` and inherits its children
+   (structural part of §5.1 :replace); replacing the root re-roots the tree."
   [tree old new]
   (when-not (contains-node? tree old) (fail "old node not in tree" {:node old}))
   (when (contains-node? tree new) (fail "new node already in tree" {:node new}))
@@ -139,7 +159,8 @@
 ;; ---------------------------------------------------------------- validation
 
 (defn valid?
-  "One parent per node, no cycles, root has no parent, every child listed once."
+  "One parent per node, no cycles, root has no parent, every child listed once,
+   every node reachable from the root."
   [tree]
   (let [{:keys [children parent]} tree
         r (root tree)]
@@ -153,7 +174,9 @@
 
 ;; ---------------------------------------------------------------- merkle
 
-(defn tree-object [tree node]
+(defn tree-object
+  "{:node n :children [[child tree-hash] ...]} for `node`, in sibling order (§3.1)."
+  [tree node]
   {:node node
    :children (mapv (fn [c] [c (get-in tree [:objects c])]) (get-in tree [:children node]))})
 
@@ -162,15 +185,15 @@
 (defn commit
   "Recomputes the tree objects of dirty nodes only, deepest first (post-order),
    reusing every other object. Returns the tree with :objects complete and :dirty empty."
-  [hasher tree]
+  [host tree]
   (let [order (sort-by #(- (depth tree %)) (:dirty tree))
         t (reduce (fn [t n]
-                    (assoc-in t [:objects n] (canon/digest hasher (tree-object t n))))
+                    (assoc-in t [:objects n] (canon/digest host (tree-object t n))))
                   tree order)]
     (assoc t :dirty #{})))
 
 (defn merkle-root
-  "Root tree-hash of a committed tree; throws if dirty."
+  "Root tree-hash of a committed tree; raises :tree/invalid if dirty."
   [tree]
   (when (seq (:dirty tree)) (fail "tree has dirty nodes; commit first" {:dirty (:dirty tree)}))
   (get-in tree [:objects (root tree)]))

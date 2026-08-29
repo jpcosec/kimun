@@ -1,10 +1,10 @@
 (ns sldb.kernel.heads-test
   (:require [clojure.test :refer [deftest is testing]]
-            [sldb.host.hash :as hash]
+            [sldb.host.default :as host]
             [sldb.kernel.revision :as rev]
             [sldb.kernel.heads :as heads]))
 
-(def h hash/sha-256)
+(def h host/host)
 (def TS "2026-08-29T12:00:00.000Z")
 (def T "01ARZ3NDEKTSV4RRFFQ69G5FAV")
 (def U "01ARZ3NDEKTSV4RRFFQ69G5FAW")

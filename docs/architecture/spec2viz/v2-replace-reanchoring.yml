@@ -1,0 +1,63 @@
+id: sldb.v2.replace_reanchoring
+title: SLDB v2 — :replace and Re-anchoring under Succession
+type: activity
+version: "1.0"
+# Source of truth: docs/v2/02 §5.1 ":replace", §6, §6.1; atoms: atom-replace-semantics-inside-a-transaction, atom-re-anchoring-rules-under-succession
+
+data:
+  start: replace_op
+
+  steps:
+    replace_op:
+      label: ":replace {:tree t :old X :new X'}"
+      next: structural
+
+    structural:
+      label: "X' takes X's :order under the same parent and inherits X's subtree; only tree t changes"
+      next: supersedes
+
+    supersedes:
+      label: "add edge supersedes X' → X with evidence {:actor plan-actor}"
+      next: scan_edges
+
+    scan_edges:
+      label: "for every active edge with X at either endpoint"
+      next: edge_type
+
+    edge_type:
+      label: "edge type?"
+      kind: decision
+      branches:
+        "reference / binding": follow
+        "semantic": leave_review
+        "projection": leave_revalidate
+        "derived": invalidate
+        "ownership": done_ownership
+
+    follow:
+      label: "new edge with X' in place of X (:ref-hash = X' if X was :to); old edge stays → superseded"
+      next: dirty
+
+    leave_review:
+      label: "not followed → superseded, awaits human/agent review"
+      next: dirty
+
+    leave_revalidate:
+      label: "not followed → superseded, awaits sense revalidation"
+      next: dirty
+
+    invalidate:
+      label: "invalidated → recomputed on demand"
+      next: dirty
+
+    done_ownership:
+      label: "already rewritten by the structural step"
+      next: dirty
+
+    dirty:
+      label: "mark X', parent and ancestors dirty in t; commit recomputes only that path"
+      next: end
+
+    end:
+      label: "revision records supersedes; later X'' → X' repeats the rules (chain)"
+      kind: end

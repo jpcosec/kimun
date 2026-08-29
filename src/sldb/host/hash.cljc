@@ -1,12 +1,16 @@
 (ns sldb.host.hash
-  "Host adapter for hashing (docs/v2/02 §8.1). The kernel only depends on the
-   `Hasher` protocol; the algorithm name is recorded in the store descriptor."
+  "Host adapter implementing `sldb.kernel.ports/Hasher` (docs/v2/02 §8.1):
+   SHA-256 over the UTF-8 encoding of a string. Babashka/JVM uses
+   MessageDigest; ClojureScript/Node uses `crypto`."
+  (:require [sldb.kernel.ports :as ports])
   #?(:clj (:import [java.security MessageDigest]
                    [java.nio.charset StandardCharsets])))
 
-(defprotocol Hasher
-  (algorithm [this] "Keyword naming the algorithm, e.g. :sha-256.")
-  (hash-bytes [this ^bytes bs] "Lower-case hex digest of a byte array."))
+(defn utf8-bytes
+  "UTF-8 encoding of a string as a byte array (or Buffer on Node)."
+  [^String s]
+  #?(:clj  (.getBytes s StandardCharsets/UTF_8)
+     :cljs (js/Buffer.from s "utf8")))
 
 #?(:clj
    (defn- hex [^bytes digest]
@@ -17,21 +21,18 @@
            (.append sb (Integer/toHexString v))))
        (str sb))))
 
+(defn sha256-hex
+  "Lower-case hex SHA-256 of a byte array."
+  [bs]
+  #?(:clj  (hex (.digest (MessageDigest/getInstance "SHA-256") ^bytes bs))
+     :cljs (let [crypto (js/require "crypto")]
+             (-> (.createHash crypto "sha256") (.update bs) (.digest "hex")))))
+
 (defrecord Sha256 []
-  Hasher
+  ports/Hasher
   (algorithm [_] :sha-256)
-  (hash-bytes [_ bs]
-    #?(:clj  (let [md (MessageDigest/getInstance "SHA-256")]
-               (hex (.digest md ^bytes bs)))
-       :cljs (let [crypto (js/require "crypto")]
-               (-> (.createHash crypto "sha256")
-                   (.update bs)
-                   (.digest "hex"))))))
+  (digest-str [_ s] (sha256-hex (utf8-bytes s))))
 
-(def sha-256 (->Sha256))
-
-(defn utf8-bytes
-  "UTF-8 encoding of a string as a byte array (or Buffer on Node)."
-  [^String s]
-  #?(:clj  (.getBytes s StandardCharsets/UTF_8)
-     :cljs (js/Buffer.from s "utf8")))
+(def sha-256
+  "The standard Hasher: SHA-256 over UTF-8."
+  (->Sha256))
