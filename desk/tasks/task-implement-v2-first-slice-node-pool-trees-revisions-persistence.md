@@ -1,6 +1,6 @@
 ---
 id: task-implement-v2-first-slice-node-pool-trees-revisions-persistence
-status: active
+status: ready_for_testing
 summary: 'MILESTONE 0 ONLY (the task id is inherited from the former umbrella task;
   milestones 1-3 are separate tasks that depend on this one): canonical EDN bytes,
   host Hasher (SHA-256), NFC, node ids for all S/M/G shapes, in-memory pool.'
@@ -8,9 +8,10 @@ tags:
 - workspace:desk
 - artifact:task
 routine: routine-task-implement-v2-first-slice-node-pool-trees-revisions-persistence
-current_node: checklist-task-implement-v2-first-slice-node-pool-trees-revisions-persistence-testing-ready
+current_node: checklist-task-implement-v2-first-slice-node-pool-trees-revisions-persistence-closeout-ready
 history:
 - operator-task-implement-v2-first-slice-node-pool-trees-revisions-persistence-activate
+- operator-task-implement-v2-first-slice-node-pool-trees-revisions-persistence-ready-for-testing
 references: []
 depends_on: []
 pills:
@@ -23,6 +24,7 @@ files:
 - src/sldb/host/text.cljc
 - src/sldb/kernel/node.cljc
 - src/sldb/kernel/pool.cljc
+- test/sldb/kernel/test_util.cljc
 - test/sldb/kernel/generators.cljc
 - test/sldb/kernel/canon_test.cljc
 - test/sldb/kernel/node_test.cljc

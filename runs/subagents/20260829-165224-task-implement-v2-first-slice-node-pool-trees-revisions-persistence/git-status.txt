@@ -1,0 +1,6 @@
+## refactor-target...origin/refactor-target [ahead 3]
+ M .deskops.log
+ M desk/tasks/task-implement-v2-first-slice-node-pool-trees-revisions-persistence.md
+?? runs/subagents/20260829-165224-task-implement-v2-first-slice-node-pool-trees-revisions-persistence/
+?? src/
+?? test/

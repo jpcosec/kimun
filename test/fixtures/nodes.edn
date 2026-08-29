@@ -1,0 +1,65 @@
+;; Golden ids for docs/v2/02 §2.1 — one entry per class/kind row.
+;; Computed once with sldb.kernel.canon + SHA-256 on 2026-08-29, reviewed, frozen.
+[{:class :sign,
+  :kind :text,
+  :content {:text "El cielo es azul."},
+  :expected-id
+  "ffdf4147e59740e4dcb21441d76bacf46a046f84d9d2ee8ae630dc0ebfa7ab6a"}
+ {:class :sign,
+  :kind :block,
+  :content {:format :markdown, :type :heading, :attrs {:level 2}},
+  :expected-id
+  "bdc0ef299e3d88c50c91859f75c703b06ea54c3d10a9eda1a69b19bd947b58b6"}
+ {:class :sign,
+  :kind :opaque,
+  :content {:format "html", :blob "<div class=\"warning\">ojo</div>"},
+  :expected-id
+  "fcc5220a4af29a8821d77d2fc52301bc196b279ca4192213b36794dfa7ee7205"}
+ {:class :sign,
+  :kind :external,
+  :content
+  {:locator {:kind :file, :path "docs/x.pdf", :page 3},
+   :sample "Resumen ejecutivo",
+   :fingerprint
+   "0000000000000000000000000000000000000000000000000000000000000000"},
+  :expected-id
+  "efae243d06afd11d0e1bb0efde2f4cb62a5e5a3291f7d88de7f5bd597905f2e3"}
+ {:class :sign,
+  :kind :span,
+  :content
+  {:leaf
+   "1111111111111111111111111111111111111111111111111111111111111111",
+   :range [3 8]},
+  :expected-id
+  "f8bc24ee5fa9c801350ca332727f2563b735357feff855a03dddee007a16ce3b"}
+ {:class :symbol,
+  :kind :term,
+  :content {:name "cielo", :lang "es"},
+  :expected-id
+  "2a03e199175a4ed0e4bbe375e0e569e8634c4213c6f859f9595bba42a427bdd2"}
+ {:class :symbol,
+  :kind :proposition,
+  :content
+  {:form
+   ["2222222222222222222222222222222222222222222222222222222222222222"
+    "3333333333333333333333333333333333333333333333333333333333333333"
+    "azul"]},
+  :expected-id
+  "a6e631b8d091412305b9982c2af837171d76db26f784c2a654bbd34aab41b407"}
+ {:class :fact,
+  :kind :triple,
+  :content
+  {:subject
+   "3333333333333333333333333333333333333333333333333333333333333333",
+   :predicate
+   "4444444444444444444444444444444444444444444444444444444444444444",
+   :object "azul",
+   :context
+   "5555555555555555555555555555555555555555555555555555555555555555"},
+  :expected-id
+  "9d1307be57183a8dbfad63aeaaab4f7a886b9ae07a1035c234345e924d80452e"}
+ {:class :fact,
+  :kind :context,
+  :content {:name "colores"},
+  :expected-id
+  "146e6ca533092558d4a54a4d7e311e5f37fe08bf3e90380ed41bc4609097ac3d"}]

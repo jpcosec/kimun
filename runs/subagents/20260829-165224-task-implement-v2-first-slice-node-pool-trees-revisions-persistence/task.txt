@@ -1,0 +1,18 @@
+Task: task-implement-v2-first-slice-node-pool-trees-revisions-persistence
+Title: Implement v2 milestone 0: content-addressed node pool
+Status: active
+Current node: checklist-task-implement-v2-first-slice-node-pool-trees-revisions-persistence-testing-ready
+Task type: implementation
+Routine: routine-task-implement-v2-first-slice-node-pool-trees-revisions-persistence
+Effective pills:
+- desk/contexts/pill-guardrail-v2-implementation-gate.md
+Effective atoms:
+- atom-smg-node-pool
+- atom-canonical-content-and-node-hashing
+- atom-first-slice-runtime-choices
+- atom-decision-pure-cljc-kernel-with-hosts-as-adapters
+- atom-w-i-context-node-and-index
+Checklist status:
+- checklist-task-implement-v2-first-slice-node-pool-trees-revisions-persistence-execution-ready: complete
+- checklist-task-implement-v2-first-slice-node-pool-trees-revisions-persistence-testing-ready: complete
+- checklist-task-implement-v2-first-slice-node-pool-trees-revisions-persistence-closeout-ready: pending
