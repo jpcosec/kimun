@@ -249,3 +249,43 @@ documents:
   - system:sldb
   - type.knowledge.atom
   - workspace.desk.atoms
+- name: atom-sldb-md-profile-a-closed-canonical-markdown-subset
+  path: desk/atoms/atom-sldb-md-profile-a-closed-canonical-markdown-subset.md
+  hash_c: c9a10ae043a2b9ffa61cd3aca9f336052732b08c2cf80a5f647616d29d3e7ae4
+  hash_d: ca409a370ef2ffbfe9cf1c775d459a4454da1e6fa4e3b0315bb72998c435adf4
+  semantic_tags:
+  - domain:documents
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-inline-marks-live-on-the-block-text-leaves-stay-plain
+  path: desk/atoms/atom-inline-marks-live-on-the-block-text-leaves-stay-plain.md
+  hash_c: 2c18ef092e472f898f92b2c3df48fab69341b01659739b11def3db6fbdd8850d
+  hash_d: a17895667d0b2b5bce33965cbd29f698bc3284b091337620d2e5e6a77aa9a5e3
+  semantic_tags:
+  - domain:text-structure
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-lossless-cst-and-canonical-render-for-markdown
+  path: desk/atoms/atom-lossless-cst-and-canonical-render-for-markdown.md
+  hash_c: ec818f4941cc053ac65d5a4edbeacfedb603545209d730bc7b42c260a0a45390
+  hash_d: 21f4ef9971720d02fa0e552ea6cf4eaed3ef66b675aebc587ae3eb2998a2d4e0
+  semantic_tags:
+  - domain:emitters
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-addressability-report-per-document
+  path: desk/atoms/atom-addressability-report-per-document.md
+  hash_c: 82e5c37c39414a166a553795ca3badd041e66b253f41e51d5c8dcd8e76c144f5
+  hash_d: e01d0df3923462dfd5538e509e584489038b196ec7a2582124b4ef1e1ff9dfae
+  semantic_tags:
+  - domain:addressability
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms

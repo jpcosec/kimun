@@ -1,0 +1,20 @@
+## refactor-target...origin/refactor-target [ahead 25]
+ M .sldb/core/documents/AtomDoc.yaml
+ M .sldb/core/models/AtomDoc.yaml
+ M .sldb/core/store_index.yaml
+ D desk/drawer/tasks/task-milestone-4-markdown-cst-to-neutral-ast.md
+ M desk/tasks/Board.md
+?? desk/atoms/atom-addressability-report-per-document.md
+?? desk/atoms/atom-inline-marks-live-on-the-block-text-leaves-stay-plain.md
+?? desk/atoms/atom-lossless-cst-and-canonical-render-for-markdown.md
+?? desk/atoms/atom-sldb-md-profile-a-closed-canonical-markdown-subset.md
+?? desk/primitives/checklists/checklist-task-milestone-4-markdown-cst-to-neutral-ast-closeout-ready.md
+?? desk/primitives/checklists/checklist-task-milestone-4-markdown-cst-to-neutral-ast-execution-ready.md
+?? desk/primitives/checklists/checklist-task-milestone-4-markdown-cst-to-neutral-ast-testing-ready.md
+?? desk/primitives/conditions/
+?? desk/primitives/edges/
+?? desk/primitives/operators/
+?? desk/routines/
+?? desk/tasks/task-milestone-4-markdown-cst-to-neutral-ast.md
+?? docs/v2/04-superficie-markdown.md
+?? runs/subagents/20260829-180407-task-milestone-4-markdown-cst-to-neutral-ast-zero-context-audit/

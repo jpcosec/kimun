@@ -4,7 +4,8 @@ id: board-001
 # Affected workspace or domain
 scope: desk
 # List of task-xxx paths
-tasks: []
+tasks:
+- desk/tasks/task-milestone-4-markdown-cst-to-neutral-ast.md
 # List of pill-xxx paths
 pills:
 - desk/contexts/pills.md
@@ -32,8 +33,10 @@ _Explain what this board routes and why it exists._
 
 _Add short operational notes about the current routed set._
 
-- Document the v2 kernel with spec2viz diagrams [draft] - spec2viz YAML specs for the v2 kernel (rings and namespaces, CAS object model, transaction flow, store layout, succession/re-anchoring) rendered and cataloged, referenced from docs/v2/README.md.
+
 
 ## Task Details
 
 _Generated from the task references above._
+
+- Milestone 4 Markdown CST to neutral AST [active] - Triage and resolve the inbox message promoted from `desk/inbox/20260829-174022-suggestion-milestone-4-markdown-cst-to-neutral-ast.md`.
