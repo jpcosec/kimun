@@ -6,7 +6,7 @@ five_wh_one_plus: how
 tags:
 - system:sldb
 - domain:implementation-clojure-core
-provenance: source docs/architecture/target-system-overview.md
+provenance: raw/source/architecture/target-system-overview.md
 ---
 
 # RelationAST and extensibility

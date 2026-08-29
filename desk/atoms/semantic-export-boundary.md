@@ -6,7 +6,7 @@ five_wh_one_plus: why
 tags:
 - system:sldb
 - domain:architecture-boundaries
-provenance: source docs/sldb-v1/README.md
+provenance: raw/source/sldb-v1/README.md
 ---
 
 # Semantic export boundary

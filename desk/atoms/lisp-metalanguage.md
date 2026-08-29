@@ -7,7 +7,7 @@ tags:
 - system:sldb
 - domain:architecture-boundaries
 - domain:architecture-integration
-provenance: source docs/core/reasoning.md
+provenance: raw/source/core/reasoning.md
 ---
 
 # Lisp metalanguage

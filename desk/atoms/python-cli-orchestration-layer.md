@@ -6,7 +6,7 @@ five_wh_one_plus: how
 tags:
 - system:sldb
 - domain:implementation-python-cli
-provenance: source docs/core/interfaces.md
+provenance: raw/source/core/interfaces.md
 ---
 
 # Python CLI orchestration layer

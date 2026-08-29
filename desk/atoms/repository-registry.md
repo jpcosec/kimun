@@ -6,7 +6,7 @@ five_wh_one_plus: where
 tags:
 - system:sldb
 - domain:store-graph
-provenance: source docs/sldb-v1/workspaces.md
+provenance: raw/source/sldb-v1/workspaces.md
 ---
 
 # Repository registry

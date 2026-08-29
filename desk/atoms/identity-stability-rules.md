@@ -6,7 +6,7 @@ five_wh_one_plus: how
 tags:
 - system:sldb
 - domain:model-identity
-provenance: source docs/core/also_core.md
+provenance: raw/source/core/also_core.md
 ---
 
 # Identity stability rules

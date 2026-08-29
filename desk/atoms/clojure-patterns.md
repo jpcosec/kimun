@@ -6,7 +6,7 @@ five_wh_one_plus: how
 tags:
 - system:sldb
 - domain:quality-patterns-clojure
-provenance: source docs/drawer-features/feature-canonical-ast-design-current-state.md
+provenance: raw/source/drawer-features/feature-canonical-ast-design-current-state.md
 ---
 
 # Clojure patterns

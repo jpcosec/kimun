@@ -7,7 +7,7 @@ tags:
 - system:sldb
 - domain:architecture-integration
 - domain:runtime-effects
-provenance: source docs/core/interfaces.md
+provenance: raw/source/core/interfaces.md
 ---
 
 # Agent provider

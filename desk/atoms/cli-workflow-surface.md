@@ -6,7 +6,7 @@ five_wh_one_plus: where
 tags:
 - system:sldb
 - domain:surfaces-cli-command-groups
-provenance: source docs/drawer-features/feature-sldb-product-principles-and-cli-continuity.md
+provenance: raw/source/drawer-features/feature-sldb-product-principles-and-cli-continuity.md
 ---
 
 # CLI Workflow Surface

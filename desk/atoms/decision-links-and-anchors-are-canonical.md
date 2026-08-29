@@ -6,7 +6,7 @@ five_wh_one_plus: why
 tags:
 - system:sldb
 - domain:architecture-decisions
-provenance: source docs/drawer-features/feature-canonical-ast-design-current-state.md
+provenance: raw/source/drawer-features/feature-canonical-ast-design-current-state.md
 ---
 
 # Decision: links and anchors are canonical

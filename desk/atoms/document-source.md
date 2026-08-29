@@ -7,7 +7,7 @@ tags:
 - system:sldb
 - domain:architecture-integration
 - domain:pipeline-importers
-provenance: source docs/core/interfaces.md
+provenance: raw/source/core/interfaces.md
 ---
 
 # Document source

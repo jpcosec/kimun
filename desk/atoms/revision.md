@@ -7,7 +7,7 @@ tags:
 - system:sldb
 - domain:model-documents
 - domain:runtime-revisions
-provenance: source docs/core/core_README.md
+provenance: raw/source/core/core_README.md
 ---
 
 # Revision

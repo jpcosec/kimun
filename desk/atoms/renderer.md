@@ -7,7 +7,7 @@ tags:
 - system:sldb
 - domain:pipeline-emitters
 - domain:architecture-integration
-provenance: source docs/core/interfaces.md
+provenance: raw/source/core/interfaces.md
 ---
 
 # Renderer

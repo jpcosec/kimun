@@ -6,7 +6,7 @@ five_wh_one_plus: why
 tags:
 - system:sldb
 - domain:architecture-boundaries
-provenance: source docs/architecture/sldb-text-layer-vs-kgdb-graph-layer.md
+provenance: raw/source/architecture/sldb-text-layer-vs-kgdb-graph-layer.md
 ---
 
 # Text layer vs graph layer

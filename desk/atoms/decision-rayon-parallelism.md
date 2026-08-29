@@ -6,7 +6,7 @@ five_wh_one_plus: why
 tags:
 - system:sldb
 - domain:architecture-decisions
-provenance: source docs/drawer-features/feature-clojure-library-stack.md
+provenance: raw/source/drawer-features/feature-clojure-library-stack.md
 ---
 
 # Decision rayon parallelism

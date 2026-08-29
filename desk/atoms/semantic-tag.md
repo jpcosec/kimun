@@ -6,7 +6,7 @@ five_wh_one_plus: what
 tags:
 - system:sldb
 - domain:runtime-semantic
-provenance: source docs/sldb-v1/faq.md
+provenance: raw/source/sldb-v1/faq.md
 ---
 
 # Semantic tag

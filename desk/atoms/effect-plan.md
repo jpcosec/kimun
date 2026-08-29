@@ -7,7 +7,7 @@ tags:
 - system:sldb
 - domain:architecture-boundaries
 - domain:runtime-hooks
-provenance: source docs/core/core_README.md
+provenance: raw/source/core/core_README.md
 ---
 
 # Effect plan

@@ -6,7 +6,7 @@ five_wh_one_plus: what
 tags:
 - system:sldb
 - domain:architecture-migration-strategy
-provenance: source docs/core/also_core.md
+provenance: raw/source/core/also_core.md
 ---
 
 # Migration unit

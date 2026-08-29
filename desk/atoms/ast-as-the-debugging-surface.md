@@ -6,7 +6,7 @@ five_wh_one_plus: where
 tags:
 - system:sldb
 - domain:runtime-query
-provenance: source docs/sldb-v1/faq.md
+provenance: raw/source/sldb-v1/faq.md
 ---
 
 # AST as the debugging surface

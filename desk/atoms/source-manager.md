@@ -7,7 +7,7 @@ tags:
 - system:sldb
 - domain:pipeline-importers
 - domain:surfaces-cli-workflows
-provenance: source docs/core/diagramas_core.md
+provenance: raw/source/core/diagramas_core.md
 ---
 
 # Source manager

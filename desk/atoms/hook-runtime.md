@@ -6,7 +6,7 @@ five_wh_one_plus: how
 tags:
 - system:sldb
 - domain:runtime-hooks
-provenance: source docs/core/reasoning.md
+provenance: raw/source/core/reasoning.md
 ---
 
 # Hook runtime

@@ -7,7 +7,7 @@ tags:
 - system:sldb
 - domain:pipeline-importers
 - domain:model-ast-core
-provenance: source docs/core/diagramas_core.md
+provenance: raw/source/core/diagramas_core.md
 ---
 
 # Canonicalizer

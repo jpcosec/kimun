@@ -6,7 +6,7 @@ five_wh_one_plus: what
 tags:
 - system:sldb
 - domain:runtime-transactions
-provenance: source docs/core/reasoning.md
+provenance: raw/source/core/reasoning.md
 ---
 
 # Transaction

@@ -6,7 +6,7 @@ five_wh_one_plus: what
 tags:
 - system:sldb
 - domain:model-ast-core
-provenance: source docs/core/core_README.md
+provenance: raw/source/core/core_README.md
 ---
 
 # Node

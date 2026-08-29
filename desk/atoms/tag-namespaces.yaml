@@ -190,3 +190,23 @@ rules:
   - Prefer spec2viz-aligned leaf domains over generic topic names.
   - Use `five_wh_one_plus` for question-shape; use `domain:*` for knowledge partition.
   - When an atom spans multiple areas, tag the dominant ownership leaf and express the rest through related-atom links.
+
+# Flat registry read by `deskops add atom` tag validation (deskops/atom_tags.py reads only
+# this key). The hierarchical schema above remains the documented domain map; CLI-created
+# atoms use two-part tags (namespace:leaf) whose leaf must be a leaf name from that schema.
+namespaces:
+  system:
+    meaning: System the atom belongs to.
+    use_when: Always, as system:sldb.
+    do_not_use_when: Never omit.
+    examples: [system:sldb]
+  domain:
+    meaning: Knowledge partition; value is a leaf name from the hierarchical domain map above.
+    use_when: Exactly one per atom.
+    do_not_use_when: The value is not a leaf of the domain map.
+    examples: [domain:decisions, domain:ast-core, domain:anchors, domain:graph]
+  epoch:
+    meaning: Design epoch the atom belongs to; later epochs prevail over earlier ones where they contradict.
+    use_when: The atom states v2 (SMG node pool) direction that supersedes earlier kernel/core atoms.
+    do_not_use_when: The atom is epoch-neutral practice or merely historical pre-v2 knowledge.
+    examples: [epoch:v2]

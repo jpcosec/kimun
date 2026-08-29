@@ -7,7 +7,7 @@ tags:
 - system:sldb
 - domain:quality-reliability
 - domain:store-graph
-provenance: source docs/core/also_core.md
+provenance: raw/source/core/also_core.md
 ---
 
 # Corruption state

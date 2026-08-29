@@ -7,7 +7,7 @@ tags:
 - system:sldb
 - domain:store-graph
 - domain:runtime-revisions
-provenance: source docs/core/diagramas_core.md
+provenance: raw/source/core/diagramas_core.md
 ---
 
 # Document head

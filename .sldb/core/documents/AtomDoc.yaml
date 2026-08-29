@@ -1,1 +1,131 @@
-documents: []
+documents:
+- name: atom-smg-node-pool
+  path: desk/atoms/atom-smg-node-pool.md
+  hash_c: 4adae7b871daadd8d3b3c04fa64ff9e380a35c0e7a674c87302a6043d5ea0bbc
+  hash_d: 2f47373a69e874a328aeea91dd54617855cc04b311819d24bb99184faeab154d
+  semantic_tags:
+  - domain:ast-core
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-tree-as-index
+  path: desk/atoms/atom-tree-as-index.md
+  hash_c: f322b2684861dc137e63720dcf97d1af33d507acc1ccdf8faa6a832fef4448db
+  hash_d: 17caefc2d535dbbd5580f5a1c50ceb61bd33ee2b7b288f609fb7a746e520a77e
+  semantic_tags:
+  - domain:graph
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-smg-as-persisted-layers
+  path: desk/atoms/atom-smg-as-persisted-layers.md
+  hash_c: 3a016cb0d72dcc91e77259136e7c3810df915cb07347fc0a22ff004cec722347
+  hash_d: b121fb77f6ea2020e36b5b7e7d40ed00062f87eef456700017aaee2e41b15521
+  semantic_tags:
+  - domain:boundaries
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-identity-is-the-content-hash-succession-is-a-recorded-edge
+  path: desk/atoms/atom-identity-is-the-content-hash-succession-is-a-recorded-edge.md
+  hash_c: 0d78c104fb2d70ba569fd306701a8859b6ff9195c7ef9938cff96a30c1697930
+  hash_d: 65fdd09673437c298a1210d4c8a2f75b6aea7d85f6f680be8f5cea7a0f8ee935
+  semantic_tags:
+  - domain:ast-core
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-evidence-edges-and-anchor-states
+  path: desk/atoms/atom-evidence-edges-and-anchor-states.md
+  hash_c: c15baf4e8d4e30f844b64f3cc67784c3d3d838975dd65094baecf828030d3c47
+  hash_d: 72ce1e6e64348efa62e3062545acf29d7c0bb52953f4af9dcce50bc165fb936a
+  semantic_tags:
+  - domain:anchors
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-reversibility-scope-in-v2
+  path: desk/atoms/atom-reversibility-scope-in-v2.md
+  hash_c: 19e81c76c35873419a24d65e114b8fb0f19f9a748341079c8e9927a62f6a4bca
+  hash_d: 035997bc2f5fffdccd789fea4c06fc0e01356529b9a3fa8beb4b0fb142da13d7
+  semantic_tags:
+  - domain:emitters
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-addressability-class-per-node
+  path: desk/atoms/atom-addressability-class-per-node.md
+  hash_c: b765e2611bca80cd44c6b9abee64f13c93c967fe99c9cf51ef3eed792dc81d27
+  hash_d: 5e25e99edeef3ac35d85fa161b89bb765a85e6c51fdb87e2434cef80fc34d09f
+  semantic_tags:
+  - domain:addressability
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-stand-off-annotation-below-the-paragraph
+  path: desk/atoms/atom-stand-off-annotation-below-the-paragraph.md
+  hash_c: f6f5db3bd9ff152ebce9a9577fc33390ce9be09245677229bb4a00d163c3205e
+  hash_d: e88be6cab389756f3b5df0cdf7b74b6452697440efefd2b1a91e36c7f11c71c1
+  semantic_tags:
+  - domain:text-structure
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-canonical-projected-or-asserted
+  path: desk/atoms/atom-canonical-projected-or-asserted.md
+  hash_c: d8846d2a10b0a57ab64901ca18a574a25c0a2abae8fa10538190f20fe36058ab
+  hash_d: 12d95fe62d16b2ca58d644c97b27ca453c29d9c3bc7fbe4eaf57ce04541fedfb
+  semantic_tags:
+  - domain:provenance
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-decision-no-separate-lisp-metalanguage
+  path: desk/atoms/atom-decision-no-separate-lisp-metalanguage.md
+  hash_c: 0137c228241308fb0a918271862522152e33fbbf924488efc815748c35415eec
+  hash_d: 730b282c290a261d1a3a84253c994c732fb8952dc3b0525946e41645ec296938
+  semantic_tags:
+  - domain:decisions
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-decision-no-rust-in-the-repository
+  path: desk/atoms/atom-decision-no-rust-in-the-repository.md
+  hash_c: 151dd54aeab438fd23336a02cc6f61b8ed743f2a43f3b7dfcffd1262d2adee0b
+  hash_d: d6b5785136edea4e54402dc6ccea99d01aa02cc2647adaf8976bb6b56072f5af
+  semantic_tags:
+  - domain:decisions
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-decision-pure-cljc-kernel-with-hosts-as-adapters
+  path: desk/atoms/atom-decision-pure-cljc-kernel-with-hosts-as-adapters.md
+  hash_c: 7e6a83dfd27bec6f1bd0431f1879498fed08f8a8dfa6ea93ef78f1a45d69887e
+  hash_d: b48d11f374081391ac56f50af4755002fa4a0ff1780004c9d279d70b07c7d76b
+  semantic_tags:
+  - domain:decisions
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-git-object-model-as-the-v2-roadmap
+  path: desk/atoms/atom-git-object-model-as-the-v2-roadmap.md
+  hash_c: fdc0a2403611a2e2f2e206d58b3364c4b20b2351585c36bd94df0abbe4d3a68c
+  hash_d: a2af272abd9743aba315c36e83e60ca4ab102c6f1f4b70b10d5b1c31fb7aa3ad
+  semantic_tags:
+  - domain:migration-strategy
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms

@@ -6,7 +6,7 @@ five_wh_one_plus: what
 tags:
 - system:sldb
 - domain:model-text-structure
-provenance: source docs/architecture/structured-text.atom.md
+provenance: raw/source/architecture/structured-text.atom.md
 ---
 
 # Structured text

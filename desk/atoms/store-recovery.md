@@ -7,7 +7,7 @@ tags:
 - system:sldb
 - domain:store-graph
 - domain:quality-reliability
-provenance: source docs/core/also_core.md
+provenance: raw/source/core/also_core.md
 ---
 
 # Store recovery

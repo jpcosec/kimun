@@ -6,7 +6,7 @@ five_wh_one_plus: why
 tags:
 - system:sldb
 - domain:architecture-decisions
-provenance: source docs/core/libraries_core.md
+provenance: raw/source/core/libraries_core.md
 ---
 
 # Decision search and semantic indexes are replaceable

@@ -1,6 +1,8 @@
-# Target Architecture Docs
+# Docs
 
-This directory keeps planning and architecture material for the current kernel/core direction.
+`v2/` holds the current direction (highest authority). `architecture/` keeps the previous-stage
+contracts, spec2viz specs and diagrams; they are superseded wherever they contradict `v2/` and will
+be regenerated from `epoch:v2` atoms.
 
 ## Main contents
 
@@ -15,15 +17,8 @@ Historical planning packs (`phase-1-resolution-pack.md`, `phase-1-macro-implemen
 
 ## Authority note
 
-The higher-priority architecture sources for this repo are the root core docs:
-
-1. `also_core.md`
-2. `core_README.md`
-3. `diagramas_core.md`
-4. `interfaces.md`
-5. `libraries_core.md`
-6. `plan_core.md`
-
-`desk/atoms/` remain durable concept truth after those core docs. Contracts under `docs/` are lower-authority materializations. Superseded historical analysis should live in Git history, not in the live KB.
-
-Legacy runtime docs, current-state snapshots, old atom materializations, and request-era documents were intentionally removed from this worktree.
+1. `docs/v2/01-orden-filosofico.md`
+2. `docs/v2/02-sustrato-computacional.md`
+3. `desk/atoms/` (`epoch:v2` prevails)
+4. `docs/architecture/` (previous stage)
+5. `raw/source/` (frozen, non-authoritative; tag `pre-v2-planning-freeze`)

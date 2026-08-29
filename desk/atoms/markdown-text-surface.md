@@ -6,7 +6,7 @@ five_wh_one_plus: what
 tags:
 - system:sldb
 - domain:model-text-structure
-provenance: source docs/core/core_README.md
+provenance: raw/source/core/core_README.md
 ---
 
 # Markdown text surface

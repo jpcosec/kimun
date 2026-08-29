@@ -6,7 +6,7 @@ five_wh_one_plus: what
 tags:
 - system:sldb
 - domain:quality-testing
-provenance: source docs/core/plan_core.md
+provenance: raw/source/core/plan_core.md
 ---
 
 # Golden fixture

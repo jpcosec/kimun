@@ -6,7 +6,7 @@ five_wh_one_plus: where
 tags:
 - system:sldb
 - domain:surfaces-cli-onboarding
-provenance: source docs/sldb-v1/README.md
+provenance: raw/source/sldb-v1/README.md
 ---
 
 # `help` command group

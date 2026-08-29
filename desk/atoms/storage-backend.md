@@ -7,7 +7,7 @@ tags:
 - system:sldb
 - domain:store-persistence
 - domain:architecture-integration
-provenance: source docs/core/interfaces.md
+provenance: raw/source/core/interfaces.md
 ---
 
 # Storage backend

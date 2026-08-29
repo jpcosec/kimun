@@ -7,7 +7,7 @@ tags:
 - system:sldb
 - domain:store-persistence
 - domain:store-hashing
-provenance: source docs/core/diagramas_core.md
+provenance: raw/source/core/diagramas_core.md
 ---
 
 # Content-addressed store

@@ -7,7 +7,7 @@ tags:
 - system:sldb
 - domain:architecture-boundaries
 - domain:security-capabilities
-provenance: source docs/core/core_README.md
+provenance: raw/source/core/core_README.md
 ---
 
 # Capability model

@@ -7,7 +7,7 @@ tags:
 - system:sldb
 - domain:store-history
 - domain:store-persistence
-provenance: source docs/core/diagramas_core.md
+provenance: raw/source/core/diagramas_core.md
 ---
 
 # Transaction log

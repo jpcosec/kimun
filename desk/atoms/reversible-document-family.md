@@ -6,7 +6,7 @@ five_wh_one_plus: when
 tags:
 - system:sldb
 - domain:model-documents
-provenance: source docs/core/reasoning.md
+provenance: raw/source/core/reasoning.md
 ---
 
 # Reversible document family

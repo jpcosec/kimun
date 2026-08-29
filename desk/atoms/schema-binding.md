@@ -6,7 +6,7 @@ five_wh_one_plus: what
 tags:
 - system:sldb
 - domain:model-fields-schemas
-provenance: source docs/drawer-features/feature-sldb-explicit-target-architecture.md
+provenance: raw/source/drawer-features/feature-sldb-explicit-target-architecture.md
 ---
 
 # Schema Binding

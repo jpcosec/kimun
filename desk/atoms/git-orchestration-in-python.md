@@ -6,7 +6,7 @@ five_wh_one_plus: why
 tags:
 - system:sldb
 - domain:implementation-python-cli
-provenance: source docs/architecture/target-system-overview.md
+provenance: raw/source/architecture/target-system-overview.md
 ---
 
 # Git orchestration in Python

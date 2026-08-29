@@ -6,7 +6,7 @@ five_wh_one_plus: when
 tags:
 - system:sldb
 - domain:model-text-structure
-provenance: source docs/sldb-v1/faq.md
+provenance: raw/source/sldb-v1/faq.md
 ---
 
 # Shallow `title + body` default

@@ -6,7 +6,7 @@ five_wh_one_plus: how
 tags:
 - system:sldb
 - domain:surfaces-cli-inputs-outputs
-provenance: source docs/sldb-v1/faq.md
+provenance: raw/source/sldb-v1/faq.md
 ---
 
 # How to get data out of SLDB

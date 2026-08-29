@@ -6,7 +6,7 @@ five_wh_one_plus: how
 tags:
 - system:sldb
 - domain:runtime-projections
-provenance: source docs/sldb-v1/README.md
+provenance: raw/source/sldb-v1/README.md
 ---
 
 # Semantic exporter

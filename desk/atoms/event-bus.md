@@ -7,7 +7,7 @@ tags:
 - system:sldb
 - domain:runtime-hooks
 - domain:runtime-effects
-provenance: source docs/core/diagramas_core.md
+provenance: raw/source/core/diagramas_core.md
 ---
 
 # Event bus

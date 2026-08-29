@@ -6,7 +6,7 @@ five_wh_one_plus: why
 tags:
 - system:sldb
 - domain:architecture-migration-strategy
-provenance: source docs/drawer-features/feature-sldb-product-principles-and-cli-continuity.md
+provenance: raw/source/drawer-features/feature-sldb-product-principles-and-cli-continuity.md
 ---
 
 # Decision: v1 parity before scope expansion

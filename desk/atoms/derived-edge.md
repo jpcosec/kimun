@@ -7,7 +7,7 @@ tags:
 - system:sldb
 - domain:model-relations
 - domain:runtime-projections
-provenance: source docs/core/reasoning.md
+provenance: raw/source/core/reasoning.md
 ---
 
 # Derived edge

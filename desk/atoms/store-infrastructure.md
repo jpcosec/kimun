@@ -6,7 +6,7 @@ five_wh_one_plus: what
 tags:
 - system:sldb
 - domain:store-graph
-provenance: source docs/core/libraries_core.md
+provenance: raw/source/core/libraries_core.md
 ---
 
 # Store infrastructure

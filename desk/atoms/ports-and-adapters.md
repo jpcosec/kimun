@@ -7,7 +7,7 @@ tags:
 - system:sldb
 - domain:architecture-boundaries
 - domain:architecture-integration
-provenance: source docs/core/interfaces.md
+provenance: raw/source/core/interfaces.md
 ---
 
 # Ports and adapters

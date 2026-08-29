@@ -6,7 +6,7 @@ five_wh_one_plus: how
 tags:
 - system:sldb
 - domain:pipeline-emitters
-provenance: source docs/drawer-features/feature-sldb-product-principles-and-cli-continuity.md
+provenance: raw/source/drawer-features/feature-sldb-product-principles-and-cli-continuity.md
 ---
 
 # Document materializer

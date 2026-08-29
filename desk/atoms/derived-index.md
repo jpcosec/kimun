@@ -6,7 +6,7 @@ five_wh_one_plus: what
 tags:
 - system:sldb
 - domain:store-indexes
-provenance: source docs/architecture/target-system-overview.md
+provenance: raw/source/architecture/target-system-overview.md
 ---
 
 # Derived index

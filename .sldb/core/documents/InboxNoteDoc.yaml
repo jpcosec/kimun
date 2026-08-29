@@ -1,1 +1,15 @@
-documents: []
+documents:
+- name: 20260829-154642-unclear-deskops-edit-atom-cannot-target-legacy-atoms
+  path: desk/inbox/20260829-154642-unclear-deskops-edit-atom-cannot-target-legacy-atoms.md
+  hash_c: 8ece64542c52ca50fc669129ab811f33e9861383d0cf167082f7c3a7effd1967
+  hash_d: 2350a9a32f359b03cf867550e31c078e15ffb4e5ced0028943903c176fd3be52
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
+- name: 20260829-154745-unclear-deskops-atoms-add-namespace-overwrites-hierarchical-tag-namespaces-yaml
+  path: desk/inbox/20260829-154745-unclear-deskops-atoms-add-namespace-overwrites-hierarchical-tag-namespaces-yaml.md
+  hash_c: 326f5ea1598af699fc494e3d1723394b089082bd5bd741ed171da77eba9e0463
+  hash_d: 9fb41349d02bb6bc99acf5a6ba30138f3ba84ca9106cc7779ced783ee56d1788
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
