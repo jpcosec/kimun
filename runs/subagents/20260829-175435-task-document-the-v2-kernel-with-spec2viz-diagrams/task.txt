@@ -1,0 +1,15 @@
+Task: task-document-the-v2-kernel-with-spec2viz-diagrams
+Title: Document the v2 kernel with spec2viz diagrams
+Status: active
+Current node: checklist-task-document-the-v2-kernel-with-spec2viz-diagrams-testing-ready
+Task type: documentation
+Routine: routine-task-document-the-v2-kernel-with-spec2viz-diagrams
+Effective atoms:
+- atom-smg-node-pool
+- atom-tree-identity-tree-objects-and-heads
+- atom-revision-id-edge-set-and-diff
+- atom-decision-pure-cljc-kernel-with-hosts-as-adapters
+Checklist status:
+- checklist-task-document-the-v2-kernel-with-spec2viz-diagrams-execution-ready: complete
+- checklist-task-document-the-v2-kernel-with-spec2viz-diagrams-testing-ready: complete
+- checklist-task-document-the-v2-kernel-with-spec2viz-diagrams-closeout-ready: pending

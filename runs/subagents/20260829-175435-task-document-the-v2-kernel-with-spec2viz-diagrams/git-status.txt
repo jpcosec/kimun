@@ -1,0 +1,4 @@
+## refactor-target...origin/refactor-target [ahead 22]
+ M .deskops.log
+ M desk/tasks/task-document-the-v2-kernel-with-spec2viz-diagrams.md
+?? runs/subagents/20260829-175435-task-document-the-v2-kernel-with-spec2viz-diagrams/

@@ -1,13 +1,14 @@
 ---
 id: task-document-the-v2-kernel-with-spec2viz-diagrams
-status: draft
+status: active
 summary: ''
 tags:
 - workspace:desk
 - artifact:task
 routine: routine-task-document-the-v2-kernel-with-spec2viz-diagrams
-current_node: checklist-task-document-the-v2-kernel-with-spec2viz-diagrams-execution-ready
-history: []
+current_node: checklist-task-document-the-v2-kernel-with-spec2viz-diagrams-testing-ready
+history:
+- operator-task-document-the-v2-kernel-with-spec2viz-diagrams-activate
 references: []
 depends_on: []
 pills: []
@@ -24,6 +25,7 @@ atoms:
 - atom-tree-identity-tree-objects-and-heads
 - atom-revision-id-edge-set-and-diff
 - atom-decision-pure-cljc-kernel-with-hosts-as-adapters
+closeout_evidence_verified: false
 ---
 
 # Document the v2 kernel with spec2viz diagrams
