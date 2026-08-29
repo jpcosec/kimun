@@ -281,3 +281,25 @@ Auto-closing task task-implement-v2-milestone-3-file-persistence-and-reload
 
 Auto-closing task task-define-and-enforce-code-standards-and-dependency-rings
 2026-08-29 17:54:29,527 - deskops - INFO - Advanced task task-harden-the-first-slice-test-suite-against-every-spec-promise to node checklist-task-harden-the-first-slice-test-suite-against-every-spec-promise-testing-ready
+2026-08-29 17:54:34,998 - deskops - INFO - Advanced task task-harden-the-first-slice-test-suite-against-every-spec-promise to node checklist-task-harden-the-first-slice-test-suite-against-every-spec-promise-closeout-ready
+2026-08-29 17:54:35,356 - deskops - INFO - Task task-harden-the-first-slice-test-suite-against-every-spec-promise is complete. Performing auto-commit and cleanup.
+2026-08-29 17:54:35,364 - deskops - DEBUG - Removing runtime artifacts for task task-harden-the-first-slice-test-suite-against-every-spec-promise
+2026-08-29 17:54:35,377 - deskops - DEBUG - Removing primitive condition-task-harden-the-first-slice-test-suite-against-every-spec-promise-has-implementation-path.md
+2026-08-29 17:54:35,377 - deskops - DEBUG - Removing primitive condition-task-harden-the-first-slice-test-suite-against-every-spec-promise-ready-for-closeout.md
+2026-08-29 17:54:35,377 - deskops - DEBUG - Removing primitive condition-task-harden-the-first-slice-test-suite-against-every-spec-promise-has-validation.md
+2026-08-29 17:54:35,377 - deskops - DEBUG - Removing primitive condition-task-harden-the-first-slice-test-suite-against-every-spec-promise-has-closeout-evidence.md
+2026-08-29 17:54:35,377 - deskops - DEBUG - Removing primitive checklist-task-harden-the-first-slice-test-suite-against-every-spec-promise-closeout-ready.md
+2026-08-29 17:54:35,377 - deskops - DEBUG - Removing primitive checklist-task-harden-the-first-slice-test-suite-against-every-spec-promise-testing-ready.md
+2026-08-29 17:54:35,377 - deskops - DEBUG - Removing primitive checklist-task-harden-the-first-slice-test-suite-against-every-spec-promise-execution-ready.md
+2026-08-29 17:54:35,377 - deskops - DEBUG - Removing primitive operator-task-harden-the-first-slice-test-suite-against-every-spec-promise-close.md
+2026-08-29 17:54:35,377 - deskops - DEBUG - Removing primitive operator-task-harden-the-first-slice-test-suite-against-every-spec-promise-activate.md
+2026-08-29 17:54:35,377 - deskops - DEBUG - Removing primitive operator-task-harden-the-first-slice-test-suite-against-every-spec-promise-ready-for-testing.md
+2026-08-29 17:54:35,377 - deskops - DEBUG - Removing primitive edge-task-harden-the-first-slice-test-suite-against-every-spec-promise-ready-to-closeout.md
+2026-08-29 17:54:35,377 - deskops - DEBUG - Removing primitive edge-task-harden-the-first-slice-test-suite-against-every-spec-promise-testing-to-ready.md
+2026-08-29 17:54:35,377 - deskops - DEBUG - Removing primitive edge-task-harden-the-first-slice-test-suite-against-every-spec-promise-closeout-to-close.md
+2026-08-29 17:54:35,377 - deskops - DEBUG - Removing primitive edge-task-harden-the-first-slice-test-suite-against-every-spec-promise-activate-to-testing.md
+2026-08-29 17:54:35,378 - deskops - DEBUG - Removing primitive edge-task-harden-the-first-slice-test-suite-against-every-spec-promise-close-to-complete.md
+2026-08-29 17:54:35,378 - deskops - DEBUG - Removing primitive edge-task-harden-the-first-slice-test-suite-against-every-spec-promise-execution-to-activate.md
+2026-08-29 17:54:35,385 - deskops - INFO - Committing closure for task-harden-the-first-slice-test-suite-against-every-spec-promise: chore(task): Harden the first-slice test suite against every spec promise
+
+Auto-closing task task-harden-the-first-slice-test-suite-against-every-spec-promise
