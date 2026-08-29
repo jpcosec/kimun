@@ -1,3 +1,7 @@
+> **Superseded (2026-08-29).** Governed by `docs/v2/01-orden-filosofico.md` and `docs/v2/02-sustrato-computacional.md`. The following statements in this document no longer hold:
+> - "FFI Boundary (PyO3)" — no Rust in the repo; Python is an optional adapter over subprocess/HTTP (02 §8)
+> - "Blake3-based hashing" — SHA-256 via the host Hasher in the first slice (02 §8.1)
+
 # Python/Clojure Ownership and FFI Contract
 
 ## Purpose and governing sources

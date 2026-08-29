@@ -25,7 +25,7 @@ A tracked doc has both a logical store name and a physical file path, and comman
 
 ### Implements with
 
-- [implements_with:: [[document]]]
+- [implements_with:: [[atom-tree-as-index]]]
 - [implements_with:: [[canonical-identity]]]
 - [implements_with:: [[stable-selector]]]
 

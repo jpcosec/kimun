@@ -35,7 +35,7 @@ A document is the stable canonical unit whose evolving states are recorded as im
 - [supports:: [[node]]]
 - [supports:: [[tracked-document-identity]]]
 - [supports:: [[projection]]]
-- [supports:: [[reversible-document-family]]]
+- [supports:: [[atom-addressability-class-per-node]]]
 
 ### 5WH1+ neighborhood
 

@@ -25,7 +25,7 @@ provenance: raw/source/sldb-v1/faq.md
 
 ### Implements with
 
-- [implements_with:: [[node-hash]]]
+- [implements_with:: [[atom-canonical-content-and-node-hashing]]]
 - [implements_with:: [[provenance-record]]]
 
 ### 5WH1+ neighborhood

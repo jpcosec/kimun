@@ -1,0 +1,20 @@
+{:paths ["src" "test"]
+ :min-bb-version "1.3.0"
+ :tasks
+ {:requires ([clojure.test :as t]
+             [babashka.fs :as fs]
+             [clojure.string :as str])
+  test {:doc "Run the kernel test suite on Babashka (clojure.test + test.check). Exit code 1 on any failure."
+        :task (let [->ns (fn [p]
+                           (-> (str (fs/relativize "test" p))
+                               (str/replace (re-pattern "\\.cljc$") "")
+                               (str/replace "_" "-")
+                               (str/replace fs/file-separator ".")
+                               symbol))
+                    nses (sort (map ->ns (fs/glob "test" "**/*_test.cljc")))]
+                (if (empty? nses)
+                  (println "no test namespaces under test/ yet")
+                  (do (doseq [n nses] (require n))
+                      (let [{:keys [fail error] :as r} (apply t/run-tests nses)]
+                        (println r)
+                        (when (pos? (+ fail error)) (System/exit 1))))))}}}

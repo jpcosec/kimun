@@ -26,7 +26,7 @@ A golden fixture is a pinned input/output artifact set used to prove that canoni
 ### Supports
 
 - [supports:: [[conformance-suite]]]
-- [supports:: [[reversible-document-family]]]
+- [supports:: [[atom-addressability-class-per-node]]]
 - [supports:: [[markdown-roundtrip-contract]]]
 
 ### 5WH1+ neighborhood

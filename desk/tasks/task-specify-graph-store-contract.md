@@ -65,4 +65,4 @@ The high-fidelity `graph-store-contract.md` is committed and approved.
 
 ## Normalization note (2026-08-01)
 
-Legacy engine mandates (SQLite/FTS5) were removed from this task's body. Per the core docs (`libraries_core.md`, `interfaces.md`, `core_README.md`) and `desk/atoms/decision-rusqlite-store.md`, persistence sits behind a replaceable kernel-owned `StorageBackend` (`redb` default, `CozoDB` alternative); no fixed engine is mandated. The delivered contract was amended accordingly on 2026-07-31.
+Legacy engine mandates (SQLite/FTS5) were removed from this task's body. Per the core docs (`libraries_core.md`, `interfaces.md`, `core_README.md`) and `raw/source/atoms-retired/decision-rusqlite-store.md`, persistence sits behind a replaceable kernel-owned `StorageBackend` (`redb` default, `CozoDB` alternative); no fixed engine is mandated. The delivered contract was amended accordingly on 2026-07-31.

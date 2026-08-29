@@ -34,7 +34,7 @@ Structured text is human-readable text whose parts have stable boundaries, recog
 - [supports:: [[markdown-importer]]]
 - [supports:: [[markdown-emitter]]]
 - [supports:: [[structurednldoc-contract]]]
-- [supports:: [[reversible-document-family]]]
+- [supports:: [[atom-addressability-class-per-node]]]
 
 ### 5WH1+ neighborhood
 

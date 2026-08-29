@@ -10,8 +10,8 @@ history: ["2026-07-29: closed with high-fidelity contract artifact."]
 references:
 - desk/atoms/python-cli-orchestration-layer.md
 - desk/atoms/clojure-core.md
-- desk/atoms/decision-clojure-core-with-minimal-python.md
-- desk/atoms/decision-pyo3-ffi.md
+- raw/source/atoms-retired/decision-clojure-core-with-minimal-python.md
+- raw/source/atoms-retired/decision-pyo3-ffi.md
 - docs/architecture/spec2viz/target-components.yml
 - docs/architecture/spec2viz/target-runtime.yml
 depends_on: []

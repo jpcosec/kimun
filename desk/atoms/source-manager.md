@@ -33,7 +33,7 @@ The source manager coordinates external source inspection, change detection, par
 
 ### Supports
 
-- [supports:: [[node-reconciliation]]]
+- [supports:: [[atom-identity-is-the-content-hash-succession-is-a-recorded-edge]]]
 - [supports:: [[document-tracker]]]
 - [supports:: [[track-existing-document-workflow]]]
 - [supports:: [[update-tracked-document-workflow]]]

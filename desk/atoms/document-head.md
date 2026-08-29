@@ -26,7 +26,7 @@ A document head is the mutable pointer from a document identity to its current r
 
 ### Depends on
 
-- [depends_on:: [[document]]]
+- [depends_on:: [[atom-tree-as-index]]]
 - [depends_on:: [[revision]]]
 
 ### Supports

@@ -26,7 +26,7 @@ A node is the primary canonical entity stored inside a document revision, carryi
 
 ### Depends on
 
-- [depends_on:: [[document]]]
+- [depends_on:: [[atom-tree-as-index]]]
 - [depends_on:: [[canonical-identity]]]
 - [depends_on:: [[relation-ast]]]
 
@@ -34,7 +34,7 @@ A node is the primary canonical entity stored inside a document revision, carryi
 
 - [supports:: [[field-binding]]]
 - [supports:: [[link-reference]]]
-- [supports:: [[node-hash]]]
+- [supports:: [[atom-canonical-content-and-node-hashing]]]
 - [supports:: [[stable-selector]]]
 
 ### 5WH1+ neighborhood

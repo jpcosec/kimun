@@ -26,7 +26,7 @@ Cache stores rebuildable derived artifacts keyed from canonical structure and de
 ### Depends on
 
 - [depends_on:: [[dependency-index]]]
-- [depends_on:: [[node-hash]]]
+- [depends_on:: [[atom-canonical-content-and-node-hashing]]]
 
 ### Supports
 

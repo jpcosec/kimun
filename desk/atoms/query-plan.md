@@ -29,7 +29,7 @@ A query plan is the explicit intermediate representation of retrieval intent bef
 
 ### Supports
 
-- [supports:: [[lisp-metalanguage]]]
+- [supports:: [[atom-decision-no-separate-lisp-metalanguage]]]
 - [supports:: [[kernel-api]]]
 - [supports:: [[observability-surface]]]
 

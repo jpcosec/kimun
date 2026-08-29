@@ -25,7 +25,7 @@ A hash field is the node field that stores the hash value associated with a cano
 
 ### Depends on
 
-- [depends_on:: [[node-hash]]]
+- [depends_on:: [[atom-canonical-content-and-node-hashing]]]
 - [depends_on:: [[clojure-core]]]
 
 ### Supports

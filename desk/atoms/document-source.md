@@ -27,7 +27,7 @@ A document source is the external origin interface through which the kernel iden
 ### Depends on
 
 - [depends_on:: [[ports-and-adapters]]]
-- [depends_on:: [[document]]]
+- [depends_on:: [[atom-tree-as-index]]]
 
 ### Supports
 

@@ -35,7 +35,7 @@ The capability model is the explicit permission system that governs external eff
 - [supports:: [[hook-runtime]]]
 - [supports:: [[effect-plan]]]
 - [supports:: [[threat-model]]]
-- [supports:: [[lisp-metalanguage]]]
+- [supports:: [[atom-decision-no-separate-lisp-metalanguage]]]
 
 ### 5WH1+ neighborhood
 

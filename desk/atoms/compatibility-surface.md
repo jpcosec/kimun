@@ -27,7 +27,7 @@ A compatibility surface is the versioned contract that must remain intelligible 
 
 - [supports:: [[migration-unit]]]
 - [supports:: [[legacy-cli-aliases]]]
-- [supports:: [[decision-v1-parity-before-scope-expansion]]]
+- [supports:: [[atom-git-object-model-as-the-v2-roadmap]]]
 
 ### 5WH1+ neighborhood
 

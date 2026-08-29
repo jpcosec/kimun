@@ -33,7 +33,7 @@ data:
       label: documents
       kind: core
       atoms:
-        - document
+        - atom-tree-as-index
 
     Revisions:
       label: immutable revisions
@@ -113,7 +113,7 @@ data:
         - content-addressed-store
 
     HeadStore:
-      label: document heads
+      label: atom-tree-as-index heads
       kind: database
       atoms:
         - document-head

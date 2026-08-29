@@ -30,7 +30,7 @@ A provenance record captures where canonical data came from and how it changed o
 ### Supports
 
 - [supports:: [[authorship-state]]]
-- [supports:: [[node-hash]]]
+- [supports:: [[atom-canonical-content-and-node-hashing]]]
 - [supports:: [[semantic-export-boundary]]]
 
 ### 5WH1+ neighborhood

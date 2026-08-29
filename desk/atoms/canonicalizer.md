@@ -32,7 +32,7 @@ The canonicalizer transforms parser-specific syntax trees or source structures i
 
 ### Supports
 
-- [supports:: [[reversible-document-family]]]
+- [supports:: [[atom-addressability-class-per-node]]]
 - [supports:: [[transaction]]]
 - [supports:: [[markdown-importer]]]
 

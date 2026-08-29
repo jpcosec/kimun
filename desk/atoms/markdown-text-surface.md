@@ -34,7 +34,7 @@ The Markdown text surface is a human-authored textual input surface and output m
 
 - [supports:: [[markdown-importer]]]
 - [supports:: [[markdown-emitter]]]
-- [supports:: [[reversible-document-family]]]
+- [supports:: [[atom-addressability-class-per-node]]]
 
 ### 5WH1+ neighborhood
 

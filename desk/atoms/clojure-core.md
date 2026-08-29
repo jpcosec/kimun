@@ -29,7 +29,7 @@ The Clojure core is the knowledge kernel that alone enforces canonical data inva
 - [depends_on:: [[transaction]]]
 - [depends_on:: [[revision]]]
 - [depends_on:: [[graph-store]]]
-- [depends_on:: [[node-hash]]]
+- [depends_on:: [[atom-canonical-content-and-node-hashing]]]
 
 ### Supports
 
@@ -42,7 +42,7 @@ The Clojure core is the knowledge kernel that alone enforces canonical data inva
 ### Constrains
 
 - [constrains:: [[ports-and-adapters]]]
-- [constrains:: [[lisp-metalanguage]]]
+- [constrains:: [[atom-decision-no-separate-lisp-metalanguage]]]
 
 ### 5WH1+ neighborhood
 

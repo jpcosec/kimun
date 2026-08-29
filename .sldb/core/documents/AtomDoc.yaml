@@ -129,3 +129,113 @@ documents:
   - system:sldb
   - type.knowledge.atom
   - workspace.desk.atoms
+- name: atom-canonical-content-and-node-hashing
+  path: desk/atoms/atom-canonical-content-and-node-hashing.md
+  hash_c: 3406e4556a83385b05c514736f264c9c72b4938e91571d8ff40131f9a2dd1d75
+  hash_d: fb3aa9a53798702fa358aa0885c0f3b2795204159b4858368b989328a66e98dc
+  semantic_tags:
+  - domain:hashing
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-tree-identity-tree-objects-and-heads
+  path: desk/atoms/atom-tree-identity-tree-objects-and-heads.md
+  hash_c: ea9aaa28eabafe087dca8758b138fc2e4e93e6e84fceb7d34a2eb9022b936aa1
+  hash_d: e8d201d56be02de3fc7da1a7d2ce6723cbe28d7b845f9f564293c93e80c0b20f
+  semantic_tags:
+  - domain:graph
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-evidence-required-per-edge-type
+  path: desk/atoms/atom-evidence-required-per-edge-type.md
+  hash_c: d07c713ae79fb5ede10841ed1803eaa93b52da408cb1c317a1c83325b452b7f9
+  hash_d: a1f93bb76ded53e878a114d414f19be94b10e385c0119c88947aad75cac31fdb
+  semantic_tags:
+  - domain:anchors
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-w-i-context-node-and-index
+  path: desk/atoms/atom-w-i-context-node-and-index.md
+  hash_c: 70814c5c5389bf0ad94116f02c7fc6bae0da81f3f26c2f7150b5c5a7f71929c3
+  hash_d: 3dae8cabe958eb8c26679c27f83a3d7d7d1356fec87502368e6540a0b4aa742d
+  semantic_tags:
+  - domain:relations
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-transactionplan-edn-schema-and-validation
+  path: desk/atoms/atom-transactionplan-edn-schema-and-validation.md
+  hash_c: 18c6ed862a793995d0bcf0b1bb72caf004ccab26668b1c1edd23c241c77c5b4e
+  hash_d: bc28b75db275d0223a8f5cf1ec132bb78db3cba684eeb5d85c5583c6906e0e74
+  semantic_tags:
+  - domain:ast-core
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-conflictset-on-failed-compare-and-swap
+  path: desk/atoms/atom-conflictset-on-failed-compare-and-swap.md
+  hash_c: 32c989faf0739989c3ebbbd59ed40dc93b18b9a379a96b5b3d88f7b1982a44be
+  hash_d: 9192049bffd27d9b25cffc5fb6d621f086786f490570b57daba5fad41558bf15
+  semantic_tags:
+  - domain:history
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-re-anchoring-rules-under-succession
+  path: desk/atoms/atom-re-anchoring-rules-under-succession.md
+  hash_c: 598d2cd4c26858b6bc9e196632aae73ac683f15aff2476eea5728ec4bf7e3c11
+  hash_d: 1772d681f88295d1f7de51b088226025b5e4e7d89d76d8eccd556e7d141dc6ab
+  semantic_tags:
+  - domain:anchors
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-stand-off-addresses-are-virtual-until-referenced
+  path: desk/atoms/atom-stand-off-addresses-are-virtual-until-referenced.md
+  hash_c: 13611d7b11ec03344c33e34ca4bbc973817b0bd53f2cc0f4af3f9919dc2acb3e
+  hash_d: 030cd18df067d6ff8ebfffa7a1b94976c6846f0cfa057115f0ca443fc8c18b19
+  semantic_tags:
+  - domain:text-structure
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-first-slice-runtime-choices
+  path: desk/atoms/atom-first-slice-runtime-choices.md
+  hash_c: 989b7f185bd8cecaa28c84b06367a72a85b5f17bfac775921400429d68f186e5
+  hash_d: f998ba880d12316a256d3f054c11c7711c9fe501ca82f6439f36a7a07268ec9d
+  semantic_tags:
+  - domain:clojure-core
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-revision-id-edge-set-and-diff
+  path: desk/atoms/atom-revision-id-edge-set-and-diff.md
+  hash_c: f220451e0176d3e853900825f8571bd77642efe005cf00c7a2ff19115702f8ad
+  hash_d: f6630418dc89af0b2c542b77cd8f658b5b8ad94b05e025cbe5b0e07e916cf908
+  semantic_tags:
+  - domain:history
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-replace-semantics-inside-a-transaction
+  path: desk/atoms/atom-replace-semantics-inside-a-transaction.md
+  hash_c: 52101fbedd62c8ca341e53053d98ededef21b1a67c7d0c9cdd6f967caa40f0a8
+  hash_d: 88be5fd0352fb97bcdd90987e6fa7c055f13211f53a08b2b88e18389b774bafa
+  semantic_tags:
+  - domain:ast-core
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms

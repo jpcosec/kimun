@@ -1,0 +1,5 @@
+## refactor-target...origin/refactor-target [ahead 2]
+ M desk/tasks/task-implement-v2-first-slice-node-pool-trees-revisions-persistence.md
+?? desk/contexts/pill-guardrail-v2-implementation-gate.md
+?? desk/rituals/ritual-zero-context-audit-gate.md
+?? runs/

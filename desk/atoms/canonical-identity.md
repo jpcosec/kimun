@@ -29,10 +29,10 @@ Durable document, node, and field units need stable canonical identity inside th
 ### Supports
 
 - [supports:: [[node]]]
-- [supports:: [[document]]]
+- [supports:: [[atom-tree-as-index]]]
 - [supports:: [[stable-selector]]]
 - [supports:: [[provenance-record]]]
-- [supports:: [[node-hash]]]
+- [supports:: [[atom-canonical-content-and-node-hashing]]]
 
 ### 5WH1+ neighborhood
 

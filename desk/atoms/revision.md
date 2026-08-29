@@ -28,12 +28,12 @@ A revision is an immutable document state produced by one committed transaction 
 ### Depends on
 
 - [depends_on:: [[transaction]]]
-- [depends_on:: [[node-hash]]]
+- [depends_on:: [[atom-canonical-content-and-node-hashing]]]
 - [depends_on:: [[document-head]]]
 
 ### Supports
 
-- [supports:: [[document]]]
+- [supports:: [[atom-tree-as-index]]]
 - [supports:: [[projection]]]
 - [supports:: [[query-engine]]]
 - [supports:: [[graph-store]]]

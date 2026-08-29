@@ -25,7 +25,7 @@ A document can exist canonically before any Markdown file or other materialized 
 ### Depends on
 
 - [depends_on:: [[canonical-ast]]]
-- [depends_on:: [[document]]]
+- [depends_on:: [[atom-tree-as-index]]]
 
 ### Supports
 

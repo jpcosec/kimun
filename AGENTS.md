@@ -5,7 +5,7 @@
 - This worktree holds v2 direction and, once tasks are promoted, first-slice implementation.
 - `deskops` governs workflow through `desk/` artifacts and CLI state.
 - `sldb` is the data/document layer.
-- Do not claim implementation progress from this worktree.
+- Implementation progress may only be claimed with test evidence under `runs/subagents/` and a commit.
 
 ## Mandatory recovery order
 
@@ -22,7 +22,13 @@
 11. `desk/rituals/closeout.md`
 12. referenced `desk/atoms/`
 
-## Planning-task rule
+## Implementation-task rule (epoch v2)
+
+- An implementation task enters execution only after the zero-context audit gate (`desk/rituals/ritual-zero-context-audit-gate.md`) is clean; evidence lives under `runs/subagents/`.
+- Its `files:`, validation (`bb test`) and Done When must let a blind executor start without questions.
+- Closeout requires passing validation output in the run directory and a commit.
+
+## Planning-task rule (legacy, planning-era tasks only)
 
 - Each planning task must produce exactly one named contract artifact.
 - The contract artifact must cite governing atoms and target architecture docs.

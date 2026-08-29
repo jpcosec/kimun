@@ -1,3 +1,9 @@
+> **Superseded (2026-08-29).** Governed by `docs/v2/01-orden-filosofico.md` and `docs/v2/02-sustrato-computacional.md`. The following statements in this document no longer hold:
+> - "render round-trips for reversible document families must stay exact" — replaced by: reversible in S, traceable S→M→G, generative back (01 §5)
+> - "The rendered text must remain equal across the cycle" — text is a canonical projection; the AST is what is idempotent (02 §7)
+> - Phase-1 v1-parity-first sequencing — replaced by the Git-model roadmap (02 §9)
+> - document as root of authority — the pool of content-addressed nodes is; a document is a tree-index (01 §4)
+
 # Target System Overview
 
 This document captures the current target architecture direction for the SLDB refactor.

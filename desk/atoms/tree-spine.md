@@ -25,7 +25,7 @@ The canonical document model keeps a tree spine for ownership and order.
 ### Depends on
 
 - [depends_on:: [[canonical-ast]]]
-- [depends_on:: [[document]]]
+- [depends_on:: [[atom-tree-as-index]]]
 
 ### Supports
 

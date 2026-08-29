@@ -19,7 +19,7 @@ Ports and adapters is the architecture rule that the kernel only depends on its 
 ## Supporting points
 
 - Document sources, parsers, renderers, storage backends, semantic providers, effect executors, and agent providers are all adapter roles.
-- Tree-sitter, Rowan, redb, Cozo, Wasmtime, PyO3, HTTP, MCP, and embedding services are implementation details behind those ports.
+- tree-sitter (WASM), SQLite (pod/WASM), Datascript, SCI, HTTP, MCP, and embedding services are implementation details behind those ports.
 - This protects the canonical model from accidental coupling to one stack choice.
 
 ## Related atoms
@@ -37,8 +37,8 @@ Ports and adapters is the architecture rule that the kernel only depends on its 
 
 ### Constrains
 
-- [constrains:: [[decision-pyo3-ffi]]]
-- [constrains:: [[decision-rusqlite-store]]]
+- [constrains:: [[atom-decision-no-rust-in-the-repository]]]
+- [constrains:: [[atom-decision-no-rust-in-the-repository]]]
 
 ### 5WH1+ neighborhood
 

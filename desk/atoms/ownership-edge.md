@@ -26,7 +26,7 @@ An ownership edge is the structural relation that forms the canonical document t
 ### Depends on
 
 - [depends_on:: [[node]]]
-- [depends_on:: [[node-hash]]]
+- [depends_on:: [[atom-canonical-content-and-node-hashing]]]
 
 ### Supports
 

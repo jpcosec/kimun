@@ -122,3 +122,4 @@
 2026-07-29 06:03:47,478 - deskops - INFO - Advanced task task-refactor-search-to-fts5-or-tantivy manually to close
 2026-07-29 06:03:47,736 - deskops - INFO - Advanced task task-refactor-graphs-to-petgraph manually to close
 2026-07-29 06:08:19,329 - deskops - INFO - Advanced task task-refactor-cli-to-v1-parity manually to close
+2026-08-29 16:48:10,468 - deskops - INFO - Advanced task task-implement-v2-first-slice-node-pool-trees-revisions-persistence to node checklist-task-implement-v2-first-slice-node-pool-trees-revisions-persistence-testing-ready

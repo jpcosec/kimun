@@ -26,7 +26,7 @@ The content-addressed store persists payloads and derived artifacts under determ
 
 ### Depends on
 
-- [depends_on:: [[node-hash]]]
+- [depends_on:: [[atom-canonical-content-and-node-hashing]]]
 - [depends_on:: [[provenance-record]]]
 
 ### Supports

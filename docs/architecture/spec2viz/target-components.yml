@@ -103,7 +103,7 @@ data:
       label: Lisp schema / macro surface
       kind: core
       atoms:
-        - lisp-macro-language
+        - atom-decision-no-separate-lisp-metalanguage
 
     CoreKernel:
       label: Core Kernel
@@ -340,7 +340,7 @@ data:
         - revision
 
     HeadStore:
-      label: document heads
+      label: atom-tree-as-index heads
       kind: database
       atoms:
         - document-head

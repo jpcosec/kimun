@@ -30,7 +30,7 @@ A projection plan is the explicit request for building a derived view from canon
 
 ### Supports
 
-- [supports:: [[lisp-metalanguage]]]
+- [supports:: [[atom-decision-no-separate-lisp-metalanguage]]]
 - [supports:: [[projection-engine]]]
 - [supports:: [[renderer]]]
 

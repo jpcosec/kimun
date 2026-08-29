@@ -30,7 +30,7 @@ A syntax locator is a locator strategy based on syntax-aware structures such as 
 ### Supports
 
 - [supports:: [[tree-sitter-adapter]]]
-- [supports:: [[non-reversible-document-family]]]
+- [supports:: [[atom-addressability-class-per-node]]]
 
 ### 5WH1+ neighborhood
 

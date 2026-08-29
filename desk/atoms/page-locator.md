@@ -29,7 +29,7 @@ A page locator is a locator strategy based on page-oriented source addressing.
 
 ### Supports
 
-- [supports:: [[non-reversible-document-family]]]
+- [supports:: [[atom-addressability-class-per-node]]]
 
 ### 5WH1+ neighborhood
 

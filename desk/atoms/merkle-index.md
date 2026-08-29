@@ -25,7 +25,7 @@ The Merkle index organizes node and subtree hashes into a structural integrity a
 
 ### Depends on
 
-- [depends_on:: [[node-hash]]]
+- [depends_on:: [[atom-canonical-content-and-node-hashing]]]
 - [depends_on:: [[dependency-index]]]
 
 ### Supports

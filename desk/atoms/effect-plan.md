@@ -31,7 +31,7 @@ An effect plan is the explicit request for an external action that must pass cap
 
 ### Supports
 
-- [supports:: [[lisp-metalanguage]]]
+- [supports:: [[atom-decision-no-separate-lisp-metalanguage]]]
 - [supports:: [[hook-runtime]]]
 - [supports:: [[agent-provider]]]
 

@@ -13,3 +13,17 @@ documents:
   semantic_tags:
   - type.desk.inbox-note
   - workspace.desk.inbox
+- name: 20260829-161650-unclear-legacy-atoms-relinked-after-retirement
+  path: desk/inbox/20260829-161650-unclear-legacy-atoms-relinked-after-retirement.md
+  hash_c: 0db023c54390ffe918b7f0fedcb2ac94156a87a81755005a0b5ee29054b61d99
+  hash_d: e2c612869864c5e10ad7875ad66d9a76c2004a9d5559d79dbf211eec28f83a53
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
+- name: 20260829-163807-suggestion-zero-context-gate-phrase-the-round-cap-as-3-rounds-after-the-last-high
+  path: desk/inbox/20260829-163807-suggestion-zero-context-gate-phrase-the-round-cap-as-3-rounds-after-the-last-high.md
+  hash_c: 9f06fbedbb333a4f3a38e7dea6c346701b423cb79b3d6d2b7fe20fd708bd9786
+  hash_d: 72d74d7fb5717bcfad6c75db9b888cc42ace2931559e1a1676d1dc2dd60d8d62
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox

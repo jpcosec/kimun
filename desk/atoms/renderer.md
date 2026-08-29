@@ -33,7 +33,7 @@ A renderer is the adapter-facing component that emits a concrete representation 
 
 - [supports:: [[markdown-emitter]]]
 - [supports:: [[document-materializer]]]
-- [supports:: [[reversible-document-family]]]
+- [supports:: [[atom-addressability-class-per-node]]]
 
 ### 5WH1+ neighborhood
 

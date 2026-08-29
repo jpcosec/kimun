@@ -28,7 +28,7 @@ Clojure patterns define the reusable implementation shapes for the canonical AST
 - [depends_on:: [[patterns]]]
 - [depends_on:: [[canonical-ast]]]
 - [depends_on:: [[tree-spine]]]
-- [depends_on:: [[node-hash]]]
+- [depends_on:: [[atom-canonical-content-and-node-hashing]]]
 
 ### Supports
 

@@ -116,7 +116,7 @@ data:
       label: Lisp runtime
       kind: backend
       atoms:
-        - lisp-macro-language
+        - atom-decision-no-separate-lisp-metalanguage
     transaction_engine:
       label: Transaction engine
       kind: backend

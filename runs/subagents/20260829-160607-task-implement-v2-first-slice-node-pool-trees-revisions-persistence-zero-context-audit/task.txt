@@ -1,0 +1,19 @@
+Task: task-implement-v2-first-slice-node-pool-trees-revisions-persistence
+Title: Implement v2 first slice: node pool, trees, revisions, persistence
+Status: draft
+Current node: checklist-task-implement-v2-first-slice-node-pool-trees-revisions-persistence-execution-ready
+Task type: implementation
+Routine: routine-task-implement-v2-first-slice-node-pool-trees-revisions-persistence
+Effective pills:
+- desk/contexts/pill-guardrail-v2-implementation-gate.md
+Effective atoms:
+- atom-smg-node-pool
+- atom-tree-as-index
+- atom-identity-is-the-content-hash-succession-is-a-recorded-edge
+- atom-decision-pure-cljc-kernel-with-hosts-as-adapters
+- atom-decision-no-separate-lisp-metalanguage
+- atom-git-object-model-as-the-v2-roadmap
+Checklist status:
+- checklist-task-implement-v2-first-slice-node-pool-trees-revisions-persistence-execution-ready: complete
+- checklist-task-implement-v2-first-slice-node-pool-trees-revisions-persistence-testing-ready: complete
+- checklist-task-implement-v2-first-slice-node-pool-trees-revisions-persistence-closeout-ready: pending

@@ -1,3 +1,7 @@
+> **Superseded (2026-08-29).** Governed by `docs/v2/01-orden-filosofico.md` and `docs/v2/02-sustrato-computacional.md`. The following statements in this document no longer hold:
+> - "redb is the default embedded backend" / decision-rusqlite-store — first slice persists to files (CAS + append-only log + heads); no backend dependency (02 §8.1)
+> - document-scoped node identity — identity is the content hash; succession is a supersedes edge (02 §6)
+
 # Graph Store Contract
 
 ## Purpose and governing sources

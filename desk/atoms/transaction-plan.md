@@ -30,7 +30,7 @@ A transaction plan is the validated intermediate representation of intended muta
 
 ### Supports
 
-- [supports:: [[lisp-metalanguage]]]
+- [supports:: [[atom-decision-no-separate-lisp-metalanguage]]]
 - [supports:: [[kernel-api]]]
 - [supports:: [[primitive-operation]]]
 

@@ -35,7 +35,7 @@ A storage backend is the replaceable persistence adapter that implements the ker
 
 - [supports:: [[graph-store]]]
 - [supports:: [[store-infrastructure]]]
-- [supports:: [[decision-rusqlite-store]]]
+- [supports:: [[atom-decision-no-rust-in-the-repository]]]
 
 ### 5WH1+ neighborhood
 

@@ -39,4 +39,4 @@ The Markdown emitter compiles Clojure-owned canonical structure back into the Ma
 - This atom is typed by its `five_wh_one_plus` field and should be queried together with nearby `what`/`how`/`when`/`where` atoms rather than as an isolated note.
 
 ### Depends on
-- [depends_on:: [[decision-rowan-ast]]]
+- [depends_on:: [[atom-decision-no-rust-in-the-repository]]]

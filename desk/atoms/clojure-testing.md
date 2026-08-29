@@ -33,7 +33,7 @@ Clojure testing validates the unit-level and structural correctness of the canon
 
 - [supports:: [[node]]]
 - [supports:: [[field-binding]]]
-- [supports:: [[node-hash]]]
+- [supports:: [[atom-canonical-content-and-node-hashing]]]
 - [supports:: [[projection]]]
 
 ### 5WH1+ neighborhood

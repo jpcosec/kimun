@@ -21,7 +21,7 @@ data:
         - AnchorKind
 
     DocumentPath:
-      label: source document path
+      label: source atom-tree-as-index path
       kind: core
       atoms:
         - document-path
@@ -97,10 +97,10 @@ data:
       kind: core
 
     ReversibleFamilies:
-      label: reversible document families
+      label: reversible atom-tree-as-index families
       kind: boundary
       atoms:
-        - reversible-document-family
+        - atom-addressability-class-per-node
 
   edges:
     - from: AnchorNode

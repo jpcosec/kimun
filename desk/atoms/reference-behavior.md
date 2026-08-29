@@ -26,7 +26,7 @@ Reference behavior is the normative expected result for a kernel operation, inde
 ### Supports
 
 - [supports:: [[conformance-suite]]]
-- [supports:: [[decision-rusqlite-store]]]
+- [supports:: [[atom-decision-no-rust-in-the-repository]]]
 - [supports:: [[ports-and-adapters]]]
 
 ### 5WH1+ neighborhood

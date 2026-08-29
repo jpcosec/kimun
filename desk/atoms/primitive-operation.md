@@ -31,7 +31,7 @@ A primitive operation is one of the closed kernel mutation forms from which high
 ### Supports
 
 - [supports:: [[transaction]]]
-- [supports:: [[lisp-metalanguage]]]
+- [supports:: [[atom-decision-no-separate-lisp-metalanguage]]]
 - [supports:: [[canonicalizer]]]
 
 ### 5WH1+ neighborhood

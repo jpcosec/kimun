@@ -16,4 +16,4 @@ provenance: raw/source/drawer-features/feature-clojure-library-stack.md
 ## Related atoms
 
 ### Implements
-- [implements:: [[node-hash]]]
+- [implements:: [[atom-canonical-content-and-node-hashing]]]

@@ -1,7 +1,7 @@
 ---
 id: task-specify-markdown-roundtrip-contract
 status: closed
-summary: Re-anchored to high-fidelity contract in docs/architecture/contracts/markdown-roundtrip-contract.md.
+summary: Re-anchored to high-fidelity contract in raw/source/architecture-retired/contracts/markdown-roundtrip-contract.md.
 tags:
 - workspace:desk
 - artifact:task
@@ -10,7 +10,7 @@ history: ["2026-07-29: closed with high-fidelity contract artifact."]
 references:
 - desk/atoms/markdown-importer.md
 - desk/atoms/markdown-emitter.md
-- desk/atoms/reversible-document-family.md
+- raw/source/atoms-retired/reversible-document-family.md
 - desk/atoms/structurednldoc-contract.md
 - desk/atoms/source-document-hash.md
 - docs/architecture/spec2viz/target-components.yml
@@ -18,7 +18,7 @@ depends_on: []
 pills:
 - desk/contexts/pill-planning-contracts.md
 files:
-- docs/architecture/contracts/markdown-roundtrip-contract.md
+- raw/source/architecture-retired/contracts/markdown-roundtrip-contract.md
 checklists: []
 ---
 
@@ -47,7 +47,7 @@ Define the absolute proof obligations for Markdown Import -> `CanonicalAST` -> E
 1. **Cycle Definition**: Map the `MarkdownImporter` -> `Rowan` -> `MarkdownEmitter` path.
 2. **Metadata Rule**: Mandate that hidden `id:` tags must be treated as first-class AST nodes.
 3. **Identity Checksum**: Require that `Source Document Hash` matches the re-rendered output checksum.
-4. **Contract Materialization**: Write the specification in `docs/architecture/contracts/markdown-roundtrip-contract.md`.
+4. **Contract Materialization**: Write the specification in `raw/source/architecture-retired/contracts/markdown-roundtrip-contract.md`.
 
 ## Validation
 

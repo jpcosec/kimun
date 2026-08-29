@@ -26,7 +26,7 @@ A dependency index records structural and derived dependencies so recomputation,
 ### Depends on
 
 - [depends_on:: [[canonical-ast]]]
-- [depends_on:: [[node-hash]]]
+- [depends_on:: [[atom-canonical-content-and-node-hashing]]]
 
 ### Supports
 
