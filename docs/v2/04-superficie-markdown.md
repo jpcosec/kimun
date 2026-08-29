@@ -80,6 +80,25 @@ Reglas de **continuación/cierre** (qué líneas siguientes pertenecen al bloque
 - `:html`, `:table`: hasta la siguiente línea en blanco (exclusive) o el fin.
 - `:paragraph`: líneas consecutivas que no cumplen 1–8.
 
+La regla (b) de listas necesita **una línea de lookahead**: el segmentador conserva la
+línea en blanco pendiente y decide al ver la siguiente; es la única regla no local.
+
+### 3.2 Del CST a bloques anidados (quotes e items)
+
+Los contenedores se parsean **recursivamente** con el mismo segmentador:
+
+- `:quote`: a cada línea se le quita el prefijo `^ {0,3}> ?` (el `>` y, si existe, un
+  espacio); las líneas resultantes se vuelven a segmentar y convertir en bloques (§4).
+- `:list`: se divide en items en cada línea que cumple la regla 6 con el mismo tipo de
+  marcador. El contenido de un item = su primera línea con el marcador y su espacio
+  sustituidos por `w` espacios, más sus líneas siguientes; después **todas** las líneas
+  del item se dedentan quitando `min(w, espacios iniciales)` espacios (una línea de
+  continuación perezosa tiene 0 y queda igual). Ese texto se segmenta y convierte
+  recursivamente. `w` es el ancho del marcador del primer item (`2` para `- `,
+  `len("n. ")` para el primer marcador ordenado).
+- El **join** de líneas de un párrafo o heading (§4: "unidas por un espacio") ocurre en la
+  conversión a AST de cada nivel, sobre las líneas ya dedentadas de ese nivel.
+
 ## 4. AST estructural neutro
 
 ```clojure
@@ -235,8 +254,11 @@ Funciones (todas puras, en `sldb.surface.markdown.plan`):
   `:sign/:block` produce el bloque `{:type (:type content) :attrs (:attrs content)}` y, si
   su tipo es heading/paragraph/code, toma `:text` de su único hijo `:sign/:text`; un
   `:sign/:opaque` produce `{:type :opaque :format :blob}`; los demás bloques toman sus
-  hijos recursivamente. Un árbol que no cumpla esa forma (p. ej. un párrafo con dos
-  hijos) lanza `:markdown/not-a-document`.
+  hijos recursivamente. Lanza `:markdown/not-a-document` cuando: el árbol no existe; el
+  root no es `:sign/:block` de `:type :document`; un bloque no es `:sign/:block` ni
+  `:sign/:opaque`, o su `:format` no es `:markdown`; un heading/paragraph/code no tiene
+  exactamente un hijo `:sign/:text`; un `:list` tiene un hijo que no es `:item`; un
+  `:text` u `:opaque` tiene hijos.
 - `(markdown->plan host text opts)` = `ast->plan` ∘ `parse`; `(store->markdown store tree-id)`
   = `render` ∘ `store->ast`.
 
@@ -247,7 +269,8 @@ Funciones (todas puras, en `sldb.surface.markdown.plan`):
 => {:blocks n                      ; bloques de cualquier tipo, contando anidados
     :structural n :opaque n
     :coverage 0.0..1.0            ; grafemas en :text (heading, paragraph, code) / (esos + grafemas de los :blob)
-    :opaque-regions [{:path [i j …] :format "…" :graphemes n} …]}   ; path = índices de hijo desde el documento
+    :opaque-regions [{:path [i j …] :format "…" :graphemes n} …]}   ; path = índices de hijo completos desde el documento
+                                                                     ; (documento→quote 0→opaco 2 ⇒ [0 2]), en orden de documento
 ```
 
 `coverage` = 1.0 para un documento sin opacos; los marcadores y escapes del render no

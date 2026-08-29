@@ -9,8 +9,9 @@ tags:
 - artifact:task
 - source:drawer
 routine: routine-task-milestone-4-markdown-cst-to-neutral-ast
-current_node: checklist-task-milestone-4-markdown-cst-to-neutral-ast-execution-ready
-history: []
+current_node: checklist-task-milestone-4-markdown-cst-to-neutral-ast-testing-ready
+history:
+- operator-task-milestone-4-markdown-cst-to-neutral-ast-activate
 references:
 - desk/drawer/tasks/task-milestone-4-markdown-cst-to-neutral-ast.md
 depends_on: []
@@ -51,6 +52,7 @@ atoms:
 - atom-canonical-content-and-node-hashing
 - atom-transactionplan-edn-schema-and-validation
 - atom-decision-pure-cljc-kernel-with-hosts-as-adapters
+closeout_evidence_verified: false
 ---
 
 # Milestone 4 Markdown CST to neutral AST

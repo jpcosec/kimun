@@ -1,0 +1,3 @@
+# Milestone 4 gate — final triage (2026-08-29)
+Round 1: A 8/3/2, B 3/2/2 → 04 rewritten with closed rules. Round 2: A 0/3/2, B ready (0/0/1).
+Round-2 mediums closed in 04 §3.1 (lookahead is explicit), new §3.2 (recursive container parsing, item dedent by min(w, indent), join at each level), §8 (store->ast error conditions), §9 (:path is the full child-index path). Gate **CLOSED — satisfied**. Design decisions taken by the main session (to confirm at leisure): marks live on the block and enter its hash; `_` is never emphasis in the profile (flanking `_` degrades to opaque); canonical paragraphs are single-line (soft breaks become spaces).

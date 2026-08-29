@@ -326,3 +326,4 @@ Auto-closing task task-harden-the-first-slice-test-suite-against-every-spec-prom
 2026-08-29 17:54:41,860 - deskops - INFO - Committing closure for task-document-the-v2-kernel-with-spec2viz-diagrams: chore(task): Document the v2 kernel with spec2viz diagrams
 
 Auto-closing task task-document-the-v2-kernel-with-spec2viz-diagrams
+2026-08-29 18:17:34,656 - deskops - INFO - Advanced task task-milestone-4-markdown-cst-to-neutral-ast to node checklist-task-milestone-4-markdown-cst-to-neutral-ast-testing-ready
