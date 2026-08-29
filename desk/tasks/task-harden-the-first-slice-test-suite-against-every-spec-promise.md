@@ -1,13 +1,14 @@
 ---
 id: task-harden-the-first-slice-test-suite-against-every-spec-promise
-status: draft
+status: active
 summary: ''
 tags:
 - workspace:desk
 - artifact:task
 routine: routine-task-harden-the-first-slice-test-suite-against-every-spec-promise
-current_node: checklist-task-harden-the-first-slice-test-suite-against-every-spec-promise-execution-ready
-history: []
+current_node: checklist-task-harden-the-first-slice-test-suite-against-every-spec-promise-testing-ready
+history:
+- operator-task-harden-the-first-slice-test-suite-against-every-spec-promise-activate
 references: []
 depends_on: []
 pills: []
@@ -24,6 +25,7 @@ atoms:
 - atom-canonical-content-and-node-hashing
 - atom-transactionplan-edn-schema-and-validation
 - atom-decision-first-slice-kernel-semantics-confirmed
+closeout_evidence_verified: false
 ---
 
 # Harden the first-slice test suite against every spec promise

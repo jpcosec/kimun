@@ -1,0 +1,32 @@
+flowchart TD
+    __start([Start])
+    replace_op[":replace {:tree t :old X :new X'}"]
+    structural["X' takes X's :order under the same parent and inherits X's subtree; only tree t changes"]
+    supersedes["add edge supersedes X' → X with evidence {:actor plan-actor}"]
+    scan_edges["for every active edge with X at either endpoint"]
+    edge_type{"edge type?"}
+    follow["new edge with X' in place of X (:ref-hash = X' if X was :to); old edge stays → superseded"]
+    leave_review["not followed → superseded, awaits human/agent review"]
+    leave_revalidate["not followed → superseded, awaits sense revalidation"]
+    invalidate["invalidated → recomputed on demand"]
+    done_ownership["already rewritten by the structural step"]
+    dirty["mark X', parent and ancestors dirty in t; commit recomputes only that path"]
+    chain["revision records supersedes; later X'' → X' repeats the rules (chain)"]
+    __end([End])
+    __start --> replace_op
+    replace_op --> structural
+    structural --> supersedes
+    supersedes --> scan_edges
+    scan_edges --> edge_type
+    edge_type -->|"reference / binding"| follow
+    edge_type -->|"semantic"| leave_review
+    edge_type -->|"projection"| leave_revalidate
+    edge_type -->|"derived"| invalidate
+    edge_type -->|"ownership"| done_ownership
+    follow --> dirty
+    leave_review --> dirty
+    leave_revalidate --> dirty
+    invalidate --> dirty
+    done_ownership --> dirty
+    dirty --> chain
+    chain --> __end

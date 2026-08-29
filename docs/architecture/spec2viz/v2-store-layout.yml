@@ -29,7 +29,7 @@ data:
 
     fail_replay:
       label: ":store/error — log and objects disagree"
-      kind: end
+      next: end
 
     heads_present:
       label: "heads.edn present?"
@@ -47,7 +47,7 @@ data:
 
     fail_heads:
       label: ":store/error — heads.edn does not match the log"
-      kind: end
+      next: end
 
     ready:
       label: "store value ready (in memory); objects/ never trusted for state"
@@ -66,8 +66,10 @@ data:
 
     ok:
       label: "{:ok? true :checked n}"
-      kind: end
+      next: end
 
     bad:
       label: "{:ok? false :bad [{:id :reason :hash-mismatch|:missing}]}"
-      kind: end
+      next: end
+
+  end: end

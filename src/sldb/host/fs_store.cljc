@@ -46,7 +46,15 @@
     #?(:clj (->> (or (read-text (path dir "log.edn")) "")
                  str/split-lines
                  (remove str/blank?)
-                 (mapv edn/read-string))))
+                 (map-indexed (fn [i line]
+                                (try (let [tx (edn/read-string line)]
+                                       (when-not (and (map? tx) (:id tx) (:plan tx) (:revision tx))
+                                         (throw (ex-info "not a Transaction" {})))
+                                       tx)
+                                     (catch Exception e
+                                       (throw (ex-info (str "store: corrupt log line " (inc i))
+                                                       {:type :store/corrupt-log :line (inc i) :cause (ex-message e)}))))))
+                 vec)))
   (read-heads [_]
     #?(:clj (some-> (read-text (path dir "heads.edn")) edn/read-string)))
   (cas-heads! [_ expected new]

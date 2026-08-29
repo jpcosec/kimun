@@ -264,8 +264,8 @@
     (for [op resolved-ops
           :when (= tid (first (plan/touched-trees {:ops [op]})))
           ref (op-refs op)
-          :let [kind (cond (contains? removed ref) :removed-target
-                           (contains? superseded ref) :superseded-target
+          :let [kind (cond (contains? superseded ref) :superseded-target   ; a replaced node is superseded, not removed
+                           (contains? removed ref) :removed-target
                            (contains? changed-parents ref) :same-parent-edit)]
           :when kind]
       {:tree tid :node ref :kind kind})))
@@ -318,12 +318,18 @@
   (let [host (:host store)
         plan (plan/canonical host (plan/check-schema plan))
         _ (plan/check-opaque-replace-only plan)
+        ;; check 1 runs BEFORE executing the ops so that a plan referencing a node that
+        ;; head replaced or removed yields a ConflictSet (§5.2) instead of an execution
+        ;; rejection. Alias refs are keywords and can never match the base→head delta.
+        raw-ops (mapv #(dissoc % :as) (:ops plan))
+        plan0 (check-base store (assoc plan :ops raw-ops) raw-ops (plan/touched-trees plan))
         ws (reduce apply-op (ws-init store plan) (:ops plan))
         aliases (:aliases ws)
         resolved-ops (mapv (fn [op] (plan/substitute-aliases aliases (dissoc op :as))) (:ops plan))
         touched (:touched ws)
         _ (plan/check-capabilities (:capabilities store) (assoc plan :ops resolved-ops) aliases)
-        plan' (check-base store (assoc plan :ops resolved-ops) resolved-ops touched)
+        plan' (cond-> (assoc plan :ops resolved-ops)
+                (:rebased-from plan0) (assoc :base (:base plan0) :rebased-from (:rebased-from plan0)))
         _ (doseq [tid touched]
             (when-not (tree/valid? (get-in ws [:trees tid]))
               (plan/reject :tree-integrity nil (str "tree " tid " is not a tree after applying the plan"))))

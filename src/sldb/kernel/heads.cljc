@@ -8,6 +8,10 @@
    lost update."
   (:require [sldb.kernel.revision :as revision]))
 
+(def max-attempts
+  "Compare-and-set retries of commit! before giving up with :store-moved."
+  32)
+
 (defn heads
   "{tree-id revision-id}: last revision that touched each tree."
   [store] (:heads store))
@@ -28,19 +32,23 @@
 
 (defn commit!
   "Applies `plan` to the store held in atom `store-ref` with all-or-nothing
-   semantics. On success swaps the new store in and returns the apply result.
-   On rejection or conflict rethrows the ex-info (:plan/rejected | :plan/conflict)."
+   semantics. `plan` may be a plan map or a function `store → plan`, so that a
+   retry after a lost compare-and-set rebuilds the plan against the store it
+   actually sees (typically to set :base to the current head). On success swaps
+   the new store in and returns the apply result. On rejection or conflict
+   rethrows the ex-info (:plan/rejected | :plan/conflict)."
   [store-ref plan]
   (loop [attempt 0]
     (let [store @store-ref
-          result (revision/apply-plan store plan)]
+          built (if (fn? plan) (plan store) plan)
+          result (revision/apply-plan store built)]
       (if (compare-and-set! store-ref store (:store result))
         result
-        (if (< attempt 3)
+        (if (< attempt max-attempts)
           (recur (inc attempt))
           (throw (ex-info "conflict" {:type :plan/conflict
-                                      :conflict-set {:base (:base plan) :head (:head @store-ref) :plan plan
-                                                     :conflicts [{:kind :store-moved}]}})))))))
+                                      :conflict-set {:base (:base built) :head (:head @store-ref) :plan built
+                                                     :conflicts [{:kind :store-moved :attempts attempt}]}})))))))
 
 (defn conflict-set
   "The ConflictSet carried by a :plan/conflict exception, or nil."

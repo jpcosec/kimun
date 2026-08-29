@@ -56,8 +56,10 @@ data:
 
     dirty:
       label: "mark X', parent and ancestors dirty in t; commit recomputes only that path"
+      next: chain
+
+    chain:
+      label: "revision records supersedes; later X'' → X' repeats the rules (chain)"
       next: end
 
-    end:
-      label: "revision records supersedes; later X'' → X' repeats the rules (chain)"
-      kind: end
+  end: end

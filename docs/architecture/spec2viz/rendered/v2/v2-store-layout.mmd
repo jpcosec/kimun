@@ -1,0 +1,34 @@
+flowchart TD
+    __start([Start])
+    open["open backend host"]
+    read_descriptor["read store.edn {:format-version :hash-alg :capabilities}; hash-alg must match the host Hasher"]
+    replay["replay log.edn: for each Transaction line apply-plan(plan) on the rebuilt store"]
+    check_ids{"replayed tx id and revision id equal the logged ones?"}
+    fail_replay[":store/error — log and objects disagree"]
+    heads_present{"heads.edn present?"}
+    compare_heads{"heads.edn == replayed {:head :heads}?"}
+    fail_heads[":store/error — heads.edn does not match the log"]
+    ready["store value ready (in memory); objects/ never trusted for state"]
+    verify["verify: reachable = closure from heads over revision → tree-set/edge-set/roots/tx → tree objects → nodes, edges"]
+    hash_files{"for each reachable id: H(objects/#lt;id#gt; content) == id?"}
+    ok["{:ok? true :checked n}"]
+    bad["{:ok? false :bad [{:id :reason :hash-mismatch|:missing}]}"]
+    __end([End])
+    __start --> open
+    open --> read_descriptor
+    read_descriptor --> replay
+    replay --> check_ids
+    check_ids -->|"yes"| heads_present
+    check_ids -->|"no"| fail_replay
+    fail_replay --> __end
+    heads_present -->|"yes"| compare_heads
+    heads_present -->|"no"| ready
+    compare_heads -->|"yes"| ready
+    compare_heads -->|"no"| fail_heads
+    fail_heads --> __end
+    ready --> verify
+    verify --> hash_files
+    hash_files -->|"all"| ok
+    hash_files -->|"some differ or missing"| bad
+    ok --> __end
+    bad --> __end

@@ -1,0 +1,19 @@
+## refactor-target...origin/refactor-target [ahead 19]
+ M .deskops.log
+ M bb.edn
+ M desk/tasks/task-harden-the-first-slice-test-suite-against-every-spec-promise.md
+ M docs/architecture/spec2viz/manifest.yml
+ M docs/architecture/spec2viz/v2-replace-reanchoring.yml
+ M docs/architecture/spec2viz/v2-store-layout.yml
+ M docs/v2/README.md
+ M src/sldb/host/fs_store.cljc
+ M src/sldb/kernel/heads.cljc
+ M src/sldb/kernel/revision.cljc
+?? docs/architecture/spec2viz/rendered/v2/v2-replace-reanchoring.mmd
+?? docs/architecture/spec2viz/rendered/v2/v2-store-layout.mmd
+?? docs/v2/tests/
+?? runs/subagents/20260829-174447-task-harden-the-first-slice-test-suite-against-every-spec-promise-testing/lane-1.md
+?? runs/subagents/20260829-174447-task-harden-the-first-slice-test-suite-against-every-spec-promise-testing/lane-2.md
+?? runs/subagents/20260829-175429-task-harden-the-first-slice-test-suite-against-every-spec-promise/
+?? scripts/canon_oracle.py
+?? test/sldb/kernel/hardening_test.cljc

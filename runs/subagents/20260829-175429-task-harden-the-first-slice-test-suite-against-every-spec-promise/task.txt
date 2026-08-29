@@ -1,0 +1,15 @@
+Task: task-harden-the-first-slice-test-suite-against-every-spec-promise
+Title: Harden the first-slice test suite against every spec promise
+Status: active
+Current node: checklist-task-harden-the-first-slice-test-suite-against-every-spec-promise-testing-ready
+Task type: implementation
+Routine: routine-task-harden-the-first-slice-test-suite-against-every-spec-promise
+Effective atoms:
+- atom-first-slice-runtime-choices
+- atom-canonical-content-and-node-hashing
+- atom-transactionplan-edn-schema-and-validation
+- atom-decision-first-slice-kernel-semantics-confirmed
+Checklist status:
+- checklist-task-harden-the-first-slice-test-suite-against-every-spec-promise-execution-ready: complete
+- checklist-task-harden-the-first-slice-test-suite-against-every-spec-promise-testing-ready: complete
+- checklist-task-harden-the-first-slice-test-suite-against-every-spec-promise-closeout-ready: pending

@@ -17,6 +17,18 @@ specs:
     file: target-runtime.yml
   - id: sldb.target.anchoring
     file: target-anchoring.yml
+  # v2 kernel (2026-08-29): rendered projections under rendered/v2/ (mermaid); regenerate with
+  #   spec2viz diagram render docs/architecture/spec2viz/v2-*.yml --out docs/architecture/spec2viz/rendered/v2 --renderer mermaid
+  - id: sldb.v2.rings
+    file: v2-rings.yml
+  - id: sldb.v2.cas_objects
+    file: v2-cas-objects.yml
+  - id: sldb.v2.transaction_flow
+    file: v2-transaction-flow.yml
+  - id: sldb.v2.replace_reanchoring
+    file: v2-replace-reanchoring.yml
+  - id: sldb.v2.store_layout
+    file: v2-store-layout.yml
 
 desk: desk
 agents: AGENTS.md
