@@ -6,7 +6,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from sldb.runtime.validation import extract_model_data
+from sldb.store.codec import StoreCodec, default_codec
 from sldb.store.io import (
     load_documents_index,
     load_models_index,
@@ -45,9 +45,9 @@ class RebuildReport:
     verbose: list[str] = field(default_factory=list)
 
 
-def _process_doc(doc, doc_path, model_type, m_name, report):
+def _process_doc(doc, doc_path, model_type, m_name, report, codec: StoreCodec = default_codec):
     report.docs_processed += 1
-    try: payload = extract_model_data(model_type, doc_path.read_text(encoding="utf-8"))
+    try: payload = codec.extract(model_type, doc_path.read_text(encoding="utf-8"))
     except Exception: payload = {}
     doc.semantic_tags = collect_document_semantic_tags(model_type, payload)
     return SemanticDocumentRecord(model=m_name, path=doc.path, tags=doc.semantic_tags)

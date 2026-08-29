@@ -10,7 +10,6 @@ from sldb.store.io import (
 )
 from sldb.store.models import DocumentEntry, StoreIndex
 from sldb.store.semantic import rebuild_semantic_indexes
-from sldb.core.exceptions import SLDBStoreError
 
 
 class StoreOperations:
@@ -29,6 +28,7 @@ class StoreOperations:
         m_idx = load_models_index(project_root / model_entry.models_index)
         d_idx = load_documents_index(project_root / m_idx.documents_index)
         if any(d.name == doc_name for d in d_idx.documents):
+            from sldb.core.exceptions import SLDBStoreError
             raise SLDBStoreError(f"Doc '{doc_name}' already tracked.")
 
     @staticmethod
@@ -36,7 +36,7 @@ class StoreOperations:
         m_idx = load_models_index(root / m_entry.models_index)
         d_idx = load_documents_index(root / m_idx.documents_index)
         if any(d.name == d_name for d in d_idx.documents):
-            raise SLDBStoreError(f"Doc '{d_name}' already tracked.")
+            from sldb.core.exceptions import SLDBStoreError; raise SLDBStoreError(f"Doc '{d_name}' already tracked.")
         d_idx.documents.append(DocumentEntry(name=d_name, path=rel_path, hash_c=hash_text(text), hash_d=_safe_hash(m_type, text)))
         save_documents_index(root / m_idx.documents_index, d_idx)
         m_idx.hash_b = hash_documents_index(d_idx)

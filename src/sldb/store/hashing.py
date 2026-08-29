@@ -1,9 +1,8 @@
 import hashlib
 import json
-from typing import Type
+from typing import Any
 
-from sldb.models.structured_doc import StructuredNLDoc
-from sldb.runtime.validation import extract_model_data
+from sldb.store.codec import StoreCodec, default_codec
 from sldb.store.models import DocumentsIndex, ModelsIndex
 
 
@@ -11,8 +10,8 @@ def hash_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
-def hash_fields(model_type: Type[StructuredNLDoc], markdown_text: str) -> str:
-    payload = extract_model_data(model_type, markdown_text)
+def hash_fields(model_type: Any, markdown_text: str, codec: StoreCodec = default_codec) -> str:
+    payload = codec.extract(model_type, markdown_text)
     normalized = json.dumps(payload, sort_keys=True, ensure_ascii=False)
     return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
 

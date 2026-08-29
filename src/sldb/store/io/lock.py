@@ -6,7 +6,6 @@ from pathlib import Path
 
 import yaml
 
-from sldb.core.exceptions import SLDBStoreError
 from sldb.store.layout import (
     lock_path,
     semantic_dag_path,
@@ -48,7 +47,5 @@ class StoreIOLock:
         try:
             fcntl.lockf(lock_fd, flags)
         except BlockingIOError:
-            raise SLDBStoreError(
-                f"Store at {self.store_path} is busy. "
-                "Use --wait to block."
-            )
+            from sldb.core.exceptions import SLDBStoreError
+            raise SLDBStoreError(f"Store at {self.store_path} is busy. Use --wait to block.")
