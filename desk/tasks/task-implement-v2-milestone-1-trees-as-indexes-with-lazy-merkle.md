@@ -34,6 +34,7 @@ atoms:
 - atom-tree-identity-tree-objects-and-heads
 - atom-evidence-required-per-edge-type
 - atom-canonical-content-and-node-hashing
+- atom-decision-first-slice-kernel-semantics-confirmed
 ---
 
 # Implement v2 milestone 1: trees as indexes with lazy Merkle

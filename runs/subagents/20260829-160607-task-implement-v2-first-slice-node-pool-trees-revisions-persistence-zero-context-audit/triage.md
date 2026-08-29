@@ -32,3 +32,7 @@ Lanes: Haiku 4.5, Explore (read-only), fresh context, no chat context. Five roun
 3. Timestamp is not part of an edge; the same assertion by the same origin is one edge (idempotent); different origins are two evidences.
 4. Tree ids are nominal ULIDs; descriptors are CAS objects referenced by the revision tree-set; Revision has eight hashed fields.
 5. First slice: SHA-256, files-only backend, Babashka-only validation, M/G as data shapes.
+
+## User confirmation (2026-08-29, after milestone 0 closeout)
+
+All five design decisions above were reviewed and **confirmed by the user** as stated: (1) class/kind enter the node hash; (2) reference/binding follow the successor, semantic/projection stay superseded, derived recompute; (3) timestamp outside the edge id, same origin ⇒ one edge, different origins ⇒ two evidences; (4) nominal ULID tree ids with descriptors in the CAS, eight-field Revision; (5) first-slice choices (SHA-256, files-only backend, Babashka-only validation, M/G as data shapes). No changes requested. Milestone 1 may start.

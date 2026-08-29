@@ -239,3 +239,13 @@ documents:
   - system:sldb
   - type.knowledge.atom
   - workspace.desk.atoms
+- name: atom-decision-first-slice-kernel-semantics-confirmed
+  path: desk/atoms/atom-decision-first-slice-kernel-semantics-confirmed.md
+  hash_c: 5c35501738b6a1103545fa5bf0b13abcaddbb2949d0398a4e7d3f730f0934f43
+  hash_d: 003dbb5ff7a9c59d7228500d49f04cfec8640cc1d84f54e0ce8f5cfb87ef8184
+  semantic_tags:
+  - domain:decisions
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
