@@ -1,0 +1,23 @@
+ M .sldb/core/documents/AtomDoc.yaml
+ M .sldb/core/documents/InboxNoteDoc.yaml
+ M .sldb/core/models/AtomDoc.yaml
+ M .sldb/core/models/InboxNoteDoc.yaml
+ M .sldb/core/store_index.yaml
+ M desk/atoms/atom-evidence-edges-and-anchor-states.md
+D  desk/drawer/tasks/task-milestone-5-anchor-states-and-drifted-reconciliation.md
+ M desk/tasks/Board.md
+ M docs/v2/02-sustrato-computacional.md
+ M docs/v2/04-superficie-markdown.md
+?? desk/atoms/atom-anchor-state-is-derived-and-computed-per-endpoint.md
+?? desk/atoms/atom-drifted-is-a-reconciled-orphan.md
+?? desk/atoms/atom-external-fingerprint-form-and-who-computes-it.md
+?? desk/drawer/tasks/task-milestone-5b-drifted-reconciliation.md
+?? desk/primitives/checklists/checklist-task-milestone-5a-anchor-states-closeout-ready.md
+?? desk/primitives/checklists/checklist-task-milestone-5a-anchor-states-execution-ready.md
+?? desk/primitives/checklists/checklist-task-milestone-5a-anchor-states-testing-ready.md
+?? desk/primitives/conditions/
+?? desk/primitives/edges/
+?? desk/primitives/operators/
+?? desk/routines/
+?? desk/tasks/task-milestone-5a-anchor-states.md
+?? runs/subagents/20260830-012800-task-milestone-5a-anchor-states-zero-context-audit/

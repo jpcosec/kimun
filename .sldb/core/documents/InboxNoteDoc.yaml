@@ -90,3 +90,10 @@ documents:
   semantic_tags:
   - type.desk.inbox-note
   - workspace.desk.inbox
+- name: 20260830-012614-suggestion-milestone-5b-drifted-reconciliation
+  path: desk/inbox/20260830-012614-suggestion-milestone-5b-drifted-reconciliation.md
+  hash_c: d06bcd5892bdb2fe7e2823025c5dc4341484b0bc9789ce0e401d98a690a5ecb7
+  hash_d: 0511cc8f096aa0a0abbffc92bbdf3f52f8c7290f520b39c8f047f4aeced36bdd
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox

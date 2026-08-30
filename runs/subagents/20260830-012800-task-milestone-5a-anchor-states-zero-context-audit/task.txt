@@ -1,0 +1,22 @@
+Task: task-milestone-5a-anchor-states
+Title: Milestone 5a anchor states
+Status: draft
+Current node: checklist-task-milestone-5a-anchor-states-execution-ready
+Task type: implementation
+Routine: routine-task-milestone-5a-anchor-states
+Effective pills:
+- desk/contexts/pill-guardrail-v2-implementation-gate.md
+Effective atoms:
+- atom-evidence-edges-and-anchor-states
+- atom-anchor-state-is-derived-and-computed-per-endpoint
+- atom-external-fingerprint-form-and-who-computes-it
+- atom-re-anchoring-rules-under-succession
+- atom-evidence-required-per-edge-type
+- atom-identity-is-the-content-hash-succession-is-a-recorded-edge
+- atom-decision-trees-are-trees-of-positions-git-like
+- atom-stand-off-addresses-are-virtual-until-referenced
+- atom-decision-pure-cljc-kernel-with-hosts-as-adapters
+Checklist status:
+- checklist-task-milestone-5a-anchor-states-execution-ready: complete
+- checklist-task-milestone-5a-anchor-states-testing-ready: complete
+- checklist-task-milestone-5a-anchor-states-closeout-ready: pending

@@ -109,33 +109,6 @@
       (cond-> (get-in raw [:evidence :ref-hash]) (update-in [:evidence :ref-hash] #(r ws %)))
       (cond-> (get-in raw [:evidence :context]) (update-in [:evidence :context] #(r ws %)))))
 
-(defn- add-edge-op [ws op]
-  (let [e0 (resolve-edge ws (:edge op))]
-    (require-node ws op (:to e0))
-    (if (= :ownership (:type e0))
-      (let [tid (require-tree ws op (:tree e0))
-            e (rejecting :evidence-ref-hash op #(edge/make (:host ws) e0))]
-        (-> ws
-            (with-tree op tid #(tree/add-child % (:parent e) (:to e) (:order e)))
-            (bind-alias op (:id e))))
-      (let [_ (require-node ws op (:from e0))
-            e (rejecting :evidence-ref-hash op #(edge/make (:host ws) e0))]
-        (when (and (get-in e [:evidence :ref-hash]) (not= (get-in e [:evidence :ref-hash]) (:to e)))
-          (plan/reject :evidence-ref-hash op ":ref-hash must equal the id of :to in the plan-resolved state"))
-        (when-let [ctx (get-in e [:evidence :context])] (require-node ws op ctx))
-        (if (contains? (:edges ws) (:id e))
-          (bind-alias ws op (:id e))                       ; idempotent no-op
-          (-> ws
-              (assoc-in [:objects (:id e)] e)
-              (update :edges conj (:id e))
-              (update :edges-added conj (:id e))
-              (bind-alias op (:id e))))))))
-
-(defn- remove-edge-op [ws op]
-  (let [id (r ws (:edge op))]
-    (when-not (contains? (:edges ws) id) (plan/reject :ids-exist op (str "unknown or inactive edge " id)))
-    (-> ws (update :edges disj id) (update :edges-removed conj id))))
-
 (defn- re-anchor
   "§6.1 inside the transaction: reference/binding edges with `old` at either
    endpoint get a successor edge; derived edges pointing at `old` are invalidated
@@ -159,6 +132,40 @@
                 (-> ws (update :edges disj (:id e)) (update :edges-removed conj (:id e)))
                 ws))
             ws touching)))
+
+(defn- add-edge-op [ws op]
+  (let [e0 (resolve-edge ws (:edge op))]
+    (require-node ws op (:to e0))
+    (if (= :ownership (:type e0))
+      (let [tid (require-tree ws op (:tree e0))
+            e (rejecting :evidence-ref-hash op #(edge/make (:host ws) e0))]
+        (-> ws
+            (with-tree op tid #(tree/add-child % (:parent e) (:to e) (:order e)))
+            (bind-alias op (:id e))))
+      (let [_ (require-node ws op (:from e0))
+            e (rejecting :evidence-ref-hash op #(edge/make (:host ws) e0))]
+        (when (and (get-in e [:evidence :ref-hash]) (not= (get-in e [:evidence :ref-hash]) (:to e)))
+          (plan/reject :evidence-ref-hash op ":ref-hash must equal the id of :to in the plan-resolved state"))
+        (when-let [ctx (get-in e [:evidence :context])] (require-node ws op ctx))
+        (if (contains? (:edges ws) (:id e))
+          (bind-alias ws op (:id e))                       ; idempotent no-op (§3.2): never re-anchors again
+          (let [ws' (-> ws
+                        (assoc-in [:objects (:id e)] e)
+                        (update :edges conj (:id e))
+                        (update :edges-added conj (:id e))
+                        (bind-alias op (:id e)))]
+            ;; §6.1, second re-anchoring trigger: :from is the successor, :to the
+            ;; replaced node, and the rules run with the edge already active.
+            (if (= :supersedes (:type e))
+              (-> ws'
+                  (update :superseded conj [(:to e) (:from e)])
+                  (re-anchor (:to e) (:from e)))
+              ws')))))))
+
+(defn- remove-edge-op [ws op]
+  (let [id (r ws (:edge op))]
+    (when-not (contains? (:edges ws) id) (plan/reject :ids-exist op (str "unknown or inactive edge " id)))
+    (-> ws (update :edges disj id) (update :edges-removed conj id))))
 
 (defn- replace-op [ws op]
   (let [tid (require-tree ws op (r ws (:tree op)))

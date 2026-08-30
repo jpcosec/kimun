@@ -276,6 +276,16 @@ Funciones (todas puras, en `sldb.surface.markdown.plan`):
   `:text` u `:opaque` tiene hijos.
 - `(markdown->plan host text opts)` = `ast->plan` ∘ `parse`; `(store->markdown store tree-id)`
   = `render` ∘ `store->ast`.
+- `(markdown->update-plan host store tree-id text {:actor :timestamp :base})` (hito 5b)
+  → `TransactionPlan` que **reingesta** un fichero editado fuera del kernel sobre un árbol
+  que ya existe: `:add-node` de los nodos que falten, un `:detach [0]` por cada hijo actual
+  del root (repetido, porque los hermanos se corren) y los `:add-edge :ownership` del AST
+  nuevo. El root no se toca: en este perfil siempre es el mismo nodo `:document`
+  (`{:format :markdown :type :document :attrs {}}`). No emite **ningún** `:replace`, y por
+  tanto ninguna arista `supersedes`: la superficie ve texto nuevo, no sabe qué sustituyó a
+  qué, y ésa es exactamente la definición de cambio externo de `docs/v2/02 §6`. Los nodos
+  que sobreviven a la edición son content-addressed, así que se vuelven a colocar y siguen
+  `intact`; los que desaparecen quedan `orphan` y los recoge `reconcile/proposals`.
 
 ## 9. Informe de direccionabilidad
 
@@ -309,6 +319,7 @@ estos nombres de test:
 | fixture `outside-profile.md`: informe congelado y opacos re-emitidos verbatim | `report_test/golden-outside-profile` |
 | mapeo §8: `markdown->plan` sobre store vacío, `store->ast` == `parse`, `store->markdown` == `render(parse)`; hoja compartida entre dos documentos | `plan_test/store-round-trip`, `plan_test/text-leaves-are-shared` |
 | `store->ast` rechaza árboles que no son documentos | `plan_test/not-a-document` |
+| `markdown->update-plan` reingesta sin `supersedes`; los bloques intactos siguen colocados y el editado queda `orphan` | `drift_test/external-edit-orphans-the-anchor` |
 | informe §9: coverage 1.0 sin opacos; paths y grafemas de cada región | `report_test/coverage` |
 
 `gen-ast` (en `test/sldb/kernel/generators.cljc`) genera solo ASTs canónicos (§4.1):

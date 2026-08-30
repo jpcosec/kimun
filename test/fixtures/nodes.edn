@@ -21,9 +21,9 @@
   {:locator {:kind :file, :path "docs/x.pdf", :page 3},
    :sample "Resumen ejecutivo",
    :fingerprint
-   "0000000000000000000000000000000000000000000000000000000000000000"},
+   "sha-256:0000000000000000000000000000000000000000000000000000000000000000"},
   :expected-id
-  "efae243d06afd11d0e1bb0efde2f4cb62a5e5a3291f7d88de7f5bd597905f2e3"}
+  "b44fd9099808bc7729937b5b0597b2ae6ee98bfd37857418eab6319d422d6890"}
  {:class :sign,
   :kind :span,
   :content

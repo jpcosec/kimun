@@ -176,7 +176,7 @@ Reglas:
   árbol → nodos, edge-set → aristas → nodos). Como todo id es un hash de contenido, el
   grafo de referencias es acíclico y el recorrido termina. Forma parte de `verify` desde
   el hito 3; la *política* de retención
-  es el hito 8, y los estados `drifted`/`orphan` de anclajes son el hito 5. Los nodos
+  es el hito 8, y los estados `orphan`/`drifted` de anclajes son el hito 5a/5b. Los nodos
   `:span` y los símbolos sin árbol propio se conservan por esta vía.
 - **Heads y CAS**: `heads.edn` es un solo mapa `{tree-id revision-id}` escrito de forma
   atómica; el CAS es lógico y por *entrada*: la escritura se acepta solo si, para cada
@@ -284,6 +284,10 @@ Operaciones primitivas: `new-tree`, `add-node`, `add-edge`, `remove-edge`, `repl
 (el nodo de una posición por otro + `supersedes`), `move` (una posición a otra dentro
 de un árbol), `detach` (quita una posición con su subárbol). No hay `update`: los nodos
 no cambian. Las ops de propiedad direccionan **posiciones** por path.
+
+Dos de estas ops registran sucesión y por tanto **re-anclan** dentro de la misma
+transacción, según la tabla de §6.1: `replace` siempre, y `add-edge` cuando la arista es
+una `supersedes` que todavía no estaba activa. Ninguna otra op re-ancla.
 
 - El plan se **valida** (tipos, capabilities, invariantes de árbol, evidencia) antes de
   aplicarse. Código no confiable (scripts de usuario, hooks, agentes) produce planes;
@@ -416,19 +420,22 @@ mismo nodo, en cualquier árbol, en cualquier revisión.
 `X` se re-anclan a `X'` por regla explícita (según tipo) o quedan marcadas para revisión.
 
 **Mutación** = un árbol apunta a otro nodo donde antes apuntaba a éste. Se detecta
-comparando la evidencia de cada arista con la revisión actual:
+comparando cada anclaje con la revisión actual:
 
-| Estado del anclaje | Condición |
-|---|---|
-| `intact` | el referente está en el árbol y el hash coincide con la evidencia |
-| `superseded` | el referente fue reemplazado y existe `supersedes` hacia el nuevo |
-| `drifted` | el referente fue reemplazado **sin** sucesión registrada (cambio externo) |
-| `orphan` | el referente no está en ningún árbol de la revisión |
+| Estado del anclaje | Condición | Cómo se decide |
+|---|---|---|
+| `intact` | el referente sigue resuelto en la revisión y su hash es el de la evidencia | determinista (§6.2) |
+| `superseded` | el referente fue reemplazado y existe `supersedes` hacia el nuevo | determinista (§6.2) |
+| `orphan` | el referente ya no resuelve en la revisión y no hay sucesión registrada | determinista (§6.2) |
+| `drifted` | un `orphan` para el que la reconciliación encontró un candidato: fue reemplazado **sin** sucesión (cambio externo) | heurístico (§6.5) |
 
-Solo `drifted` requiere heurística (reconciliación por sample/posición), y se marca con
-confianza. Es el caso de un `.md` editado fuera del kernel: no hubo transacción, así que
-no hay `supersedes`. Los estados son consultables por nodo ("qué está anclado en qué") y
-por revisión (diff de anclajes), y `drifted`/`orphan` alimentan el bucle autopoiético.
+`drifted` es un **refinamiento de `orphan`**, no un cuarto estado paralelo: el kernel
+calcula `intact | superseded | orphan` sin heurística ninguna (hito 5a), y la
+reconciliación reclasifica un `orphan` como `drifted` cuando puede nombrar al sustituto
+con una confianza (hito 5b). Es el caso de un `.md` editado fuera del kernel: no hubo
+transacción, así que no hay `supersedes`. Los estados son consultables por nodo ("qué
+está anclado en qué") y por revisión (diff de anclajes), y `drifted`/`orphan` alimentan
+el bucle autopoiético (`01` §8).
 
 ### 6.1 Reglas de re-anclaje cuando `X'` sucede a `X`
 
@@ -445,10 +452,233 @@ El re-anclaje siempre apunta al **sucesor directo** en el momento del `:replace`
 más tarde `X''` sucede a `X'`, ese segundo `:replace` vuelve a aplicar las reglas sobre
 las aristas que apuntan a `X'`, de modo que la cadena se sigue paso a paso.
 
-Cambio externo (`drifted`, hito 5): la reconciliación heurística produce una *propuesta*
-`{:old X :candidate X' :confidence <0..1> :method <kw>}` que vive fuera del pool (no es
-nodo ni arista) hasta que un actor la acepta; entonces se registra `supersedes` con ese
-actor y aplican las mismas reglas.
+**Disparadores del re-anclaje.** La sucesión se registra de dos maneras y las dos aplican
+esta tabla dentro de la misma transacción:
+
+1. `:replace` — la transacción acuña la arista `supersedes` con el `:actor` del plan.
+2. `:add-edge` de una arista `:supersedes` **nueva** — es la forma de aceptar una
+   propuesta de reconciliación (§6.5) y de registrar una sucesión que ninguna operación
+   de árbol expresa. Un `:add-edge` cuya arista ya está activa es el no-op de §3.2 y **no**
+   vuelve a re-anclar (el re-anclaje ya ocurrió cuando se añadió).
+
+En una arista `supersedes`, `:from` es el **sucesor** y `:to` es el nodo **reemplazado**
+(§3.2). El re-anclaje corre **después** de que la arista entre en el conjunto activo, de
+modo que la propia `supersedes` ya está ahí cuando se recorren las aristas que tocan a
+`old`; ella misma cae en el caso por defecto de la tabla (no se re-ancla a sí misma).
+Ambos caminos añaden el par `[old new]` = `[(:to e) (:from e)]` al `:superseded` del
+resultado de la transacción, que es lo que lee el `diff` de §5.2. El no-op idempotente
+**nunca** re-ancla: si la arista ya estaba activa, el re-anclaje ocurrió cuando se añadió,
+y repetirlo duplicaría aristas de re-anclaje que ya existen.
+
+### 6.2 Estados de anclaje (hito 5a)
+
+**Anclaje** = arista activa en la revisión `R` de tipo `reference`, `binding`,
+`projection`, `semantic` o `derived`. `ownership` no es anclaje (es estructura; su
+provenance es la transacción) y `supersedes` tampoco (es el registro de sucesión que los
+demás consultan).
+
+El estado se calcula **por extremo** y luego se combina, porque §6.1 sigue al sucesor en
+cualquiera de los dos extremos.
+
+**Sucesión activa.** `successors(R, X) = {(:from e) | e ∈ edges(R), (:type e) = :supersedes,
+(:to e) = X}`. Es un *conjunto*: dos actores pueden afirmar sucesores distintos para el
+mismo nodo y las dos aristas son legítimas (§3.2). La cadena se sigue mientras el conjunto
+del paso actual tenga exactamente un elemento, empezando por el propio `X`. Los tres casos,
+sin más:
+
+- `successors(R, X) = ∅` → `:successors []`, `:latest nil`, `:ambiguous? false`; el nodo
+  no está sucedido.
+- algún paso (el primero incluido) tiene más de un sucesor → `:latest nil`,
+  `:ambiguous? true`.
+- si no → `:latest` es el último nodo alcanzado, `:ambiguous? false`.
+
+El recorrido lleva un conjunto de visitados: un ciclo (imposible por construcción, porque
+`X'` es un nodo que no existía) **corta la cadena y se comporta como su final**, es decir
+`:latest` es el último nodo alcanzado antes de repetirse y `:ambiguous?` sigue siendo
+`false`. Nunca cuelga y nunca es un error.
+
+**Resolución de un extremo.** `resolves?(R, X)`, por clase y kind de `X`:
+
+| `X` | resuelve cuando |
+|---|---|
+| `:sign/:span` con `{:leaf L :range [a b]}` | `resolves?(R, L)` **y** `b ≤` número de grafemas del `:text` de `L`; si la hoja no resuelve, el span tampoco (la dirección stand-off hereda el suelo de su hoja, §4.1) |
+| cualquier otro `:sign` | `X` ocupa al menos una posición de algún árbol de `R` |
+| `:symbol`, `:fact` | `X` existe en el CAS |
+| un id que no está en el CAS | nunca resuelve |
+
+La última fila no puede darse por `:add-edge` (que exige que los dos extremos existan,
+§5.1), pero `replay` y `verify` no pueden depender de eso: un extremo ausente del pool es
+`orphan`, no un error.
+
+La fila de M/G es una **concesión explícita del primer slice**: los símbolos y los hechos
+todavía no viven en árboles (`02 §8.1`), así que exigirles posición los volvería todos
+`orphan`. El hito 7 la endurece a "pertenece a algún árbol `:context`". Los nodos `:span`
+tampoco ocupan posiciones (§4.1): su ancla es la hoja, y por eso recursan.
+
+**Estado de un extremo**, evaluado en este orden:
+
+| condición | estado |
+|---|---|
+| `successors(R, X) ≠ ∅` | `superseded` |
+| `resolves?(R, X)` | `intact` |
+| resto | `orphan` |
+
+El orden importa: un nodo puede estar sucedido y seguir presente en otro árbol; gana
+`superseded`, porque hay una sucesión registrada que dice qué hacer con él.
+
+**Estado de la arista** = el peor de sus dos extremos, con el orden
+`intact < superseded < orphan`. Esa es la única regla. Como observación: §6.1 invalida las
+aristas `derived` que tocan al nodo sucedido, así que lo normal es que una `derived` activa
+solo aparezca `intact` u `orphan`; si aun así una `derived` tiene un extremo `superseded`
+—porque la sucesión ya estaba registrada antes de crearla— su estado es `superseded`, por
+la regla, sin excepción.
+
+### 6.3 Consultas de anclaje (hito 5a)
+
+`sldb.kernel.anchor`, todas puras sobre `(store, rev-id)` y sin autoridad (invariante 10):
+
+```
+(anchor/anchor-types)         ; #{:reference :binding :projection :semantic :derived}
+
+(anchor/placements store rev-id)
+  → {<node-id> [[<tree-id> <path>] …]}      ; el índice inverso nodo → posiciones
+
+(anchor/endpoint-state store rev-id node-id)
+  → {:node <id> :state :intact|:superseded|:orphan
+     :successors [<id> …] :latest <id>|nil :ambiguous? bool
+     :positions [[<tree-id> <path>] …]}
+
+(anchor/state store rev-id edge-id)
+  → {:edge <id> :type <kw> :state <kw> :from {…} :to {…}}   ; :from/:to = endpoint-state
+
+(anchor/states store rev-id)          ; un mapa por anclaje activo, ordenado por edge-id
+(anchor/anchored-in store rev-id node-id)
+  → {:node <id> :positions [[tree path] …] :as-from [state …] :as-to [state …]}
+(anchor/report store rev-id)
+  → {:revision <id> :anchors n :by-state {:intact n :superseded n :orphan n}
+     :by-type {<kw> {:intact n :superseded n :orphan n}} :orphans [<edge-id> …]}
+(anchor/diff store r1 r2)
+  → {:changed [{:edge <id> :type <kw> :before <estado> :after <estado>} …]
+     :added [state …] :removed [<edge-id> …]}
+```
+
+**Formas de retorno.**
+
+- `:positions` lista **todas** las posiciones del nodo en **todos** los árboles de la
+  revisión (los de `:roots`), los árboles en orden ascendente de id y, dentro de cada
+  árbol, los paths en orden de documento (pre-orden). Los paths **no se ordenan**: salen
+  en el orden del recorrido, que ya es determinista. (El orden natural de Clojure sobre
+  vectores compara primero la longitud, así que "orden lexicográfico" no sería lo mismo;
+  por eso se fija el recorrido y no un comparador.)
+- `:successors` son los sucesores **directos**, sin repetidos, en orden ascendente de id, y
+  `[]` cuando no hay ninguno. `:latest` es `nil` cuando no hay sucesores o cuando la cadena
+  es ambigua; `:ambiguous?` es cierto sii algún paso de la cadena tuvo más de un sucesor.
+- `:as-from` y `:as-to` son **vectores** de mapas `anchor/state`, en orden **ascendente**
+  de id de arista (no están indexados por id: el llamante recorre). Una arista cuyos dos
+  extremos son el mismo nodo aparece en los dos vectores.
+- `:by-type` lleva **las cinco** claves de `anchor-types` siempre, con ceros cuando no hay
+  anclajes de ese tipo; `:by-state`, las tres.
+- `anchor/diff` compara los conjuntos de anclajes de `r1` y `r2`: `:added` son los activos
+  solo en `r2` (mapas de estado completos), `:removed` los ids de los activos solo en `r1`,
+  y `:changed` los activos en ambos cuyo estado de arista difiere. Las tres, por id de
+  arista ascendente. En `:changed`, `:before` y `:after` son los **estados de la arista**
+  (una de las tres keywords) en `r1` y en `r2`; se llaman así, y no `:from`/`:to`, para no
+  confundirlos con los dos extremos de la arista.
+
+**Determinismo.** Toda secuencia devuelta es determinista y **ninguna** se devuelve como
+conjunto o mapa cuando el orden importa: los ids —de arista, de nodo y de árbol— se ordenan
+siempre por el orden **ascendente** de string, y las posiciones salen en el orden de
+recorrido descrito arriba. Cómo
+se indexe por dentro (de una vez por revisión, con caché o recomputando) es elección del
+implementador: no es observable, porque el resultado está fijado.
+
+**Errores** (`ex-info` con `:type`, docs/v2/03 §2; ninguna consulta devuelve un valor de
+error):
+
+- `:anchor/unknown-revision` `{:revision r}` — lo lanza cualquiera de las siete consultas
+  cuando `rev-id` (o `r1`/`r2`) no está en `(:revisions store)`.
+- `:anchor/not-an-anchor` `{:edge e :revision r}` o `{:edge e :type t}` — solo
+  `anchor/state`, cuando el id no es una arista activa de la revisión o cuando lo es pero
+  su tipo no está en `anchor-types`.
+
+### 6.4 Fingerprint de los anclajes externos (hito 5a)
+
+Un nodo `:sign/:external` es `{:locator {:kind k …} :sample "…" :fingerprint "<alg>:<hex>"}`.
+
+- `alg` es el nombre del algoritmo del store (`sha-256` en el primer slice, §8.1) y `hex`
+  va en minúsculas. El kernel **valida la forma y compara por igualdad**; nunca recomputa
+  el digest, porque no hace I/O.
+- Qué bytes se digieren depende del `:kind` del locator y lo produce el **motor** que
+  emite el anclaje, que queda registrado en `:engine`/`:version` de la evidencia:
+
+| `:kind` | bytes |
+|---|---|
+| `:file` | el contenido del fichero, tal cual |
+| `:url` | el cuerpo de la respuesta, tal cual |
+| `:text` | UTF-8 del `:sample` en NFC |
+
+- La comprobación vive en `node/validate`, junto a las demás de forma, de modo que
+  `node/make` levanta `:node/invalid` (docs/v2/02 §2.1) ante un `:fingerprint` mal formado
+  o con un algoritmo que no es el del store — el que devuelve `(algorithm (hasher host))`.
+  Un locator de otro `:kind` es admisible: el kernel no cierra la lista, solo exige la forma.
+- El estado de un anclaje externo se calcula como el de cualquier otro (§6.2). El nodo
+  `:external` es content-addressed, así que un recurso que cambia produce un nodo
+  distinto; si ninguna transacción registró la sucesión, el viejo queda `orphan` y es
+  candidato de §6.5 por `:fingerprint` (mismo locator, huella distinta).
+
+### 6.5 Reconciliación de `drifted` (hito 5b)
+
+`sldb.kernel.reconcile`, sobre los `orphan` de `(anchor/report store rev-id)`:
+
+```
+(reconcile/proposals store rev-id opts)
+  → [{:old <id> :candidate <id> :confidence <0..1> :method <kw>
+      :edges [<edge-id> …] :evidence {…}} …]
+  opts {:base <rev-id>            ; por defecto, el único padre de rev-id
+        :min-confidence 0.6
+        :all? false}
+```
+
+`:base` solo tiene defecto cuando la revisión tiene **exactamente un padre**. Con cero
+padres (la revisión raíz) o con varios (cuando haya merges), pasarlo es obligatorio y su
+ausencia levanta `:reconcile/base-required`; el método `:position` es el único que lo usa,
+y adivinar un padre sería inventar la historia contra la que se compara.
+
+Una **propuesta vive fuera del pool**: no es nodo ni arista, no se persiste, no cambia
+nada del store. Es un valor devuelto que un actor acepta o descarta.
+
+Métodos, en orden de precedencia; cada uno da como mucho un candidato por `(old, método)`:
+
+| método | condición | confianza |
+|---|---|---|
+| `:position` | `X` ocupaba el path `p` del árbol `T` en la revisión `:base`, en `R` ese `p` de `T` lo ocupa `Y ≠ X`, y `Y` tiene la misma `class` y el mismo `kind` que `X` | `1.0` si `Y` no ocurría en `T` en `:base`; `0.9` si ya ocurría |
+| `:fingerprint` | `X` e `Y` son `:sign/:external` con el mismo `:locator` y `:fingerprint` distinto, e `Y` resuelve en `R` | `1.0` |
+| `:sample` | `X` e `Y` tienen el mismo `kind` y texto comparable (`:text`→`:text`, `:opaque`→`:blob`, `:external`→`:sample`), `Y` resuelve en `R`, y `dice(X,Y) ≥ :min-confidence` | `dice(X,Y)` |
+
+`dice(a,b)` sobre el **multiconjunto de trigramas de grafema** del texto en NFC:
+`2·|A ∩ B| / (|A| + |B|)`, con la intersección tomada como mínimo de multiplicidades. Un
+texto de menos de tres grafemas aporta un único gramo, el texto entero. Dos textos vacíos
+dan `1.0`; un vacío contra uno no vacío da `0.0`.
+
+Determinismo: numerador y denominador son enteros y hay una sola división
+(`(/ (double num) den)`), sin redondeo, así que el valor es idéntico en cualquier host
+IEEE-754. Las propuestas se ordenan por confianza descendente y, a igualdad, por id de
+candidato ascendente; solo se conserva la mejor por `old`, salvo que se pidan todas.
+
+**Aceptación.** Aceptar es una transacción ordinaria y explícita:
+
+```
+(reconcile/accept-plan store rev-id proposal {:actor a :timestamp t})
+  → TransactionPlan con un solo :add-edge {:type :supersedes :from candidate :to old
+                                           :evidence {:actor a}}
+```
+
+El kernel no aplica nada: lo aplica el actor con `store/commit!`. Al aplicarse, §6.1
+re-ancla `reference` y `binding` al sucesor, invalida `derived`, deja `semantic` y
+`projection` para revisión, y el anclaje pasa de `orphan` a `superseded`. La confianza y
+el método **no** entran en la arista: la evidencia de un `supersedes` es su `:actor`
+(§3.2), porque quien responde de la sucesión es quien la aceptó, no el heurístico que la
+propuso.
 
 ## 7. Capas de superficie: CST y modelo estructural neutro
 
@@ -525,7 +755,8 @@ Cada hito es un vertical slice verificable, no una capa de abstracción.
 | 2 | **Commits**: revisiones, transacciones, `TransactionPlan` EDN validado, `supersedes`, CAS de heads | `commit`, `log`, `diff` | describir a mano una transacción y obtener exactamente su revisión; diff entre revisiones |
 | 3 | **Persistencia**: log append-only + CAS en disco; reload reproduce estado e historial | `.git/objects`, refs | cerrar y abrir el proceso ⇒ mismo estado, mismos hashes |
 | 4 | **Primera superficie**: Markdown → CST → AST neutro → árbol-índice + hojas; emisor inverso-correcto; regiones `opaque` | `add`, `checkout` | `parse(render(A)) == A` para todo `A` canónico, por property testing; informe de direccionabilidad por documento |
-| 5 | **Evidencia y anclajes**: aristas entre capas con evidencia; estados `intact/superseded/drifted/orphan`; consulta "qué está anclado en qué" | `blame` | un cambio externo produce `drifted` detectable y re-anclable |
+| 5a | **Estados de anclaje**: estados deterministas `intact/superseded/orphan` por extremo y por arista; consultas "qué está anclado en qué", informe y diff de anclajes; forma del `:fingerprint` externo | `blame` | detachar el nodo anclado deja el anclaje `orphan`; registrar `supersedes` lo deja `superseded` y re-ancla según §6.1; toda consulta es derivada y reproducible desde el log |
+| 5b | **Reconciliación de `drifted`**: propuestas `{old candidate confidence method}` fuera del pool por posición, fingerprint y muestra; aceptación como transacción `supersedes` | — | un `.md` editado fuera del kernel deja anclajes `orphan`, la reconciliación los reclasifica `drifted` nombrando al sustituto, y aceptar la propuesta los deja `superseded` y re-anclados |
 | 6 | **Stand-off**: hojas con offsets, capas UAX #29 bajo demanda, anclaje `(hoja, rango, hash)` | — | dirección hasta el grafema sin nodos materializados |
 | 7 | **M y G**: símbolos canónicos, `binding` bajo `W_i`, hechos con estado de sentido; adaptador Matrix | — | un símbolo referenciado por N signos; consolidación validada |
 | 8 | **Retención y GC**: alcanzabilidad desde heads, pins, nodos huérfanos | `gc`, `prune` | export/import sin backend; `verify` y `rebuild-indexes` |
@@ -557,4 +788,7 @@ proveedores semánticos y superficies visuales quedan explícitamente fuera hast
 16. El timestamp no entra en el id de ninguna arista; entra en el id de la revisión.
 17. Todo objeto persistido (nodo, objeto de árbol, arista, edge-set, revisión) cumple
     H(bytes del objeto) == su nombre en el CAS.
+18. El estado de un anclaje es derivado: se recomputa desde revisión + pool, no se
+    persiste, y una propuesta de reconciliación no es nodo ni arista hasta que un
+    actor la acepta como `supersedes`.
 ```

@@ -41,7 +41,7 @@ Leyenda: `ok` probado · `oracle` probado además por una implementación indepe
 | timestamp fuera del id (inv. 16); mismo origen ⇒ misma arista; orígenes distintos ⇒ dos | edge_test/timestamp-is-not-part-of-an-edge…, revision_test/adding-an-existing-edge-is-a-no-op |
 | claves extra de evidencia entran al id; origen string vacío admitido, nil no | hardening/edge-evidence-extra-keys-enter-the-id, edge-empty-origin-is-still-a-string |
 | un binding por W_i; contextos distintos ⇒ aristas distintas | hardening/multi-context-bindings-are-distinct-edges |
-| :ref-hash como detector de mutación | **deferred** → `task-milestone-5-anchor-states-and-drifted-reconciliation` |
+| `:ref-hash` como detector de mutación (estados de anclaje, §6.2) | anchor_test/* (ver §6) |
 
 ## §4.1 — stand-off
 
@@ -86,6 +86,29 @@ Leyenda: `ok` probado · `oracle` probado además por una implementación indepe
 | diff {:trees {:added :removed :moved} :edges :superseded} | revision_test/replace-keeps-order… (diff) |
 | CAS por entrada; commit! con reintentos y plan como función del store | heads_test/cas-per-entry, hardening/concurrent-commits-on-disjoint-trees-all-land |
 
+## §6 — identidad, sucesión y estados de anclaje (hito 5a)
+
+| promesa | test |
+|---|---|
+| §6.1 el re-anclaje se dispara también con un `:add-edge` de `supersedes` nuevo; `old` = `:to`, `new` = `:from`; el par `[old new]` llega al resultado de la transacción | anchor_test/adding-a-supersedes-edge-re-anchors-and-records-the-pair |
+| §6.1 el no-op idempotente nunca vuelve a re-anclar | anchor_test/adding-a-supersedes-edge… (bloque `testing`) |
+| §6.1 `reference`/`binding` siguen al sucesor en cualquiera de los dos extremos | anchor_test/adding-a-supersedes-edge…, revision_test/the-seven-checks… (vía `:replace`) |
+| §6.2 anclaje = las cinco aristas entre capas; `ownership` y `supersedes` no lo son | anchor_test/anchors-are-the-five-cross-layer-types |
+| §6.2 `intact` cuando el referente resuelve; un símbolo sin árbol resuelve en el primer slice | anchor_test/a-placed-referent-is-intact |
+| §6.2 `orphan` cuando el referente deja de ocupar posición y no hay sucesión | anchor_test/detaching-the-referent-orphans-the-anchor |
+| §6.2 el estado de la arista es el peor de sus dos extremos; `superseded` gana a la presencia | anchor_test/detaching-the-referent…, adding-a-supersedes-edge… |
+| §6.2 un `:span` hereda el suelo de su hoja; un rango que se pasa del texto no resuelve | anchor_test/a-span-whose-leaf-is-replaced-is-orphan-and-its-leaf-is-superseded, a-span-whose-range-runs-past-its-leaf-is-orphan |
+| §6.2 un id que no está en el pool es `orphan` | anchor_test/an-endpoint-that-is-not-in-the-pool-is-orphan |
+| §6.2 cadena de sucesión: ambigua desde cualquier paso, o seguida hasta el final | anchor_test/two-successors-make-the-chain-ambiguous, a-chain-of-succession-is-followed-to-the-last-node |
+| §6.3 `anchored-in`: posiciones en orden de documento, `:as-from`/`:as-to` por id ascendente, un bucle en los dos vectores | anchor_test/anchored-in-answers-what-is-anchored-in-what, diff-reports-added-removed-and-changed-anchors |
+| §6.3 `report` lleva siempre los tres estados y los cinco tipos, con ceros | anchor_test/report-always-carries-the-three-states-and-the-five-types |
+| §6.3 `diff`: `:added`, `:removed`, `:changed` con `:before`/`:after` | anchor_test/diff-reports-added-removed-and-changed-anchors |
+| §6.3 las consultas son derivadas, puras y ordenadas (inv. 18) | anchor_test/queries-are-pure-derived-and-deterministic |
+| §6.3 `:anchor/unknown-revision` y `:anchor/not-an-anchor` | anchor_test/the-two-error-types |
+| §6.4 `:fingerprint` externo con la forma `<alg>:<hex>` y el algoritmo del store; `:node/invalid` si no | node_test/invalid-shapes-are-rejected, golden-fixture-covers-every-row-and-freezes-ids · **oracle**: id congelado recomputado en Python |
+| inv. 18: el estado de un anclaje es derivado y no se persiste | anchor_test/queries-are-pure-derived-and-deterministic |
+| §9 hito 5a: detachar deja `orphan`; registrar `supersedes` deja `superseded` y re-ancla | anchor_test/detaching-the-referent-orphans-the-anchor, adding-a-supersedes-edge-re-anchors-and-records-the-pair |
+
 ## §8.1 — backend de archivos
 
 | promesa | test |
@@ -102,7 +125,7 @@ Leyenda: `ok` probado · `oracle` probado además por una implementación indepe
 
 ## Invariantes §10
 
-1 pool_test/tampered…, store_test/close-and-reopen · 2 node_test/same-content-same-id · 3 revision_test/heads-advance-only… · 4 tree_test/generated-trees-are-valid · 5 tree_test/one-node-in-two-trees · 6 edge_test/evidence-requirements · 7 revision_test/replace-keeps-order… · 8, 9 **deferred** (hito 4) · 10 pool_test/pool-is-rebuildable, store_test/replay… · 11 **deferred** (efectos) · 12 plan_test/opaque-replace-only · 13 tree_test/ulid-ids-are-nominal · 14 tree_test/sibling-order… · 15 revision_test/the-seven-checks · 16 edge_test/timestamp…, hardening/timestamp-enters-the-revision-id · 17 store_test/every-object-file…
+1 pool_test/tampered…, store_test/close-and-reopen · 2 node_test/same-content-same-id · 3 revision_test/heads-advance-only… · 4 tree_test/generated-trees-are-valid · 5 tree_test/one-node-in-two-trees · 6 edge_test/evidence-requirements · 7 revision_test/replace-keeps-order… · 8, 9 **deferred** (hito 4) · 10 pool_test/pool-is-rebuildable, store_test/replay… · 11 **deferred** (efectos) · 12 plan_test/opaque-replace-only · 13 tree_test/ulid-ids-are-nominal · 14 tree_test/sibling-order… · 15 revision_test/the-seven-checks · 16 edge_test/timestamp…, hardening/timestamp-enters-the-revision-id · 17 store_test/every-object-file… · 18 anchor_test/queries-are-pure-derived-and-deterministic
 
 ## §3.1 (revisado 2026-08-29) — árboles de posiciones
 

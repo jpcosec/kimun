@@ -81,16 +81,18 @@ como datos), efectos, GC. Cada uno tiene su drawer (§6).
 
 ## 6. Drawer (13 tasks) — siguiente paso sugerido en negrita
 
-**`task-milestone-5-anchor-states-and-drifted-reconciliation`** (estados
-`intact/superseded/drifted/orphan` sobre evidencia + sucesión + posiciones; ya tiene todo
-lo que necesita) · `task-node-host-parity-for-the-v2-kernel` (probar `.cljc` + puertos en
+**`task-milestone-5a-anchor-states`** (estados deterministas
+`intact/superseded/orphan` por extremo y por arista, consultas de anclaje, disparador
+`supersedes` del re-anclaje, forma del `:fingerprint` externo; `02 §6.1-6.4`) ·
+`task-milestone-5b-drifted-reconciliation` (propuestas fuera del pool que reclasifican un
+`orphan` como `drifted`; `02 §6.5`, `04 §8`) · `task-node-host-parity-for-the-v2-kernel` (probar `.cljc` + puertos en
 Node: `Intl.Segmenter`, `crypto`, `fs`) · conformidad CommonMark completa · cobertura/lint
 (clj-kondo, JVM) · contención entre procesos · monotonicidad ULID · objetos inalcanzables/GC ·
 reescritura de specs spec2viz pre-v2 · oráculo externo (hecho; cerrable).
 
 ## 7. Deuda aceptada
 
-`transclusion` sin definir (hito 4+); bytes de `:fingerprint` por `:kind` externo (hito 5);
+`transclusion` sin definir (hito 4+); bytes de `:fingerprint` por `:kind` externo (forma en el hito 5a; la receta por kind es contrato del motor emisor);
 rituales `execution/testing/closeout` legado intactos (la pill `pill-guardrail-v2-implementation-gate`
 manda para tasks v2); `Board.md` legado no editable por CLI; `deskops` no puede editar
 atoms/board en formato legado y `atoms add-namespace` sobrescribe el fichero (ambos en

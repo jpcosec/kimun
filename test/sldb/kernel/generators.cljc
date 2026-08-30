@@ -39,7 +39,8 @@
                              {:format :markdown :type type :attrs {:level level}})
    [:sign :opaque]         (gen/let [b gen-text] {:format "html" :blob b})
    [:sign :external]       (gen/let [p gen/string-alphanumeric s gen-text f gen-hex]
-                             {:locator {:kind :file :path p :page 3} :sample s :fingerprint f})
+                             {:locator {:kind :file :path p :page 3} :sample s
+                              :fingerprint (str "sha-256:" f)})       ; docs/v2/02 §6.4
    [:sign :span]           (gen/let [leaf gen-hex a gen/nat d gen/nat] {:leaf leaf :range [a (+ a d)]})
    [:symbol :term]         (gen/let [n gen-text l (gen/elements ["es" "en" "de"])] {:name n :lang l})
    [:symbol :proposition]  (gen/let [p gen-hex args (gen/vector gen-atomic 0 3)] {:form (into [p] args)})

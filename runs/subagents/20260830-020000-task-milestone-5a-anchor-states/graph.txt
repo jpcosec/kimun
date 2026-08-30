@@ -1,0 +1,2 @@
+Ingested 445 nodes to /home/jp/proyectos/hum-ecosystem/tools/sldb-refactor-worktree/.sldb/runtime/knowledge_graph.nx.json
+Graph snapshot written: /home/jp/proyectos/hum-ecosystem/tools/sldb-refactor-worktree/.sldb/runtime/knowledge_graph.kg.json

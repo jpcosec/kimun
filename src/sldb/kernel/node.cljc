@@ -6,6 +6,7 @@
    hash, `address` does not (it is derived from class/kind). Provenance,
    timestamps and evidence never live in a node."
   (:require [sldb.kernel.canon :as canon]
+            [sldb.kernel.ports :as ports]
             [sldb.kernel.err :as err]))
 
 (def shapes
@@ -44,6 +45,17 @@
     :external :external
     :structural))
 
+(def ^:private fingerprint-re #"([a-z0-9-]+):([0-9a-f]+)")
+
+(defn fingerprint-ok?
+  "docs/v2/02 §6.4: an external `:fingerprint` is \"<alg>:<hex>\" with `alg` the
+   algorithm of the store's hasher and `hex` lower-case. The kernel checks the
+   form and compares for equality; it never recomputes the digest."
+  [host fingerprint]
+  (boolean (when (string? fingerprint)
+             (let [m (re-matches fingerprint-re fingerprint)]
+               (and m (= (second m) (name (ports/algorithm (ports/hasher host)))))))))
+
 (defn- fail [node why]
   (err/raise :node/invalid (str "invalid node: " why) {:node node :why why}))
 
@@ -56,6 +68,8 @@
   (when-not (map? content) (fail node "content must be a map"))
   (when-not ((get-in shapes [class kind]) content) (fail node (str "content does not match shape " class "/" kind)))
   (when-not (canon/valid? host content) (fail node "content contains a value not admitted in canonical content"))
+  (when (and (= :sign class) (= :external kind) (not (fingerprint-ok? host (:fingerprint content))))
+    (fail node "external :fingerprint must be \"<alg>:<hex>\" with the store algorithm and lower-case hex (§6.4)"))
   node)
 
 (defn identity-form

@@ -35,7 +35,7 @@
 (deftest address-is-derived
   (is (= :structural (:address (node/make h :sign :text {:text "a"}))))
   (is (= :opaque (:address (node/make h :sign :opaque {:format "html" :blob "<b>"}))))
-  (is (= :external (:address (node/make h :sign :external {:locator {:kind :file :path "x"} :sample "" :fingerprint "0"})))))
+  (is (= :external (:address (node/make h :sign :external {:locator {:kind :file :path "x"} :sample "" :fingerprint "sha-256:0"})))))
 
 (deftest class-and-kind-enter-the-id
   (let [t (node/make h :sign :text {:text "x"})

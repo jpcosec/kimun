@@ -299,3 +299,33 @@ documents:
   - system:sldb
   - type.knowledge.atom
   - workspace.desk.atoms
+- name: atom-anchor-state-is-derived-and-computed-per-endpoint
+  path: desk/atoms/atom-anchor-state-is-derived-and-computed-per-endpoint.md
+  hash_c: 5aedc2372f374e6986cdc9b3e6036d5974687fbafcf80854e17a68aaac4eb89f
+  hash_d: 39cfab74b9baa59904d064ebbd9b30f409d5657aa5a7d4aadd1050d17f1ee644
+  semantic_tags:
+  - domain:anchors
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-drifted-is-a-reconciled-orphan
+  path: desk/atoms/atom-drifted-is-a-reconciled-orphan.md
+  hash_c: 52612ad9dbf2301a2928921ad1ff0e9eca8413783a30ea303cd0b42a6251a37e
+  hash_d: 01b2c6ec5024d83fa7411c7fa06b29d61f6e29e1239ea455c64986a07322bcb5
+  semantic_tags:
+  - domain:anchors
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
+- name: atom-external-fingerprint-form-and-who-computes-it
+  path: desk/atoms/atom-external-fingerprint-form-and-who-computes-it.md
+  hash_c: c9dd4046018b050eb30118c36ad59ce4c90a85742ae860323ed026ab5a50ba8c
+  hash_d: d91d04106125ade90eed9772a06f6d6121a1bd9c5cf5653af0fc2c6883962032
+  semantic_tags:
+  - domain:anchors
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms
