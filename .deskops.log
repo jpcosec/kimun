@@ -327,3 +327,43 @@ Auto-closing task task-harden-the-first-slice-test-suite-against-every-spec-prom
 
 Auto-closing task task-document-the-v2-kernel-with-spec2viz-diagrams
 2026-08-29 18:17:34,656 - deskops - INFO - Advanced task task-milestone-4-markdown-cst-to-neutral-ast to node checklist-task-milestone-4-markdown-cst-to-neutral-ast-testing-ready
+2026-08-29 22:36:51,698 - deskops - INFO - Advanced task task-milestone-4-markdown-cst-to-neutral-ast to node checklist-task-milestone-4-markdown-cst-to-neutral-ast-closeout-ready
+2026-08-29 22:36:52,298 - deskops - INFO - Task task-milestone-4-markdown-cst-to-neutral-ast is complete. Performing auto-commit and cleanup.
+2026-08-29 22:36:52,298 - deskops - DEBUG - Staging file: docs/v2/04-superficie-markdown.md
+2026-08-29 22:36:52,301 - deskops - DEBUG - Staging file: src/sldb/kernel/ports.cljc
+2026-08-29 22:36:52,305 - deskops - DEBUG - Staging file: src/sldb/host/text.cljc
+2026-08-29 22:36:52,308 - deskops - DEBUG - Staging file: src/sldb/surface/markdown/cst.cljc
+2026-08-29 22:36:52,311 - deskops - DEBUG - Staging file: src/sldb/surface/markdown/inline.cljc
+2026-08-29 22:36:52,315 - deskops - DEBUG - Staging file: src/sldb/surface/markdown/ast.cljc
+2026-08-29 22:36:52,319 - deskops - DEBUG - Staging file: src/sldb/surface/markdown/render.cljc
+2026-08-29 22:36:52,323 - deskops - DEBUG - Staging file: src/sldb/surface/markdown/plan.cljc
+2026-08-29 22:36:52,327 - deskops - DEBUG - Staging file: src/sldb/surface/markdown/report.cljc
+2026-08-29 22:36:52,331 - deskops - DEBUG - Staging file: test/sldb/surface/markdown/cst_test.cljc
+2026-08-29 22:36:52,336 - deskops - DEBUG - Staging file: test/sldb/surface/markdown/roundtrip_test.cljc
+2026-08-29 22:36:52,340 - deskops - DEBUG - Staging file: test/sldb/surface/markdown/plan_test.cljc
+2026-08-29 22:36:52,343 - deskops - DEBUG - Staging file: test/sldb/kernel/generators.cljc
+2026-08-29 22:36:52,347 - deskops - DEBUG - Staging file: test/fixtures/markdown/profile.md
+2026-08-29 22:36:52,350 - deskops - DEBUG - Staging file: test/fixtures/markdown/profile.ast.edn
+2026-08-29 22:36:52,354 - deskops - DEBUG - Staging file: test/fixtures/markdown/outside-profile.md
+2026-08-29 22:36:52,358 - deskops - DEBUG - Staging file: test/fixtures/markdown/outside-profile.report.edn
+2026-08-29 22:36:52,362 - deskops - DEBUG - Staging file: docs/v2/tests/promises.md
+2026-08-29 22:36:52,377 - deskops - DEBUG - Removing runtime artifacts for task task-milestone-4-markdown-cst-to-neutral-ast
+2026-08-29 22:36:52,397 - deskops - DEBUG - Removing primitive condition-task-milestone-4-markdown-cst-to-neutral-ast-ready-for-closeout.md
+2026-08-29 22:36:52,397 - deskops - DEBUG - Removing primitive condition-task-milestone-4-markdown-cst-to-neutral-ast-has-validation.md
+2026-08-29 22:36:52,397 - deskops - DEBUG - Removing primitive condition-task-milestone-4-markdown-cst-to-neutral-ast-has-closeout-evidence.md
+2026-08-29 22:36:52,397 - deskops - DEBUG - Removing primitive condition-task-milestone-4-markdown-cst-to-neutral-ast-has-implementation-path.md
+2026-08-29 22:36:52,398 - deskops - DEBUG - Removing primitive checklist-task-milestone-4-markdown-cst-to-neutral-ast-execution-ready.md
+2026-08-29 22:36:52,398 - deskops - DEBUG - Removing primitive checklist-task-milestone-4-markdown-cst-to-neutral-ast-testing-ready.md
+2026-08-29 22:36:52,398 - deskops - DEBUG - Removing primitive checklist-task-milestone-4-markdown-cst-to-neutral-ast-closeout-ready.md
+2026-08-29 22:36:52,398 - deskops - DEBUG - Removing primitive operator-task-milestone-4-markdown-cst-to-neutral-ast-activate.md
+2026-08-29 22:36:52,398 - deskops - DEBUG - Removing primitive operator-task-milestone-4-markdown-cst-to-neutral-ast-ready-for-testing.md
+2026-08-29 22:36:52,398 - deskops - DEBUG - Removing primitive operator-task-milestone-4-markdown-cst-to-neutral-ast-close.md
+2026-08-29 22:36:52,398 - deskops - DEBUG - Removing primitive edge-task-milestone-4-markdown-cst-to-neutral-ast-ready-to-closeout.md
+2026-08-29 22:36:52,398 - deskops - DEBUG - Removing primitive edge-task-milestone-4-markdown-cst-to-neutral-ast-activate-to-testing.md
+2026-08-29 22:36:52,398 - deskops - DEBUG - Removing primitive edge-task-milestone-4-markdown-cst-to-neutral-ast-closeout-to-close.md
+2026-08-29 22:36:52,398 - deskops - DEBUG - Removing primitive edge-task-milestone-4-markdown-cst-to-neutral-ast-execution-to-activate.md
+2026-08-29 22:36:52,398 - deskops - DEBUG - Removing primitive edge-task-milestone-4-markdown-cst-to-neutral-ast-close-to-complete.md
+2026-08-29 22:36:52,398 - deskops - DEBUG - Removing primitive edge-task-milestone-4-markdown-cst-to-neutral-ast-testing-to-ready.md
+2026-08-29 22:36:52,412 - deskops - INFO - Committing closure for task-milestone-4-markdown-cst-to-neutral-ast: chore(task): Milestone 4 Markdown CST to neutral AST
+
+Auto-closing task task-milestone-4-markdown-cst-to-neutral-ast
