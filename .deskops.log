@@ -370,3 +370,35 @@ Auto-closing task task-milestone-4-markdown-cst-to-neutral-ast
 2026-08-30 01:48:51,140 - deskops - INFO - Advanced task task-milestone-5a-anchor-states to node checklist-task-milestone-5a-anchor-states-testing-ready
 2026-08-30 01:52:05,819 - deskops - INFO - Advanced task task-milestone-5a-anchor-states to node checklist-task-milestone-5a-anchor-states-closeout-ready
 2026-08-30 01:52:14,530 - deskops - INFO - Advanced task task-milestone-5a-anchor-states to node checklist-task-milestone-5a-anchor-states-closeout-ready
+2026-08-30 01:52:27,231 - deskops - INFO - Advanced task task-milestone-5a-anchor-states to node checklist-task-milestone-5a-anchor-states-closeout-ready
+2026-08-30 01:53:19,544 - deskops - INFO - Task task-milestone-5a-anchor-states is complete. Performing auto-commit and cleanup.
+2026-08-30 01:53:19,545 - deskops - DEBUG - Staging file: docs/v2/02-sustrato-computacional.md
+2026-08-30 01:53:19,547 - deskops - DEBUG - Staging file: src/sldb/kernel/anchor.cljc
+2026-08-30 01:53:19,549 - deskops - DEBUG - Staging file: src/sldb/kernel/revision.cljc
+2026-08-30 01:53:19,551 - deskops - DEBUG - Staging file: src/sldb/kernel/node.cljc
+2026-08-30 01:53:19,553 - deskops - DEBUG - Staging file: test/sldb/kernel/anchor_test.cljc
+2026-08-30 01:53:19,555 - deskops - DEBUG - Staging file: test/sldb/kernel/revision_test.cljc
+2026-08-30 01:53:19,557 - deskops - DEBUG - Staging file: test/sldb/kernel/node_test.cljc
+2026-08-30 01:53:19,559 - deskops - DEBUG - Staging file: test/sldb/kernel/generators.cljc
+2026-08-30 01:53:19,561 - deskops - DEBUG - Staging file: test/fixtures/nodes.edn
+2026-08-30 01:53:19,563 - deskops - DEBUG - Staging file: docs/v2/tests/promises.md
+2026-08-30 01:53:19,572 - deskops - DEBUG - Removing runtime artifacts for task task-milestone-5a-anchor-states
+2026-08-30 01:53:19,579 - deskops - DEBUG - Removing primitive condition-task-milestone-5a-anchor-states-has-closeout-evidence.md
+2026-08-30 01:53:19,580 - deskops - DEBUG - Removing primitive condition-task-milestone-5a-anchor-states-ready-for-closeout.md
+2026-08-30 01:53:19,580 - deskops - DEBUG - Removing primitive condition-task-milestone-5a-anchor-states-has-implementation-path.md
+2026-08-30 01:53:19,580 - deskops - DEBUG - Removing primitive condition-task-milestone-5a-anchor-states-has-validation.md
+2026-08-30 01:53:19,580 - deskops - DEBUG - Removing primitive checklist-task-milestone-5a-anchor-states-closeout-ready.md
+2026-08-30 01:53:19,580 - deskops - DEBUG - Removing primitive checklist-task-milestone-5a-anchor-states-execution-ready.md
+2026-08-30 01:53:19,580 - deskops - DEBUG - Removing primitive checklist-task-milestone-5a-anchor-states-testing-ready.md
+2026-08-30 01:53:19,580 - deskops - DEBUG - Removing primitive operator-task-milestone-5a-anchor-states-close.md
+2026-08-30 01:53:19,580 - deskops - DEBUG - Removing primitive operator-task-milestone-5a-anchor-states-ready-for-testing.md
+2026-08-30 01:53:19,580 - deskops - DEBUG - Removing primitive operator-task-milestone-5a-anchor-states-activate.md
+2026-08-30 01:53:19,580 - deskops - DEBUG - Removing primitive edge-task-milestone-5a-anchor-states-execution-to-activate.md
+2026-08-30 01:53:19,580 - deskops - DEBUG - Removing primitive edge-task-milestone-5a-anchor-states-activate-to-testing.md
+2026-08-30 01:53:19,580 - deskops - DEBUG - Removing primitive edge-task-milestone-5a-anchor-states-close-to-complete.md
+2026-08-30 01:53:19,580 - deskops - DEBUG - Removing primitive edge-task-milestone-5a-anchor-states-testing-to-ready.md
+2026-08-30 01:53:19,580 - deskops - DEBUG - Removing primitive edge-task-milestone-5a-anchor-states-closeout-to-close.md
+2026-08-30 01:53:19,580 - deskops - DEBUG - Removing primitive edge-task-milestone-5a-anchor-states-ready-to-closeout.md
+2026-08-30 01:53:19,586 - deskops - INFO - Committing closure for task-milestone-5a-anchor-states: chore(task): Milestone 5a anchor states
+
+Auto-closing task task-milestone-5a-anchor-states
