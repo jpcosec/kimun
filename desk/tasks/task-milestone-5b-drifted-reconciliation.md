@@ -1,6 +1,6 @@
 ---
 id: task-milestone-5b-drifted-reconciliation
-status: active
+status: ready_for_testing
 summary: Milestone 5b (docs/v2/02 section 9 row 5b, spec docs/v2/02 section 6.5 and
   docs/v2/04 section 8)- reconciliation of orphan anchors into proposals outside the
   pool by position, external fingerprint and Dice similarity over grapheme trigrams;
@@ -12,11 +12,16 @@ tags:
 - artifact:task
 - source:drawer
 routine: routine-task-milestone-5b-drifted-reconciliation
-current_node: checklist-task-milestone-5b-drifted-reconciliation-testing-ready
+current_node: checklist-task-milestone-5b-drifted-reconciliation-closeout-ready
 history:
 - operator-task-milestone-5b-drifted-reconciliation-activate
+- operator-task-milestone-5b-drifted-reconciliation-ready-for-testing
 references:
-- desk/drawer/tasks/task-milestone-5b-drifted-reconciliation.md
+- test/sldb/kernel/reconcile_test.cljc
+- test/sldb/surface/markdown/drift_test.cljc
+- atom-drifted-is-a-reconciled-orphan
+- 095ae90b3243
+- runs/subagents/20260830-023000-task-milestone-5b-drifted-reconciliation/result-summary.md
 depends_on:
 - task-milestone-5a-anchor-states
 pills:
