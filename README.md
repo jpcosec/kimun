@@ -6,6 +6,7 @@ pool of content-addressed immutable nodes indexed by many trees.
 
 ## Read first
 
+0. `docs/v2/05-estado.md` — current state: what exists, how to run it, decisions, next step
 1. `docs/v2/01-orden-filosofico.md` — what the persisted object is and which guarantees make sense
 2. `docs/v2/02-sustrato-computacional.md` — data structures, invariants, runtime, roadmap (Git-object-model analogy)
 3. `desk/atoms/` — durable concept truth; atoms tagged `epoch:v2` prevail over earlier ones
@@ -13,7 +14,8 @@ pool of content-addressed immutable nodes indexed by many trees.
 
 ## Layout
 
-- `docs/v2/` — v2 direction documents (highest authority)
+- `docs/v2/` — v2 direction documents (highest authority); `05-estado.md` is the status entry point
+- `src/sldb/{kernel,host,surface}/` — ring 0 / 1 / 2 (`bb lint`, `bb test`, `bb oracle`)
 - `docs/architecture/` — previous-stage contracts, spec2viz specs and diagrams; superseded where they contradict `docs/v2/`
 - `desk/` — deskops workflow state (atoms, tasks, pills, drawer, rituals)
 - `raw/source/` — frozen source material from before the v2 reorientation (see its README); tag `pre-v2-planning-freeze`

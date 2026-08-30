@@ -11,16 +11,17 @@
 
 1. `AGENTS.md`
 2. `README.md`
-3. `docs/v2/01-orden-filosofico.md`
-4. `docs/v2/02-sustrato-computacional.md`
-5. `docs/faq.md`
-6. `desk/tasks/Board.md`
-7. task-bound pills in `desk/contexts/`
-8. `desk/rituals/phase.md`
-9. `desk/rituals/execution.md`
-10. `desk/rituals/testing.md`
-11. `desk/rituals/closeout.md`
-12. referenced `desk/atoms/`
+3. `docs/v2/05-estado.md` (status, decisions, next step)
+4. `docs/v2/01-orden-filosofico.md`
+5. `docs/v2/02-sustrato-computacional.md`
+6. `docs/faq.md`
+7. `desk/tasks/Board.md`
+8. task-bound pills in `desk/contexts/`
+9. `desk/rituals/phase.md`
+10. `desk/rituals/execution.md`
+11. `desk/rituals/testing.md`
+12. `desk/rituals/closeout.md`
+13. referenced `desk/atoms/`
 
 ## Implementation-task rule (epoch v2)
 

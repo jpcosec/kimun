@@ -9,6 +9,7 @@ a "base de datos de lenguaje estructurado sobre el modelo S/M/G".
 | `02-sustrato-computacional.md` | estructuras de datos, invariantes, runtime, y roadmap por analogía con el modelo de objetos de Git |
 | `03-estandares-de-codigo.md` | anillos de dependencia (`bb lint`), compartimentación, docstrings, estándares de test |
 | `04-superficie-markdown.md` | perfil SLDB-MD: CST lossless, AST neutro con marcas por grafema, render canónico, mapeo al pool, opacos, informe de direccionabilidad |
+| `05-estado.md` | **empieza aquí**: qué existe, cómo se usa, decisiones confirmadas, evidencia, drawer y siguiente paso |
 | `tests/promises.md` | trazabilidad promesa de la spec → test que la prueba (primer slice + superficie Markdown) |
 
 ## Diagramas (spec2viz, fuente YAML en `docs/architecture/spec2viz/v2-*.yml`, render en `rendered/v2/*.mmd`)
