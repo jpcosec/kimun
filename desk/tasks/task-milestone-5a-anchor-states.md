@@ -1,6 +1,6 @@
 ---
 id: task-milestone-5a-anchor-states
-status: active
+status: ready_for_testing
 summary: Milestone 5a (docs/v2/02 section 9 row 5a, spec docs/v2/02 sections 6.1-6.4)-
   deterministic anchor states intact/superseded/orphan per endpoint and per edge,
   the six anchor queries, the supersedes trigger for re-anchoring, and the external
@@ -10,9 +10,10 @@ tags:
 - workspace:desk
 - artifact:task
 routine: routine-task-milestone-5a-anchor-states
-current_node: checklist-task-milestone-5a-anchor-states-testing-ready
+current_node: checklist-task-milestone-5a-anchor-states-closeout-ready
 history:
 - operator-task-milestone-5a-anchor-states-activate
+- operator-task-milestone-5a-anchor-states-ready-for-testing
 references: []
 depends_on: []
 pills:
