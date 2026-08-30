@@ -97,3 +97,10 @@ documents:
   semantic_tags:
   - type.desk.inbox-note
   - workspace.desk.inbox
+- name: 20260830-022207-suggestion-milestone-6-stand-off-below-the-paragraph
+  path: desk/inbox/20260830-022207-suggestion-milestone-6-stand-off-below-the-paragraph.md
+  hash_c: 8891122ff9fd7e84c84b249e3170adfef2a8f3776ed34fa0fd9223b67f75c8e7
+  hash_d: 62714a6fb3244d33c35875a73acd1899e30f0af0b9c5040927bc3911083048e8
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
