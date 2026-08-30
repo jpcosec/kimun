@@ -109,6 +109,26 @@ Leyenda: `ok` probado · `oracle` probado además por una implementación indepe
 | inv. 18: el estado de un anclaje es derivado y no se persiste | anchor_test/queries-are-pure-derived-and-deterministic |
 | §9 hito 5a: detachar deja `orphan`; registrar `supersedes` deja `superseded` y re-ancla | anchor_test/detaching-the-referent-orphans-the-anchor, adding-a-supersedes-edge-re-anchors-and-records-the-pair |
 
+## §6.5 — reconciliación de `drifted` (hito 5b)
+
+| promesa | test |
+|---|---|
+| la entrada son los extremos `orphan`, no los ids de arista; los anclajes afectados viajan en `:edges` | reconcile_test/position-names-the-node-that-took-the-path |
+| método `:position` con sus dos confianzas (1.0 si el candidato no estaba en el árbol en `:base`, 0.9 si sí) | reconcile_test/position-names-the-node-that-took-the-path, a-candidate-that-was-already-in-the-tree-is-proposed-with-less-confidence |
+| método `:fingerprint`: mismo locator, huella distinta, confianza 1.0; gana el ranking | reconcile_test/fingerprint-names-the-same-locator-with-a-different-digest |
+| método `:sample`: el mejor Dice, no un Dice cualquiera; y el umbral `:min-confidence` | reconcile_test/sample-names-the-best-dice-match-above-the-threshold |
+| un método que no aplica no produce candidato y nunca es un error | reconcile_test/fingerprint-names… (`:position` descartado por kind distinto) |
+| `dice` sobre trigramas de grafema en NFC: identidad, disjuntos, dos vacíos, vacío contra no vacío, simetría, textos de menos de tres grafemas, clústeres | reconcile_test/dice-is-a-deterministic-grapheme-trigram-coefficient |
+| solo la mejor propuesta por `orphan` salvo `:all?`; el orden es el mismo en los dos casos | reconcile_test/fingerprint-names… (`:all?`), position-names… (una sola) |
+| la propuesta vive fuera del pool: calcularla no crea ninguna arista | reconcile_test/a-proposal-is-outside-the-pool-until-an-actor-accepts-it |
+| aceptar es una transacción `supersedes` cuya única evidencia es el actor; ni confianza ni método llegan a la arista | reconcile_test/a-proposal-is-outside-the-pool-until-an-actor-accepts-it |
+| aceptada, el anclaje pasa a `superseded`, se re-ancla y no queda ningún `orphan` | reconcile_test/a-proposal-is-outside-the-pool-until-an-actor-accepts-it |
+| `:base` obligatorio cuando la revisión no tiene exactamente un padre (`:reconcile/base-required`) | reconcile_test/base-is-required-when-the-revision-has-no-single-parent |
+| §04 §8 `markdown->update-plan` no emite `:replace` ni `supersedes`; lo que sobrevive a la edición sigue colocado e `intact`; lo sustituido queda `orphan` | drift_test/external-edit-orphans-the-anchor |
+| §04 §8 el documento se sigue leyendo tras la reingesta; un root distinto es `:markdown/root-changed` | drift_test/update-plan-keeps-the-document-readable-and-refuses-a-changed-root |
+| §9 hito 5b: un `.md` editado fuera del kernel deja `orphan`, la reconciliación lo reclasifica `drifted` nombrando al sustituto, y aceptarla lo deja `superseded` y re-anclado | drift_test/external-edit-orphans-the-anchor |
+| inv. 18 (segunda mitad): una propuesta no es objeto hasta que se acepta | reconcile_test/a-proposal-is-outside-the-pool-until-an-actor-accepts-it |
+
 ## §8.1 — backend de archivos
 
 | promesa | test |
@@ -125,7 +145,7 @@ Leyenda: `ok` probado · `oracle` probado además por una implementación indepe
 
 ## Invariantes §10
 
-1 pool_test/tampered…, store_test/close-and-reopen · 2 node_test/same-content-same-id · 3 revision_test/heads-advance-only… · 4 tree_test/generated-trees-are-valid · 5 tree_test/one-node-in-two-trees · 6 edge_test/evidence-requirements · 7 revision_test/replace-keeps-order… · 8, 9 **deferred** (hito 4) · 10 pool_test/pool-is-rebuildable, store_test/replay… · 11 **deferred** (efectos) · 12 plan_test/opaque-replace-only · 13 tree_test/ulid-ids-are-nominal · 14 tree_test/sibling-order… · 15 revision_test/the-seven-checks · 16 edge_test/timestamp…, hardening/timestamp-enters-the-revision-id · 17 store_test/every-object-file… · 18 anchor_test/queries-are-pure-derived-and-deterministic
+1 pool_test/tampered…, store_test/close-and-reopen · 2 node_test/same-content-same-id · 3 revision_test/heads-advance-only… · 4 tree_test/generated-trees-are-valid · 5 tree_test/one-node-in-two-trees · 6 edge_test/evidence-requirements · 7 revision_test/replace-keeps-order… · 8, 9 **deferred** (hito 4) · 10 pool_test/pool-is-rebuildable, store_test/replay… · 11 **deferred** (efectos) · 12 plan_test/opaque-replace-only · 13 tree_test/ulid-ids-are-nominal · 14 tree_test/sibling-order… · 15 revision_test/the-seven-checks · 16 edge_test/timestamp…, hardening/timestamp-enters-the-revision-id · 17 store_test/every-object-file… · 18 anchor_test/queries-are-pure-derived-and-deterministic, reconcile_test/a-proposal-is-outside-the-pool-until-an-actor-accepts-it
 
 ## §3.1 (revisado 2026-08-29) — árboles de posiciones
 

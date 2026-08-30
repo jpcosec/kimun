@@ -18,6 +18,9 @@
 
 (defn- text-node [text] {:class :sign :kind :text :content {:text text}})
 
+(defn- not-a-document [why data]
+  (err/raise :markdown/not-a-document (str "store->ast: " why) data))
+
 (defn- collect
   "Walks the AST producing add-node ops (one alias per distinct node id) and
    ownership positions [parent-path child-alias order] in document order."
@@ -59,8 +62,38 @@
   [host text opts]
   (ast->plan host (ast/parse host text) opts))
 
-(defn- not-a-document [why data]
-  (err/raise :markdown/not-a-document (str "store->ast: " why) data))
+(defn ast->update-plan
+  "TransactionPlan that re-ingests `ast` into the document tree `tree-id` that
+   already exists in `store` (docs/v2/04 §8): the nodes it needs, one
+   `:detach [0]` per current child of the root — repeated, because the siblings
+   shift — and the ownership positions of the new AST. It emits no `:replace`,
+   and therefore records no succession: that is exactly what an edit made
+   outside the kernel looks like (docs/v2/02 §6). Raises
+   `:markdown/not-a-document` for an unknown tree and `:markdown/root-changed`
+   when the new AST's root is not the tree's root node."
+  [host store tree-id ast {:keys [actor timestamp base] :or {actor "surface/markdown"}}]
+  (let [t (or (get-in store [:trees tree-id])
+              (not-a-document "unknown tree" {:tree tree-id}))
+        {:keys [ops edges]} (collect host ast)
+        root-id (:id (node/make host :sign :block (:content (block-node ast))))
+        _ (when (not= root-id (tree/root t))
+            (err/raise :markdown/root-changed
+                       "ast->update-plan: the document root node changed; re-rooting would need a :replace, and a :replace records a succession the surface may not invent"
+                       {:tree tree-id :was (tree/root t) :now root-id}))
+        n (count (tree/children-at t []))]
+    {:plan/version 1 :base base :actor actor
+     :engines {"sldb.surface.markdown" "1"} :timestamp timestamp
+     :ops (-> ops
+              (into (repeat n {:op :detach :tree tree-id :at [0]}))
+              (into (map (fn [[parent to order]]
+                           {:op :add-edge :edge {:type :ownership :tree tree-id
+                                                 :parent parent :to to :order order}})
+                         edges)))}))
+
+(defn markdown->update-plan
+  "parse + ast->update-plan."
+  [host store tree-id text opts]
+  (ast->update-plan host store tree-id (ast/parse host text) opts))
 
 (defn store->ast
   "AST of the :document tree `tree-id` in `store` (docs/v2/04 §8), walking positions."

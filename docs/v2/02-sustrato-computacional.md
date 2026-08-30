@@ -628,9 +628,12 @@ Un nodo `:sign/:external` es `{:locator {:kind k …} :sample "…" :fingerprint
 
 ### 6.5 Reconciliación de `drifted` (hito 5b)
 
-`sldb.kernel.reconcile`, sobre los `orphan` de `(anchor/report store rev-id)`:
+`sldb.kernel.reconcile`, sobre los extremos `orphan` de la revisión:
 
 ```
+(reconcile/orphans store rev-id)
+  → {<node-id> [<edge-id> …]}      ; un extremo orphan → los anclajes que lo tocan
+
 (reconcile/proposals store rev-id opts)
   → [{:old <id> :candidate <id> :confidence <0..1> :method <kw>
       :edges [<edge-id> …] :evidence {…}} …]
@@ -644,6 +647,13 @@ padres (la revisión raíz) o con varios (cuando haya merges), pasarlo es obliga
 ausencia levanta `:reconcile/base-required`; el método `:position` es el único que lo usa,
 y adivinar un padre sería inventar la historia contra la que se compara.
 
+La entrada es `reconcile/orphans`, **no** los ids de arista de `anchor/report`: los
+métodos hablan de nodos, no de aristas. Se reconcilia **cada extremo `orphan` de cada
+anclaje activo**, de modo que una arista cuyos dos extremos son `orphan` produce dos
+entradas independientes; los ids de arista van en el `:edges` de la propuesta solo para
+que el llamante sepa a qué anclajes afecta aceptarla. Los nodos ordenados por id
+ascendente.
+
 Una **propuesta vive fuera del pool**: no es nodo ni arista, no se persiste, no cambia
 nada del store. Es un valor devuelto que un actor acepta o descarta.
 
@@ -655,6 +665,21 @@ Métodos, en orden de precedencia; cada uno da como mucho un candidato por `(old
 | `:fingerprint` | `X` e `Y` son `:sign/:external` con el mismo `:locator` y `:fingerprint` distinto, e `Y` resuelve en `R` | `1.0` |
 | `:sample` | `X` e `Y` tienen el mismo `kind` y texto comparable (`:text`→`:text`, `:opaque`→`:blob`, `:external`→`:sample`), `Y` resuelve en `R`, y `dice(X,Y) ≥ :min-confidence` | `dice(X,Y)` |
 
+Un método que no aplica al nodo simplemente **no produce candidato**; nunca es un error.
+En particular `:position` no aplica a `:symbol` ni a `:fact`, que en el primer slice no
+ocupan posiciones (§6.2), ni a un `:span`, que tampoco: para todos ellos el conjunto de
+posiciones en `:base` es vacío y el método no dice nada.
+
+Si `X` ocupaba **varias** posiciones en `:base`, se examinan en el orden que ya fija
+`:positions` (§6.3: árboles por id ascendente y, dentro de cada árbol, paths en orden de
+documento) y gana la **primera** que produce candidato; la confianza la decide ese
+candidato, no los demás. Así el método sigue dando como mucho un candidato y el resultado
+no depende del orden de recorrido de ningún mapa.
+
+El `:evidence` de una propuesta es informativo —no llega nunca a la arista ni se
+persiste— y lleva, por método: `:position` → `{:tree <id> :path <path> :base <rev-id>}`;
+`:fingerprint` → `{:locator <locator>}`; `:sample` → `{:dice <0..1>}`.
+
 `dice(a,b)` sobre el **multiconjunto de trigramas de grafema** del texto en NFC:
 `2·|A ∩ B| / (|A| + |B|)`, con la intersección tomada como mínimo de multiplicidades. Un
 texto de menos de tres grafemas aporta un único gramo, el texto entero. Dos textos vacíos
@@ -663,7 +688,9 @@ dan `1.0`; un vacío contra uno no vacío da `0.0`.
 Determinismo: numerador y denominador son enteros y hay una sola división
 (`(/ (double num) den)`), sin redondeo, así que el valor es idéntico en cualquier host
 IEEE-754. Las propuestas se ordenan por confianza descendente y, a igualdad, por id de
-candidato ascendente; solo se conserva la mejor por `old`, salvo que se pidan todas.
+candidato ascendente. Ese orden es el mismo con `:all?` y sin él: `:all?` solo cambia **qué
+se conserva** —todas las que encontró cada método, o únicamente la mejor por `old`—, nunca
+cómo se ordena la lista resultante.
 
 **Aceptación.** Aceptar es una transacción ordinaria y explícita:
 
@@ -673,7 +700,10 @@ candidato ascendente; solo se conserva la mejor por `old`, salvo que se pidan to
                                            :evidence {:actor a}}
 ```
 
-El kernel no aplica nada: lo aplica el actor con `store/commit!`. Al aplicarse, §6.1
+`accept-plan` comprueba que la revisión existe (`:anchor/unknown-revision`) y que los dos
+nodos de la propuesta están en el pool (`:reconcile/unknown-node`); no comprueba nada más,
+porque aceptar una propuesta que ya no vale la rechazará el propio plan. El kernel no
+aplica nada: lo aplica el actor con `store/commit!`. Al aplicarse, §6.1
 re-ancla `reference` y `binding` al sucesor, invalida `derived`, deja `semantic` y
 `projection` para revisión, y el anclaje pasa de `orphan` a `superseded`. La confianza y
 el método **no** entran en la arista: la evidencia de un `supersedes` es su `:actor`

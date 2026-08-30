@@ -280,8 +280,12 @@ Funciones (todas puras, en `sldb.surface.markdown.plan`):
   → `TransactionPlan` que **reingesta** un fichero editado fuera del kernel sobre un árbol
   que ya existe: `:add-node` de los nodos que falten, un `:detach [0]` por cada hijo actual
   del root (repetido, porque los hermanos se corren) y los `:add-edge :ownership` del AST
-  nuevo. El root no se toca: en este perfil siempre es el mismo nodo `:document`
-  (`{:format :markdown :type :document :attrs {}}`). No emite **ningún** `:replace`, y por
+  nuevo. El root **no se toca**: en este perfil siempre es el mismo nodo `:document`
+  (`{:format :markdown :type :document :attrs {}}`), y la función lo **verifica** — si el
+  root del AST nuevo no es el nodo raíz del árbol, levanta `:markdown/root-changed` en vez
+  de re-enraizar, porque re-enraizar exigiría un `:replace` y un `:replace` registra una
+  sucesión que la superficie no tiene derecho a inventar; un árbol que no existe es
+  `:markdown/not-a-document`, como en `store->ast`. No emite **ningún** `:replace`, y por
   tanto ninguna arista `supersedes`: la superficie ve texto nuevo, no sabe qué sustituyó a
   qué, y ésa es exactamente la definición de cambio externo de `docs/v2/02 §6`. Los nodos
   que sobreviven a la edición son content-addressed, así que se vuelven a colocar y siguen

@@ -1,0 +1,11 @@
+ D desk/drawer/tasks/task-milestone-5b-drifted-reconciliation.md
+ M desk/tasks/Board.md
+?? desk/primitives/checklists/checklist-task-milestone-5b-drifted-reconciliation-closeout-ready.md
+?? desk/primitives/checklists/checklist-task-milestone-5b-drifted-reconciliation-execution-ready.md
+?? desk/primitives/checklists/checklist-task-milestone-5b-drifted-reconciliation-testing-ready.md
+?? desk/primitives/conditions/
+?? desk/primitives/edges/
+?? desk/primitives/operators/
+?? desk/routines/
+?? desk/tasks/task-milestone-5b-drifted-reconciliation.md
+?? runs/subagents/20260830-021500-task-milestone-5b-drifted-reconciliation-zero-context-audit/

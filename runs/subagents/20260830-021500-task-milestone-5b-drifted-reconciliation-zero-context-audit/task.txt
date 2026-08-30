@@ -1,0 +1,22 @@
+Task: task-milestone-5b-drifted-reconciliation
+Title: Milestone 5b drifted reconciliation
+Status: active
+Current node: checklist-task-milestone-5b-drifted-reconciliation-execution-ready
+Task type: implementation
+Routine: routine-task-milestone-5b-drifted-reconciliation
+Effective pills:
+- desk/contexts/pill-guardrail-v2-implementation-gate.md
+Effective atoms:
+- atom-drifted-is-a-reconciled-orphan
+- atom-evidence-edges-and-anchor-states
+- atom-anchor-state-is-derived-and-computed-per-endpoint
+- atom-external-fingerprint-form-and-who-computes-it
+- atom-re-anchoring-rules-under-succession
+- atom-identity-is-the-content-hash-succession-is-a-recorded-edge
+- atom-decision-trees-are-trees-of-positions-git-like
+- atom-sldb-md-profile-a-closed-canonical-markdown-subset
+- atom-lossless-cst-and-canonical-render-for-markdown
+Checklist status:
+- checklist-task-milestone-5b-drifted-reconciliation-execution-ready: complete
+- checklist-task-milestone-5b-drifted-reconciliation-testing-ready: complete
+- checklist-task-milestone-5b-drifted-reconciliation-closeout-ready: pending
