@@ -1,0 +1,103 @@
+;; Golden AST of profile.md (docs/v2/04 §4) — generated once with sldb.surface.markdown.ast on 2026-08-29, reviewed, frozen.
+{:type :document,
+ :attrs {},
+ :children
+ [{:type :heading,
+   :attrs {:level 1, :marks []},
+   :text "SLDB-MD profile"}
+  {:type :paragraph,
+   :attrs
+   {:marks
+    [[:emphasis 12 19]
+     [:strong 21 28]
+     [:emphasis 30 35]
+     [:strong 30 35]
+     [:code 37 43]
+     [:link 46 55 "https://x.dev/a"]]},
+   :text
+   "Párrafo con énfasis, negrita, ambas, código y un enlace. Escapes: *, _, [, ], `, <, |, a_b."}
+  {:type :heading,
+   :attrs
+   {:level 2,
+    :marks [[:code 14 18] [:link 21 30 "u"] [:emphasis 26 30]]},
+   :text "Heading 2 con code y link emph"}
+  {:type :heading, :attrs {:level 6, :marks []}, :text "Nivel seis"}
+  {:type :heading, :attrs {:level 4, :marks []}, :text ""}
+  {:type :paragraph, :attrs {:marks []}, :text "# no es heading"}
+  {:type :paragraph, :attrs {:marks []}, :text "1. no es lista"}
+  {:type :paragraph, :attrs {:marks []}, :text "- tampoco"}
+  {:type :paragraph, :attrs {:marks []}, :text "---"}
+  {:type :list,
+   :attrs {:ordered false},
+   :children
+   [{:type :item,
+     :attrs {},
+     :children [{:type :paragraph, :attrs {:marks []}, :text "uno"}]}
+    {:type :item,
+     :attrs {},
+     :children
+     [{:type :paragraph,
+       :attrs {:marks []},
+       :text "dos con continuación perezosa"}
+      {:type :paragraph,
+       :attrs {:marks []},
+       :text "y un segundo párrafo"}]}
+    {:type :item,
+     :attrs {},
+     :children
+     [{:type :paragraph, :attrs {:marks []}, :text "tres"}
+      {:type :code, :attrs {:lang "clj"}, :text "(+ 1 2)"}]}]}
+  {:type :list,
+   :attrs {:ordered true, :start 3},
+   :children
+   [{:type :item,
+     :attrs {},
+     :children [{:type :paragraph, :attrs {:marks []}, :text "tres"}]}
+    {:type :item,
+     :attrs {},
+     :children
+     [{:type :paragraph, :attrs {:marks []}, :text "cuatro"}
+      {:type :list,
+       :attrs {:ordered false},
+       :children
+       [{:type :item,
+         :attrs {},
+         :children
+         [{:type :paragraph, :attrs {:marks []}, :text "anidada"}]}
+        {:type :item,
+         :attrs {},
+         :children
+         [{:type :paragraph, :attrs {:marks []}, :text "otra"}]}]}]}]}
+  {:type :quote,
+   :attrs {},
+   :children
+   [{:type :paragraph,
+     :attrs {:marks [[:emphasis 9 14]]},
+     :text "cita con marca"}
+    {:type :quote,
+     :attrs {},
+     :children
+     [{:type :paragraph, :attrs {:marks []}, :text "anidada"}]}
+    {:type :list,
+     :attrs {:ordered false},
+     :children
+     [{:type :item,
+       :attrs {},
+       :children
+       [{:type :paragraph,
+         :attrs {:marks []},
+         :text "lista en cita"}]}]}]}
+  {:type :code,
+   :attrs {:lang "python"},
+   :text "def f():\n    return \"```\""}
+  {:type :code, :attrs {}, :text "```"}
+  {:type :thematic-break, :attrs {}}
+  {:type :opaque,
+   :format "markdown/html",
+   :blob "<div class=\"warning\">\n**html** opaco\n</div>"}
+  {:type :opaque,
+   :format "markdown/table",
+   :blob "| a | b |\n|---|---|"}
+  {:type :paragraph,
+   :attrs {:marks [[:emphasis 24 25] [:strong 24 25]]},
+   :text "Texto final con 👨‍👩‍👧 y é y x al final."}]}

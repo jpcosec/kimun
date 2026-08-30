@@ -28,7 +28,7 @@
 (deftest touched-trees
   (is (= #{:t1 "T2"}
          (plan/touched-trees {:ops [{:op :new-tree :tree {:kind :document} :as :t1}
-                                    {:op :add-edge :edge {:type :ownership :tree "T2" :from "a" :to "b" :order 0}}
+                                    {:op :add-edge :edge {:type :ownership :tree "T2" :parent [] :to "b" :order 0}}
                                     {:op :add-edge :edge {:type :binding :from "a" :to "b"}}]}))))
 
 (deftest opaque-replace-only-check-6

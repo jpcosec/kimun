@@ -1,0 +1,21 @@
+Task: task-milestone-4-markdown-cst-to-neutral-ast
+Title: Milestone 4 Markdown CST to neutral AST
+Status: active
+Current node: checklist-task-milestone-4-markdown-cst-to-neutral-ast-testing-ready
+Task type: implementation
+Routine: routine-task-milestone-4-markdown-cst-to-neutral-ast
+Effective pills:
+- desk/contexts/pill-guardrail-v2-implementation-gate.md
+Effective atoms:
+- atom-sldb-md-profile-a-closed-canonical-markdown-subset
+- atom-inline-marks-live-on-the-block-text-leaves-stay-plain
+- atom-lossless-cst-and-canonical-render-for-markdown
+- atom-addressability-report-per-document
+- atom-addressability-class-per-node
+- atom-canonical-content-and-node-hashing
+- atom-transactionplan-edn-schema-and-validation
+- atom-decision-pure-cljc-kernel-with-hosts-as-adapters
+Checklist status:
+- checklist-task-milestone-4-markdown-cst-to-neutral-ast-execution-ready: complete
+- checklist-task-milestone-4-markdown-cst-to-neutral-ast-testing-ready: complete
+- checklist-task-milestone-4-markdown-cst-to-neutral-ast-closeout-ready: pending

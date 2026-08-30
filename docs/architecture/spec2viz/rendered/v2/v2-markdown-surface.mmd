@@ -1,0 +1,33 @@
+flowchart TD
+    __start([Start])
+    text["Markdown text (any string)"]
+    cst["cst/parse — total, lossless blocks with source lines (invariant 8: text == cst/text)"]
+    blocks["ast/parse — §3.1 rules; quotes and list items re-parsed recursively (dedent by w)"]
+    inline["inline/parse per heading/paragraph — delimiter stack, escapes, grapheme offsets"]
+    in_profile{"inside the SLDB-MD profile?"}
+    opaque[":opaque {:format markdown/unparsed|html|table :blob verbatim}"]
+    ast["neutral AST — canonical marks on the block, plain NFC text leaves"]
+    branch{"what next?"}
+    render["render — one canonical spelling; parse(render(A)) == A (invariant 9)"]
+    plan["plan/ast-#gt;plan — one add-node per distinct node, ownership edges by position path"]
+    apply["kernel apply-plan → :document tree of positions; identical items share tree objects"]
+    back["plan/store-#gt;ast — walk positions; store-#gt;markdown == render(parse(s))"]
+    report["report — blocks, structural/opaque, coverage, opaque regions with paths"]
+    __end([End])
+    __start --> text
+    text --> cst
+    cst --> blocks
+    blocks --> inline
+    inline --> in_profile
+    in_profile -->|"yes"| ast
+    in_profile -->|"no (autolink, ref link, image, html inline, crossed marks, flanking _)"| opaque
+    opaque --> ast
+    ast --> branch
+    branch -->|"render"| render
+    branch -->|"store"| plan
+    branch -->|"report"| report
+    render --> __end
+    plan --> apply
+    apply --> back
+    back --> __end
+    report --> __end

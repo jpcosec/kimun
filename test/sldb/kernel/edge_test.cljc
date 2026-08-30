@@ -13,9 +13,11 @@
 (def c (apply str (repeat 64 "c")))
 
 (deftest ownership-and-non-ownership-shapes
-  (is (:id (edge/make h {:type :ownership :from a :to b :tree "01ARZ3NDEKTSV4RRFFQ69G5FAV" :order 0})))
+  (is (:id (edge/make h {:type :ownership :parent [0 2] :to b :tree "01ARZ3NDEKTSV4RRFFQ69G5FAV" :order 0})))
   (is (thrown? #?(:clj clojure.lang.ExceptionInfo :cljs js/Error)
-               (edge/make h {:type :ownership :from a :to b})))
+               (edge/make h {:type :ownership :parent [] :to b})) "no tree")
+  (is (thrown? #?(:clj clojure.lang.ExceptionInfo :cljs js/Error)
+               (edge/make h {:type :ownership :from a :to b :tree "01ARZ3NDEKTSV4RRFFQ69G5FAV" :order 0})) "ownership addresses a parent path, not :from")
   (is (thrown? #?(:clj clojure.lang.ExceptionInfo :cljs js/Error)
                (edge/make h {:type :binding :from a :to b :tree "x" :evidence {:ref-hash b :actor "jp" :context c}}))))
 

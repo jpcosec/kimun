@@ -70,8 +70,10 @@ Reglas de **continuación/cierre** (qué líneas siguientes pertenecen al bloque
 - `:heading`, `:thematic-break`: una sola línea.
 - `:quote`: líneas consecutivas que cumplen 5. Una línea en blanco cierra el quote (dos
   quotes separados por blanco son dos bloques).
-- `:list`: una línea siguiente pertenece a la lista si (a) cumple 6, o (b) es una línea
-  en blanco **seguida** de una línea que cumple 6 o que empieza con ≥ `w` espacios,
+- `:list`: una línea siguiente pertenece a la lista si (a) cumple 6 **con el mismo tipo
+  de marcador** que el primer item (misma viñeta `-`/`*`/`+`, u ordenada) y con indent
+  < `w`, o (b) es una línea en blanco **seguida** de una línea que cumple (a) o que
+  empieza con ≥ `w` espacios,
   donde `w` es el ancho del marcador del primer item (`2` para `- `, `len("n. ")` para
   ordenadas), o (c) empieza con ≥ `w` espacios, o (d) es una línea no en blanco que no
   cumple ninguna regla 2–8 (continuación perezosa del párrafo del item). En cualquier
@@ -137,7 +139,13 @@ genera y el que `parse` siempre produce:
 
 1. `Text` de heading/párrafo no empieza ni termina en espacio, no contiene `\n` ni `\t`, y
    el de párrafo no está vacío (el de heading puede estarlo).
-2. `Marks` cumple §4 y ninguna marca tiene rango vacío.
+2. `Marks` cumple §4 y ninguna marca tiene rango vacío; el primer y el último grafema
+   de cada marca no son espacios (un delimitador junto a un espacio no abre/cierra en
+   §5); dos marcas **disjuntas** dejan al menos un grafema entre ellas (`e₁ < s₂`), porque
+   dos delimitadores contiguos formarían una racha distinta; el contenido de una marca
+   `:code` no empieza ni termina en backtick (se fundiría con su delimitador); un
+   `:emphasis` exterior y un `:strong` interior no comparten inicio ni fin (una racha
+   `***` siempre se lee como strong exterior + emphasis interior).
 3. `:attrs` tiene exactamente las claves de la tabla de §4 (`:lang` solo cuando no está
    vacío).
 4. Dos hermanos consecutivos no son ambos `:list` con el mismo `:ordered`, ni ambos
@@ -189,8 +197,10 @@ determinista de una pasada con una pila de delimitadores:
 `render(ast)` produce **una sola** forma, con `\n` como salto y salto final:
 
 - Bloques hermanos separados por **una** línea en blanco; un `:item` renderiza su primer
-  bloque en la línea del marcador y los siguientes indentados `w` espacios (§3.1), sin
-  línea en blanco entre items de la misma lista.
+  bloque en la línea del marcador y los siguientes indentados `w` espacios (§3.1) —
+  **también las líneas en blanco** dentro del item llevan los `w` espacios, para que
+  cuenten como continuación indentada (regla c) —, sin línea en blanco entre items de
+  la misma lista.
 - heading: `#` × level + ` ` + inline (o solo `#` × level si el texto es vacío);
   párrafo: inline en **una línea**.
 - inline: se recorre `Text` por grafemas; en cada offset se emiten primero los cierres
@@ -199,15 +209,18 @@ determinista de una pasada con una pila de delimitadores:
   `:emphasis` → `*…*`, `:strong` → `**…**`, `:code` → `` `…` `` con tantos backticks como
   la racha máxima interior + 1, `:link` → `[…](url)`. Dentro de un `:code` el texto va tal
   cual; fuera, cada grafema que sea `\`, `*`, `_`, `[`, `]`, `` ` ``, `<` o `|` se emite
-  precedido de `\`. Además, si la línea resultante empezara cumpliendo alguna regla 2–8
+  precedido de `\` (en un heading también `#`, para que un `#` final no se lea como
+  cierre; y `!` cuando lo sigue inmediatamente la apertura de un link, para no formar
+  `![`). Además, si la línea resultante empezara cumpliendo alguna regla 2–8
   de §3.1 (`#`, fence, break, `>`, marcador de lista, `<`, `|`), se escapa su primer
   carácter no-espacio (`\#`, `\-`, `1\.`, `\>`, …).
 - code: fence de `` ` `` × `max(3, racha máxima de backticks al inicio de línea en el
   texto + 1)`, `:lang` pegado al fence de apertura, texto, fence de cierre.
 - lista: `- ` para no ordenadas; `<n>. ` con `n` desde `:start` incrementando 1 por item
-  para ordenadas; `w` = 2 o `len("<n>. ")` del item mayor de la lista (así la
-  indentación es uniforme).
-- quote: cada línea del render de sus hijos prefijada con `> ` (`>` si la línea es vacía).
+  para ordenadas; las líneas de continuación se indentan `w` = ancho del **primer**
+  marcador (`2` o `len("<start>. ")`), exactamente el ancho por el que §3.2 dedenta.
+- quote: cada línea del render de sus hijos prefijada con `> ` (`>` solo si la línea
+  es exactamente vacía; una línea en blanco indentada conserva sus espacios).
 - thematic break: `---`.
 - opaco: `:blob` tal cual.
 
@@ -221,9 +234,9 @@ Se conservan como `:sign/:opaque`, hash sobre el blob, y no se descienden:
 - párrafos y headings cuyo inline devuelve `:unparsed` → `"markdown/unparsed"`, blob =
   sus líneas fuente unidas con `\n` (sin el marcador de heading procesado: la línea tal
   cual);
-- listas con marcadores mezclados (cambio entre `-`, `*`, `+`, o entre ordenada y no
-  ordenada dentro del mismo bloque `:list`) o cuyo dedentado deja un item sin bloque
-  inicial válido → todo el bloque `:list` opaco `"markdown/unparsed"`.
+- listas cuyo dedentado deja un item sin bloques o con un primer bloque que no es
+  párrafo/heading/código/opaco → todo el bloque `:list` opaco `"markdown/unparsed"`
+  (un cambio de marcador no mezcla: cierra la lista y abre otra, §3.1).
 
 Las regiones opacas se re-emiten byte a byte, así que un documento fuera del perfil
 sigue cumpliendo `parse(render(parse(s))) == parse(s)`.
@@ -246,9 +259,11 @@ es **almacenada** en el bloque; las capas UAX #29 sí son derivadas.
 Funciones (todas puras, en `sldb.surface.markdown.plan`):
 
 - `(ast->plan host ast {:tree-id ulid|nil :name str :actor str :timestamp str :base rev|nil})`
-  → `TransactionPlan` con un `:add-node` por nodo distinto (un mismo texto ⇒ un alias
-  reutilizado), un `:new-tree` y un `:add-edge :ownership` por arista, `:order` = índice
-  del hijo. Alias: `:n<i>` en orden de primera aparición; el árbol `:t`.
+  → `TransactionPlan` con un `:add-node` por nodo **distinto** (un mismo texto o un mismo
+  bloque —todos los `:item`— ⇒ un alias reutilizado), un `:new-tree` y un
+  `:add-edge :ownership` por posición, con `:parent` = path del padre y `:order` =
+  índice del hijo (docs/v2/02 §3.1: árboles de posiciones). Alias: `:n<i>` en orden de
+  primera aparición; el árbol `:t`.
 - `(store->ast store tree-id)` → AST: parte de `(get-in store [:trees tree-id])`, recorre
   `:children` desde el root; cada id se resuelve con `revision/get-object`; un
   `:sign/:block` produce el bloque `{:type (:type content) :attrs (:attrs content)}` y, si

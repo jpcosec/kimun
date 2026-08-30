@@ -289,3 +289,13 @@ documents:
   - system:sldb
   - type.knowledge.atom
   - workspace.desk.atoms
+- name: atom-decision-trees-are-trees-of-positions-git-like
+  path: desk/atoms/atom-decision-trees-are-trees-of-positions-git-like.md
+  hash_c: 92da04e99967269c610bc8f86d15c2acf9c16471a01723cb71a02b14dfd5ffb7
+  hash_d: 0e781229aca556ef222c8f58899f796e19bd7442bfa7ed321a88ac617a980246
+  semantic_tags:
+  - domain:decisions
+  - epoch:v2
+  - system:sldb
+  - type.knowledge.atom
+  - workspace.desk.atoms

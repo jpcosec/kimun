@@ -1,12 +1,13 @@
 (ns sldb.kernel.revision
   "Applying a TransactionPlan to an in-memory store and producing an immutable
-   revision (docs/v2/02 §5, §5.1, §5.2).
+   revision (docs/v2/02 §5, §5.1, §5.2). Ownership is addressed by position paths
+   (§3.1): a node may occur at several positions of a tree.
 
    Store (a value):
    {:host host :capabilities {...}
     :objects {id object}            ; the CAS: nodes, edges, tree objects, descriptors, edge-sets, tree-sets, revisions, resolved plans
     :trees {tree-id committed-tree}  ; current tree values (sldb.kernel.tree)
-    :edges #{edge-id}               ; active edge set at :head
+    :edges #{edge-id}               ; active non-ownership edge set at :head
     :head <rev-id|nil>              ; latest revision
     :heads {tree-id rev-id}         ; last revision that touched each tree
     :revisions {rev-id Revision}}
@@ -102,21 +103,23 @@
 
 (defn- resolve-edge [ws raw]
   (-> raw
-      (update :from #(r ws %)) (update :to #(r ws %))
+      (cond-> (contains? raw :from) (update :from #(r ws %)))
+      (update :to #(r ws %))
       (cond-> (contains? raw :tree) (update :tree #(r ws %)))
       (cond-> (get-in raw [:evidence :ref-hash]) (update-in [:evidence :ref-hash] #(r ws %)))
       (cond-> (get-in raw [:evidence :context]) (update-in [:evidence :context] #(r ws %)))))
 
 (defn- add-edge-op [ws op]
   (let [e0 (resolve-edge ws (:edge op))]
-    (require-node ws op (:from e0)) (require-node ws op (:to e0))
+    (require-node ws op (:to e0))
     (if (= :ownership (:type e0))
       (let [tid (require-tree ws op (:tree e0))
             e (rejecting :evidence-ref-hash op #(edge/make (:host ws) e0))]
         (-> ws
-            (with-tree op tid #(tree/add-child % (:from e) (:to e) (:order e)))
+            (with-tree op tid #(tree/add-child % (:parent e) (:to e) (:order e)))
             (bind-alias op (:id e))))
-      (let [e (rejecting :evidence-ref-hash op #(edge/make (:host ws) e0))]
+      (let [_ (require-node ws op (:from e0))
+            e (rejecting :evidence-ref-hash op #(edge/make (:host ws) e0))]
         (when (and (get-in e [:evidence :ref-hash]) (not= (get-in e [:evidence :ref-hash]) (:to e)))
           (plan/reject :evidence-ref-hash op ":ref-hash must equal the id of :to in the plan-resolved state"))
         (when-let [ctx (get-in e [:evidence :context])] (require-node ws op ctx))
@@ -131,7 +134,6 @@
 (defn- remove-edge-op [ws op]
   (let [id (r ws (:edge op))]
     (when-not (contains? (:edges ws) id) (plan/reject :ids-exist op (str "unknown or inactive edge " id)))
-    (when (= :ownership (:type (get-in ws [:objects id]))) (plan/reject :ids-exist op "ownership edges are removed through the tree, not by id"))
     (-> ws (update :edges disj id) (update :edges-removed conj id))))
 
 (defn- re-anchor
@@ -160,11 +162,12 @@
 
 (defn- replace-op [ws op]
   (let [tid (require-tree ws op (r ws (:tree op)))
-        old (require-node ws op (r ws (:old op)))
+        path (:at op)
+        old (or (tree/node-at (get-in ws [:trees tid]) path) (plan/reject :ids-exist op (str "no position " path)))
         new (require-node ws op (r ws (:new op)))
         sup (edge/make (:host ws) {:type :supersedes :from new :to old :evidence {:actor (:actor (:plan ws))}})]
     (-> ws
-        (with-tree op tid #(tree/replace-node % old new))
+        (with-tree op tid #(tree/replace-node % path new))
         (assoc-in [:objects (:id sup)] sup)
         (update :edges conj (:id sup))
         (update :edges-added conj (:id sup))
@@ -172,10 +175,12 @@
         (re-anchor old new))))
 
 (defn- move-op [ws op]
-  (let [tid (require-tree ws op (r ws (:tree op)))
-        n (require-node ws op (r ws (:node op)))
-        p (require-node ws op (r ws (:parent op)))]
-    (with-tree ws op tid #(tree/move % n p (:order op)))))
+  (let [tid (require-tree ws op (r ws (:tree op)))]
+    (with-tree ws op tid #(tree/move % (:from op) (:to op) (:order op)))))
+
+(defn- detach-op [ws op]
+  (let [tid (require-tree ws op (r ws (:tree op)))]
+    (with-tree ws op tid #(tree/detach % (:at op)))))
 
 (defn- apply-op [ws op]
   (case (:op op)
@@ -184,32 +189,35 @@
     :add-edge    (add-edge-op ws op)
     :remove-edge (remove-edge-op ws op)
     :replace     (replace-op ws op)
-    :move        (move-op ws op)))
+    :move        (move-op ws op)
+    :detach      (detach-op ws op)))
 
 ;; ---------------------------------------------------------------- diff (§5.2)
 
-(defn- index-of [v x]
-  (first (keep-indexed (fn [i y] (when (= x y) i)) v)))
-
-(defn- tree-at
-  "Reconstructs {:children {node [child…]} :parent {child parent}} for tree `tid`
-   at revision `rev-id` from the tree objects in the CAS."
+(defn tree-at
+  "Committed tree :root Position of `tid` at `rev-id`, rebuilt from the CAS; nil
+   when the revision has no such tree."
   [store rev-id tid]
-  (let [root-hash (get-in (revision store rev-id) [:roots tid])]
-    (when root-hash
-      (loop [todo [root-hash] children {} parent {}]
-        (if (empty? todo)
-          {:children children :parent parent}
-          (let [[hsh & more] todo
-                {:keys [node] kids :children} (get-object store hsh)]
-            (recur (into more (map second kids))
-                   (assoc children node (mapv first kids))
-                   (reduce (fn [p [c _]] (assoc p c node)) parent kids))))))))
+  (when-let [root-hash (get-in (revision store rev-id) [:roots tid])]
+    (tree/from-objects root-hash #(get-object store %))))
+
+(defn- position-map
+  "{path node} of a :root Position."
+  [pos]
+  (into {} (tree/positions {:root pos})))
+
+(defn- children-map
+  "{path [child-node …]} of a :root Position."
+  [pos]
+  (letfn [(walk [p path] (cons [path (mapv :node (:children p))]
+                               (mapcat (fn [i c] (walk c (conj path i))) (range) (:children p))))]
+    (into {} (walk pos []))))
 
 (defn diff
   "Difference between two revisions (docs/v2/02 §5.2):
-   {:trees {tree-id {:added :removed :moved :parents-changed}}
-    :edges {:added :removed} :superseded [[old new] ...]}.
+   {:trees {tree-id {:added [node …] :removed [node …]
+                     :moved [{:node :from-paths :to-paths} …] :parents-changed [path …]}}
+    :edges {:added :removed} :superseded [[old new] …]}.
    Only trees whose merkle-root differs are descended."
   [store r1 r2]
   (let [rev1 (revision store r1) rev2 (revision store r2)
@@ -217,21 +225,22 @@
         trees (into {}
                     (for [tid tids
                           :when (not= (get-in rev1 [:roots tid]) (get-in rev2 [:roots tid]))]
-                      (let [a (or (tree-at store r1 tid) {:children {} :parent {}})
-                            b (or (tree-at store r2 tid) {:children {} :parent {}})
-                            na (set (keys (:children a))) nb (set (keys (:children b)))
-                            moved (for [n (filter nb na)
-                                        :let [pa (get-in a [:parent n]) pb (get-in b [:parent n])]
-                                        :when (not= pa pb)]
-                                    {:node n :from-parent pa :to-parent pb
-                                     :order (index-of (get-in b [:children pb]) n)})
-                            parents-changed (for [n (filter nb na)
-                                                  :when (not= (get-in a [:children n]) (get-in b [:children n]))]
-                                              n)]
+                      (let [a (tree-at store r1 tid) b (tree-at store r2 tid)
+                            pa (if a (position-map a) {}) pb (if b (position-map b) {})
+                            na (set (vals pa)) nb (set (vals pb))
+                            paths-of (fn [pm n] (vec (sort (keep (fn [[p x]] (when (= x n) p)) pm))))
+                            moved (for [n (sort (filter nb na))
+                                        :let [fa (paths-of pa n) fb (paths-of pb n)]
+                                        :when (not= fa fb)]
+                                    {:node n :from-paths fa :to-paths fb})
+                            ca (if a (children-map a) {}) cb (if b (children-map b) {})
+                            parents-changed (for [p (sort (distinct (concat (keys ca) (keys cb))))
+                                                  :when (not= (get ca p) (get cb p))]
+                                              p)]
                         [tid {:added (vec (sort (remove na nb)))
                               :removed (vec (sort (remove nb na)))
                               :moved (vec moved)
-                              :parents-changed (vec (sort parents-changed))}])))
+                              :parents-changed (vec parents-changed)}])))
         e1 (set (get-object store (:edges rev1))) e2 (set (get-object store (:edges rev2)))
         superseded (for [eid (remove e1 e2)
                          :let [e (get-object store eid)]
@@ -249,8 +258,24 @@
   (let [last (get-in store [:heads tid])]
     (and last (not (contains? (ancestors store base) last)))))
 
-(defn- op-refs [op]
-  (remove nil? [(:old op) (:new op) (:node op) (:parent op) (get-in op [:edge :from]) (get-in op [:edge :to])]))
+(defn- op-parent-paths
+  "Parent positions an op edits in its tree."
+  [op]
+  (case (:op op)
+    :add-edge (when (= :ownership (get-in op [:edge :type])) [(get-in op [:edge :parent])])
+    :replace  [(tree/parent-path (:at op))]
+    :detach   [(tree/parent-path (:at op))]
+    :move     [(tree/parent-path (:from op)) (:to op)]
+    nil))
+
+(defn- op-position-paths
+  "Positions an op addresses as a target (whose node may have been replaced/removed)."
+  [op]
+  (case (:op op)
+    :replace [(:at op)]
+    :detach  [(:at op)]
+    :move    [(:from op)]
+    nil))
 
 (defn- conflicts-for
   "ConflictSet entries between the plan and the changes base→head on tree `tid`."
@@ -258,17 +283,23 @@
   (let [head-rev (:head store)
         full (diff store base head-rev)
         d (get-in full [:trees tid])
-        changed-parents (set (concat (map :to-parent (:moved d)) (map :from-parent (:moved d)) (:parents-changed d)))
+        changed-parents (set (:parents-changed d))
+        base-pos (some-> (tree-at store base tid) position-map)
         removed (set (:removed d))
         superseded (set (map first (:superseded full)))]
     (for [op resolved-ops
           :when (= tid (first (plan/touched-trees {:ops [op]})))
-          ref (op-refs op)
-          :let [kind (cond (contains? superseded ref) :superseded-target   ; a replaced node is superseded, not removed
-                           (contains? removed ref) :removed-target
-                           (contains? changed-parents ref) :same-parent-edit)]
-          :when kind]
-      {:tree tid :node ref :kind kind})))
+          entry (concat
+                 (for [p (op-parent-paths op) :when (and p (contains? changed-parents p))]
+                   {:tree tid :path p :kind :same-parent-edit})
+                 (for [p (op-position-paths op)
+                       :let [n (get base-pos p)]
+                       :when n
+                       :let [kind (cond (contains? superseded n) :superseded-target
+                                        (contains? removed n) :removed-target)]
+                       :when kind]
+                   {:tree tid :path p :node n :kind kind}))]
+      entry)))
 
 (defn- removed-edge-conflicts
   "A :remove-edge whose target head already removed is a :removed-target conflict."
@@ -293,7 +324,7 @@
                        (removed-edge-conflicts store base resolved-ops))]
         (if (seq cs)
           (throw (ex-info "conflict" {:type :plan/conflict
-                                      :conflict-set {:base base :head head :plan plan :conflicts (vec cs)}}))
+                                      :conflict-set {:base base :head head :plan plan :conflicts (vec (distinct cs))}}))
           (assoc plan :base head :rebased-from base))))))
 
 ;; ---------------------------------------------------------------- objects of a revision
@@ -302,9 +333,6 @@
 
 (defn- tree-set-entries [host trees]
   (vec (sort-by first (map (fn [[tid t]] [tid (tree/descriptor-id host (:descriptor t))]) trees))))
-
-(defn- store-tree-objects [objects t]
-  (reduce (fn [objs [n obj]] (assoc objs (get-in t [:objects n]) obj)) objects (tree/objects t)))
 
 ;; ---------------------------------------------------------------- apply
 
@@ -318,7 +346,7 @@
   (let [host (:host store)
         plan (plan/canonical host (plan/check-schema plan))
         _ (plan/check-opaque-replace-only plan)
-        ;; check 1 runs BEFORE executing the ops so that a plan referencing a node that
+        ;; check 1 runs BEFORE executing the ops so that a plan addressing a position
         ;; head replaced or removed yields a ConflictSet (§5.2) instead of an execution
         ;; rejection. Alias refs are keywords and can never match the base→head delta.
         raw-ops (mapv #(dissoc % :as) (:ops plan))
@@ -336,7 +364,7 @@
         trees' (reduce (fn [ts tid] (update ts tid #(tree/commit host %))) (:trees ws) touched)
         objects (reduce (fn [objs tid] (let [t (trees' tid)]
                                          (-> objs
-                                             (store-tree-objects t)
+                                             (merge (tree/objects t))
                                              (assoc (tree/descriptor-id host (:descriptor t)) (:descriptor t)))))
                         (:objects ws) touched)
         edge-set (vec (sort (:edges ws)))

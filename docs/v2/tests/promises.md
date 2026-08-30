@@ -104,10 +104,38 @@ Leyenda: `ok` probado · `oracle` probado además por una implementación indepe
 
 1 pool_test/tampered…, store_test/close-and-reopen · 2 node_test/same-content-same-id · 3 revision_test/heads-advance-only… · 4 tree_test/generated-trees-are-valid · 5 tree_test/one-node-in-two-trees · 6 edge_test/evidence-requirements · 7 revision_test/replace-keeps-order… · 8, 9 **deferred** (hito 4) · 10 pool_test/pool-is-rebuildable, store_test/replay… · 11 **deferred** (efectos) · 12 plan_test/opaque-replace-only · 13 tree_test/ulid-ids-are-nominal · 14 tree_test/sibling-order… · 15 revision_test/the-seven-checks · 16 edge_test/timestamp…, hardening/timestamp-enters-the-revision-id · 17 store_test/every-object-file…
 
-## §04 — superficie Markdown (hito 4, pendiente de cierre)
+## §3.1 (revisado 2026-08-29) — árboles de posiciones
 
-Las filas y nombres de test están fijados en `docs/v2/04-superficie-markdown.md §10`; se
-mueven a este documento con su estado al cerrar `task-milestone-4-markdown-cst-to-neutral-ast`.
+| promesa | test |
+|---|---|
+| un nodo puede ocurrir en varias posiciones de un árbol y en varios árboles; cada posición tiene un padre (inv. 5) | tree_test/one-node-at-several-positions-and-in-several-trees, hardening/tree-boundaries ("same node at two positions") |
+| subárboles idénticos comparten objeto (dentro y entre árboles) | tree_test/identical-subtrees-share-objects, one-node-at-several-positions… |
+| posiciones por path; `positions`, `node-at`, `paths-of`, `from-objects` reconstruye desde el CAS | tree_test/positions-and-paths, from-objects-rebuilds-a-committed-tree |
+| `replace` es por posición (otras ocurrencias intactas); `detach`; `move` con corrección de path | tree_test/replace-keeps-position-and-subtree, detach-and-move-keep-validity |
+| ops de propiedad por path en planes (`:parent`, `:at`, `:from/:to`, `detach`); conflictos por path padre | revision_test/the-seven-checks…, heads_test/commit-through-atom-and-conflict-set, hardening/conflict-kinds-removed-and-superseded-target |
+| reordenar hermanos cambia el hash sii cambia la secuencia (nodo, hash) | tree_test/reordering-siblings-changes-parent-hash |
+
+## §04 — superficie Markdown (hito 4)
+
+| promesa | test |
+|---|---|
+| inv. 8: `(cst/text (cst/parse s)) == s` ∀ `s` (`\r\n`, tabs, blancos finales, sin salto final, vacío) | cst_test/lossless-for-any-string, lossless-edge-cases |
+| reglas de segmentación §3.1 (fences `~` vs `` ` `` y longitud, quote cortado por blanco, listas por familia de marcador, blanco+indentado, continuación perezosa, html/table hasta blanco) | cst_test/segmentation-rules |
+| inv. 9: `(parse (render A)) == A` ∀ `A` canónico (`gen-ast`) | roundtrip_test/parse-render-identity (10×300 en desarrollo, 150 en suite) |
+| `render` idempotente | roundtrip_test/render-is-idempotent |
+| escapes: todo grafema escapable y todo inicio de línea peligroso vuelven literal (párrafo y heading) | roundtrip_test/escapes-round-trip |
+| inline §5: cada regla de `:unparsed`, `snake_case` literal, code span con backticks internos, links con énfasis, `<`/`_`/`!`/`]` | inline_test/profile-rules |
+| orden canónico y validez de marcas §4; offsets en grafemas; NFC antes de offsets | inline_test/marks-canonical-order, grapheme-offsets |
+| deletreos canónicos (heading, viñetas, numeración desde `:start`, soft breaks, quotes, fences, blancos indentados en items) | roundtrip_test/canonical-spellings |
+| fixture dorado `profile.md` ⇄ `profile.ast.edn`, render byte a byte | roundtrip_test/golden-profile |
+| fixture `outside-profile.md`: informe congelado, opacos verbatim, estable | plan_test/golden-outside-profile |
+| mapeo §8: `markdown->plan` → store → `store->ast` == `parse`; `store->markdown` == `render`; nodos de las formas §8 | plan_test/store-round-trip |
+| hojas de texto compartidas entre documentos (marcas en el bloque) | plan_test/text-leaves-are-shared |
+| `store->ast` rechaza árboles que no son documentos (`:markdown/not-a-document`) | plan_test/not-a-document |
+| informe §9: coverage 1.0 sin opacos; paths completos y grafemas por región | plan_test/coverage, golden-outside-profile |
+| `TextSegmenter`: `(apply str (graphemes s)) == s`, clústeres UAX #29 | inline_test/grapheme-offsets (emoji ZWJ, é) |
+
+Bugs de kernel encontrados por el hito 4: el modelo "un padre por nodo por árbol" no podía representar listas (items idénticos) → árboles de posiciones (`atom-decision-trees-are-trees-of-positions-git-like`).
 
 ## Deuda aceptada
 

@@ -37,8 +37,8 @@
    {:op :add-node :node {:class :fact :kind :context :content {:name "w1"}} :as :w1}
    {:op :add-node :node {:class :fact :kind :context :content {:name "w2"}} :as :w2}
    {:op :new-tree :tree {:kind :document :name "d"} :id T :root :root :as :t}
-   {:op :add-edge :edge {:type :ownership :tree :t :from :root :to :a :order 0}}
-   {:op :add-edge :edge {:type :ownership :tree :t :from :root :to :b :order 1}}])
+   {:op :add-edge :edge {:type :ownership :tree :t :parent [] :to :a :order 0}}
+   {:op :add-edge :edge {:type :ownership :tree :t :parent [] :to :b :order 1}}])
 
 (defn- base-store []
   (rev/apply-plan (rev/empty-store h caps) (plan nil doc-ops)))
@@ -90,22 +90,22 @@
     (testing "a single-node tree commits and has a merkle-root"
       (is (= 64 (count (tree/merkle-root (tree/commit h t))))))
     (testing "order boundary: count is allowed, count+1 is not"
-      (is (tree/add-child t r a 0))
-      (is (thrown? #?(:clj clojure.lang.ExceptionInfo :cljs js/Error) (tree/add-child t r a 1))))
-    (testing "duplicate child rejected"
-      (is (thrown? #?(:clj clojure.lang.ExceptionInfo :cljs js/Error)
-                   (-> t (tree/add-child r a 0) (tree/add-child r a 1)))))
+      (is (tree/add-child t [] a 0))
+      (is (thrown? #?(:clj clojure.lang.ExceptionInfo :cljs js/Error) (tree/add-child t [] a 1))))
+    (testing "the same node at two positions is allowed (invariant 5, positions)"
+      (let [t2 (-> t (tree/add-child [] a 0) (tree/add-child [] a 1))]
+        (is (= [a a] (tree/children-at t2 [])))))
     (testing "replacing the root re-roots the tree"
-      (let [t2 (tree/commit h (-> t (tree/add-child r a 0) (tree/replace-node r b)))]
+      (let [t2 (tree/commit h (-> t (tree/add-child [] a 0) (tree/replace-node [] b)))]
         (is (= b (tree/root t2)))
-        (is (= [a] (get-in t2 [:children b])))
+        (is (= [a] (tree/children-at t2 [])))
         (is (tree/valid? t2))))
     (testing "deep tree: 200 levels commit and only the changed path is dirty"
       (let [ids (mapv #(text (str "deep-" %)) (range 200))
-            deep (reduce (fn [t i] (tree/add-child t (ids (dec i)) (ids i) 0)) (tree/create h :document "deep" (ids 0) U) (range 1 200))
+            deep (reduce (fn [t i] (tree/add-child t (vec (repeat (dec i) 0)) (ids i) 0)) (tree/create h :document "deep" (ids 0) U) (range 1 200))
             c (tree/commit h deep)
-            c2 (tree/replace-node c (ids 199) (text "leaf'"))]
-        (is (= 200 (count (:dirty c2))) "leaf + 199 ancestors")
+            c2 (tree/replace-node c (vec (repeat 199 0)) (text "leaf'"))]
+        (is (= 200 (count (tree/dirty-paths c2))) "leaf + 199 ancestors")
         (is (tree/valid? (tree/commit h c2)))))))
 
 ;; ---------------------------------------------------------------- plan / revision (§5.1, §5.2, §6.1)
@@ -122,23 +122,24 @@
     (is (= :ids-exist (:check (ex-of #(rev/apply-plan store (plan (:head store) [{:op :add-node :node {:class :sign :kind :text :content {:text "x"}} :as :n}
                                                                               {:op :add-node :node {:class :sign :kind :text :content {:text "y"}} :as :n}])))))
         "duplicate alias")
-    (is (= :ids-exist (:check (ex-of #(rev/apply-plan store (plan (:head store) [{:op :add-edge :edge {:type :ownership :tree T :from :later :to :later2 :order 0}}
+    (is (= :ids-exist (:check (ex-of #(rev/apply-plan store (plan (:head store) [{:op :add-edge :edge {:type :ownership :tree T :parent [] :to :later :order 0}}
                                                                               {:op :add-node :node {:class :sign :kind :text :content {:text "x"}} :as :later}])))))
         "alias used before declaration")))
 
 (deftest ownership-edges-are-not-removed-by-id
   (let [{:keys [store aliases]} (base-store)
-        eid (:id (edge/make h {:type :ownership :tree T :from (aliases :root) :to (aliases :a) :order 0}))]
+        eid (:id (edge/make h {:type :ownership :tree T :parent [] :to (aliases :a) :order 0}))]
     (is (= :ids-exist (:check (ex-of #(rev/apply-plan store (plan (:head store) [{:op :remove-edge :edge eid}]))))))))
 
 (deftest move-to-own-descendant-is-tree-integrity
   (let [{:keys [store aliases]} (base-store)
         r (aliases :root) a (aliases :a)]
-    (is (= :tree-integrity (:check (ex-of #(rev/apply-plan store (plan (:head store) [{:op :move :tree T :node r :parent a :order 0}]))))))))
+    (is (= :tree-integrity (:check (ex-of #(rev/apply-plan store (plan (:head store) [{:op :move :tree T :from [0] :to [0] :order 0}]))))) "into its own subtree")
+    (is (= :tree-integrity (:check (ex-of #(rev/apply-plan store (plan (:head store) [{:op :move :tree T :from [] :to [0] :order 0}]))))) "the root")))
 
 (deftest move-marks-dirty-and-changes-the-root
   (let [{:keys [store aliases]} (base-store)
-        r (rev/apply-plan store (plan (:head store) [{:op :move :tree T :node (aliases :b) :parent (aliases :root) :order 0}]))]
+        r (rev/apply-plan store (plan (:head store) [{:op :move :tree T :from [1] :to [] :order 0}]))]
     (is (not= (get-in (rev/revision store (:head store)) [:roots T]) (get-in r [:revision :roots T])))))
 
 (deftest multi-context-bindings-are-distinct-edges
@@ -176,14 +177,14 @@
         a (aliases :a)
         s1 (:store (rev/apply-plan store (plan (:head store) [{:op :add-node :node {:class :sign :kind :block :content {:format :markdown :type :document :attrs {:n 3}}} :as :r2}
                                                               {:op :new-tree :tree {:kind :taxonomy :name "u"} :id U :root :r2}
-                                                              {:op :add-edge :edge {:type :ownership :tree U :from :r2 :to a :order 0}}])))
-        u-root-before (get-in s1 [:trees U :objects (tree/root (get-in s1 [:trees U]))])
+                                                              {:op :add-edge :edge {:type :ownership :tree U :parent [] :to a :order 0}}])))
+        u-root-before (tree/merkle-root (get-in s1 [:trees U]))
         a' (text "a'")
         r (rev/apply-plan s1 (plan (:head s1) [{:op :add-node :node {:class :sign :kind :text :content {:text "a'"}}}
-                                               {:op :replace :tree T :old a :new a'}]))
+                                               {:op :replace :tree T :at [0] :new a'}]))
         s2 (:store r)]
     (is (tree/contains-node? (get-in s2 [:trees U]) a) "a still in U")
-    (is (= u-root-before (get-in s2 [:trees U :objects (tree/root (get-in s2 [:trees U]))])) "U's merkle-root unchanged")
+    (is (= u-root-before (tree/merkle-root (get-in s2 [:trees U]))) "U's merkle-root unchanged")
     (is (= (:head s1) (get-in s2 [:heads U])))))
 
 (deftest chained-replace-follows-step-by-step
@@ -191,8 +192,8 @@
         a (aliases :a) sym (aliases :sym) w1 (aliases :w1)
         s1 (:store (rev/apply-plan store (plan (:head store) [{:op :add-edge :edge {:type :binding :from a :to sym :evidence {:ref-hash sym :actor "jp" :context w1}}}])))
         a' (text "a'") a'' (text "a''")
-        s2 (:store (rev/apply-plan s1 (plan (:head s1) [{:op :add-node :node {:class :sign :kind :text :content {:text "a'"}}} {:op :replace :tree T :old a :new a'}])))
-        s3 (:store (rev/apply-plan s2 (plan (:head s2) [{:op :add-node :node {:class :sign :kind :text :content {:text "a''"}}} {:op :replace :tree T :old a' :new a''}])))
+        s2 (:store (rev/apply-plan s1 (plan (:head s1) [{:op :add-node :node {:class :sign :kind :text :content {:text "a'"}}} {:op :replace :tree T :at [0] :new a'}])))
+        s3 (:store (rev/apply-plan s2 (plan (:head s2) [{:op :add-node :node {:class :sign :kind :text :content {:text "a''"}}} {:op :replace :tree T :at [0] :new a''}])))
         bindings-from (fn [s n] (filter #(and (= :binding (:type %)) (= n (:from %))) (map #(rev/get-object s %) (:edges s))))
         sups (filter #(= :supersedes (:type %)) (map #(rev/get-object s3 %) (:edges s3)))]
     (is (= 1 (count (bindings-from s3 a''))) "binding followed to the latest successor")
@@ -209,7 +210,7 @@
                                                {:op :add-edge :edge {:type :projection :from sym :to a :evidence {:ref-hash a :engine "m" :version "1" :context w1 :status :sinnvoll}} :as :proj}
                                                {:op :add-edge :edge {:type :derived :from a :to sym2 :evidence {:ref-hash sym2 :engine "emb" :version "1"}} :as :der}])))
         a' (text "a'")
-        r (rev/apply-plan s1 (plan (:head s1) [{:op :add-node :node {:class :sign :kind :text :content {:text "a'"}}} {:op :replace :tree T :old a :new a'}]))
+        r (rev/apply-plan s1 (plan (:head s1) [{:op :add-node :node {:class :sign :kind :text :content {:text "a'"}}} {:op :replace :tree T :at [0] :new a'}]))
         s2 (:store r)
         types-to (fn [n] (set (map :type (filter #(= n (:to %)) (map #(rev/get-object s2 %) (:edges s2))))))]
     (is (= #{:semantic :projection :supersedes} (types-to a)) "semantic/projection stay on the old node; supersedes points to it")
@@ -221,16 +222,16 @@
         base (:head store) root (aliases :root) a (aliases :a) b (aliases :b)
         a' (text "a'")
         ;; head: a replaced by a'
-        s1 (:store (rev/apply-plan store (plan base [{:op :add-node :node {:class :sign :kind :text :content {:text "a'"}}} {:op :replace :tree T :old a :new a'}])))
-        e1 (ex-of #(rev/apply-plan s1 (plan base [{:op :move :tree T :node a :parent root :order 1}])))
+        s1 (:store (rev/apply-plan store (plan base [{:op :add-node :node {:class :sign :kind :text :content {:text "a'"}}} {:op :replace :tree T :at [0] :new a'}])))
+        e1 (ex-of #(rev/apply-plan s1 (plan base [{:op :move :tree T :from [0] :to [] :order 1}])))
         ;; head: b removed via move-away is not possible; remove by replacing subtree owner — use a second store where b is gone
         s2 (:store (rev/apply-plan store (plan base [{:op :add-node :node {:class :sign :kind :block :content {:format :markdown :type :document :attrs {:n 9}}} :as :r2}
                                                      {:op :new-tree :tree {:kind :document :name "d2"} :id U :root :r2}
                                                      {:op :add-node :node {:class :sign :kind :text :content {:text "b'"}} :as :b2}
-                                                     {:op :replace :tree T :old b :new :b2}])))
-        e2 (ex-of #(rev/apply-plan s2 (plan base [{:op :move :tree T :node b :parent root :order 0}])))]
-    (is (= #{{:tree T :node a :kind :superseded-target} {:tree T :node root :kind :same-parent-edit}}
-           (set (get-in e1 [:conflict-set :conflicts]))) "the moved node was superseded; its parent's children changed")
+                                                     {:op :replace :tree T :at [1] :new :b2}])))
+        e2 (ex-of #(rev/apply-plan s2 (plan base [{:op :move :tree T :from [1] :to [] :order 0}])))]
+    (is (= #{{:tree T :path [0] :node a :kind :superseded-target} {:tree T :path [] :kind :same-parent-edit}}
+           (set (get-in e1 [:conflict-set :conflicts]))) "the moved position was superseded; its parent's children changed")
     (is (= :plan/conflict (:type e2)))
     (is (contains? (set (map :kind (get-in e2 [:conflict-set :conflicts]))) :superseded-target) "superseded wins over removed")))
 

@@ -8,7 +8,8 @@ a "base de datos de lenguaje estructurado sobre el modelo S/M/G".
 | `01-orden-filosofico.md` | qué es el objeto persistido, qué garantías tiene sentido pedirle, qué se retira del diseño anterior |
 | `02-sustrato-computacional.md` | estructuras de datos, invariantes, runtime, y roadmap por analogía con el modelo de objetos de Git |
 | `03-estandares-de-codigo.md` | anillos de dependencia (`bb lint`), compartimentación, docstrings, estándares de test |
-| `tests/promises.md` | trazabilidad promesa de la spec → test que la prueba (primer slice) |
+| `04-superficie-markdown.md` | perfil SLDB-MD: CST lossless, AST neutro con marcas por grafema, render canónico, mapeo al pool, opacos, informe de direccionabilidad |
+| `tests/promises.md` | trazabilidad promesa de la spec → test que la prueba (primer slice + superficie Markdown) |
 
 ## Diagramas (spec2viz, fuente YAML en `docs/architecture/spec2viz/v2-*.yml`, render en `rendered/v2/*.mmd`)
 
@@ -19,6 +20,7 @@ a "base de datos de lenguaje estructurado sobre el modelo S/M/G".
 | `v2-transaction-flow` | secuencia plan → validación → aplicación → objetos → persistencia (CAS de heads) |
 | `v2-replace-reanchoring` | pasos de `:replace` y las reglas de re-anclaje por tipo de arista |
 | `v2-store-layout` | open/replay/verify sobre el backend de archivos |
+| `v2-markdown-surface` | pipeline de la superficie Markdown: texto → CST → AST → plan → árbol de posiciones → render |
 
 Los `.mmd` son proyecciones: para cambiar un diagrama se edita el YAML y se vuelve a renderizar (`spec2viz diagram render … --renderer mermaid`).
 

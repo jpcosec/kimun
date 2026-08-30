@@ -21,7 +21,7 @@
 (defn- snapshot [s]
   {:head (:head s) :heads (:heads s)
    :revisions (:revisions s)
-   :roots (into {} (map (fn [[tid t]] [tid (get-in t [:objects (get-in t [:descriptor :root])])])) (:trees s))
+   :roots (into {} (map (fn [[tid t]] [tid (sldb.kernel.tree/merkle-root t)])) (:trees s))
    :edges (:edges s)
    :nodes (set (keep (fn [[id o]] (when (:class o) id)) (:objects s)))
    :tree-sets (set (map :trees (vals (:revisions s))))

@@ -1,5 +1,5 @@
 ;; Hand-described transaction (docs/v2/02 §8.1): plan + the exact eight-field Revision and id it must yield.
-;; Computed with sldb.kernel.revision + SHA-256 on 2026-08-29 (regenerated once after fixing alias substitution in map keys), reviewed, frozen.
+;; Computed once with sldb.kernel.revision + SHA-256 on 2026-08-29, reviewed, frozen.
 {:store {:capabilities {"jp" :all}},
  :plan
  {:plan/version 1,
@@ -39,9 +39,9 @@
     :root :root,
     :as :t}
    {:op :add-edge,
-    :edge {:type :ownership, :tree :t, :from :root, :to :p1, :order 0}}
+    :edge {:type :ownership, :tree :t, :parent [], :to :p1, :order 0}}
    {:op :add-edge,
-    :edge {:type :ownership, :tree :t, :from :root, :to :p2, :order 1}}
+    :edge {:type :ownership, :tree :t, :parent [], :to :p2, :order 1}}
    {:op :add-edge,
     :edge
     {:type :binding,
@@ -60,9 +60,9 @@
    "a8674ea1a5e7a753c150f1c90d813c7ed653c932ce876aef14402c0bf8bb5ae5",
    :parents [],
    :tx
-   "e74e9a16aa0f1ac50b67ec47a6f976f776d4c78a634a544e4b1a56de9a337ed6",
+   "2ef667eaca5c428eb6182f015a2e13b98e0c965edf916fb2c0b0ddc42047d997",
    :actor "jp",
    :engines {},
    :timestamp "2026-08-29T12:00:00.000Z"},
   :revision-id
-  "70e7785bd1d558fec1f22b99af86486baaced8956331e01c98dad948cb6bf93c"}}
+  "93fd0bca29b4f94b68464a6952b42b1464055a26dd3dec4c3d37173c8a985053"}}

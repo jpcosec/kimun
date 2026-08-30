@@ -31,8 +31,8 @@
          {:op :add-node :node {:class :symbol :kind :term :content {:name "cielo" :lang "es"}} :as :sym}
          {:op :add-node :node {:class :fact :kind :context :content {:name "colores"}} :as :w}
          {:op :new-tree :tree {:kind :document :name "doc"} :id "01ARZ3NDEKTSV4RRFFQ69G5FAV" :root :root :as :t}
-         {:op :add-edge :edge {:type :ownership :tree :t :from :root :to :p1 :order 0}}
-         {:op :add-edge :edge {:type :ownership :tree :t :from :root :to :p2 :order 1}}
+         {:op :add-edge :edge {:type :ownership :tree :t :parent [] :to :p1 :order 0}}
+         {:op :add-edge :edge {:type :ownership :tree :t :parent [] :to :p2 :order 1}}
          {:op :add-edge :edge {:type :binding :from :p1 :to :sym :evidence {:ref-hash :sym :actor "jp" :context :w}} :as :b1}]})
 
 (defn- applied [] (rev/apply-plan (rev/empty-store h caps) base-plan))
@@ -70,13 +70,14 @@
         base (fn [ops] {:plan/version 1 :base head :actor "jp" :engines {} :timestamp TS :ops ops})
         check (fn [p] (:check (rejected store p)))]
     (is (= :base-cas (check (assoc (base []) :base "nope"))))
-    (is (= :ids-exist (check (base [{:op :move :tree T :node "deadbeef" :parent root :order 0}]))))
+    (is (= :ids-exist (check (base [{:op :replace :tree T :at [9] :new p1}]))) "no such position")
     (is (= :ids-exist (check (base [{:op :remove-edge :edge :unknown}]))))
-    (is (= :tree-integrity (check (base [{:op :move :tree T :node root :parent p1 :order 0}]))) "moving the root")
-    (is (= :tree-integrity (check (base [{:op :add-edge :edge {:type :ownership :tree T :from root :to p1 :order 0}}]))) "second parent")
+    (is (= :tree-integrity (check (base [{:op :move :tree T :from [] :to [0] :order 0}]))) "moving the root")
+    (is (= :tree-integrity (check (base [{:op :add-edge :edge {:type :ownership :tree T :parent [7] :to p1 :order 0}}]))) "parent position missing")
+    (is (= :tree-integrity (check (base [{:op :add-edge :edge {:type :ownership :tree T :parent [] :to p1 :order 5}}]))) "order out of range")
     (is (= :evidence-ref-hash (check (base [{:op :add-edge :edge {:type :binding :from p1 :to sym :evidence {:ref-hash root :actor "jp" :context sym}}}]))))
     (is (= :evidence-ref-hash (check (base [{:op :add-edge :edge {:type :binding :from p1 :to sym :evidence {:ref-hash sym :context sym}}}]))) "missing origin")
-    (is (= :capability (check (assoc (base [{:op :move :tree T :node p1 :parent root :order 1}]) :actor "ana"))))
+    (is (= :capability (check (assoc (base [{:op :move :tree T :from [0] :to [] :order 1}]) :actor "ana"))))
     (is (= :capability (check (assoc (base [{:op :add-node :node {:class :sign :kind :text :content {:text "x"}}}]) :actor "nobody"))) "absent actor")
     (is (= :opaque-replace-only (check (base [{:op :add-node :node {:class :sign :kind :text :content {:text "x"}} :patch {}}]))))
     (is (= :pure-data (check (assoc (base []) :timestamp "now"))))
@@ -88,9 +89,9 @@
         p1' (:id (node/make h :sign :text {:text "El cielo es celeste."}))
         r (rev/apply-plan store {:plan/version 1 :base (:head store) :actor "jp" :engines {} :timestamp TS
                                  :ops [{:op :add-node :node {:class :sign :kind :text :content {:text "El cielo es celeste."}}}
-                                       {:op :replace :tree T :old p1 :new p1'}]})
+                                       {:op :replace :tree T :at [0] :new p1'}]})
         s' (:store r)
-        kids (get-in s' [:trees T :children root])
+        kids (sldb.kernel.tree/children-at (get-in s' [:trees T]) [])
         sup (first (filter #(= :supersedes (:type %)) (map #(rev/get-object s' %) (:edges-added r))))
         followers (filter #(and (= :binding (:type %)) (= p1' (:from %))) (map #(rev/get-object s' %) (:edges s')))]
     (is (= p1' (first kids)) "new node takes the old order")

@@ -18,6 +18,14 @@
   "Nominal ids for trees (docs/v2/02 §3.1)."
   (ulid [this] "A fresh 26-character Crockford-base32 ULID."))
 
+(defprotocol TextSegmenter
+  "Grapheme segmentation (UAX #29), the unit of every stand-off offset (docs/v2/04 §2)."
+  (graphemes [this s] "Vector of grapheme-cluster strings of `s`, in order; (apply str v) == s."))
+
+(defn segmenter
+  "The TextSegmenter of a host value."
+  [host] (:segmenter host))
+
 (defn hasher
   "The Hasher of a host value."
   [host] (:hasher host))
@@ -31,9 +39,10 @@
   [host] (:ids host))
 
 (defn host?
-  "True when `host` carries the three ports."
+  "True when `host` carries the four ports."
   [host]
   (and (map? host)
        (satisfies? Hasher (:hasher host))
        (satisfies? TextNormalizer (:text host))
-       (satisfies? IdMinter (:ids host))))
+       (satisfies? IdMinter (:ids host))
+       (satisfies? TextSegmenter (:segmenter host))))

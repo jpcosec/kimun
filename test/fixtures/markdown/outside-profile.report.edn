@@ -1,0 +1,15 @@
+;; Golden addressability report of outside-profile.md (docs/v2/04 §9) — generated once on 2026-08-29, reviewed, frozen.
+{:blocks 16,
+ :structural 7,
+ :opaque 9,
+ :coverage 0.1676470588235294,
+ :opaque-regions
+ [{:path [1], :format "markdown/unparsed", :graphemes 52}
+  {:path [2], :format "markdown/unparsed", :graphemes 36}
+  {:path [3], :format "markdown/unparsed", :graphemes 20}
+  {:path [4], :format "markdown/unparsed", :graphemes 28}
+  {:path [5], :format "markdown/unparsed", :graphemes 28}
+  {:path [6], :format "markdown/unparsed", :graphemes 32}
+  {:path [7], :format "markdown/html", :graphemes 36}
+  {:path [8], :format "markdown/table", :graphemes 27}
+  {:path [9], :format "markdown/html", :graphemes 24}]}

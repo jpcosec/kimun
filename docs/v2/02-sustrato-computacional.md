@@ -113,7 +113,7 @@ Edge {
 
 | Tipo | Capa | Entra al Merkle | Semántica |
 |---|---|---|---|
-| `ownership` | dentro de un árbol | **sí** (del árbol) | estructura: padre → hijo, ordenada |
+| `ownership` | dentro de un árbol | **sí** (del árbol) | estructura: posición padre (path) → nodo hijo, ordenada |
 | `binding` | S → M | no | este signo expresa este símbolo, en este contexto |
 | `projection` | M → G | no | este símbolo se consolidó en este hecho |
 | `reference` | S ↔ S | no | anclaje entre signos (links, transclusiones) |
@@ -141,28 +141,35 @@ Reglas:
   descriptores vivos mediante `:trees` (§5), igual que referencia las aristas mediante
   `:edges`. Es el análogo de un *ref* de Git; un id por contenido sería absurdo porque
   cada edición lo cambiaría.
-- **Objeto de árbol** (análogo al *tree object* de Git): para cada nodo de un árbol,
+- **Posiciones**: un árbol es un árbol de *posiciones*, no de nodos. Un nodo puede
+  ocurrir en varias posiciones del mismo árbol (todos los items de una lista son el
+  mismo nodo `{:type :item}`; un párrafo puede repetirse). La identidad de una posición
+  es su **path**: el vector de índices de hermano desde la raíz (`[]` = raíz,
+  `[0 2]` = tercer hijo del primer hijo). Los planes direccionan la propiedad
+  (`ownership`) por paths, nunca por id de nodo (§5.1).
+- **Objeto de árbol** (análogo al *tree object* de Git): para cada posición,
   `{:node <id> :children [[<hijo-1> <tree-hash-1>] [<hijo-2> <tree-hash-2>] ...]}` en el
-  orden dado por `order`. `tree-hash(n) = H(canonical-bytes(objeto))`; una hoja tiene
+  orden de hermanos. `tree-hash(pos) = H(canonical-bytes(objeto))`; una hoja tiene
   `:children []`. **El orden de hermanos entra al hash por construcción.**
-  `merkle-root(árbol) = tree-hash(raíz)`.
+  `merkle-root(árbol) = tree-hash(raíz)`. Dos subárboles idénticos (mismo nodo, mismos
+  hijos) tienen el mismo objeto y lo comparten, dentro de un árbol y entre árboles
+  (como Git comparte blobs y trees).
 - Los objetos de árbol se guardan en el CAS como cualquier blob. Recalcular el Merkle
   perezoso = recalcular los objetos del camino sucio hasta la raíz; el resto se comparte
   entre revisiones (compartición estructural, como en Git).
 - Las aristas `ownership` de un árbol en una revisión **son** su conjunto de objetos de
-  árbol; la lista de adyacencia y el índice inverso nodo → árboles son vistas derivadas
-  (Datascript), reconstruibles, sin autoridad. Las aristas de los demás tipos son
+  árbol; el índice inverso nodo → (árbol, paths) es una vista derivada (Datascript),
+  reconstruible, sin autoridad. Las aristas de los demás tipos son
   **objetos de arista** persistidos en el CAS (§3.2); una revisión referencia el conjunto
   de aristas activas mediante `:edges` (§5).
-- **Marcado sucio** (Merkle perezoso): cada árbol mantiene, durante la aplicación de un
-  plan, un conjunto `dirty` de ids de nodo, vacío al empezar. Solo las ops que cambian
-  hijos **ownership** de `n` (add/remove/move/replace en ese árbol) añaden a `dirty` a
-  `n` y a todos sus ancestros en ese árbol; `:add-edge`/`:remove-edge` de otros tipos
-  **no** tocan `dirty` ni el Merkle. Al confirmar, se recomputan en post-orden solo los
-  objetos de árbol de los nodos en `dirty`; los demás se reutilizan **de la revisión
-  base** (compartición estructural entre la revisión base y la nueva). En un árbol recién
-  creado todos sus nodos están en `dirty`, así que la primera revisión construye todos
-  sus objetos. `dirty` se vacía al confirmar.
+- **Marcado sucio** (Merkle perezoso): cada posición guarda el `tree-hash` de su
+  subárbol; una posición sin hash está *sucia*. Solo las ops que cambian hijos
+  **ownership** (add/detach/move/replace en ese árbol) borran el hash de la posición
+  tocada y de todos sus ancestros; `:add-edge`/`:remove-edge` de otros tipos **no**
+  tocan el Merkle. Al confirmar, se recomputan en post-orden solo las posiciones sin
+  hash; las demás conservan el suyo (compartición estructural entre la revisión base y
+  la nueva). Un árbol recién creado tiene su raíz sin hash, así que la primera revisión
+  construye todos sus objetos.
 - **Alcanzabilidad** (`verify`, hito 3; GC y retención, hito 8): el conjunto alcanzable es
   la clausura transitiva de las referencias por id partiendo de los ids de revisión que
   hay en `heads` (revisión → `parents`, tree-set → descriptores, `roots` → objetos de
@@ -183,7 +190,8 @@ Reglas:
 ### 3.2 Evidencia por tipo de arista
 
 ```
-Edge     {:type t  :from <id>  :to <id>  :tree <tree-id|nil>  :order <n|nil>  :evidence Evidence}
+Edge     {:type t  :from <id>  :to <id>  :evidence Evidence}                       ; tipos no ownership
+Edge     {:type :ownership  :tree <tree-id>  :parent <path>  :to <id>  :order <n>}  ; una posición
 Evidence {:ref-hash <id>  :actor <str> | :engine <str> :version <str>  :context <node-id>  :status <kw>}
 id(arista) = H(canonical-bytes(Edge))
 ```
@@ -273,8 +281,9 @@ TransactionPlan = datos EDN (§5.1)
 ```
 
 Operaciones primitivas: `new-tree`, `add-node`, `add-edge`, `remove-edge`, `replace`
-(= `add-node` + re-enlace + `supersedes`), `move` (re-enlace dentro de un árbol). No hay
-`update`: los nodos no cambian.
+(el nodo de una posición por otro + `supersedes`), `move` (una posición a otra dentro
+de un árbol), `detach` (quita una posición con su subárbol). No hay `update`: los nodos
+no cambian. Las ops de propiedad direccionan **posiciones** por path.
 
 - El plan se **valida** (tipos, capabilities, invariantes de árbol, evidencia) antes de
   aplicarse. Código no confiable (scripts de usuario, hooks, agentes) produce planes;
@@ -294,11 +303,12 @@ Operaciones primitivas: `new-tree`, `add-node`, `add-edge`, `remove-edge`, `repl
  :engines {<nombre> <versión>}            ; opcional
  :ops [{:op :new-tree    :tree {:kind :document :name "..."} :as :t1}   ; :as = alias local al plan
        {:op :add-node    :node {:class :sign :kind :text :content {:text "..."}} :as :n1}
-       {:op :add-edge    :edge {:type :ownership :tree :t1 :from <id|alias> :to :n1 :order 0}}
+       {:op :add-edge    :edge {:type :ownership :tree :t1 :parent [] :to :n1 :order 0}}   ; posición padre por path
        {:op :add-edge    :edge {:type :binding :from :n1 :to <id> :evidence {...}} :as :e1}
        {:op :remove-edge :edge <edge-id | alias de un :add-edge anterior del mismo plan>}
-       {:op :replace     :tree <tree-id> :old <id> :new <id|alias>}
-       {:op :move        :tree <tree-id> :node <id> :parent <id> :order <n>}]}
+       {:op :replace     :tree <tree-id> :at [<path>] :new <id|alias>}       ; el nodo de esa posición
+       {:op :move        :tree <tree-id> :from [<path>] :to [<path-padre>] :order <n>}
+       {:op :detach      :tree <tree-id> :at [<path>]}]}
 ```
 
 Validación antes de aplicar (rechazo total si falla cualquiera):
@@ -307,8 +317,9 @@ Validación antes de aplicar (rechazo total si falla cualquiera):
    creado por el plan o con cambios `ownership`; las aristas de otros tipos no tocan
    árboles (viven en el edge-set de la revisión y se fusionan por unión al rebasar, §5.2).
 2. Todo id referenciado existe en el pool o se crea en el mismo plan (aliases `:as`).
-3. Tras aplicar, cada árbol sigue siendo árbol: un padre por nodo, sin ciclos, `order`
-   sin huecos ni duplicados entre hermanos.
+3. Tras aplicar, cada árbol sigue siendo árbol: cada posición tiene un padre, sin
+   ciclos (un `move` a su propio subárbol se rechaza), `order` dentro de `0..count`; el
+   mismo nodo puede ocurrir en varias posiciones.
 4. La evidencia obligatoria (§3.2) está presente y su `:ref-hash` coincide con el id de
    `:to` **en el estado resuelto del plan** (pool de la revisión base más los nodos que
    el propio plan añade; los aliases ya sustituidos).
@@ -333,10 +344,11 @@ Resultado: `Transaction {:id H(plan-resuelto) :plan plan :revision <id>}`, donde
 resuelto tiene los aliases sustituidos por ids, más el mapa `{alias → id}` y los ids de
 las aristas creadas, para que el autor pueda referirlas después.
 
-Semántica exacta de `:replace {:tree t :old X :new X'}`:
+Semántica exacta de `:replace {:tree t :at p :new X'}`, con `X` = nodo en la posición `p`:
 
-1. `X'` ocupa **el mismo `:order`** que tenía `X` bajo el mismo padre en `t`; el subárbol
-   de `X` (sus objetos de árbol) pasa a colgar de `X'` salvo que el plan lo mueva.
+1. `X'` ocupa **la misma posición** `p` (mismo padre, mismo orden); el subárbol de la
+   posición pasa a colgar de `X'` salvo que el plan lo mueva. Otras ocurrencias de `X`
+   en `t` **no** cambian: el reemplazo es por posición.
 2. Se crea la arista `supersedes X' → X` con `:actor` = `:actor` del plan.
 3. Se aplican las reglas de §6.1 **dentro de la misma transacción**: las aristas
    `reference` y `binding` con `:to X` se duplican hacia `X'` (evidencia nueva con
@@ -353,12 +365,14 @@ rechazado (así se prueba la denegación); el fixture usa un actor con `:all`.
 
 ```clojure
 {:base <rev> :head <rev> :plan <plan>
- :conflicts [{:tree <id> :node <id> :kind :same-parent-edit | :superseded-target | :removed-target}]}
+ :conflicts [{:tree <id> :path [<path>] :kind :same-parent-edit}
+             {:tree <id> :path [<path>] :node <id> :kind :superseded-target | :removed-target}
+             {:tree nil :node <edge-id> :kind :removed-target}]}
 ```
 
 Al fallar el CAS se calcula el delta `base → head` y se compara con el plan. Hay
-conflicto si ambos editan el conjunto de hijos del mismo `(árbol, padre)`, o si el plan
-referencia un nodo que `head` reemplazó o quitó. Si los árboles tocados son disjuntos, el
+conflicto si ambos editan los hijos de la misma posición padre `(árbol, path)`, o si el
+plan direcciona una posición cuyo nodo `head` reemplazó o quitó. Si los árboles tocados son disjuntos, el
 plan se **rebasa** automáticamente sobre `head` y se reintenta el CAS. **Rebase** = el
 mismo plan con `:base` sustituido por `head` y re-validado (§5.1); las ops no cambian
 porque no tocan nada que `head` haya cambiado; `roots` y tree-set de la nueva revisión
@@ -371,7 +385,9 @@ que `head` ya quitó, es conflicto `:removed-target`. No hay merge semántico en
 **Diff entre revisiones** (`diff r1 r2`), criterio de salida del hito 2:
 
 ```clojure
-{:trees {<tree-id> {:added [<node-id> ...] :removed [...] :moved [{:node :from-parent :to-parent :order}]}}
+{:trees {<tree-id> {:added [<node-id> ...] :removed [...]
+                    :moved [{:node :from-paths :to-paths}]      ; nodos cuyas posiciones cambiaron
+                    :parents-changed [<path> ...]}}              ; posiciones cuyos hijos cambiaron
  :edges {:added [<edge-id> ...] :removed [...]}
  :superseded [[<old> <new>] ...]}
 ```
@@ -526,7 +542,7 @@ proveedores semánticos y superficies visuales quedan explícitamente fuera hast
 3.  Toda mutación produce una revisión nueva que apunta a una transacción válida.
 4.  Las aristas ownership de un árbol forman un árbol; el Merkle de un árbol
     hashea solo esas aristas.
-5.  Un nodo puede pertenecer a N árboles; tiene un padre por árbol.
+5.  Un nodo puede ocurrir en N posiciones de N árboles; cada posición tiene un padre.
 6.  Toda arista entre capas o hacia lo opaco/externo lleva evidencia (hash + provenance).
 7.  La sucesión se registra con `supersedes`; nunca se infiere dentro de una transacción.
 8.  concat(tokens(parse(s))) == s para todo CST.

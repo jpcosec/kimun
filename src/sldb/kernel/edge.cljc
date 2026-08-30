@@ -1,13 +1,14 @@
 (ns sldb.kernel.edge
   "Edges and evidence (docs/v2/02 §3, §3.2).
 
-   Edge     {:type t :from id :to id :tree tree-id|absent :order n|absent :evidence Evidence}
+   Edge     {:type t :from id :to id :evidence Evidence}                      ; non-ownership
+            {:type :ownership :tree tree-id :parent path :to id :order n}     ; ownership (a position)
    Evidence {:ref-hash id, exactly one origin (:actor | :engine + :version),
              :context node-id, :status kw}
    id(edge) = H(canonical-bytes edge). The timestamp is never part of an edge
    (invariant 16): it belongs to the transaction. Ownership edges are
    represented by tree objects (sldb.kernel.tree); their shape exists here so
-   plans can express them."
+   plans can express them, addressing the parent by its position path."
   (:require [sldb.kernel.canon :as canon]
             [sldb.kernel.err :as err]))
 
@@ -37,18 +38,23 @@
   (or (and (string? actor) (nil? engine) (nil? version))
       (and (nil? actor) (string? engine) (string? version))))
 
+(defn- path? [p] (and (vector? p) (every? #(and (integer? %) (<= 0 %)) p)))
+
 (defn validate
   "Returns the edge when its shape and mandatory evidence are admitted; raises
    :edge/invalid otherwise."
-  [host {:keys [type from to tree order evidence] :as edge}]
+  [host {:keys [type from to tree parent order evidence] :as edge}]
   (when-not (contains? types type) (fail edge (str "unknown type " type)))
-  (when-not (and (string? from) (string? to)) (fail edge ":from and :to must be node ids"))
+  (when-not (string? to) (fail edge ":to must be a node id"))
   (when (contains? edge :timestamp) (fail edge "timestamp is not part of an edge (invariant 16)"))
   (if (= type :ownership)
     (do (when-not (string? tree) (fail edge "ownership edges carry :tree"))
+        (when-not (path? parent) (fail edge "ownership edges carry :parent, a position path"))
+        (when (contains? edge :from) (fail edge "ownership edges address the parent by :parent path, not :from"))
         (when-not (and (integer? order) (<= 0 order)) (fail edge "ownership edges carry a non-negative :order")))
-    (do (when (or (contains? edge :tree) (contains? edge :order))
-          (fail edge "only ownership edges carry :tree/:order"))
+    (do (when-not (string? from) (fail edge ":from must be a node id"))
+        (when (or (contains? edge :tree) (contains? edge :order) (contains? edge :parent))
+          (fail edge "only ownership edges carry :tree/:parent/:order"))
         (let [ev (or evidence {})
               req (required-evidence type)]
           (when-not (map? ev) (fail edge "evidence must be a map"))
@@ -62,9 +68,9 @@
   edge)
 
 (defn identity-form
-  "The exact map that is hashed: present keys among :type :from :to :tree :order :evidence."
+  "The exact map that is hashed: present keys among :type :from :to :tree :parent :order :evidence."
   [edge]
-  (into {} (filter (fn [[k v]] (and (contains? #{:type :from :to :tree :order :evidence} k) (some? v)))) edge))
+  (into {} (filter (fn [[k v]] (and (contains? #{:type :from :to :tree :parent :order :evidence} k) (some? v)))) edge))
 
 (defn edge-id
   "id(edge) = H(canonical-bytes (identity-form edge))."

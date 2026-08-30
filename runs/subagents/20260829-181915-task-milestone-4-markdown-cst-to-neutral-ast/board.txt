@@ -1,0 +1,10 @@
+Board: board-001
+Title: sldb-refactor-worktree Board
+status: 
+summary: 
+scope: desk
+purpose: 
+tasks: desk/tasks/task-milestone-4-markdown-cst-to-neutral-ast.md
+pills: desk/contexts/pills.md, desk/contexts/pill-planning-contracts.md
+rituals: desk/rituals/execution.md, desk/rituals/testing.md, desk/rituals/closeout.md
+notes: - Milestone 4 Markdown CST to neutral AST [active] - Triage and resolve the inbox message promoted from `desk/inbox/20260829-174022-suggestion-milestone-4-markdown-cst-to-neutral-ast.md`.

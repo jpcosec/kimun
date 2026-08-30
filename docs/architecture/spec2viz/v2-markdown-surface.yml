@@ -1,0 +1,70 @@
+id: sldb.v2.markdown_surface
+title: SLDB v2 — Markdown Surface (ring 2) Pipeline
+type: activity
+version: "1.0"
+# Source of truth: docs/v2/04-superficie-markdown.md; code: sldb.surface.markdown.{cst,inline,ast,render,plan,report}
+
+data:
+  start: text
+
+  steps:
+    text:
+      label: "Markdown text (any string)"
+      next: cst
+
+    cst:
+      label: "cst/parse — total, lossless blocks with source lines (invariant 8: text == cst/text)"
+      next: blocks
+
+    blocks:
+      label: "ast/parse — §3.1 rules; quotes and list items re-parsed recursively (dedent by w)"
+      next: inline
+
+    inline:
+      label: "inline/parse per heading/paragraph — delimiter stack, escapes, grapheme offsets"
+      next: in_profile
+
+    in_profile:
+      label: "inside the SLDB-MD profile?"
+      kind: decision
+      branches:
+        "yes": ast
+        "no (autolink, ref link, image, html inline, crossed marks, flanking _)": opaque
+
+    opaque:
+      label: ":opaque {:format markdown/unparsed|html|table :blob verbatim}"
+      next: ast
+
+    ast:
+      label: "neutral AST — canonical marks on the block, plain NFC text leaves"
+      next: branch
+
+    branch:
+      label: "what next?"
+      kind: decision
+      branches:
+        "render": render
+        "store": plan
+        "report": report
+
+    render:
+      label: "render — one canonical spelling; parse(render(A)) == A (invariant 9)"
+      next: end
+
+    plan:
+      label: "plan/ast->plan — one add-node per distinct node, ownership edges by position path"
+      next: apply
+
+    apply:
+      label: "kernel apply-plan → :document tree of positions; identical items share tree objects"
+      next: back
+
+    back:
+      label: "plan/store->ast — walk positions; store->markdown == render(parse(s))"
+      next: end
+
+    report:
+      label: "report — blocks, structural/opaque, coverage, opaque regions with paths"
+      next: end
+
+  end: end

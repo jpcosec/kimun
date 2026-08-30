@@ -13,4 +13,4 @@ provenance: docs/v2/02-sustrato-computacional.md
 
 ## Answer
 
-A tree (document, section hierarchy, taxonomy, syntax tree, W_i context) is a set of ordered ownership edges over the shared node pool, not a container of nodes. A node may belong to many trees and has exactly one parent per tree. Each tree's Merkle root hashes only its own ownership edges and node ids, so no other edge type can create hash cycles. This mirrors Git: one blob referenced by many trees.
+A tree (document, section hierarchy, taxonomy, syntax tree, W_i context) is a tree of POSITIONS over the shared node pool, not a container of nodes: each position holds a node id and an ordered vector of child positions, and the identity of a position is its path (vector of sibling indices from the root). A node may occur at many positions of the same tree and in many trees (all the items of a list are one node); plans address ownership by path. Each position has exactly one parent. The Merkle root of a tree hashes only its own tree objects and node ids, so no other edge type can create hash cycles. This mirrors Git: one blob referenced from many paths and many trees.

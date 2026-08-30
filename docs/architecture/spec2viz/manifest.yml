@@ -29,6 +29,8 @@ specs:
     file: v2-replace-reanchoring.yml
   - id: sldb.v2.store_layout
     file: v2-store-layout.yml
+  - id: sldb.v2.markdown_surface
+    file: v2-markdown-surface.yml
 
 desk: desk
 agents: AGENTS.md

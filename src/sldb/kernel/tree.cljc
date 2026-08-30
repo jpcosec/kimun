@@ -1,18 +1,21 @@
 (ns sldb.kernel.tree
-  "Trees as indexes over the node pool (docs/v2/02 §3, §3.1).
+  "Trees as indexes over the node pool, as trees of POSITIONS (docs/v2/02 §3, §3.1).
+
+   A node may occur at several positions of the same tree (all the items of a list
+   are the same node; a paragraph can be repeated); the identity of a position is
+   its `path`, the vector of sibling indices from the root (`[]` is the root).
 
    A tree value:
-   {:tree      <ULID>                      ; nominal id
-    :descriptor {:tree :kind :name :root}   ; a CAS object; see descriptor-id
-    :children  {node-id [child-id ...]}      ; ownership, sibling order = vector order
-    :parent    {child-id parent-id}
-    :objects   {node-id tree-hash}           ; committed tree objects, shared between states
-    :dirty     #{node-id ...}}               ; nodes whose tree object must be recomputed
+   {:tree       <ULID>                          ; nominal id
+    :descriptor {:tree :kind :name :root}       ; a CAS object; see descriptor-id
+    :root       Position}
+   Position = {:node <id> :children [Position …] :hash <tree-hash | nil>}
 
-   tree-object(n) = {:node n :children [[child tree-hash] ...]} in sibling order
-   tree-hash(n)   = H(canonical-bytes tree-object(n)); merkle-root = tree-hash(root).
-   Only ownership changes mark the dirty set; commit recomputes dirty objects in
-   post-order and reuses every other object from the previous state."
+   tree-object(pos) = {:node n :children [[child-node child-tree-hash] …]} in sibling order
+   tree-hash(pos)   = H(canonical-bytes tree-object(pos)); merkle-root = tree-hash(root).
+   A position whose :hash is nil is dirty; ownership changes set :hash nil along the
+   path to the root, and `commit` recomputes only those (structural sharing: an
+   untouched subtree keeps its hash, and identical subtrees share one object)."
   (:require [sldb.kernel.canon :as canon]
             [sldb.kernel.ports :as ports]
             [sldb.kernel.err :as err]))
@@ -28,177 +31,217 @@
   [s]
   (and (string? s) (= 26 (count s)) (every? #(some #{%} ulid-alphabet) s)))
 
+(defn path?
+  "True for a position path: a vector of non-negative integers."
+  [p] (and (vector? p) (every? #(and (integer? %) (<= 0 %)) p)))
+
 (defn- fail [why data]
   (err/raise :tree/invalid (str "tree: " why) data))
 
-;; ---------------------------------------------------------------- descriptor
+;; ---------------------------------------------------------------- descriptor / creation
 
 (defn descriptor-id
   "Content-addressed id of a tree descriptor {:tree :kind :name :root} (§3.1)."
   [host descriptor]
   (canon/digest host descriptor))
 
-;; ---------------------------------------------------------------- creation
+(defn- position [node] {:node node :children [] :hash nil})
 
 (defn create
-  "A new tree of `kind` rooted at node `root`, with every node dirty (§3.1).
-   `tree-id` defaults to a fresh ULID from the host IdMinter; pass one
-   explicitly for reproducible fixtures."
+  "A new tree of `kind` rooted at node `root` (dirty). `tree-id` defaults to a fresh
+   ULID from the host IdMinter; pass one explicitly for reproducible fixtures."
   ([host kind name root] (create host kind name root (ports/ulid (ports/ids host))))
   ([_host kind name root tree-id]
    (when-not (contains? kinds kind) (fail "unknown tree kind" {:kind kind}))
    (when-not (ulid? tree-id) (fail "tree id must be a ULID" {:tree tree-id}))
+   (when-not (string? root) (fail "root must be a node id" {:root root}))
    {:tree tree-id
     :descriptor {:tree tree-id :kind kind :name name :root root}
-    :children {root []}
-    :parent {}
-    :objects {}
-    :dirty #{root}}))
+    :root (position root)}))
+
+;; ---------------------------------------------------------------- navigation
+
+(defn- pos-path
+  "Internal key path into the nested :root structure for a position path."
+  [path] (into [:root] (mapcat (fn [i] [:children i]) path)))
+
+(defn position-at
+  "The Position at `path`, or nil."
+  [tree path]
+  (when (path? path) (get-in tree (pos-path path))))
+
+(defn node-at
+  "Node id at `path`, or nil."
+  [tree path] (:node (position-at tree path)))
+
+(defn children-at
+  "Node ids of the children at `path`."
+  [tree path] (mapv :node (:children (position-at tree path))))
 
 (defn root
-  "The root node id of the tree."
+  "The root node id."
   [tree] (get-in tree [:descriptor :root]))
+
+(defn positions
+  "Seq of [path node] for every position, in document (pre-)order."
+  [tree]
+  (letfn [(walk [pos path]
+            (cons [path (:node pos)]
+                  (mapcat (fn [i c] (walk c (conj path i))) (range) (:children pos))))]
+    (walk (:root tree) [])))
 
 (defn nodes
   "Set of node ids in the tree."
-  [tree] (set (keys (:children tree))))
+  [tree] (set (map second (positions tree))))
 
 (defn contains-node?
-  "True when `node` is in the tree."
-  [tree node] (contains? (:children tree) node))
+  "True when `node` occurs somewhere in the tree."
+  [tree node] (contains? (nodes tree) node))
 
-(defn ancestors
-  "Ancestors of `node` in this tree, nearest first."
-  [tree node]
-  (loop [n (get-in tree [:parent node]) acc []]
-    (if (nil? n) acc (recur (get-in tree [:parent n]) (conj acc n)))))
+(defn paths-of
+  "All paths where `node` occurs."
+  [tree node] (vec (keep (fn [[p n]] (when (= n node) p)) (positions tree))))
 
-(defn- mark-dirty [tree node]
-  (update tree :dirty into (cons node (ancestors tree node))))
+(defn parent-path
+  "Path of the parent position; nil for the root."
+  [path] (when (seq path) (pop path)))
 
-(defn- insert-at [v i x]
-  (let [v (vec v)] (into (conj (subvec v 0 i) x) (subvec v i))))
+(defn ancestor-path?
+  "True when `a` is a strict ancestor path of `b`."
+  [a b] (and (< (count a) (count b)) (= a (subvec b 0 (count a)))))
 
-(defn- remove-item [v x] (vec (remove #{x} v)))
+;; ---------------------------------------------------------------- dirty marking
+
+(defn- mark-dirty
+  "Sets :hash nil at `path` and every ancestor."
+  [tree path]
+  (reduce (fn [t p] (assoc-in t (conj (pos-path p) :hash) nil))
+          tree
+          (map #(subvec path 0 %) (range (inc (count path))))))
+
+(defn- require-position [tree path what]
+  (or (position-at tree path) (fail (str what " not in tree") {:path path})))
+
+(defn- insert-at [v i x] (into (conj (subvec v 0 i) x) (subvec v i)))
+(defn- remove-at [v i] (into (subvec v 0 i) (subvec v (inc i))))
 
 ;; ---------------------------------------------------------------- ownership ops
 
 (defn add-child
-  "Attaches `child` under `parent` at sibling position `order` (dense: 0..count)."
+  "Attaches node `child` as a new position under `parent` (a path) at sibling
+   position `order` (dense: 0..count)."
   [tree parent child order]
-  (when-not (contains-node? tree parent) (fail "parent not in tree" {:parent parent}))
-  (when (contains-node? tree child) (fail "node already in this tree (one parent per tree)" {:child child}))
-  (let [siblings (get-in tree [:children parent])]
-    (when-not (and (integer? order) (<= 0 order (count siblings))) (fail "order out of range" {:order order}))
+  (let [p (require-position tree parent "parent")
+        n (count (:children p))]
+    (when-not (string? child) (fail "child must be a node id" {:child child}))
+    (when-not (and (integer? order) (<= 0 order n)) (fail "order out of range" {:order order :count n}))
     (-> tree
-        (assoc-in [:children parent] (insert-at siblings order child))
-        (assoc-in [:children child] [])
-        (assoc-in [:parent child] parent)
-        (mark-dirty parent)
-        (update :dirty conj child))))
+        (update-in (conj (pos-path parent) :children) insert-at order (position child))
+        (mark-dirty parent))))
 
-(defn- subtree-nodes [tree node]
-  (tree-seq (fn [_] true) #(get-in tree [:children %]) node))
-
-(defn remove-subtree
-  "Detaches `node` and its subtree from the tree."
-  [tree node]
-  (when (= node (root tree)) (fail "cannot remove the root" {:node node}))
-  (let [parent (get-in tree [:parent node])
-        gone (set (subtree-nodes tree node))]
-    (when-not parent (fail "node not in tree" {:node node}))
+(defn detach
+  "Removes the position at `path` with its subtree; returns the tree."
+  [tree path]
+  (when (empty? path) (fail "cannot detach the root" {}))
+  (require-position tree path "position")
+  (let [parent (parent-path path)]
     (-> tree
-        (update-in [:children parent] remove-item node)
-        (update :children #(apply dissoc % gone))
-        (update :parent #(apply dissoc % gone))
-        (update :objects #(apply dissoc % gone))
-        (update :dirty #(apply disj % gone))
+        (update-in (conj (pos-path parent) :children) remove-at (peek path))
         (mark-dirty parent))))
 
 (defn move
-  "Re-parents `node` (with its subtree) under `new-parent` at `order`; rejects cycles."
-  [tree node new-parent order]
-  (when (= node (root tree)) (fail "cannot move the root" {:node node}))
-  (when (some #{new-parent} (subtree-nodes tree node)) (fail "cycle" {:node node :parent new-parent}))
-  (let [old-parent (get-in tree [:parent node])]
-    (when-not old-parent (fail "node not in tree" {:node node}))
-    (let [t (-> tree (update-in [:children old-parent] remove-item node) (mark-dirty old-parent))
-          siblings (get-in t [:children new-parent])]
-      (when-not (and (integer? order) (<= 0 order (count siblings))) (fail "order out of range" {:order order}))
-      (-> t
-          (assoc-in [:children new-parent] (insert-at siblings order node))
-          (assoc-in [:parent node] new-parent)
-          (mark-dirty new-parent)
-          (update :dirty conj node)))))
+  "Moves the subtree at `from` under `to-parent` at `order`; rejects moving a
+   position into its own subtree. `order` refers to the parent's children AFTER
+   the detach."
+  [tree from to-parent order]
+  (when (empty? from) (fail "cannot move the root" {}))
+  (require-position tree from "position")
+  (require-position tree to-parent "parent")
+  (when (or (= from to-parent) (ancestor-path? from to-parent)) (fail "cycle" {:from from :to to-parent}))
+  (let [sub (position-at tree from)
+        t (detach tree from)
+        ;; the target parent path may shift when `from` was an earlier sibling on the same level
+        to-parent (let [fp (parent-path from)]
+                    (if (and (ancestor-path? fp to-parent) (> (nth to-parent (count fp)) (peek from)))
+                      (update to-parent (count fp) dec)
+                      to-parent))
+        p (require-position t to-parent "parent")
+        n (count (:children p))]
+    (when-not (and (integer? order) (<= 0 order n)) (fail "order out of range" {:order order :count n}))
+    (-> t
+        (update-in (conj (pos-path to-parent) :children) insert-at order (assoc sub :hash nil))
+        (mark-dirty to-parent))))
 
 (defn replace-node
-  "`new` takes the exact position of `old` and inherits its children
-   (structural part of §5.1 :replace); replacing the root re-roots the tree."
-  [tree old new]
-  (when-not (contains-node? tree old) (fail "old node not in tree" {:node old}))
-  (when (contains-node? tree new) (fail "new node already in tree" {:node new}))
-  (let [parent (get-in tree [:parent old])
-        kids (get-in tree [:children old])
-        t (-> tree
-              (update :children dissoc old)
-              (assoc-in [:children new] kids)
-              (update :parent dissoc old)
-              (update :objects dissoc old)
-              (update :dirty disj old))
-        t (reduce (fn [t k] (assoc-in t [:parent k] new)) t kids)]
-    (if parent
-      (-> t
-          (update-in [:children parent] #(mapv (fn [c] (if (= c old) new c)) %))
-          (assoc-in [:parent new] parent)
-          (mark-dirty parent)
-          (update :dirty conj new))
-      (-> t
-          (assoc-in [:descriptor :root] new)
-          (update :dirty conj new)))))
+  "`new` takes the position `path` (same order, same subtree); replacing the root
+   re-roots the tree. Returns the tree."
+  [tree path new]
+  (require-position tree path "position")
+  (when-not (string? new) (fail "new must be a node id" {:new new}))
+  (cond-> (-> tree (assoc-in (conj (pos-path path) :node) new) (mark-dirty path))
+    (empty? path) (assoc-in [:descriptor :root] new)))
 
 ;; ---------------------------------------------------------------- validation
 
 (defn valid?
-  "One parent per node, no cycles, root has no parent, every child listed once,
-   every node reachable from the root."
+  "Every position holds a node id and a vector of children; the root matches the
+   descriptor. (Acyclicity and dense sibling order hold by construction.)"
   [tree]
-  (let [{:keys [children parent]} tree
-        r (root tree)]
-    (and (contains? children r)
-         (nil? (parent r))
-         (every? (fn [[p kids]] (and (apply distinct? (cons ::none kids))
-                                      (every? #(= p (parent %)) kids)))
-                 children)
-         (every? (fn [[c p]] (some #{c} (children p))) parent)
-         (= (count children) (count (subtree-nodes tree r))))))
+  (letfn [(ok? [pos] (and (string? (:node pos)) (vector? (:children pos)) (every? ok? (:children pos))))]
+    (and (ok? (:root tree)) (= (root tree) (get-in tree [:root :node])))))
 
 ;; ---------------------------------------------------------------- merkle
 
 (defn tree-object
-  "{:node n :children [[child tree-hash] ...]} for `node`, in sibling order (§3.1)."
-  [tree node]
-  {:node node
-   :children (mapv (fn [c] [c (get-in tree [:objects c])]) (get-in tree [:children node]))})
+  "{:node n :children [[child-node child-tree-hash] …]} of a committed position."
+  [pos]
+  {:node (:node pos) :children (mapv (fn [c] [(:node c) (:hash c)]) (:children pos))})
 
-(defn- depth [tree node] (count (ancestors tree node)))
+(defn- commit-pos [host pos]
+  (if (:hash pos)
+    pos
+    (let [kids (mapv #(commit-pos host %) (:children pos))
+          pos' (assoc pos :children kids)]
+      (assoc pos' :hash (canon/digest host (tree-object pos'))))))
 
 (defn commit
-  "Recomputes the tree objects of dirty nodes only, deepest first (post-order),
-   reusing every other object. Returns the tree with :objects complete and :dirty empty."
+  "Recomputes the hashes of dirty positions only, post-order; the rest are reused."
   [host tree]
-  (let [order (sort-by #(- (depth tree %)) (:dirty tree))
-        t (reduce (fn [t n]
-                    (assoc-in t [:objects n] (canon/digest host (tree-object t n))))
-                  tree order)]
-    (assoc t :dirty #{})))
+  (update tree :root #(commit-pos host %)))
+
+(defn dirty?
+  "True when some position still has no hash."
+  [tree]
+  (letfn [(d? [pos] (or (nil? (:hash pos)) (some d? (:children pos)))) ]
+    (boolean (d? (:root tree)))))
+
+(defn dirty-paths
+  "Paths of the positions without hash."
+  [tree]
+  (letfn [(walk [pos path] (concat (when (nil? (:hash pos)) [path])
+                                   (mapcat (fn [i c] (walk c (conj path i))) (range) (:children pos))))]
+    (vec (walk (:root tree) []))))
 
 (defn merkle-root
   "Root tree-hash of a committed tree; raises :tree/invalid if dirty."
   [tree]
-  (when (seq (:dirty tree)) (fail "tree has dirty nodes; commit first" {:dirty (:dirty tree)}))
-  (get-in tree [:objects (root tree)]))
+  (when (dirty? tree) (fail "tree has dirty positions; commit first" {:dirty (dirty-paths tree)}))
+  (get-in tree [:root :hash]))
+
+(defn hash-at
+  "Tree-hash of the committed position at `path`."
+  [tree path] (:hash (position-at tree path)))
 
 (defn objects
-  "All tree objects of a committed tree, keyed by node id."
+  "All tree objects of a committed tree keyed by tree-hash (identical subtrees share one)."
   [tree]
-  (into {} (map (fn [n] [n (tree-object tree n)])) (keys (:children tree))))
+  (letfn [(walk [pos] (cons [(:hash pos) (tree-object pos)] (mapcat walk (:children pos))))]
+    (into {} (walk (:root tree)))))
+
+(defn from-objects
+  "Rebuilds a committed :root Position from a root tree-hash and a lookup fn
+   hash → tree-object (used by diff and store->ast on the CAS)."
+  [root-hash lookup]
+  (letfn [(build [h] (let [{:keys [node children]} (lookup h)]
+                       {:node node :hash h :children (mapv (fn [[_ ch]] (build ch)) children)}))]
+    (build root-hash)))

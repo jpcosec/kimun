@@ -14,7 +14,7 @@
    :ops [{:op :add-node :node {:class :sign :kind :block :content {:format :markdown :type :document :attrs {}}} :as :root}
          {:op :add-node :node {:class :sign :kind :text :content {:text text}} :as :p}
          {:op :new-tree :tree {:kind :document :name text} :id tid :root :root :as :t}
-         {:op :add-edge :edge {:type :ownership :tree :t :from :root :to :p :order 0}}]})
+         {:op :add-edge :edge {:type :ownership :tree :t :parent [] :to :p :order 0}}]})
 
 (deftest cas-per-entry
   (let [s (rev/empty-store h {"jp" :all})
@@ -32,18 +32,18 @@
         ;; writer A edits the children of root
         _ (heads/commit! ref {:plan/version 1 :base base :actor "jp" :engines {} :timestamp TS
                               :ops [{:op :add-node :node {:class :sign :kind :text :content {:text "b"}} :as :q}
-                                    {:op :add-edge :edge {:type :ownership :tree T :from root :to :q :order 1}}]})
+                                    {:op :add-edge :edge {:type :ownership :tree T :parent [] :to :q :order 1}}]})
         ;; writer B, still on the old base, edits the same parent
         e (try (heads/commit! ref {:plan/version 1 :base base :actor "jp" :engines {} :timestamp TS
                                    :ops [{:op :add-node :node {:class :sign :kind :text :content {:text "c"}} :as :r}
-                                         {:op :add-edge :edge {:type :ownership :tree T :from root :to :r :order 0}}]})
+                                         {:op :add-edge :edge {:type :ownership :tree T :parent [] :to :r :order 0}}]})
                nil
                (catch #?(:clj clojure.lang.ExceptionInfo :cljs :default) e e))
         cs (heads/conflict-set e)]
     (is (some? cs))
     (is (= base (:base cs)))
     (is (= (:head @ref) (:head cs)))
-    (is (= [{:tree T :node root :kind :same-parent-edit}] (:conflicts cs)))
+    (is (= [{:tree T :path [] :kind :same-parent-edit}] (:conflicts cs)))
     (testing "writer C on the old base but touching another tree rebases and commits"
       (let [r (heads/commit! ref (doc-plan base U "other"))]
         (is (= base (:rebased-from r)))

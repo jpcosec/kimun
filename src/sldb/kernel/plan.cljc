@@ -5,20 +5,24 @@
    {:plan/version 1 :base <rev|nil> :actor <str> :engines {} :timestamp <ISO ms UTC>
     :ops [{:op :new-tree    :tree {:kind :document :name \"…\"} :id <ulid|absent> :root <id|alias> :as :t1}
           {:op :add-node    :node {:class :kind :content} :as :n1}
-          {:op :add-edge    :edge {…} :as :e1}
+          {:op :add-edge    :edge {:type :ownership :tree t :parent [path] :to <id|alias> :order n}}
+          {:op :add-edge    :edge {:type :binding :from … :to … :evidence {…}} :as :e1}
           {:op :remove-edge :edge <edge-id|alias>}
-          {:op :replace     :tree <tree-id|alias> :old <id> :new <id|alias>}
-          {:op :move        :tree <tree-id|alias> :node <id> :parent <id> :order <n>}]}
+          {:op :replace     :tree <tree-id|alias> :at [path] :new <id|alias>}
+          {:op :move        :tree <tree-id|alias> :from [path] :to [parent-path] :order <n>}
+          {:op :detach      :tree <tree-id|alias> :at [path]}]}
 
-   Aliases are keywords declared with :as and may be used wherever an id is
-   expected in later ops. Validation checks by name: base-cas, ids-exist,
-   tree-integrity, evidence-ref-hash, capability, opaque-replace-only, pure-data."
+   Ownership is addressed by POSITION paths (docs/v2/02 §3.1): a node may occur
+   several times in a tree. Aliases are keywords declared with :as and may be
+   used wherever an id is expected in later ops. Validation checks by name:
+   base-cas, ids-exist, tree-integrity, evidence-ref-hash, capability,
+   opaque-replace-only, pure-data."
   (:require [clojure.string :as str]
             [sldb.kernel.canon :as canon]))
 
 (def ops
-  "The six primitive operations (docs/v2/02 §5)."
-  #{:new-tree :add-node :add-edge :remove-edge :replace :move})
+  "The seven primitive operations (docs/v2/02 §5)."
+  #{:new-tree :add-node :add-edge :remove-edge :replace :move :detach})
 
 (def ^:private timestamp-re #"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$")
 
@@ -82,7 +86,7 @@
   (into #{} (keep (fn [{:keys [op] :as o}]
                     (case op
                       :new-tree (or (:id o) (:as o))
-                      (:replace :move) (:tree o)
+                      (:replace :move :detach) (:tree o)
                       :add-edge (when (= :ownership (get-in o [:edge :type])) (get-in o [:edge :tree]))
                       :remove-edge nil
                       nil)))
@@ -90,12 +94,10 @@
 
 ;; ---------------------------------------------------------------- capability (check 5)
 
-(defn- tree-op? [op] (contains? #{:new-tree :replace :move} (:op op)))
-
 (defn- op-tree [op]
   (case (:op op)
     :new-tree (:id op)
-    (:replace :move) (:tree op)
+    (:replace :move :detach) (:tree op)
     (:add-edge :remove-edge) (when (= :ownership (get-in op [:edge :type])) (get-in op [:edge :tree]))
     nil))
 

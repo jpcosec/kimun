@@ -39,11 +39,9 @@
      :root :root,
      :as :t}
     {:op :add-edge,
-     :edge
-     {:type :ownership, :tree :t, :from :root, :to :p1, :order 0}}
+     :edge {:type :ownership, :tree :t, :parent [], :to :p1, :order 0}}
     {:op :add-edge,
-     :edge
-     {:type :ownership, :tree :t, :from :root, :to :p2, :order 1}}
+     :edge {:type :ownership, :tree :t, :parent [], :to :p2, :order 1}}
     {:op :add-edge,
      :edge
      {:type :binding,
@@ -53,7 +51,7 @@
      :as :b1}]}
   {:plan/version 1,
    :base
-   "70e7785bd1d558fec1f22b99af86486baaced8956331e01c98dad948cb6bf93c",
+   "93fd0bca29b4f94b68464a6952b42b1464055a26dd3dec4c3d37173c8a985053",
    :actor "jp",
    :engines {},
    :timestamp "2026-08-29T12:00:01.000Z",
@@ -65,14 +63,13 @@
      :edge
      {:type :ownership,
       :tree "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-      :from
-      "660104826a7cafb9ff5c5dcdf41dc38ccb615e694d280c0082087c9a202a4898",
+      :parent [],
       :to :q,
       :order 1}}]}],
  :concurrent-plan
  {:plan/version 1,
   :base
-  "70e7785bd1d558fec1f22b99af86486baaced8956331e01c98dad948cb6bf93c",
+  "93fd0bca29b4f94b68464a6952b42b1464055a26dd3dec4c3d37173c8a985053",
   :actor "jp",
   :engines {},
   :timestamp "2026-08-29T12:00:02.000Z",
@@ -84,14 +81,13 @@
     :edge
     {:type :ownership,
      :tree "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-     :from
-     "660104826a7cafb9ff5c5dcdf41dc38ccb615e694d280c0082087c9a202a4898",
+     :parent [],
      :to :r,
      :order 0}}]},
  :disjoint-plan
  {:plan/version 1,
   :base
-  "70e7785bd1d558fec1f22b99af86486baaced8956331e01c98dad948cb6bf93c",
+  "93fd0bca29b4f94b68464a6952b42b1464055a26dd3dec4c3d37173c8a985053",
   :actor "jp",
   :engines {},
   :timestamp "2026-08-29T12:00:03.000Z",
@@ -111,6 +107,5 @@
  :expected
  {:conflicts
   [{:tree "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-    :node
-    "660104826a7cafb9ff5c5dcdf41dc38ccb615e694d280c0082087c9a202a4898",
+    :path [],
     :kind :same-parent-edit}]}}

@@ -7,7 +7,8 @@
             [sldb.host.ulid :as ulid]))
 
 (def host
-  "`{:hasher :text :ids}` — SHA-256, NFC via the platform normalizer, ULIDs."
-  {:hasher hash/sha-256
-   :text   text/normalizer
-   :ids    ulid/minter})
+  "`{:hasher :text :ids :segmenter}` — SHA-256, NFC and graphemes via the platform, ULIDs."
+  {:hasher    hash/sha-256
+   :text      text/normalizer
+   :ids       ulid/minter
+   :segmenter text/segmenter})
