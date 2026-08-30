@@ -6,7 +6,6 @@ from pathlib import Path
 
 import yaml
 
-from sldb.core.exceptions import SLDBStoreError
 from sldb.store.layout import (
     lock_path,
     semantic_dag_path,

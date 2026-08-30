@@ -34,9 +34,10 @@ class CLI:
     def _load_3(self):
         from sldb.cli.commands.fields import FieldsCLI
         from sldb.cli.commands.sections import SectionsCLI
+        from sldb.cli.commands.serve import ServeCLI
         from sldb.cli.commands.lint import lint_cli
         self.handlers.update({"fields": FieldsCLI().run, "sections": SectionsCLI().run})
-        self.handlers.update({"lint": lint_cli})
+        self.handlers.update({"serve": ServeCLI().run, "lint": lint_cli})
 
     def run(self, argv: Any = None) -> int:
         if self._check_help(argv): return 0

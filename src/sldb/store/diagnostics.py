@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Callable, Optional, Type
+from typing import Any, Callable, Optional
 
-from sldb.models.structured_doc import StructuredNLDoc
 from sldb.store.layout import project_root as store_project_root
 from sldb.store.hashing import (
     hash_documents_index,
@@ -23,7 +22,7 @@ from sldb.store.diagnostics_models import (
 
 def _try_resolve_model(
     model_ref: str, pythonpath: Optional[str], resolve_model_ref: Callable
-) -> Optional[Type[StructuredNLDoc]]:
+) -> Any:
     try:
         return resolve_model_ref(model_ref, pythonpath)
     except Exception:
@@ -31,7 +30,7 @@ def _try_resolve_model(
         return None
 
 
-def _diagnose_doc(doc, root: Path, model_type: Optional[Type[StructuredNLDoc]]) -> DocumentDiagnosis:
+def _diagnose_doc(doc, root: Path, model_type: Any) -> DocumentDiagnosis:
     doc_path = root / doc.path
     if not doc_path.exists():
         return DocumentDiagnosis(name=doc.name, path=doc.path, hash_c_ok=False, hash_d_ok=False, path_exists=False, note=DiagnosisNote.MISSING)

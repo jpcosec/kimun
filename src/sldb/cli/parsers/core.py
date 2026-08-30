@@ -6,6 +6,7 @@ from .public import add_public_group_commands
 from .misc import add_misc_commands
 from .find import add_find_commands
 from .legacy import add_legacy_commands
+from .serve import add_serve_commands
 from .hidden import add_hidden_compat_commands
 
 def build_parser() -> argparse.ArgumentParser:
@@ -24,4 +25,5 @@ def _add_commands(s: argparse._SubParsersAction) -> None:
     add_misc_commands(s)
     add_find_commands(s)
     add_legacy_commands(s)
+    add_serve_commands(s)
     add_hidden_compat_commands(s)
