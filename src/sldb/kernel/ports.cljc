@@ -19,8 +19,12 @@
   (ulid [this] "A fresh 26-character Crockford-base32 ULID."))
 
 (defprotocol TextSegmenter
-  "Grapheme segmentation (UAX #29), the unit of every stand-off offset (docs/v2/04 §2)."
-  (graphemes [this s] "Vector of grapheme-cluster strings of `s`, in order; (apply str v) == s."))
+  "Segmentation of text into the deterministic UAX #29 layers that stand-off
+   addresses are counted in (docs/v2/02 §4, docs/v2/04 §2): graphemes are the
+   unit of every offset; words and sentences are ranges over those units."
+  (graphemes [this s] "Vector of grapheme-cluster strings of `s`, in order; (apply str v) == s.")
+  (words [this s] "Vector of [start end] grapheme-offset ranges of the UAX #29 word segments of `s`, in order and covering it.")
+  (sentences [this s] "Vector of [start end] grapheme-offset ranges of the UAX #29 sentence segments of `s`, in order and covering it."))
 
 (defn segmenter
   "The TextSegmenter of a host value."

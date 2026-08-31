@@ -1,0 +1,17 @@
+Task: task-milestone-6-stand-off-below-the-paragraph
+Title: Milestone 6 stand-off below the paragraph
+Status: active
+Current node: checklist-task-milestone-6-stand-off-below-the-paragraph-testing-ready
+Task type: 
+Routine: routine-task-milestone-6-stand-off-below-the-paragraph
+Effective pills:
+- desk/contexts/pill-guardrail-v2-implementation-gate.md
+Effective atoms:
+- desk/atoms/atom-stand-off-annotation-below-the-paragraph.md
+- desk/atoms/atom-stand-off-addresses-are-virtual-until-referenced.md
+- desk/atoms/atom-anchor-state-is-derived-and-computed-per-endpoint.md
+- desk/atoms/atom-inline-marks-live-on-the-block-text-leaves-stay-plain.md
+Checklist status:
+- checklist-task-milestone-6-stand-off-below-the-paragraph-execution-ready: complete
+- checklist-task-milestone-6-stand-off-below-the-paragraph-testing-ready: complete
+- checklist-task-milestone-6-stand-off-below-the-paragraph-closeout-ready: pending

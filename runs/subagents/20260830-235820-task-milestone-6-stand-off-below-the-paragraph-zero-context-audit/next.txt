@@ -1,0 +1,22 @@
+Task: task-milestone-6-stand-off-below-the-paragraph
+Title: Milestone 6 stand-off below the paragraph
+Status: active
+Current node: checklist-task-milestone-6-stand-off-below-the-paragraph-execution-ready
+Phase: execution
+Required ritual:
+- desk/rituals/execution.md
+Required pills:
+- desk/contexts/pills.md
+- desk/contexts/pill-planning-contracts.md
+- desk/contexts/pill-guardrail-v2-implementation-gate.md
+Next actions:
+1. Make the active task, scope, touched files, and validation targets explicit.
+2. Run a fresh-context subagent review.
+3. Bind matching board and task pills.
+4. Start implementation only after the initialization gate is satisfied.
+Advance when:
+- Execution gate obligations are recorded or satisfied.
+Sources:
+- task: desk/tasks/task-milestone-6-stand-off-below-the-paragraph.md
+- board: desk/tasks/Board.md
+- workflow: spec/workflows/task_lifecycle.yaml

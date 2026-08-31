@@ -1,0 +1,52 @@
+rings and docstrings ok: 25 files
+rings and docstrings ok: 25 files
+
+Testing sldb.kernel.anchor-test
+
+Testing sldb.kernel.canon-test
+
+Testing sldb.kernel.edge-test
+
+Testing sldb.kernel.hardening-test
+
+Testing sldb.kernel.heads-test
+
+Testing sldb.kernel.node-test
+
+Testing sldb.kernel.plan-test
+
+Testing sldb.kernel.pool-test
+
+Testing sldb.kernel.reconcile-test
+
+Testing sldb.kernel.revision-test
+
+Testing sldb.kernel.standoff-test
+
+Testing sldb.kernel.store-test
+
+Testing sldb.kernel.tree-test
+
+Testing sldb.surface.markdown.cst-test
+
+Testing sldb.surface.markdown.drift-test
+
+Testing sldb.surface.markdown.inline-test
+
+Testing sldb.surface.markdown.plan-test
+
+Testing sldb.surface.markdown.roundtrip-test
+
+Ran 127 tests containing 551 assertions.
+0 failures, 0 errors.
+{:test 127, :pass 551, :fail 0, :error 0, :type :summary}
+ok  sign/text ffdf4147e59740e4…
+ok  sign/block bdc0ef299e3d88c5…
+ok  sign/opaque fcc5220a4af29a88…
+ok  sign/external b44fd9099808bc77…
+ok  sign/span f8bc24ee5fa9c801…
+ok  symbol/term 2a03e199175a4ed0…
+ok  symbol/proposition a6e631b8d0914123…
+ok  fact/triple 9d1307be57183a8d…
+ok  fact/context 146e6ca533092558…
+9 rows, 0 mismatches

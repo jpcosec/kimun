@@ -1,0 +1,22 @@
+Task: task-milestone-6-stand-off-below-the-paragraph
+Title: Milestone 6 stand-off below the paragraph
+Status: ready_for_testing
+Current node: checklist-task-milestone-6-stand-off-below-the-paragraph-closeout-ready
+Phase: closeout
+Required ritual:
+- desk/rituals/closeout.md
+Required pills:
+- desk/contexts/pills.md
+- desk/contexts/pill-planning-contracts.md
+- desk/contexts/pill-guardrail-v2-implementation-gate.md
+Next actions:
+1. Confirm passing validation evidence and pill coverage.
+2. Remove the task from the active board and delete the resolved task file when ready.
+3. Untrack the store entry if tracked.
+4. Create one atomic closing commit.
+Advance when:
+- Closeout ritual obligations are satisfied.
+Sources:
+- task: desk/tasks/task-milestone-6-stand-off-below-the-paragraph.md
+- board: desk/tasks/Board.md
+- workflow: spec/workflows/task_lifecycle.yaml

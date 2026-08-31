@@ -1,0 +1,11 @@
+ D desk/drawer/tasks/task-milestone-6-stand-off-below-the-paragraph.md
+ M desk/tasks/Board.md
+?? desk/primitives/checklists/checklist-task-milestone-6-stand-off-below-the-paragraph-closeout-ready.md
+?? desk/primitives/checklists/checklist-task-milestone-6-stand-off-below-the-paragraph-execution-ready.md
+?? desk/primitives/checklists/checklist-task-milestone-6-stand-off-below-the-paragraph-testing-ready.md
+?? desk/primitives/conditions/
+?? desk/primitives/edges/
+?? desk/primitives/operators/
+?? desk/routines/
+?? desk/tasks/task-milestone-6-stand-off-below-the-paragraph.md
+?? runs/subagents/20260830-235820-task-milestone-6-stand-off-below-the-paragraph-zero-context-audit/
