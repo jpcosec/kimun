@@ -32,7 +32,7 @@ _Explain what this board routes and why it exists._
 
 _Add short operational notes about the current routed set._
 
-- Milestone 5b drifted reconciliation [active] - Triage and resolve the inbox message promoted from `desk/inbox/20260830-012614-suggestion-milestone-5b-drifted-reconciliation.md`.
+- Milestone 6 stand-off below the paragraph [active] - Triage and resolve the inbox message promoted from `desk/inbox/20260830-022207-suggestion-milestone-6-stand-off-below-the-paragraph.md`.
 
 ## Task Details
 
