@@ -432,3 +432,31 @@ Auto-closing task task-milestone-5a-anchor-states
 2026-08-30 02:20:56,359 - deskops - INFO - Committing closure for task-milestone-5b-drifted-reconciliation: chore(task): Milestone 5b drifted reconciliation
 
 Auto-closing task task-milestone-5b-drifted-reconciliation
+2026-08-31 00:04:29,967 - deskops - INFO - Advanced task task-milestone-6 to node checklist-task-milestone-6-stand-off-below-the-paragraph-testing-ready
+2026-08-31 00:28:58,288 - deskops - INFO - Advanced task task-milestone-6 to node checklist-task-milestone-6-stand-off-below-the-paragraph-closeout-ready
+2026-08-31 00:29:12,461 - deskops - INFO - Advanced task task-milestone-6 to node checklist-task-milestone-6-stand-off-below-the-paragraph-closeout-ready
+2026-08-31 00:30:13,112 - deskops - INFO - Task task-milestone-6 is complete. Performing auto-commit and cleanup.
+2026-08-31 00:30:13,113 - deskops - DEBUG - Staging file: src/sldb/kernel/ports.cljc
+2026-08-31 00:30:13,115 - deskops - DEBUG - Staging file: src/sldb/host/text.cljc
+2026-08-31 00:30:13,117 - deskops - DEBUG - Staging file: src/sldb/kernel/standoff.cljc
+2026-08-31 00:30:13,119 - deskops - DEBUG - Staging file: test/sldb/kernel/standoff_test.cljc
+2026-08-31 00:30:13,126 - deskops - DEBUG - Removing runtime artifacts for task task-milestone-6-stand-off-below-the-paragraph
+2026-08-31 00:30:13,133 - deskops - DEBUG - Removing primitive condition-task-milestone-6-stand-off-below-the-paragraph-has-implementation-path.md
+2026-08-31 00:30:13,133 - deskops - DEBUG - Removing primitive condition-task-milestone-6-stand-off-below-the-paragraph-ready-for-closeout.md
+2026-08-31 00:30:13,133 - deskops - DEBUG - Removing primitive condition-task-milestone-6-stand-off-below-the-paragraph-has-validation.md
+2026-08-31 00:30:13,133 - deskops - DEBUG - Removing primitive condition-task-milestone-6-stand-off-below-the-paragraph-has-closeout-evidence.md
+2026-08-31 00:30:13,133 - deskops - DEBUG - Removing primitive checklist-task-milestone-6-stand-off-below-the-paragraph-execution-ready.md
+2026-08-31 00:30:13,133 - deskops - DEBUG - Removing primitive checklist-task-milestone-6-stand-off-below-the-paragraph-closeout-ready.md
+2026-08-31 00:30:13,133 - deskops - DEBUG - Removing primitive checklist-task-milestone-6-stand-off-below-the-paragraph-testing-ready.md
+2026-08-31 00:30:13,133 - deskops - DEBUG - Removing primitive operator-task-milestone-6-stand-off-below-the-paragraph-ready-for-testing.md
+2026-08-31 00:30:13,134 - deskops - DEBUG - Removing primitive operator-task-milestone-6-stand-off-below-the-paragraph-activate.md
+2026-08-31 00:30:13,134 - deskops - DEBUG - Removing primitive operator-task-milestone-6-stand-off-below-the-paragraph-close.md
+2026-08-31 00:30:13,134 - deskops - DEBUG - Removing primitive edge-task-milestone-6-stand-off-below-the-paragraph-closeout-to-close.md
+2026-08-31 00:30:13,134 - deskops - DEBUG - Removing primitive edge-task-milestone-6-stand-off-below-the-paragraph-execution-to-activate.md
+2026-08-31 00:30:13,134 - deskops - DEBUG - Removing primitive edge-task-milestone-6-stand-off-below-the-paragraph-ready-to-closeout.md
+2026-08-31 00:30:13,134 - deskops - DEBUG - Removing primitive edge-task-milestone-6-stand-off-below-the-paragraph-close-to-complete.md
+2026-08-31 00:30:13,134 - deskops - DEBUG - Removing primitive edge-task-milestone-6-stand-off-below-the-paragraph-activate-to-testing.md
+2026-08-31 00:30:13,134 - deskops - DEBUG - Removing primitive edge-task-milestone-6-stand-off-below-the-paragraph-testing-to-ready.md
+2026-08-31 00:30:13,140 - deskops - INFO - Committing closure for task-milestone-6-stand-off-below-the-paragraph: chore(task): Milestone 6 stand-off below the paragraph
+
+Auto-closing task task-milestone-6-stand-off-below-the-paragraph

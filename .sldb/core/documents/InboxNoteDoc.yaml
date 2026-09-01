@@ -104,3 +104,10 @@ documents:
   semantic_tags:
   - type.desk.inbox-note
   - workspace.desk.inbox
+- name: 20260831-003040-unclear-board-notes-retain-stale-active-lines-for-closed-milestones-5b-and-6
+  path: desk/inbox/20260831-003040-unclear-board-notes-retain-stale-active-lines-for-closed-milestones-5b-and-6.md
+  hash_c: 2d66de6680f0dbfd94b42811ca9ef499340349f1dabbf1cab838480e97b69e45
+  hash_d: 8aef6a68fad54dd49a2f0da1661c2352529e0c4c8ed8d2499ccc28da80cc9ff0
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
