@@ -111,3 +111,17 @@ documents:
   semantic_tags:
   - type.desk.inbox-note
   - workspace.desk.inbox
+- name: 20260901-100419-unclear-board-notes-missed-one-promoted-task
+  path: desk/inbox/20260901-100419-unclear-board-notes-missed-one-promoted-task.md
+  hash_c: 3450f45baa0aac3cd14b03e4411cac09d213414cc65ebffc7d0e1966361022a8
+  hash_d: f667ceacb8400152e855193ceba3e0156be9279bf429eb1ba294ac60f5afc82e
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox
+- name: 20260901-100429-unclear-promotion-defaults-task-validation-to-pytest
+  path: desk/inbox/20260901-100429-unclear-promotion-defaults-task-validation-to-pytest.md
+  hash_c: e911390b412ed7a41a85ff3327426b0128571d2665ae1e1635e29c83fe67a6e5
+  hash_d: 9590748646dda8845ff54658aaed1f257a0fa948d4937fb79af20c77637c39ac
+  semantic_tags:
+  - type.desk.inbox-note
+  - workspace.desk.inbox

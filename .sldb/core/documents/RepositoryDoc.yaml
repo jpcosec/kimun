@@ -1,1 +1,8 @@
-documents: []
+documents:
+- name: repo-sldb-refactor-worktree
+  path: desk/registry/repo-sldb-refactor-worktree.md
+  hash_c: 400d1937238fd53b97246e893fe50e370723f728b56ddc369921b7592b71460c
+  hash_d: c696db3df8e77ffa31c23b8917d232ed41d2efaf635a9a8ae41ad267e8a736cf
+  semantic_tags:
+  - type.desk.repository
+  - workspace.desk.registry
