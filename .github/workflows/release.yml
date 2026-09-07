@@ -1,0 +1,47 @@
+name: release
+on:
+  push:
+    tags: ["v*"]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read pinned babashka version
+        id: bb
+        run: echo "version=$(sed -n 's/.*:bb "\([^"]*\)".*/\1/p' release.edn)" >> "$GITHUB_OUTPUT"
+      - uses: turtlequeue/setup-babashka@v1.7.0
+        with:
+          babashka-version: ${{ steps.bb.outputs.version }}
+      - run: bb lint && bb test
+      - name: Tag must match resources/VERSION
+        run: test "v$(tr -d '[:space:]' < resources/VERSION)" = "${GITHUB_REF_NAME}"
+      - name: Build all platform bundles (pinned bb, sha256-checked)
+        run: bb release --out dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bundles
+          path: |
+            dist/*.tar.gz
+            dist/*.zip
+            dist/SHA256SUMS
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    # Human approval gate: the `release` environment requires a reviewer
+    # (docs/v2/08 §6; house_rules ID-5). Building is reversible, publishing is not.
+    environment: release
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: bundles
+          path: dist
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.tar.gz
+            dist/*.zip
+            dist/SHA256SUMS
+          generate_release_notes: true

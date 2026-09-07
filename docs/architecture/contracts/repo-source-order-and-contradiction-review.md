@@ -1,3 +1,5 @@
+> **Superseded (2026-09-06).** Governed by `docs/v2/README.md (authority order)`: the source order is docs/v2 > desk/atoms epoch:v2 > docs/architecture > raw/source.
+
 # Repo Source Order and Contradiction Review
 
 ## Purpose and governing sources

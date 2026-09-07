@@ -1,3 +1,5 @@
+> **Superseded (2026-09-06).** Governed by `docs/v2/README.md (spec2viz v2-* diagrams)`: diagrams are projections of docs/architecture/spec2viz/v2-*.yml rendered to rendered/v2/*.mmd.
+
 # Diagram Traceability Contract
 
 ## Purpose and governing sources

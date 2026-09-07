@@ -1,3 +1,5 @@
+> **Superseded (2026-09-06).** Governed by `docs/v2/02-sustrato-computacional.md §6 and docs/v2/09-evaluador-anclado.md`: anchor states are derived per endpoint (intact/superseded/orphan) and the evaluator anchors are documents of the AnchorDoc model.
+
 # Anchoring Contract
 
 ## Purpose and governing sources

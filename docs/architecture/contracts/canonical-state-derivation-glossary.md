@@ -1,3 +1,5 @@
+> **Absorbed (2026-09-06)** into `docs/v2/01-orden-filosofico.md` §4.5 (canonical state is derived from the pool + heads; this glossary is kept for the vocabulary only).
+
 # Canonical-State Derivation Glossary
 
 ## Purpose and governing sources

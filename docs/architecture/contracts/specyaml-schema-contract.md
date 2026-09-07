@@ -1,3 +1,5 @@
+> **Superseded (2026-09-06).** Governed by `docs/v2/07-modelos-como-nodos.md`: models are EDN descriptors stored as opaque `edn/model` nodes in the `models` taxonomy tree, not SpecYAML.
+
 # SpecYAML Schema Contract
 
 ## Purpose and governing sources

@@ -1,3 +1,5 @@
+> **Superseded (2026-09-06).** Governed by `docs/v2/README.md (authority order)`: contradictions are resolved by the docs/v2 authority order; this map is historical.
+
 # Documentation Contradiction Map
 
 ## Purpose and governing sources

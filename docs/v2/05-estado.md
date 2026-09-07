@@ -1,8 +1,10 @@
-# SLDB v2 — Estado del kernel (2026-08-30)
+# knowledge (SLDB v2) — Estado (2026-09-07)
 
 > Punto de entrada para quien retoma el trabajo: qué existe, cómo se usa, qué se decidió y
 > qué sigue. Se actualiza al cerrar cada hito. Autoridad: `01` (por qué) > `02` (qué
-> construye) > `03` (cómo se escribe) > `04` (superficie Markdown) > este documento.
+> construye) > `03` (cómo se escribe) > `04` (superficie Markdown) > `06`–`09` (producto
+> `knowledge`) > este documento. Desde el 2026-09-06 este repo es **`knowledge`**: un solo
+> producto que absorbe sldb v1, kgdb y el evaluador anclado de `legos/knowledge` (§8).
 
 ## 1. Qué hay
 
@@ -13,18 +15,21 @@ para Markdown — todavía sin línea de comandos.
 
 | anillo | namespaces | qué hacen |
 |---|---|---|
-| 0 kernel | `sldb.kernel.{ports,err,canon,node,pool,edge,tree,plan,revision,heads,store,anchor,reconcile}` | puertos del host; errores tipados; bytes canónicos + hash; nodos S/M/G; pool; aristas con evidencia; árboles de **posiciones** con Merkle perezoso; `TransactionPlan` con 7 chequeos; revisiones inmutables, sucesión, ConflictSet/rebase, diff; heads con CAS; puerto `Backend` + open/replay/verify; **estados de anclaje** derivados y sus consultas; **reconciliación** de `orphan` en propuestas fuera del pool |
+| 0 kernel | `sldb.kernel.{ports,err,canon,node,pool,edge,tree,plan,revision,heads,store,anchor,reconcile,standoff}` | puertos del host; errores tipados; bytes canónicos + hash; nodos S/M/G; pool; aristas con evidencia; árboles de **posiciones** con Merkle perezoso; `TransactionPlan` con 7 chequeos; revisiones inmutables, sucesión, ConflictSet/rebase, diff; heads con CAS; puerto `Backend` + open/replay/verify; **estados de anclaje** derivados y sus consultas; **reconciliación** de `orphan` en propuestas fuera del pool; **stand-off** (hito 6): hojas con offsets, capas UAX #29 bajo demanda con cache suministrada por el host (sin `atom` global en anillo 0), anclaje `(hoja, rango, hash)` |
 | 1 host | `sldb.host.{default,hash,text,ulid,fs-store}` | SHA-256, NFC + grafemas (UAX #29), ULID, backend de archivos (`objects/`, `log.edn`, `heads.edn`, `store.edn`) |
 | 2 superficie | `sldb.surface.markdown.{cst,inline,ast,render,plan,report}` | Markdown ⇄ AST neutro ⇄ árbol de documento en el pool; render canónico; informe de direccionabilidad; **reingesta** de un fichero editado fuera del kernel |
+| 2 producto | `knowledge.cli.{main,args,out,errors,store}`, `knowledge.cli.commands.stores` | CLI `knowledge` (S0): envelope json/edn/text, exit codes, discovery de `.knowledge/`, `stores init|check|verify|show`; el resto de grupos llega por la pista S (§8) |
 
-2.544 líneas de `src`, 1.922 de `test`. Hitos cerrados del roadmap (`02 §9`): **0, 1, 2, 3, 4, 5a, 5b**.
+Hitos cerrados del roadmap del kernel (`02 §9`): **0, 1, 2, 3, 4, 5a, 5b, 6**. Hitos cerrados de la pista S (§8): **S0**.
 
 ## 2. Cómo se usa hoy
 
 ```bash
-bb lint     # anillos + docstrings (docs/v2/03)
-bb test     # 99 tests / 413 aserciones
+bb lint     # anillos + docstrings + sin def mutable en anillo 0 (docs/v2/03, 06 §2)
+bb test     # 150 tests / 699 aserciones (kernel + superficie Markdown + CLI + release)
 bb oracle   # reimplementación Python independiente de canonical-bytes: 9/9 ids
+bin/knowledge --version          # CLI en desarrollo (requiere bb local)
+bb jar && bb release --local-bb  # bundle distribuible en dist/ (docs/v2/08)
 ```
 
 ```clojure
@@ -53,7 +58,7 @@ p                                                    ; {:old … :candidate … 
                                {:actor "jp" :timestamp "..."}))           ; el anclaje pasa a superseded y se re-ancla
 ```
 
-Lo que **no** hay: CLI, API/HTTP, consultas más allá de `get-object`/`diff`/anclajes/recorrer
+Lo que **no** hay todavía: grupos de CLI más allá de `stores`, API/HTTP, consultas más allá de `get-object`/`diff`/anclajes/recorrer
 árboles, índices derivados (Datascript), Node/cljs probado, stand-off por debajo del
 párrafo materializado, semántica (M/G solo como datos), efectos, GC. Cada uno tiene su
 drawer (§6).
@@ -73,6 +78,11 @@ drawer (§6).
 | 9 | los estados deterministas son **tres** (`intact`/`superseded`/`orphan`), se calculan **por extremo** y la arista toma el peor; `drifted` es un `orphan` que la reconciliación supo nombrar, no un cuarto estado | `02 §6.2, §6.5`, `atom-anchor-state-is-derived-and-computed-per-endpoint`, `atom-drifted-is-a-reconciled-orphan` |
 | 10 | una propuesta de reconciliación vive **fuera del pool**; aceptarla es una transacción `supersedes` cuya única evidencia es el actor: responde quien acepta, no el heurístico | `02 §6.5`, inv. 18 |
 | 11 | el `:fingerprint` externo es `<alg>:<hex>` con el algoritmo del store; el kernel valida la forma y compara, y qué bytes se digieren es contrato del motor emisor | `02 §6.4`, `atom-external-fingerprint-form-and-who-computes-it` |
+| 12 | **un solo producto, `knowledge`**: sldb v1 y kgdb se congelan (`v1-frozen`); el evaluador anclado de `legos/knowledge` se porta aquí y ese repo pasa a `provenance` (S7) | `06`, `08 §1`, plan 2026-09-06 |
+| 13 | los modelos son **nodos del árbol**: descriptores EDN como opacos `edn/model` en el árbol `models`, versionados por `:replace` ⇒ `supersedes`, proyectables para auditarse | `07` |
+| 14 | **Babashka es el host definitivo del CLI**; el kernel sigue `.cljc`; la paridad Node queda en el drawer (UI) | `08 §2` |
+| 15 | rutas **relativas** en `store.edn` (`:links`), índices y export; nunca absolutas (vicio v1) | `06 §5` |
+| 16 | toda escritura (evaluador incluido) es un `TransactionPlan`; los derivados se invalidan por `anchor/states` sobre aristas `derived`, sin tracker aparte | `09 §3–4` |
 
 ## 4. Cómo se trabaja (y por qué)
 
@@ -116,6 +126,23 @@ herede el suelo de su hoja — y ya está anotado como candidato en el drawer
 `Intl.Segmenter`, `crypto`, `fs`) · conformidad CommonMark completa · cobertura/lint
 (clj-kondo, JVM) · contención entre procesos · monotonicidad ULID · objetos inalcanzables/GC ·
 reescritura de specs spec2viz pre-v2 · oráculo externo (hecho; cerrable).
+
+## 7b. Pista S — producto `knowledge` (en paralelo a los hitos 7–9 del kernel)
+
+| hito | qué | estado |
+|---|---|---|
+| **S0** repo + CLI + packaging | repo `tools/knowledge` (clon de `refactor-target`, historia intacta), `knowledge.cli.*`, `stores`, `bb jar`/`bb release`, launcher con `--`, workflows `ci`/`release` (gate humano), docs 06–09 | **cerrado 2026-09-07** |
+| S1 modelos + modo directo | descriptores, frontmatter en CST, `models *`, `extract/render/validate` | siguiente |
+| S2 docs/fields/sections + escritura | `surface.edit`, outbox, `status`, `reconcile`, `migrate --from-v1` | |
+| S3 índices + consultas + grafo | índice cacheado, `--where`, direcciones, `find`, `graph *` | |
+| S4 evaluador (lectura) | `09 §1–2` | |
+| S5 derivados + efectos + escritura | `09 §3–4` | |
+| S6 cliente Python + deskops + serve | `08 §7` | |
+| S7 split `provenance` | `08 §1` A4 | |
+
+Pendiente de A1/A2 (`08 §1`): crear `github.com/jpcosec/knowledge` (humano), push, tags
+`v1-frozen`/`v2-seed-2026-09` en `tools/sldb`. Incidente de S0 documentado en `08 §3`: una
+task `uberjar` que sombreaba al builtin recursaba sin fin (`bb jar` desde entonces).
 
 ## 7. Deuda aceptada
 

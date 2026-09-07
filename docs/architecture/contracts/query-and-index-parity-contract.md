@@ -1,3 +1,5 @@
+> **Superseded (2026-09-06).** Governed by `docs/v2/06-superficies-y-cli.md`: indexes are reconstructible maps cached per revision and `--where` parses to an AST (docs/v2/06 §7); an unknown `--where` is an error, never silent False.
+
 # Query and Index Parity Contract
 
 ## Purpose and governing sources

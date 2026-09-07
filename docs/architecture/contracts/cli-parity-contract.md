@@ -1,3 +1,5 @@
+> **Superseded (2026-09-06).** Governed by `docs/v2/06-superficies-y-cli.md`: the v1 command map, envelope and exit codes are defined by docs/v2/06 (pista S); v1 parity is in scope again as the "floor" listed there, not as a 1:1 port.
+
 # CLI Parity Contract
 
 ## Purpose and governing sources

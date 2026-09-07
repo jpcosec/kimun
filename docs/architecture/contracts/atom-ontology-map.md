@@ -1,3 +1,5 @@
+> **Superseded (2026-09-06).** Governed by `docs/v2/01-orden-filosofico.md and desk/atoms tagged epoch:v2`: the ontology is the S/M/G model; atoms tagged epoch:v2 prevail.
+
 # Atom Ontology Map
 
 ## Purpose and governing sources

@@ -7,9 +7,8 @@
   cli {:doc "Run the knowledge CLI in-process: bb cli stores check --format text"
        :task (let [p (apply shell {:continue true} "bb" "-m" "knowledge.cli.main" *command-line-args*)]
                (System/exit (:exit p)))}
-  uberjar {:doc "Build target/knowledge.jar (src + resources, main knowledge.cli.main); stamps resources/git-sha."
-           :override-builtin true
-           :task (let [sha (-> (shell {:out :string :continue true} "git" "rev-parse" "--short" "HEAD") :out str/trim)]
+  jar {:doc "Build target/knowledge.jar with the built-in `bb uberjar` (src + resources, main knowledge.cli.main); stamps resources/git-sha. Named `jar` on purpose: a task named `uberjar` would shadow the built-in it calls and recurse."
+       :task (let [sha (-> (shell {:out :string :continue true} "git" "rev-parse" "--short" "HEAD") :out str/trim)]
                    (spit "resources/git-sha" (str (if (str/blank? sha) "dev" sha) "\n"))
                    (fs/create-dirs "target")
                    (shell "bb" "--classpath" "src:resources" "uberjar" "target/knowledge.jar" "-m" "knowledge.cli.main")

@@ -1,0 +1,31 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read pinned babashka version
+        id: bb
+        run: echo "version=$(sed -n 's/.*:bb "\([^"]*\)".*/\1/p' release.edn)" >> "$GITHUB_OUTPUT"
+      - uses: turtlequeue/setup-babashka@v1.7.0
+        with:
+          babashka-version: ${{ steps.bb.outputs.version }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: bb lint
+      - run: bb test
+      - run: bb oracle
+      - name: Build uberjar and smoke-test it
+        run: |
+          bb jar
+          cd /tmp && bb --jar "$GITHUB_WORKSPACE/target/knowledge.jar" --version
+      - name: Local bundle (linux-amd64) runs without bb on PATH
+        run: |
+          bb release --local-bb --platforms linux-amd64 --out /tmp/dist
+          tar -xzf /tmp/dist/knowledge-*-linux-amd64.tar.gz -C /tmp
+          PATH=/usr/bin:/bin /tmp/knowledge-*-linux-amd64/bin/knowledge --version
