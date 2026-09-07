@@ -51,6 +51,6 @@ the word "knowledge" around here; they are distinct (`docs/v2/08 §0`):
 |---|---|---|
 | `kimun` | this product: SLDB v2 kernel + models + anchored evaluator, binary `kimun` | `jpcosec/kimun` |
 | `knowledge` (v1) | the Python evaluator over `.sldb` v1 + kgdb, pip `knowledge`, script `knowledge-cli`; alive, developed in parallel | `jpcosec/knowledge` |
-| `pron` | the provenance knowledge base (atoms, specs, corpus) both tools operate on; today it shares a repo with `knowledge` v1, split in S7 | `jpcosec/pron` |
+| `pron` | the provenance knowledge base (atoms, specs, corpus) both tools operate on; split from `knowledge` v1 on 2026-09-07 (`hum-ecosystem/tools/pron`) | `jpcosec/pron` |
 
 `sldb` v1 and `kgdb` are frozen (`v1-frozen`). License: MIT.

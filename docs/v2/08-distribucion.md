@@ -10,7 +10,7 @@
 | nombre | qué es | repo | pip / binario |
 |---|---|---|---|
 | **`kimun`** (Mapudungun *kimün*, saber) | este producto: kernel SLDB v2 + modelos + evaluador anclado, en Clojure/bb | `jpcosec/kimun`, local `~/proyectos/kimun` | binario `kimun`, store `.kimun/`, `$KIMUN_STORE`; pip `kimun` (S6) |
-| **`knowledge`** v1 | herramienta Python: evaluador anclado s-expr sobre `.sldb` v1 + kgdb, con sus ops de escritura. **Viva**, se desarrolla en paralelo | `jpcosec/knowledge` (rama `master`), local `legos/knowledge` | pip `knowledge` (editable), script `knowledge-cli` |
+| **`knowledge`** v1 | herramienta Python: evaluador anclado s-expr sobre `.sldb` v1 + kgdb, con sus ops de escritura. **Viva**, se desarrolla en paralelo | `jpcosec/knowledge` (rama `master`), local `hum-ecosystem/tools/knowledge` | pip `knowledge` (editable), script `knowledge-cli` |
 | **`pron`** (Mapudungun, el cordel anudado de registro) | la base de conocimiento de provenance: 296 atoms, specs de dominio, `source/knar`, `reviews`, `views`, `desk`, su `.sldb/`. Datos, no herramienta: hoy la opera `knowledge` v1, después `kimun` | `jpcosec/pron`; hoy comparte repo con `knowledge` v1 hasta S7 | ninguno |
 
 Reglas: `knowledge` no es un nombre de producto de v2 en ningún sitio (el kernel se llama
@@ -32,7 +32,7 @@ se borra a mano y v2 vive en `jpcosec/kimun`.
 | A3 | kgdb: tag `v1-frozen`, CLI deprecado. Los contratos pydantic (`contracts/{base,node,io}.py`, `query/language.py`) se copian **verbatim** a `python/kimun/graph/`; `graph.py` se reimplementa sin networkx (extra opcional `kimun[graph]`). Lo muerto no se copia | S6 |
 | A4 | split de `legos/knowledge` en dos repos (§0): la herramienta `knowledge` v1 (`src/knowledge`, `tests/`, `pyproject.toml`, sus specs del core anclado) conserva `jpcosec/knowledge`; la KB va a `jpcosec/pron` (296 atoms con `impl:here` → `impl:kimun`, specs de dominio, `source/knar`, `reviews`, `views/`, `desk/`, `.sldb/` v1 hasta `kimun migrate --from-v1`). Los 4 specs del core anclado se condensan en `09` y los 13 anchors se copian a `resources/grammar/` de este repo como gramática por defecto; **no se borra código de v1**: v1 sigue viva | S7 |
 
-Regla: `legos/knowledge` **no se toca desde aquí** durante S0–S6 (v1 se desarrolla en
+Regla: `tools/knowledge` (antes `legos/knowledge`) **no se toca desde aquí** durante S0–S6 (v1 se desarrolla en
 paralelo por su cuenta); S2 y S4 se prueban sobre una migración de ese repo a un directorio
 temporal (309 docs), nunca in place.
 
@@ -126,7 +126,7 @@ se revisan en el diff del commit; un asset cuyo digest no coincide aborta el bui
 
 ## 7. Instalación local, iso-lab y lo que llega en S6
 
-**Local (hoy).** El editable pip `knowledge` (v1, desde `legos/knowledge`) **se queda**: es
+**Local (hoy).** El editable pip `knowledge` (v1, desde `hum-ecosystem/tools/knowledge`) **se queda**: es
 otra herramienta (§0) y no choca con nada de `kimun`. Descomprimir el tarball y enlazar
 `bin/kimun` en `~/.local/bin` o usar `~/proyectos/kimun/bin/kimun` (dev, requiere `bb` local).
 `sldb` v1 **sigue en PATH** y `.sldb/` coexiste con `.kimun/` hasta S7.

@@ -1,6 +1,6 @@
 # kimun — Evaluador anclado, escritura y derivados (pista S, §F y §E del plan)
 
-> Condensa los cuatro specs Python del evaluador de `legos/knowledge` (`semantic-anchoring`,
+> Condensa los cuatro specs Python del evaluador de `knowledge` v1 (`semantic-anchoring`,
 > `usability`, `components D1–D3`, `database`) en el vocabulario de `02`, y fija cómo la
 > escritura, los valores derivados y la propagación por hash pasan por el kernel. Llega en
 > S4 (lectura) y S5 (escritura y derivados); S0 solo reserva la superficie (`06 §B`: un
@@ -78,7 +78,7 @@ valor→cada input (posiciones de documentos, campos, otros derivados). Como `02
 ## 5. Spec ejecutable
 
 Los 17 casos de `tests/test_acceptance.py`, los 12 de `tests/test_wrapper.py` (KB efímera
-construida por plan, no por ficheros) y los compliance portables de `legos/knowledge` se
+construida por plan, no por ficheros) y los compliance portables de `knowledge` v1 se
 portan a `test/kimun/surface/eval/*_test.cljc` más goldens de CLI (`test/fixtures/cli/s4/`).
 En S7 la KB deja `legos/knowledge` hacia `pron`; los tests y anchors de v1 se quedan con `knowledge` v1, que sigue viva (`08 §0`), y se copian aquí como spec ejecutable.
 

@@ -4,7 +4,7 @@
 > qué sigue. Se actualiza al cerrar cada hito. Autoridad: `01` (por qué) > `02` (qué
 > construye) > `03` (cómo se escribe) > `04` (superficie Markdown) > `06`–`09` (producto
 > `kimun`) > este documento. Desde el 2026-09-06 este repo es **`kimun`**: un solo
-> producto que absorbe sldb v1, kgdb y el evaluador anclado de `legos/knowledge` (§8).
+> producto que absorbe sldb v1, kgdb y el evaluador anclado de `knowledge` v1 (§8).
 
 ## 1. Qué hay
 
