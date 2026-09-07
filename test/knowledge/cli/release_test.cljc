@@ -71,6 +71,14 @@
           (is (= in-process (:data envelope)) "bundle --version == in-process version-data")
           (println (format "release_test: bundle --version in %.0f ms" ms))
           (is (< ms 1500) "startup budget (docs/v2/08 §4)")
+          (testing "a symlink to the launcher (~/.local/bin style) still finds the bundle"
+            (let [bindir (str (fs/path tmp "home-bin"))
+                  _ (fs/create-dirs bindir)
+                  link (str (fs/path bindir "knowledge"))
+                  _ (fs/create-sym-link link launcher)
+                  {:keys [exit out]} (run-bundle link ext "--version")]
+              (is (zero? exit))
+              (is (= in-process (:data (json/parse-string out true))))))
           (testing "`--` keeps --help for knowledge, not bb"
             (let [{:keys [exit out]} (run-bundle launcher ext "--help")]
               (is (zero? exit))

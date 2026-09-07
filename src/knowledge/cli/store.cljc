@@ -61,8 +61,10 @@
   [dir]
   (when (or (nil? dir) (not (store? dir)))
     (err/raise :cli/no-store
-               (str "no knowledge store at " (or dir "(none found: run `knowledge stores init` or pass --store)"))
-               {:path (some-> dir str)}))
+               (if dir
+                 (str "no knowledge store at " dir)
+                 "no knowledge store found (no .knowledge/ here or in a parent directory, no --store, no $KNOWLEDGE_STORE): run `knowledge stores init` or pass --store PATH")
+               (if dir {:path (str dir)} {})))
   (let [b (backend dir)]
     {:backend b
      :descriptor (store/read-descriptor b)

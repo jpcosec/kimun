@@ -35,7 +35,7 @@ de ese repo a un directorio temporal (309 docs), nunca in place.
 | `bb test` / `bb oracle` | suite y oráculo (`05 §2`) |
 | `bb cli -- <args>` | ejecuta `knowledge.cli.main/-main` desde `src/` (desarrollo; `bin/knowledge` es su envoltorio) |
 | `bb jar` | llama al `bb uberjar` **nativo** (`--classpath src:resources`, main `knowledge.cli.main`); la task no puede llamarse `uberjar`: sombrearía el builtin y recursaría |
-| `bb release [--platforms p…] [--local-bb] [--pin]` | `scripts/release.clj`: descarga el `bb` pinado por plataforma y comprueba su sha256 (o usa el local con `--local-bb`, para tests), monta `dist/`, comprime y firma con `SHA256SUMS`; `--pin` reescribe los sha256 de `release.edn` |
+| `bb release [--platforms p…] [--out d] [--jar j] [--local-bb] [--pin]` | `scripts/release.clj`: reconstruye el jar (`bb jar`) salvo con `--jar`; descarga el `bb` pinado por plataforma y comprueba su sha256 (o usa el local con `--local-bb`, para tests), monta `dist/`, comprime y firma con `SHA256SUMS`; `--pin` reescribe los sha256 de `release.edn` |
 | `bb wheel` | S6: construye los wheels de §7 |
 
 ## 4. Layout de release y launcher
@@ -54,10 +54,17 @@ dist/SHA256SUMS
 
 ```sh
 #!/bin/sh
-DIR="$(cd "$(dirname "$0")/.." && pwd)"
+SELF="$0"                                   # sigue symlinks: ~/.local/bin/knowledge -> <bundle>/bin/knowledge
+while [ -h "$SELF" ]; do
+  LINKDIR="$(cd "$(dirname "$SELF")" && pwd)"
+  SELF="$(readlink "$SELF")"
+  case "$SELF" in /*) ;; *) SELF="$LINKDIR/$SELF" ;; esac
+done
+DIR="$(cd "$(dirname "$SELF")/.." && pwd)"
 exec "$DIR/lib/bb" --jar "$DIR/lib/knowledge.jar" -- "$@"
 ```
 
+- Instalación típica: `ln -s <bundle>/bin/knowledge ~/.local/bin/knowledge`; el launcher resuelve el enlace (test `release_test`, caso symlink).
 - El `--` es obligatorio: sin él `bb` se queda con `--version`, `--help` y `version` y responde por sí mismo.
 - El launcher no toca `PATH` ni variables: un tarball descomprimido en cualquier ruta
   funciona en una máquina sin `bb` (DoD de S0; test `release_test/tarball-runs-without-bb-on-path`).

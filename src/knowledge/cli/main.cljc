@@ -68,7 +68,7 @@
 
       :else
       (out/failure :eval/not-available
-                   (str "la superficie del evaluador (knowledge " (str/join " " args) ") llega en S4")
+                   (str "the evaluator surface (knowledge " (str/join " " args) ") arrives in milestone S4; known groups: " (str/join ", " (sort (keys groups))))
                    {:tokens (vec args)}
                    6))))
 

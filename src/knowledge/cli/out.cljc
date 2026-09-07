@@ -52,8 +52,9 @@
 (defn- sorted-entries [m]
   (sort-by (comp str key) m))
 
-(defn- text-success [{:keys [data revision]}]
-  (let [body (cond (map? data) (map (fn [[k v]] (kv-line "" k v)) (sorted-entries data))
+(defn- text-success [{:keys [command data revision]}]
+  (let [body (cond (= "help" command) [(:usage data)]
+                   (map? data) (map (fn [[k v]] (kv-line "" k v)) (sorted-entries data))
                    (sequential? data) (map value-str data)
                    (nil? data) []
                    :else [(value-str data)])

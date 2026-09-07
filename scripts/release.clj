@@ -42,9 +42,16 @@
 
 (def posix-launcher
   "#!/bin/sh
-# knowledge launcher: bundled babashka + uberjar, relative to this file.
+# knowledge launcher: bundled babashka + uberjar, located relative to this file.
+# Follows symlinks (e.g. ~/.local/bin/knowledge -> <bundle>/bin/knowledge).
 # `--` keeps every argument for knowledge (bb would otherwise take --version/--help/version).
-DIR=\"$(cd \"$(dirname \"$0\")/..\" && pwd)\"
+SELF=\"$0\"
+while [ -h \"$SELF\" ]; do
+  LINKDIR=\"$(cd \"$(dirname \"$SELF\")\" && pwd)\"
+  SELF=\"$(readlink \"$SELF\")\"
+  case \"$SELF\" in /*) ;; *) SELF=\"$LINKDIR/$SELF\" ;; esac
+done
+DIR=\"$(cd \"$(dirname \"$SELF\")/..\" && pwd)\"
 exec \"$DIR/lib/bb\" --jar \"$DIR/lib/knowledge.jar\" -- \"$@\"
 ")
 
@@ -140,9 +147,11 @@ exec \"$DIR/lib/bb\" --jar \"$DIR/lib/knowledge.jar\" -- \"$@\"
         out (str (fs/absolutize (or (:out opts) (fs/path root "dist"))))
         jar (str (fs/absolutize (or (:jar opts) (fs/path root "target" "knowledge.jar"))))]
     (fs/create-dirs out)
-    (when-not (fs/exists? jar)
-      (when (:jar opts) (fail 2 "jar not found:" jar))
-      (shell {:dir root} "bb" "jar"))
+    ;; Without --jar the jar is always rebuilt from the working tree: a stale
+    ;; target/knowledge.jar would silently ship old code. --jar means "use this one".
+    (if (:jar opts)
+      (when-not (fs/exists? jar) (fail 2 "jar not found:" jar))
+      (shell {:dir root :out :string} "bb" "jar"))
     (let [cfg (if (:pin opts) (pin! cfg platforms out) cfg)
           bundles (mapv #(bundle! cfg % {:out out :jar jar :local-bb (:local-bb opts) :pin (:pin opts)}) platforms)]
       (spit (str (fs/path out "SHA256SUMS"))

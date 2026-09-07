@@ -84,6 +84,7 @@
   (if-let [f (get commands sub)]
     (f opts ctx)
     (out/failure :cli/usage
-                 (str "unknown subcommand `stores " sub "`; expected one of: " (str/join ", " (sort (keys commands))))
+                 (str (if sub (str "unknown subcommand `stores " sub "`") "missing subcommand for `stores`")
+                      "; expected one of: " (str/join ", " (sort (keys commands))))
                  {:group "stores" :subcommand sub :known (vec (sort (keys commands)))}
                  6)))
