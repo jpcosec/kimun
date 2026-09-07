@@ -132,7 +132,7 @@ reescritura de specs spec2viz pre-v2 · oráculo externo (hecho; cerrable).
 
 | hito | qué | estado |
 |---|---|---|
-| **S0** repo + CLI + packaging | repo `tools/kimun` (clon de `refactor-target`, historia intacta), `kimun.cli.*`, `stores`, `bb jar`/`bb release`, launcher con `--`, workflows `ci`/`release` (gate humano), docs 06–09 | **cerrado 2026-09-07** |
+| **S0** repo + CLI + packaging | repo `~/proyectos/kimun` (clon de `refactor-target`, historia intacta; nació como `hum-ecosystem/tools/kimun`), `kimun.cli.*`, `stores`, `bb jar`/`bb release`, launcher con `--`, workflows `ci`/`release` (gate humano), docs 06–09 | **cerrado 2026-09-07** |
 | S1 modelos + modo directo | descriptores, frontmatter en CST, `models *`, `extract/render/validate` | siguiente |
 | S2 docs/fields/sections + escritura | `surface.edit`, outbox, `status`, `reconcile`, `migrate --from-v1` | |
 | S3 índices + consultas + grafo | índice cacheado, `--where`, direcciones, `find`, `graph *` | |

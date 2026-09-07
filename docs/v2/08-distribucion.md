@@ -9,7 +9,7 @@
 
 | nombre | qué es | repo | pip / binario |
 |---|---|---|---|
-| **`kimun`** (Mapudungun *kimün*, saber) | este producto: kernel SLDB v2 + modelos + evaluador anclado, en Clojure/bb | `jpcosec/kimun`, local `hum-ecosystem/tools/kimun` | binario `kimun`, store `.kimun/`, `$KIMUN_STORE`; pip `kimun` (S6) |
+| **`kimun`** (Mapudungun *kimün*, saber) | este producto: kernel SLDB v2 + modelos + evaluador anclado, en Clojure/bb | `jpcosec/kimun`, local `~/proyectos/kimun` | binario `kimun`, store `.kimun/`, `$KIMUN_STORE`; pip `kimun` (S6) |
 | **`knowledge`** v1 | herramienta Python: evaluador anclado s-expr sobre `.sldb` v1 + kgdb, con sus ops de escritura. **Viva**, se desarrolla en paralelo | `jpcosec/knowledge` (rama `master`), local `legos/knowledge` | pip `knowledge` (editable), script `knowledge-cli` |
 | **`pron`** (Mapudungun, el cordel anudado de registro) | la base de conocimiento de provenance: 296 atoms, specs de dominio, `source/knar`, `reviews`, `views`, `desk`, su `.sldb/`. Datos, no herramienta: hoy la opera `knowledge` v1, después `kimun` | `jpcosec/pron`; hoy comparte repo con `knowledge` v1 hasta S7 | ninguno |
 
@@ -128,13 +128,13 @@ se revisan en el diff del commit; un asset cuyo digest no coincide aborta el bui
 
 **Local (hoy).** El editable pip `knowledge` (v1, desde `legos/knowledge`) **se queda**: es
 otra herramienta (§0) y no choca con nada de `kimun`. Descomprimir el tarball y enlazar
-`bin/kimun` en `~/.local/bin` o usar `tools/kimun/bin/kimun` (dev, requiere `bb` local).
+`bin/kimun` en `~/.local/bin` o usar `~/proyectos/kimun/bin/kimun` (dev, requiere `bb` local).
 `sldb` v1 **sigue en PATH** y `.sldb/` coexiste con `.kimun/` hasta S7.
 
 **iso-lab.** `docker/` instala el `bb` pinado por `release.edn` (mismo sha256) en la imagen
-base; `manifest.yaml` ya lista `kimun` con baseline 0 (sldb 426, kgdb 28, deskops 210
-según el manifest actual); S6 eleva `kimun` al número de tests del cliente y sustituye
-el editable Python por el tarball.
+base; `manifest.yaml` lista hoy `knowledge` (v1, baseline 0) junto a sldb 426, kgdb 28 y
+deskops 210; S6 añade `kimun` con el número de tests del cliente y sustituye el editable
+Python de sldb por el tarball. El repo vive fuera de `hum-ecosystem` (`~/proyectos/kimun`).
 
 **S6.** Wheels por plataforma (`kimun-2.0.0a1-py3-none-manylinux_x86_64.whl`, …) con el
 bundle en `kimun/_bin/<plat>/{bb, kimun.jar}` (precedente: `ruff`, `nodejs-bin`)
