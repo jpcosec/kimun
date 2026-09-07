@@ -1,11 +1,22 @@
 ;; Release matrix for `bb release` (docs/v2/08 §5). `:version` must equal
-;; resources/VERSION. `:sha256` digests of the babashka assets are nil until
-;; pinned with `bb release --pin`; a nil digest aborts a non-local build.
-{:version "2.0.0-alpha.1"
- :bb "1.13.219"
- :platforms [:linux-amd64 :linux-aarch64 :macos-amd64 :macos-aarch64 :windows-amd64]
- :sha256 {:linux-amd64 nil
-          :linux-aarch64 nil
-          :macos-amd64 nil
-          :macos-aarch64 nil
-          :windows-amd64 nil}}
+;; resources/VERSION. `:sha256` digests of the babashka assets are pinned with
+;; `bb release --pin`; a nil digest aborts a non-local build.
+{:version "2.0.0-alpha.1",
+ :bb "1.13.219",
+ :platforms
+ [:linux-amd64
+  :linux-aarch64
+  :macos-amd64
+  :macos-aarch64
+  :windows-amd64],
+ :sha256
+ {:linux-amd64
+  "9ac1fe988d7001625b30ef3e3307e67f8545505a7cb49a4aa179f578115a3e09",
+  :linux-aarch64
+  "e8d7a9c66c364b80627a43cb6ba5c14fb6ac7e4af114e8e5d80f97551ccdfe11",
+  :macos-amd64
+  "a26e2640d813d676682b5aa4244863fdb4da022802684d2da1183e612456b101",
+  :macos-aarch64
+  "57a45df1cee534081375f35d39a3cb5f334956e6d429e364adbf46e296d52cfb",
+  :windows-amd64
+  "3f29a2338c30c2750e11f8ebebbadcc58dd71612286cf4b44defb8c11ce44006"}}
