@@ -10,7 +10,7 @@
 ## 1. Enunciado del producto
 
 `kimun` es **un solo producto** que reúne tres cosas que hoy viven separadas: el
-evaluador de s-expressions anclado (`legos/knowledge`, Python, solo lectura), la CLI de sldb
+evaluador de s-expressions anclado (`pron`, Python, solo lectura), la CLI de sldb
 v1 (Python, markdown como verdad) y el grafo de kgdb (networkx). El kernel es SLDB v2
 (`docs/v2/02`): pool content-addressed, sucesión, aristas con evidencia, planes EDN.
 
