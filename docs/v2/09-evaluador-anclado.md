@@ -1,6 +1,6 @@
 # kimun — Evaluador anclado, escritura y derivados (pista S, §F y §E del plan)
 
-> Condensa los cuatro specs Python del evaluador de `knowledge` v1 (`semantic-anchoring`,
+> Condensa los cuatro specs Python del evaluador de `pron` (`semantic-anchoring`,
 > `usability`, `components D1–D3`, `database`) en el vocabulario de `02`, y fija cómo la
 > escritura, los valores derivados y la propagación por hash pasan por el kernel. Llega en
 > S4 (lectura) y S5 (escritura y derivados); S0 solo reserva la superficie (`06 §B`: un
@@ -15,7 +15,7 @@ canónicos de modelos, documentos, relaciones, operaciones, proyecciones y expre
 resultado se evalúa sobre el índice (`06 §7`). El evaluador no tiene una puerta lateral al
 store: **lee del índice y escribe por `TransactionPlan`**, como cualquier grupo v1.
 
-| pieza Python (`knowledge` v1, `src/knowledge/`) | en `kimun` | hito |
+| pieza Python (`pron`, `src/pron/`) | en `kimun` | hito |
 |---|---|---|
 | `sexpr.py` (lector/impresor propio) | `edn/read-string` + `pr-str`; una s-expr es EDN | S4 |
 | `anchors.py` (13 anchors YAML) | `:anchors` del índice; `AnchorDoc` es un descriptor de modelo (`resources/models/AnchorDoc.edn`) con `kind ∈ #{model doc relation operation projection expr}`; los 13 anchors viven en `resources/grammar/` como gramática por defecto y se ingestan como documentos | S4 |
@@ -78,9 +78,9 @@ valor→cada input (posiciones de documentos, campos, otros derivados). Como `02
 ## 5. Spec ejecutable
 
 Los 17 casos de `tests/test_acceptance.py`, los 12 de `tests/test_wrapper.py` (KB efímera
-construida por plan, no por ficheros) y los compliance portables de `knowledge` v1 se
+construida por plan, no por ficheros) y los compliance portables de `pron` se
 portan a `test/kimun/surface/eval/*_test.cljc` más goldens de CLI (`test/fixtures/cli/s4/`).
-En S7 la KB deja `legos/knowledge` hacia `pron`; los tests y anchors de v1 se quedan con `knowledge` v1, que sigue viva (`08 §0`), y se copian aquí como spec ejecutable.
+El split ya ocurrió (2026-09-07): la KB y el evaluador viven en `pron`, que sigue vivo (`08 §0`); sus tests y los 13 anchors se copian aquí como spec ejecutable en S4.
 
 ## 6. Lo que no se copia de v1
 

@@ -10,13 +10,13 @@
 | nombre | qué es | repo | pip / binario |
 |---|---|---|---|
 | **`kimun`** (Mapudungun *kimün*, saber) | este producto: kernel SLDB v2 + modelos + evaluador anclado, en Clojure/bb | `jpcosec/kimun`, local `~/proyectos/kimun` | binario `kimun`, store `.kimun/`, `$KIMUN_STORE`; pip `kimun` (S6) |
-| **`knowledge`** v1 | herramienta Python: evaluador anclado s-expr sobre `.sldb` v1 + kgdb, con sus ops de escritura. **Viva**, se desarrolla en paralelo | `jpcosec/knowledge` (rama `master`), local `hum-ecosystem/tools/knowledge` | pip `knowledge` (editable), script `knowledge-cli` |
-| **`pron`** (Mapudungun, el cordel anudado de registro) | la base de conocimiento de provenance: 296 atoms, specs de dominio, `source/knar`, `reviews`, `views`, `desk`, su `.sldb/`. Datos, no herramienta: hoy la opera `knowledge` v1, después `kimun` | `jpcosec/pron`; hoy comparte repo con `knowledge` v1 hasta S7 | ninguno |
+| **`pron`** (Mapudungun, el cordel anudado de registro) | la base de conocimiento de provenance **y** el evaluador que la opera, en un paquete Python que depende de `sldb` y `kgdb`. **Vivo**: lo importa `kinesis` | `jpcosec/pron`, local `legos/pron` | pip `pron`, binario `pron` |
+| **`knowledge`** | congelado 2026-09-07: solo el CLI de julio sobre archivos (`knowledge_legacy.py`) y la rama `iso-lab/knowledge` | `jpcosec/knowledge` (`master`), local `hum-ecosystem/tools/knowledge` | ninguno |
 
-Reglas: `knowledge` no es un nombre de producto de v2 en ningún sitio (el kernel se llama
-`sldb.*`, la superficie `kimun.*`); el paquete Python `knowledge` es de v1 mientras v1 viva,
-así que el cliente Python de S6 se llama `kimun`; S4 porta la **lectura** de v1 a `kimun`,
-pero v1 no se congela por eso: coexisten sobre `pron` hasta que el usuario decida.
+Reglas: `knowledge` no es un nombre de producto en ningún sitio (el kernel se llama
+`sldb.*`, la superficie `kimun.*`); el paquete Python instalable de v1 es `pron`,
+así que el cliente Python de S6 se llama `kimun`; S4 porta la **lectura** del evaluador de
+`pron` a `kimun`, pero `pron` no se congela por eso: coexisten hasta que el usuario decida.
 
 Lo que pasó el 2026-09-07: el producto se llamó `knowledge` durante S0 y se pusheó a
 `jpcosec/knowledge`, que ya era el remoto de v1 (rama `master`). Se deshizo el mismo día:
@@ -30,11 +30,11 @@ se borra a mano y v2 vive en `jpcosec/kimun`.
 | A1 | Un humano crea `github.com/jpcosec/kimun` vacío (gate de publicación, §6). `git clone -b refactor-target git@github.com:jpcosec/sldb.git tools/kimun && git branch -m main && git remote set-url origin git@github.com:jpcosec/kimun.git && git push -u origin main --tags`. La rama era un worktree del mismo repo: clonarla **preserva los 140 commits** sin `filter-repo`. Tras el push: environment `release` con *required reviewer* humano | S0 |
 | A2 | En `tools/sldb`: tags `v1-frozen` (sobre `main`) y `v2-seed-2026-09` (sobre `refactor-target`); banner en su README: *frozen, superseded by kimun*; `git worktree remove tools/sldb-refactor-worktree` tras confirmar que `tools/kimun` tiene todo. `iso-lab/worktrees/sldb` se mantiene (pina v1). No se borra ninguna rama | S0 |
 | A3 | kgdb: tag `v1-frozen`, CLI deprecado. Los contratos pydantic (`contracts/{base,node,io}.py`, `query/language.py`) se copian **verbatim** a `python/kimun/graph/`; `graph.py` se reimplementa sin networkx (extra opcional `kimun[graph]`). Lo muerto no se copia | S6 |
-| A4 | split de `legos/knowledge` en dos repos (§0): la herramienta `knowledge` v1 (`src/knowledge`, `tests/`, `pyproject.toml`, sus specs del core anclado) conserva `jpcosec/knowledge`; la KB va a `jpcosec/pron` (296 atoms con `impl:here` → `impl:kimun`, specs de dominio, `source/knar`, `reviews`, `views/`, `desk/`, `.sldb/` v1 hasta `kimun migrate --from-v1`). Los 4 specs del core anclado se condensan en `09` y los 13 anchors se copian a `resources/grammar/` de este repo como gramática por defecto; **no se borra código de v1**: v1 sigue viva | S7 |
+| A4 | `pron` ya es un repo propio (KB + evaluador, pip `pron`, importado por `kinesis`). Aquí queda: copiar sus 13 anchors a `resources/grammar/` como gramática por defecto y `kimun migrate --from-v1` sobre `pron/.sldb`. **No se borra código de `pron`**: sigue vivo | S7 |
 
-Regla: `tools/knowledge` (antes `legos/knowledge`) **no se toca desde aquí** durante S0–S6 (v1 se desarrolla en
-paralelo por su cuenta); S2 y S4 se prueban sobre una migración de ese repo a un directorio
-temporal (309 docs), nunca in place.
+Regla: `pron` **no se toca desde aquí** durante S0–S6 (se desarrolla en paralelo, con `kinesis`
+como consumidor); S2 y S4 se prueban sobre una migración de ese repo a un directorio temporal
+(309 docs), nunca in place.
 
 ## 2. Toolchain
 
@@ -126,8 +126,8 @@ se revisan en el diff del commit; un asset cuyo digest no coincide aborta el bui
 
 ## 7. Instalación local, iso-lab y lo que llega en S6
 
-**Local (hoy).** El editable pip `knowledge` (v1, desde `hum-ecosystem/tools/knowledge`) **se queda**: es
-otra herramienta (§0) y no choca con nada de `kimun`. Descomprimir el tarball y enlazar
+**Local (hoy).** El editable pip `pron` (desde `legos/pron`) **se queda**: es otra herramienta
+(§0) y no choca con nada de `kimun`. Descomprimir el tarball y enlazar
 `bin/kimun` en `~/.local/bin` o usar `~/proyectos/kimun/bin/kimun` (dev, requiere `bb` local).
 `sldb` v1 **sigue en PATH** y `.sldb/` coexiste con `.kimun/` hasta S7.
 

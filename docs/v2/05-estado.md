@@ -4,7 +4,7 @@
 > qué sigue. Se actualiza al cerrar cada hito. Autoridad: `01` (por qué) > `02` (qué
 > construye) > `03` (cómo se escribe) > `04` (superficie Markdown) > `06`–`09` (producto
 > `kimun`) > este documento. Desde el 2026-09-06 este repo es **`kimun`**: un solo
-> producto que absorbe sldb v1, kgdb y el evaluador anclado de `knowledge` v1 (§8).
+> producto que absorbe sldb v1, kgdb y el evaluador anclado de `pron` (§8).
 
 ## 1. Qué hay
 
@@ -78,12 +78,12 @@ drawer (§6).
 | 9 | los estados deterministas son **tres** (`intact`/`superseded`/`orphan`), se calculan **por extremo** y la arista toma el peor; `drifted` es un `orphan` que la reconciliación supo nombrar, no un cuarto estado | `02 §6.2, §6.5`, `atom-anchor-state-is-derived-and-computed-per-endpoint`, `atom-drifted-is-a-reconciled-orphan` |
 | 10 | una propuesta de reconciliación vive **fuera del pool**; aceptarla es una transacción `supersedes` cuya única evidencia es el actor: responde quien acepta, no el heurístico | `02 §6.5`, inv. 18 |
 | 11 | el `:fingerprint` externo es `<alg>:<hex>` con el algoritmo del store; el kernel valida la forma y compara, y qué bytes se digieren es contrato del motor emisor | `02 §6.4`, `atom-external-fingerprint-form-and-who-computes-it` |
-| 12 | **un solo producto v2**: sldb v1 y kgdb se congelan (`v1-frozen`); la lectura del evaluador anclado de `knowledge` v1 se porta aquí (S4) | `06`, `08 §1`, plan 2026-09-06 |
+| 12 | **un solo producto v2**: sldb v1 y kgdb se congelan (`v1-frozen`); la lectura dla lectura del evaluador de `pron` se porta aquí (S4) | `06`, `08 §1`, plan 2026-09-06 |
 | 13 | los modelos son **nodos del árbol**: descriptores EDN como opacos `edn/model` en el árbol `models`, versionados por `:replace` ⇒ `supersedes`, proyectables para auditarse | `07` |
 | 14 | **Babashka es el host definitivo del CLI**; el kernel sigue `.cljc`; la paridad Node queda en el drawer (UI) | `08 §2` |
 | 15 | rutas **relativas** en `store.edn` (`:links`), índices y export; nunca absolutas (vicio v1) | `06 §5` |
 | 16 | toda escritura (evaluador incluido) es un `TransactionPlan`; los derivados se invalidan por `anchor/states` sobre aristas `derived`, sin tracker aparte | `09 §3–4` |
-| 17 | **tres nombres para tres cosas** (2026-09-07): el producto v2 es **`kimun`** (Mapudungun *kimün*); **`knowledge`** queda para la herramienta Python v1, que sigue viva y se desarrolla en paralelo (repo `jpcosec/knowledge`, pip `knowledge`); la KB de provenance es **`pron`** (el cordel anudado). Nada de v2 usa la palabra `knowledge` como identificador | `08 §0` |
+| 17 | **tres nombres para tres cosas** (2026-09-07): el producto v2 es **`kimun`** (Mapudungun *kimün*); **`pron`** es la KB **y** su evaluador Python en un solo paquete (repo `jpcosec/pron`, pip `pron`), que importa `kinesis`; `knowledge` queda congelado como el legacy de julio. Nada de v2 usa la palabra `knowledge` como identificador | `08 §0` |
 
 ## 4. Cómo se trabaja (y por qué)
 
@@ -139,7 +139,7 @@ reescritura de specs spec2viz pre-v2 · oráculo externo (hecho; cerrable).
 | S4 evaluador (lectura) | `09 §1–2` | |
 | S5 derivados + efectos + escritura | `09 §3–4` | |
 | S6 cliente Python + deskops + serve | `08 §7` | |
-| S7 split `pron` / `knowledge` v1 | `08 §0`, `08 §1` A4 | |
+| S7 anchors de `pron` como gramática + `migrate --from-v1` | `08 §0`, `08 §1` A4 | |
 
 A2 hecho el 2026-09-07 (tags `v1-frozen`/`v2-seed-2026-09` y banner en `tools/sldb`). A1
 se hizo primero bajo el nombre `knowledge` contra el repo de v1 y se deshizo; queda

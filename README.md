@@ -1,7 +1,7 @@
 # kimun
 
 **Content-addressed knowledge store with a CLI** — the successor of `sldb` (v1, Python), `kgdb`
-and, for reading, of the anchored evaluator `knowledge` (v1, Python), merged into one product.
+and, for reading, of the anchored evaluator in `pron` (Python), merged into one product.
 The name is Mapudungun (*kimün*, knowledge). The kernel is pure
 Clojure (`.cljc`) running on Babashka: a pool of content-addressed immutable nodes (S/M/G),
 trees of positions as indexes, typed edges with evidence, succession by `supersedes`, derived
@@ -50,7 +50,7 @@ the word "knowledge" around here; they are distinct (`docs/v2/08 §0`):
 | name | what | repo |
 |---|---|---|
 | `kimun` | this product: SLDB v2 kernel + models + anchored evaluator, binary `kimun` | `jpcosec/kimun` |
-| `knowledge` (v1) | the Python evaluator over `.sldb` v1 + kgdb, pip `knowledge`, script `knowledge-cli`; alive, developed in parallel | `jpcosec/knowledge` |
-| `pron` | the provenance knowledge base (atoms, specs, corpus) both tools operate on; split from `knowledge` v1 on 2026-09-07 (`hum-ecosystem/tools/pron`) | `jpcosec/pron` |
+| `pron` | the provenance knowledge base and the Python evaluator over `.sldb` v1 + kgdb, in one package (pip `pron`); alive, imported by `kinesis` | `jpcosec/pron` |
+| `knowledge` | frozen: the July 2026 file-based CLI only | `jpcosec/knowledge` |
 
 `sldb` v1 and `kgdb` are frozen (`v1-frozen`). License: MIT.
