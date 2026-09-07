@@ -1,0 +1,13 @@
+{
+  "ok" : true,
+  "command" : "version",
+  "store" : null,
+  "revision" : "<norm>",
+  "data" : {
+    "version" : "2.0.0-alpha.1",
+    "kernel" : "sldb-v2",
+    "bb" : "<norm>",
+    "git" : "<norm>"
+  },
+  "warnings" : [ ]
+}

@@ -12,3 +12,9 @@
    :text      text/normalizer
    :ids       ulid/minter
    :segmenter text/segmenter})
+
+(defn layer-cache
+  "A fresh memo for `sldb.kernel.standoff/layers`: an atom holding a map keyed
+   by leaf id. The host composes the memo and hands it to the kernel as an
+   argument, so the kernel keeps no global mutable state (docs/v2/03 §1)."
+  [] (atom {}))

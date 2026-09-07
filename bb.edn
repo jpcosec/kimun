@@ -1,9 +1,22 @@
-{:paths ["src" "test"]
+{:paths ["src" "resources" "test"]
  :min-bb-version "1.3.0"
  :tasks
  {:requires ([clojure.test :as t]
              [babashka.fs :as fs]
              [clojure.string :as str])
+  cli {:doc "Run the knowledge CLI in-process: bb cli stores check --format text"
+       :task (let [p (apply shell {:continue true} "bb" "-m" "knowledge.cli.main" *command-line-args*)]
+               (System/exit (:exit p)))}
+  uberjar {:doc "Build target/knowledge.jar (src + resources, main knowledge.cli.main); stamps resources/git-sha."
+           :override-builtin true
+           :task (let [sha (-> (shell {:out :string :continue true} "git" "rev-parse" "--short" "HEAD") :out str/trim)]
+                   (spit "resources/git-sha" (str (if (str/blank? sha) "dev" sha) "\n"))
+                   (fs/create-dirs "target")
+                   (shell "bb" "--classpath" "src:resources" "uberjar" "target/knowledge.jar" "-m" "knowledge.cli.main")
+                   (println "built target/knowledge.jar" (if (str/blank? sha) "(git sha: dev)" (str "(git sha: " sha ")"))))}
+  release {:doc "Build distributable bundles: bb release --platforms linux-amd64 [--local-bb] (scripts/release.clj)."
+           :task (let [p (apply shell {:continue true} "bb" "scripts/release.clj" *command-line-args*)]
+                   (System/exit (:exit p)))}
   lint {:doc "Dependency rings + docstrings (docs/v2/03 §1, §3): scripts/check_rings.clj."
         :task (shell "bb" "scripts/check_rings.clj")}
   oracle {:doc "Independent Python re-implementation of canonical-bytes checks the frozen node ids (docs/v2/tests/promises.md)."

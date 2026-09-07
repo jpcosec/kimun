@@ -1,0 +1,20 @@
+{
+  "ok" : true,
+  "command" : "stores check",
+  "store" : {
+    "name" : "golden",
+    "path" : "<norm>"
+  },
+  "revision" : "<norm>",
+  "data" : {
+    "name" : "golden",
+    "path" : "<norm>",
+    "hash-alg" : "sha-256",
+    "revisions" : 0,
+    "trees" : 0,
+    "objects" : 0,
+    "head" : "<norm>",
+    "links" : [ ]
+  },
+  "warnings" : [ ]
+}

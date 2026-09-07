@@ -1,6 +1,7 @@
 #!/usr/bin/env bb
-;; Enforces docs/v2/03-estandares-de-codigo.md §1 (dependency rings) and §3
-;; (docstrings) over src/**/*.cljc. Exit 1 on any violation.
+;; Enforces docs/v2/03-estandares-de-codigo.md §1 (dependency rings, no global
+;; mutable def in ring 0) and §3 (docstrings) over <root>/**/*.cljc for every
+;; root given on the command line (default: src). Exit 1 on any violation.
 (ns check-rings
   (:require [babashka.fs :as fs]
             [clojure.string :as str]
@@ -11,7 +12,14 @@
   "namespace prefix → set of prefixes it may require (besides itself)."
   {"sldb.kernel."  #{"clojure." "sldb.kernel."}
    "sldb.host."    #{"clojure." "sldb.kernel." "sldb.host." "babashka."}
-   "sldb.surface." #{"clojure." "sldb.kernel." "sldb.host." "sldb.surface." "babashka."}})
+   "sldb.surface." #{"clojure." "sldb.kernel." "sldb.host." "sldb.surface." "babashka."}
+   "knowledge."    #{"clojure." "sldb.kernel." "sldb.host." "sldb.surface." "knowledge."
+                     "babashka." "cheshire." "clj-yaml."}})
+
+(def mutable-constructors
+  "Heads of a `def` value form that create mutable state; forbidden in ring 0
+   (docs/v2/03 §1: \"Ningún def global mutable\")."
+  '#{atom ref agent volatile!})
 
 (defn- ring-of [ns-name]
   (some (fn [[prefix _]] (when (str/starts-with? ns-name prefix) prefix)) rings))
@@ -53,6 +61,13 @@
         :when (and (seq? m) (not (string? (last m))))]
     (str "defprotocol " (second f) " / " (first m))))
 
+(defn- global-mutable-defs [forms]
+  (for [f forms
+        :when (and (seq? f) (= 'def (first f)) (symbol? (second f)))
+        :let [v (last f)]
+        :when (and (> (count f) 2) (seq? v) (contains? mutable-constructors (first v)))]
+    (str "global mutable def in kernel: (def " (second f) " (" (first v) " …))")))
+
 (defn check-file [file]
   (let [forms (read-forms file)
         ns-form (first (filter #(and (seq? %) (= 'ns (first %))) forms))
@@ -64,17 +79,20 @@
                              :when (not (some #(str/starts-with? req %) (conj (rings ring) ns-name)))]
                          req))
         cond-in-kernel (when (and ring (= ring "sldb.kernel.") (not= ns-name "sldb.kernel.err"))
-                         (when (str/includes? (slurp (str file)) "#?") ["reader conditional in kernel"]))]
+                         (when (str/includes? (slurp (str file)) "#?") ["reader conditional in kernel"]))
+        mutable-in-kernel (when (= ring "sldb.kernel.") (global-mutable-defs forms))]
     (concat
      (when-not ring [(str ns-name ": namespace outside every ring")])
      (map #(str ns-name ": forbidden require " %) bad-requires)
      (map #(str ns-name ": " %) cond-in-kernel)
+     (map #(str ns-name ": " %) mutable-in-kernel)
      (when-not ns-doc? [(str ns-name ": ns without docstring")])
      (map #(str ns-name ": missing docstring on " %) (public-vars-without-doc forms))
      (map #(str ns-name ": missing docstring on " %) (protocol-methods-without-doc forms)))))
 
-(defn -main [& _]
-  (let [files (sort (map str (fs/glob "src" "**/*.cljc")))
+(defn -main [& roots]
+  (let [roots (if (seq roots) roots ["src"])
+        files (sort (mapcat (fn [root] (map str (fs/glob root "**/*.cljc"))) roots))
         problems (mapcat check-file files)]
     (if (seq problems)
       (do (doseq [p problems] (println "RING/DOC:" p))

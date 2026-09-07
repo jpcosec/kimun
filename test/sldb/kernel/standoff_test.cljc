@@ -58,14 +58,19 @@
 ;; ---------------------------------------------------------------- memoization by leaf id
 
 (deftest layers-are-memoized-by-leaf-id
-  (let [text (str "unique memo probe " (rand))       ; a leaf id no other test derives
+  (let [text (str "unique memo probe " (rand))
         {:keys [store ids]} (store-with [text])
-        id (ids text)]
-    (is (not (standoff/cached? id)) "not memoized before the first derivation")
-    (let [first-call (standoff/layers store id)]
-      (is (standoff/cached? id) "memoized after the first derivation")
-      (is (identical? first-call (standoff/layers store id))
-          "a second call returns the very same cached value, not a fresh derivation"))))
+        id (ids text)
+        cache (host/layer-cache)]                     ; the host composes the memo, the kernel receives it
+    (is (not (standoff/cached? cache id)) "not memoized before the first derivation")
+    (let [first-call (standoff/layers store id cache)]
+      (is (standoff/cached? cache id) "memoized after the first derivation")
+      (is (identical? first-call (standoff/layers store id cache))
+          "a second call returns the very same cached value, not a fresh derivation")
+      (is (= first-call (standoff/layers store id))
+          "without a cache the layers are recomputed and equal, never memoized")
+      (is (not (standoff/cached? nil id)) "a nil cache never memoizes")
+      (is (not (standoff/cached? (host/layer-cache) id)) "a fresh cache is independent"))))
 
 ;; ---------------------------------------------------------------- §4.1 virtual address
 

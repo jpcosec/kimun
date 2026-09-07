@@ -29,3 +29,10 @@ target/
 *.exe
 *.dll**/target/
 **/*.rs.bk
+
+# knowledge (S0)
+target/
+dist/
+.knowledge/index/
+.knowledge/session.edn
+resources/git-sha

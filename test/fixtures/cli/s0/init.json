@@ -1,0 +1,16 @@
+{
+  "ok" : true,
+  "command" : "stores init",
+  "store" : {
+    "name" : "golden",
+    "path" : "<norm>"
+  },
+  "revision" : "<norm>",
+  "data" : {
+    "path" : "<norm>",
+    "name" : "golden",
+    "actor" : "<norm>",
+    "capabilities" : "<norm>"
+  },
+  "warnings" : [ ]
+}
