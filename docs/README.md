@@ -1,6 +1,6 @@
 # Docs
 
-`v2/` holds the current direction (highest authority): `01`–`05` the kernel, `06`–`09` the `knowledge` product built on it (CLI, models, distribution, evaluator). `architecture/` keeps the previous-stage
+`v2/` holds the current direction (highest authority): `01`–`05` the kernel, `06`–`09` the `kimun` product built on it (CLI, models, distribution, evaluator). `architecture/` keeps the previous-stage
 contracts, spec2viz specs and diagrams; contradicting contracts were retired to `raw/source/architecture-retired/` on 2026-08-29 and the
 remaining ones carry a `Superseded` header where a statement no longer holds.
 

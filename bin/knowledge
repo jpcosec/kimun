@@ -1,5 +1,0 @@
-#!/bin/sh
-# Development launcher: runs the knowledge CLI from this checkout with Babashka,
-# preserving the caller's working directory (store discovery walks up from it).
-REPO="$(cd "$(dirname "$0")/.." && pwd)"
-exec bb --config "$REPO/bb.edn" -m knowledge.cli.main -- "$@"

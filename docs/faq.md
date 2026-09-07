@@ -2,7 +2,7 @@
 
 ## What is this worktree for?
 
-Direction (docs/v2), knowledge base (desk/atoms) and implementation of `knowledge`: the SLDB v2 kernel plus the product surface (CLI, models, indexes, evaluator, packaging) built on it along the "pista S" milestones (docs/v2/05 §Pista S).
+Direction (docs/v2), knowledge base (desk/atoms) and implementation of `kimun`: the SLDB v2 kernel plus the product surface (CLI, models, indexes, evaluator, packaging) built on it along the "pista S" milestones (docs/v2/05 §Pista S).
 
 ## What is intentionally out of scope here?
 
@@ -25,5 +25,5 @@ Direction (docs/v2), knowledge base (desk/atoms) and implementation of `knowledg
 
 ## How should deskops be interpreted here?
 
-- `knowledge` (this repo, formerly `sldb` v2) = data/document layer; `sldb` v1 and `kgdb` are frozen and superseded by it
+- `kimun` (this repo, formerly `sldb` v2) = data/document layer; `sldb` v1 and `kgdb` are frozen and superseded by it
 - `deskops` = workflow harness

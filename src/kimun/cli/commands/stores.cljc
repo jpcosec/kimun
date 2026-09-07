@@ -1,17 +1,17 @@
-(ns knowledge.cli.commands.stores
-  "The `knowledge stores` group (docs/v2/06 §B): `init`, `check`, `verify`
+(ns kimun.cli.commands.stores
+  "The `kimun stores` group (docs/v2/06 §B): `init`, `check`, `verify`
    and `show`. Every command is `(fn [opts ctx] envelope)` where `ctx` is
    `{:env env :cwd cwd}`; `dispatch` routes a subcommand name."
   (:require [babashka.fs :as fs]
             [clojure.string :as str]
-            [knowledge.cli.out :as out]
-            [knowledge.cli.store :as cli-store]
+            [kimun.cli.out :as out]
+            [kimun.cli.store :as cli-store]
             [sldb.kernel.store :as store]))
 
 (defn- store-ref [descriptor path] {:name (:name descriptor) :path path})
 
 (defn init
-  "`stores init`: creates the store at `--store` (if given) or `<cwd>/.knowledge`
+  "`stores init`: creates the store at `--store` (if given) or `<cwd>/.kimun`
    with `--name` and `--actor`. Data: `{:path :name :actor :capabilities}`."
   [opts {:keys [cwd]}]
   (let [dir (if (:store opts)

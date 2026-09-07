@@ -1,5 +1,5 @@
-(ns knowledge.cli.args
-  "Command-line parsing of the `knowledge` CLI over babashka.cli (docs/v2/06
+(ns kimun.cli.args
+  "Command-line parsing of the `kimun` CLI over babashka.cli (docs/v2/06
    §B): global options, positional tokens, and rejection of unknown options as
    usage errors."
   (:require [babashka.cli :as cli]
@@ -11,7 +11,7 @@
 
 (def spec
   "babashka.cli spec of the global options."
-  {:store   {:ref "PATH" :desc "Store directory (.knowledge or its project dir)"}
+  {:store   {:ref "PATH" :desc "Store directory (.kimun or its project dir)"}
    :format  {:ref "FMT" :desc "Output format: json | edn | text" :default "json" :validate formats}
    :actor   {:ref "NAME" :desc "Actor recorded in transactions (default human/$USER)"}
    :name    {:ref "NAME" :desc "Store name (stores init)"}

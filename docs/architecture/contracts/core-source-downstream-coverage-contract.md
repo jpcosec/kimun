@@ -1,4 +1,4 @@
-> **Superseded (2026-09-06).** Governed by `docs/v2/05-estado.md (pista S) and docs/v2/08-distribucion.md §1 (A4)`: the Python evaluator, its tests and the 13 anchors move to this repo in S7; `legos/knowledge` becomes `provenance`.
+> **Superseded (2026-09-06).** Governed by `docs/v2/05-estado.md (pista S) and docs/v2/08-distribucion.md §1 (A4)`: the reading half of the Python evaluator is ported to `kimun` (S4); `knowledge` v1 stays alive in its own repo and the knowledge base moves to `pron` in S7 (`docs/v2/08 §0`).
 
 # Core Source Downstream Coverage Contract
 

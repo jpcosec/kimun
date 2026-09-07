@@ -1,4 +1,4 @@
-(ns knowledge.cli.golden-test
+(ns kimun.cli.golden-test
   "Frozen CLI envelopes (test/fixtures/cli/s0/*.json): the JSON rendering of
    `version`, `stores init` and `stores check`, with volatile fields
    normalized, must match the fixtures generated once from the implementation
@@ -7,8 +7,8 @@
             [clojure.walk :as walk]
             [babashka.fs :as fs]
             [cheshire.core :as json]
-            [knowledge.cli.main :as main]
-            [knowledge.cli.out :as out]))
+            [kimun.cli.main :as main]
+            [kimun.cli.out :as out]))
 
 (def env {"USER" "golden"})
 
@@ -36,7 +36,7 @@
   (is (= (fixture "version") (rendered ["--version"] (System/getProperty "user.dir")))))
 
 (deftest golden-init-and-check
-  (let [proj (str (fs/create-temp-dir {:prefix "knowledge-golden-"}))
+  (let [proj (str (fs/create-temp-dir {:prefix "kimun-golden-"}))
         init (rendered ["stores" "init" "--name" "golden"] proj)
         check (rendered ["stores" "check"] proj)]
     (is (= (fixture "init") init))

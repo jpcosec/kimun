@@ -1,4 +1,4 @@
-# knowledge — Modelos como nodos (pista S, §C del plan)
+# kimun — Modelos como nodos (pista S, §C del plan)
 
 > Cómo un modelo de documento (lo que v1 llamaba `StructuredNLDoc`) deja de ser una clase
 > Python y pasa a ser un nodo del pool, sin tocar el kernel. Requisito del usuario, textual:
@@ -93,7 +93,7 @@ Marcadores:
 | traits `\|list`, `\|table`, `\|dict` | forma del valor: lista de items, tabla del perfil (opaco `markdown/table`), lista clave: valor |
 | `⸢py•…⸥` | **no migra** (§8): un define con `py•` se rechaza (`models/invalid`, exit 3) con el informe de qué marcadores hay que convertir a derivados (`09 §6`) |
 
-La **receta** (`knowledge.surface.models.recipe`) es una vista derivada del template ya
+La **receta** (`kimun.surface.models.recipe`) es una vista derivada del template ya
 parseado: `[{:path [..] :kind :rev|:optrev|:render :field "status" :trait :list} …]` en
 orden de documento. No se persiste: se recalcula del árbol `model/<Name>/template`.
 
@@ -138,7 +138,7 @@ explícito con nombre de campo y path del hueco: el "vacío válido" de v1 no ex
 | comando | efecto |
 |---|---|
 | `models define -f X.edn [--actor]` | valida el descriptor; si el nombre no existe: `:add-node` + posición en `models` + ingesta de `model/<Name>/template`; si existe: `:model/version`+1 y `:replace` de la posición ⇒ `supersedes` ⇒ los docs se re-anclan (`02 §6.1`) |
-| `models define --from-python mod:Class` | invoca `python -m knowledge.models export mod:Class` (`06 §9`) y sigue como `-f`; la MRO de la clase se exporta como `:base` |
+| `models define --from-python mod:Class` | invoca `python -m kimun.models export mod:Class` (`06 §9`) y sigue como `-f`; la MRO de la clase se exporta como `:base` |
 | `models show NAME [--format md\|json\|edn]` | `md` = proyección auditable: campos con tipo y default, template con marcadores resaltados, bases resueltas, versión e historial, docs que lo referencian y el estado de anclaje de cada `reference` (`intact`/`superseded`/`orphan`) |
 | `models list` | nombre, versión, nº de docs, nº de docs con anclaje no `intact` |
 | `models check [NAME]` | valida descriptores (tipos, bases existentes, `:state` coherente, template parseable) y todos los docs de cada modelo con `validate` |

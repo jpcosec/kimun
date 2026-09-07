@@ -1,35 +1,35 @@
-(ns knowledge.cli.main
-  "Entry point of the `knowledge` CLI (docs/v2/06 §B): parses the command
+(ns kimun.cli.main
+  "Entry point of the `kimun` CLI (docs/v2/06 §B): parses the command
    line, routes the first token to a command group, renders one envelope on
    stdout and exits with its code. `run` is the pure-of-process core used by
    tests; `-main` adds printing and `System/exit`."
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
-            [knowledge.cli.args :as args]
-            [knowledge.cli.commands.stores :as stores]
-            [knowledge.cli.errors :as errors]
-            [knowledge.cli.out :as out]))
+            [kimun.cli.args :as args]
+            [kimun.cli.commands.stores :as stores]
+            [kimun.cli.errors :as errors]
+            [kimun.cli.out :as out]))
 
 (def groups
   "First token → group dispatch `(fn [subcommand opts ctx] envelope)`."
   {"stores" stores/dispatch})
 
 (def usage
-  "Usage text shown by `knowledge`, `knowledge help` and `--help`."
+  "Usage text shown by `kimun`, `kimun help` and `--help`."
   (str/join "\n"
-            ["knowledge — content-addressed knowledge store (SLDB v2)"
+            ["kimun — content-addressed knowledge store (SLDB v2)"
              ""
-             "usage: knowledge <group> <command> [options]"
-             "       knowledge --version | --help"
+             "usage: kimun <group> <command> [options]"
+             "       kimun --version | --help"
              ""
              "groups:"
-             "  stores init [--name NAME]   create .knowledge/ in the working directory (or --store PATH)"
+             "  stores init [--name NAME]   create .kimun/ in the working directory (or --store PATH)"
              "  stores check                open the store (replay) and report revisions, trees, objects"
              "  stores verify               recompute the hash of every reachable object"
              "  stores show                 descriptor and heads without replay"
              ""
              "options:"
-             "  --store PATH    store directory (.knowledge or its project dir); else $KNOWLEDGE_STORE, else walk-up"
+             "  --store PATH    store directory (.kimun or its project dir); else $KIMUN_STORE, else walk-up"
              "  --format FMT    json (default) | edn | text"
              "  --actor NAME    actor recorded in transactions (default human/$USER)"
              "  --debug         print the stacktrace of an unexpected error to stderr"
@@ -68,14 +68,14 @@
 
       :else
       (out/failure :eval/not-available
-                   (str "the evaluator surface (knowledge " (str/join " " args) ") arrives in milestone S4; known groups: " (str/join ", " (sort (keys groups))))
+                   (str "the evaluator surface (kimun " (str/join " " args) ") arrives in milestone S4; known groups: " (str/join ", " (sort (keys groups))))
                    {:tokens (vec args)}
                    6))))
 
 (defn run
   "Runs `argv` with environment map `env` and working directory `cwd`; returns
    `{:envelope e :fmt fmt}` without printing or exiting. Every error becomes a
-   failure envelope through `knowledge.cli.errors/wrap`."
+   failure envelope through `kimun.cli.errors/wrap`."
   [argv env cwd]
   (let [argv (vec argv)
         parsed (errors/wrap #(args/parse argv env))]

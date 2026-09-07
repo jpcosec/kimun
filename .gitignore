@@ -30,9 +30,9 @@ target/
 *.dll**/target/
 **/*.rs.bk
 
-# knowledge (S0)
+# kimun (S0)
 target/
 dist/
-.knowledge/index/
-.knowledge/session.edn
+.kimun/index/
+.kimun/session.edn
 resources/git-sha

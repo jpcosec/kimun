@@ -1,5 +1,5 @@
-(ns knowledge.cli.out
-  "Result envelopes of the `knowledge` CLI and their rendering (docs/v2/06 §B):
+(ns kimun.cli.out
+  "Result envelopes of the `kimun` CLI and their rendering (docs/v2/06 §B):
    every command returns one envelope value, `{:ok true …}` or `{:ok false …}`,
    which `emit` renders as json, edn or text. Building an envelope never
    performs I/O; printing is the caller's job."

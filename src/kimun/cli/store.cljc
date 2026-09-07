@@ -1,7 +1,7 @@
-(ns knowledge.cli.store
-  "Locating, opening and creating the `.knowledge/` store of the CLI (docs/v2/06
+(ns kimun.cli.store
+  "Locating, opening and creating the `.kimun/` store of the CLI (docs/v2/06
    §B): discovery walks up from the working directory, `--store` and
-   `KNOWLEDGE_STORE` override it, and every open goes through
+   `KIMUN_STORE` override it, and every open goes through
    `sldb.kernel.store/open` (replay from the log) with the standard host."
   (:require [babashka.fs :as fs]
             [sldb.host.default :as host]
@@ -11,7 +11,7 @@
 
 (def dirname
   "Name of the store directory inside a project."
-  ".knowledge")
+  ".kimun")
 
 (defn descriptor-path
   "Path of `store.edn` inside store directory `dir`."
@@ -23,7 +23,7 @@
 
 (defn discover
   "Walks up from `start-dir` to the filesystem root looking for
-   `<dir>/.knowledge/store.edn`; returns the `.knowledge` path string or nil."
+   `<dir>/.kimun/store.edn`; returns the `.kimun` path string or nil."
   [start-dir]
   (loop [dir (fs/absolutize start-dir)]
     (when dir
@@ -33,8 +33,8 @@
           (recur (fs/parent dir)))))))
 
 (defn normalize-store-path
-  "A user-supplied store path: the `.knowledge` directory itself, or a project
-   directory that contains one. Returns the `.knowledge` path string."
+  "A user-supplied store path: the `.kimun` directory itself, or a project
+   directory that contains one. Returns the `.kimun` path string."
   [p]
   (let [p (fs/absolutize p)
         nested (fs/path p dirname)]
@@ -44,10 +44,10 @@
 
 (defn resolve-store
   "Store directory for `opts` (parsed options), `env` (environment map) and
-   `cwd`: `--store` > `KNOWLEDGE_STORE` > `(discover cwd)`. Nil when none."
+   `cwd`: `--store` > `KIMUN_STORE` > `(discover cwd)`. Nil when none."
   [opts env cwd]
   (cond (:store opts) (normalize-store-path (:store opts))
-        (seq (get env "KNOWLEDGE_STORE")) (normalize-store-path (get env "KNOWLEDGE_STORE"))
+        (seq (get env "KIMUN_STORE")) (normalize-store-path (get env "KIMUN_STORE"))
         :else (discover cwd)))
 
 (defn backend
@@ -62,8 +62,8 @@
   (when (or (nil? dir) (not (store? dir)))
     (err/raise :cli/no-store
                (if dir
-                 (str "no knowledge store at " dir)
-                 "no knowledge store found (no .knowledge/ here or in a parent directory, no --store, no $KNOWLEDGE_STORE): run `knowledge stores init` or pass --store PATH")
+                 (str "no kimun store at " dir)
+                 "no kimun store found (no .kimun/ here or in a parent directory, no --store, no $KIMUN_STORE): run `kimun stores init` or pass --store PATH")
                (if dir {:path (str dir)} {})))
   (let [b (backend dir)]
     {:backend b
@@ -73,24 +73,24 @@
 
 (defn default-name
   "Default store name: the project directory's name when `dir` is a
-   `.knowledge` directory, else the directory's own name."
+   `.kimun` directory, else the directory's own name."
   [dir]
   (let [p (fs/absolutize dir)]
     (str (fs/file-name (if (= dirname (str (fs/file-name p))) (fs/parent p) p)))))
 
 (defn init!
   "Creates a store at `dir` for `actor`: `sldb.kernel.store/init!` with
-   capabilities `{actor :all \"knowledge/derive\" :all \"knowledge/materialize\" :all}`,
+   capabilities `{actor :all \"kimun/derive\" :all \"kimun/materialize\" :all}`,
    then the descriptor gains `:name` (default `default-name`) and `:links []`.
    Creates `dir` when missing. Raises `:cli/store-exists` when `store.edn` is
    already there. Returns `{:path :name :actor :capabilities :descriptor}`."
   [dir {:keys [name actor]}]
   (let [dir (str (fs/absolutize dir))]
     (when (store? dir)
-      (err/raise :cli/store-exists (str "a knowledge store already exists at " dir) {:path dir}))
+      (err/raise :cli/store-exists (str "a kimun store already exists at " dir) {:path dir}))
     (fs/create-dirs dir)
     (let [b (backend dir)
-          capabilities {actor :all "knowledge/derive" :all "knowledge/materialize" :all}
+          capabilities {actor :all "kimun/derive" :all "kimun/materialize" :all}
           _ (store/init! b host/host capabilities)
           nm (or name (default-name dir))
           descriptor (assoc (store/read-descriptor b) :name nm :links [])]

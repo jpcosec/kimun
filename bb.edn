@@ -4,15 +4,15 @@
  {:requires ([clojure.test :as t]
              [babashka.fs :as fs]
              [clojure.string :as str])
-  cli {:doc "Run the knowledge CLI in-process: bb cli stores check --format text"
-       :task (let [p (apply shell {:continue true} "bb" "-m" "knowledge.cli.main" *command-line-args*)]
+  cli {:doc "Run the kimun CLI in-process: bb cli stores check --format text"
+       :task (let [p (apply shell {:continue true} "bb" "-m" "kimun.cli.main" *command-line-args*)]
                (System/exit (:exit p)))}
-  jar {:doc "Build target/knowledge.jar with the built-in `bb uberjar` (src + resources, main knowledge.cli.main); stamps resources/git-sha. Named `jar` on purpose: a task named `uberjar` would shadow the built-in it calls and recurse."
+  jar {:doc "Build target/kimun.jar with the built-in `bb uberjar` (src + resources, main kimun.cli.main); stamps resources/git-sha. Named `jar` on purpose: a task named `uberjar` would shadow the built-in it calls and recurse."
        :task (let [sha (-> (shell {:out :string :continue true} "git" "rev-parse" "--short" "HEAD") :out str/trim)]
                    (spit "resources/git-sha" (str (if (str/blank? sha) "dev" sha) "\n"))
                    (fs/create-dirs "target")
-                   (shell "bb" "--classpath" "src:resources" "uberjar" "target/knowledge.jar" "-m" "knowledge.cli.main")
-                   (println "built target/knowledge.jar" (if (str/blank? sha) "(git sha: dev)" (str "(git sha: " sha ")"))))}
+                   (shell "bb" "--classpath" "src:resources" "uberjar" "target/kimun.jar" "-m" "kimun.cli.main")
+                   (println "built target/kimun.jar" (if (str/blank? sha) "(git sha: dev)" (str "(git sha: " sha ")"))))}
   release {:doc "Build distributable bundles: bb release --platforms linux-amd64 [--local-bb] (scripts/release.clj)."
            :task (let [p (apply shell {:continue true} "bb" "scripts/release.clj" *command-line-args*)]
                    (System/exit (:exit p)))}

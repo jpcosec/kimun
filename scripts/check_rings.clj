@@ -13,7 +13,7 @@
   {"sldb.kernel."  #{"clojure." "sldb.kernel."}
    "sldb.host."    #{"clojure." "sldb.kernel." "sldb.host." "babashka."}
    "sldb.surface." #{"clojure." "sldb.kernel." "sldb.host." "sldb.surface." "babashka."}
-   "knowledge."    #{"clojure." "sldb.kernel." "sldb.host." "sldb.surface." "knowledge."
+   "kimun."    #{"clojure." "sldb.kernel." "sldb.host." "sldb.surface." "kimun."
                      "babashka." "cheshire." "clj-yaml."}})
 
 (def mutable-constructors

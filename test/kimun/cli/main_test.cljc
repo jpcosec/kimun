@@ -1,12 +1,12 @@
-(ns knowledge.cli.main-test
+(ns kimun.cli.main-test
   "The CLI entry point: version, usage, formats and the not-yet-available
    evaluator surface (docs/v2/06 §B)."
   (:require [clojure.test :refer [deftest is testing]]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [knowledge.cli.main :as main]
-            [knowledge.cli.out :as out]))
+            [kimun.cli.main :as main]
+            [kimun.cli.out :as out]))
 
 (def env {"USER" "tester"})
 (def cwd (System/getProperty "user.dir"))
@@ -30,7 +30,7 @@
     (is (= 6 (:exit envelope)))
     (is (= 6 (out/exit-code envelope)))
     (is (= "eval/not-available" (get-in envelope [:error :type])))
-    (is (str/includes? (get-in envelope [:error :message]) "knowledge find foo"))
+    (is (str/includes? (get-in envelope [:error :message]) "kimun find foo"))
     (is (= ["find" "foo"] (get-in envelope [:error :data :tokens])))))
 
 (deftest edn-format-round-trips-the-envelope
@@ -71,7 +71,7 @@
       (is (true? (:ok envelope)))
       (is (= "text" fmt))
       (is (str/includes? (get-in envelope [:data :usage]) "stores init"))
-      (is (str/includes? (out/emit envelope fmt) "usage: knowledge")))))
+      (is (str/includes? (out/emit envelope fmt) "usage: kimun")))))
 
 (deftest json-format-renders-namespaced-types-as-strings
   (let [{:keys [envelope]} (run "find" "x")

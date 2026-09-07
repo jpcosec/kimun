@@ -1,4 +1,4 @@
-# knowledge (SLDB v2) — documentos de dirección
+# kimun (SLDB v2) — documentos de dirección
 
 Condensación de la reorientación del 2026-08-29: de "kernel para documentos estructurados"
 a "base de datos de lenguaje estructurado sobre el modelo S/M/G".
@@ -9,7 +9,7 @@ a "base de datos de lenguaje estructurado sobre el modelo S/M/G".
 | `02-sustrato-computacional.md` | estructuras de datos, invariantes, runtime, y roadmap por analogía con el modelo de objetos de Git |
 | `03-estandares-de-codigo.md` | anillos de dependencia (`bb lint`), compartimentación, docstrings, estándares de test |
 | `04-superficie-markdown.md` | perfil SLDB-MD: CST lossless, AST neutro con marcas por grafema, render canónico, mapeo al pool, opacos, informe de direccionabilidad |
-| `06-superficies-y-cli.md` | producto `knowledge`: superficie CLI (grupos v1 + evaluador), envelope, exit codes, store `.knowledge/`, índices y efectos |
+| `06-superficies-y-cli.md` | producto `kimun`: superficie CLI (grupos v1 + evaluador), envelope, exit codes, store `.kimun/`, índices y efectos |
 | `07-modelos-como-nodos.md` | modelos como descriptores EDN opacos en el árbol `models`: definición, versionado por `supersedes`, proyección auditable, frontmatter |
 | `08-distribucion.md` | topología de repos (A1–A4), toolchain bb, `bb jar` / `bb release`, layout de bundle y launcher, workflows y gate humano de publicación |
 | `09-evaluador-anclado.md` | evaluador de s-expresiones anclado (port del Python), escritura por plan, derivados y propagación por hash |

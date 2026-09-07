@@ -1,7 +1,8 @@
-# knowledge
+# kimun
 
 **Content-addressed knowledge store with a CLI** — the successor of `sldb` (v1, Python), `kgdb`
-and the anchored evaluator of `legos/knowledge`, merged into one product. The kernel is pure
+and, for reading, of the anchored evaluator `knowledge` (v1, Python), merged into one product.
+The name is Mapudungun (*kimün*, knowledge). The kernel is pure
 Clojure (`.cljc`) running on Babashka: a pool of content-addressed immutable nodes (S/M/G),
 trees of positions as indexes, typed edges with evidence, succession by `supersedes`, derived
 anchor states, reconciliation of external edits. Markdown documents are projections of it.
@@ -13,15 +14,15 @@ Status: **2.0.0-alpha.1** — milestone S0 (repo, `stores` CLI group, packaging)
 
 ```bash
 bb lint && bb test && bb oracle     # rings/docstrings, suite, canonical-bytes oracle
-bin/knowledge --version             # dev launcher (needs bb ≥ 1.13 on PATH)
-bin/knowledge stores init --name my-kb
-bin/knowledge stores check --format text
-bb jar                              # target/knowledge.jar (built-in bb uberjar)
-bb release --local-bb --platforms linux-amd64   # dist/knowledge-<ver>-<plat>.tar.gz
+bin/kimun --version             # dev launcher (needs bb ≥ 1.13 on PATH)
+bin/kimun stores init --name my-kb
+bin/kimun stores check --format text
+bb jar                              # target/kimun.jar (built-in bb uberjar)
+bb release --local-bb --platforms linux-amd64   # dist/kimun-<ver>-<plat>.tar.gz
 ```
 
-A release bundle needs nothing on the target machine: `bin/knowledge` runs the bundled `bb`
-on `lib/knowledge.jar`. Every command prints one envelope (`--format json|edn|text`) and exits
+A release bundle needs nothing on the target machine: `bin/kimun` runs the bundled `bb`
+on `lib/kimun.jar`. Every command prints one envelope (`--format json|edn|text`) and exits
 with a documented code (`docs/v2/06`).
 
 ## Read first
@@ -34,7 +35,7 @@ with a documented code (`docs/v2/06`).
 ## Layout
 
 - `src/sldb/{kernel,host,surface}/` — rings 0/1/2 of the kernel (`bb lint` enforces the rings)
-- `src/knowledge/cli/` — the CLI (ring 2, `knowledge.*` may require `sldb.*`, never the reverse)
+- `src/kimun/cli/` — the CLI (ring 2, `kimun.*` may require `sldb.*`, never the reverse)
 - `test/`, `test/fixtures/cli/` — suite and golden envelopes
 - `scripts/` — `check_rings.clj` (lint), `canon_oracle.py` (oracle), `release.clj` (bundles)
 - `release.edn` — pinned Babashka version, platform matrix and asset digests
@@ -43,6 +44,13 @@ with a documented code (`docs/v2/06`).
 
 ## Lineage
 
-Cloned from `jpcosec/sldb` branch `refactor-target` (history preserved). `sldb` v1 and `kgdb`
-are frozen (`v1-frozen`); `legos/knowledge` becomes `provenance` once the evaluator lands here
-(milestone S7). License: MIT.
+Cloned from `jpcosec/sldb` branch `refactor-target` (history preserved). Three things carry
+the word "knowledge" around here; they are distinct (`docs/v2/08 §0`):
+
+| name | what | repo |
+|---|---|---|
+| `kimun` | this product: SLDB v2 kernel + models + anchored evaluator, binary `kimun` | `jpcosec/kimun` |
+| `knowledge` (v1) | the Python evaluator over `.sldb` v1 + kgdb, pip `knowledge`, script `knowledge-cli`; alive, developed in parallel | `jpcosec/knowledge` |
+| `pron` | the provenance knowledge base (atoms, specs, corpus) both tools operate on; today it shares a repo with `knowledge` v1, split in S7 | `jpcosec/pron` |
+
+`sldb` v1 and `kgdb` are frozen (`v1-frozen`). License: MIT.

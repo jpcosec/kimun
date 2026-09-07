@@ -1,7 +1,7 @@
-(ns knowledge.cli.release-test
+(ns kimun.cli.release-test
   "Packaging (docs/v2/08 §4): `bb release --local-bb` produces the bundle layout,
    the extracted tarball runs without `bb` on PATH, its `--version` equals the
-   in-process one, and `stores init` works from it. Builds target/knowledge.jar
+   in-process one, and `stores init` works from it. Builds target/kimun.jar
    once if absent; spawns one bb at a time."
   (:require [clojure.test :refer [deftest is testing]]
             [babashka.fs :as fs]
@@ -10,10 +10,10 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [knowledge.cli.main :as main]))
+            [kimun.cli.main :as main]))
 
 (def root (str (fs/absolutize ".")))
-(def jar (str (fs/path root "target" "knowledge.jar")))
+(def jar (str (fs/path root "target" "kimun.jar")))
 (def clean-env {"PATH" "/usr/bin:/bin"})
 
 (defn- ensure-jar! []
@@ -37,7 +37,7 @@
 
 (deftest local-bb-release-bundle-runs-without-bb-on-path
   (ensure-jar!)
-  (fs/with-temp-dir [tmp {:prefix "knowledge-release"}]
+  (fs/with-temp-dir [tmp {:prefix "kimun-release"}]
     (let [out (str (fs/path tmp "dist"))
           summary (release! out)
           [bundle] (:bundles summary)
@@ -47,9 +47,9 @@
         (is (= "2.0.0-alpha.1" (:version summary)))
         (is (= (str/trim (slurp (io/resource "VERSION"))) (:version summary)))
         (is (= "linux-amd64" (:platform bundle)))
-        (doseq [f ["bin/knowledge" "bin/knowledge.cmd" "lib/bb" "lib/knowledge.jar" "VERSION" "LICENSE"]]
+        (doseq [f ["bin/kimun" "bin/kimun.cmd" "lib/bb" "lib/kimun.jar" "VERSION" "LICENSE"]]
           (is (fs/exists? (fs/path dir f)) f))
-        (is (fs/executable? (fs/path dir "bin" "knowledge")))
+        (is (fs/executable? (fs/path dir "bin" "kimun")))
         (is (fs/executable? (fs/path dir "lib" "bb")))
         (is (= (str (:version summary) "\n") (slurp (str (fs/path dir "VERSION")))))
         (is (str/ends-with? archive ".tar.gz"))
@@ -62,7 +62,7 @@
         (let [ext (str (fs/path tmp "ext"))
               _ (fs/create-dirs ext)
               _ (p/shell {:out :string} "tar" "-xzf" archive "-C" ext)
-              launcher (str (fs/path ext (fs/file-name dir) "bin" "knowledge"))
+              launcher (str (fs/path ext (fs/file-name dir) "bin" "kimun"))
               {:keys [exit out ms]} (run-bundle launcher ext "--version")
               envelope (json/parse-string out true)
               in-process (get-in (main/run ["--version"] {} root) [:envelope :data])]
@@ -74,28 +74,28 @@
           (testing "a symlink to the launcher (~/.local/bin style) still finds the bundle"
             (let [bindir (str (fs/path tmp "home-bin"))
                   _ (fs/create-dirs bindir)
-                  link (str (fs/path bindir "knowledge"))
+                  link (str (fs/path bindir "kimun"))
                   _ (fs/create-sym-link link launcher)
                   {:keys [exit out]} (run-bundle link ext "--version")]
               (is (zero? exit))
               (is (= in-process (:data (json/parse-string out true))))))
-          (testing "`--` keeps --help for knowledge, not bb"
+          (testing "`--` keeps --help for kimun, not bb"
             (let [{:keys [exit out]} (run-bundle launcher ext "--help")]
               (is (zero? exit))
-              (is (str/includes? out "usage: knowledge"))))
+              (is (str/includes? out "usage: kimun"))))
           (testing "stores init / check from the bundle"
             (let [proj (str (fs/path tmp "proj"))
                   _ (fs/create-dirs proj)
                   init (run-bundle launcher proj "stores" "init" "--name" "demo")
                   check (run-bundle launcher proj "stores" "check")]
               (is (zero? (:exit init)) (:err init))
-              (is (fs/exists? (fs/path proj ".knowledge" "store.edn")))
+              (is (fs/exists? (fs/path proj ".kimun" "store.edn")))
               (is (= "demo" (get-in (json/parse-string (:out init) true) [:data :name])))
               (is (zero? (:exit check)))
               (is (= 0 (get-in (json/parse-string (:out check) true) [:data :revisions]))))))))))
 
 (deftest release-rejects-unknown-platform-and-version-drift
-  (fs/with-temp-dir [tmp {:prefix "knowledge-release-neg"}]
+  (fs/with-temp-dir [tmp {:prefix "kimun-release-neg"}]
     (let [r (p/shell {:dir root :out :string :err :string :continue true}
                      "bb" "scripts/release.clj" "--local-bb" "--platforms" "amiga-68k"
                      "--out" (str tmp) "--jar" jar)]

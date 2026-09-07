@@ -1,9 +1,9 @@
 #!/usr/bin/env bb
-;; Builds distributable bundles of `knowledge` (docs/v2/08 §3–§5):
-;;   bb release [--platforms linux-amd64,macos-aarch64] [--out dist] [--jar target/knowledge.jar]
+;; Builds distributable bundles of `kimun` (docs/v2/08 §3–§5):
+;;   bb release [--platforms linux-amd64,macos-aarch64] [--out dist] [--jar target/kimun.jar]
 ;;              [--local-bb] [--pin]
-;; Per platform: <out>/knowledge-<version>-<platform>/{bin/knowledge, bin/knowledge.cmd,
-;; lib/bb, lib/knowledge.jar, VERSION, LICENSE}, an archive (.tar.gz, .zip on windows) and
+;; Per platform: <out>/kimun-<version>-<platform>/{bin/kimun, bin/kimun.cmd,
+;; lib/bb, lib/kimun.jar, VERSION, LICENSE}, an archive (.tar.gz, .zip on windows) and
 ;; <out>/SHA256SUMS. `--local-bb` copies the babashka found on PATH instead of downloading
 ;; the pinned asset (tests, offline builds). `--pin` downloads every asset and rewrites the
 ;; sha256 map of release.edn. Prints one EDN summary on stdout; exit 2 on a usage or
@@ -42,9 +42,9 @@
 
 (def posix-launcher
   "#!/bin/sh
-# knowledge launcher: bundled babashka + uberjar, located relative to this file.
-# Follows symlinks (e.g. ~/.local/bin/knowledge -> <bundle>/bin/knowledge).
-# `--` keeps every argument for knowledge (bb would otherwise take --version/--help/version).
+# kimun launcher: bundled babashka + uberjar, located relative to this file.
+# Follows symlinks (e.g. ~/.local/bin/kimun -> <bundle>/bin/kimun).
+# `--` keeps every argument for kimun (bb would otherwise take --version/--help/version).
 SELF=\"$0\"
 while [ -h \"$SELF\" ]; do
   LINKDIR=\"$(cd \"$(dirname \"$SELF\")\" && pwd)\"
@@ -52,11 +52,11 @@ while [ -h \"$SELF\" ]; do
   case \"$SELF\" in /*) ;; *) SELF=\"$LINKDIR/$SELF\" ;; esac
 done
 DIR=\"$(cd \"$(dirname \"$SELF\")/..\" && pwd)\"
-exec \"$DIR/lib/bb\" --jar \"$DIR/lib/knowledge.jar\" -- \"$@\"
+exec \"$DIR/lib/bb\" --jar \"$DIR/lib/kimun.jar\" -- \"$@\"
 ")
 
 (def cmd-launcher
-  "@echo off\r\nrem knowledge launcher (Windows): bundled bb.exe + uberjar, relative to this file.\r\nset \"DIR=%~dp0..\"\r\n\"%DIR%\\lib\\bb.exe\" --jar \"%DIR%\\lib\\knowledge.jar\" -- %*\r\n")
+  "@echo off\r\nrem kimun launcher (Windows): bundled bb.exe + uberjar, relative to this file.\r\nset \"DIR=%~dp0..\"\r\n\"%DIR%\\lib\\bb.exe\" --jar \"%DIR%\\lib\\kimun.jar\" -- %*\r\n")
 
 (defn- download! [url dest]
   (fs/create-dirs (fs/parent dest))
@@ -94,7 +94,7 @@ exec \"$DIR/lib/bb\" --jar \"$DIR/lib/knowledge.jar\" -- \"$@\"
 
 (defn- bundle!
   [{:keys [version] :as cfg} platform {:keys [out jar local-bb pin]}]
-  (let [name (str "knowledge-" version "-" (clojure.core/name platform))
+  (let [name (str "kimun-" version "-" (clojure.core/name platform))
         dir (fs/path out name)
         bin (fs/path dir "bin") lib (fs/path dir "lib")
         bb-name (if (windows? platform) "bb.exe" "bb")]
@@ -105,12 +105,12 @@ exec \"$DIR/lib/bb\" --jar \"$DIR/lib/knowledge.jar\" -- \"$@\"
                    (let [{:keys [archive]} (pinned-bb! cfg platform out pin)]
                      (extract-bb! archive (fs/path out ".cache" (str "bb-" (clojure.core/name platform))) platform)))]
       (fs/copy bb-src (fs/path lib bb-name) {:replace-existing true}))
-    (fs/copy jar (fs/path lib "knowledge.jar") {:replace-existing true})
-    (spit (str (fs/path bin "knowledge")) posix-launcher)
-    (spit (str (fs/path bin "knowledge.cmd")) cmd-launcher)
+    (fs/copy jar (fs/path lib "kimun.jar") {:replace-existing true})
+    (spit (str (fs/path bin "kimun")) posix-launcher)
+    (spit (str (fs/path bin "kimun.cmd")) cmd-launcher)
     (spit (str (fs/path dir "VERSION")) (str version "\n"))
     (fs/copy (fs/path root "LICENSE") (fs/path dir "LICENSE") {:replace-existing true})
-    (doseq [f [(fs/path bin "knowledge") (fs/path lib bb-name)]]
+    (doseq [f [(fs/path bin "kimun") (fs/path lib bb-name)]]
       (try (fs/set-posix-file-permissions f "rwxr-xr-x") (catch Exception _ nil)))
     (let [archive (if (windows? platform)
                     (let [z (fs/path out (str name ".zip"))]
@@ -145,10 +145,10 @@ exec \"$DIR/lib/bb\" --jar \"$DIR/lib/knowledge.jar\" -- \"$@\"
                     (:platforms cfg))
         _ (doseq [p platforms] (when-not (all p) (fail 2 "unknown platform" (name p) "(known:" (str/join "," (map name (:platforms cfg))) ")")))
         out (str (fs/absolutize (or (:out opts) (fs/path root "dist"))))
-        jar (str (fs/absolutize (or (:jar opts) (fs/path root "target" "knowledge.jar"))))]
+        jar (str (fs/absolutize (or (:jar opts) (fs/path root "target" "kimun.jar"))))]
     (fs/create-dirs out)
     ;; Without --jar the jar is always rebuilt from the working tree: a stale
-    ;; target/knowledge.jar would silently ship old code. --jar means "use this one".
+    ;; target/kimun.jar would silently ship old code. --jar means "use this one".
     (if (:jar opts)
       (when-not (fs/exists? jar) (fail 2 "jar not found:" jar))
       (shell {:dir root :out :string} "bb" "jar"))

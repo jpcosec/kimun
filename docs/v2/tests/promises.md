@@ -180,20 +180,20 @@ Leyenda: `ok` probado · `oracle` probado además por una implementación indepe
 
 Bugs de kernel encontrados por el hito 4: el modelo "un padre por nodo por árbol" no podía representar listas (items idénticos) → árboles de posiciones (`atom-decision-trees-are-trees-of-positions-git-like`).
 
-## Pista S0 — CLI `knowledge` y distribución (docs/v2/06, 08)
+## Pista S0 — CLI `kimun` y distribución (docs/v2/06, 08)
 
 | promesa | test |
 |---|---|
-| `knowledge --version` lee `resources/VERSION`; `version` es alias | cli/main_test/version-matches-resources-VERSION |
+| `kimun --version` lee `resources/VERSION`; `version` es alias | cli/main_test/version-matches-resources-VERSION |
 | envelope `{:ok :command :store :revision :data :warnings}` / `{:ok false :error :exit}` en json/edn/text | cli/main_test/edn-format-round-trips-the-envelope, text-format-is-human-readable, json-format-renders-namespaced-types-as-strings |
 | primer token desconocido ⇒ superficie del evaluador (stub `:eval/not-available`, exit 6 hasta S4) | cli/main_test/unknown-first-token-is-the-evaluator-stub |
 | opción desconocida / `--format` inválido / valor ausente ⇒ exit 6 | cli/main_test/unknown-option-is-a-usage-error |
-| `stores init` crea `.knowledge/{store.edn,objects}` con `:links []`; doble init ⇒ exit 5 | cli/stores_test |
-| discovery `--store` > `KNOWLEDGE_STORE` > walk-up; sin store ⇒ exit 5 con path | cli/stores_test |
+| `stores init` crea `.kimun/{store.edn,objects}` con `:links []`; doble init ⇒ exit 5 | cli/stores_test |
+| discovery `--store` > `KIMUN_STORE` > walk-up; sin store ⇒ exit 5 con path | cli/stores_test |
 | `stores verify` detecta objeto corrupto ⇒ `:bad`, exit 5 | cli/stores_test |
 | salida estable de `version/init/check` | cli/golden_test + `test/fixtures/cli/s0/*.json` |
-| anillo `knowledge.*` y regla "sin `def` mutable en anillo 0" | lint_test |
-| `bb release --local-bb` produce `bin/knowledge, bin/knowledge.cmd, lib/bb, lib/knowledge.jar, VERSION, LICENSE`, tar.gz y `SHA256SUMS` | cli/release_test/local-bb-release-bundle-runs-without-bb-on-path |
+| anillo `kimun.*` y regla "sin `def` mutable en anillo 0" | lint_test |
+| `bb release --local-bb` produce `bin/kimun, bin/kimun.cmd, lib/bb, lib/kimun.jar, VERSION, LICENSE`, tar.gz y `SHA256SUMS` | cli/release_test/local-bb-release-bundle-runs-without-bb-on-path |
 | el tarball corre con `PATH=/usr/bin:/bin`; `--version` == in-process; `--` preserva `--help`; `stores init/check` desde el bundle; arranque < 1.5 s | cli/release_test/local-bb-release-bundle-runs-without-bb-on-path |
 | plataforma desconocida ⇒ exit 2 | cli/release_test/release-rejects-unknown-platform-and-version-drift |
 

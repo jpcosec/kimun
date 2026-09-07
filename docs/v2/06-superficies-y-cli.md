@@ -1,7 +1,7 @@
-# knowledge — Superficies y CLI (pista S, §B del plan)
+# kimun — Superficies y CLI (pista S, §B del plan)
 
-> Qué expone el producto por encima del kernel: el binario `knowledge`, su envelope, sus
-> códigos de salida, el directorio `.knowledge/` y el mapeo completo de la CLI v1 de sldb a
+> Qué expone el producto por encima del kernel: el binario `kimun`, su envelope, sus
+> códigos de salida, el directorio `.kimun/` y el mapeo completo de la CLI v1 de sldb a
 > la v2. El sustrato está en `docs/v2/02`; los modelos en `07`; la distribución en `08`; el
 > evaluador en `09`. Autoridad: por debajo de `01`–`04`, por encima de `05` y de cualquier
 > contrato de `docs/architecture/` (que este documento supersede: `cli-parity-contract`,
@@ -9,7 +9,7 @@
 
 ## 1. Enunciado del producto
 
-`knowledge` es **un solo producto** que reúne tres cosas que hoy viven separadas: el
+`kimun` es **un solo producto** que reúne tres cosas que hoy viven separadas: el
 evaluador de s-expressions anclado (`legos/knowledge`, Python, solo lectura), la CLI de sldb
 v1 (Python, markdown como verdad) y el grafo de kgdb (networkx). El kernel es SLDB v2
 (`docs/v2/02`): pool content-addressed, sucesión, aristas con evidencia, planes EDN.
@@ -17,8 +17,8 @@ v1 (Python, markdown como verdad) y el grafo de kgdb (networkx). El kernel es SL
 Dos superficies, un solo camino:
 
 ```
-knowledge next task --summary          ← evaluador anclado (arriba, docs/v2/09)
-knowledge docs track desk/tasks/x.md   ← vocabulario v1 (abajo, este documento)
+kimun next task --summary          ← evaluador anclado (arriba, docs/v2/09)
+kimun docs track desk/tasks/x.md   ← vocabulario v1 (abajo, este documento)
               │ ambas producen un TransactionPlan o una consulta sobre el índice
               ▼
         sldb.kernel.*  (docs/v2/02)     ← sin puerta lateral
@@ -34,13 +34,13 @@ knowledge docs track desk/tasks/x.md   ← vocabulario v1 (abajo, este documento
 
 ## 2. Anillo y mapa de namespaces
 
-`knowledge.*` es **anillo 2**, al lado de `sldb.surface.*` (`03 §1`). Reglas que
+`kimun.*` es **anillo 2**, al lado de `sldb.surface.*` (`03 §1`). Reglas que
 `scripts/check_rings.clj` hace cumplir:
 
 | regla | detalle |
 |---|---|
-| `knowledge.*` puede requerir | `clojure.*`, `sldb.kernel.*`, `sldb.host.*`, `sldb.surface.*`, `knowledge.*`, `babashka.*`, `cheshire.*`, `clj-yaml.*` |
-| nunca al revés | ningún `sldb.*` requiere `knowledge.*` |
+| `kimun.*` puede requerir | `clojure.*`, `sldb.kernel.*`, `sldb.host.*`, `sldb.surface.*`, `kimun.*`, `babashka.*`, `cheshire.*`, `clj-yaml.*` |
+| nunca al revés | ningún `sldb.*` requiere `kimun.*` |
 | reader conditionals e I/O | permitidos en anillo 2 (la CLI es un host) |
 | anillo 0 | nuevo: **ningún `def` global mutable** (`atom`/`ref`/`agent`/`volatile!`) en `sldb.kernel.*`; la caché de `sldb.kernel.standoff` la aporta el llamante y la compone `sldb.host.default/layer-cache` |
 
@@ -48,19 +48,19 @@ Se conservan `sldb.kernel.*`, `sldb.host.*` y `sldb.surface.markdown.*` con sus 
 el kernel no se renombra al renombrar el producto.
 
 ```
-knowledge.cli.{main,args,out,errors,store}                         ; S0
-knowledge.cli.commands.{stores}                                    ; S0
-knowledge.cli.commands.{models,docs,fields,sections,find,graph,
+kimun.cli.{main,args,out,errors,store}                         ; S0
+kimun.cli.commands.{stores}                                    ; S0
+kimun.cli.commands.{models,docs,fields,sections,find,graph,
                         serve,derive,status,migrate,anchors}       ; S1–S6
-knowledge.surface.models.{descriptor,recipe,extract,render,validate}   ; S1 (07)
-knowledge.surface.edit                                             ; S2 (09 §7)
-knowledge.surface.index.{build,cache,where,address,search,sections,graph} ; S3
-knowledge.surface.effects.{outbox,runner,sci}                      ; S5
-knowledge.surface.eval.{reader,anchors,desugar,resolve,core,read,write,session} ; S4/S5 (09)
-knowledge.surface.http                                             ; S6
+kimun.surface.models.{descriptor,recipe,extract,render,validate}   ; S1 (07)
+kimun.surface.edit                                             ; S2 (09 §7)
+kimun.surface.index.{build,cache,where,address,search,sections,graph} ; S3
+kimun.surface.effects.{outbox,runner,sci}                      ; S5
+kimun.surface.eval.{reader,anchors,desugar,resolve,core,read,write,session} ; S4/S5 (09)
+kimun.surface.http                                             ; S6
 ```
 
-`knowledge.cli.main/-main` solo despacha; cada `commands.*` recibe `{:store :args :opts}` y
+`kimun.cli.main/-main` solo despacha; cada `commands.*` recibe `{:store :args :opts}` y
 devuelve datos; `cli.out` los imprime; `cli.errors` traduce `ex-info` a envelope y exit.
 
 ## 3. Envelope y códigos de salida
@@ -68,7 +68,7 @@ devuelve datos; `cli.out` los imprime; `cli.errors` traduce `ex-info` a envelope
 Todo comando escribe **un** valor a stdout con `--format json|edn|text` (default `json`):
 
 ```clojure
-{:ok true  :command "stores/check" :store {:name "legos" :path ".knowledge"}
+{:ok true  :command "stores/check" :store {:name "legos" :path ".kimun"}
  :revision "<rev-id>|nil" :data {...} :warnings []}
 {:ok false :error {:type "store/corrupt-object" :message "…" :data {...}} :exit 5}
 ```
@@ -93,10 +93,10 @@ Todo comando escribe **un** valor a stdout con `--format json|edn|text` (default
 Un exit distinto de 0 siempre lleva `:ok false` y el `:exit` repetido en el envelope, de modo
 que un cliente que solo lee stdout no necesita el código del proceso.
 
-## 4. El store `.knowledge/`
+## 4. El store `.kimun/`
 
 ```
-.knowledge/
+.kimun/
   store.edn      ; descriptor del kernel (02 §8.1) + :name + :links + :capabilities   canónico
   objects/       ; CAS                                                               canónico
   log.edn        ; una Transaction por línea                                          canónico
@@ -109,22 +109,22 @@ que un cliente que solo lee stdout no necesita el código del proceso.
 ```clojure
 ;; store.edn
 {:format-version 1 :hash-alg "sha-256" :name "legos"
- :links [{:name "hum" :path "../hum-ecosystem/.knowledge"}]        ; rutas RELATIVAS al store
+ :links [{:name "hum" :path "../hum-ecosystem/.kimun"}]        ; rutas RELATIVAS al store
  :capabilities {"human/jp" :all
                 "agent/claude" #{{:op :add-node} {:op :add-edge} {:op :new-tree}}
-                "knowledge/derive" #{{:op :add-node} {:op :add-edge} {:op :replace}}
-                "knowledge/materialize" #{}}}
+                "kimun/derive" #{{:op :add-node} {:op :add-edge} {:op :replace}}
+                "kimun/materialize" #{}}}
 ```
 
-- **Discovery**: `--store <dir>` > `KNOWLEDGE_STORE` > walk-up desde el cwd buscando
-  `.knowledge/`. Sin store ⇒ `cli/no-store` (exit 5) con el path desde el que se buscó.
-- **Coexistencia**: `.knowledge/` convive con `.sldb/` v1 hasta `migrate --from-v1`
+- **Discovery**: `--store <dir>` > `KIMUN_STORE` > walk-up desde el cwd buscando
+  `.kimun/`. Sin store ⇒ `cli/no-store` (exit 5) con el path desde el que se buscó.
+- **Coexistencia**: `.kimun/` convive con `.sldb/` v1 hasta `migrate --from-v1`
   (S2). Nada de v2 lee `.sldb/`.
 - **Links** (`stores link`): un store federado se nombra y se localiza por ruta relativa;
   un documento federado es el par `(store, tree-id)`. No hay espejos de modelos: el modelo
   del doc federado se lee del store que lo posee.
 - **Capabilities por actor**: `human/<user>`, `agent/<name>`, y los actores internos
-  `knowledge/derive` (motor de derivados) y `knowledge/materialize` (runner del outbox, que
+  `kimun/derive` (motor de derivados) y `kimun/materialize` (runner del outbox, que
   no escribe en el grafo: `02 §10` inv. 11). El chequeo 5 del plan (`02 §5.1`) decide; la
   CLI solo lo traduce a exit 7.
 
@@ -134,7 +134,7 @@ Piso de paridad fijado por el usuario: store core + modo directo + `find`/`--whe
 direcciones/`--global` + links/transclusión/predicates + `serve` + export/query de grafo.
 La columna "vicio eliminado" nombra el defecto de v1 que **no** se copia y cómo.
 
-| v1 (sldb) | v2 (knowledge) | hito | vicio eliminado / cómo |
+| v1 (sldb) | v2 (kimun) | hito | vicio eliminado / cómo |
 |---|---|---|---|
 | `stores init` | `stores init [--name] [--actor]` | S0 | migración implícita al abrir → `init` es explícito y falla si ya existe (`cli/store-exists`, 5) |
 | `stores add`, `store update` | `stores link NAME PATH` | S3 | rutas absolutas en `store.json` → ruta relativa al store, validada al abrir |
@@ -142,7 +142,7 @@ La columna "vicio eliminado" nombra el defecto de v1 que **no** se copia y cómo
 | — | `stores verify` (recomputa hashes alcanzables, `02 §3.1`) | S0 | nuevo: corrupción nombrada por objeto (`:bad`, exit 5) |
 | `stores list`, `store show` | `stores show` | S0 | — |
 | `stores semantic-map` | `rebuild-indexes` | S3 | índices que se escribían en cada lectura → solo reconstruye bajo orden; leer nunca escribe |
-| `stores semantic-export`, `query` | `graph export\|snapshot\|query\|edges` | S3 | rutas absolutas en el export → `store` relativo, `producer knowledge`, contrato `sldb_kgdb_semantic_export` **v2**; `direction` estaba declarado y sin implementar → implementado; absorbe kgdb (`--id-scheme sldb` para ontology) |
+| `stores semantic-export`, `query` | `graph export\|snapshot\|query\|edges` | S3 | rutas absolutas en el export → `store` relativo, `producer kimun`, contrato `sldb_kgdb_semantic_export` **v2**; `direction` estaba declarado y sin implementar → implementado; absorbe kgdb (`--id-scheme sldb` para ontology) |
 | `models add\|update` (Python `StructuredNLDoc`) | `models define -f X.edn` / `--from-python mod:Class` | S1 | modelo = clase Python importada → modelo = **datos** en el árbol (`07`); `update` = `:replace` ⇒ `supersedes` |
 | `models list\|show\|validate\|template\|schema\|fields` | `models list`, `models show [--format md]`, `models check`, `models history` | S1 | `show` era código → proyección auditable (`07 §6`) |
 | `extract`, `render`, `validate` (directo) | `extract`, `render`, `validate` (directo, sin store) | S1 | regex a mano sobre YAML → CST/AST + `clj-yaml`; campo `rev` ausente ⇒ error explícito, nunca `None` silencioso |
@@ -178,7 +178,7 @@ comandos:
 
 ## 7. Comandos S0 y nuevos
 
-S0 entrega `knowledge --version`, `knowledge stores init|check|verify|show`, `--format`,
+S0 entrega `kimun --version`, `kimun stores init|check|verify|show`, `--format`,
 `--store`, `--debug`. Cualquier primer token que no sea grupo conocido delega al evaluador
 (stub exit 6 hasta S4).
 
@@ -196,22 +196,22 @@ Nuevos respecto a v1, todos por el kernel: `status` (S2), `reconcile [--accept]
 | `ast show\|schema` | exponía el AST interno de v1; en v2 el AST es `04` y se consulta con `docs show --format ast` |
 | `lint`, `legacy ls\|get\|glob\|raw-find` | ~900 líneas muertas o duplicadas de `find` |
 | `project init\|example`, `help` hardcodeado | `--help` se deriva de los anchors (`09 §3`) |
-| `knowledge project` (materializar kgdb) | desaparece: no hay grafo aparte que proyectar (`09 §10`) |
+| `kimun project` (materializar kgdb) | desaparece: no hay grafo aparte que proyectar (`09 §10`) |
 
-## 9. Cómo habla una herramienta Python con `knowledge`
+## 9. Cómo habla una herramienta Python con `kimun`
 
 Siempre **subprocess + JSON**, nunca FFI ni import del kernel:
 
 ```python
-from knowledge import Client                      # S6, python/knowledge/client.py
-kb = Client(store=".knowledge", actor="agent/deskops")
+from kimun import Client                      # S6, python/kimun/client.py
+kb = Client(store=".kimun", actor="agent/deskops")
 r = kb.run("docs", "list", "--where", "[:in \"open\" status]")   # → dict del envelope
 r["ok"], r["data"], r["revision"]
 ```
 
-- `Client.run` localiza el binario (`$KNOWLEDGE_BIN` > wheel `_bin/<plat>/` > PATH, `08 §7`),
-  añade `--format json`, y convierte `:exit` en la excepción de `knowledge.errors` que le
+- `Client.run` localiza el binario (`$KIMUN_BIN` > wheel `_bin/<plat>/` > PATH, `08 §7`),
+  añade `--format json`, y convierte `:exit` en la excepción de `kimun.errors` que le
   corresponde (`MissingError` 1, `AmbiguousError` 2, `RejectedError` 3, …).
-- `python -m knowledge.models export mod:Class` es el **único** punto bb→Python, opcional,
+- `python -m kimun.models export mod:Class` es el **único** punto bb→Python, opcional,
   y solo para `models define --from-python` (`07 §8`).
-- Hasta S6 el contrato es el envelope de §3 llamado con `subprocess.run(["knowledge", …])`.
+- Hasta S6 el contrato es el envelope de §3 llamado con `subprocess.run(["kimun", …])`.

@@ -1,9 +1,9 @@
-# knowledge (SLDB v2) — Estado (2026-09-07)
+# kimun (SLDB v2) — Estado (2026-09-07)
 
 > Punto de entrada para quien retoma el trabajo: qué existe, cómo se usa, qué se decidió y
 > qué sigue. Se actualiza al cerrar cada hito. Autoridad: `01` (por qué) > `02` (qué
 > construye) > `03` (cómo se escribe) > `04` (superficie Markdown) > `06`–`09` (producto
-> `knowledge`) > este documento. Desde el 2026-09-06 este repo es **`knowledge`**: un solo
+> `kimun`) > este documento. Desde el 2026-09-06 este repo es **`kimun`**: un solo
 > producto que absorbe sldb v1, kgdb y el evaluador anclado de `legos/knowledge` (§8).
 
 ## 1. Qué hay
@@ -18,7 +18,7 @@ para Markdown — todavía sin línea de comandos.
 | 0 kernel | `sldb.kernel.{ports,err,canon,node,pool,edge,tree,plan,revision,heads,store,anchor,reconcile,standoff}` | puertos del host; errores tipados; bytes canónicos + hash; nodos S/M/G; pool; aristas con evidencia; árboles de **posiciones** con Merkle perezoso; `TransactionPlan` con 7 chequeos; revisiones inmutables, sucesión, ConflictSet/rebase, diff; heads con CAS; puerto `Backend` + open/replay/verify; **estados de anclaje** derivados y sus consultas; **reconciliación** de `orphan` en propuestas fuera del pool; **stand-off** (hito 6): hojas con offsets, capas UAX #29 bajo demanda con cache suministrada por el host (sin `atom` global en anillo 0), anclaje `(hoja, rango, hash)` |
 | 1 host | `sldb.host.{default,hash,text,ulid,fs-store}` | SHA-256, NFC + grafemas (UAX #29), ULID, backend de archivos (`objects/`, `log.edn`, `heads.edn`, `store.edn`) |
 | 2 superficie | `sldb.surface.markdown.{cst,inline,ast,render,plan,report}` | Markdown ⇄ AST neutro ⇄ árbol de documento en el pool; render canónico; informe de direccionabilidad; **reingesta** de un fichero editado fuera del kernel |
-| 2 producto | `knowledge.cli.{main,args,out,errors,store}`, `knowledge.cli.commands.stores` | CLI `knowledge` (S0): envelope json/edn/text, exit codes, discovery de `.knowledge/`, `stores init|check|verify|show`; el resto de grupos llega por la pista S (§8) |
+| 2 producto | `kimun.cli.{main,args,out,errors,store}`, `kimun.cli.commands.stores` | CLI `kimun` (S0): envelope json/edn/text, exit codes, discovery de `.kimun/`, `stores init|check|verify|show`; el resto de grupos llega por la pista S (§8) |
 
 Hitos cerrados del roadmap del kernel (`02 §9`): **0, 1, 2, 3, 4, 5a, 5b, 6**. Hitos cerrados de la pista S (§8): **S0**.
 
@@ -28,7 +28,7 @@ Hitos cerrados del roadmap del kernel (`02 §9`): **0, 1, 2, 3, 4, 5a, 5b, 6**. 
 bb lint     # anillos + docstrings + sin def mutable en anillo 0 (docs/v2/03, 06 §2)
 bb test     # 150 tests / 699 aserciones (kernel + superficie Markdown + CLI + release)
 bb oracle   # reimplementación Python independiente de canonical-bytes: 9/9 ids
-bin/knowledge --version          # CLI en desarrollo (requiere bb local)
+bin/kimun --version          # CLI en desarrollo (requiere bb local)
 bb jar && bb release --local-bb  # bundle distribuible en dist/ (docs/v2/08)
 ```
 
@@ -78,11 +78,12 @@ drawer (§6).
 | 9 | los estados deterministas son **tres** (`intact`/`superseded`/`orphan`), se calculan **por extremo** y la arista toma el peor; `drifted` es un `orphan` que la reconciliación supo nombrar, no un cuarto estado | `02 §6.2, §6.5`, `atom-anchor-state-is-derived-and-computed-per-endpoint`, `atom-drifted-is-a-reconciled-orphan` |
 | 10 | una propuesta de reconciliación vive **fuera del pool**; aceptarla es una transacción `supersedes` cuya única evidencia es el actor: responde quien acepta, no el heurístico | `02 §6.5`, inv. 18 |
 | 11 | el `:fingerprint` externo es `<alg>:<hex>` con el algoritmo del store; el kernel valida la forma y compara, y qué bytes se digieren es contrato del motor emisor | `02 §6.4`, `atom-external-fingerprint-form-and-who-computes-it` |
-| 12 | **un solo producto, `knowledge`**: sldb v1 y kgdb se congelan (`v1-frozen`); el evaluador anclado de `legos/knowledge` se porta aquí y ese repo pasa a `provenance` (S7) | `06`, `08 §1`, plan 2026-09-06 |
+| 12 | **un solo producto v2**: sldb v1 y kgdb se congelan (`v1-frozen`); la lectura del evaluador anclado de `knowledge` v1 se porta aquí (S4) | `06`, `08 §1`, plan 2026-09-06 |
 | 13 | los modelos son **nodos del árbol**: descriptores EDN como opacos `edn/model` en el árbol `models`, versionados por `:replace` ⇒ `supersedes`, proyectables para auditarse | `07` |
 | 14 | **Babashka es el host definitivo del CLI**; el kernel sigue `.cljc`; la paridad Node queda en el drawer (UI) | `08 §2` |
 | 15 | rutas **relativas** en `store.edn` (`:links`), índices y export; nunca absolutas (vicio v1) | `06 §5` |
 | 16 | toda escritura (evaluador incluido) es un `TransactionPlan`; los derivados se invalidan por `anchor/states` sobre aristas `derived`, sin tracker aparte | `09 §3–4` |
+| 17 | **tres nombres para tres cosas** (2026-09-07): el producto v2 es **`kimun`** (Mapudungun *kimün*); **`knowledge`** queda para la herramienta Python v1, que sigue viva y se desarrolla en paralelo (repo `jpcosec/knowledge`, pip `knowledge`); la KB de provenance es **`pron`** (el cordel anudado). Nada de v2 usa la palabra `knowledge` como identificador | `08 §0` |
 
 ## 4. Cómo se trabaja (y por qué)
 
@@ -127,21 +128,22 @@ herede el suelo de su hoja — y ya está anotado como candidato en el drawer
 (clj-kondo, JVM) · contención entre procesos · monotonicidad ULID · objetos inalcanzables/GC ·
 reescritura de specs spec2viz pre-v2 · oráculo externo (hecho; cerrable).
 
-## 7b. Pista S — producto `knowledge` (en paralelo a los hitos 7–9 del kernel)
+## 7b. Pista S — producto `kimun` (en paralelo a los hitos 7–9 del kernel)
 
 | hito | qué | estado |
 |---|---|---|
-| **S0** repo + CLI + packaging | repo `tools/knowledge` (clon de `refactor-target`, historia intacta), `knowledge.cli.*`, `stores`, `bb jar`/`bb release`, launcher con `--`, workflows `ci`/`release` (gate humano), docs 06–09 | **cerrado 2026-09-07** |
+| **S0** repo + CLI + packaging | repo `tools/kimun` (clon de `refactor-target`, historia intacta), `kimun.cli.*`, `stores`, `bb jar`/`bb release`, launcher con `--`, workflows `ci`/`release` (gate humano), docs 06–09 | **cerrado 2026-09-07** |
 | S1 modelos + modo directo | descriptores, frontmatter en CST, `models *`, `extract/render/validate` | siguiente |
 | S2 docs/fields/sections + escritura | `surface.edit`, outbox, `status`, `reconcile`, `migrate --from-v1` | |
 | S3 índices + consultas + grafo | índice cacheado, `--where`, direcciones, `find`, `graph *` | |
 | S4 evaluador (lectura) | `09 §1–2` | |
 | S5 derivados + efectos + escritura | `09 §3–4` | |
 | S6 cliente Python + deskops + serve | `08 §7` | |
-| S7 split `provenance` | `08 §1` A4 | |
+| S7 split `pron` / `knowledge` v1 | `08 §0`, `08 §1` A4 | |
 
-Pendiente de A1/A2 (`08 §1`): crear `github.com/jpcosec/knowledge` (humano), push, tags
-`v1-frozen`/`v2-seed-2026-09` en `tools/sldb`. Incidente de S0 documentado en `08 §3`: una
+A2 hecho el 2026-09-07 (tags `v1-frozen`/`v2-seed-2026-09` y banner en `tools/sldb`). A1
+se hizo primero bajo el nombre `knowledge` contra el repo de v1 y se deshizo; queda
+pendiente el push a `github.com/jpcosec/kimun` (humano crea el repo). Incidente de S0 documentado en `08 §3`: una
 task `uberjar` que sombreaba al builtin recursaba sin fin (`bb jar` desde entonces).
 
 ## 7. Deuda aceptada
