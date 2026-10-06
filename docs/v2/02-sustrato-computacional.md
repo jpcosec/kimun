@@ -178,10 +178,21 @@ Reglas:
   el hito 3; la *política* de retención
   es el hito 8, y los estados `orphan`/`drifted` de anclajes son el hito 5a/5b. Los nodos
   `:span` y los símbolos sin árbol propio se conservan por esta vía.
+  *(2026-10-06, escala)* En formato 2 el recorrido parte de `:head` y de la raíz del mmap
+  de cabezas por árbol (`:heads-root`), y una revisión se recorre por sus tres mmaps
+  (`:trees` → descriptores y objetos de árbol, `:edges` → aristas, `:incidence` →
+  aristas y conjuntos anidados) en lugar de `roots`, tree-set y edge-set
+  (`10-escala.md` §5).
 - **Heads y CAS**: `heads.edn` es un solo mapa `{tree-id revision-id}` escrito de forma
   atómica; el CAS es lógico y por *entrada*: la escritura se acepta solo si, para cada
   árbol tocado por el plan, el valor actual coincide con `:base`. Una revisión mueve en
   una sola escritura todas las entradas de los árboles que toca.
+  *(2026-10-06, escala)* En formato 2 `heads.edn` es `{:head rev-id :heads-root id}`: el
+  mapa `{tree-id revision-id}` vive en el CAS como mmap y `heads.edn` nombra su raíz
+  (tamaño fijo). El commit compara las cabezas que el escritor cargó con las actuales y
+  agrega la línea del log y reemplaza `heads.edn` como una sola operación bajo un lock
+  exclusivo (`Backend/commit-tx!`); un escritor obsoleto no escribe ni log ni cabezas
+  (`10-escala.md` §5, §7). Formato 1 conserva `{:head :heads}`.
 - **Heads**: `heads: {tree-id → revision-id}` en el head store, actualizado por CAS
   **por árbol**. Un documento es un árbol de kind `:document`; "document head" es el head
   de ese árbol. Una revisión puede mover varios heads (uno por árbol en `roots`). En el
@@ -276,6 +287,15 @@ Revision {
 }
 revision-id = H(canonical-bytes(Revision))  ; exactamente los ocho campos anteriores; provenance = tx + actor, derivado
 
+; (2026-10-06, escala) formato 2 (stores nuevos; 10-escala.md §3, §5): sin roots y con
+; las colecciones como raíces de mapas Merkle independientes de la historia (sldb.kernel.mmap):
+Revision {
+  trees     : <raíz mmap tree-id → [descriptor-id merkle-root]>
+  edges     : <raíz mmap edge-id → true>          ; aristas activas que no son de propiedad
+  incidence : <raíz mmap node-id → [edge-id …] | {:set <raíz mmap edge-id → true>}>  ; derivada de edges, determinista
+  parents tx actor engines timestamp             ; como arriba
+}                                                ; siguen siendo ocho campos; revision-id = H(los ocho)
+
 Transaction = {:id H(plan-resuelto) :plan plan-resuelto :revision revision-id}
 TransactionPlan = datos EDN (§5.1)
 ```
@@ -295,6 +315,11 @@ una `supersedes` que todavía no estaba activa. Ninguna otra op re-ancla.
 - Commit por **compare-and-swap** sobre el head. Conflicto → reconciliación por árbol
   (cambios en árboles distintos son independientes por construcción) o `ConflictSet`
   explícito.
+  *(2026-10-06, escala)* El compare-and-swap, la línea del log y el reemplazo de las
+  cabezas son una sola operación del puerto `Backend` (`commit-tx!`) bajo un lock
+  exclusivo; el escritor que pierde recibe `:store/stale` y no deja línea en el log
+  (solo objetos de escritura única sin referencia). `apply-plan` cuesta lo que el plan,
+  no lo que el store (`10-escala.md` §3, §7).
 - Efectos externos (git, filesystem, APIs, subagentes) salen como `EffectPlan` a un
   outbox persistente; su resultado entra como una transacción nueva.
 
@@ -765,7 +790,7 @@ la elección hacia Node + WASM cuando toque.
 | tema | decisión |
 |---|---|
 | hash | SHA-256 a través del protocolo `Hasher` del host (bb: `java.security.MessageDigest`; cljs/Node: `crypto`). BLAKE3 cuando exista en ambos hosts. El algoritmo queda registrado en el descriptor del store |
-| backend del hito 3 | solo archivos, con la semántica de ficheros de **Babashka/JVM** (Node llega con la task de paridad de host): `<store>/objects/<hash>` (CAS; cada objeto —nodo, objeto de árbol, arista, edge-set, revisión— se escribe como **texto UTF-8 con sus canonical-bytes EDN**, de modo que `H(contenido del fichero) == nombre`), `<store>/log.edn` (append-only, una línea por transacción con el mapa `Transaction {:id :plan :revision}`), `<store>/heads.edn` (mapa `{tree-id revision-id}` escrito a fichero temporal y renombrado; CAS por comparación con el contenido leído), `<store>/store.edn` (descriptor: `:hash-alg`, `:capabilities`, `:format-version`). `open` = leer descriptor + heads y **replay**: re-aplicar cada plan del log en orden y comprobar que los ids de revisión obtenidos coinciden con los registrados. `verify` = recomputar el hash de cada objeto alcanzable desde los heads y compararlo con su nombre. `rebuild-indexes` queda para cuando existan índices derivados (hito 4+) |
+| backend del hito 3 | solo archivos, con la semántica de ficheros de **Babashka/JVM** (Node llega con la task de paridad de host): `<store>/objects/<hash>` (CAS; cada objeto —nodo, objeto de árbol, arista, edge-set, revisión— se escribe como **texto UTF-8 con sus canonical-bytes EDN**, de modo que `H(contenido del fichero) == nombre`), `<store>/log.edn` (append-only, una línea por transacción con el mapa `Transaction {:id :plan :revision}`), `<store>/heads.edn` (mapa `{tree-id revision-id}` escrito a fichero temporal y renombrado; CAS por comparación con el contenido leído), `<store>/store.edn` (descriptor: `:hash-alg`, `:capabilities`, `:format-version`). `open` = leer descriptor + heads y **replay**: re-aplicar cada plan del log en orden y comprobar que los ids de revisión obtenidos coinciden con los registrados. `verify` = recomputar el hash de cada objeto alcanzable desde los heads y compararlo con su nombre. `rebuild-indexes` queda para cuando existan índices derivados (hito 4+). *(2026-10-06, escala)* Formato 2 (`10-escala.md` §5–§7): `heads.edn` = `{:head rev-id :heads-root id}`, escrito bajo el lock de `<store>/lock`; `open` **no replaya**: lee `store.edn` y `heads.edn` y comprueba por hash y forma la Revision cabeza y la raíz de cabezas, y confía en el resto, que se lee bajo demanda; el replay completo con comprobación de ids y de `heads.edn` pasa a `replay-open`/`verify-full` (`stores verify`, `journal verify`); `verify` (`stores check`) hashea todo lo alcanzable y compara el final del log con las cabezas. Un store de formato 1 abre por replay como antes; `stores upgrade` lo pasa al formato 2 |
 | NFC | `java.text.Normalizer/normalize` con `Form/NFC` en Babashka/JVM; `String.prototype.normalize("NFC")` en cljs; detrás del mismo protocolo de host que el `Hasher` |
 | tests | `clojure.test` + `clojure.test.check` (incluido en Babashka). "Tests generativos" = propiedades test.check sobre generadores que cubren **todas las filas class/kind de §2.1**, árboles y planes; propiedad mínima: para todo plan válido, aplicar es determinista y `verify` sobre el store recargado reproduce los mismos hashes |
 | fixtures dorados | `test/fixtures/nodes.edn`: vector de `{:class :kind :content :expected-id}`, una entrada por fila de §2.1. `test/fixtures/trees.edn`: `{:nodes [...] :tree {:kind :document :root <alias> :children {<alias> [<alias> ...]}} :expected {:objects {<alias> <tree-hash>} :root <merkle-root>}}`. `test/fixtures/tx-<n>.edn`: `{:store {:capabilities {...}} :plan {...} :expected {:revision {:roots :trees :edges :parents :tx :actor :engines :timestamp} :revision-id ...}}` con `:timestamp` fijado en el plan para que el id sea reproducible; el test compara **los ocho campos y el id**. Generadores compartidos en `test/sldb/kernel/generators.cljc` (`gen-node`, `gen-tree`, `gen-valid-plan`, `gen-plan-sequence`), creados en el hito 0 y ampliados en cada hito. Los ids esperados se calculan una vez con la implementación, se revisan a mano y se congelan |
@@ -809,6 +834,8 @@ proveedores semánticos y superficies visuales quedan explícitamente fuera hast
 8.  concat(tokens(parse(s))) == s para todo CST.
 9.  parse_f(render_f(A)) == A para todo AST estructural canónico A y formato f.
 10. Lo derivado se reconstruye desde log + pool; no tiene autoridad.
+    (2026-10-06, escala) :incidence de una revisión de formato 2 es derivada de :edges:
+    open confía en ella y verify-full (replay) la recalcula (10-escala.md §6).
 11. Un efecto externo nunca muta el grafo directamente.
 12. Toda operación sobre un nodo :opaque es reemplazo del blob completo, o se rechaza.
 13. Los ids de árbol son nominales (refs); los ids de nodo, arista y objeto de árbol
@@ -818,6 +845,8 @@ proveedores semánticos y superficies visuales quedan explícitamente fuera hast
 16. El timestamp no entra en el id de ninguna arista; entra en el id de la revisión.
 17. Todo objeto persistido (nodo, objeto de árbol, arista, edge-set, revisión) cumple
     H(bytes del objeto) == su nombre en el CAS.
+    (2026-10-06, escala) también los nodos de los mapas Merkle (hoja y rama de
+    sldb.kernel.mmap) que en formato 2 sustituyen a edge-set y tree-set (10-escala.md §5).
 18. El estado de un anclaje es derivado: se recomputa desde revisión + pool, no se
     persiste, y una propuesta de reconciliación no es nodo ni arista hasta que un
     actor la acepta como `supersedes`.

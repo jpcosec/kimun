@@ -291,4 +291,13 @@
          (let [dir2 (str (bfs/create-temp-dir {:prefix "sldb-alg-"})) b2 (fs/backend dir2)]
            (store/init! b2 h caps)
            (spit (str dir2 "/store.edn") (pr-str {:format-version 1 :hash-alg :blake3 :capabilities caps}))
-           (is (= :store/error (:type (ex-of #(store/open b2 h))))))))))
+           (is (= :store/error (:type (ex-of #(store/open b2 h)))))
+           ;; format 2 opens from the heads, not by replay: the same check on that path, with history
+           (let [dir3 (str (bfs/create-temp-dir {:prefix "sldb-alg-"})) b3 (fs/backend dir3)
+                 s3 (store/init! b3 h caps)]
+             (store/commit! b3 s3 {:plan/version 1 :base nil :actor "jp" :engines {} :timestamp "2026-08-29T12:00:00.000Z"
+                                   :ops [{:op :add-node :node {:class :sign :kind :text :content {:text "x"}}}]})
+             (is (some? (store/open b3 h)))
+             (spit (str dir3 "/store.edn") (pr-str {:format-version 2 :hash-alg :blake3 :capabilities caps}))
+             (is (= :store/error (:type (ex-of #(store/open b3 h)))))
+             (is (re-find #"hash algorithm" (ex-message (try (store/open b3 h) (catch Exception e e)))))))))))

@@ -54,7 +54,11 @@ Leyenda: `ok` probado · `oracle` probado además por una implementación indepe
 
 | promesa | test |
 |---|---|
-| Revision de 8 campos; id = H(los 8); tx = H(plan resuelto) | revision_test/fixture-tx-001…, heads-advance-only-through-a-commit (inv. 17) |
+| Revision de 8 campos; id = H(los 8); tx = H(plan resuelto) | revision_test/fixture-tx-001…, heads-advance-only-through-a-commit (inv. 17). *(2026-10-06, escala)* el fixture fija dos ids: formato 1 (`:roots`, tree-set, edge-set; motor `legacy.revision`) y formato 2 (`:trees :edges :incidence` raíces de mmap) — `test_util/tx-001-revision-ids` |
+| *(2026-10-06, escala)* formato 2 y motor legado dan los mismos árboles, aristas, nodos, incidencia y rechazos | revision_format2_test/format-2-and-legacy-engines-agree-on-random-histories, accessors-answer-from-the-mmaps |
+| *(2026-10-06, escala)* mmap: la raíz depende solo del contenido (cualquier orden de inserción/borrado); `:new` = exactamente los nodos nuevos; todo nodo hashea a su id | mmap_test/history-independence, insert-then-remove-…, new-is-exactly-the-nodes-not-reachable-from-the-old-root, new-objects-hash-to-their-ids-and-close-the-root |
+| *(2026-10-06, escala)* `:incidence`: forma canónica (vector ≤ 16, `{:set raíz}` por encima) función del conjunto; un concentrador cuesta pocos nodos por arista | revision_format2_test/the-incidence-value-of-a-node-depends-only-on-its-set-of-edges, a-hub-keeps-its-edges-in-a-nested-set-… |
+| *(2026-10-06, escala)* `commit!` escribe exactamente los objetos nuevos y nunca lista el backend | revision_format2_test/commit-writes-exactly-the-new-objects-and-never-lists-the-backend |
 | timestamp formato fijo y entra al id de revisión | plan_test/schema…, hardening/timestamp-enters-the-revision-id |
 | :engines solo de esta transacción | revision_test/fixture-tx-001 (`{}` sin herencia) |
 | seis ops; ops desconocidas rechazadas | plan_test/schema-and-pure-data-check-7 |
@@ -135,12 +139,15 @@ Leyenda: `ok` probado · `oracle` probado además por una implementación indepe
 |---|---|
 | objects/<id> con H(fichero) == id (inv. 17) | store_test/every-object-file-hashes-to-its-name |
 | store.edn con :format-version :hash-alg :capabilities | hardening/store-failure-modes |
-| log.edn una Transaction por línea; línea corrupta ⇒ :store/corrupt-log con número de línea | hardening/store-failure-modes |
-| heads.edn atómico; CAS obsoleto rechazado sin escribir | store_test/stale-heads-cas-is-rejected-without-writing |
-| open = replay + comprobación de ids; replay solo con log + objects | store_test/close-and-reopen…, replay-from-log-and-objects-only, reopen-from-a-separate-bb-process |
-| verify: objeto corrupto o ausente, nombrado | store_test/corrupting-one-object…, hardening/store-failure-modes (:missing) |
-| algoritmo de hash del descriptor debe coincidir | hardening/store-failure-modes |
-| cualquier secuencia de planes recarga idéntica | store_test/any-valid-plan-sequence-reloads-identically |
+| log.edn una Transaction por línea; línea corrupta ⇒ :store/corrupt-log con número de línea | hardening/store-failure-modes. *(2026-10-06, escala)* lo lanzan `replay`/`replay-open`; `open` de formato 2 no lee el log; `stores verify`/`journal verify` lo informan como `store/corrupt` (`:replay-failed`): cli/stores_test/verify-detects-a-damaged-log, cli/journal_test/verify-detects-a-truncated-log-… |
+| heads.edn atómico; CAS obsoleto rechazado sin escribir | store_test/stale-heads-cas-is-rejected-without-writing. *(2026-10-06, escala)* `Backend/commit-tx!` bajo lock exclusivo: con cabezas obsoletas ⇒ `:store/stale` y ni `log.edn` ni `heads.edn` cambian (los objetos del perdedor quedan sin referencia); el store abre, pasa `verify-full` y un reintento funciona: store_test/two-writers-on-the-same-loaded-store-the-loser-leaves-nothing-visible, concurrent-writers-on-the-fs-backend-exactly-one-wins, cli/journal_test/a-losing-writer-is-stale-and-leaves-the-store-readable |
+| *(2026-10-06, escala)* ventana de caída: una última línea que las cabezas no registran se ignora al abrir, se informa (`:uncommitted-tail`) y el siguiente commit la descarta; un log que no termina en las cabezas impide escribir | store_test/log-tail-rule, a-writer-dead-between-log-append-and-heads-write-…, the-full-verification-reports-an-uncommitted-tail-and-open-ignores-it, a-log-that-does-not-end-at-the-heads-refuses-further-commits |
+| open = replay + comprobación de ids; replay solo con log + objects | store_test/close-and-reopen…, replay-from-log-and-objects-only, reopen-from-a-separate-bb-process. *(2026-10-06, escala)* formato 2: `open` = `store.edn` + `heads.edn` (`{:head :heads-root}`) + Revision cabeza y raíz de cabezas comprobadas por hash y forma, sin replay ni log: store_test/open-reads-only-the-head-revisions-and-never-the-log, open-checks-heads-edn-and-the-head-revisions; el replay con comprobación de ids pasa a `replay-open`/`verify-full`: replay-from-log-and-objects-only, the-full-verification-detects-a-damaged-log-and-heads-that-disagree-with-it; formato 1 sigue abriendo por replay: revision_format2_test/a-format-1-store-opens-commits-and-reopens-through-the-legacy-path |
+| verify: objeto corrupto o ausente, nombrado | store_test/corrupting-one-object…, hardening/store-failure-modes (:missing). *(2026-10-06, escala)* `verify` (`stores check`) = hash de todo lo alcanzable + final del log frente a las cabezas; `verify-full` (`stores verify`) = replay + `verify`. Cada clase de objeto dañado (nodo, objeto de árbol, rama y hoja de mmap, las tres raíces, conjunto anidado, Revision antigua, cabeza de otro árbol; alterado, ilegible, borrado) informada y nunca lanzada; la Revision cabeza y la raíz de cabezas las rechaza `open`: cli/diagnostics_test/check-reports-each-kind-of-damaged-object, store_test/a-tampered-object-is-detected-by-the-hash-check |
+| algoritmo de hash del descriptor debe coincidir | hardening/store-failure-modes (formato 1 por replay y, *(2026-10-06, escala)*, formato 2 desde las cabezas) |
+| cualquier secuencia de planes recarga idéntica | store_test/any-valid-plan-sequence-reloads-identically (*(2026-10-06, escala)* `open`, `replay-open` y el valor en memoria coinciden; `verify` y `verify-full` pasan) |
+| *(2026-10-06, escala)* el valor perezoso y el ansioso muestran las mismas vistas; la caché de objetos no oculta un objeto alterado | store_test/the-lazy-and-the-eager-store-show-the-same-views, the-fs-backend-parses-each-object-at-most-once-per-instance, the-object-cache-never-hides-a-tampered-object |
+| *(2026-10-06, escala)* `stores upgrade`: formato 1 → 2 conserva cada nodo, arista y árbol, actor/timestamp/engines/ops de cada transacción y la cadena de padres; verifica antes de reemplazar; el original queda como respaldo; idempotente | upgrade_test/a-format-1-history-upgrades-to-format-2-and-keeps-everything, any-format-1-history-upgrades-to-the-same-trees-and-edges, upgrade-refuses-what-it-cannot-do-safely, cli/upgrade_test/a-format-1-store-answers-the-same-after-the-upgrade |
 | rebuild-indexes | **deferred** → hito 4+ (índices derivados) |
 
 ## Invariantes §10
@@ -201,5 +208,7 @@ Bugs de kernel encontrados por el hito 4: el modelo "un padre por nodo por árbo
 
 - Paridad de host (Node): `task-node-host-parity-for-the-v2-kernel`.
 - Cobertura/lint externos: `task-test-coverage-and-lint-tooling-for-babashka`.
-- Dos procesos reales escribiendo el mismo directorio: `task-contention-test-for-heads-commit` (en memoria ya cubierto).
+- Dos procesos reales escribiendo el mismo directorio: `task-contention-test-for-heads-commit` (en memoria ya cubierto). *(2026-10-06, escala)* el lock de `commit-tx!` lo cubren hilos de una misma JVM (store_test/concurrent-writers-on-the-fs-backend-exactly-one-wins), no dos procesos.
+- *(2026-10-06, escala)* `:incidence` "nunca de confianza": la recalcula el replay de `verify-full`, pero ningún test altera una `:incidence` dejando el resto válido (alterarla cambia el id de la Revision, que el hash ya detecta).
+- *(2026-10-06, escala)* objetos sin referencia (de un escritor perdedor, nodos de raíces de cabezas reemplazadas): ningún comando los informa; GC en el hito 8.
 - Monotonicidad de ULID: `task-ulid-monotonicity-and-clock-adapter`.
