@@ -1,0 +1,7 @@
+name: note-a
+path: notes/a.md
+source_hash: 81603eda4c594532188eb16dd985c121aee04b9c44410cdcc66742f3b7ce86e6
+content_hash: 0000
+field_hashes: {}
+semantic_tags:
+- type.fixture

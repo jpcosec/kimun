@@ -1,0 +1,7 @@
+name: note-b
+path: notes/b.md
+source_hash: f37940434fa675f1072569c7482fa7c88ebfffa41f7ac731a61926939cbc9918
+content_hash: 0000
+field_hashes: {}
+semantic_tags:
+- type.fixture

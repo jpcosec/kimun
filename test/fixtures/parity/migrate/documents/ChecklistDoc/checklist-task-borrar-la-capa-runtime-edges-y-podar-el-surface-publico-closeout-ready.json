@@ -1,0 +1,35 @@
+{
+ "name": "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-ready",
+ "model": "ChecklistDoc",
+ "path": "desk/primitives/checklists/checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-ready.md",
+ "source_hash": "57e3cc7a6d34d8393271b7ae20a5ebca1d8897233c62237f41cdaa12cb649974",
+ "content_hash": "aa479ed7bc7ae62f72958e02137a434c30db45b122e73cac8a8c2117d593de79",
+ "semantic_tags": [
+  "primitive:checklist",
+  "representation.markdown",
+  "source.document.markdown",
+  "type.workflow.checklist",
+  "workspace.desk.primitives"
+ ],
+ "source_hash_live": "57e3cc7a6d34d8393271b7ae20a5ebca1d8897233c62237f41cdaa12cb649974",
+ "content_hash_live": "aa479ed7bc7ae62f72958e02137a434c30db45b122e73cac8a8c2117d593de79",
+ "payload": {
+  "title": "Closeout Ready",
+  "id": "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-ready",
+  "status": "active",
+  "summary": "Confirms the task is ready for closeout.",
+  "tags": [
+   "primitive:checklist"
+  ],
+  "items": [
+   "Task is ready for closeout",
+   "Durable evidence is verified",
+   "Pill knowledge is graduated to atoms when required"
+  ],
+  "condition_refs": [
+   "condition-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-ready-for-closeout",
+   "condition-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-has-closeout-evidence"
+  ],
+  "mode": "all"
+ }
+}

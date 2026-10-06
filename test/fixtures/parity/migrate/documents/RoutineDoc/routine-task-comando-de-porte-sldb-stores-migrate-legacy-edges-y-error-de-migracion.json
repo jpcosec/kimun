@@ -1,0 +1,47 @@
+{
+ "name": "routine-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion",
+ "model": "RoutineDoc",
+ "path": "desk/routines/routine-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion.md",
+ "source_hash": "dce62115ca1e53fbfacaea6a86d83b4222545c8ab28415f162e2ef2589d7cb2c",
+ "content_hash": "995720347a791aef001f06598f0fedd86605b70907478960401ab2c6627be365",
+ "semantic_tags": [
+  "primitive:routine",
+  "representation.markdown",
+  "source.document.markdown",
+  "type.workflow.routine",
+  "workspace.desk.routines",
+  "workspace:desk"
+ ],
+ "source_hash_live": "dce62115ca1e53fbfacaea6a86d83b4222545c8ab28415f162e2ef2589d7cb2c",
+ "content_hash_live": "995720347a791aef001f06598f0fedd86605b70907478960401ab2c6627be365",
+ "payload": {
+  "title": "Routine for Comando de porte sldb stores migrate-legacy-edges y error de migracion",
+  "id": "routine-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion",
+  "status": "active",
+  "summary": "Actionable routine for Comando de porte sldb stores migrate-legacy-edges y error de migracion.",
+  "tags": [
+   "workspace:desk",
+   "primitive:routine"
+  ],
+  "entrypoint": "checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-execution-ready",
+  "decomposition": [
+   "checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-execution-ready",
+   "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-activate",
+   "checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-testing-ready",
+   "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-ready-for-testing",
+   "checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-closeout-ready",
+   "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-close"
+  ],
+  "edges": [
+   "edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-execution-to-activate",
+   "edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-activate-to-testing",
+   "edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-testing-to-ready",
+   "edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-ready-to-closeout",
+   "edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-closeout-to-close",
+   "edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-close-to-complete"
+  ],
+  "terminal_nodes": [
+   "complete"
+  ]
+ }
+}

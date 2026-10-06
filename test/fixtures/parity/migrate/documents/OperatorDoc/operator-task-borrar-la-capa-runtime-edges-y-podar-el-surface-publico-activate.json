@@ -1,0 +1,28 @@
+{
+ "name": "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-activate",
+ "model": "OperatorDoc",
+ "path": "desk/primitives/operators/operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-activate.md",
+ "source_hash": "87d516e81b06bec4255d3de94c9c4eb222ec9a0bec7d83eede30f6af8e1ec447",
+ "content_hash": "ddb51c9eef8b1162a57de1e22bee3b076666f59004335127b4c00aea6e002ff8",
+ "semantic_tags": [
+  "primitive:operator",
+  "representation.markdown",
+  "source.document.markdown",
+  "type.workflow.operator",
+  "workspace.desk.primitives"
+ ],
+ "source_hash_live": "87d516e81b06bec4255d3de94c9c4eb222ec9a0bec7d83eede30f6af8e1ec447",
+ "content_hash_live": "ddb51c9eef8b1162a57de1e22bee3b076666f59004335127b4c00aea6e002ff8",
+ "payload": {
+  "title": "Activate task",
+  "id": "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-activate",
+  "status": "active",
+  "summary": "Moves the task into active execution.",
+  "tags": [
+   "primitive:operator"
+  ],
+  "action": "set_field",
+  "target": "status",
+  "value": "active"
+ }
+}

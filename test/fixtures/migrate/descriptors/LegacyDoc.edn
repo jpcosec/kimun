@@ -1,0 +1,3 @@
+{:model/name "LegacyDoc" :base [] :semantics []
+ :fields [{:name "title" :type :string :required true :description "Title."}]
+ :template "# ⸢py•title⸥\n"}

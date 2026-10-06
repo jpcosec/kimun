@@ -1,0 +1,35 @@
+{
+ "name": "pill-002-onboarding-surface-before-depth",
+ "model": "PillDoc",
+ "path": "desk/pills/pill-002-onboarding-surface-before-depth.md",
+ "source_hash": "d06296373367b3ec1b5b90f3ea8f78a201c1da87a29ed92aefaf1aa6d53b0db9",
+ "content_hash": "1715e49712b2d3f06d465c5d0a96805d2a72c00722c9cc16d7c92458f75ce528",
+ "semantic_tags": [
+  "representation.markdown",
+  "source.document.markdown",
+  "system:sldb",
+  "topic:cli",
+  "topic:onboarding",
+  "type.workflow.pill",
+  "workspace.desk",
+  "workspace:desk"
+ ],
+ "source_hash_live": "d06296373367b3ec1b5b90f3ea8f78a201c1da87a29ed92aefaf1aa6d53b0db9",
+ "content_hash_live": "1715e49712b2d3f06d465c5d0a96805d2a72c00722c9cc16d7c92458f75ce528",
+ "payload": {
+  "title": "Put a small onboarding surface before the deep system",
+  "id": "pill-002-onboarding-surface-before-depth",
+  "tags": [
+   "system:sldb",
+   "topic:onboarding",
+   "topic:cli",
+   "workspace:desk"
+  ],
+  "what": "The first-use layer for SLDB should stay small and legible before asking users to understand the full store, model, and workflow depth.",
+  "why": "A broad concept stack is easier to adopt when users first see a compact entry surface such as help, FAQ, docs explore, and a small number of clear examples.",
+  "when": "Apply this pill to changes affecting help, FAQ, documentation entry points, onboarding commands, or repo-first discovery surfaces.",
+  "where": "- `docs/faq.md`\n- CLI help and parser surfaces\n- onboarding-oriented docs and examples",
+  "how": "Favor a minimal top layer that points users to deeper capabilities only after the first-use path is understandable.",
+  "how_not": "Do not force first-time users to reconstruct the full internal architecture before they can discover the next useful command or document."
+ }
+}

@@ -1,0 +1,23 @@
+{
+ "name": "20260614-000002-suggestion-add-store-health-check-api",
+ "model": "InboxNoteDoc",
+ "path": "desk/inbox/20260614-000002-suggestion-add-store-health-check-api.md",
+ "source_hash": "eb94a58b7a8da2614805bb943b4f1b77732201a8c9ba57b8d63b467ed28c3efa",
+ "content_hash": "6ddfc5353dd472e82095a1cbf76a14adfa32c29d7b60a44fda8adc1f127b19f5",
+ "semantic_tags": [
+  "representation.markdown",
+  "source.document.markdown",
+  "type.desk.inbox-note",
+  "workspace.desk.inbox"
+ ],
+ "source_hash_live": "eb94a58b7a8da2614805bb943b4f1b77732201a8c9ba57b8d63b467ed28c3efa",
+ "content_hash_live": "6ddfc5353dd472e82095a1cbf76a14adfa32c29d7b60a44fda8adc1f127b19f5",
+ "payload": {
+  "kind": "suggestion",
+  "sender_project": "deskops",
+  "created_at": "2026-06-14T00:00:02",
+  "status": "open",
+  "title": "Add store health-check API",
+  "body": "## Scope\n\n- `sldb stores check --path <dir>` — validate that `.sldb/` has all required index files, documents index is loadable, models index is loadable, store index is readable\n- Exit 0 if healthy, non-zero with specific diagnostics if not\n- Optionally expose a Python function: `check_store(path: Path) -> StoreHealth` with structured result\n- Clear messages for: missing index, corrupt index, missing document dir, permission error\n\n## Motivation\n\nDeskops health/recovery commands need to detect broken stores without guessing. SLDB is the only authority on what a valid store looks like.\n\n## Existing pills\n\n- `desk/pills/pill-001-sldb-vs-deskops-boundary.md`\n\n## Done When\n\n- `sldb stores check` on a healthy store exits 0 with a summary line\n- Missing/corrupt index produces clear diagnostic per broken item\n- Python API returns structured health data (not just exit codes)"
+ }
+}

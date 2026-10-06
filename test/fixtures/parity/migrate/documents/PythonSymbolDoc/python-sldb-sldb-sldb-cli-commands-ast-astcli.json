@@ -1,0 +1,33 @@
+{
+ "name": "python-sldb-sldb-sldb-cli-commands-ast-astcli",
+ "model": "PythonSymbolDoc",
+ "path": "knowledge/symbols/python-sldb-sldb-sldb-cli-commands-ast-astcli.md",
+ "source_hash": "70266a3ce03f98ad122bf4c5bf4540ec13cf9d5dd6d882a99a3ba5c570f06286",
+ "content_hash": "57da62335ade7dfda97cf5451ddbbbd97c04c67f4d32cc6eb0f936bdb401caee",
+ "semantic_tags": [
+  "representation.markdown",
+  "source.code.python",
+  "type.knowledge.code_symbol",
+  "workspace.knowledge.symbols"
+ ],
+ "source_hash_live": "70266a3ce03f98ad122bf4c5bf4540ec13cf9d5dd6d882a99a3ba5c570f06286",
+ "content_hash_live": "57da62335ade7dfda97cf5451ddbbbd97c04c67f4d32cc6eb0f936bdb401caee",
+ "payload": {
+  "id": "python-sldb-sldb-sldb-cli-commands-ast-astcli",
+  "system": "sldb",
+  "module": "sldb.sldb.cli.commands.ast",
+  "qualname": "ASTCLI",
+  "kind": "ClassDef",
+  "source_path": "sldb/cli/commands/ast.py",
+  "source_span": "38:58",
+  "source_sha256": "788802abd123bf678ba29b9595a18e4809b771ba7f7990e82e60f286f4833027",
+  "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+  "signature": "Not applicable.",
+  "docstring": "Expose the normalized SLDB graph.",
+  "imports": "[\"__future__\", \"json\", \"sldb.cli.graph_ops\", \"typing\", \"yaml\"]",
+  "purpose": "Not documented.",
+  "architecture": "Not documented.",
+  "tags": [],
+  "provenance": "python-ast:python:sldb.sldb.cli.commands.ast:ASTCLI; contract-sha256:0f5c4ef405ff6d6851e709c4e193cc3657f36ada526973721ffa5871de52b3b4"
+ }
+}

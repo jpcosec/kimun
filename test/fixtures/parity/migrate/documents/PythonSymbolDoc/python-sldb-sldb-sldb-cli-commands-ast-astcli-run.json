@@ -1,0 +1,33 @@
+{
+ "name": "python-sldb-sldb-sldb-cli-commands-ast-astcli-run",
+ "model": "PythonSymbolDoc",
+ "path": "knowledge/symbols/python-sldb-sldb-sldb-cli-commands-ast-astcli-run.md",
+ "source_hash": "8d5a4eacebbc7d2095d4f6252f7a7fbdf5fe696cc138d593c6b16c670f55bea4",
+ "content_hash": "d7d07de85613d62b3640ee67e4adfdfaec4c3ec9e2ce10e13d240b4a64291edb",
+ "semantic_tags": [
+  "representation.markdown",
+  "source.code.python",
+  "type.knowledge.code_symbol",
+  "workspace.knowledge.symbols"
+ ],
+ "source_hash_live": "8d5a4eacebbc7d2095d4f6252f7a7fbdf5fe696cc138d593c6b16c670f55bea4",
+ "content_hash_live": "d7d07de85613d62b3640ee67e4adfdfaec4c3ec9e2ce10e13d240b4a64291edb",
+ "payload": {
+  "id": "python-sldb-sldb-sldb-cli-commands-ast-astcli-run",
+  "system": "sldb",
+  "module": "sldb.sldb.cli.commands.ast",
+  "qualname": "ASTCLI.run",
+  "kind": "FunctionDef",
+  "source_path": "sldb/cli/commands/ast.py",
+  "source_span": "41:49",
+  "source_sha256": "788802abd123bf678ba29b9595a18e4809b771ba7f7990e82e60f286f4833027",
+  "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+  "signature": "run(self, args: Any)",
+  "docstring": "Not documented.",
+  "imports": "[\"__future__\", \"json\", \"sldb.cli.graph_ops\", \"typing\", \"yaml\"]",
+  "purpose": "Not documented.",
+  "architecture": "Not documented.",
+  "tags": [],
+  "provenance": "python-ast:python:sldb.sldb.cli.commands.ast:ASTCLI.run; contract-sha256:e244f022d6145ae8dee6f40bebb8c5709b582251701ea7dec47bff1c075a3d89"
+ }
+}

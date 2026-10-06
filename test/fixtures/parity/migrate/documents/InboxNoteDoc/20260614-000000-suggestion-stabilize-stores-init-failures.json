@@ -1,0 +1,23 @@
+{
+ "name": "20260614-000000-suggestion-stabilize-stores-init-failures",
+ "model": "InboxNoteDoc",
+ "path": "desk/inbox/20260614-000000-suggestion-stabilize-stores-init-failures.md",
+ "source_hash": "50a99c7c5579ac3777fc5f42042b1d80bd41008b141073551eb477eb9d8fded8",
+ "content_hash": "b07c5e7cc0baf305046646778308d6fece874fa36987645f70819cf5059ab198",
+ "semantic_tags": [
+  "representation.markdown",
+  "source.document.markdown",
+  "type.desk.inbox-note",
+  "workspace.desk.inbox"
+ ],
+ "source_hash_live": "50a99c7c5579ac3777fc5f42042b1d80bd41008b141073551eb477eb9d8fded8",
+ "content_hash_live": "b07c5e7cc0baf305046646778308d6fece874fa36987645f70819cf5059ab198",
+ "payload": {
+  "kind": "suggestion",
+  "sender_project": "deskops",
+  "created_at": "2026-06-14T00:00:00",
+  "status": "open",
+  "title": "Stabilize `stores init` failure handling",
+  "body": "## Scope\n\n- `stores init` should be idempotent: if `.sldb/` exists, report it clearly and exit 0\n- Partial init failures (created dirs but no index) should roll back or leave a detectable partial state\n- Exit codes should distinguish: already-exists (0), created (0), partial-failure (1+), precondition-error (2+)\n- Stderr output for failures should be actionable, not raw tracebacks\n\n## Motivation\n\nDeskops needs to report safe, clear output to first-time users. Currently a bare `sldb stores init` failure propagates as a cryptic subprocess error.\n\n## Existing pills\n\n- `desk/pills/pill-001-sldb-vs-deskops-boundary.md` — SLDB owns store contracts, deskops owns workflow\n\n## Done When\n\n- `sldb stores init` run twice in the same directory: first exits 0 creates store, second exits 0 says \"already exists\"\n- Forced init failure (readonly parent dir) exits non-zero with actionable stderr and no partial `.sldb/` left behind\n- Deskops `init` can read the exit code and report the right user message"
+ }
+}
