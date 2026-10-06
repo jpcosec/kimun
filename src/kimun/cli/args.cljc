@@ -45,8 +45,16 @@
   ([argv] (parse argv {} {}))
   ([argv env] (parse argv env {}))
   ([argv env extra]
-   (let [full (merge extra spec)
-         {:keys [args opts]} (cli/parse-args (vec argv) {:spec full :restrict true})
+   (let [full (into {} (map (fn [[k v]] [k (if (contains? v :coerce) v (assoc v :coerce :string))]))
+                    (merge extra spec))
+         {:keys [args opts]} (try (cli/parse-args (vec argv) {:spec full :restrict true})
+                                  (catch clojure.lang.ExceptionInfo e
+                                    (let [d (ex-data e)]
+                                      (if (and (= :org.babashka/cli (:type d))
+                                               (some-> (ex-message e) (.startsWith "Missing value")))
+                                        (err/raise :cli/usage (str "option --" (name (:option d)) " needs a value")
+                                                   {:option (:option d)})
+                                        (throw e)))))
          opts (or opts {})]
      (doseq [k (value-options full)] (require-string! opts k))
      {:args (vec (or args []))
