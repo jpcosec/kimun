@@ -8,6 +8,7 @@
             [sldb.kernel.test-util :as tu :refer [defspec]]
             [sldb.host.default :as host]
             [sldb.host.fs-store :as fs]
+            [sldb.kernel.canon :as canon]
             [sldb.kernel.generators :as g]
             [sldb.kernel.legacy.revision :as legacy]
             [sldb.kernel.mmap :as mmap]
@@ -59,6 +60,26 @@
                        (reduce #(update %1 %2 (fnil conj (sorted-set)) id) m (distinct [(:from e) (:to e)]))))
           {} (rev/active-edges s)))
 
+(defn- expand
+  "The sorted edge ids of an :incidence value: the inline vector itself, or the
+   keys of the nested set of a hub `{:set root}`."
+  [s v]
+  (if (rev/hub-value? v) (vec (mmap/keys #(rev/get-object s %) (:set v))) v))
+
+(defn- incidence-entries [s]
+  (into {} (map (fn [[n v]] [n (expand s v)]))
+        (mmap/entries #(rev/get-object s %) (:incidence (rev/revision s (:head s))))))
+
+(defn- canonical-incidence-value?
+  "The shape rule: a non-empty sorted vector up to the threshold, `{:set root}`
+   with nothing else and more than the threshold above it."
+  [s v]
+  (let [ids (expand s v)]
+    (and (seq ids) (= ids (vec (sort (distinct ids))))
+         (if (> (count ids) rev/hub-threshold)
+           (and (map? v) (= [:set] (keys v)) (string? (:set v)))
+           (vector? v)))))
+
 (defn- same-state? [l s]
   (let [head (rev/revision s (:head s))]
     (and (= (:trees l) (:trees s))
@@ -68,8 +89,8 @@
          (= (:edges l) (:edges s) (set (rev/active-edges s)))
          (= (count (:trees l)) (rev/tree-count s)) (= (count (:edges l)) (rev/edge-count s))
          (= (set (filter :class (vals (:objects l)))) (set (filter :class (vals (:objects s)))))
-         (= (into {} (map (fn [[n ids]] [n (vec ids)])) (incidence-of s))
-            (into {} (mmap/entries #(rev/get-object s %) (:incidence head))))
+         (= (into {} (map (fn [[n ids]] [n (vec ids)])) (incidence-of s)) (incidence-entries s))
+         (every? (fn [[_ v]] (canonical-incidence-value? s v)) (mmap/entries #(rev/get-object s %) (:incidence head)))
          (every? (fn [[n ids]] (= (vec ids) (rev/edges-touching s n))) (incidence-of s)))))
 
 (defn- run-both
@@ -98,6 +119,96 @@
 (defspec format-2-and-legacy-engines-agree-on-random-histories 40
   (prop/for-all [p g/gen-valid-plan steps (gen/vector gen-step 0 12)]
     (run-both p steps)))
+
+;; ---------------------------------------------------------------- hubs
+
+(def ^:private pool (mapv #(canon/digest h [:edge %]) (range 48)))
+
+(defn- value-after
+  "Folds `incidence-value` over `batches` ([add-ids del-ids] each), carrying the
+   emitted mmap nodes as the loader: {:value v :objs {id node} :set #{ids}}."
+  [batches]
+  (reduce (fn [{:keys [value objs ids]} [add del]]
+            (let [r (rev/incidence-value h objs (when-not (= mmap/removal value) value) (set add) (set (remove (set add) del)))]
+              {:value (:value r) :objs (merge objs (:new r)) :ids (into (reduce disj ids del) add)}))
+          {:value mmap/removal :objs {} :ids #{}} batches))
+
+(defspec the-incidence-value-of-a-node-depends-only-on-its-set-of-edges 60
+  (prop/for-all [batches (gen/vector (gen/tuple (gen/vector (gen/elements pool) 0 12) (gen/vector (gen/elements pool) 0 12)) 0 14)
+                 seed gen/nat]
+    (let [{:keys [value objs ids]} (value-after batches)
+          shuffled (map second (sort-by first (map-indexed (fn [i id] [(hash [seed i id]) id]) (sort ids))))
+          other (value-after (map (fn [c] [c []]) (partition-all 5 shuffled)))
+          direct (rev/incidence-value h {} nil ids #{})]
+      (and (= value (:value other) (:value direct))
+           (cond (empty? ids) (= mmap/removal value)
+                 (<= (count ids) rev/hub-threshold) (= (vec (sort ids)) value)
+                 :else (and (= [:set] (keys value))
+                            (= (vec (sort ids)) (vec (mmap/keys objs (:set value))))
+                            ;; a hub change emits mmap nodes only, each hashing to its id
+                            (every? (fn [[id o]] (and (mmap/node? o) (= id (canon/digest h o)))) objs)))))))
+
+(defn- hub-store
+  "A document whose root is the target of one reference edge from each of the
+   text nodes `texts`, added in that order, `per-plan` edges per transaction."
+  [texts per-plan]
+  (let [T "01ARZ3NDEKTSV4RRFFQ69G5FAV"
+        r0 (rev/apply-plan (rev/empty-store h caps)
+                           (plan nil [{:op :add-node :node {:class :sign :kind :block :content {:format :markdown :type :document :attrs {}}} :as :root}
+                                      {:op :new-tree :tree {:kind :document :name "d"} :id T :root :root}]))
+        hub (get-in r0 [:aliases :root])]
+    (reduce (fn [{:keys [store edges]} chunk]
+              (let [r (rev/apply-plan store (plan (:head store)
+                                                  (vec (mapcat (fn [t] [(text-op t (keyword t))
+                                                                   {:op :add-edge :edge {:type :reference :from (keyword t) :to hub :evidence {:ref-hash hub :actor "jp"}} :as (keyword (str "e-" t))}])
+                                                                chunk))))]
+                {:store (:store r) :hub hub :tree T
+                 :edges (into edges (map (fn [t] [t (get-in r [:aliases (keyword (str "e-" t))])])) chunk)}))
+            {:store (:store r0) :hub hub :tree T :edges {}}
+            (partition-all per-plan texts))))
+
+(defn- incidence-root [s] (:incidence (rev/revision s (:head s))))
+(defn- hub-value [s hub] (mmap/lookup h #(rev/get-object s %) (incidence-root s) hub nil))
+
+(deftest a-hub-keeps-its-edges-in-a-nested-set-and-costs-a-few-nodes-per-edge
+  (let [texts (mapv #(str "t" %) (range 40))
+        {:keys [store hub edges]} (hub-store texts 1)
+        other (hub-store (reverse texts) 7)]
+    (testing "above the threshold the value is {:set root}; the accessor still answers the sorted ids"
+      (is (= [:set] (keys (hub-value store hub))))
+      (is (= 40 (count (rev/edges-touching store hub))))
+      (is (= (vec (sort (vals edges))) (rev/edges-touching store hub)))
+      (is (canonical-incidence-value? store (hub-value store hub))))
+    (testing "the same edges in another order and batching give the same roots"
+      (is (= (incidence-root store) (incidence-root (:store other))))
+      (is (= (:edges (rev/revision store (:head store))) (:edges (rev/revision (:store other) (:head (:store other)))))))
+    (testing "one more edge on the hub writes a few mmap nodes, none carrying the whole set"
+      (let [r (rev/apply-plan store (plan (:head store) [(text-op "one-more" :n)
+                                                         {:op :add-edge :edge {:type :reference :from :n :to hub :evidence {:ref-hash hub :actor "jp"}}}]))
+            nodes (filter mmap/node? (vals (:new-objects r)))]
+        (is (= 41 (count (rev/edges-touching (:store r) hub))))
+        (is (every? #(<= (count (or (:entries %) (:children %))) 16) nodes))
+        (is (not-any? (fn [n] (some (fn [[_ v]] (and (vector? v) (> (count v) rev/hub-threshold))) (:entries n))) nodes))))
+    (testing "shrinking back to the threshold collapses to the inline vector with the ids of a store that never grew"
+      (let [kept (take rev/hub-threshold texts)
+            shrunk (:store (rev/apply-plan store (plan (:head store) (mapv (fn [t] {:op :remove-edge :edge (edges t)}) (drop rev/hub-threshold texts)))))
+            small (hub-store kept 3)
+            regrown (:store (reduce (fn [r t] (rev/apply-plan (:store r) (plan (:head (:store r)) [{:op :add-edge :edge {:type :reference :from (get-in (rev/get-object store (edges t)) [:from]) :to hub :evidence {:ref-hash hub :actor "jp"}}}])))
+                                    {:store shrunk} (drop rev/hub-threshold texts)))]
+        (is (vector? (hub-value shrunk hub)))
+        (is (= rev/hub-threshold (count (hub-value shrunk hub))))
+        (is (= (hub-value shrunk hub) (hub-value (:store small) hub) (rev/edges-touching shrunk hub)))
+        (is (= (incidence-root store) (incidence-root regrown)) "grown past the threshold again: the same nested root")
+        (is (= (rev/edges-touching store hub) (rev/edges-touching regrown hub)))
+        (is (= (rev/edges-touching store hub) (rev/edges-touching shrunk hub (:head store))) "the older revision still answers from its nested set")))
+    (testing "reachable walks the nested sets: everything this history wrote is reachable from its head"
+      (let [reach (store/reachable store)]
+        (is (contains? reach (:set (hub-value store hub))))
+        (is (every? reach (keys (:objects store))))
+        (let [root (:set (hub-value store hub))
+              damaged (store/reachable (update store :objects dissoc root))]
+          (is (contains? damaged root) "a missing nested root is in the result (verify reports it), not raised")
+          (is (< (count damaged) (count reach))))))))
 
 ;; ---------------------------------------------------------------- accessors
 

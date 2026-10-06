@@ -17,7 +17,8 @@
 
    Revision {:trees     <mmap root: tree-id -> [descriptor-id merkle-root]>
              :edges     <mmap root: active edge id -> true>
-             :incidence <mmap root: node-id -> sorted vector of the active edge ids with it as :from or :to>
+             :incidence <mmap root: node-id -> the active edge ids with it as :from or :to,
+                         a sorted vector up to `hub-threshold` ids and {:set <root of the mmap edge-id -> true>} above>
              :parents [rev-id] :tx tx-id :actor :engines :timestamp}
    (sldb.kernel.mmap). :incidence is derived from :edges, deterministic, and never
    trusted by verification (a full replay recomputes it).
@@ -101,15 +102,31 @@
      (= rev-id (:head store)) (contains? (:edges store) edge-id)
      :else (boolean (some #{edge-id} (active-edges store rev-id))))))
 
+(def hub-threshold
+  "Largest number of edges a node's :incidence entry holds inline. Measured
+   (gen_store, 200 docs; object bytes per commit): 8/16/32/64 -> 40.1/40.0/39.9/40.3 KB,
+   inline only -> 50.7 KB and growing with the hub;
+   16 = mmap/leaf-capacity keeps every inline entry near 1 KB."
+  16)
+
+(defn hub-value?
+  "True when an :incidence value is the nested form `{:set <mmap root id>}`
+   (a node with more than `hub-threshold` edges); the inline form is a vector."
+  [v]
+  (map? v))
+
 (defn edges-touching
   "Sorted vector of the active edge ids having `node-id` as :from or :to, at
-   the head or at `rev-id` (one :incidence lookup)."
+   the head or at `rev-id`. One :incidence lookup; for a hub (more than
+   `hub-threshold` edges) it also enumerates the nested set."
   ([store node-id] (edges-touching store node-id (:head store)))
   ([store node-id rev-id]
    (if (legacy? store)
      (vec (filter #(let [e (get-object store %)] (or (= node-id (:from e)) (= node-id (:to e))))
                   (active-edges store rev-id)))
-     (mmap/lookup (:host store) (loader store) (:incidence (roots store rev-id)) node-id []))))
+     (let [load (loader store)
+           v (mmap/lookup (:host store) load (:incidence (roots store rev-id)) node-id [])]
+       (if (hub-value? v) (vec (mmap/keys load (:set v))) v)))))
 
 (defn edge-count
   "Number of active edges at the head or at `rev-id` (reads one mmap node)."
@@ -549,17 +566,42 @@
 
 ;; ---------------------------------------------------------------- apply
 
+(defn incidence-value
+  "The canonical :incidence value of a node whose current value is `cur`
+   (nil, an inline vector or `{:set root}`) after adding the edge ids `add` and
+   removing `del`: {:value v :new {id mmap-node}}. The shape is a function of
+   the resulting set alone: no edges -> mmap/removal; at most `hub-threshold`
+   -> the sorted vector of ids; more -> `{:set root}`, root of the mmap
+   edge-id -> true. A hub costs O(log) mmap nodes per edge, never its whole
+   set; it collapses back to the vector when it shrinks to the threshold."
+  [host load cur add del]
+  (if (hub-value? cur)
+    (let [{:keys [root new]} (mmap/update-many host load (:set cur)
+                                               (merge (zipmap del (repeat mmap/removal)) (zipmap add (repeat true))))
+          load' #(or (get new %) (load %))]
+      (if (> (mmap/count load' root) hub-threshold)
+        {:value {:set root} :new new}
+        {:value (vec (mmap/keys load' root)) :new {}}))
+    (let [ids (vec (sort (into (reduce disj (set cur) del) add)))]
+      (cond
+        (empty? ids) {:value mmap/removal :new {}}
+        (> (count ids) hub-threshold) (let [m (mmap/from-entries host (map #(vector % true) ids))]
+                                        {:value {:set (:root m)} :new (:new m)})
+        :else {:value ids :new {}}))))
+
 (defn- incidence-delta
-  "{node-id sorted-edge-ids | mmap/removal} for the endpoints of the net edge delta."
-  [ws]
-  (let [ends (fn [id] (let [e (ws-object ws id)] (distinct [(:from e) (:to e)])))
+  "{:delta {node-id value | mmap/removal} :new {id mmap-node}} for the
+   endpoints of the net edge delta (values as `incidence-value`)."
+  [ws load base-root]
+  (let [host (:host (:store ws))
+        ends (fn [id] (let [e (ws-object ws id)] (distinct [(:from e) (:to e)])))
         collect (fn [m ids k]
                   (reduce (fn [m id] (reduce #(update-in %1 [%2 k] (fnil conj #{}) id) m (ends id))) m ids))]
-    (into {}
-          (map (fn [[n {:keys [add del]}]]
-                 (let [v (vec (sort (into (reduce disj (set (edges-touching (:store ws) n)) del) add)))]
-                   [n (if (seq v) v mmap/removal)])))
-          (-> {} (collect (:e+ ws) :add) (collect (:e- ws) :del)))))
+    (reduce (fn [acc [n {:keys [add del]}]]
+              (let [{:keys [value new]} (incidence-value host load (mmap/lookup host load base-root n nil) add del)]
+                (-> acc (assoc-in [:delta n] value) (update :new merge new))))
+            {:delta {} :new {}}
+            (-> {} (collect (:e+ ws) :add) (collect (:e- ws) :del)))))
 
 (defn- commit-tree
   "[committed-tree {id object}] with exactly the tree objects of the positions
@@ -613,7 +655,8 @@
                                (into {} (map (fn [[tid t]] [tid [(tree/descriptor-id host (:descriptor t)) (tree/merkle-root t)]])) trees'))
           em (mmap/update-many host load (:edges base)
                                (merge (zipmap (:e- ws) (repeat mmap/removal)) (zipmap (:e+ ws) (repeat true))))
-          im (mmap/update-many host load (:incidence base) (incidence-delta ws))
+          idelta (incidence-delta ws load (:incidence base))
+          im (update (mmap/update-many host load (:incidence base) (:delta idelta)) :new #(merge (:new idelta) %))
           resolved-plan (dissoc plan' :rebased-from)
           tx-id (canon/digest host resolved-plan)
           rev {:trees (:root tm)

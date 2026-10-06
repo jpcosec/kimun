@@ -358,7 +358,7 @@
   (let [as (fn [k ids] (for [id ids :when (string? id)] [id k]))]
     (cond
       (mmap/branch? o) (as (if (= :trees kind) :trees :obj) (mmap/child-ids o))
-      (mmap/leaf? o) (as :obj (mapcat (fn [[k v]] (concat (when-not (= :trees kind) [k]) (when (vector? v) v))) (:entries o)))
+      (mmap/leaf? o) (as :obj (mapcat (fn [[k v]] (concat (when-not (= :trees kind) [k]) (cond (vector? v) v (and (map? v) (:set v)) [(:set v)]))) (:entries o)))
       (and (map? o) (:incidence o) (:tx o)) (concat (as :trees [(:trees o)]) (as :obj (concat [(:edges o) (:incidence o) (:tx o)] (:parents o))))
       (and (map? o) (:roots o) (:tx o))            (as :soft (concat (vals (:roots o)) [(:trees o) (:edges o) (:tx o)] (:parents o)))
       (and (map? o) (:node o) (contains? o :children)) (as :obj (cons (:node o) (mapcat identity (:children o))))
@@ -372,7 +372,8 @@
   "Ids of every object reachable from the heads of `store` (docs/v2/02 §3.1):
    the transitive closure over id references, acyclic because ids are hashes.
    Format-2 Revisions are walked through their three mmaps (branch children,
-   leaf keys and id vectors); format-1 Revisions through :roots and the sets.
+   leaf keys, id vectors and the nested edge-id set of a hub
+   :incidence entry `{:set root}`); format-1 Revisions through :roots and the sets.
    Never raises on damaged content: an id that a format-2 structure names but
    that is absent or unreadable IS in the result (so `verify` reports it) and
    the walk goes on with what it can still read; what was reachable only

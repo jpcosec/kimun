@@ -11,6 +11,7 @@
             [kimun.cli.store :as cli-store]
             [sldb.host.fs-store :as fs-store]
             [sldb.kernel.mmap :as mmap]
+            [sldb.kernel.revision :as rev]
             [sldb.kernel.store :as store]))
 
 (def env {"USER" "tester"})
@@ -128,11 +129,12 @@
 (defn- raw-run [p & argv] (:envelope (main/run (vec argv) env p)))
 
 (defn- many-commits
-  "`project` plus 14 documents and two edits of `login`: 17+ revisions, one of
-   them the head of no tree, and an :incidence map big enough for a branch."
+  "`project` plus 20 documents and two edits of `login`: 23+ revisions, one of
+   them the head of no tree, an :incidence map big enough for a branch and a
+   hub (the model node: more than `rev/hub-threshold` edges, a nested set)."
   []
   (let [p (project)]
-    (doseq [i (range 14)]
+    (doseq [i (range 20)]
       (is (true? (:ok (run p "docs" "create" "TicketDoc" (str "d" i) "--set" (str "title=T" i) "--set" "status=open")))))
     (is (true? (:ok (run p "fields" "set" "login" "status" "doing"))))
     (is (true? (:ok (run p "fields" "set" "login" "status" "done"))))
@@ -148,15 +150,23 @@
         ids (sort (store/reachable s))
         rev (get objs (:head s))
         heads (set (cons (:head s) (vals (:heads s))))
-        branch (first (filter #(mmap/branch? (get objs %)) ids))
+        ;; the nested edge set of a hub: the model node, an endpoint of one edge per document
+        hub-root (some (fn [[_ v]] (when (rev/hub-value? v) (:set v))) (mmap/entries #(get objs %) (:incidence rev)))
+        hub-inner (first (mmap/child-ids (get objs hub-root)))
+        ;; one object per kind: the generic branch and leaf are none of the objects named above
+        ;; (ids vary per run, and a leaf of :edges can be the very leaf of a hub's set)
+        taken #{(:trees rev) (:edges rev) (:incidence rev) hub-root hub-inner}
+        branch (first (filter #(and (mmap/branch? (get objs %)) (not (taken %)) (some (complement taken) (mmap/child-ids (get objs %)))) ids))
         tree-obj (first (filter #(let [o (get objs %)] (and (map? o) (:node o) (contains? o :children))) ids))
         older (first (remove heads (keys (:revisions s))))
         victims {:node (:node (get objs tree-obj)) :tree tree-obj
-                 :mmap-branch branch :mmap-leaf (first (mmap/child-ids (get objs branch)))
+                 :mmap-branch branch :mmap-leaf (first (remove taken (mmap/child-ids (get objs branch))))
+                 :hub-set-root hub-root :hub-set-inner hub-inner
                  :trees-root (:trees rev) :edges-root (:edges rev) :incidence-root (:incidence rev)
                  :older-revision older}]
     (is (every? string? (vals victims)) "the store has one object of every kind")
-    (is (= (count victims) (count (set (vals victims)))) "eight different objects")
+    (is (= (count victims) (count (set (vals victims)))) "ten different objects")
+    (is (and (mmap/branch? (get objs hub-root)) (> (mmap/node-count (get objs hub-root)) rev/hub-threshold)) "the hub set is a nested mmap")
     (doseq [[kind id] victims
             [mode reason] [[:altered :hash-mismatch] [:unparseable :hash-mismatch] [:deleted :missing]]]
       (testing (str kind " " mode)
