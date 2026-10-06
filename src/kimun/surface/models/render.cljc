@@ -8,6 +8,7 @@
             [clojure.string :as str]
             [kimun.surface.models.blocks :as blocks]
             [kimun.surface.models.descriptor :as descriptor]
+            [kimun.surface.models.extract :as extract]
             [kimun.surface.models.marker :as marker]))
 
 (defn- fold-plain
@@ -133,8 +134,58 @@
          (str/join "\n\n")
          str/trim)))
 
+(defn- spec-get [spec k] (let [v (get spec k)] (if (some? v) v (get spec (keyword k)))))
+
+(defn- fill-line
+  "v1's `str.format(**payload)` for a composition line template: `{field}`
+   placeholders (`{{`/`}}` escape a brace); nil when a placeholder names a
+   field the payload does not have (v1's KeyError, which skips the ref)."
+  [template payload]
+  (let [names (keep second (re-seq #"\{\{|\}\}|\{([^{}]*)\}" template))]
+    (when (every? #(contains? payload %) names)
+      (str/replace template #"\{\{|\}\}|\{([^{}]*)\}"
+                   (fn [[whole n]] (cond (= "{{" whole) "{" (= "}}" whole) "}"
+                                         :else (let [v (get payload n)] (if (nil? v) "None" (pystr v)))))))))
+
+(defn- compose-field
+  "The text of one composed field (v1 `StructuredNLDoc.compose_field`): one
+   line per ref of the source field, each the line template filled with the
+   payload extracted from the referenced document. A ref with no text, an
+   invalid referenced document or an unfillable line is skipped silently."
+  [spec data {:keys [ref-text ref-model]}]
+  (let [source (spec-get spec "source_field")
+        refs (when source (get data source))
+        model (when-let [m (spec-get spec "model")] (when ref-model (ref-model m)))
+        line (fn [raw]
+               (try
+                 (when-let [text (when ref-text (ref-text (-> (str raw) str/trim (str/replace #"^`+|`+$" ""))))]
+                   (let [p (extract/extract model text)]
+                     (when (seq p) (fill-line (or (spec-get spec "template") "- {title}") p))))
+                 (catch Exception _ nil)))]
+    (if (or (str/blank? source) (not (sequential? refs)) (nil? model))
+      ""
+      (str/join (or (spec-get spec "separator") "\n") (remove str/blank? (map line refs))))))
+
+(defn compositions
+  "The compositions a descriptor declares, `{name {\"source_field\" \"model\"
+   \"template\" [\"separator\"]}}` (keyword keys accepted too), read from
+   `:compositions` or, as v1's exporter writes it, `:py/compositions`."
+  [descriptor]
+  (or (:compositions descriptor) (:py/compositions descriptor) {}))
+
+(defn- with-compositions [descriptor data ctx]
+  (reduce-kv (fn [d n spec] (assoc d (name n) (compose-field spec d ctx))) data (compositions descriptor)))
+
 (defn render
   "Markdown of `payload` under `descriptor`: defaults and coercion applied
-   (`descriptor/finalize`), then the template filled."
-  [descriptor payload]
-  (render-template (:template descriptor) (with-carriers descriptor (descriptor/finalize descriptor payload))))
+   (`descriptor/finalize`), then the template filled. Composed fields
+   (`⸢render•name⸥` over `compositions`) are expanded through the optional
+   context `ctx`, two caller-supplied functions so the engine does no I/O:
+   `{:ref-text (fn [ref] markdown-or-nil) :ref-model (fn [model-ref]
+   descriptor-or-nil)}`. `ref` is the ref as written in the payload (trimmed,
+   backticks stripped): resolving it against a root is the caller's job.
+   Without a context every composed field renders empty."
+  ([descriptor payload] (render descriptor payload nil))
+  ([descriptor payload ctx]
+   (render-template (:template descriptor)
+                    (with-compositions descriptor (with-carriers descriptor (descriptor/finalize descriptor payload)) ctx))))
