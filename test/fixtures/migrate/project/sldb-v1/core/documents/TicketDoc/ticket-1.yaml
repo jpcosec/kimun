@@ -1,0 +1,7 @@
+name: ticket-1
+path: tickets/1.md
+source_hash: 2b0ef76fe0f4580fa43b6e18e9bbe4990dc2068309511711f353404235a5b312
+content_hash: 0000
+field_hashes: {}
+semantic_tags:
+- type.fixture

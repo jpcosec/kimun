@@ -1,0 +1,5 @@
+{:model/name "TaskDoc" :base [] :semantics ["task"]
+ :fields [{:name "title" :type :string :required true :description "Task title."}
+          {:name "owner" :type :string :required true :description "Who does it."}
+          {:name "notes" :type :string :required true :description "Free notes."}]
+ :template "# ⸢rev•title⸥\n\nOwner: ⸢rev•owner⸥\n\n## Notes\n\n⸢rev•notes⸥\n"}

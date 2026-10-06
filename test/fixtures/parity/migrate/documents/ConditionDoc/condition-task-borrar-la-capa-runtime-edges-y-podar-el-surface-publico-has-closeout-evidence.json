@@ -1,0 +1,28 @@
+{
+ "name": "condition-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-has-closeout-evidence",
+ "model": "ConditionDoc",
+ "path": "desk/primitives/conditions/condition-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-has-closeout-evidence.md",
+ "source_hash": "fbf5188f9befaa950788d4ee4b04d60d844eaabeeb6a6aef17b58dfa3399a200",
+ "content_hash": "e9f3921ddc89665e0d37a7e41aba91dfbbaf87c4e67f93f5719d4e532e612f19",
+ "semantic_tags": [
+  "primitive:condition",
+  "representation.markdown",
+  "source.document.markdown",
+  "type.workflow.condition",
+  "workspace.desk.primitives"
+ ],
+ "source_hash_live": "fbf5188f9befaa950788d4ee4b04d60d844eaabeeb6a6aef17b58dfa3399a200",
+ "content_hash_live": "e9f3921ddc89665e0d37a7e41aba91dfbbaf87c4e67f93f5719d4e532e612f19",
+ "payload": {
+  "title": "Durable evidence is verified",
+  "id": "condition-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-has-closeout-evidence",
+  "status": "active",
+  "summary": "Task references must point to a real atom, test, or git commit before closeout.",
+  "tags": [
+   "primitive:condition"
+  ],
+  "subject": "closeout_evidence_verified",
+  "predicate": "truthy",
+  "expected": ""
+ }
+}

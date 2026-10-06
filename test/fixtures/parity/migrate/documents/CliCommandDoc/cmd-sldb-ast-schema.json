@@ -1,0 +1,38 @@
+{
+ "name": "cmd-sldb-ast-schema",
+ "model": "CliCommandDoc",
+ "path": "knowledge/commands/cmd-sldb-ast-schema.md",
+ "source_hash": "0744647e26a0a9bff7a27e208fc71970c5c79b63f262eb20d56600e4d3c8dc4c",
+ "content_hash": "8b018b771ee2429fcc40ea38bdc5d7f63c04139c1f4f9adb0fd9c2df6ab39d0a",
+ "semantic_tags": [
+  "domain:retrieval",
+  "entity:cli_command",
+  "impl:external",
+  "kind:software",
+  "representation.markdown",
+  "source.document.markdown",
+  "system:sldb",
+  "type.knowledge.cli_command",
+  "workspace.knowledge.commands"
+ ],
+ "source_hash_live": "0744647e26a0a9bff7a27e208fc71970c5c79b63f262eb20d56600e4d3c8dc4c",
+ "content_hash_live": "8b018b771ee2429fcc40ea38bdc5d7f63c04139c1f4f9adb0fd9c2df6ab39d0a",
+ "payload": {
+  "id": "cmd-sldb-ast-schema",
+  "system": "sldb",
+  "command_path": "ast schema",
+  "synopsis": "Show node and edge schema.",
+  "purpose": "The `sldb ast schema` command: Show node and edge schema.",
+  "how_it_works": "Implemented under src/sldb/cli/parsers/ as the argparse subcommand 'schema'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.",
+  "arguments": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"--format\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"json\\\"\",\n      \"choices\": [\n        \"\\\"json\\\"\",\n        \"\\\"yaml\\\"\",\n        \"\\\"text\\\"\"\n      ],\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+  "usage": "ast schema",
+  "tags": [
+   "system:sldb",
+   "domain:retrieval",
+   "kind:software",
+   "impl:external",
+   "entity:cli_command"
+  ],
+  "provenance": "parser:sldb.cli.parser:build_parser#ast schema; contract-sha256:f36bb2571f3b2ad66865dfd3fb5e2d1b34dd4f3f5cb009623984737a41cd1054"
+ }
+}

@@ -1,0 +1,12 @@
+;; Documents of the frozen sample whose kimun payload is known to differ from
+;; v1's, with the cause (runs/parity/migrate-*.md classifies them at scale).
+;; The test fails when a document differs without an entry here, and when an
+;; entry here no longer differs: fix the engine, then delete the entry.
+{"20260614-000000-suggestion-stabilize-stores-init-failures"
+ {:field "created_at" :cause "v1 parses a front-matter date into a datetime and dumps it as ISO `2026-06-14T00:00:00`; kimun keeps the text `2026-06-14`"}
+ "task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico"
+ {:field "from_drawer" :cause "optional field absent from the document: v1 omits the key, kimun yields an empty string"}
+ "task-build-code-self-documentation"
+ {:field "from_drawer" :cause "optional field absent from the document: v1 omits the key, kimun yields an empty string"}
+ "task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges"
+ {:field "from_drawer" :cause "optional field absent from the document: v1 omits the key, kimun yields an empty string"}}

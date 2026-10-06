@@ -1,0 +1,28 @@
+{
+ "name": "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-close-to-complete",
+ "model": "EdgeDoc",
+ "path": "desk/primitives/edges/edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-close-to-complete.md",
+ "source_hash": "8c5e179280626f587447d165ec856274d2ab6d4be14e1787008abc51309ab393",
+ "content_hash": "37b7901197f40e3b954544a98407b4e13606e204405c55c234cd826462ea97a0",
+ "semantic_tags": [
+  "primitive:edge",
+  "representation.markdown",
+  "source.document.markdown",
+  "type.workflow.edge",
+  "workspace.desk.primitives"
+ ],
+ "source_hash_live": "8c5e179280626f587447d165ec856274d2ab6d4be14e1787008abc51309ab393",
+ "content_hash_live": "37b7901197f40e3b954544a98407b4e13606e204405c55c234cd826462ea97a0",
+ "payload": {
+  "title": "Close operator to complete",
+  "id": "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-close-to-complete",
+  "status": "active",
+  "summary": "Task closed.",
+  "tags": [
+   "primitive:edge"
+  ],
+  "source": "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-close",
+  "target": "complete",
+  "condition_ref": ""
+ }
+}
