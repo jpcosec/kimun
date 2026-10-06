@@ -1,11 +1,6 @@
 ;; v1 promises kimun does not hold today; pinned in test/kimun/parity/known_gaps_test.cljc.
 ;; Checked by scripts/parity/coverage.py (see its docstring).
 {
- "api/test_api_documents.py::test_cli_save_payload_still_exits_with_the_message"
- {:promise "Saving a payload for a document that is not tracked fails with a message naming the document (\"Doc 'ghost' not registered.\")."
-  :kimun "`docs update ghost --set title=x` answers cli/usage exit 6: \"`docs update` needs --name NAME (or a second token naming the document)\"; the message never mentions ghost and `docs update --name ghost --set ...` asks for a Markdown FILE."
-  :fix "In the docs update dispatch, when --set/--data is given and NAME is not a tracked document, return docs/missing (exit 1) naming NAME instead of falling through to the untyped FILE path."}
-
  "api/test_api_edges.py::test_linked_store_documents_come_back_qualified"
  {:promise "the edge index of a store with links includes the linked store's documents qualified by the link name (annex:Table:t99, semantics.store = annex, has_document edge from the model), and include_linked=False drops them"
   :kimun "the edges view (edges nodes|node|show) holds only the local store's documents; `stores link` is not consulted by kimun.surface.edges"

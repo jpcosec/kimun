@@ -130,19 +130,6 @@
 (def ticket (str (fs/absolutize "test/fixtures/models/ticket.edn")))
 
 
-;; v1: api/test_api_documents.py::test_cli_save_payload_still_exits_with_the_message
-;; GAP: v1 promised that saving a payload for a document that is not tracked fails
-;; with a message naming it ("Doc 'ghost' not registered."); kimun answers a generic
-;; usage error (exit 6) about --name / a Markdown FILE that never mentions the document.
-(deftest update-payload-of-an-untracked-document-is-a-generic-usage-error
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-gap-clistore-"}))]
-    (run p "stores" "init" "--name" "p")
-    (run p "models" "define" "-f" ticket)
-    (let [e (run p "docs" "update" "ghost" "--set" "title=x")]
-      (is (false? (:ok e)))
-      (is (= [6 "cli/usage"] [(:exit e) (get-in e [:error :type])]))
-      (is (not (str/includes? (get-in e [:error :message]) "ghost"))))))
-
 ;; ---------------------------------------------------------------- engine: field descriptions
 ;; v1: test_standalone.py::test_structured_nl_doc_requires_field_descriptions
 ;; GAP: v1 promised a model whose field has no (or an empty) description is rejected ("fields must define a non-empty description: title"); kimun accepts it

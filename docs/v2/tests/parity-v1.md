@@ -8,6 +8,21 @@
 > misma promesa). El mapeo de comandos es el de `docs/v2/06 §5`; las superficies retiradas,
 > las de `06 §8`.
 
+## Marcador (se regenera con `python3 scripts/parity/coverage.py <v1> . `)
+
+Estado al 2026-10-06, sobre las 590 funciones de test de sldb v1:
+
+| estado | funciones | qué significa |
+|---|---|---|
+| portada | 512 | un test de kimun la nombra y ejerce la misma promesa |
+| mapeada | 1 | cubierta por un test de kimun con otro nombre (`parity-map.edn`) |
+| oráculo | 14 | su tema es el motor y los corpus diferenciales la reproducen (`parity-oracle.edn`) |
+| n/a | 55 | probaba un mecanismo que v2 no tiene por diseño; cada una con su razón y lo que sostiene la promesa hoy (`parity-na.edn`) |
+| brecha | 6 | promesa de v1 que kimun **no** cumple todavía (`parity-gaps.edn`, fijadas en `test/kimun/parity/known_gaps_test.cljc`) |
+| abierta | 2 | `selfdoc`: guarda de before-image al escribir y chequeo del grafo kgdb |
+
+Brechas abiertas: (1) un escritor que pierde la carrera deja su transacción en el log y el store ilegible (3 tests; se arregla en K1); (2) aristas y export de grafo no ven los stores enlazados (2 tests); (3) no se exige descripción por campo del modelo (1 test). Además, hallado al cerrar: un documento `superseded` se lee bajo el contrato nuevo, y `models field-add` de un campo opcional reasigna el último hueco de los documentos existentes.
+
 ## Cómo se mide
 
 1. **Oráculo diferencial del motor**: un plugin de pytest corre la suite de v1 y graba cada
@@ -62,6 +77,8 @@ nombra, para cada uno, el test del kernel que sostiene la promesa equivalente.
 |---|---|---|
 | S2 primer corte | hecho 2026-10-06 | `e444d4d`, `test/kimun/cli/docs_test.cljc` |
 | A4 enlaces | hecho 2026-10-06 | `13184d9`; `kimun.surface.links.{parser,resolver,recovery,composer}`; 8/8 de `test_links.py` a nivel de enlace, 13 tests |
+| E3 cierre del marcador | hecho 2026-10-06 | `f1e0667`, `95b55d9`, `61e1bf8`; `scripts/parity/coverage.py --strict` con contexto de menciones, oráculo declarado, mapa, n/a y gaps; 109 promesas de v1 portadas en `test/kimun/parity/*`; datos en `parity-{na,map,oracle,gaps}.edn` |
+| E2 adaptadores (selfdoc) | hecho 2026-10-06 | `515b4a2`, `4ba6c89`, `673fb18`; protocolo en `docs/v2/11-adaptadores.md`; adaptadores fuera de proceso `python-symbols`, `argparse-cli`, `click-cli`, `treesitter-symbols` (Python y JavaScript); grupo `adapters scan\|sync\|check\|list`; contra v1 en vivo: 2.288/2.288 símbolos, 93/93 comandos, 25/25 superficies con todos los campos propios iguales; tree-sitter y `ast` coinciden en 2.876 hechos sobre el fuente de v1 |
 | D1b rutas HTTP | hecho 2026-10-06 | `87c73cf`, `072159c`; `kimun.surface.http.{routes,views}`: schema, graph, save por lotes con `expected`, docs create/track/untrack, document, segments, fields, sections, find, edges, graph, corpus, similar, models, lint, ast; de 61 funciones de v1: 55 portadas, 4 n/a, 2 ya cubiertas por el esqueleto |
 | E1 migración | hecho 2026-10-06 | `dc770e6`, `548b9bf`, `2cfed85`; `kimun migrate --from-v1`; **store real de v1: 35/35 modelos, 1.551/1.551 documentos migrados (47 con `--force` por no hacer round-trip), 1.544 payloads y content-hash iguales a v1, 7 distintos (`TaskDoc.from_drawer`), 1.551 source-hash iguales, 1.551 rutas relativas**; informe en `runs/parity/migrate-2026-10-06.md` |
 | C2 aristas, grafo, predicates | hecho 2026-10-06 | `6bdc107`…`0552d4e`; `kimun.surface.edges` (grafo del store como vista derivada, ids `sldb://…` de v1), `kimun.surface.graph.store`, grupos `edges`, `graph`, `predicates`; predicates y tipos de relación como nodos en el árbol `relations`, relación de autor = arista `:semantic` con contexto; diferencial: 40 documentos reales, 2.486 aristas de v1, 1.991 iguales, 541 diferencias todas explicadas; 52 funciones portadas, 4 n/a, 3 diferidas |
@@ -113,6 +130,7 @@ nombra, para cada uno, el test del kernel que sostiene la promesa equivalente.
 ## Desviaciones deliberadas respecto de v1 (acumuladas)
 
 - `--where` no reconocido es `query/bad-where` con posición, no `False` silencioso (`06 §5`). Regex inválida se rechaza al parsear. `>=`/`<=` entre tipos distintos da falso en vez de `TypeError`. Dialecto de regex: Java.
+- Adaptadores: `sync` deja de rastrear los documentos huérfanos que el adaptador posee (v1 solo los informaba); el drift de `check` es `adapters/missing` con `:reason "drift"` (exit 1, como v1); no se portaron la heurística de renombres, la proyección a kgdb ni la guarda de before-image. v1 ya no puede sincronizar sus propios símbolos: cinco pares getter/setter chocan en un mismo id; kimun lo informa como `adapters/collision`.
 - Rutas HTTP: `/models/promote` y los borradores `.py.temp` se retiran (`POST /models/define {edn}`); `/lint` sirve los hallazgos de `stores check`; `/ast` es el documento con payload y secciones; `/models/detail` de un modelo desconocido es 404 (v1: 200 con `ok false`); las listas `unavailable` de `/schema` y `/graph` existen pero ningún estado del store las llena, porque un modelo es un nodo y no un módulo que pueda fallar al importarse. Claves que cambian de nombre: `id`→`name`, resultados bajo `data`.
 - Índice y búsqueda: la búsqueda física también mira el texto del documento y el valor de los campos (v1: solo nombres y rutas); `--fuzzy` y el ranking por defecto usan Dice, no `difflib`; no se persisten vectores (`:score-fn` reemplaza al `Embedder`); una dirección que rompe la gramática es `query/bad-address` (exit 3), una bien formada que no nombra nada da vacío; `rebuild-indexes` con documentos que no extraen sale con 0 y `:complete false`.
 - Aristas: `edges init|rebuild` son no-ops informados (el grafo se deriva de `(store, head)`); los 14 tipos builtin existen siempre; `edges check` y `predicates validate` salen con 3 (v1: 1); v1 inventaba secciones dentro del frontmatter YAML y kimun no (74 `has_section` y sus 421 `tagged_as` en la muestra real).
