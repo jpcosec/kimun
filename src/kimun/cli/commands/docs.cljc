@@ -22,6 +22,7 @@
             [sldb.host.default :as host]
             [sldb.kernel.err :as err]
             [sldb.kernel.ports :as ports]
+            [sldb.kernel.revision :as revision]
             [sldb.kernel.store :as store]
             [sldb.kernel.tree :as tree]
             [sldb.surface.markdown.plan :as md]))
@@ -36,15 +37,19 @@
      :cljs (.toISOString (js/Date.))))
 
 (defn documents
-  "`[{:name :tree :root}]` of every `:document` tree in `store`, by name then id."
-  [store]
-  (->> (apply dissoc (:trees store) (concat (tdocs/hidden-trees store) (map :tree (tdocs/documents store))))
-       (keep (fn [[tid t]]
-               (let [d (:descriptor t)]
-                 (when (= :document (:kind d))
-                   {:name (:name d) :tree tid :root (:root d)}))))
-       (sort-by (juxt :name :tree))
-       vec))
+  "`[{:name :tree :root}]` of every untyped `:document` tree in `store`, by
+   name then id (typed ones, tracked or hidden, are left out). `typed` is
+   `(tdocs/documents store)` when the caller already has it. Reads the tree
+   descriptors only."
+  ([store] (documents store (tdocs/documents store)))
+  ([store typed]
+   (let [skip (into (tdocs/hidden-trees store typed) (map :tree typed))]
+     (->> (revision/tree-descriptors store)
+          (keep (fn [[tid d]]
+                  (when (and (= :document (:kind d)) (not (skip tid)))
+                    {:name (:name d) :tree tid :root (:root d)})))
+          (sort-by (juxt :name :tree))
+          vec))))
 
 (defn resolve-document
   "The document named or identified by `token`: a tree id (ULID) present in
@@ -136,8 +141,9 @@
    :state :path`. `--model` keeps the documents of that model."
   [_args opts {:keys [env cwd]}]
   (let [{:keys [descriptor store] store-path :path} (cli-store/open! (cli-store/resolve-store opts env cwd))
-        typed (map #(select-keys % [:name :tree :root :model :model-version :state :path]) (tdocs/documents store))
-        all (if (:model opts) (filter #(= (:model opts) (:model %)) typed) (concat typed (documents store)))]
+        docs (tdocs/documents store)
+        typed (map #(select-keys % [:name :tree :root :model :model-version :state :path]) docs)
+        all (if (:model opts) (filter #(= (:model opts) (:model %)) typed) (concat typed (documents store docs)))]
     (out/ok "docs list" {:store (store-ref descriptor store-path)
                          :revision (:head store)
                          :data (vec (sort-by (juxt :name :tree) all))})))

@@ -23,6 +23,7 @@
             [kimun.surface.semantic :as sem]
             [sldb.kernel.anchor :as anchor]
             [sldb.kernel.err :as err]
+            [sldb.kernel.revision :as revision]
             [sldb.kernel.node :as node]))
 
 ;; ---------------------------------------------------------------- ids
@@ -83,8 +84,10 @@
          (rt "composes" "WHAT" "many_to_many" [] [])]))
 
 (defn- relations-tree [store]
-  (first (filter (fn [[_ t]] (let [d (:descriptor t)] (and (= :taxonomy (:kind d)) (= tree-name (:name d)))))
-                 (sort-by key (:trees store)))))
+  ;; the first taxonomy tree by id among the trees with that name (the kernel's name index), loading only that tree
+  (let [trees (:trees store)]
+    (first (keep (fn [tid] (let [t (get trees tid)] (when (= :taxonomy (get-in t [:descriptor :kind])) [tid t])))
+                 (revision/trees-named store tree-name)))))
 
 (defn- entries
   "Entries of the relations tree: `[{:position :id :format :value}]`, nil when

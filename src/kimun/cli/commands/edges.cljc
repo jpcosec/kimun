@@ -15,6 +15,7 @@
             [sldb.host.default :as host]
             [sldb.kernel.err :as err]
             [sldb.kernel.ports :as ports]
+            [sldb.kernel.revision :as revision]
             [sldb.kernel.store :as store]))
 
 (defn- open [opts {:keys [env cwd]}] (cli-store/open! (cli-store/resolve-store opts env cwd)))
@@ -227,7 +228,7 @@
              :data {:changed changed :type (get (edges/stored-relation-types s) n)}})))
 
 (defn- materialised? [s]
-  (boolean (some (fn [[_ t]] (let [d (:descriptor t)] (and (= :taxonomy (:kind d)) (= edges/tree-name (:name d))))) (:trees s))))
+  (boolean (some (fn [tid] (= :taxonomy (:kind (revision/tree-descriptor s tid)))) (revision/trees-named s edges/tree-name))))
 
 (defn- derived
   "The envelope of a command that has nothing to write because the graph is derived."

@@ -122,17 +122,20 @@
    `:state` is `:intact` (extracted under the current contract), `:superseded`
    (the model was redefined since) or `:orphan` (its model is gone)."
   [store]
+  ;; `describe` reads only the descriptor of a tree (its name and root node): no tree object is loaded
   (let [current (mstore/models store) by-from (edges-by-from store)]
-    (->> (:trees store) (filter #(= :document (get-in (val %) [:descriptor :kind])))
-         (keep #(describe store current by-from %)) (sort-by (juxt :name :tree)) vec)))
+    (->> (revision/tree-descriptors store) (filter #(= :document (:kind (second %))))
+         (keep (fn [[tid d]] (describe store current by-from [tid {:descriptor d}]))) (sort-by (juxt :name :tree)) vec)))
 
 (defn hidden-trees
   "Ids of `:document` trees that are typed-document roots no longer tracked
-   (untracked documents stay in history; listings skip them)."
-  [store]
-  (let [tracked (set (map :tree (documents store)))]
-    (set (for [[tid t] (:trees store)
-               :when (and (get-in store [:objects (tree/root t) :content :attrs :doc]) (not (tracked tid)))] tid))))
+   (untracked documents stay in history; listings skip them). `docs` is
+   `(documents store)` when the caller already has it."
+  ([store] (hidden-trees store (documents store)))
+  ([store docs]
+   (let [tracked (set (map :tree docs))]
+     (set (for [[tid d] (revision/tree-descriptors store)
+                :when (and (get-in store [:objects (:root d) :content :attrs :doc]) (not (tracked tid)))] tid)))))
 
 (defn find-document "The tracked document named or identified by `token`, or nil." [store token]
   ;; same answer as the first match of `documents`, describing only the trees that can match

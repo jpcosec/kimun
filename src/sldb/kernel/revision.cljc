@@ -170,6 +170,16 @@
   ([store tid rev-id]
    (when-let [[desc-id _] (tree-entry store tid rev-id)] (get-object store desc-id))))
 
+(defn tree-descriptors
+  "`[[tree-id descriptor] …]` of every tree at the head, ascending by tree id:
+   one walk of the :trees mmap plus one descriptor object per tree, and no
+   tree object (a descriptor carries :tree :kind :name and the root node id)."
+  [store]
+  (if (legacy? store)
+    (map (fn [[tid t]] [tid (:descriptor t)]) (sort-by key (:trees store)))
+    (map (fn [[tid [desc-id _]]] [tid (get-object store desc-id)])
+         (sort-by first (mmap/entries (loader store) (:trees (roots store (:head store))))))))
+
 (defn load-tree
   "Committed tree {:tree :descriptor :root} of `tid` at `rev-id`, rebuilt from
    the CAS (loads the tree objects of that one tree); nil when absent. Equal to
