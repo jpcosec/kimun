@@ -11,6 +11,7 @@
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.args :as args]
             [kimun.cli.commands.edges :as cedges]
+            [kimun.cli.commands.graph :as cgraph]
             [kimun.cli.commands.predicates :as cpred]
             [kimun.cli.errors :as errors]
             [kimun.cli.main :as main]
@@ -266,6 +267,14 @@
                    [:data :type "source_types"])))
     (is (= "intact" (get-in (cli "edges" "relate" "Table:t12" "Table:t14" "--relation" "flows_to") [:data :anchor])))
     (is (= "DEPENDENCY" (get-in (cli "predicates" "add" "depends_on" "--axis" "dependency" "--description" "Declares.") [:data :predicate :axis])))
+    (testing "the graph group declares --relation repeatable: whichever spec wins the merge, edges reads one"
+      (let [specs' (merge specs cgraph/spec)
+            cli' (fn [& argv]
+                   (errors/wrap #(let [{[_ sub & more] :args opts :opts} (args/parse (vec argv) env specs')]
+                                   (cedges/dispatch sub more opts {:env env :cwd p}))))]
+        (is (= [["sldb://document/Booking:b1" "assigned_to" "sldb://document/Table:t12"]]
+               (triples (:data (cli' "edges" "show" "--from" "Booking:b1" "--relation" "assigned_to" "--no-links")))))
+        (is (= ["cli/usage" 6] (failed (cli' "edges" "show" "--relation" "a" "--relation" "b"))))))
     (is (= ["cli/usage" 6] (failed (cli "edges" "show" "--from"))) "a value-taking option without a value")
     (is (= 6 (:exit (cli "edges" "show" "--nonsense" "x"))) "an option no group declares")
     (testing "every format renders"

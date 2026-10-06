@@ -27,9 +27,13 @@
   (or (get args i) (usage! sub (str "`edges " sub "` needs " what) {})))
 
 (defn- text-opt
-  "Option `k` as a non-blank string or nil; anything else is `cli/usage`."
+  "Option `k` as a non-blank string or nil; anything else is `cli/usage`. A
+   one-element vector is unwrapped: another group (`graph`) declares the same
+   name repeatable, and behind the merged parser the value arrives as given
+   there; here the option is single, so two values are a usage error."
   [opts k sub]
-  (let [v (get opts k)]
+  (let [v (get opts k)
+        v (if (and (sequential? v) (= 1 (count v))) (first v) v)]
     (cond (nil? v) nil
           (and (string? v) (not (str/blank? v))) v
           :else (usage! sub (str "option --" (name k) " needs a value") {:option k}))))
