@@ -1,0 +1,51 @@
+# kimun kernel baseline (before scale work) — 2026-10-06
+# machine: Linux 7.0.0-34-generic, bb babashka v1.13.219
+
+## synthetic 200 docs: bb scripts/bench/gen_store.clj /tmp/kimun-bench/syn-200 200
+docs 100 elapsed_s 3.3 ms_per_commit_last100 33
+docs 200 elapsed_s 8.9 ms_per_commit_last100 56
+total_seconds 8.9
+log_lines 201
+objects 6062
+bytes_kimun 16396405
+first_doc note-00000 field owner
+## run_bench.sh /tmp/kimun-bench/syn-200 (warm, 2nd run; fields_set adds 2 commits so log_lines = N+2)
+# store /tmp/kimun-bench/syn-200 doc=note-00099 field=owner
+docs_list 5.244
+docs_show 5.126
+fields_set 5.206
+find 5.574
+stores_check 5.845
+stores_verify 5.723
+bytes_kimun 16497767
+objects 6072
+log_lines 202
+
+## synthetic 400 docs: bb scripts/bench/gen_store.clj /tmp/kimun-bench/syn-400 400
+docs 100 elapsed_s 3.3 ms_per_commit_last100 33
+docs 200 elapsed_s 8.7 ms_per_commit_last100 54
+docs 300 elapsed_s 16.3 ms_per_commit_last100 76
+docs 400 elapsed_s 25.7 ms_per_commit_last100 95
+total_seconds 25.7
+log_lines 401
+objects 11812
+bytes_kimun 51232432
+first_doc note-00000 field owner
+## run_bench.sh /tmp/kimun-bench/syn-400 (warm, 2nd run; fields_set adds 2 commits so log_lines = N+2)
+# store /tmp/kimun-bench/syn-400 doc=note-00199 field=owner
+docs_list 15.174
+docs_show 15.190
+fields_set 15.521
+find 18.107
+stores_check 17.540
+stores_verify 17.998
+bytes_kimun 51407490
+objects 11822
+log_lines 402
+
+## real store copy /tmp/kimun-bench/real-f1 (copy of work1, open-snapshot.edn deleted), single run, timeout 600
+doc python-sldb-sldb-sldb-cli-parsers-hidden-_hd_track
+docs_show 187.899
+bytes_kimun 606339051
+objects 36718   (ls .kimun/objects | wc -l)
+log_lines 1586
