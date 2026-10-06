@@ -25,6 +25,8 @@
    A store-level finding `:corrupt` (v1's tampered hash) comes from the
    kernel's verification: `kimun stores verify` names the objects."
   (:require [clojure.string :as str]
+            [clojure.walk :as walk]
+            [sldb.kernel.err :as err]
             [kimun.surface.docs :as tdocs]
             [kimun.surface.models.extract :as extract]
             [kimun.surface.models.noise :as noise]
@@ -138,14 +140,24 @@
    :document :path :state :action :message :inspect :needs-human :content-ok
    :fields-ok}` plus `:fields` (edited), `:error` (unextractable), `:noise`
    and `:undeclared` (the noisy headings as written; v1 `undeclared`).
+   When `:verify` reports damage and the documents can no longer be read
+   through the damaged objects, `:documents` and `:models` are empty and the
+   `:corrupt` finding stands alone (the report never raises for damage).
    `:valid` is false when anything is neither `:ok` nor `:reformatted` —
    except `:noise` on a file that still matches what was recorded, which is
    reported and asks for a human but does not block (v1: noise already tracked
    is reported without blocking); noise brought in by a hand edit does block."
   ([store read-file] (report store read-file {}))
   ([store read-file {:keys [verify]}]
-   (let [docs (mapv #(diagnose store read-file %) (tdocs/documents store))
-         models (mapv #(model-finding docs %) (mstore/models store))
+   (let [damaged? (and verify (not (:ok? verify)))
+         ;; a store with damaged objects may not be readable at all (e.g. a lost mmap node of the
+         ;; head Revision): the corruption is the finding, the documents are diagnosed only if they still can be
+         [docs models] (if damaged?
+                         (err/rescue-any (fn [_] [[] []])
+                                         (let [ds (mapv #(diagnose store read-file %) (tdocs/documents store))]
+                                           (walk/postwalk identity [ds (mapv #(model-finding ds %) (mstore/models store))])))
+                         (let [ds (mapv #(diagnose store read-file %) (tdocs/documents store))]
+                           [ds (mapv #(model-finding ds %) (mstore/models store))]))
          corrupt (when (and verify (not (:ok? verify)))
                    {:category :corrupt :model nil :document nil :path nil :needs-human true :action (action-of :corrupt nil)
                     :inspect "kimun stores verify" :bad (vec (:bad verify))

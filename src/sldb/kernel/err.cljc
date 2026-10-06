@@ -17,3 +17,12 @@
   `(try ~@body
         (catch #?(:clj clojure.lang.ExceptionInfo :cljs :default) e#
           (if (ex-data e#) (~handler e#) (throw e#)))))
+
+(defmacro rescue-any
+  "Evaluates `body`; if ANYTHING is thrown (ex-info or not, e.g. the reader's
+   error on bytes that are not EDN), returns `(handler e)`. Only for code that
+   inspects possibly damaged content and must report instead of raising."
+  [handler & body]
+  `(try ~@body
+        (catch #?(:clj Exception :cljs :default) e#
+          (~handler e#))))

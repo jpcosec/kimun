@@ -342,33 +342,54 @@
 
 ;; ---------------------------------------------------------------- verify
 
+(defn- object-or-nil
+  "Object `id` of the `:objects` view, or nil when it is absent OR unreadable:
+   on a lazy store the lookup parses the stored bytes, which may raise for a
+   damaged file. The reachability walk must report damage, never raise."
+  [objs id]
+  (err/rescue-any (fn [_] nil) (get objs id)))
+
+(defn- references
+  "What object `o`, reached as `kind`, refers to: a seq of [id kind]. Kinds:
+   :obj (the id must be a stored object), :trees (a node of a Revision's :trees
+   mmap: its leaf keys are tree ULIDs, not objects) and :soft (format-1 shapes
+   and edge endpoints: followed only when stored, as before format 2)."
+  [o kind]
+  (let [as (fn [k ids] (for [id ids :when (string? id)] [id k]))]
+    (cond
+      (mmap/branch? o) (as (if (= :trees kind) :trees :obj) (mmap/child-ids o))
+      (mmap/leaf? o) (as :obj (mapcat (fn [[k v]] (concat (when-not (= :trees kind) [k]) (when (vector? v) v))) (:entries o)))
+      (and (map? o) (:incidence o) (:tx o)) (concat (as :trees [(:trees o)]) (as :obj (concat [(:edges o) (:incidence o) (:tx o)] (:parents o))))
+      (and (map? o) (:roots o) (:tx o))            (as :soft (concat (vals (:roots o)) [(:trees o) (:edges o) (:tx o)] (:parents o)))
+      (and (map? o) (:node o) (contains? o :children)) (as :obj (cons (:node o) (mapcat identity (:children o))))
+      (and (vector? o) (every? vector? o))         (as :soft (map second o))
+      (and (vector? o) (every? string? o))         (as :soft o)
+      (and (map? o) (:tree o) (:root o))           (as :soft [(:root o)])
+      (and (map? o) (:type o) (:from o))           (as :soft [(:from o) (:to o) (get-in o [:evidence :context])])
+      :else [])))
+
 (defn reachable
   "Ids of every object reachable from the heads of `store` (docs/v2/02 §3.1):
    the transitive closure over id references, acyclic because ids are hashes.
    Format-2 Revisions are walked through their three mmaps (branch children,
-   leaf keys and id vectors); format-1 Revisions through :roots and the sets."
+   leaf keys and id vectors); format-1 Revisions through :roots and the sets.
+   Never raises on damaged content: an id that a format-2 structure names but
+   that is absent or unreadable IS in the result (so `verify` reports it) and
+   the walk goes on with what it can still read; what was reachable only
+   through an unreadable object is not in the result."
   [store]
   (let [objs (:objects store)]
-    (loop [todo (vec (remove nil? (cons (:head store) (vals (:heads store))))) seen #{}]
+    (loop [todo (mapv #(vector % :obj) (remove nil? (cons (:head store) (vals (:heads store))))) seen #{}]
       (if (empty? todo)
         seen
-        (let [[id & more] todo]
-          (if (or (nil? id) (seen id) (not (contains? objs id)))
+        (let [[id kind] (peek todo) more (pop todo)]
+          (if (seen id)
             (recur more seen)
-            (let [o (objs id)
-                  refs (cond
-                         (mmap/branch? o) (mmap/child-ids o)
-                         ;; leaf entries: keys (edge/node ids; tree ULIDs are no objects) and id vectors as values
-                         (mmap/leaf? o) (filter string? (mapcat (fn [[k v]] (cons k (when (vector? v) v))) (:entries o)))
-                         (and (map? o) (:incidence o) (:tx o)) (concat [(:trees o) (:edges o) (:incidence o) (:tx o)] (:parents o))
-                         (and (map? o) (:roots o) (:tx o))            (concat (vals (:roots o)) [(:trees o) (:edges o) (:tx o)] (:parents o))
-                         (and (map? o) (:node o) (contains? o :children)) (cons (:node o) (mapcat identity (:children o)))
-                         (and (vector? o) (every? vector? o))         (map second o)
-                         (and (vector? o) (every? string? o))         o
-                         (and (map? o) (:tree o) (:root o))           [(:root o)]
-                         (and (map? o) (:type o) (:from o))           [(:from o) (:to o) (get-in o [:evidence :context])]
-                         :else [])]
-              (recur (into more (remove nil? refs)) (conj seen id)))))))))
+            (let [o (object-or-nil objs id)]
+              (cond
+                (and (nil? o) (= :soft kind)) (recur more seen)
+                (nil? o) (recur more (conj seen id))
+                :else (recur (into more (err/rescue-any (fn [_] []) (vec (references o kind)))) (conj seen id))))))))))
 
 (defn verify
   "The cheap-ish check: recomputes H(file) for every object reachable from the

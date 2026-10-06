@@ -74,9 +74,10 @@
     (let [data (cond-> {:name (:name descriptor)
                         :path path
                         :hash-alg (:hash-alg descriptor)
-                        :revisions (count (:revisions store))
-                        :trees (count (:trees store))
-                        :objects (count (:objects store))
+                        ;; nil when damage (reported in :documents) makes the view unreadable
+                        :revisions (err/rescue-any (fn [_] nil) (count (:revisions store)))
+                        :trees (err/rescue-any (fn [_] nil) (count (:trees store)))
+                        :objects (err/rescue-any (fn [_] nil) (count (:objects store)))
                         :head (:head store)
                         :links link-report}
                  (or (seq (:documents report)) (seq (:findings report)))

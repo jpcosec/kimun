@@ -9,6 +9,8 @@
             [kimun.cli.main :as main]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
+            [sldb.host.fs-store :as fs-store]
+            [sldb.kernel.mmap :as mmap]
             [sldb.kernel.store :as store]))
 
 (def env {"USER" "tester"})
@@ -108,17 +110,99 @@
       (is (str/includes? y "models:"))
       (is (str/includes? y "category: edited")))))
 
-(deftest check-reports-a-tampered-object
-  ;; v1: test_tampered_hash_b — the stored signature no longer matches; the fix is named
-  (let [p (project)
-        dir (file p ".kimun")
-        victim (first (sort (store/reachable (:store (cli-store/open! dir)))))]
-    (spit (file dir "objects" victim) "tampered")
-    (let [e (run p "stores" "check")
-          w (first (:warnings e))]
-      (is (false? (get-in e [:data :documents :valid])))
-      (is (= ["store/corrupt" "kimun stores verify"] [(:type w) (:action w)]))
-      (is (= :needs-human (get-in (run p "stores" "health") [:data :status]))))))
+(defn- damage!
+  "Damages objects/<id> of the store in `dir`: `:altered` (other bytes, still
+   EDN), `:unparseable` (not EDN) or `:deleted`."
+  [dir id mode]
+  (let [f (file dir "objects" id)]
+    (case mode :altered (spit f "tampered") :unparseable (spit f "{{{") :deleted (fs/delete f))))
+
+(defn- damaged-copy
+  "A fresh copy of project `p0` whose object `id` is damaged; the project path."
+  [p0 id mode]
+  (let [p (str (fs/create-temp-dir {:prefix "kimun-diag-dmg-"}))]
+    (fs/copy-tree p0 p {:replace-existing true})
+    (damage! (file p ".kimun") id mode)
+    p))
+
+(defn- raw-run [p & argv] (:envelope (main/run (vec argv) env p)))
+
+(defn- many-commits
+  "`project` plus 14 documents and two edits of `login`: 17+ revisions, one of
+   them the head of no tree, and an :incidence map big enough for a branch."
+  []
+  (let [p (project)]
+    (doseq [i (range 14)]
+      (is (true? (:ok (run p "docs" "create" "TicketDoc" (str "d" i) "--set" (str "title=T" i) "--set" "status=open")))))
+    (is (true? (:ok (run p "fields" "set" "login" "status" "doing"))))
+    (is (true? (:ok (run p "fields" "set" "login" "status" "done"))))
+    p))
+
+(deftest check-reports-each-kind-of-damaged-object
+  ;; v1: test_tampered_hash_b — the stored signature no longer matches; the fix is named.
+  ;; Replaces the random-victim `check-reports-a-tampered-object`: one victim per KIND of
+  ;; reachable object, each altered, made unparseable and deleted.
+  (let [p0 (many-commits)
+        s (:store (cli-store/open! (file p0 ".kimun")))
+        objs (:objects s)
+        ids (sort (store/reachable s))
+        rev (get objs (:head s))
+        heads (set (cons (:head s) (vals (:heads s))))
+        branch (first (filter #(mmap/branch? (get objs %)) ids))
+        tree-obj (first (filter #(let [o (get objs %)] (and (map? o) (:node o) (contains? o :children))) ids))
+        older (first (remove heads (keys (:revisions s))))
+        victims {:node (:node (get objs tree-obj)) :tree tree-obj
+                 :mmap-branch branch :mmap-leaf (first (mmap/child-ids (get objs branch)))
+                 :trees-root (:trees rev) :edges-root (:edges rev) :incidence-root (:incidence rev)
+                 :older-revision older}]
+    (is (every? string? (vals victims)) "the store has one object of every kind")
+    (is (= (count victims) (count (set (vals victims)))) "eight different objects")
+    (doseq [[kind id] victims
+            [mode reason] [[:altered :hash-mismatch] [:unparseable :hash-mismatch] [:deleted :missing]]]
+      (testing (str kind " " mode)
+        (let [p (damaged-copy p0 id mode)
+              bad [{:id id :reason reason}]
+              {:keys [backend store]} (cli-store/open! (file p ".kimun"))   ; open reads only the head Revisions
+              check (raw-run p "stores" "check")
+              sverify (raw-run p "stores" "verify")
+              jverify (raw-run p "journal" "verify")]
+          (is (= {:ok? false :bad bad} (select-keys (store/verify backend store) [:ok? :bad])))
+          (is (= {:ok? false :bad bad} (select-keys (store/verify-full backend (:host store)) [:ok? :bad])))
+          (is (= ["store/invalid" 5] [(get-in check [:error :type]) (out/exit-code check)]))
+          (is (= bad (get-in check [:error :data :documents :findings 0 :bad])))
+          (is (= ["store/corrupt" "kimun stores verify"]
+                 ((juxt :type :action) (first (get-in check [:error :data :warnings])))))
+          (is (= ["store/corrupt" 5 bad] [(get-in sverify [:error :type]) (out/exit-code sverify) (get-in sverify [:error :data :bad])]))
+          (is (= ["store/corrupt" 5 bad] [(get-in jverify [:error :type]) (out/exit-code jverify) (get-in jverify [:error :data :bad])]))
+          (is (= :needs-human (get-in (run p "stores" "health") [:data :status]))))))
+    (doseq [mode [:altered :unparseable :deleted]]
+      (testing (str "head Revision " mode ": open itself refuses, every command reports it, nothing raises")
+        (let [id (:head s)
+              p (damaged-copy p0 id mode)
+              reason (if (= :deleted mode) :missing :hash-mismatch)
+              opened (try (cli-store/open! (file p ".kimun")) (catch Exception e (ex-data e)))
+              full (store/verify-full (fs-store/backend (file p ".kimun")) (:host s))]
+          (is (= [:store/corrupt-head id reason] ((juxt :type :id :reason) opened)))
+          (is (= {:ok? false :bad [{:id id :reason reason}]} (select-keys full [:ok? :bad])))   ; the replay does not need it
+          (doseq [argv [["stores" "check"] ["stores" "verify"] ["journal" "verify"] ["stores" "health"]]]
+            (let [e (apply raw-run p argv)]
+              (is (false? (:ok e)) (str argv))
+              (is (= 5 (out/exit-code e)) (str argv))
+              (is (str/includes? (pr-str (:error e)) id) (str argv)))))))))
+
+(deftest check-reports-a-tampered-object-whichever-it-is
+  ;; the random-victim property the table above replaces as the main test: any reachable object but the head Revisions
+  (let [p0 (project)
+        s (:store (cli-store/open! (file p0 ".kimun")))
+        heads (set (cons (:head s) (vals (:heads s))))
+        candidates (vec (remove heads (sort (store/reachable s))))]
+    (doseq [id (take 6 (shuffle candidates))]
+      (let [p (damaged-copy p0 id (rand-nth [:altered :unparseable :deleted]))
+            e (run p "stores" "check")
+            w (first (:warnings e))]
+        (is (false? (get-in e [:data :documents :valid])) id)
+        (is (= [id] (mapv :id (get-in e [:data :documents :findings 0 :bad]))) id)
+        (is (= ["store/corrupt" "kimun stores verify"] [(:type w) (:action w)]) id)))))
 
 (deftest health-names-the-document-the-category-and-the-command
   ;; v1: test_health_names_what_to_look_at_and_what_to_run, test_health_demands_a_human_when_a_field_was_edited (CLI)
