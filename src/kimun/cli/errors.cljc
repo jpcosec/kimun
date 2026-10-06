@@ -7,6 +7,9 @@
 (def ^:private exit-by-type
   {:eval/missing 1
    :eval/ambiguous 2
+   :docs/missing 1
+   :docs/no-file 1
+   :docs/ambiguous 2
    :plan/conflict 4
    :store/stale 4
    :cli/no-store 5
@@ -16,13 +19,15 @@
    :eval/not-available 6})
 
 (def ^:private exit-by-namespace
-  {"query" 3 "models" 3 "validate" 3
+  {"query" 3 "models" 3 "validate" 3 "docs" 3
    "store" 5 "markdown" 5 "index" 5})
 
 (defn exit-for
   "Exit code for error `type` (a namespaced keyword) with its `data`: 0 for nil;
    1 missing; 2 ambiguous; 3 rejection (`:plan/rejected` unless the failed
-   check is `:capability`, which is 7; `:query/*`, `:models/*`, `:validate/*`);
+   check is `:capability`, which is 7; `:query/*`, `:models/*`, `:validate/*`,
+   `:docs/*` such as a duplicate document); `:docs/missing` and `:docs/no-file`
+   are 1, `:docs/ambiguous` 2;
    4 conflict/stale; 5 store errors, corruption, missing or duplicate store,
    markdown and index errors; 6 usage; 70 anything else."
   ([type] (exit-for type nil))

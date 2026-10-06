@@ -78,9 +78,10 @@
   {"init" init "check" check "verify" verify "show" show})
 
 (defn dispatch
-  "Runs subcommand `sub` of the `stores` group; an unknown or missing
-   subcommand is the failure `cli/usage` listing the known ones."
-  [sub opts ctx]
+  "Runs subcommand `sub` of the `stores` group (positional `_args` unused);
+   an unknown or missing subcommand is the failure `cli/usage` listing the
+   known ones."
+  [sub _args opts ctx]
   (if-let [f (get commands sub)]
     (f opts ctx)
     (out/failure :cli/usage

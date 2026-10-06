@@ -6,13 +6,16 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [kimun.cli.args :as args]
+            [kimun.cli.commands.docs :as docs]
             [kimun.cli.commands.stores :as stores]
             [kimun.cli.errors :as errors]
             [kimun.cli.out :as out]))
 
 (def groups
-  "First token → group dispatch `(fn [subcommand opts ctx] envelope)`."
-  {"stores" stores/dispatch})
+  "First token → group dispatch `(fn [subcommand args opts ctx] envelope)`,
+   where `args` are the positional tokens after the subcommand."
+  {"stores" stores/dispatch
+   "docs" docs/dispatch})
 
 (def usage
   "Usage text shown by `kimun`, `kimun help` and `--help`."
@@ -27,6 +30,10 @@
              "  stores check                open the store (replay) and report revisions, trees, objects"
              "  stores verify               recompute the hash of every reachable object"
              "  stores show                 descriptor and heads without replay"
+             "  docs ingest FILE [--name N] parse a Markdown file and commit it as a new document tree"
+             "  docs update FILE --name N   re-ingest FILE into the existing document N (an outside edit)"
+             "  docs render NAME|TREE       canonical Markdown of a document (--format text prints it raw)"
+             "  docs list                   every document: name, tree id, root node"
              ""
              "options:"
              "  --store PATH    store directory (.kimun or its project dir); else $KIMUN_STORE, else walk-up"
@@ -64,7 +71,7 @@
       (out/ok "version" {:data (version-data)})
 
       (contains? groups group)
-      ((groups group) sub opts ctx)
+      ((groups group) sub (vec (drop 2 args)) opts ctx)
 
       :else
       (out/failure :eval/not-available

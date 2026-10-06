@@ -18,7 +18,7 @@ para Markdown — todavía sin línea de comandos.
 | 0 kernel | `sldb.kernel.{ports,err,canon,node,pool,edge,tree,plan,revision,heads,store,anchor,reconcile,standoff}` | puertos del host; errores tipados; bytes canónicos + hash; nodos S/M/G; pool; aristas con evidencia; árboles de **posiciones** con Merkle perezoso; `TransactionPlan` con 7 chequeos; revisiones inmutables, sucesión, ConflictSet/rebase, diff; heads con CAS; puerto `Backend` + open/replay/verify; **estados de anclaje** derivados y sus consultas; **reconciliación** de `orphan` en propuestas fuera del pool; **stand-off** (hito 6): hojas con offsets, capas UAX #29 bajo demanda con cache suministrada por el host (sin `atom` global en anillo 0), anclaje `(hoja, rango, hash)` |
 | 1 host | `sldb.host.{default,hash,text,ulid,fs-store}` | SHA-256, NFC + grafemas (UAX #29), ULID, backend de archivos (`objects/`, `log.edn`, `heads.edn`, `store.edn`) |
 | 2 superficie | `sldb.surface.markdown.{cst,inline,ast,render,plan,report}` | Markdown ⇄ AST neutro ⇄ árbol de documento en el pool; render canónico; informe de direccionabilidad; **reingesta** de un fichero editado fuera del kernel |
-| 2 producto | `kimun.cli.{main,args,out,errors,store}`, `kimun.cli.commands.stores` | CLI `kimun` (S0): envelope json/edn/text, exit codes, discovery de `.kimun/`, `stores init|check|verify|show`; el resto de grupos llega por la pista S (§8) |
+| 2 producto | `kimun.cli.{main,args,out,errors,store}`, `kimun.cli.commands.stores` | CLI `kimun` (S0): envelope json/edn/text, exit codes, discovery de `.kimun/`, `stores init|check|verify|show`; `kimun.cli.commands.docs` (primer corte de S2, 2026-10-06): `docs ingest|update|render|list` sobre `sldb.surface.markdown.plan`, sin puerta lateral; el resto de grupos llega por la pista S (§8) |
 
 Hitos cerrados del roadmap del kernel (`02 §9`): **0, 1, 2, 3, 4, 5a, 5b, 6**. Hitos cerrados de la pista S (§8): **S0**.
 
@@ -134,7 +134,7 @@ reescritura de specs spec2viz pre-v2 · oráculo externo (hecho; cerrable).
 |---|---|---|
 | **S0** repo + CLI + packaging | repo `~/proyectos/kimun` (clon de `refactor-target`, historia intacta; nació como `hum-ecosystem/tools/kimun`), `kimun.cli.*`, `stores`, `bb jar`/`bb release`, launcher con `--`, workflows `ci`/`release` (gate humano), docs 06–09 | **cerrado 2026-09-07** |
 | S1 modelos + modo directo | descriptores, frontmatter en CST, `models *`, `extract/render/validate` | siguiente |
-| S2 docs/fields/sections + escritura | `surface.edit`, outbox, `status`, `reconcile`, `migrate --from-v1` | |
+| S2 docs/fields/sections + escritura | `surface.edit`, outbox, `status`, `reconcile`, `migrate --from-v1` | primer corte 2026-10-06: `docs ingest|update|render|list` (4 tests, 41 aserciones) |
 | S3 índices + consultas + grafo | índice cacheado, `--where`, direcciones, `find`, `graph *` | |
 | S4 evaluador (lectura) | `09 §1–2` | |
 | S5 derivados + efectos + escritura | `09 §3–4` | |

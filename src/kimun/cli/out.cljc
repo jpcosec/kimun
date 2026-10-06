@@ -58,7 +58,7 @@
                    (sequential? data) (map value-str data)
                    (nil? data) []
                    :else [(value-str data)])
-        rev (when revision [(str "revision: " revision)])]
+        rev (when (and revision (not (string? data))) [(str "revision: " revision)])]
     (str/join "\n" (concat body rev))))
 
 (defn- text-failure [{:keys [error]}]
@@ -70,7 +70,9 @@
   "Renders `envelope` as a string in format `fmt`: \"json\" (pretty, via
    cheshire), \"edn\" (`pr-str`, reads back with clojure.edn) or \"text\"
    (human: `key: value` lines of :data when it is a map, one line per item when
-   it is sequential, then `revision: …` when present; failures render as
+   it is sequential, the string itself when :data is a string — a document,
+   printed raw so it can be piped — then `revision: …` when present and the
+   data is not a string; failures render as
    `✗ <type>: <message>` followed by indented `key: value` lines of the data)."
   [envelope fmt]
   (case fmt
