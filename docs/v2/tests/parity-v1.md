@@ -1,0 +1,61 @@
+# Paridad con sldb v1 — libro y DAG (abierto 2026-10-06)
+
+> Objetivo: `kimun` equivalente a sldb v1, medido contra los tests de v1
+> (`hum-ecosystem/tools/sldb/tests`: 82 archivos, 590 funciones). Cada archivo de v1 queda
+> en uno de tres estados: **portado** (test kimun que ejerce la misma promesa), **oráculo**
+> (cubierto por el corpus diferencial grabado desde v1) o **n/a** (probaba un mecanismo
+> interno de v1 que el diseño de v2 reemplaza; se nombra el test del kernel que sostiene la
+> misma promesa). El mapeo de comandos es el de `docs/v2/06 §5`; las superficies retiradas,
+> las de `06 §8`.
+
+## Cómo se mide
+
+1. **Oráculo diferencial del motor**: un plugin de pytest corre la suite de v1 y graba cada
+   llamada a extracción y render (clase de modelo → descriptor EDN, Markdown de entrada,
+   payload, Markdown renderizado) en `test/fixtures/parity/engine/`. El motor de kimun
+   tiene que reproducir cada caso. Son literalmente los mismos tests, en la frontera del motor.
+2. **Tests portados**: para store, CLI, grafo, consultas y serve, cada test de v1 se
+   reescribe contra la CLI/API de kimun con el vocabulario de `06 §5`.
+3. **Corpus real**: `migrate --from-v1` sobre el `.sldb` de sldb (1.551 documentos) y
+   comparación payload a payload.
+
+## DAG
+
+| id | tarea | depende de | estimado | paralelo | archivos v1 que cubre |
+|---|---|---|---|---|---|
+| T1 | oráculo + motor de modelos: frontmatter/tabla opacos en CST, `kimun.surface.models.{descriptor,marker,recipe,extract,render,validate}`, exportador Python de clases v1 | — | 120 min | tanda A | test_standalone, test_marker_invariants, test_section_body_extraction, test_validation_semantics, test_field_ownership, test_extraction_segments, test_document_segments, test_segment_structure, api/test_field_blocks, store/test_optional_field_hash_neutral, test_store_readme_doc, store/test_document_formats |
+| A2 | `--where`: parser de la sintaxis v1 y de la forma EDN a AST cerrado, evaluador | — | 30 min | tanda A | store/test_where_empty_and_errors, store/test_queries_expanded |
+| A3 | algoritmos de grafo puros: vecindario, camino, ciclos, orden, componentes, centralidad, similitud, lenguaje de consulta, io node-link | — | 45 min | tanda A | store/test_graph_{analysis,executor,io,language,neighborhood}, api/test_api_graph_analysis |
+| A4 | enlaces: parser `[[…]]`, resolución, transclusión `![[…]]` | — | 30 min | tanda A | test_links (parte pura), test_composition, api/test_composition_ref_root |
+| B1 | modelos en el store y CLI: `models define\|list\|show\|check\|history`, `extract\|render\|validate` directos | T1 | 60 min | serie | api/test_api_models, api/test_model_lifecycle, api/test_api_model_drafts, store/test_models_io, store/test_contract_in_model_node, store/test_resolver |
+| B2 | documentos con modelo: `docs create\|track\|update\|untrack\|delete\|show\|list`, `fields`, `sections` | B1 | 90 min | serie | api/test_api_creation, api/test_api_documents, api/test_api_stores, store/test_cli_store, test_cli_v2, store/test_section_rebuild, api/test_structural_noise, test_cli_reconciliation, store/test_update_fault_tolerance, store/test_hashing |
+| C1 | índice derivado, `find`, direcciones, `--global`, `stores link` | B2, A2 | 60 min | serie (base de C2–C5) | test_address_surface, test_field_corpus, test_linked_structural, api/test_api_store_fingerprint |
+| C2 | aristas, relaciones, predicates, `graph *`, export/snapshot | C1, A3 | 60 min | tanda C | api/test_api_edges, api/test_api_graph, api/test_graph_source_parity, api/test_declared_references, api/test_composition_edges, test_relation_models, test_predicates_cli, store/test_edge_anchor_targets, store/test_semantic_export |
+| C3 | semántica: tags, DAG, equivalencias | C1 | 45 min | tanda C | api/test_api_semantic, store/test_semantic_dag_walk, store/test_semantic_rebuild |
+| C4 | journal como vista del log: `journal show\|verify` | B2 | 30 min | tanda C | api/test_journal |
+| C5 | `docs recover\|compose` en CLI | B2, A4 | 30 min | tanda C | test_links (parte CLI) |
+| C6 | diagnósticos de `stores check` | C1 | 30 min | tanda C | store/test_diagnostics, store/test_catalog_reconcile |
+| D1 | `serve` HTTP | C1–C3 | 90 min | serie | test_serve, test_serve_auth, test_serve_corpus_similar, test_serve_edges_docs, test_serve_stores_check |
+| E1 | `migrate --from-v1` y corrida sobre el corpus real | B2 | 60 min | con D1 | — |
+| E2 | selfdoc (adaptadores código → documentos) | B2 | 60 min | con D1 | selfdoc/* |
+| E3 | cierre del libro: mapa test a test, n/a justificados | todo | 30 min | — | los n/a de abajo |
+
+Regla de paralelismo: una tanda corre en paralelo solo si sus tareas crean namespaces y
+tests nuevos sin tocar archivos compartidos; el cableado en `kimun.cli.main` y
+`kimun.cli.errors` lo hace el integrador al fusionar. Con solape, en serie y la más corta primero.
+
+## n/a previstos (mecanismos internos de v1)
+
+`store/test_cache_identity`, `test_documents_shards`, `test_io_atomic_write`,
+`test_legacy_layout_migration`, `test_merkle_cost`, `test_merkle_operation_cache`,
+`test_merkle_shards`, `test_migration_hash_names` (×2), `test_runtime_cache_outside_store`,
+`test_stale_shard_hashes`, `test_store_name_relpaths`, `test_runtime_cache`,
+`test_clean_code_rules`: shards, cachés por capas, migraciones de layout y de nombres de
+hash. En v2 no existen: los objetos son inmutables y direccionados por contenido. E3
+nombra, para cada uno, el test del kernel que sostiene la promesa equivalente.
+
+## Estado
+
+| id | estado | evidencia |
+|---|---|---|
+| S2 primer corte | hecho 2026-10-06 | `e444d4d`, `test/kimun/cli/docs_test.cljc` |
