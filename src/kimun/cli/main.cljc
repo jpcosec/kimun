@@ -7,6 +7,7 @@
             [clojure.string :as str]
             [kimun.cli.args :as args]
             [kimun.cli.commands.direct :as direct]
+            [kimun.cli.commands.adapters :as adapters]
             [kimun.cli.commands.corpus :as corpus]
             [kimun.cli.commands.docs :as docs]
             [kimun.cli.commands.edges :as edges]
@@ -34,6 +35,7 @@
             (if-let [f (get links/commands sub)]
               (f args opts ctx)
               (docs/dispatch sub args opts ctx)))
+   "adapters" adapters/dispatch
    "edges" edges/dispatch
    "graph" graph/dispatch
    "predicates" predicates/dispatch
@@ -54,7 +56,7 @@
   "The option spec of every group, merged: a group declares its own options
    in its `spec` var, so adding a group never edits `kimun.cli.args`. Two
    groups may share an option name only with the same meaning."
-  (merge stores/spec docs/spec journal/spec serve/spec models/spec direct/spec links/spec semantic/spec fields/spec sections/spec find/spec corpus/spec index/spec predicates/spec edges/spec graph/spec))
+  (merge stores/spec docs/spec journal/spec serve/spec models/spec direct/spec links/spec semantic/spec fields/spec sections/spec find/spec corpus/spec index/spec predicates/spec edges/spec graph/spec adapters/spec))
 
 (def usage
   "Usage text shown by `kimun`, `kimun help` and `--help`."
@@ -104,6 +106,9 @@
              "  graph get ID · list [--type T] · query -f FILE.json · neighborhood ID [--depth N] [--direction D]"
              "  graph path FROM TO · cycles · order · components · central [--metric K] · isolated · similar ID"
              "  graph snapshot save|load FILE · export [-o FILE] · ingest-sldb FILE [-o OUT]"
+             "  adapters list · scan|sync|check ADAPTER PATH --system S [--factory M:A] [--language L] [-- adapter options]"
+             "                              code → documents through an out-of-process adapter: python-symbols, argparse-cli,"
+             "                              click-cli, treesitter-symbols, or the path of any executable (docs/v2/11)"
              "  fields get DOC PATH · schema MODEL [FIELD] · query FIELD [--where EXPR] [--model M]"
              "  fields set|append DOC PATH VALUE · unset|clear DOC PATH · clean DOC PATH [--dedupe] [--drop-empty]"
              "  sections list DOC · fields DOC SECTION · find [TERM] [--in physical|semantic|both] [--regex] [--fuzzy] [--where EXPR]"
