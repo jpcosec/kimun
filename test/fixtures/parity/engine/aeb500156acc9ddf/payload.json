@@ -1,12 +1,12 @@
 {
- "expected": "",
+ "title": "Pill knowledge is graduated when required",
  "id": "condition-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-pill-knowledge-graduated",
- "predicate": "truthy",
  "status": "active",
- "subject": "pill_graduation_verified",
  "summary": "Tasks with bound pills should reference an atom when durable pill knowledge was discovered; tasks without bound pills pass trivially.",
  "tags": [
   "primitive:condition"
  ],
- "title": "Pill knowledge is graduated when required"
+ "subject": "pill_graduation_verified",
+ "predicate": "truthy",
+ "expected": ""
 }

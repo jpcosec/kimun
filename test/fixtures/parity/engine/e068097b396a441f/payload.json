@@ -1,6 +1,5 @@
 {
- "how": "Add diagnostics and programmatic checks in SLDB, then let deskops consume those outputs rather than re-implementing the logic.",
- "how_not": "Do not make deskops parse raw store internals or duplicate validity rules that belong in SLDB.",
+ "title": "Store health is owned by SLDB",
  "id": "pill-005-store-health-is-sldb-owned",
  "tags": [
   "system:sldb",
@@ -8,9 +7,10 @@
   "topic:store",
   "topic:health"
  ],
- "title": "Store health is owned by SLDB",
  "what": "SLDB, not deskops, should define and expose what counts as a valid `.sldb/` store.",
+ "why": "Only SLDB knows the internal store contracts. Duplicating validation logic downstream would create drift and inconsistent recovery behavior.",
  "when": "Apply this pill when adding health checks, integrity commands, diagnostics, or recovery-related CLI/API surfaces.",
  "where": "- `src/sldb/store/`\n- `src/sldb/cli/commands/stores.py`\n- downstream deskops health surfaces that call into SLDB",
- "why": "Only SLDB knows the internal store contracts. Duplicating validation logic downstream would create drift and inconsistent recovery behavior."
+ "how": "Add diagnostics and programmatic checks in SLDB, then let deskops consume those outputs rather than re-implementing the logic.",
+ "how_not": "Do not make deskops parse raw store internals or duplicate validity rules that belong in SLDB."
 }

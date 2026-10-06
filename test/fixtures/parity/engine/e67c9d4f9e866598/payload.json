@@ -1,12 +1,12 @@
 {
- "condition_ref": "",
+ "title": "Testing-ready operator to closeout gate",
  "id": "edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-ready-to-closeout",
- "source": "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-ready-for-testing",
  "status": "active",
  "summary": "Ready-for-testing state entered.",
  "tags": [
   "primitive:edge"
  ],
+ "source": "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-ready-for-testing",
  "target": "checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-closeout-ready",
- "title": "Testing-ready operator to closeout gate"
+ "condition_ref": ""
 }

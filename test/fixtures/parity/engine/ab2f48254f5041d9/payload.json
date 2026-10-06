@@ -1,13 +1,13 @@
 {
- "axis": "WHAT",
- "cardinality": "many_to_many",
- "condition": "",
- "description": "The anchor (an alias word) names this model, field, relation type or document.",
- "direction": "directed",
+ "title": "names",
  "name": "names",
+ "direction": "directed",
+ "cardinality": "many_to_many",
+ "axis": "WHAT",
  "source_types": [
   "anchor"
  ],
  "target_types": [],
- "title": "names"
+ "condition": "",
+ "description": "The anchor (an alias word) names this model, field, relation type or document."
 }

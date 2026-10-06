@@ -1,8 +1,8 @@
 {
- "condition": "",
- "notes": "",
- "relation_type": "assigned_to",
+ "title": "b1-t99",
  "source_id": "Booking:b1",
  "target_id": "annex:Table:t99",
- "title": "b1-t99"
+ "relation_type": "assigned_to",
+ "condition": "",
+ "notes": ""
 }

@@ -1,12 +1,12 @@
 {
- "expected": "ready_for_testing",
+ "title": "Ready for closeout",
  "id": "condition-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-ready-for-closeout",
- "predicate": "equals",
  "status": "active",
- "subject": "status",
  "summary": "Task must be in ready_for_testing before closeout.",
  "tags": [
   "primitive:condition"
  ],
- "title": "Ready for closeout"
+ "subject": "status",
+ "predicate": "equals",
+ "expected": "ready_for_testing"
 }

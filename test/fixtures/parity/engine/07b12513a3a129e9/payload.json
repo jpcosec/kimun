@@ -1,10 +1,42 @@
 {
- "at": "2026-09-14T15:37:42+00:00",
- "hash_after": "48b7771c29e37a8bc1a3b612f33aa49388ce718921967900740eef41cdbf0cae",
- "hash_before": "48b7771c29e37a8bc1a3b612f33aa49388ce718921967900740eef41cdbf0cae",
  "id": "move-20260914T153742-001",
+ "at": "2026-09-14T15:37:42+00:00",
+ "speaker": "",
  "outcome": "ambiguo",
+ "state_before": "libre",
+ "state_after": "pendiente",
+ "hash_before": "48b7771c29e37a8bc1a3b612f33aa49388ce718921967900740eef41cdbf0cae",
+ "hash_after": "48b7771c29e37a8bc1a3b612f33aa49388ce718921967900740eef41cdbf0cae",
+ "refers_to": "",
+ "sentence": "what python symbols does sldb.sldb.selfdoc.command import",
  "record": {
+  "queries": [
+   "pron graph python_symbol contains selfdoc → 159"
+  ],
+  "writes": [],
+  "edges": [],
+  "interpretation": {
+   "forma": "read",
+   "items": [
+    "wh('what')",
+    "word('python symbols'→source_model:PythonSymbol)",
+    "wh('does')",
+    "word('sldb'→value:CliCommandDoc.system=sldb,value:PythonSymbolDoc.system=sldb,value:SurfaceDoc.system=sldb)",
+    "punct('.')",
+    "word('sldb'→value:CliCommandDoc.system=sldb,value:PythonSymbolDoc.system=sldb,value:SurfaceDoc.system=sldb)",
+    "punct('.')",
+    "unknown('selfdoc')",
+    "punct('.')",
+    "unknown('command')",
+    "word('import'→source_relation:imports)"
+   ],
+   "parts": [
+    "read · source_relation:imports · subject=the PythonSymbol [] selfdoc · object=all PythonSymbol [] · payload={'asked': 'object'}"
+   ],
+   "unknown": [],
+   "notes": []
+  },
+  "reads": [],
   "candidates": [
    "python:sldb.sldb.cli.commands.selfdoc:SelfdocCLI",
    "python:sldb.sldb.cli.commands.selfdoc:SelfdocCLI._architecture_spec_path",
@@ -166,41 +198,9 @@
    "sldb.selfdoc.python_symbol",
    "sldb.selfdoc.report"
   ],
-  "edges": [],
-  "interpretation": {
-   "forma": "read",
-   "items": [
-    "wh('what')",
-    "word('python symbols'→source_model:PythonSymbol)",
-    "wh('does')",
-    "word('sldb'→value:CliCommandDoc.system=sldb,value:PythonSymbolDoc.system=sldb,value:SurfaceDoc.system=sldb)",
-    "punct('.')",
-    "word('sldb'→value:CliCommandDoc.system=sldb,value:PythonSymbolDoc.system=sldb,value:SurfaceDoc.system=sldb)",
-    "punct('.')",
-    "unknown('selfdoc')",
-    "punct('.')",
-    "unknown('command')",
-    "word('import'→source_relation:imports)"
-   ],
-   "notes": [],
-   "parts": [
-    "read · source_relation:imports · subject=the PythonSymbol [] selfdoc · object=all PythonSymbol [] · payload={'asked': 'object'}"
-   ],
-   "unknown": []
-  },
-  "queries": [
-   "pron graph python_symbol contains selfdoc → 159"
-  ],
-  "reads": [],
   "trace": [
    "interpretation: read",
    "pron graph python_symbol contains selfdoc → 159"
-  ],
-  "writes": []
- },
- "refers_to": "",
- "sentence": "what python symbols does sldb.sldb.selfdoc.command import",
- "speaker": "",
- "state_after": "pendiente",
- "state_before": "libre"
+  ]
+ }
 }

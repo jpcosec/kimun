@@ -1,12 +1,12 @@
 {
- "action": "set_field",
+ "title": "Close task",
  "id": "operator-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-close",
  "status": "active",
  "summary": "Closes the task in the operational runtime.",
  "tags": [
   "primitive:operator"
  ],
+ "action": "set_field",
  "target": "status",
- "title": "Close task",
  "value": "closed"
 }

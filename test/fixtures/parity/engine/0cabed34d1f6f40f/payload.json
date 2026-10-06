@@ -1,12 +1,12 @@
 {
- "expected": "",
+ "title": "Validation exists",
  "id": "condition-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-has-validation",
- "predicate": "not_empty",
  "status": "active",
- "subject": "validation",
  "summary": "Task validation must exist before testing handoff.",
  "tags": [
   "primitive:condition"
  ],
- "title": "Validation exists"
+ "subject": "validation",
+ "predicate": "not_empty",
+ "expected": ""
 }

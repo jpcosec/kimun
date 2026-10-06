@@ -1,8 +1,8 @@
 {
- "condition": "",
- "notes": "",
- "relation_type": "x",
+ "title": "r1",
  "source_id": "Note:n1",
  "target_id": "Note:n2",
- "title": "r1"
+ "relation_type": "x",
+ "condition": "",
+ "notes": ""
 }

@@ -1,10 +1,10 @@
 {
- "commands": "- widget a b",
- "how_it_works": "Not documented.",
  "id": "surface-widget-a",
- "provenance": "parser:fixture:build#a; contract-sha256:b9158f3ccadb940ad859474bd2f6d2317488f600e0ba22c6a592c13dd06dbee6",
- "purpose": "Not documented.",
- "surface": "a",
  "system": "widget",
- "tags": []
+ "surface": "a",
+ "purpose": "Not documented.",
+ "how_it_works": "Not documented.",
+ "commands": "- widget a b",
+ "tags": [],
+ "provenance": "parser:fixture:build#a; contract-sha256:b9158f3ccadb940ad859474bd2f6d2317488f600e0ba22c6a592c13dd06dbee6"
 }

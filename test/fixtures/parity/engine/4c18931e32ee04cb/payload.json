@@ -1,12 +1,12 @@
 {
- "condition_ref": "",
+ "title": "Activation to testing gate",
  "id": "edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-activate-to-testing",
- "source": "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-activate",
  "status": "active",
  "summary": "Activation complete.",
  "tags": [
   "primitive:edge"
  ],
+ "source": "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-activate",
  "target": "checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-testing-ready",
- "title": "Activation to testing gate"
+ "condition_ref": ""
 }

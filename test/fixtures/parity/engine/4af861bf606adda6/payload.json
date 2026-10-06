@@ -1,12 +1,12 @@
 {
- "arguments": "```json\n{\n  \"arguments\": [],\n  \"exclusive_groups\": []\n}\n```",
- "command_path": "run",
- "how_it_works": "Not documented.",
  "id": "cmd-widget-run",
- "provenance": "parser:fixture:build#run; contract-sha256:75cc554e25d20b42c0da48f93eb34feb20c539a17b851935d5dbebba872d01d7",
- "purpose": "Not documented.",
- "synopsis": "Run",
  "system": "widget",
+ "command_path": "run",
+ "synopsis": "Run",
+ "purpose": "Not documented.",
+ "how_it_works": "Not documented.",
+ "arguments": "```json\n{\n  \"arguments\": [],\n  \"exclusive_groups\": []\n}\n```",
+ "usage": "usage: __main__.py run [-h]",
  "tags": [],
- "usage": "usage: __main__.py run [-h]"
+ "provenance": "parser:fixture:build#run; contract-sha256:75cc554e25d20b42c0da48f93eb34feb20c539a17b851935d5dbebba872d01d7"
 }

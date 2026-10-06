@@ -1,12 +1,12 @@
 {
- "condition_ref": "",
+ "title": "Execution gate to activation",
  "id": "edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-execution-to-activate",
- "source": "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-execution-ready",
  "status": "active",
  "summary": "Execution gate passed.",
  "tags": [
   "primitive:edge"
  ],
+ "source": "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-execution-ready",
  "target": "operator-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-activate",
- "title": "Execution gate to activation"
+ "condition_ref": ""
 }

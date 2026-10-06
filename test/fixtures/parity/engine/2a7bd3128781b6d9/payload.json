@@ -1,19 +1,19 @@
 {
- "condition_refs": [
-  "condition-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-ready-for-closeout",
-  "condition-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-has-closeout-evidence"
- ],
+ "title": "Closeout Ready",
  "id": "checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-closeout-ready",
- "items": [
-  "Task is ready for closeout",
-  "Durable evidence is verified",
-  "Pill knowledge is graduated to atoms when required"
- ],
- "mode": "all",
  "status": "active",
  "summary": "Confirms the task is ready for closeout.",
  "tags": [
   "primitive:checklist"
  ],
- "title": "Closeout Ready"
+ "items": [
+  "Task is ready for closeout",
+  "Durable evidence is verified",
+  "Pill knowledge is graduated to atoms when required"
+ ],
+ "condition_refs": [
+  "condition-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-ready-for-closeout",
+  "condition-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-has-closeout-evidence"
+ ],
+ "mode": "all"
 }

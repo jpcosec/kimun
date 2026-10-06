@@ -1,4 +1,13 @@
 {
+ "title": "Routine for Borrar la capa runtime/edges y podar el surface publico",
+ "id": "routine-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico",
+ "status": "active",
+ "summary": "Actionable routine for Borrar la capa runtime/edges y podar el surface publico.",
+ "tags": [
+  "workspace:desk",
+  "primitive:routine"
+ ],
+ "entrypoint": "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-ready",
  "decomposition": [
   "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-ready",
   "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-activate",
@@ -15,16 +24,7 @@
   "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-to-close",
   "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-close-to-complete"
  ],
- "entrypoint": "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-ready",
- "id": "routine-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico",
- "status": "active",
- "summary": "Actionable routine for Borrar la capa runtime/edges y podar el surface publico.",
- "tags": [
-  "workspace:desk",
-  "primitive:routine"
- ],
  "terminal_nodes": [
   "complete"
- ],
- "title": "Routine for Borrar la capa runtime/edges y podar el surface publico"
+ ]
 }

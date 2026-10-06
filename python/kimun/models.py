@@ -83,6 +83,8 @@ def descriptor(cls: type) -> dict:
              Kw("required"): bool(info.is_required()) and not optional,
              Kw("description"): info.description or "",
              Kw("py/annotation"): str(info.annotation)}
+        if info.exclude:
+            f[Kw("exclude")] = True
         if info.default is not PydanticUndefined and info.default is not None:
             f[Kw("default")] = _jsonable(info.default)
         elif info.default_factory is not None:

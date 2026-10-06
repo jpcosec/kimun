@@ -1,12 +1,12 @@
 {
- "expected": "",
+ "title": "Implementation path exists",
  "id": "condition-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-has-implementation-path",
- "predicate": "truthy",
  "status": "active",
- "subject": "implementation_path",
  "summary": "Task implementation path must exist before execution.",
  "tags": [
   "primitive:condition"
  ],
- "title": "Implementation path exists"
+ "subject": "implementation_path",
+ "predicate": "truthy",
+ "expected": ""
 }

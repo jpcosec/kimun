@@ -1,11 +1,11 @@
 {
+ "title": "My Standalone Doc",
+ "meta": {
+  "version": "1.0.0",
+  "status": "stable"
+ },
  "items": [
   "First",
   "Second"
- ],
- "meta": {
-  "status": "stable",
-  "version": "1.0.0"
- },
- "title": "My Standalone Doc"
+ ]
 }

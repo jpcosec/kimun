@@ -1,16 +1,16 @@
 {
- "commands": "- sldb find",
- "how_it_works": "Registered under src/sldb/cli/parsers/ as the 'find' subparser. Each command dispatches to its handler over the .sldb store.",
  "id": "surface-sldb-find",
- "provenance": "parser:sldb.cli.parser:build_parser#find; contract-sha256:e0bfe85dcee0770390b76e464421537d2ef4afbf9d7d25e9ef214e5ff15bc22f",
- "purpose": "Unified semantic + physical retrieval. Groups 1 command(s).",
- "surface": "find",
  "system": "sldb",
+ "surface": "find",
+ "purpose": "Unified semantic + physical retrieval. Groups 1 command(s).",
+ "how_it_works": "Registered under src/sldb/cli/parsers/ as the 'find' subparser. Each command dispatches to its handler over the .sldb store.",
+ "commands": "- sldb find",
  "tags": [
   "system:sldb",
   "domain:retrieval",
   "kind:software",
   "impl:external",
   "entity:cli_surface"
- ]
+ ],
+ "provenance": "parser:sldb.cli.parser:build_parser#find; contract-sha256:e0bfe85dcee0770390b76e464421537d2ef4afbf9d7d25e9ef214e5ff15bc22f"
 }

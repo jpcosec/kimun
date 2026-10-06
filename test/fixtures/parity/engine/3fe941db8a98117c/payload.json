@@ -1,12 +1,12 @@
 {
- "condition_ref": "",
+ "title": "Execution gate to activation",
  "id": "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-to-activate",
- "source": "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-ready",
  "status": "active",
  "summary": "Execution gate passed.",
  "tags": [
   "primitive:edge"
  ],
+ "source": "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-ready",
  "target": "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-activate",
- "title": "Execution gate to activation"
+ "condition_ref": ""
 }

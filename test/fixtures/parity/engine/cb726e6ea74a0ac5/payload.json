@@ -1,10 +1,10 @@
 {
+ "title": "Hello World",
+ "subtitle": null,
+ "slug": "hello-world",
  "items": [
   "One",
   "Two"
  ],
- "meta": null,
- "slug": "hello-world",
- "subtitle": null,
- "title": "Hello World"
+ "meta": null
 }

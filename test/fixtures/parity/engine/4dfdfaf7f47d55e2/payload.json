@@ -1,12 +1,12 @@
 {
- "action": "set_field",
+ "title": "Activate task",
  "id": "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-activate",
  "status": "active",
  "summary": "Moves the task into active execution.",
  "tags": [
   "primitive:operator"
  ],
+ "action": "set_field",
  "target": "status",
- "title": "Activate task",
  "value": "active"
 }

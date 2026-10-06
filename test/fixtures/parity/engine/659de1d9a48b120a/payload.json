@@ -1,4 +1,13 @@
 {
+ "title": "Routine for Comando de porte sldb stores migrate-legacy-edges y error de migracion",
+ "id": "routine-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion",
+ "status": "active",
+ "summary": "Actionable routine for Comando de porte sldb stores migrate-legacy-edges y error de migracion.",
+ "tags": [
+  "workspace:desk",
+  "primitive:routine"
+ ],
+ "entrypoint": "checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-execution-ready",
  "decomposition": [
   "checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-execution-ready",
   "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-activate",
@@ -15,16 +24,7 @@
   "edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-closeout-to-close",
   "edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-close-to-complete"
  ],
- "entrypoint": "checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-execution-ready",
- "id": "routine-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion",
- "status": "active",
- "summary": "Actionable routine for Comando de porte sldb stores migrate-legacy-edges y error de migracion.",
- "tags": [
-  "workspace:desk",
-  "primitive:routine"
- ],
  "terminal_nodes": [
   "complete"
- ],
- "title": "Routine for Comando de porte sldb stores migrate-legacy-edges y error de migracion"
+ ]
 }

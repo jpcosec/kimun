@@ -1,6 +1,5 @@
 {
- "how": "Normalize output only at the presentation boundary, verify exit codes and stderr, and test both human-facing and machine-facing command behavior where relevant.",
- "how_not": "Do not catch every exception as a user error, degrade stored data just to satisfy JSON output, or let help text and parser behavior drift apart.",
+ "title": "SLDB CLI errors must stay actionable and machine-safe",
  "id": "pill-009-cli-error-and-serialization-failure-mode",
  "tags": [
   "system:sldb",
@@ -8,9 +7,10 @@
   "topic:serialization",
   "language:python"
  ],
- "title": "SLDB CLI errors must stay actionable and machine-safe",
  "what": "User-input failures should become actionable diagnostics while machine-readable outputs and document semantics remain intact.",
+ "why": "Raw file errors, datetime serialization crashes, confusing empty-input messages, and location-dependent output create avoidable operator confusion and downstream automation drift.",
  "when": "Apply this pill when changing FAQ, inbox JSON, extract/render/validate, docs, fields, stores, query, help, version, or empty-input validation behavior.",
  "where": "- `src/sldb/cli/main.py`\n- `src/sldb/cli/parser.py`\n- `src/sldb/cli/commands/`\n- serialization-sensitive tests",
- "why": "Raw file errors, datetime serialization crashes, confusing empty-input messages, and location-dependent output create avoidable operator confusion and downstream automation drift."
+ "how": "Normalize output only at the presentation boundary, verify exit codes and stderr, and test both human-facing and machine-facing command behavior where relevant.",
+ "how_not": "Do not catch every exception as a user error, degrade stored data just to satisfy JSON output, or let help text and parser behavior drift apart."
 }

@@ -1,12 +1,12 @@
 {
- "action": "set_field",
+ "title": "Mark ready for testing",
  "id": "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-ready-for-testing",
  "status": "active",
  "summary": "Moves the task into the testing gate.",
  "tags": [
   "primitive:operator"
  ],
+ "action": "set_field",
  "target": "status",
- "title": "Mark ready for testing",
  "value": "ready_for_testing"
 }

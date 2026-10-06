@@ -1,8 +1,8 @@
 {
- "condition": "",
- "notes": "",
- "relation_type": "near",
+ "title": "t12-t14",
  "source_id": "Table:t12",
  "target_id": "Table:t14",
- "title": "t12-t14"
+ "relation_type": "near",
+ "condition": "",
+ "notes": ""
 }

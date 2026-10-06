@@ -62,10 +62,10 @@ def _wrap():
         try:
             out = orig_render(self, data, ref_root)
         except Exception as e:
-            _record("render", self.model_type, desc, None, json.loads(_norm(data)), None,
+            _record("render", self.model_type, desc, None, json.loads(json.dumps(data, default=str)), None,
                     {"type": type(e).__name__, "message": str(e)[:500]})
             raise
-        _record("render", self.model_type, desc, None, json.loads(_norm(data)), out, None)
+        _record("render", self.model_type, desc, None, json.loads(json.dumps(data, default=str)), out, None)
         return out
 
     V.extract, V.render = extract, render
@@ -88,7 +88,8 @@ def pytest_sessionfinish(session, exitstatus):
         if c["input"] is not None:
             (d / "input.md").write_text(c["input"], encoding="utf-8")
         if c["payload"] is not None:
-            (d / "payload.json").write_text(_norm(c["payload"]) + "\n", encoding="utf-8")
+            # insertion order is kept on purpose: v1 dumps mappings in payload order
+            (d / "payload.json").write_text(json.dumps(c["payload"], ensure_ascii=False, indent=1, default=str) + "\n", encoding="utf-8")
         if c["rendered"] is not None:
             (d / "rendered.md").write_text(c["rendered"], encoding="utf-8")
         if c["error"] is not None:

@@ -1,16 +1,16 @@
 {
- "condition_refs": [
-  "condition-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-has-validation"
- ],
+ "title": "Testing Ready",
  "id": "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-testing-ready",
- "items": [
-  "Validation exists"
- ],
- "mode": "all",
  "status": "active",
  "summary": "Confirms the task is ready for testing handoff.",
  "tags": [
   "primitive:checklist"
  ],
- "title": "Testing Ready"
+ "items": [
+  "Validation exists"
+ ],
+ "condition_refs": [
+  "condition-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-has-validation"
+ ],
+ "mode": "all"
 }

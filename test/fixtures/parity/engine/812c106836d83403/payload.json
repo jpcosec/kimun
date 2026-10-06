@@ -1,10 +1,17 @@
 {
- "at": "2026-09-14T14:47:48+00:00",
- "hash_after": "28ffb2d24d7afe126249cdfb4e4ca20719f88e5c31f67f5c34182199e3853f6e",
- "hash_before": "28ffb2d24d7afe126249cdfb4e4ca20719f88e5c31f67f5c34182199e3853f6e",
  "id": "move-20260914T144748-001",
+ "at": "2026-09-14T14:47:48+00:00",
+ "speaker": "",
  "outcome": "unico",
+ "state_before": "libre",
+ "state_after": "libre",
+ "hash_before": "28ffb2d24d7afe126249cdfb4e4ca20719f88e5c31f67f5c34182199e3853f6e",
+ "hash_after": "28ffb2d24d7afe126249cdfb4e4ca20719f88e5c31f67f5c34182199e3853f6e",
+ "refers_to": "",
+ "sentence": "the python symbol CommandRecord references what python symbols",
  "record": {
+  "queries": [],
+  "writes": [],
   "edges": [],
   "interpretation": {
    "forma": "read",
@@ -16,23 +23,16 @@
     "wh('what')",
     "word('python symbols'→source_model:PythonSymbol)"
    ],
-   "notes": [],
    "parts": [
     "read · source_relation:references · subject=all PythonSymbol [] · payload={'asked': 'subject'}"
    ],
    "unknown": [
     "CommandRecord"
-   ]
+   ],
+   "notes": []
   },
-  "queries": [],
   "trace": [
    "interpretation: read"
-  ],
-  "writes": []
- },
- "refers_to": "",
- "sentence": "the python symbol CommandRecord references what python symbols",
- "speaker": "",
- "state_after": "libre",
- "state_before": "libre"
+  ]
+ }
 }

@@ -1,15 +1,15 @@
 {
+ "title": "Task Board",
  "tasks": [
   {
-   "goal": "Define shape",
    "name": "Model",
-   "status": "done"
+   "status": "done",
+   "goal": "Define shape"
   },
   {
-   "goal": "Ship docs",
    "name": "Writer",
-   "status": "open"
+   "status": "open",
+   "goal": "Ship docs"
   }
- ],
- "title": "Task Board"
+ ]
 }

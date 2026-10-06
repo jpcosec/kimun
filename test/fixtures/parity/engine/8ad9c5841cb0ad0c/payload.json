@@ -1,15 +1,15 @@
 {
- "axis": "WHAT",
- "cardinality": "one_to_many",
- "condition": "",
- "description": "The store registers this model.",
- "direction": "directed",
+ "title": "has_model",
  "name": "has_model",
+ "direction": "directed",
+ "cardinality": "one_to_many",
+ "axis": "WHAT",
  "source_types": [
   "sldb_store"
  ],
  "target_types": [
   "sldb_model"
  ],
- "title": "has_model"
+ "condition": "",
+ "description": "The store registers this model."
 }

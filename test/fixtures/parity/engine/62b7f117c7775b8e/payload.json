@@ -1,16 +1,16 @@
 {
- "commands": "- sldb lint",
- "how_it_works": "Registered under src/sldb/cli/parsers/ as the 'lint' subparser. Each command dispatches to its handler over the .sldb store.",
  "id": "surface-sldb-lint",
- "provenance": "parser:sldb.cli.parser:build_parser#lint; contract-sha256:3e592c55f7905f39606c20f99f4056182a64aeecafa22acd438c662442d52939",
- "purpose": "Lint tracked documents. Groups 1 command(s).",
- "surface": "lint",
  "system": "sldb",
+ "surface": "lint",
+ "purpose": "Lint tracked documents. Groups 1 command(s).",
+ "how_it_works": "Registered under src/sldb/cli/parsers/ as the 'lint' subparser. Each command dispatches to its handler over the .sldb store.",
+ "commands": "- sldb lint",
  "tags": [
   "system:sldb",
   "domain:retrieval",
   "kind:software",
   "impl:external",
   "entity:cli_surface"
- ]
+ ],
+ "provenance": "parser:sldb.cli.parser:build_parser#lint; contract-sha256:3e592c55f7905f39606c20f99f4056182a64aeecafa22acd438c662442d52939"
 }

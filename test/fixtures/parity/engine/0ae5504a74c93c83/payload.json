@@ -1,12 +1,12 @@
 {
- "condition_ref": "",
+ "title": "Close operator to complete",
  "id": "edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-close-to-complete",
- "source": "operator-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-close",
  "status": "active",
  "summary": "Task closed.",
  "tags": [
   "primitive:edge"
  ],
+ "source": "operator-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-close",
  "target": "complete",
- "title": "Close operator to complete"
+ "condition_ref": ""
 }

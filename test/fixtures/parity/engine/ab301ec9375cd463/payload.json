@@ -1,6 +1,6 @@
 {
+ "title": "board-one",
  "tasks": [
   "sub/task-a.md"
- ],
- "title": "board-one"
+ ]
 }

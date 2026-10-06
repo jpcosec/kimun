@@ -1,12 +1,12 @@
 {
- "condition_ref": "",
+ "title": "Close operator to complete",
  "id": "edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-close-to-complete",
- "source": "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-close",
  "status": "active",
  "summary": "Task closed.",
  "tags": [
   "primitive:edge"
  ],
+ "source": "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-close",
  "target": "complete",
- "title": "Close operator to complete"
+ "condition_ref": ""
 }

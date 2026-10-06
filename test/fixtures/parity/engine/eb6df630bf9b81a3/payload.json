@@ -1,8 +1,8 @@
 {
- "semantic_tags": [
-  "project.sldb.database"
- ],
+ "title": "Roadmap",
  "status": "draft",
  "tasks": [],
- "title": "Roadmap"
+ "semantic_tags": [
+  "project.sldb.database"
+ ]
 }

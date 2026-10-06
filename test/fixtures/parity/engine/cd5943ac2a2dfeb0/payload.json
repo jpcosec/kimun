@@ -1,11 +1,11 @@
 {
- "semantic_tags": [
-  "project.sldb.database"
- ],
+ "title": "Roadmap",
  "status": "accepted",
  "tasks": [
   "Ship CLI",
   "Write docs"
  ],
- "title": "Roadmap"
+ "semantic_tags": [
+  "project.sldb.database"
+ ]
 }

@@ -1,13 +1,13 @@
 {
- "cardinality": "many_to_many",
- "description": "Step A can transition to step B.",
- "direction": "directed",
+ "title": "flows_to",
  "name": "flows_to",
+ "direction": "directed",
+ "cardinality": "many_to_many",
  "source_types": [
   "conversation-step"
  ],
  "target_types": [
   "conversation-step"
  ],
- "title": "flows_to"
+ "description": "Step A can transition to step B."
 }

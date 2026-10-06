@@ -1,8 +1,8 @@
 {
+ "title": "Roadmap",
  "status": "draft",
  "tasks": [
   "Ship CLI",
   "Write docs"
- ],
- "title": "Roadmap"
+ ]
 }

@@ -1,8 +1,8 @@
 {
- "note": "pending",
+ "title": "Broken login",
  "status": "open",
  "tags": [
   "auth"
  ],
- "title": "Broken login"
+ "note": "pending"
 }
