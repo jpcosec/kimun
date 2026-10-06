@@ -38,12 +38,12 @@
                       (tree/positions {:root pos}))
               acc))
           {}
-          (sort (keys (:roots (revision-of store rev-id))))))
+          (do (revision-of store rev-id) (revision/tree-ids store rev-id))))
 
 (defn- active-edges
   "[[edge-id edge] …] of the revision, in edge-set order (ascending id)."
   [store rev-id]
-  (vec (for [eid (revision/get-object store (:edges (revision-of store rev-id)))
+  (vec (for [eid (do (revision-of store rev-id) (revision/active-edges store rev-id))
              :let [e (revision/get-object store eid)]
              :when (map? e)]
          [eid e])))

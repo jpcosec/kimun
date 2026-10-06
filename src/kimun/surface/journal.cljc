@@ -32,7 +32,7 @@
         before (node-texts store (:removed d))
         after (node-texts store (:added d))]
     (cond-> {:tree tid :name name :kind kind
-             :created? (nil? (get-in (revision/revision store r1) [:roots tid]))
+             :created? (nil? (revision/tree-entry store tid r1))
              :nodes-added (count (:added d))
              :nodes-removed (count (:removed d))
              :moved (count (:moved d))}

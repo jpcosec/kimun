@@ -32,7 +32,7 @@
   [dir]
   (let [b (fs/backend dir)
         fx1 (read-fixture "test/fixtures/tx-001.edn")
-        fx2 (read-fixture "test/fixtures/tx-002-conflict.edn")
+        fx2 (sldb.kernel.test-util/format-2-fixture (read-fixture "test/fixtures/tx-002-conflict.edn"))
         s0 (store/init! b h (get-in fx1 [:store :capabilities]))
         s1 (:store (store/commit! b s0 (:plan fx1)))
         s2 (:store (store/commit! b s1 (second (:base-plans fx2))))]
@@ -77,7 +77,7 @@
   (let [dir (tmp-dir)
         s (populate! dir)
         b (fs/backend dir)
-        fx2 (read-fixture "test/fixtures/tx-002-conflict.edn")
+        fx2 (sldb.kernel.test-util/format-2-fixture (read-fixture "test/fixtures/tx-002-conflict.edn"))
         stale (store/open b h)
         ;; another writer commits first
         _ (store/commit! b s (assoc (:disjoint-plan fx2) :base (:head s)))

@@ -114,7 +114,8 @@
   (let [{:keys [store]} (base-store)
         r (rev/apply-plan store (plan (:head store) []))]
     (is (= [(:head store)] (get-in r [:revision :parents])))
-    (is (= (:roots (rev/revision store (:head store))) (:roots (:revision r))))
+    (is (= (select-keys (rev/revision store (:head store)) [:trees :edges :incidence])
+           (select-keys (:revision r) [:trees :edges :incidence])) "same trees (roots included), edges and incidence")
     (is (= 2 (count (:revisions (:store r)))))))
 
 (deftest alias-misuse-is-rejected
@@ -140,7 +141,8 @@
 (deftest move-marks-dirty-and-changes-the-root
   (let [{:keys [store aliases]} (base-store)
         r (rev/apply-plan store (plan (:head store) [{:op :move :tree T :from [1] :to [] :order 0}]))]
-    (is (not= (get-in (rev/revision store (:head store)) [:roots T]) (get-in r [:revision :roots T])))))
+    (is (some? (second (rev/tree-entry store T))))
+    (is (not= (second (rev/tree-entry store T)) (second (rev/tree-entry (:store r) T))))))
 
 (deftest multi-context-bindings-are-distinct-edges
   (let [{:keys [store aliases]} (base-store)

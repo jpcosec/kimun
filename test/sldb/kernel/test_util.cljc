@@ -1,7 +1,8 @@
 (ns sldb.kernel.test-util
   "Minimal `defspec` over test.check's quick-check, because Babashka bundles
    clojure.test.check.{generators,properties} but not clojure-test."
-  (:require [clojure.test :as t]
+  (:require [clojure.walk]
+            [clojure.test :as t]
             [clojure.test.check :as tc]))
 
 (defmacro defspec
@@ -11,3 +12,15 @@
   `(t/deftest ~name
      (let [r# (tc/quick-check ~num-tests ~prop)]
        (t/is (:pass? r#) (pr-str (select-keys r# [:num-tests :seed :fail :shrunk]))))))
+
+(def tx-001-revision-ids
+  "Revision id of test/fixtures/tx-001.edn under each store format. The fixtures
+   pin the format-1 id (as :expected and as the :base of later plans)."
+  {1 "93fd0bca29b4f94b68464a6952b42b1464055a26dd3dec4c3d37173c8a985053"
+   2 "8ee693939d457251112165da68534a4d4508d1cbe17a7efe4b46f4483ed05992"})
+
+(defn format-2-fixture
+  "A fixture with every reference to the format-1 revision id of tx-001
+   rewritten to its format-2 id (plans keep everything else)."
+  [fx]
+  (clojure.walk/postwalk-replace {(tx-001-revision-ids 1) (tx-001-revision-ids 2)} fx))

@@ -1,42 +1,58 @@
 (ns sldb.kernel.revision
-  "Applying a TransactionPlan to an in-memory store and producing an immutable
-   revision (docs/v2/02 §5, §5.1, §5.2). Ownership is addressed by position paths
-   (§3.1): a node may occur at several positions of a tree.
+  "Applying a TransactionPlan to a store value and producing an immutable
+   revision (docs/v2/02 §5, §5.1, §5.2), format 2: every cost is proportional
+   to the plan, never to the number of trees, edges or revisions.
 
    Store (a value):
-   {:host host :capabilities {...}
-    :objects {id object}            ; the CAS: nodes, edges, tree objects, descriptors, edge-sets, tree-sets, revisions, resolved plans
-    :trees {tree-id committed-tree}  ; current tree values (sldb.kernel.tree)
-    :edges #{edge-id}               ; active non-ownership edge set at :head
-    :head <rev-id|nil>              ; latest revision
-    :heads {tree-id rev-id}         ; last revision that touched each tree
+   {:host host :capabilities {...} :format-version 2
+    :objects {id object}             ; the CAS: nodes, edges, tree objects, descriptors, mmap nodes, revisions, resolved plans
+    :trees {tree-id committed-tree}  ; VIEW of the head: current tree values (sldb.kernel.tree)
+    :edges #{edge-id}                ; VIEW of the head: active non-ownership edge set
+    :head <rev-id|nil>               ; latest revision
+    :heads {tree-id rev-id}          ; last revision that touched each tree
     :revisions {rev-id Revision}}
+   The two views are maintained only by `refresh-views`; kernel code asks through
+   the accessors below (all of them load through `get-object`).
 
-   Revision {:roots {tree-id merkle-root} :trees tree-set-id :edges edge-set-id
+   Revision {:trees     <mmap root: tree-id -> [descriptor-id merkle-root]>
+             :edges     <mmap root: active edge id -> true>
+             :incidence <mmap root: node-id -> sorted vector of the active edge ids with it as :from or :to>
              :parents [rev-id] :tx tx-id :actor :engines :timestamp}
-   revision-id = H(canonical-bytes Revision); Transaction {:id H(resolved plan) :plan :revision}."
+   (sldb.kernel.mmap). :incidence is derived from :edges, deterministic, and never
+   trusted by verification (a full replay recomputes it).
+   revision-id = H(canonical-bytes Revision); Transaction {:id H(resolved plan) :plan :revision}.
+
+   A store value with :format-version 1 is served by sldb.kernel.legacy.revision:
+   apply-plan, diff, tree-at and the accessors dispatch on it."
+  (:refer-clojure :exclude [ancestors])
   (:require [sldb.kernel.canon :as canon]
             [sldb.kernel.node :as node]
             [sldb.kernel.edge :as edge]
             [sldb.kernel.tree :as tree]
             [sldb.kernel.plan :as plan]
+            [sldb.kernel.mmap :as mmap]
+            [sldb.kernel.legacy.revision :as legacy]
             [sldb.kernel.err :as err]))
 
 ;; ---------------------------------------------------------------- store
 
 (defn empty-store
-  "A store with no objects, trees, edges or revisions."
+  "A format-2 store with no objects, trees, edges or revisions."
   [host capabilities]
-  {:host host :capabilities capabilities
+  {:host host :capabilities capabilities :format-version 2
    :objects {} :trees {} :edges #{} :head nil :heads {} :revisions {}})
 
+(defn legacy?
+  "True for a format-1 store value (served by sldb.kernel.legacy.revision)."
+  [store] (= 1 (:format-version store)))
+
 (defn get-object
-  "The CAS object with `id`, or nil."
-  [store id] (get-in store [:objects id]))
+  "The CAS object with `id`, or nil. The one loader every accessor goes through."
+  [store id] (get (:objects store) id))
 
 (defn revision
   "The Revision map with `rev-id`, or nil."
-  [store rev-id] (get-in store [:revisions rev-id]))
+  [store rev-id] (get (:revisions store) rev-id))
 
 (defn ancestors
   "Revision ids reachable from `rev-id` through :parents (including itself)."
@@ -49,15 +65,162 @@
           (recur more seen)
           (recur (into more (:parents (revision store r))) (conj seen r)))))))
 
+;; ---------------------------------------------------------------- accessors
+
+(defn- loader
+  "id -> mmap node over `get-object`. The empty map of a store without
+   revisions is not in the CAS yet (the first revision writes it)."
+  [store]
+  (if (:head store)
+    #(get-object store %)
+    (let [e (:new (mmap/empty (:host store)))] #(or (get-object store %) (get e %)))))
+
+(defn- roots
+  "{:trees :edges :incidence} mmap roots of `rev-id` (the empty maps when nil/unknown)."
+  [store rev-id]
+  (or (revision store rev-id)
+      (let [e (:root (mmap/empty (:host store)))] {:trees e :edges e :incidence e})))
+
+(defn active-edges
+  "Lazy seq of the active edge ids, ascending, at the head or at `rev-id`."
+  ([store] (active-edges store (:head store)))
+  ([store rev-id]
+   (if (legacy? store)
+     (seq (get-object store (:edges (revision store rev-id))))
+     (mmap/keys (loader store) (:edges (roots store rev-id))))))
+
+(defn edge-active?
+  "True when `edge-id` is in the active edge set at the head or at `rev-id`
+   (one mmap lookup)."
+  ([store edge-id] (edge-active? store edge-id (:head store)))
+  ([store edge-id rev-id]
+   (cond
+     (not (legacy? store)) (mmap/has-key? (:host store) (loader store) (:edges (roots store rev-id)) edge-id)
+     (= rev-id (:head store)) (contains? (:edges store) edge-id)
+     :else (boolean (some #{edge-id} (active-edges store rev-id))))))
+
+(defn edges-touching
+  "Sorted vector of the active edge ids having `node-id` as :from or :to, at
+   the head or at `rev-id` (one :incidence lookup)."
+  ([store node-id] (edges-touching store node-id (:head store)))
+  ([store node-id rev-id]
+   (if (legacy? store)
+     (vec (filter #(let [e (get-object store %)] (or (= node-id (:from e)) (= node-id (:to e))))
+                  (active-edges store rev-id)))
+     (mmap/lookup (:host store) (loader store) (:incidence (roots store rev-id)) node-id []))))
+
+(defn edge-count
+  "Number of active edges at the head or at `rev-id` (reads one mmap node)."
+  ([store] (edge-count store (:head store)))
+  ([store rev-id]
+   (if (legacy? store)
+     (count (active-edges store rev-id))
+     (mmap/count (loader store) (:edges (roots store rev-id))))))
+
+(defn tree-ids
+  "Ids of the trees at the head or at `rev-id`, ascending."
+  ([store] (tree-ids store (:head store)))
+  ([store rev-id]
+   (sort (if (legacy? store)
+           (keys (:roots (revision store rev-id)))
+           (mmap/keys (loader store) (:trees (roots store rev-id)))))))
+
+(defn tree-count
+  "Number of trees at the head or at `rev-id` (reads one mmap node)."
+  ([store] (tree-count store (:head store)))
+  ([store rev-id]
+   (if (legacy? store)
+     (count (:roots (revision store rev-id)))
+     (mmap/count (loader store) (:trees (roots store rev-id))))))
+
+(defn tree-entry
+  "[descriptor-id merkle-root] of tree `tid` at the head or at `rev-id`, without
+   loading any of its objects; nil when the revision has no such tree."
+  ([store tid] (tree-entry store tid (:head store)))
+  ([store tid rev-id]
+   (if (legacy? store)
+     (let [rev (revision store rev-id)]
+       (when-let [root (get-in rev [:roots tid])]
+         [(some (fn [[t d]] (when (= t tid) d)) (get-object store (:trees rev))) root]))
+     (mmap/lookup (:host store) (loader store) (:trees (roots store rev-id)) tid nil))))
+
+(defn tree-descriptor
+  "Descriptor {:tree :kind :name :root} of tree `tid` at the head or at `rev-id`
+   (loads one object), or nil."
+  ([store tid] (tree-descriptor store tid (:head store)))
+  ([store tid rev-id]
+   (when-let [[desc-id _] (tree-entry store tid rev-id)] (get-object store desc-id))))
+
+(defn load-tree
+  "Committed tree {:tree :descriptor :root} of `tid` at `rev-id`, rebuilt from
+   the CAS (loads the tree objects of that one tree); nil when absent. Equal to
+   the value `(:trees store)` holds for the head."
+  [store tid rev-id]
+  (when-let [[desc-id root] (tree-entry store tid rev-id)]
+    {:tree tid :descriptor (get-object store desc-id)
+     :root (tree/from-objects root #(get-object store %))}))
+
+(defn committed-tree
+  "Committed tree of `tid` at the head (a lookup in the :trees view) or at
+   `rev-id` (see `load-tree`); nil when absent."
+  ([store tid] (get (:trees store) tid))
+  ([store tid rev-id]
+   (if (= rev-id (:head store)) (committed-tree store tid) (load-tree store tid rev-id))))
+
+(defn refresh-views
+  "THE one place where the eager views of the head are maintained, in O(plan):
+   `trees'` {tree-id committed-tree} of the trees the transaction touched is
+   merged into :trees, and the net edge delta (`added`/`removed` id sets) is
+   applied to :edges. A lazy store replaces this function by views computed from
+   the head Revision (`load-tree` per tree, `active-edges`)."
+  [store trees' added removed]
+  (-> store
+      (update :trees merge trees')
+      (update :edges #(reduce conj (reduce disj % removed) added))))
+
 ;; ---------------------------------------------------------------- working state
 
 (defn- ws-init [store plan]
   {:store store :host (:host store) :plan plan
-   :aliases {} :nodes-added #{} :edges-added #{} :edges-removed #{}
-   :trees (:trees store) :touched #{} :superseded []
-   :edges (:edges store) :objects (:objects store)})
+   :aliases {} :edges-added #{} :edges-removed #{}
+   :trees {}          ; only the trees this transaction read for writing
+   :touched #{} :superseded []
+   :e+ #{} :e- #{}    ; net delta over the active edge set of the base
+   :new {}})          ; objects created by this transaction
 
-(defn- node-exists? [ws id] (contains? (:objects ws) id))
+(defn- ws-object [ws id] (or (get (:new ws) id) (get-object (:store ws) id)))
+
+(defn- node-exists? [ws id]
+  (or (contains? (:new ws) id) (contains? (:objects (:store ws)) id)))
+
+(defn- ws-tree [ws tid] (or (get-in ws [:trees tid]) (committed-tree (:store ws) tid)))
+
+(defn- ws-active? [ws id]
+  (or (contains? (:e+ ws) id)
+      (and (not (contains? (:e- ws) id)) (edge-active? (:store ws) id))))
+
+(defn- activate
+  "Adds the (inactive) edge `e` to the active set."
+  [ws e]
+  (let [id (:id e)]
+    (cond-> (-> ws (assoc-in [:new id] e) (update :edges-added conj id))
+      (contains? (:e- ws) id)       (update :e- disj id)
+      (not (contains? (:e- ws) id)) (update :e+ conj id))))
+
+(defn- deactivate
+  "Removes the (active) edge `id` from the active set."
+  [ws id]
+  (cond-> (update ws :edges-removed conj id)
+    (contains? (:e+ ws) id)       (update :e+ disj id)
+    (not (contains? (:e+ ws) id)) (update :e- conj id)))
+
+(defn- ws-touching
+  "Active edges of the working state with `node` at either endpoint: the
+   :incidence entry of the base corrected by the transaction's own delta."
+  [ws node]
+  (let [base (remove (:e- ws) (edges-touching (:store ws) node))
+        fresh (filter #(let [e (ws-object ws %)] (or (= node (:from e)) (= node (:to e)))) (:e+ ws))]
+    (mapv #(ws-object ws %) (sort (distinct (concat base fresh))))))
 
 (defn- require-node [ws op id]
   (when-not (and (string? id) (node-exists? ws id))
@@ -78,10 +241,7 @@
 (defn- add-node-op [ws op]
   (let [{:keys [class kind content]} (:node op)
         n (rejecting :ids-exist op #(node/make (:host ws) class kind content))]
-    (-> ws
-        (assoc-in [:objects (:id n)] n)
-        (update :nodes-added conj (:id n))
-        (bind-alias op (:id n)))))
+    (-> ws (assoc-in [:new (:id n)] n) (bind-alias op (:id n)))))
 
 (defn- new-tree-op [ws op]
   (let [root (require-node ws op (r ws (:root op)))
@@ -91,15 +251,15 @@
                         (tree/create (:host ws) kind (or name "") root (:id op))
                         (tree/create (:host ws) kind (or name "") root)))
         id (:tree t)]
-    (when (contains? (:trees ws) id) (plan/reject :ids-exist op (str "tree already exists " id)))
+    (when (ws-tree ws id) (plan/reject :ids-exist op (str "tree already exists " id)))
     (-> ws (assoc-in [:trees id] t) (update :touched conj id) (bind-alias op id))))
 
 (defn- require-tree [ws op tid]
-  (when-not (contains? (:trees ws) tid) (plan/reject :ids-exist op (str "unknown tree " tid)))
+  (when-not (ws-tree ws tid) (plan/reject :ids-exist op (str "unknown tree " tid)))
   tid)
 
 (defn- with-tree [ws op tid f]
-  (rejecting :tree-integrity op #(-> ws (update-in [:trees tid] f) (update :touched conj tid))))
+  (rejecting :tree-integrity op #(-> ws (assoc-in [:trees tid] (f (ws-tree ws tid))) (update :touched conj tid))))
 
 (defn- resolve-edge [ws raw]
   (-> raw
@@ -112,26 +272,20 @@
 (defn- re-anchor
   "§6.1 inside the transaction: reference/binding edges with `old` at either
    endpoint get a successor edge; derived edges pointing at `old` are invalidated
-   (removed from the active set); semantic/projection are left as they are."
+   (removed from the active set); semantic/projection are left as they are.
+   Costs the edges touching `old` (:incidence), not the edge set."
   [ws old new]
-  (let [host (:host ws)
-        touching (for [eid (:edges ws)
-                       :let [e (get-in ws [:objects eid])]
-                       :when (or (= old (:to e)) (= old (:from e)))]
-                   e)]
+  (let [host (:host ws)]
     (reduce (fn [ws e]
               (case (:type e)
                 (:reference :binding)
                 (let [e' (edge/make host (cond-> (dissoc e :id)
                                            (= old (:from e)) (assoc :from new)
                                            (= old (:to e))   (-> (assoc :to new) (assoc-in [:evidence :ref-hash] new))))]
-                  (if (contains? (:edges ws) (:id e'))
-                    ws
-                    (-> ws (assoc-in [:objects (:id e')] e') (update :edges conj (:id e')) (update :edges-added conj (:id e')))))
-                :derived
-                (-> ws (update :edges disj (:id e)) (update :edges-removed conj (:id e)))
+                  (if (ws-active? ws (:id e')) ws (activate ws e')))
+                :derived (deactivate ws (:id e))
                 ws))
-            ws touching)))
+            ws (ws-touching ws old))))
 
 (defn- add-edge-op [ws op]
   (let [e0 (resolve-edge ws (:edge op))]
@@ -147,13 +301,9 @@
         (when (and (get-in e [:evidence :ref-hash]) (not= (get-in e [:evidence :ref-hash]) (:to e)))
           (plan/reject :evidence-ref-hash op ":ref-hash must equal the id of :to in the plan-resolved state"))
         (when-let [ctx (get-in e [:evidence :context])] (require-node ws op ctx))
-        (if (contains? (:edges ws) (:id e))
+        (if (ws-active? ws (:id e))
           (bind-alias ws op (:id e))                       ; idempotent no-op (§3.2): never re-anchors again
-          (let [ws' (-> ws
-                        (assoc-in [:objects (:id e)] e)
-                        (update :edges conj (:id e))
-                        (update :edges-added conj (:id e))
-                        (bind-alias op (:id e)))]
+          (let [ws' (-> ws (activate e) (bind-alias op (:id e)))]
             ;; §6.1, second re-anchoring trigger: :from is the successor, :to the
             ;; replaced node, and the rules run with the edge already active.
             (if (= :supersedes (:type e))
@@ -164,20 +314,20 @@
 
 (defn- remove-edge-op [ws op]
   (let [id (r ws (:edge op))]
-    (when-not (contains? (:edges ws) id) (plan/reject :ids-exist op (str "unknown or inactive edge " id)))
-    (-> ws (update :edges disj id) (update :edges-removed conj id))))
+    (when-not (ws-active? ws id) (plan/reject :ids-exist op (str "unknown or inactive edge " id)))
+    (deactivate ws id)))
 
 (defn- replace-op [ws op]
   (let [tid (require-tree ws op (r ws (:tree op)))
         path (:at op)
-        old (or (tree/node-at (get-in ws [:trees tid]) path) (plan/reject :ids-exist op (str "no position " path)))
+        old (or (tree/node-at (ws-tree ws tid) path) (plan/reject :ids-exist op (str "no position " path)))
         new (require-node ws op (r ws (:new op)))
         sup (edge/make (:host ws) {:type :supersedes :from new :to old :evidence {:actor (:actor (:plan ws))}})]
     (-> ws
         (with-tree op tid #(tree/replace-node % path new))
-        (assoc-in [:objects (:id sup)] sup)
-        (update :edges conj (:id sup))
-        (update :edges-added conj (:id sup))
+        (as-> w (if (ws-active? w (:id sup))
+                  (-> w (assoc-in [:new (:id sup)] sup) (update :edges-added conj (:id sup)))
+                  (activate w sup)))
         (update :superseded conj [old new])
         (re-anchor old new))))
 
@@ -205,8 +355,10 @@
   "Committed tree :root Position of `tid` at `rev-id`, rebuilt from the CAS; nil
    when the revision has no such tree."
   [store rev-id tid]
-  (when-let [root-hash (get-in (revision store rev-id) [:roots tid])]
-    (tree/from-objects root-hash #(get-object store %))))
+  (if (legacy? store)
+    (legacy/tree-at store rev-id tid)
+    (when-let [[_ root-hash] (tree-entry store tid rev-id)]
+      (tree/from-objects root-hash #(get-object store %)))))
 
 (defn- position-map
   "{path node} of a :root Position."
@@ -220,42 +372,50 @@
                                (mapcat (fn [i c] (walk c (conj path i))) (range) (:children p))))]
     (into {} (walk pos []))))
 
+
 (defn diff
   "Difference between two revisions (docs/v2/02 §5.2):
    {:trees {tree-id {:added [node …] :removed [node …]
                      :moved [{:node :from-paths :to-paths} …] :parents-changed [path …]}}
     :edges {:added :removed} :superseded [[old new] …]}.
-   Only trees whose merkle-root differs are descended."
+   Walks the mmaps of both revisions only where they differ, and descends only
+   the trees whose merkle-root differs."
   [store r1 r2]
-  (let [rev1 (revision store r1) rev2 (revision store r2)
-        tids (into #{} (concat (keys (:roots rev1)) (keys (:roots rev2))))
-        trees (into {}
-                    (for [tid tids
-                          :when (not= (get-in rev1 [:roots tid]) (get-in rev2 [:roots tid]))]
-                      (let [a (tree-at store r1 tid) b (tree-at store r2 tid)
-                            pa (if a (position-map a) {}) pb (if b (position-map b) {})
-                            na (set (vals pa)) nb (set (vals pb))
-                            paths-of (fn [pm n] (vec (sort (keep (fn [[p x]] (when (= x n) p)) pm))))
-                            moved (for [n (sort (filter nb na))
-                                        :let [fa (paths-of pa n) fb (paths-of pb n)]
-                                        :when (not= fa fb)]
-                                    {:node n :from-paths fa :to-paths fb})
-                            ca (if a (children-map a) {}) cb (if b (children-map b) {})
-                            parents-changed (for [p (sort (distinct (concat (keys ca) (keys cb))))
-                                                  :when (not= (get ca p) (get cb p))]
-                                              p)]
-                        [tid {:added (vec (sort (remove na nb)))
-                              :removed (vec (sort (remove nb na)))
-                              :moved (vec moved)
-                              :parents-changed (vec parents-changed)}])))
-        e1 (set (get-object store (:edges rev1))) e2 (set (get-object store (:edges rev2)))
-        superseded (for [eid (remove e1 e2)
-                         :let [e (get-object store eid)]
-                         :when (= :supersedes (:type e))]
-                     [(:to e) (:from e)])]
-    {:trees trees
-     :edges {:added (vec (sort (remove e1 e2))) :removed (vec (sort (remove e2 e1)))}
-     :superseded (vec superseded)}))
+  (if (legacy? store)
+    (legacy/diff store r1 r2)
+    (let [load (loader store) m1 (roots store r1) m2 (roots store r2)
+          trees (into {}
+                      (for [[tid {:keys [before after]}] (mmap/diff load (:trees m1) (:trees m2))
+                            :when (not= (second before) (second after))]
+                        (let [a (tree-at store r1 tid) b (tree-at store r2 tid)
+                              pa (if a (position-map a) {}) pb (if b (position-map b) {})
+                              na (set (vals pa)) nb (set (vals pb))
+                              paths-of (fn [pm n] (vec (sort (keep (fn [[p x]] (when (= x n) p)) pm))))
+                              moved (for [n (sort (filter nb na))
+                                          :let [fa (paths-of pa n) fb (paths-of pb n)]
+                                          :when (not= fa fb)]
+                                      {:node n :from-paths fa :to-paths fb})
+                              ca (if a (children-map a) {}) cb (if b (children-map b) {})
+                              parents-changed (for [p (sort (distinct (concat (keys ca) (keys cb))))
+                                                    :when (not= (get ca p) (get cb p))]
+                                                p)]
+                          [tid {:added (vec (sort (remove na nb)))
+                                :removed (vec (sort (remove nb na)))
+                                :moved (vec moved)
+                                :parents-changed (vec parents-changed)}])))
+          ed (mmap/diff load (:edges m1) (:edges m2))
+          added (vec (sort (keep (fn [[id d]] (when-not (contains? d :before) id)) ed)))
+          removed (vec (sort (keep (fn [[id d]] (when-not (contains? d :after) id)) ed)))
+          superseded (for [eid added
+                           :let [e (get-object store eid)]
+                           :when (= :supersedes (:type e))]
+                       [(:to e) (:from e)])]
+      {:trees trees
+       :edges {:added added :removed removed}
+       :superseded (vec superseded)})))
+
+;; ---------------------------------------------------------------- base-cas (check 1) and conflicts
+
 
 ;; ---------------------------------------------------------------- base-cas (check 1) and conflicts
 
@@ -336,69 +496,99 @@
 
 ;; ---------------------------------------------------------------- objects of a revision
 
-(defn- edge-set-id [host edges] (canon/digest host (vec (sort edges))))
-
-(defn- tree-set-entries [host trees]
-  (vec (sort-by first (map (fn [[tid t]] [tid (tree/descriptor-id host (:descriptor t))]) trees))))
 
 ;; ---------------------------------------------------------------- apply
+
+(defn- incidence-delta
+  "{node-id sorted-edge-ids | mmap/removal} for the endpoints of the net edge delta."
+  [ws]
+  (let [ends (fn [id] (let [e (ws-object ws id)] (distinct [(:from e) (:to e)])))
+        collect (fn [m ids k]
+                  (reduce (fn [m id] (reduce #(update-in %1 [%2 k] (fnil conj #{}) id) m (ends id))) m ids))]
+    (into {}
+          (map (fn [[n {:keys [add del]}]]
+                 (let [v (vec (sort (into (reduce disj (set (edges-touching (:store ws) n)) del) add)))]
+                   [n (if (seq v) v mmap/removal)])))
+          (-> {} (collect (:e+ ws) :add) (collect (:e- ws) :del)))))
+
+(defn- commit-tree
+  "[committed-tree {id object}] with exactly the tree objects of the positions
+   the transaction dirtied, plus the descriptor."
+  [host t]
+  (let [dirty (tree/dirty-paths t)
+        t' (tree/commit host t)]
+    [t' (into {(tree/descriptor-id host (:descriptor t')) (:descriptor t')}
+              (map (fn [p] (let [pos (tree/position-at t' p)] [(:hash pos) (tree/tree-object pos)])))
+              dirty)]))
 
 (defn apply-plan
   "Validates and applies `plan` to `store` (§5.1). Returns
    {:store store' :transaction tx :revision rev :revision-id id :aliases {...}
-    :edges-added [...] :superseded [[old new] ...] :rebased-from base|nil}
+    :edges-added [...] :superseded [[old new] ...] :rebased-from base|nil
+    :new-objects {id object}}
    or raises :plan/rejected (with :check and :op) / :plan/conflict (with
-   :conflict-set). All-or-nothing: the input store is never mutated."
+   :conflict-set). All-or-nothing: the input store is never mutated.
+   :new-objects is everything the transaction adds to the CAS (nodes, edges,
+   tree objects of dirtied positions, descriptors of touched trees, mmap nodes,
+   the resolved plan and the Revision): a committer persists exactly those. An
+   object equal to an already stored one may appear in it. Cost: the plan, the
+   trees it touches and a few mmap nodes per changed key."
   [store plan]
-  (let [host (:host store)
-        plan (plan/canonical host (plan/check-schema plan))
-        _ (plan/check-opaque-replace-only plan)
-        ;; check 1 runs BEFORE executing the ops so that a plan addressing a position
-        ;; head replaced or removed yields a ConflictSet (§5.2) instead of an execution
-        ;; rejection. Alias refs are keywords and can never match the base→head delta.
-        raw-ops (mapv #(dissoc % :as) (:ops plan))
-        plan0 (check-base store (assoc plan :ops raw-ops) raw-ops (plan/touched-trees plan))
-        ws (reduce apply-op (ws-init store plan) (:ops plan))
-        aliases (:aliases ws)
-        resolved-ops (mapv (fn [op] (plan/substitute-aliases aliases (dissoc op :as))) (:ops plan))
-        touched (:touched ws)
-        _ (plan/check-capabilities (:capabilities store) (assoc plan :ops resolved-ops) aliases)
-        plan' (cond-> (assoc plan :ops resolved-ops)
-                (:rebased-from plan0) (assoc :base (:base plan0) :rebased-from (:rebased-from plan0)))
-        _ (doseq [tid touched]
-            (when-not (tree/valid? (get-in ws [:trees tid]))
-              (plan/reject :tree-integrity nil (str "tree " tid " is not a tree after applying the plan"))))
-        trees' (reduce (fn [ts tid] (update ts tid #(tree/commit host %))) (:trees ws) touched)
-        objects (reduce (fn [objs tid] (let [t (trees' tid)]
-                                         (-> objs
-                                             (merge (tree/objects t))
-                                             (assoc (tree/descriptor-id host (:descriptor t)) (:descriptor t)))))
-                        (:objects ws) touched)
-        edge-set (vec (sort (:edges ws)))
-        es-id (edge-set-id host edge-set)
-        ts-entries (tree-set-entries host trees')
-        ts-id (canon/digest host ts-entries)
-        resolved-plan (dissoc plan' :rebased-from)
-        tx-id (canon/digest host resolved-plan)
-        rev {:roots (into {} (map (fn [[tid t]] [tid (tree/merkle-root t)])) trees')
-             :trees ts-id
-             :edges es-id
-             :parents (if (:head store) [(:head store)] [])
-             :tx tx-id
-             :actor (:actor plan)
-             :engines (or (:engines plan) {})
-             :timestamp (:timestamp plan)}
-        rev-id (canon/digest host rev)
-        tx {:id tx-id :plan resolved-plan :revision rev-id}
-        store' (-> store
-                   ;; every CAS object satisfies H(canonical-bytes object) == id (invariant 17):
-                   ;; the transaction is stored as its resolved plan; the Transaction map lives in the log
-                   (assoc :objects (-> objects (assoc es-id edge-set) (assoc ts-id ts-entries) (assoc rev-id rev) (assoc tx-id resolved-plan)))
-                   (assoc :trees trees')
-                   (assoc :edges (:edges ws))
-                   (assoc :head rev-id)
-                   (update :heads merge (into {} (map (fn [tid] [tid rev-id])) touched))
-                   (assoc-in [:revisions rev-id] rev))]
-    {:store store' :transaction tx :revision rev :revision-id rev-id
-     :aliases aliases :edges-added (vec (sort (:edges-added ws))) :superseded (:superseded ws)
-     :rebased-from (:rebased-from plan')}))
+  (if (legacy? store)
+    (legacy/apply-plan store plan)
+    (let [host (:host store)
+          plan (plan/canonical host (plan/check-schema plan))
+          _ (plan/check-opaque-replace-only plan)
+          ;; check 1 runs BEFORE executing the ops so that a plan addressing a position
+          ;; head replaced or removed yields a ConflictSet (§5.2) instead of an execution
+          ;; rejection. Alias refs are keywords and can never match the base→head delta.
+          raw-ops (mapv #(dissoc % :as) (:ops plan))
+          plan0 (check-base store (assoc plan :ops raw-ops) raw-ops (plan/touched-trees plan))
+          ws (reduce apply-op (ws-init store plan) (:ops plan))
+          aliases (:aliases ws)
+          resolved-ops (mapv (fn [op] (plan/substitute-aliases aliases (dissoc op :as))) (:ops plan))
+          touched (:touched ws)
+          _ (plan/check-capabilities (:capabilities store) (assoc plan :ops resolved-ops) aliases)
+          plan' (cond-> (assoc plan :ops resolved-ops)
+                  (:rebased-from plan0) (assoc :base (:base plan0) :rebased-from (:rebased-from plan0)))
+          _ (doseq [tid touched]
+              (when-not (tree/valid? (get-in ws [:trees tid]))
+                (plan/reject :tree-integrity nil (str "tree " tid " is not a tree after applying the plan"))))
+          committed (into {} (map (fn [tid] [tid (commit-tree host (get-in ws [:trees tid]))])) touched)
+          trees' (into {} (map (fn [[tid [t _]]] [tid t])) committed)
+          load (loader store)
+          empty-map (mmap/empty host)   ; referenced by a revision with no trees/edges: written with it
+          base (roots store (:head store))
+          tm (mmap/update-many host load (:trees base)
+                               (into {} (map (fn [[tid t]] [tid [(tree/descriptor-id host (:descriptor t)) (tree/merkle-root t)]])) trees'))
+          em (mmap/update-many host load (:edges base)
+                               (merge (zipmap (:e- ws) (repeat mmap/removal)) (zipmap (:e+ ws) (repeat true))))
+          im (mmap/update-many host load (:incidence base) (incidence-delta ws))
+          resolved-plan (dissoc plan' :rebased-from)
+          tx-id (canon/digest host resolved-plan)
+          rev {:trees (:root tm)
+               :edges (:root em)
+               :incidence (:root im)
+               :parents (if (:head store) [(:head store)] [])
+               :tx tx-id
+               :actor (:actor plan)
+               :engines (or (:engines plan) {})
+               :timestamp (:timestamp plan)}
+          rev-id (canon/digest host rev)
+          tx {:id tx-id :plan resolved-plan :revision rev-id}
+          ;; every CAS object satisfies H(canonical-bytes object) == id (invariant 17):
+          ;; the transaction is stored as its resolved plan; the Transaction map lives in the log
+          new-objects (-> (:new ws)
+                          (into (mapcat (fn [[_ [_ objs]]] objs)) committed)
+                          (cond-> (some #{(:root empty-map)} [(:root tm) (:root em) (:root im)]) (merge (:new empty-map)))
+                          (merge (:new tm) (:new em) (:new im))
+                          (assoc rev-id rev tx-id resolved-plan))
+          store' (-> store
+                     (update :objects merge new-objects)
+                     (refresh-views trees' (:e+ ws) (:e- ws))
+                     (assoc :head rev-id)
+                     (update :heads merge (into {} (map (fn [tid] [tid rev-id])) touched))
+                     (assoc-in [:revisions rev-id] rev))]
+      {:store store' :transaction tx :revision rev :revision-id rev-id
+       :aliases aliases :edges-added (vec (sort (:edges-added ws))) :superseded (:superseded ws)
+       :rebased-from (:rebased-from plan') :new-objects new-objects})))

@@ -1,6 +1,7 @@
 (ns sldb.kernel.revision-test
   (:require [clojure.test :refer [deftest is testing]]
-            [sldb.kernel.test-util :refer [defspec]]
+            [sldb.kernel.test-util :as tu :refer [defspec]]
+            [sldb.kernel.legacy.revision :as legacy]
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
             [clojure.edn :as edn]
@@ -39,22 +40,35 @@
 
 (deftest fixture-tx-001-yields-exactly-the-expected-revision
   (let [fx (read-fixture "test/fixtures/tx-001.edn")
-        store (rev/empty-store h (get-in fx [:store :capabilities]))
-        {:keys [revision revision-id]} (rev/apply-plan store (:plan fx))]
-    (is (= (get-in fx [:expected :revision]) revision) "eight fields")
-    (is (= (get-in fx [:expected :revision-id]) revision-id))
-    (is (= #{:roots :trees :edges :parents :tx :actor :engines :timestamp} (set (keys revision))))))
+        caps (get-in fx [:store :capabilities])
+        expected (get-in fx [:expected :revision])]
+    (testing "format 1 (legacy engine): the fixture pins the whole Revision"
+      (let [{:keys [revision revision-id]} (legacy/apply-plan (legacy/empty-store h caps) (:plan fx))]
+        (is (= expected revision) "eight fields")
+        (is (= (get-in fx [:expected :revision-id]) revision-id))
+        (is (= (tu/tx-001-revision-ids 1) revision-id))
+        (is (= #{:roots :trees :edges :parents :tx :actor :engines :timestamp} (set (keys revision))))))
+    (testing "format 2: same transaction and tree roots, state held in three mmaps"
+      (let [{:keys [revision revision-id store]} (rev/apply-plan (rev/empty-store h caps) (:plan fx))]
+        (is (= (tu/tx-001-revision-ids 2) revision-id))
+        (is (= #{:trees :edges :incidence :parents :tx :actor :engines :timestamp} (set (keys revision))) "eight fields")
+        (is (= (select-keys expected [:parents :tx :actor :engines :timestamp])
+               (select-keys revision [:parents :tx :actor :engines :timestamp])))
+        (is (= (:roots expected)
+               (into {} (map (fn [tid] [tid (second (rev/tree-entry store tid))])) (rev/tree-ids store))))
+        (is (= (sort (:edges store)) (rev/active-edges store)))))))
 
 (deftest fixture-tx-002-conflict
-  (let [fx (read-fixture "test/fixtures/tx-002-conflict.edn")
-        store (reduce (fn [s p] (:store (rev/apply-plan s p))) (rev/empty-store h (get-in fx [:store :capabilities])) (:base-plans fx))
-        e (rejected store (:concurrent-plan fx))]
-    (is (= :plan/conflict (:type e)))
-    (is (= (get-in fx [:expected :conflicts]) (get-in e [:conflict-set :conflicts])))
-    (testing "a plan touching only a disjoint tree rebases automatically"
-      (let [r (rev/apply-plan store (:disjoint-plan fx))]
-        (is (= (:base (:disjoint-plan fx)) (:rebased-from r)) "rebased from the stale base")
-        (is (= [(:head store)] (get-in r [:revision :parents])) "onto the current head")))))
+  (doseq [[fx apply-plan empty-store] [[(tu/format-2-fixture (read-fixture "test/fixtures/tx-002-conflict.edn")) rev/apply-plan rev/empty-store]
+                                       [(read-fixture "test/fixtures/tx-002-conflict.edn") legacy/apply-plan legacy/empty-store]]]
+    (let [store (reduce (fn [s p] (:store (apply-plan s p))) (empty-store h (get-in fx [:store :capabilities])) (:base-plans fx))
+          e (try (apply-plan store (:concurrent-plan fx)) nil (catch #?(:clj clojure.lang.ExceptionInfo :cljs :default) e (ex-data e)))]
+      (is (= :plan/conflict (:type e)))
+      (is (= (get-in fx [:expected :conflicts]) (get-in e [:conflict-set :conflicts])))
+      (testing "a plan touching only a disjoint tree rebases automatically"
+        (let [r (apply-plan store (:disjoint-plan fx))]
+          (is (= (:base (:disjoint-plan fx)) (:rebased-from r)) "rebased from the stale base")
+          (is (= [(:head store)] (get-in r [:revision :parents])) "onto the current head"))))))
 
 (deftest apply-is-deterministic-and-all-or-nothing
   (let [s (rev/empty-store h caps)
