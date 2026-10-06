@@ -371,10 +371,12 @@
           (-> g
               (add-nodes [[did {:type (:model doc) :semantics {"export_id" eid "name" (:name doc) "model" (:model doc) "path" (:path doc)
                                                                "semantic_tags" dtags "fingerprint" (:fingerprint doc) "state" (name (:state doc))}}]])
-              (add-nodes (map (fn [s] [(section-id eid (:path s)) {:type "sldb_section" :semantics (merge (strs s) {"export_id" (str eid "#" (:path s)) "document_id" eid})}]) secs))
+              (add-nodes (map (fn [s] [(section-id eid (:path s)) {:type "sldb_section" :semantics (merge (strs s) {"export_id" (str eid "#" (:path s)) "document_id" eid "semantic_tags" dtags})}]) secs))
               (add-edges (concat [(edge (model-id (:model doc)) did "has_document" "structural")]
                                  (map #(edge did (section-id eid (:path %)) "has_section" "structural") secs)
                                  (map #(edge did (tag-id %) "tagged_as" "structural") dtags)
+                                 ;; v1: a section carries its document's tags (every section of v1's real index does)
+                                 (for [s secs t dtags] (edge (section-id eid (:path s)) (tag-id t) "tagged_as" "structural"))
                                  (declared-edges did d payload)
                                  (compose-edges did d payload owners)
                                  (when links?

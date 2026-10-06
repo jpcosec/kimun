@@ -264,3 +264,80 @@
              (mapv (juxt :to :metadata) (edges/edges-from (:graph i) "Table:t15" "implements"))))
       (is (= [] (edges/edges-from (:graph i) "Table:t15" "defines")))
       (is (:ok (edges/check i))))))
+
+(def ^:private relation-type-doc
+  {:semantics {"type" ["relation" "type"]}
+   :fields [["title" :string] ["name" :string] ["direction" :string] ["cardinality" :string] ["axis" :string]
+            ["source_types" [:list :string]] ["target_types" [:list :string]] ["condition" :string]]
+   :template "---\nname: ⸢rev•name⸥\ndirection: ⸢rev•direction⸥\ncardinality: ⸢rev•cardinality⸥\naxis: ⸢rev•axis⸥\nsource_types: ⸢rev,list•source_types⸥\ntarget_types: ⸢rev,list•target_types⸥\ncondition: ⸢rev•condition⸥\n---\n\n# ⸢rev•title⸥\n"})
+
+;; v1 `RelationTypeDoc` (tests/test_relation_models.py, store/edge_index relation_contribution): a document of the
+;; model, or of a model based on it, IS a relation type — the real ones are compared in edges_parity_test.
+(deftest a-relation-type-document-defines-a-relation-type
+  (let [p (world)
+        rtype (fn [m n src tgt] (create p m (str "reltype-" n) {"title" n "name" n "direction" "directed" "cardinality" "many_to_many" "axis" "WHO"
+                                                              "source_types" src "target_types" tgt "condition" "always"}))]
+    (model p "RelationTypeDoc" relation-type-doc)
+    (model p "HouseRelationType" (assoc relation-type-doc :extra {:base ["RelationTypeDoc"]}))
+    (rtype "RelationTypeDoc" "served_at" ["Booking"] ["Table" "Nowhere"])
+    (rtype "HouseRelationType" "next_to" ["Table"] ["Table"])
+    (relation p "b1-served" "Booking:b1" "Table:t14" "served_at")
+    (let [i (idx p) g (:graph i)]
+      (is (= "relation_type" (:type (edges/node g "sldb://relation_type/served_at")) (:type (edges/node g "sldb://relation_type/next_to"))))
+      (is (= ["reltype-served_at" "WHO"] (mapv (:semantics (edges/node g "sldb://relation_type/served_at")) ["doc" "axis"])))
+      (testing "it contributes applies_to_* to the models that exist (a dangling schema edge is dropped) and nothing a plain document does"
+        (is (= [["sldb://model/Booking" "applies_to_source"] ["sldb://model/Table" "applies_to_target"]] (pairs (edges/edges-from g "sldb://relation_type/served_at"))))
+        (is (= [["sldb://model/Table" "applies_to_source"] ["sldb://model/Table" "applies_to_target"]] (pairs (edges/edges-from g "sldb://relation_type/next_to"))))
+        (is (nil? (edges/node g "RelationTypeDoc:reltype-served_at")))
+        (is (= [] (edges/edges-from g "sldb://model/RelationTypeDoc" "has_document") (edges/edges-from g "sldb://model/HouseRelationType" "has_document"))))
+      (testing "relation documents of that type inherit from it and are checked against it"
+        (is (= {"sldb://document/Table:t14" {"origin" "relation_doc" "relation_doc" "b1-served" "condition" "always" "axis" "WHO"}}
+               (into {} (map (juxt :to :metadata)) (edges/edges-from g "Booking:b1" "served_at"))))
+        (is (= "many_to_many" (get-in i [:relation-types "served_at" "cardinality"])))
+        (is (:ok (edges/check i)) (pr-str (:errors (edges/check i))))))
+    (relation p "t12-served" "Table:t12" "Table:t14" "served_at")
+    (is (some #(= :endpoint-type (:kind %)) (:violations (edges/check (idx p)))) "a Table may not be the source of served_at")))
+
+;; store/test_edge_anchor_targets.py, kernel side: what the anchor state of an authored relation does under succession.
+;; `:superseded` needs an active `supersedes` edge leaving an endpoint (sldb.kernel.anchor), which only a `:replace` of
+;; that node records; `docs update` never replaces a document's root (sldb.surface.markdown.plan raises
+;; `:markdown/root-changed` rather than invent a succession), so no surface operation makes an authored relation superseded.
+(deftest an-authored-relation-under-updates-removal-and-re-adding
+  (let [p (world) rel {:from "Booking:b1" :to "Table:t14" :relation "assigned_to"}
+        one #(first (:authored (idx p)))
+        standing #(mapv (juxt :state (fn [a] (get-in a [:from :document])) (fn [a] (get-in a [:to :document]))) (:authored (idx p)))]
+    (is (apply! p edges/relate-plan rel))
+    (let [before (one)]
+      (ok! p "docs" "update" "t14" "--set" "notes=Moved to the terrace.")
+      (testing "updating the target keeps its root node: same edge, still intact, never superseded"
+        (is (= before (one)))
+        (is (= [:intact :intact :intact] [(:state before) (get-in before [:from :state]) (get-in before [:to :state])]))
+        (is (= ["sldb://document/Table:t14"] (mapv :to (filter #(= "authored" (get-in % [:metadata "origin"])) (edges/edges-from (g p) "Booking:b1" "assigned_to")))))
+        (is (= [] (:anchors (edges/check (idx p)))))))
+    (testing "removing and re-adding it (same actor, hence the same content-addressed edge) leaves one standing relation"
+      (is (apply! p edges/unrelate-plan rel))
+      (is (= [] (:authored (idx p))))
+      (is (= :edges/missing (raised #(apply! p edges/unrelate-plan rel))))
+      (is (apply! p edges/relate-plan rel))
+      (is (= [[:intact "Booking:b1" "Table:t14"]] (standing)))
+      (is (false? (apply! p edges/relate-plan rel))))
+    ;; KNOWN DEFECT, pinned so that a fix shows up here: `docs update` of the SOURCE document drops the authored
+    ;; `:semantic` edge from the head revision (it is neither superseded nor orphan: it is gone). The loss happens
+    ;; under src/sldb/ (the update plan detaches and re-attaches the document's blocks), outside kimun.surface.edges.
+    (testing "updating the source document loses the relation (known defect)"
+      (ok! p "docs" "update" "b1" "--set" "party_size=5")
+      (is (= [] (standing)))
+      (is (apply! p edges/relate-plan rel) "it can be authored again")
+      (is (= [[:intact "Booking:b1" "Table:t14"]] (standing))))))
+
+(deftest links-only-add-edges-of-origin-link-to-the-default-view
+  (let [p (world)]
+    (create p "Table" "t15" {"title" "Table 15" "capacity" 2 "notes" "Next to [implements:: [[Table:t12]]] and [refines:: [[t14]]]."})
+    (let [plain (idx p) linked (idx p {:links? true})
+          added (remove (set (:edges (:graph plain))) (:edges (:graph linked)))]
+      (is (= (:nodes (:graph plain)) (:nodes (:graph linked))))
+      (is (= (:edges (:graph plain)) (vec (remove #(= "link" (get-in % [:metadata "origin"])) (:edges (:graph linked))))))
+      (is (= #{["sldb://document/Table:t15" "sldb://document/Table:t12" "implements"] ["sldb://document/Table:t15" "sldb://document/Table:t14" "refines"]}
+             (set (map (juxt :from :to :type) added))))
+      (is (every? #(= "link" (get-in % [:metadata "origin"])) added))
+      (is (= (dissoc plain :graph) (dissoc linked :graph))))))
