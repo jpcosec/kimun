@@ -125,7 +125,14 @@
                :when (and (get-in store [:objects (tree/root t) :content :attrs :doc]) (not (tracked tid)))] tid))))
 
 (defn find-document "The tracked document named or identified by `token`, or nil." [store token]
-  (first (filter #(or (= token (:name %)) (= token (:tree %))) (documents store))))
+  ;; same answer as the first match of `documents`, describing only the trees that can match
+  ;; (a document's :name is its tree's descriptor name and its :tree the tree id): every write
+  ;; (create, fields set, edit) resolves its document here, so it must not describe all of them
+  (let [current (mstore/models store) by-from (edges-by-from store)]
+    (->> (:trees store)
+         (filter (fn [[tid t]] (and (= :document (get-in t [:descriptor :kind]))
+                                    (or (= token tid) (= token (get-in t [:descriptor :name]))))))
+         (keep #(describe store current by-from %)) (sort-by (juxt :name :tree)) first)))
 
 (defn payload-of
   "`{:payload p}` of document `doc` under its model's current contract, or
