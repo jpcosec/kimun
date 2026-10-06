@@ -8,6 +8,7 @@
             [kimun.cli.args :as args]
             [kimun.cli.commands.docs :as docs]
             [kimun.cli.commands.journal :as journal]
+            [kimun.cli.commands.serve :as serve]
             [kimun.cli.commands.stores :as stores]
             [kimun.cli.errors :as errors]
             [kimun.cli.out :as out]))
@@ -17,13 +18,14 @@
    where `args` are the positional tokens after the subcommand."
   {"stores" stores/dispatch
    "docs" docs/dispatch
-   "journal" journal/dispatch})
+   "journal" journal/dispatch
+   "serve" serve/dispatch})
 
 (def group-specs
   "The option spec of every group, merged: a group declares its own options
    in its `spec` var, so adding a group never edits `kimun.cli.args`. Two
    groups may share an option name only with the same meaning."
-  (merge stores/spec docs/spec journal/spec))
+  (merge stores/spec docs/spec journal/spec serve/spec))
 
 (def usage
   "Usage text shown by `kimun`, `kimun help` and `--help`."
@@ -47,6 +49,8 @@
              "  docs list                   every document: name, tree id, root node"
              "  journal show [--limit N] [--by ACTOR] [--tree NAME|ID]   the write history, newest first (a view of the log)"
              "  journal verify              check the revision chain, the log replay and every reachable object"
+             "  serve [--port N] [--host H] [--token T] [--cors]   HTTP API over the commands (default 127.0.0.1:8787)"
+             "                              --token (or $KIMUN_SERVE_TOKEN) requires `Authorization: Bearer TOKEN`"
              ""
              "options:"
              "  --store PATH    store directory (.kimun or its project dir); else $KIMUN_STORE, else walk-up"

@@ -60,6 +60,7 @@ nombra, para cada uno, el test del kernel que sostiene la promesa equivalente.
 |---|---|---|
 | S2 primer corte | hecho 2026-10-06 | `e444d4d`, `test/kimun/cli/docs_test.cljc` |
 | A4 enlaces | hecho 2026-10-06 | `13184d9`; `kimun.surface.links.{parser,resolver,recovery,composer}`; 8/8 de `test_links.py` a nivel de enlace, 13 tests |
+| D1 esqueleto de `serve` | hecho 2026-10-06 | `93b9107`; `kimun.surface.http` (rutas como datos, bearer en tiempo constante, CORS, exit→status, `command-route`) y `kimun serve`; `test_serve_auth.py` 5/5; el resto de rutas en `parity-serve-checklist.md` |
 | C4 journal (base) | hecho 2026-10-06 | `1623e8b`; `kimun.surface.journal` (`entries`, `verify`) y `journal show\|verify`: vista sobre `log.edn` y el DAG de revisiones, sin segundo almacén; 5 de 8 funciones de v1, 3 esperan campos tipados |
 | federación (parte de C1) | hecho 2026-10-06 | `c880c51`; `stores link\|unlink\|links`, rutas relativas validadas al abrir, `linked-stores` con guarda de ciclos; 5 funciones de v1 portadas |
 | A3 grafo | hecho 2026-10-06 | `4beff47`; `kimun.surface.graph.{model,traversal,analysis,query,io}`; 36 de 38 funciones de v1 (16+4+6+3+3+4), 2 de CLI diferidas a C2; pagerank, betweenness, grados, caminos, ciclos, componentes y capas reimplementados y contrastados con networkx 3.6.1 |
@@ -80,6 +81,7 @@ nombra, para cada uno, el test del kernel que sostiene la promesa equivalente.
 ## Desviaciones deliberadas respecto de v1 (acumuladas)
 
 - `--where` no reconocido es `query/bad-where` con posición, no `False` silencioso (`06 §5`). Regex inválida se rechaza al parsear. `>=`/`<=` entre tipos distintos da falso en vez de `TypeError`. Dialecto de regex: Java.
+- Serve: todo cuerpo es el envelope (v1 enviaba el payload desnudo y `{ok:false,error:"…"}`); los status coinciden con v1. Ruta conocida con método equivocado es 405. CORS permite la cabecera `Authorization`. La variable es `KIMUN_SERVE_TOKEN`.
 - Journal: no hay segundo almacén ni escritura en el commit; la cadena de hashes es el DAG de revisiones (`previous_hash` ⇒ `:parents`); no hay campo `operation`, sino el conteo de ops del plan; el filtro por actor es `--by`.
 - Federación: `stores link NAME PATH` con ruta relativa al store; no existe catálogo global en el home (`~/.sldb` con rutas absolutas era el vicio nombrado en `06 §5`), así que `test_store_init_registers_project_in_global_catalog` y `test_get_store_context_readonly_falls_back_to_global` no se portan. Un destino ausente es un warning, no un fallo.
 - Grafo: el orden es determinista por id donde v1 heredaba el de networkx (camino, orden topológico, ciclos); `paths-between` no repite un camino por cada relación paralela; `gt`/`lt` entre tipos no comparables dan falso.
