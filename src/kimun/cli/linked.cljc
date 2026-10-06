@@ -40,7 +40,10 @@
   (let [dir (cli-store/resolve-store opts env cwd)
         token (:store opts)
         home (let [h (cli-store/resolve-store (dissoc opts :store) env cwd)] (when (store-dir? h) h))
-        linked (when (and token home (not (store-dir? dir)))
+        ;; `resolve-store` also resolves a link NAME to the linked store, so the
+        ;; alias is told apart here: a token that is not itself a store path.
+        as-path (when token (cli-store/normalize-store-path (str (fs/path cwd token))))
+        linked (when (and token home (not (store-dir? as-path)))
                  (first (filter #(= token (:name %)) (cli-store/linked-stores home))))]
     (if linked
       {:opened (:open linked) :alias token :home home}

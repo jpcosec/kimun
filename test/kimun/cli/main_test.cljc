@@ -25,13 +25,13 @@
     (is (= envelope (:envelope (run "version"))) "the bare token is an alias of --version")))
 
 (deftest unknown-first-token-is-the-evaluator-stub
-  (let [{:keys [envelope]} (run "find" "foo")]
+  (let [{:keys [envelope]} (run "next" "task")]
     (is (false? (:ok envelope)))
     (is (= 6 (:exit envelope)))
     (is (= 6 (out/exit-code envelope)))
     (is (= "eval/not-available" (get-in envelope [:error :type])))
-    (is (str/includes? (get-in envelope [:error :message]) "kimun find foo"))
-    (is (= ["find" "foo"] (get-in envelope [:error :data :tokens])))))
+    (is (str/includes? (get-in envelope [:error :message]) "kimun next task"))
+    (is (= ["next" "task"] (get-in envelope [:error :data :tokens])))))
 
 (deftest edn-format-round-trips-the-envelope
   (let [{:keys [envelope fmt]} (run "--version" "--format" "edn")]
@@ -45,7 +45,7 @@
     (is (not (str/blank? s)))
     (is (str/includes? s "version"))
     (testing "a failure renders its type and message"
-      (let [{:keys [envelope fmt]} (run "find" "x" "--format" "text")
+      (let [{:keys [envelope fmt]} (run "next" "x" "--format" "text")
             s (out/emit envelope fmt)]
         (is (str/starts-with? s "✗ eval/not-available:"))))))
 
@@ -74,7 +74,7 @@
       (is (str/includes? (out/emit envelope fmt) "usage: kimun")))))
 
 (deftest json-format-renders-namespaced-types-as-strings
-  (let [{:keys [envelope]} (run "find" "x")
+  (let [{:keys [envelope]} (run "next" "x")
         s (out/emit envelope "json")]
     (is (str/includes? s "\"eval/not-available\""))
     (is (not (str/includes? s "Exception")))))

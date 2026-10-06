@@ -321,14 +321,12 @@
       (is (apply! p edges/relate-plan rel))
       (is (= [[:intact "Booking:b1" "Table:t14"]] (standing)))
       (is (false? (apply! p edges/relate-plan rel))))
-    ;; KNOWN DEFECT, pinned so that a fix shows up here: `docs update` of the SOURCE document drops the authored
-    ;; `:semantic` edge from the head revision (it is neither superseded nor orphan: it is gone). The loss happens
-    ;; under src/sldb/ (the update plan detaches and re-attaches the document's blocks), outside kimun.surface.edges.
-    (testing "updating the source document loses the relation (known defect)"
+    ;; regression: `docs update` of the SOURCE document keeps the authored relation — the docs surface
+    ;; removes only the edges it owns (model, source, file), never an edge someone else wrote from the root.
+    (testing "updating the source document keeps the relation"
       (ok! p "docs" "update" "b1" "--set" "party_size=5")
-      (is (= [] (standing)))
-      (is (apply! p edges/relate-plan rel) "it can be authored again")
-      (is (= [[:intact "Booking:b1" "Table:t14"]] (standing))))))
+      (is (= [[:intact "Booking:b1" "Table:t14"]] (standing)))
+      (is (false? (apply! p edges/relate-plan rel)) "still there: authoring it again changes nothing"))))
 
 (deftest links-only-add-edges-of-origin-link-to-the-default-view
   (let [p (world)]

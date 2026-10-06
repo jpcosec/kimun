@@ -7,9 +7,15 @@
             [clojure.string :as str]
             [kimun.cli.args :as args]
             [kimun.cli.commands.direct :as direct]
+            [kimun.cli.commands.corpus :as corpus]
             [kimun.cli.commands.docs :as docs]
+            [kimun.cli.commands.edges :as edges]
             [kimun.cli.commands.fields :as fields]
+            [kimun.cli.commands.find :as find]
+            [kimun.cli.commands.graph :as graph]
+            [kimun.cli.commands.index :as index]
             [kimun.cli.commands.models :as models]
+            [kimun.cli.commands.predicates :as predicates]
             [kimun.cli.commands.sections :as sections]
             [kimun.cli.commands.semantic :as semantic]
             [kimun.cli.commands.journal :as journal]
@@ -28,6 +34,12 @@
             (if-let [f (get links/commands sub)]
               (f args opts ctx)
               (docs/dispatch sub args opts ctx)))
+   "edges" edges/dispatch
+   "graph" graph/dispatch
+   "predicates" predicates/dispatch
+   "find" find/dispatch
+   "corpus" corpus/dispatch
+   "rebuild-indexes" index/dispatch
    "fields" fields/dispatch
    "sections" sections/dispatch
    "journal" journal/dispatch
@@ -42,7 +54,7 @@
   "The option spec of every group, merged: a group declares its own options
    in its `spec` var, so adding a group never edits `kimun.cli.args`. Two
    groups may share an option name only with the same meaning."
-  (merge stores/spec docs/spec journal/spec serve/spec models/spec direct/spec links/spec semantic/spec fields/spec sections/spec))
+  (merge stores/spec docs/spec journal/spec serve/spec models/spec direct/spec links/spec semantic/spec fields/spec sections/spec find/spec corpus/spec index/spec predicates/spec edges/spec graph/spec))
 
 (def usage
   "Usage text shown by `kimun`, `kimun help` and `--help`."
@@ -82,6 +94,16 @@
              "                              MODEL (or --model): X.edn | model NAME in the store | module:Class"
              "  docs recover DOC [--depth N] [--links-only]   the [[links]] of a document and where they resolve"
              "  docs compose DOC [-o FILE|-]                  expand ![[transclusions]] into composed Markdown"
+             "  find TERM [--in physical|semantic|all] [--type KIND,…] [--global] [--regex] [--fuzzy] [--where EXPR] [--select K,…] [--limit N]"
+             "                              TERM may be an address: st.{Model}.doc.field · st.{Base+} · se.<tag> · gse.<tag>"
+             "  corpus rank QUERY [--k N] [--threshold X] [--among ID,…] [--fields] [--refresh] · corpus refresh"
+             "  rebuild-indexes             write the derived index of the head under .kimun/index/"
+             "  edges show [ID | --from ID | --to ID] [--relation R] · check · node ID · nodes [--type T] · types"
+             "  edges relate|unrelate FROM TO --relation R · type-define NAME [--source-types a,b --target-types a,b …]"
+             "  predicates add NAME --axis A [--description D] · list · show NAME · validate [NAME] · remove NAME"
+             "  graph get ID · list [--type T] · query -f FILE.json · neighborhood ID [--depth N] [--direction D]"
+             "  graph path FROM TO · cycles · order · components · central [--metric K] · isolated · similar ID"
+             "  graph snapshot save|load FILE · export [-o FILE] · ingest-sldb FILE [-o OUT]"
              "  fields get DOC PATH · schema MODEL [FIELD] · query FIELD [--where EXPR] [--model M]"
              "  fields set|append DOC PATH VALUE · unset|clear DOC PATH · clean DOC PATH [--dedupe] [--drop-empty]"
              "  sections list DOC · fields DOC SECTION · find [TERM] [--in physical|semantic|both] [--regex] [--fuzzy] [--where EXPR]"

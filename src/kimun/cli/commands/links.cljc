@@ -13,6 +13,7 @@
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
             [kimun.surface.docs :as tdocs]
+            [kimun.surface.edges :as edges]
             [kimun.surface.links :as links]
             [sldb.kernel.err :as err]))
 
@@ -50,15 +51,18 @@
       (usage! (str "`--depth` needs a positive integer, got `" v "`") {:subcommand "recover" :depth (str v)}))))
 
 (defn- project
-  "`{:root :by-name :by-path}`: the project root, the tracked documents' absolute
-   paths by name, and their stored sources by absolute path. Without a store the
-   root is `cwd` and nothing is tracked."
+  "`{:root :predicates :by-name :by-path}`: the project root, the store's
+   predicate registry (`kimun.surface.edges/predicate-registry`), the tracked
+   documents' absolute paths by name, and their stored sources by absolute
+   path. Without a store the root is `cwd`, nothing is tracked and the
+   predicates are the defaults."
   [opts {:keys [env cwd]}]
   (if-let [dir (cli-store/resolve-store opts env cwd)]
     (let [{:keys [store]} (cli-store/open! dir)
           root (str (fs/parent (fs/absolutize dir)))
           docs (map #(assoc % :abs (absolute root (:path %))) (tdocs/documents store))]
       {:root root
+       :predicates (edges/predicate-registry store)
        :by-name (into {} (map (juxt :name :abs)) docs)
        :by-path (into {} (map (juxt :abs :source)) docs)})
     {:root (str (fs/absolutize cwd)) :by-name {} :by-path {}}))
@@ -118,7 +122,7 @@
   (let [d (depth-of opts)
         {:keys [path proj]} (setup "recover" args opts ctx)
         report (links/recover-links path {:lookup (lookup-fn proj) :content (content-fn proj) :depth d
-                                          :predicate-types default-predicates})
+                                          :predicate-types (or (:predicates proj) default-predicates)})
         targets (vec (sort (distinct (map :target (:links report)))))
         shaped (cond (:links-only opts) targets
                      (= "text" (:format opts)) (mapv link-line (:links report))

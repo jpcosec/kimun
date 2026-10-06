@@ -74,6 +74,17 @@
 
 (defn- target [store e] (get-in store [:objects (:to e)]))
 (defn- model-node? [n] (= mstore/blob-format (get-in n [:content :format])))
+(defn- source-or-file?
+  "True for the two signs a document owns besides its model binding: its
+   stored source text and its file on disk."
+  [n]
+  (or (= source-format (get-in n [:content :format])) (= :external (:kind n))))
+(defn- owned-edge?
+  "True for an edge this surface wrote from a document root: to its model, its
+   source or its file. Any other edge leaving the root — an authored relation,
+   a link — belongs to whoever wrote it and is never removed here."
+  [store e]
+  (let [n (target store e)] (or (model-node? n) (source-or-file? n))))
 
 (defn- describe
   "The document map of the `:document` tree `[tid t]`, or nil when its root is
@@ -164,7 +175,7 @@
                  ext (conj {:type :reference :from root :to xid :evidence {:ref-hash xid :actor actor}}))
         keep-to (set (map :to wanted))
         stale (for [eid (:edges old) :let [e (get-in store [:objects eid])]
-                    :when (and (not (keep-to (:to e))) (not (model-node? (target store e))))] eid)]
+                    :when (and (not (keep-to (:to e))) (source-or-file? (target store e)))] eid)]
     (-> [{:op :add-node :node src}]
         (cond-> ext (conj {:op :add-node :node ext}))
         (into (map (fn [eid] {:op :remove-edge :edge eid}) stale))
@@ -228,14 +239,16 @@
                  (update :ops into (binding-ops host store (:root doc) {:model-id (:id m) :text text :path path :actor actor} doc))))}))
 
 (defn untrack-plan
-  "Plan that stops tracking document `token`: its edges are removed, its tree
-   stays in history. Returns `{:plan :name :tree :path}`."
+  "Plan that stops tracking document `token`: the edges this surface owns (to
+   its model, source and file) are removed, its tree stays in history; edges
+   others wrote from it stay and become orphans their owners can report. Returns `{:plan :name :tree :path}`."
   [store token {:keys [actor timestamp operation]}]
   (let [doc (document store token)]
     {:name (:name doc) :tree (:tree doc) :path (:path doc)
      :plan {:plan/version 1 :base (:head store) :actor actor :timestamp timestamp
             :engines (meta-engines {:operation (or operation "docs untrack") :address (str (:model doc) ":" (:name doc)) :fields {}})
-            :ops (mapv (fn [eid] {:op :remove-edge :edge eid}) (:edges doc))}}))
+            :ops (vec (for [eid (:edges doc) :when (owned-edge? store (get-in store [:objects eid]))]
+                        {:op :remove-edge :edge eid}))}}))
 
 (defn sync-report
   "`[{:name :path :status}]` for tracked documents with a file, where
