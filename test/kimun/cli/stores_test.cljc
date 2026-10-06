@@ -123,6 +123,91 @@
             (is (seq (get-in bad [:error :data :bad])))
             (is (= victim (:id (first (get-in bad [:error :data :bad])))))))))))
 
+
+(defn- history
+  "A project whose store has three committed transactions; returns
+   {:proj :dir :log (path) :lines (log lines) :revs [r1 r2 r3] :heads (path)}."
+  []
+  (let [proj (tmp)
+        dir (str (fs/path proj ".kimun"))
+        log (str (fs/path dir "log.edn"))]
+    (run proj "stores" "init" "--name" "p")
+    (doseq [text ["one" "two" "three"]]
+      (spit (str (fs/path proj "doc.md")) (str "# T\n\npara " text "\n"))
+      (if (= "one" text) (run proj "docs" "ingest" "doc.md") (run proj "docs" "update" "doc.md" "--name" "doc")))
+    (let [lines (str/split-lines (slurp log))]
+      {:proj proj :dir dir :log log :lines lines :heads (str (fs/path dir "heads.edn"))
+       :revs (mapv #(:revision (edn/read-string %)) lines)})))
+
+(defn- point-heads-at!
+  "Rewrites heads.edn so that every head naming the last revision names `rev` instead."
+  [{:keys [heads revs]} rev]
+  (spit heads (str/replace (slurp heads) (peek revs) rev)))
+
+;; F (kernel-scale): `stores verify` is the full verification (store/verify-full: replay of the log);
+;; `stores check` is the cheap one (store/verify: hashes + the END of the log against the heads);
+;; opening (store/open, format 2) reads neither the log nor any object but the head Revisions.
+(deftest verify-detects-a-damaged-log
+  (testing "a log line altered: the replay computes another transaction id"
+    (let [{:keys [proj log lines]} (history)]
+      (spit log (str (str/join "\n" (cons (str/replace (first lines) "human/tester" "human/mallory") (rest lines))) "\n"))
+      (let [e (run proj "stores" "verify")]
+        (is (false? (:ok e)) (pr-str e))
+        (is (= ["store/corrupt" 5] [(get-in e [:error :type]) (:exit e)]))
+        (is (= [:replay-failed] (mapv :reason (get-in e [:error :data :bad]))))
+        (is (str/includes? (get-in e [:error :message]) "does not replay")))
+      (testing "the cheap paths do not read that line: open and stores check still pass"
+        (is (true? (:ok (run proj "docs" "list"))))
+        (is (true? (:ok (run proj "stores" "check")))))))
+  (testing "the last log line cut short"
+    (let [{:keys [proj log lines]} (history)
+          text (str (str/join "\n" lines) "\n")]
+      (spit log (subs text 0 (- (count text) (quot (count (peek lines)) 2))))
+      (let [e (run proj "stores" "verify")]
+        (is (= ["store/corrupt" 5] [(get-in e [:error :type]) (:exit e)]) (pr-str e))
+        (is (= [:replay-failed] (mapv :reason (get-in e [:error :data :bad])))))
+      (testing "stores check reads the end of the log and reports it"
+        (let [c (run proj "stores" "check")]
+          (is (= ["store/invalid" 5] [(get-in c [:error :type]) (:exit c)]) (pr-str c))
+          (is (= ["store/corrupt" "kimun stores verify"] ((juxt :type :action) (first (get-in c [:error :data :warnings])))))
+          (is (str/includes? (pr-str (get-in c [:error :data])) "log-heads-mismatch"))))))
+  (testing "a middle log line cut short"
+    (let [{:keys [proj log lines]} (history)
+          [a b c] lines]
+      (spit log (str a "\n" (subs b 0 (quot (count b) 2)) "\n" c "\n"))
+      (let [e (run proj "stores" "verify")]
+        (is (= ["store/corrupt" 5] [(get-in e [:error :type]) (:exit e)]) (pr-str e))
+        (is (= [:replay-failed] (mapv :reason (get-in e [:error :data :bad]))))))))
+
+(deftest verify-detects-heads-that-disagree-with-the-log
+  (testing "heads.edn names a revision two transactions behind the end of the log"
+    (let [{:keys [proj revs] :as h} (history)]
+      (point-heads-at! h (first revs))
+      (testing "opening trusts heads.edn: the store opens at the older, well-formed revision"
+        (let [l (run proj "docs" "list")]
+          (is (true? (:ok l)) (pr-str l))
+          (is (= (first revs) (:revision l)))))
+      (let [e (run proj "stores" "verify")]
+        (is (= ["store/corrupt" 5] [(get-in e [:error :type]) (:exit e)]) (pr-str e))
+        (is (= [:replay-failed] (mapv :reason (get-in e [:error :data :bad])))))
+      (let [c (run proj "stores" "check")]
+        (is (= ["store/invalid" 5] [(get-in c [:error :type]) (:exit c)]) (pr-str c))
+        (is (= ["store/corrupt" "kimun stores verify"] ((juxt :type :action) (first (get-in c [:error :data :warnings])))))
+          (is (str/includes? (pr-str (get-in c [:error :data])) "log-heads-mismatch")))))
+  (testing "the log lost its last line: the heads name a revision the log does not reach"
+    (let [{:keys [proj log lines]} (history)]
+      (spit log (str (str/join "\n" (butlast lines)) "\n"))
+      (let [e (run proj "stores" "verify")]
+        (is (= ["store/corrupt" 5] [(get-in e [:error :type]) (:exit e)]) (pr-str e)))))
+  (testing "heads one transaction behind are a writer dead mid-commit: reported, not a failure"
+    (let [{:keys [proj revs] :as h} (history)]
+      (point-heads-at! h (second revs))
+      (let [e (run proj "stores" "verify")]
+        (is (true? (:ok e)) (pr-str e))
+        (is (= (peek revs) (get-in e [:data :uncommitted-tail :revision])))
+        (is (= (second revs) (:revision e))))
+      (is (true? (:ok (run proj "stores" "check")))))))
+
 (deftest discovery-walks-up-from-a-nested-directory
   (let [proj (tmp)
         nested (str (fs/create-dirs (fs/path proj "a" "b" "c")))

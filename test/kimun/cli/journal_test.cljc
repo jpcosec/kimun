@@ -4,6 +4,7 @@
    `kimun.cli.main` at merge): `show` and its filters, `verify`, tampering of an
    object and of the log, and the usage failures."
   (:require [clojure.test :refer [deftest is testing]]
+            [clojure.edn :as edn]
             [clojure.string :as str]
             [babashka.fs :as fs]
             [kimun.cli.commands.journal :as j]
@@ -97,6 +98,50 @@
       (let [e (jr proj "verify" {})]
         (is (= "store/corrupt" (get-in e [:error :type])) (pr-str e))
         (is (= 5 (:exit e)))))))
+
+
+(defn- history
+  "A project whose store has three committed transactions; returns
+   {:proj :dir :log (path) :lines (log lines) :revs [r1 r2 r3] :heads (path)}."
+  []
+  (let [proj (str (fs/create-temp-dir {:prefix "kimun-cli-journal-"}))
+        dir (str (fs/path proj ".kimun"))
+        log (str (fs/path dir "log.edn"))]
+    (run proj "stores" "init" "--name" "p")
+    (doseq [text ["one" "two" "three"]]
+      (spit (str (fs/path proj "doc.md")) (str "# T\n\npara " text "\n"))
+      (if (= "one" text) (run proj "docs" "ingest" "doc.md") (run proj "docs" "update" "doc.md" "--name" "doc")))
+    (let [lines (str/split-lines (slurp log))]
+      {:proj proj :dir dir :log log :lines lines :heads (str (fs/path dir "heads.edn"))
+       :revs (mapv #(:revision (edn/read-string %)) lines)})))
+
+(defn- point-heads-at!
+  "Rewrites heads.edn so that every head naming the last revision names `rev` instead."
+  [{:keys [heads revs]} rev]
+  (spit heads (str/replace (slurp heads) (peek revs) rev)))
+
+;; F (kernel-scale): `journal verify` replays the log (store/replay-open), then checks the DAG and the hashes.
+(deftest verify-detects-a-truncated-log-and-heads-that-disagree-with-it
+  (testing "the last log line cut short"
+    (let [{:keys [proj log lines]} (history)
+          text (str (str/join "\n" lines) "\n")]
+      (spit log (subs text 0 (- (count text) (quot (count (peek lines)) 2))))
+      (let [e (jr proj "verify" {})]
+        (is (= ["store/corrupt" 5] [(get-in e [:error :type]) (:exit e)]) (pr-str e))
+        (is (= [:replay-failed] (mapv :reason (get-in e [:error :data :bad])))))))
+  (testing "heads.edn two transactions behind the end of the log"
+    (let [{:keys [proj revs] :as h} (history)]
+      (point-heads-at! h (first revs))
+      (let [e (jr proj "verify" {})]
+        (is (= ["store/corrupt" 5] [(get-in e [:error :type]) (:exit e)]) (pr-str e))
+        (is (= [:replay-failed] (mapv :reason (get-in e [:error :data :bad])))))))
+  (testing "heads one transaction behind are a writer dead mid-commit: reported, not a failure"
+    (let [{:keys [proj revs] :as h} (history)]
+      (point-heads-at! h (second revs))
+      (let [e (jr proj "verify" {})]
+        (is (true? (:ok e)) (pr-str e))
+        (is (= 2 (get-in e [:data :revisions])))
+        (is (= (peek revs) (get-in e [:data :uncommitted-tail :revision])))))))
 
 (deftest group-surface
   (is (= #{"show" "verify"} (set (keys j/commands))))

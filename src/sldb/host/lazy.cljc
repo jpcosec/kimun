@@ -1,10 +1,10 @@
 (ns sldb.host.lazy
   "The LazyMaps port (sldb.kernel.ports) for Babashka/JVM: a persistent map
-   whose values come from a loader on first use. This is also the per-process
-   object cache of a store: the memo of the :objects map (id -> parsed object)
-   lives here, shared by every map derived from it through assoc/dissoc, and is
-   unbounded — CAS objects are immutable (no invalidation) and a process holds
-   at most the objects it asked for."
+   whose values come from a loader on first use. Each map lineage (a map and
+   everything derived from it through assoc/dissoc) memoises what its loader
+   returned. This memo is NOT the object cache of a store: that one lives in
+   the Backend adapter (sldb.host.fs-store, the kernel's `ObjectCache` port),
+   so the :objects loader hands out the adapter's already-parsed values."
   (:require [sldb.kernel.ports :as ports]))
 
 #?(:clj

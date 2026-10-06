@@ -388,3 +388,85 @@
            (is (= old (heads-of (store/open b h))) "open trusts heads.edn")
            (is (= [:replay-failed] (map :reason (:bad (store/verify-full b h)))))
            (is (some #{:log-heads-mismatch} (map :reason (:bad (store/verify b (store/open b h))))) "the cheap check compares the end of the log"))))))
+
+;; ---------------------------------------------------------------- object cache of the fs backend (S4b)
+
+(defn- counting-cached-backend
+  "`counting-backend` that also forwards the ObjectCache port of `b`."
+  [b reads]
+  (let [c (counting-backend b reads)]
+    (reify
+      store/ObjectCache
+      (cached-object [_ id] (store/cached-object b id))
+      (cache-object! [_ id o] (store/cache-object! b id o))
+      store/Backend
+      (read-descriptor [_] (store/read-descriptor c))
+      (write-descriptor! [_ d] (store/write-descriptor! c d))
+      (read-object [_ id] (store/read-object c id))
+      (write-object! [_ id content] (store/write-object! c id content))
+      (object-ids [_] (store/object-ids c))
+      (read-log [_] (store/read-log c))
+      (read-heads [_] (store/read-heads c))
+      (commit-tx! [_ e tx n] (store/commit-tx! c e tx n)))))
+
+#?(:clj
+   (deftest the-fs-backend-parses-each-object-at-most-once-per-instance
+     (let [[dir _ s] (docs-store! 3 2)
+           fsb (fs/backend dir)
+           reads (atom {})
+           b (counting-cached-backend fsb reads)
+           all-ids (set (store/object-ids fsb))
+           head-ids (set (cons (:head s) (vals (:heads s))))
+           present (fn [] (filter all-ids (:objects @reads)))
+           use! (fn [st] [(into {} (:objects st)) (store/reachable st) (into {} (:trees st)) (count (:revisions st))])]
+       (is (empty? (fs/cached-ids fsb)) "a new instance starts empty")
+       (let [o1 (store/open b h)
+             seen1 (use! o1)]
+         ;; `reachable` also probes ids that are no objects (tree ULIDs, keys of the :trees mmap): an absent
+         ;; id is never cached (it may be written later), so only the reads of existing objects are counted
+         (is (= all-ids (set (present)) (fs/cached-ids fsb)))
+         (is (every? #{1} (vals (frequencies (present)))) "open, the lazy views and reachable read each object once")
+         (reset! reads {})
+         (let [o2 (store/open b h)]
+           (is (= seen1 (use! o2)) "a second store value over the same backend sees the same objects")
+           (is (= (frequencies head-ids) (frequencies (present))) "and reads only the head Revisions again, to hash them")
+           (is (identical? (get (:objects o1) (:head s)) (get (:objects o2) (:head s))) "parsed once: the same value"))
+         (reset! reads {})
+         (is (:ok? (store/verify b o1)))
+         (is (= (frequencies (store/reachable o1)) (frequencies (present)))
+             "the hash check reads every reachable object from the backend, cached or not"))
+       (is (empty? (fs/cached-ids (fs/backend dir))) "instances share nothing"))))
+
+#?(:clj
+   (deftest the-object-cache-never-hides-a-tampered-object
+     (let [node-id (fn [s] (some (fn [[id o]] (when (:class o) id)) (:objects s)))]
+       (testing "tampered before the backend existed: the cache holds the tampered parse, the hash check reads the file"
+         (let [[dir _ s] (docs-store! 3 0)
+               id (node-id s)
+               _ (tamper! dir id)
+               b (fs/backend dir)
+               opened (store/open b h)]
+           (is (some? (get (:objects opened) id)))
+           (is (contains? (fs/cached-ids b) id))
+           (is (= [{:id id :reason :hash-mismatch}] (:bad (store/verify b opened)) (:bad (store/verify-full b h))))))
+       (testing "tampered after it was cached: the cached value is the good one, the hash check still reads the file"
+         (let [[dir _ s] (docs-store! 3 0)
+               id (node-id s)
+               b (fs/backend dir)
+               opened (store/open b h)]
+           (is (= (count (store/object-ids b)) (count (into {} (:objects opened))) (count (fs/cached-ids b))))
+           (tamper! dir id)
+           (is (= [{:id id :reason :hash-mismatch}] (:bad (store/verify b opened)) (:bad (store/verify-full b h))))
+           (testing "a head Revision already cached is hashed again by the next open"
+             (tamper! dir (:head s))
+             (is (= [:store/corrupt-head :hash-mismatch] ((juxt :type :reason) (ex-of #(store/open b h)))))))))))
+
+#?(:clj
+   (deftest the-full-verification-reports-an-uncommitted-tail-and-open-ignores-it
+     (let [[dir b s] (docs-store! 2 0)
+           dead (rev/apply-plan s (doc-plan s 7))]
+       (spit (str dir "/log.edn") (str (pr-str (:transaction dead)) "\n") :append true)
+       (is (= (heads-of s) (heads-of (store/open b h))) "open reads no log: the dead writer's line is not fatal")
+       (let [v (store/verify-full b h)]
+         (is (true? (:ok? v)))
+         (is (= (:id (:transaction dead)) (:id (:uncommitted-tail v))))))))

@@ -178,7 +178,9 @@
                                        ;; a writer died mid-commit: reported, not a failure; the next commit discards it
                                        uncommitted-tail (assoc :uncommitted-tail (select-keys uncommitted-tail [:id :revision :torn-line])))})
       (out/failure :store/corrupt
-                   (str (count bad) " object(s) do not hash to their name in " path)
+                   (if-let [f (first (filter #(= :replay-failed (:reason %)) bad))]
+                     (str "the log does not replay in " path ": " (:message f))
+                     (str (count bad) " problem(s) in " path " (objects that do not hash to their name, or a log that does not end at the heads)"))
                    {:checked checked :bad bad :path path}
                    5))))
 

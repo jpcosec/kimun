@@ -57,6 +57,20 @@
      :store/error on an :inconsistent one, writing nothing), appends `tx` as a
      log line, then replaces the heads with `new`; returns true."))
 
+;; ---------------------------------------------------------------- object cache (optional port)
+
+(defprotocol ObjectCache
+  "Optional port of a Backend: a per-backend-instance cache id -> PARSED object
+   (the value `deserialize` returns). CAS objects are immutable, so an entry is
+   never invalidated. The state lives in the host adapter; the kernel only asks.
+   The cache never answers a hash check: `verify` and the head check of `open`
+   hash the text `read-object` returns, which an adapter must always read from
+   its medium."
+  (cached-object [b id] "The parsed object cached under `id`, or nil.")
+  (cache-object! [b id obj] "Remembers `obj` as the parsed object of `id`; returns `obj`."))
+
+(defn- caching? [b] (satisfies? ObjectCache b))
+
 ;; ---------------------------------------------------------------- hashed forms
 
 (defn hashed-form
@@ -222,6 +236,17 @@
     (when-not (well-formed-heads? hd) (fail "heads.edn is malformed" {:type :store/corrupt-heads :heads hd}))
     hd))
 
+(defn load-object
+  "The parsed object `id` of backend `b`, or nil when absent: from the
+   backend's `ObjectCache` when it has one (each object is then read and parsed
+   at most once per backend instance), else read and parsed on every call.
+   Checks no hash (see `deserialize`)."
+  [b id]
+  (if (caching? b)
+    (or (cached-object b id)
+        (some->> (read-object b id) (deserialize id) (cache-object! b id)))
+    (some->> (read-object b id) (deserialize id))))
+
 (defn- checked-head-revision
   "The Revision object `id` named by the heads, read from `b` and checked:
    present, H(content) == id, and a Revision. Raises :store/corrupt-head with
@@ -232,7 +257,11 @@
     (cond
       (nil? content) (bad :missing)
       (not= id (ports/digest-str (ports/hasher host) content)) (bad :hash-mismatch)
-      :else (let [o (deserialize id content)] (if (revision-object? o) o (bad :not-a-revision))))))
+      ;; the hash is over the text just read; only then may the cache spare the parse or learn the object
+      :else (let [o (or (when (caching? b) (cached-object b id)) (deserialize id content))]
+              (if (revision-object? o)
+                (if (caching? b) (cache-object! b id o) o)
+                (bad :not-a-revision))))))
 
 (defn- open-from-heads
   [b host capabilities]
@@ -241,7 +270,7 @@
         head-ids (distinct (remove nil? (cons (:head hd) (vals (:heads hd)))))
         heads (into {} (map (fn [id] [id (checked-head-revision b host id)])) head-ids)
         objects (ports/lazy-map lm
-                                (fn [id] (when (string? id) (some->> (read-object b id) (deserialize id))))
+                                (fn [id] (when (string? id) (load-object b id)))
                                 #(object-ids b)
                                 heads)
         revisions (ports/lazy-map lm
