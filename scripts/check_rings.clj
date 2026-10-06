@@ -14,7 +14,7 @@
    "sldb.host."    #{"clojure." "sldb.kernel." "sldb.host." "babashka."}
    "sldb.surface." #{"clojure." "sldb.kernel." "sldb.host." "sldb.surface." "babashka."}
    "kimun."    #{"clojure." "sldb.kernel." "sldb.host." "sldb.surface." "kimun."
-                     "babashka." "cheshire." "clj-yaml."}})
+                     "babashka." "cheshire." "clj-yaml." "org.httpkit."}})
 
 (def mutable-constructors
   "Heads of a `def` value form that create mutable state; forbidden in ring 0
