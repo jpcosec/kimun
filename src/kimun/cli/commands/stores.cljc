@@ -1,14 +1,17 @@
 (ns kimun.cli.commands.stores
-  "The `kimun stores` group (docs/v2/06 §B): `init`, `check`, `verify`,
-   `show`, and the federation commands `link`, `unlink` and `links`. Every
+  "The `kimun stores` group (docs/v2/06 §B): `init`, `check`, `health`,
+   `update`, `reconcile`, `verify`, `show`, and the federation commands `link`, `unlink` and `links`. Every
    command is `(fn [args opts ctx] envelope)` where `args` are the positional
    tokens after the subcommand and `ctx` is `{:env env :cwd cwd}`; `dispatch`
    routes a subcommand name."
   (:require [babashka.fs :as fs]
             [clojure.string :as str]
+            [kimun.cli.commands.docs :as docs]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
+            [kimun.surface.diagnostics :as diag]
             [kimun.surface.docs :as tdocs]
+            [sldb.host.default :as host]
             [sldb.kernel.err :as err]
             [sldb.kernel.store :as store]))
 
@@ -31,44 +34,123 @@
                            :revision nil
                            :data (select-keys r [:path :name :actor :capabilities])})))
 
+(defn- file-reader
+  "`(fn [relative-path] text-or-nil)` over the project that owns store `path`."
+  [path]
+  (let [root (fs/parent (fs/absolutize path))]
+    (fn [rel] (let [f (fs/path root rel)] (when (fs/regular-file? f) (slurp (str f)))))))
+
+(defn- diagnose
+  "The `kimun.surface.diagnostics/report` of an opened store (`open!` result),
+   with the kernel's hash verification handed in."
+  [{:keys [backend store path]}]
+  (diag/report store (file-reader path) {:verify (store/verify backend store)}))
+
+(def ^:private warning-type
+  {:reformatted "docs/file-modified" :edited "docs/file-modified" :missing "docs/file-missing"
+   :contract-moved "docs/superseded" :unextractable "docs/unextractable" :noise "docs/structural-noise"
+   :orphan "docs/orphan" :corrupt "store/corrupt"})
+
+(defn- finding-warning [f]
+  (assoc (select-keys f [:category :model :document :path :action :undeclared])
+         :type (warning-type (:category f)) :message (:message f)))
+
 (defn check
   "`stores check`: opens the store (replaying the log) and reports
    `{:name :path :hash-alg :revisions :trees :objects :head :links}` where
    `:links` is the `kimun.cli.store/links` report; a link whose target is
    missing or not a store is a warning `{:type \"link/missing\" :message …}`
-   (the command stays `:ok`). When the store tracks typed documents, `:documents
-   {:tracked n :findings [{:name :model :state :file}]}` lists those whose file
-   was modified or is missing, or whose model was redefined, each also a warning."
+   (the command stays `:ok`). When the store tracks typed documents (or is
+   corrupt), `:documents` is the `kimun.surface.diagnostics/report` plus
+   `:tracked`: `{:tracked :valid :summary :checked :counts :models :documents
+   :findings}`; every finding is also a warning `{:type :message :category
+   :model :document :path :action}` naming the command that repairs it."
   [_args opts {:keys [env cwd]}]
-  (let [{:keys [descriptor store path]} (cli-store/open! (cli-store/resolve-store opts env cwd))
+  (let [{:keys [descriptor store path] :as opened} (cli-store/open! (cli-store/resolve-store opts env cwd))
         link-report (cli-store/links path)
-        root (fs/parent (fs/absolutize path))
-        typed (tdocs/documents store)
-        sync (into {} (map (juxt :name :status))
-                   (tdocs/sync-report store #(let [f (fs/path root %)] (when (fs/regular-file? f) (slurp (str f))))))
-        doc-report (vec (for [d typed
-                              :let [file (get sync (:name d) :none)]
-                              :when (or (not= :intact (:state d)) (contains? #{:modified :missing} file))]
-                          {:name (:name d) :model (:model d) :state (:state d) :file file}))]
+        report (diagnose opened)]
     (out/ok "stores check" {:store (store-ref descriptor path)
                             :revision (:head store)
                             :data (cond-> {:name (:name descriptor)
-                                   :path path
-                                   :hash-alg (:hash-alg descriptor)
-                                   :revisions (count (:revisions store))
-                                   :trees (count (:trees store))
-                                   :objects (count (:objects store))
-                                   :head (:head store)
-                                   :links link-report}
-                                  (seq typed) (assoc :documents {:tracked (count typed) :findings doc-report}))
+                                           :path path
+                                           :hash-alg (:hash-alg descriptor)
+                                           :revisions (count (:revisions store))
+                                           :trees (count (:trees store))
+                                           :objects (count (:objects store))
+                                           :head (:head store)
+                                           :links link-report}
+                                    (or (seq (:documents report)) (seq (:findings report)))
+                                    (assoc :documents (assoc report :tracked (count (:documents report)))))
                             :warnings (into (mapv link-warning (remove #(= :ok (:status %)) link-report))
-                                            (map (fn [d]
-                                                   {:type (if (= :intact (:state d)) (str "docs/file-" (name (:file d))) (str "docs/" (name (:state d))))
-                                                    :message (str "document `" (:name d) "` (" (:model d) "): "
-                                                                  (if (= :intact (:state d))
-                                                                    (str "its file is " (name (:file d)) " since the last commit; run `docs update " (:name d) "`")
-                                                                    (str "its model was redefined; run `docs update " (:name d) "` or redefine with --backfill")))}))
-                                            doc-report)})))
+                                            (map finding-warning) (:findings report))})))
+
+(defn health
+  "`stores health`: the verdict of the store (`kimun.surface.diagnostics/health`):
+   `{:status :summary :findings :actions :next}` with `:status` `:ok`,
+   `:degraded` (a command repairs it: `:next` is `run: …`) or `:needs-human`
+   (`:next` is `inspect: …`). Each finding is also a warning."
+  [_args opts {:keys [env cwd]}]
+  (let [{:keys [descriptor store path] :as opened} (cli-store/open! (cli-store/resolve-store opts env cwd))
+        report (diagnose opened)]
+    (out/ok "stores health" {:store (store-ref descriptor path)
+                             :revision (:head store)
+                             :data (assoc (diag/health report) :summary (:summary report))
+                             :warnings (mapv finding-warning (:findings report))})))
+
+(defn update-store
+  "`stores update`: applies every repair that needs no decision — re-reads the
+   documents whose file was only reformatted and re-extracts those whose
+   model's contract moved (v1 `stores update` recomputed hashes; here a hash
+   is never stored apart from its content, so updating means committing the
+   new source). Findings that need a human are left alone and listed. Data:
+   `{:updated [name] :skipped [{:document :category :action}] :status}`."
+  [_args opts {:keys [env cwd]}]
+  (let [{:keys [backend descriptor path] :as opened} (cli-store/open! (cli-store/resolve-store opts env cwd))
+        read-file (file-reader path)
+        findings (:findings (diagnose opened))
+        final (reduce (fn [s f]
+                        (let [doc (tdocs/find-document s (:document f))
+                              text (or (some-> (:path doc) read-file) (:source doc))
+                              {:keys [plan]} (tdocs/update-plan host/host s (:document f) text
+                                                                {:actor (:actor opts) :timestamp (docs/timestamp) :operation "stores update"})]
+                          (if plan (:store (store/commit! backend s plan)) s)))
+                      (:store opened)
+                      (filter (comp diag/safe :category) findings))
+        after (diag/report final read-file)]
+    (out/ok "stores update" {:store (store-ref descriptor path)
+                             :revision (:head final)
+                             :data {:updated (mapv :document (filter (comp diag/safe :category) findings))
+                                    :skipped (mapv #(select-keys % [:document :category :action]) (remove (comp diag/safe :category) findings))
+                                    :status (:status (diag/health after))}
+                             :warnings (mapv finding-warning (:findings after))})))
+
+(defn- canonical [p] (str (fs/canonicalize p)))
+
+(defn reconcile
+  "`stores reconcile [ROOT] [--apply]`: compares the stores found under ROOT
+   (default: this store's project directory) with this store's links (v1
+   `reconcile_catalog`). Data: `{:root :discovered [path] :missing [path]
+   :stale [{:name :resolved}] :applied}` — `:missing` are stores found but
+   not linked, `:stale` links whose target is gone. Nothing is written
+   without `--apply`, which links each missing store under its project
+   directory's name and unlinks each stale link."
+  [args opts {:keys [env cwd]}]
+  (let [{:keys [descriptor store path]} (cli-store/open! (cli-store/resolve-store opts env cwd))
+        root (if-let [r (first args)] (str (fs/absolutize (fs/path cwd r))) (str (fs/parent (fs/absolutize path))))
+        found (->> (fs/glob root "**store.edn" {:hidden true})
+                   (map fs/parent)
+                   (filter #(= cli-store/dirname (str (fs/file-name %))))
+                   (map canonical) (remove #{(canonical path)}) sort vec)
+        linked (cli-store/links path)
+        registered (set (map (comp canonical :resolved) (filter #(= :ok (:status %)) linked)))
+        missing (vec (remove registered found))
+        stale (mapv #(select-keys % [:name :resolved]) (remove #(= :ok (:status %)) linked))]
+    (when (:apply opts)
+      (doseq [s stale] (cli-store/unlink! path (:name s)))
+      (doseq [m missing] (cli-store/link! path (str (fs/file-name (fs/parent m))) m cwd)))
+    (out/ok "stores reconcile" {:store (store-ref descriptor path)
+                                :revision (:head store)
+                                :data {:root root :discovered found :missing missing :stale stale :applied (boolean (:apply opts))}})))
 
 (defn verify
   "`stores verify`: recomputes the hash of every reachable object
@@ -147,12 +229,14 @@
 
 (def spec
   "Options of the `stores` group (babashka.cli spec, merged by `kimun.cli.main`)."
-  {:name {:ref "NAME" :desc "Store name (stores init)"}})
+  {:name {:ref "NAME" :desc "Store name (stores init)"}
+   :apply {:desc "Write what the comparison found (stores reconcile)" :coerce :boolean}})
 
 (def commands
   "Subcommand name → command fn."
   {"init" init "check" check "verify" verify "show" show
-   "link" link "unlink" unlink "links" links})
+   "link" link "unlink" unlink "links" links
+   "health" health "update" update-store "reconcile" reconcile})
 
 (defn dispatch
   "Runs subcommand `sub` of the `stores` group (`args` are the positional tokens);

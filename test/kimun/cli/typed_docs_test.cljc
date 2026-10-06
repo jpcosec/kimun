@@ -128,7 +128,8 @@
     (spit (file p "login.md") "# T\n\nStatus: closed\n")
     (let [chk (run p "stores" "check")]
       (is (true? (:ok chk)))
-      (is (= [{:name "login" :model "TicketDoc" :state :intact :file :modified}] (get-in chk [:data :documents :findings])))
+      (is (= [{:document "login" :model "TicketDoc" :state :intact :category :edited}]
+             (mapv #(select-keys % [:document :model :state :category]) (get-in chk [:data :documents :findings]))))
       (is (= "docs/file-modified" (:type (first (:warnings chk))))))
     (is (= [{:name "login" :path "login.md" :status :modified}] (:data (run p "docs" "status"))))
     (is (= "closed" (get-in (run p "docs" "update" "login") [:data :payload "status"])))
