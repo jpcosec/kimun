@@ -101,7 +101,7 @@
        :profile-ms {:bb-startup-and-load (ms #(p/shell {:out :string :dir repo} "bb" "-e" "(require 'kimun.cli.main)"))
                     :read-log-file (ms #(slurp (str (fs/path kdir "log.edn"))))
                     :read-all-objects (ms #(doseq [o objs] (slurp (str o))))
-                    :kernel-open-replay (ms #(store/open b host/host))
+                    :kernel-open (ms #(store/open b host/host))
                     :documents-listing (ms #(tdocs/documents kstore))
                     :extract-every-document (ms #(doseq [d (vals kdocs)] (tdocs/payload-of kstore d)))}})))
 

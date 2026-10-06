@@ -270,8 +270,10 @@
                     (store/init! b h {"jp" :all})
                     ps)
           reloaded (store/open b h)]
-      (and (= (snapshot s) (snapshot reloaded))
-           (:ok? (store/verify b reloaded))))))
+      ;; open (format 2) trusts heads.edn; the full replay of the same log must reach the same state
+      (and (= (snapshot s) (snapshot reloaded) (snapshot (store/replay-open b h)))
+           (:ok? (store/verify b reloaded))
+           (:ok? (store/verify-full b h))))))
 
 ;; ------------------------------------------------- open from heads / verification (format 2)
 

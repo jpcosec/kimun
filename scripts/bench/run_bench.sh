@@ -28,12 +28,14 @@ if [ -z "$DOC" ]; then
   DOC=$(timeout "$LIM" "$KIMUN" docs list 2>/dev/null | awk '/"data"/{d=1} d && /^  *"name" *:/{print}' \
         | sed 's/.*"name" *: *"\([^"]*\)".*/\1/' | awk '{a[NR]=$0} END{print a[int((NR+1)/2)]}')
 fi
+# a writer the store grants: BENCH_ACTOR, else the first non-kimun/ actor of store.edn :capabilities
+ACTOR="${BENCH_ACTOR:-$(bb -e '(->> (slurp ".kimun/store.edn") clojure.edn/read-string :capabilities keys (remove #(clojure.string/starts-with? % "kimun/")) sort first print)')}"
 FIELD="${3:-owner}"
 VALUE="${4:-benchvalue}"
-echo "# store $(pwd) doc=$DOC field=$FIELD"
+echo "# store $(pwd) doc=$DOC field=$FIELD actor=$ACTOR"
 timed docs_list "$KIMUN" docs list
 timed docs_show "$KIMUN" docs show "$DOC"
-timed fields_set "$KIMUN" fields set "$DOC" "$FIELD" "$VALUE"
+timed fields_set "$KIMUN" fields set "$DOC" "$FIELD" "$VALUE" --actor "$ACTOR"
 timed find "$KIMUN" find "${BENCH_TERM:-replay}"
 timed stores_check "$KIMUN" stores check
 if "$KIMUN" --help 2>&1 | grep -q 'stores verify'; then
