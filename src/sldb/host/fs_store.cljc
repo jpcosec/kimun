@@ -114,7 +114,10 @@
                                                            {:type :store/corrupt-log :line (inc i) :cause (ex-message e)}))))))
                                 lines)))))
   (read-heads [_]
-    #?(:clj (some-> (read-text (path dir "heads.edn")) edn/read-string)))
+    #?(:clj (when-let [text (read-text (path dir "heads.edn"))]
+              (try (edn/read-string text)
+                   (catch Exception e
+                     (throw (ex-info "store: heads.edn is unreadable" {:type :store/corrupt-heads :cause (ex-message e)})))))))
   (commit-tx! [_ expected tx new]
     #?(:clj (with-store-lock dir
               (fn []

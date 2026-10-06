@@ -22,13 +22,16 @@
    :format-version 1 is served by sldb.kernel.legacy.revision. The store value
    carries :format-version and every function here dispatches on it.
 
-   `open` never trusts objects/ or heads.edn for state: it is `replay-open`,
-   which replays log.edn through apply-plan and checks every transaction and
-   revision id against the log and the final heads against heads.edn. `verify`
-   walks the objects reachable from the heads and recomputes their hashes.
-   `commit!` writes exactly the objects the plan created, then calls
-   `commit-tx!`."
-  (:require [sldb.kernel.canon :as canon]
+   `open` (format 2, host with the LazyMaps port) reads store.edn and
+   heads.edn, checks the head Revision objects and replays NOTHING: see its
+   docstring for what it checks and what it trusts. `replay-open` is the full
+   verification by replay (log.edn through apply-plan, every transaction and
+   revision id, final heads against heads.edn); `verify` recomputes the hash
+   of every object reachable from the heads; `verify-full` is both. Format 1
+   (and hosts without lazy maps) open through `replay-open`. `commit!` writes
+   exactly the objects the plan created, then calls `commit-tx!`."
+  (:require [clojure.edn :as edn]
+            [sldb.kernel.canon :as canon]
             [sldb.kernel.node :as node]
             [sldb.kernel.edge :as edge]
             [sldb.kernel.ports :as ports]
@@ -45,7 +48,7 @@
   (write-object! [b id content] "Writes objects/<id> once; existing objects are never rewritten.")
   (object-ids [b] "Ids present under objects/.")
   (read-log [b] "Vector of Transaction maps in log order; a final line cut short (unterminated and unreadable) is the entry {:torn-line n}.")
-  (read-heads [b] "{:head :heads} or nil.")
+  (read-heads [b] "{:head :heads}, or nil when absent; raises :store/corrupt-heads when the file cannot be read as EDN.")
   (commit-tx! [b expected tx new]
     "The single mutation of log and heads, atomic against other writers (one
      exclusive lock around all of it). When the current heads (absent =
@@ -68,6 +71,18 @@
 (defn serialize
   "Canonical text written to objects/<id>."
   [host obj] (canon/canon-str host (hashed-form obj)))
+
+(defn deserialize
+  "Inverse of `serialize`: the in-memory object of `id` from the text of
+   objects/<id>. Nodes get back :id and :address and edges :id (the keys their
+   hashed form leaves out). Recomputes no hash: the caller trusts the content
+   or checks it (`open` for the head Revisions, `verify` for the rest)."
+  [id content]
+  (let [o (edn/read-string content)]
+    (cond
+      (and (map? o) (:class o) (:kind o) (contains? o :content)) (assoc o :id id :address (node/address o))
+      (and (map? o) (:type o) (:from o) (:to o))                 (assoc o :id id)
+      :else o)))
 
 (defn- fail [why data] (err/raise (or (:type data) :store/error) (str "store: " why) data))
 
@@ -190,11 +205,87 @@
       (fail "heads.edn does not match the replayed log" {:file hd :replayed {:head (:head store) :heads (:heads store)}}))
     store))
 
+(defn- revision-object? [o]
+  (and (map? o) (contains? o :tx) (contains? o :parents) (contains? o :trees) (contains? o :edges)))
+
+(defn- well-formed-heads? [hd]
+  (and (map? hd) (= #{:head :heads} (set (keys hd)))
+       (map? (:heads hd)) (every? string? (keys (:heads hd))) (every? string? (vals (:heads hd)))
+       (if (nil? (:head hd)) (empty? (:heads hd)) (string? (:head hd)))))
+
+(defn- checked-heads
+  "heads.edn of `b` (absent = `no-heads`), raising :store/corrupt-heads when it
+   is not {:head id|nil :heads {tree-id rev-id}} (an unreadable file is the
+   backend's to report, with the same type)."
+  [b]
+  (let [hd (or (read-heads b) no-heads)]
+    (when-not (well-formed-heads? hd) (fail "heads.edn is malformed" {:type :store/corrupt-heads :heads hd}))
+    hd))
+
+(defn- checked-head-revision
+  "The Revision object `id` named by the heads, read from `b` and checked:
+   present, H(content) == id, and a Revision. Raises :store/corrupt-head with
+   :reason :missing | :hash-mismatch | :not-a-revision."
+  [b host id]
+  (let [content (read-object b id)
+        bad (fn [reason] (fail (str "head revision " id ": " (name reason)) {:type :store/corrupt-head :id id :reason reason}))]
+    (cond
+      (nil? content) (bad :missing)
+      (not= id (ports/digest-str (ports/hasher host) content)) (bad :hash-mismatch)
+      :else (let [o (deserialize id content)] (if (revision-object? o) o (bad :not-a-revision))))))
+
+(defn- open-from-heads
+  [b host capabilities]
+  (let [lm (ports/lazy-maps host)
+        hd (checked-heads b)
+        head-ids (distinct (remove nil? (cons (:head hd) (vals (:heads hd)))))
+        heads (into {} (map (fn [id] [id (checked-head-revision b host id)])) head-ids)
+        objects (ports/lazy-map lm
+                                (fn [id] (when (string? id) (some->> (read-object b id) (deserialize id))))
+                                #(object-ids b)
+                                heads)
+        revisions (ports/lazy-map lm
+                                  (fn [id] (let [o (get objects id)] (when (revision-object? o) o)))
+                                  ;; every revision = the ancestors of the heads (walks history: only when enumerated)
+                                  (fn [] (loop [todo (vec head-ids) seen #{}]
+                                           (if-let [id (peek todo)]
+                                             (if (seen id)
+                                               (recur (pop todo) seen)
+                                               (recur (into (pop todo) (:parents (get objects id))) (conj seen id)))
+                                             seen)))
+                                  {})]
+    (revision/lazy-store {:host host :capabilities capabilities :format-version 2
+                          :objects objects :revisions revisions :head (:head hd) :heads (:heads hd)})))
+
 (defn open
-  "Opens the store in backend `b`: `replay-open` (format 1: the legacy replay;
-   format 2: the same full replay through the format-2 apply-plan)."
+  "Opens the store in backend `b`.
+
+   Format 2 on a host with the LazyMaps port: NO replay, the log is not read.
+   CHECKS: store.edn exists and its :hash-alg is the host's; heads.edn is
+   well-formed ({:head id|nil :heads {tree-id rev-id}}, :store/corrupt-heads);
+   every distinct revision id it names is an object that exists, whose content
+   hashes to the id and is a Revision (:store/corrupt-head, :reason :missing |
+   :hash-mismatch | :not-a-revision). Reads exactly those objects: O(distinct
+   head ids), independent of the length of the history.
+   TRUSTS: that heads.edn names the heads the log leads to (it is the commit
+   point; `replay-open` checks it); every other object, which is read lazily
+   on demand WITHOUT rehashing (`verify` checks them all); the :incidence map
+   and every other derived structure inside the Revisions (`replay-open`
+   recomputes them). An :uncommitted log tail is not looked for: the store
+   opens at the recorded heads either way, `verify` reports the tail and the
+   next `commit-tx!` discards it.
+   The value returned is `revision/lazy-store`: :objects (every id of the
+   backend; orphans of a losing writer included when enumerated), :revisions
+   (ancestors of the heads), :trees and :edges are computed on first use.
+
+   Format 1, or a host without the port: `replay-open` (full replay)."
   [b host]
-  (replay-open b host))
+  (let [{:keys [capabilities hash-alg] fv :format-version} (or (read-descriptor b) (fail "no store.edn" {}))
+        alg (ports/algorithm (ports/hasher host))]
+    (if (and (= 2 fv) (ports/lazy-maps? host))
+      (do (when (not= hash-alg alg) (fail "hash algorithm mismatch" {:store hash-alg :hasher alg}))
+          (open-from-heads b host capabilities))
+      (replay-open b host))))
 
 ;; ---------------------------------------------------------------- commit
 
@@ -251,19 +342,43 @@
               (recur (into more (remove nil? refs)) (conj seen id)))))))))
 
 (defn verify
-  "Recomputes H(file) for every reachable object. Returns
+  "The cheap-ish check: recomputes H(file) for every object reachable from the
+   heads of `store` (detects a missing or tampered object; does not read the
+   log beyond its tail and does not detect heads that disagree with it). Returns
    {:ok? bool :checked n :bad [{:id :reason (:missing | :hash-mismatch)}]},
    plus :uncommitted-tail <log entry> when the log ends with a line the heads
-   do not record (reported, not an error: see `log-tail`)."
+   do not record (reported, not an error: see `log-tail`). Also reads the log
+   (no replay) to compare its END with the heads: an :inconsistent tail
+   (`log-tail`: the last committed line is not the recorded head, e.g. a log
+   cut or overwritten) is the bad entry {:reason :log-heads-mismatch}."
   [b store]
   (let [hasher (ports/hasher (:host store))
         ids (sort (reachable store))
-        tail (uncommitted-tail b)
-        bad (for [id ids
-                  :let [content (read-object b id)
-                        reason (cond (nil? content) :missing
-                                     (not= id (ports/digest-str hasher content)) :hash-mismatch)]
-                  :when reason]
-              {:id id :reason reason})]
+        log (vec (read-log b))
+        state (log-tail (read-heads b) (last-two log))
+        tail (when (= :uncommitted state) (peek log))
+        bad (concat
+             (for [id ids
+                   :let [content (read-object b id)
+                         reason (cond (nil? content) :missing
+                                      (not= id (ports/digest-str hasher content)) :hash-mismatch)]
+                   :when reason]
+               {:id id :reason reason})
+             (when (= :inconsistent state) [{:reason :log-heads-mismatch}]))]
     (cond-> {:ok? (empty? bad) :checked (count ids) :bad (vec bad)}
       tail (assoc :uncommitted-tail tail))))
+
+(defn verify-full
+  "The full verification, trusting only store.edn and log.edn: `replay-open`
+   (every logged plan through apply-plan, every transaction and revision id,
+   the final heads against heads.edn, :incidence recomputed) and then `verify`
+   over the REPLAYED store. Detects what `verify` detects plus a truncated or
+   altered log line and heads that disagree with the log. Never raises for a
+   corrupt store: returns `verify`'s map plus :store (the replayed value), or
+   {:ok? false :checked 0 :bad [{:reason :replay-failed :message m :data d}]}."
+  [b host]
+  (let [s (err/rescue (fn [e] {::failed {:reason :replay-failed :message (ex-message e) :data (dissoc (ex-data e) :file :replayed)}})
+                      (replay-open b host))]
+    (if-let [f (::failed s)]
+      {:ok? false :checked 0 :bad [f]}
+      (assoc (verify b s) :store s))))

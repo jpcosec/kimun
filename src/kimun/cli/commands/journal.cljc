@@ -49,7 +49,9 @@
   [_args opts {:keys [env cwd]}]
   (let [dir (cli-store/resolve-store opts env cwd)
         _ (when (or (nil? dir) (not (cli-store/store? dir))) (cli-store/open! dir))
-        opened (try (cli-store/open! dir)
+        ;; full verification: the store examined is the one REPLAYED from the log, not the one opened from the heads
+        opened (try (let [o (cli-store/open! dir)]
+                      (assoc o :store (store/replay-open (:backend o) (:host (:store o)))))
                     (catch #?(:clj Exception :cljs :default) e e))]
     (if (instance? #?(:clj Throwable :cljs js/Error) opened)
       (if (= :cli/no-store (:type (ex-data opened)))

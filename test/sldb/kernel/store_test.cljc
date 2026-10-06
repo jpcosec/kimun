@@ -242,7 +242,9 @@
              log-before (slurp (str dir "/log.edn"))
              heads-before (store/read-heads b)]
          (is (nil? (store/uncommitted-tail b)) "two lines beyond the heads are not a dead writer's tail")
-         (is (= :store/error (:type (ex-of #(store/open b h)))) "the full replay refuses")
+         (is (= :store/error (:type (ex-of #(store/replay-open b h)))) "the full replay refuses")
+         (is (= [:replay-failed] (map :reason (:bad (store/verify-full b h)))) "and the full verification reports it")
+         (is (some #{:log-heads-mismatch} (map :reason (:bad (store/verify b s1)))) "the cheap check sees a log that does not end at the heads")
          (is (= :store/error (:type (ex-of #(store/commit! b s1 (doc-plan s1 4))))) "a holder of the recorded heads cannot commit on top")
          (is (= log-before (slurp (str dir "/log.edn"))))
          (is (= heads-before (store/read-heads b)))))))
@@ -267,3 +269,122 @@
           reloaded (store/open b h)]
       (and (= (snapshot s) (snapshot reloaded))
            (:ok? (store/verify b reloaded))))))
+
+;; ------------------------------------------------- open from heads / verification (format 2)
+
+(defn- empty-plan [s] {:plan/version 1 :engines {} :base (:head s) :actor "jp" :timestamp "2026-08-29T12:00:00.000Z" :ops []})
+
+(defn- counting-backend
+  "`b` recording in the atom `reads` every object read, log read and listing."
+  [b reads]
+  (reify store/Backend
+    (read-descriptor [_] (store/read-descriptor b))
+    (write-descriptor! [_ d] (store/write-descriptor! b d))
+    (read-object [_ id] (swap! reads update :objects (fnil conj []) id) (store/read-object b id))
+    (write-object! [_ id c] (store/write-object! b id c))
+    (object-ids [_] (swap! reads update :listings (fnil inc 0)) (store/object-ids b))
+    (read-log [_] (swap! reads update :log (fnil inc 0)) (store/read-log b))
+    (read-heads [_] (store/read-heads b))
+    (commit-tx! [_ e tx n] (store/commit-tx! b e tx n))))
+
+(defn- docs-store!
+  "A fresh fs store with `docs` document trees followed by `extra` empty revisions; [dir backend store]."
+  [docs extra]
+  (let [dir (tmp-dir) b (fs/backend dir)
+        s (reduce (fn [s i] (:store (store/commit! b s (doc-plan s i)))) (store/init! b h {"jp" :all}) (range 1 (inc docs)))
+        s (reduce (fn [s _] (:store (store/commit! b s (empty-plan s)))) s (range extra))]
+    [dir b s]))
+
+(defn- tamper! [dir id] #?(:clj (let [f (io/file dir "objects" id)] (.setWritable f true) (spit f (str (slurp f) " ")))))
+
+#?(:clj
+   (deftest open-reads-only-the-head-revisions-and-never-the-log
+     (let [sizes (for [extra [0 25]]
+                   (let [[_ b s] (docs-store! 3 extra)
+                         reads (atom {})
+                         opened (store/open (counting-backend b reads) h)
+                         head-ids (set (cons (:head s) (vals (:heads s))))]
+                     (is (= (heads-of s) (heads-of opened)))
+                     (is (= head-ids (set (:objects @reads))) "exactly the head Revisions are read")
+                     (is (= (count head-ids) (count (:objects @reads))) "each once")
+                     (is (nil? (:log @reads)) "the log is not read")
+                     (is (nil? (:listings @reads)) "the backend is not listed")
+                     (count (:objects @reads))))]
+       (is (= [3 4] sizes) "25 more revisions cost one more read (the head itself): O(heads), not O(history)"))))
+
+#?(:clj
+   (deftest the-lazy-and-the-eager-store-show-the-same-views
+     (let [[dir b s] (docs-store! 4 2)
+           eager-host (dissoc h :lazy-maps)
+           views (fn [st] (assoc (snapshot st) :trees (into {} (:trees st)) :objects (into {} (:objects st))
+                                 :capabilities (:capabilities st) :format-version (:format-version st)))
+           lazy (store/open b h)
+           eager (store/open b eager-host)]
+       (is (not (sldb.kernel.ports/lazy-maps? eager-host)))
+       (is (set? (:edges lazy)))
+       (is (= (dissoc (views eager) :host) (dissoc (views lazy) :host)) "opened from the heads vs replayed eagerly")
+       (is (= (views s) (views lazy)) "and vs the value the commits returned")
+       (testing "after one more commit on each"
+         (let [p (doc-plan lazy 9)
+               l2 (:store (rev/apply-plan lazy p))
+               e2 (:store (rev/apply-plan eager p))]
+           (is (= (views e2) (views l2)))
+           (is (= (views l2) (views (:store (store/commit! b lazy p)))))
+           (is (= (views l2) (views (store/open (fs/backend dir) h)))))))))
+
+#?(:clj
+   (deftest open-checks-heads-edn-and-the-head-revisions
+     (let [damaged (fn [f] (let [[dir b s] (docs-store! 2 1)] (f dir b s) (ex-of #(store/open b h))))
+           node-id (fn [s] (some (fn [[id o]] (when (:class o) id)) (:objects s)))]
+       (is (= [:store/corrupt-head :missing]
+              ((juxt :type :reason) (damaged (fn [dir _ s] (io/delete-file (io/file dir "objects" (:head s))))))))
+       (is (= [:store/corrupt-head :hash-mismatch]
+              ((juxt :type :reason) (damaged (fn [dir _ s] (tamper! dir (:head s)))))))
+       (is (= [:store/corrupt-head :hash-mismatch]
+              ((juxt :type :reason) (damaged (fn [dir _ s] (tamper! dir (first (remove #{(:head s)} (vals (:heads s)))))))))
+           "a per-tree head is checked like the head")
+       (is (= [:store/corrupt-head :not-a-revision]
+              ((juxt :type :reason) (damaged (fn [dir _ s] (spit (str dir "/heads.edn") (pr-str (assoc (heads-of s) :head (node-id s)))))))))
+       (is (= :store/corrupt-heads (:type (damaged (fn [dir _ _] (spit (str dir "/heads.edn") "{:head \"abc"))))) "unreadable")
+       (is (= :store/corrupt-heads (:type (damaged (fn [dir _ _] (spit (str dir "/heads.edn") "{:head 1 :heads []}"))))) "wrong shape")
+       (is (= :store/corrupt-heads (:type (damaged (fn [dir _ s] (spit (str dir "/heads.edn") (pr-str (:heads s))))))) "not {:head :heads}"))))
+
+#?(:clj
+   (deftest a-tampered-object-is-detected-by-the-hash-check
+     (let [[dir b s] (docs-store! 3 0)
+           id (some (fn [[id o]] (when (:class o) id)) (:objects s))]
+       (tamper! dir id)
+       (let [opened (store/open b h)]
+         (is (= (:head s) (:head opened)) "open trusts the objects the heads do not name")
+         (is (= [{:id id :reason :hash-mismatch}] (:bad (store/verify b opened))))
+         (is (= [{:id id :reason :hash-mismatch}] (:bad (store/verify-full b h))))
+         (is (false? (:ok? (store/verify-full b h))))))))
+
+#?(:clj
+   (deftest the-full-verification-detects-a-damaged-log-and-heads-that-disagree-with-it
+     (let [full (fn [f] (let [[dir b s] (docs-store! 3 0)
+                              log (str dir "/log.edn")]
+                          (f dir log s)
+                          {:open (ex-of #(store/open b h)) :full (store/verify-full b h) :replay (ex-of #(store/replay-open b h))}))
+           failed? (fn [r] (and (false? (:ok? (:full r))) (= [:replay-failed] (map :reason (:bad (:full r)))) (some? (:replay r))))]
+       (testing "sanity: an intact store passes"
+         (let [r (full (fn [_ _ _]))] (is (true? (:ok? (:full r)))) (is (nil? (:replay r)))))
+       (testing "a truncated log line"
+         (let [r (full (fn [_ log _] (let [t (slurp log)] (spit log (subs t 0 (- (count t) 40))))))]
+           (is (failed? r))
+           (is (nil? (:open r)) "open does not read the log: only the full verification sees it")))
+       (testing "an altered log line"
+         (let [r (full (fn [_ log _] (spit log (str/replace-first (slurp log) ":actor \"jp\"" ":actor \"xx\""))))]
+           (is (failed? r))
+           (is (nil? (:open r)))))
+       (testing "a log line removed from the middle"
+         (is (failed? (full (fn [_ log _] (let [ls (str/split-lines (slurp log))] (spit log (str (str/join "\n" (cons (first ls) (drop 2 ls))) "\n"))))))))
+       (testing "heads that disagree with the log (a well-formed, older state)"
+         (let [[dir b _] (docs-store! 1 0)
+               old (heads-of (store/open b h))
+               s (store/open b h)
+               s (reduce (fn [s i] (:store (store/commit! b s (doc-plan s i)))) s [2 3])]
+           (spit (str dir "/heads.edn") (pr-str old))
+           (is (= old (heads-of (store/open b h))) "open trusts heads.edn")
+           (is (= [:replay-failed] (map :reason (:bad (store/verify-full b h)))))
+           (is (some #{:log-heads-mismatch} (map :reason (:bad (store/verify b (store/open b h))))) "the cheap check compares the end of the log"))))))

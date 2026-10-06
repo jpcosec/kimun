@@ -161,13 +161,16 @@
                                 :data {:root root :discovered found :missing missing :stale stale :applied (boolean (:apply opts))}})))
 
 (defn verify
-  "`stores verify`: recomputes the hash of every reachable object
-   (`sldb.kernel.store/verify`). Data `{:checked :bad}`, plus `:uncommitted-tail`
+  "`stores verify`: the full verification (`sldb.kernel.store/verify-full`):
+   replays the whole log (every transaction and revision id, final heads
+   against heads.edn) and recomputes the hash of every reachable object; a log
+   that does not replay is `:bad [{:reason :replay-failed}]`. (`stores check`
+   runs only the hash check, on the store as opened from its heads.) Data `{:checked :bad}`, plus `:uncommitted-tail`
    when the log ends with a line the heads do not record; a mismatch is the
    failure `store/corrupt` (exit 5) carrying `:bad`."
   [_args opts {:keys [env cwd]}]
   (let [{:keys [backend descriptor store path]} (cli-store/open! (cli-store/resolve-store opts env cwd))
-        {:keys [ok? checked bad uncommitted-tail]} (store/verify backend store)]
+        {:keys [ok? checked bad uncommitted-tail]} (store/verify-full backend (:host store))]
     (if ok?
       (out/ok "stores verify" {:store (store-ref descriptor path)
                                :revision (:head store)
