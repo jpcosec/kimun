@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-cli-commands-docs-docscli\nsystem: sldb\nmodule: sldb.sldb.cli.commands.docs\nqualname: DocsCLI\nkind: ClassDef\nsource_path: sldb/cli/commands/docs.py\nsource_span: 13:71\nsource_sha256: c853813a19ddec0435375b07b14a4d388bfe6d1fc505bdc5dc3d5fc78a1b7744\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.cli.commands.docs:DocsCLI; contract-sha256:496c235898e7b9067395c7df466797341d2301b8811e9eb009793c4d2bbeaff8\n---\n\n# DocsCLI\n\n## Signature\n\nNot applicable.\n\n## Docstring\n\nPlural docs surface for the redesigned CLI.\n\n## Imports\n\n[\"__future__\", \"json\", \"sldb.cli.commands.doc\", \"sldb.cli.commands.explore\", \"sldb.cli.commands.links\", \"sldb.cli.graph_ops\", \"sldb.cli.store_context\", \"sldb.store.io\", \"typing\", \"yaml\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 55
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 64,
+   "end": 68
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 77,
+   "end": 104
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 115,
+   "end": 122
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 129,
+   "end": 137
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 151,
+   "end": 176
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 190,
+   "end": 195
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 211,
+   "end": 275
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 295,
+   "end": 409
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 416,
+   "end": 418
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 431,
+   "end": 566
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 574,
+   "end": 581
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 597,
+   "end": 612
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 628,
+   "end": 671
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 685,
+   "end": 871
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 885,
+   "end": 900
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 919,
+   "end": 934
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 55,
+   "text": "python-sldb-sldb-sldb-cli-commands-docs-docscli",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-cli-commands-docs-docscli",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 55,
+   "end": 64,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 64,
+   "end": 68,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 68,
+   "end": 77,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 77,
+   "end": 104,
+   "text": "sldb.sldb.cli.commands.docs",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.cli.commands.docs",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 104,
+   "end": 115,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 115,
+   "end": 122,
+   "text": "DocsCLI",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "DocsCLI",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 122,
+   "end": 129,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 129,
+   "end": 137,
+   "text": "ClassDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "ClassDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 137,
+   "end": 151,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 151,
+   "end": 176,
+   "text": "sldb/cli/commands/docs.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/cli/commands/docs.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 176,
+   "end": 190,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 190,
+   "end": 195,
+   "text": "13:71",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "13:71",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 195,
+   "end": 211,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 211,
+   "end": 275,
+   "text": "c853813a19ddec0435375b07b14a4d388bfe6d1fc505bdc5dc3d5fc78a1b7744",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "c853813a19ddec0435375b07b14a4d388bfe6d1fc505bdc5dc3d5fc78a1b7744",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 275,
+   "end": 295,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 295,
+   "end": 409,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 409,
+   "end": 416,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 416,
+   "end": 418,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 418,
+   "end": 431,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 431,
+   "end": 566,
+   "text": "python-ast:python:sldb.sldb.cli.commands.docs:DocsCLI; contract-sha256:496c235898e7b9067395c7df466797341d2301b8811e9eb009793c4d2bbeaff8",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.cli.commands.docs:DocsCLI; contract-sha256:496c235898e7b9067395c7df466797341d2301b8811e9eb009793c4d2bbeaff8",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 566,
+   "end": 574,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 574,
+   "end": 581,
+   "text": "DocsCLI",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "DocsCLI",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 581,
+   "end": 597,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 597,
+   "end": 612,
+   "text": "Not applicable.",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not applicable.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 612,
+   "end": 628,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 628,
+   "end": 671,
+   "text": "Plural docs surface for the redesigned CLI.",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Plural docs surface for the redesigned CLI.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 671,
+   "end": 685,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 685,
+   "end": 871,
+   "text": "[\"__future__\", \"json\", \"sldb.cli.commands.doc\", \"sldb.cli.commands.explore\", \"sldb.cli.commands.links\", \"sldb.cli.graph_ops\", \"sldb.cli.store_context\", \"sldb.store.io\", \"typing\", \"yaml\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\"__future__\", \"json\", \"sldb.cli.commands.doc\", \"sldb.cli.commands.explore\", \"sldb.cli.commands.links\", \"sldb.cli.graph_ops\", \"sldb.cli.store_context\", \"sldb.store.io\", \"typing\", \"yaml\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 871,
+   "end": 885,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 885,
+   "end": 900,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 900,
+   "end": 919,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 919,
+   "end": 934,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

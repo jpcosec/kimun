@@ -1,0 +1,12 @@
+{
+ "title": "Mark ready for testing",
+ "id": "operator-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-ready-for-testing",
+ "status": "active",
+ "summary": "Moves the task into the testing gate.",
+ "tags": [
+  "primitive:operator"
+ ],
+ "action": "set_field",
+ "target": "status",
+ "value": "ready_for_testing"
+}

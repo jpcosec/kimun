@@ -1,0 +1,1 @@
+{:op :render_with_spans :fn "sldb.core.segments.instrumented_render.render_with_spans" :tests ["tests/test_segment_structure.py::test_sentinels_do_not_shield_the_newline_jinja_drops"]}

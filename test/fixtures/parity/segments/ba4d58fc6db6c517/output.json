@@ -1,0 +1,265 @@
+{
+ "text": "---\n# condition-xxx\nid: condition-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-has-closeout-evidence\n# active | archived\nstatus: active\n# Payload path the condition reads\nsubject: closeout_evidence_verified\n# Predicate applied to the value (e.g., eq, contains)\npredicate: truthy\n# Expected value used by the predicate\nexpected: ''\n# e.g., system:deskops\ntags:\n- primitive:condition\n---\n\n# Durable evidence is verified\n\n## Summary\n\n_Summarize the predicate this condition checks._\n\nTask references must point to a real atom, test, or git commit before closeout.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 24,
+   "end": 126
+  },
+  {
+   "meta": {
+    "path": "status",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 155,
+   "end": 161
+  },
+  {
+   "meta": {
+    "path": "subject",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 206,
+   "end": 232
+  },
+  {
+   "meta": {
+    "path": "predicate",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 298,
+   "end": 304
+  },
+  {
+   "meta": {
+    "path": "expected",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 354,
+   "end": 356
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 385,
+   "end": 407
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 415,
+   "end": 443
+  },
+  {
+   "meta": {
+    "path": "summary",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 507,
+   "end": 586
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 24,
+   "text": "---\n# condition-xxx\nid: "
+  },
+  {
+   "type": "field",
+   "start": 24,
+   "end": 126,
+   "text": "condition-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-has-closeout-evidence",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "condition-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-has-closeout-evidence",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 126,
+   "end": 155,
+   "text": "\n# active | archived\nstatus: "
+  },
+  {
+   "type": "field",
+   "start": 155,
+   "end": 161,
+   "text": "active",
+   "path": "status",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "active",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 161,
+   "end": 206,
+   "text": "\n# Payload path the condition reads\nsubject: "
+  },
+  {
+   "type": "field",
+   "start": 206,
+   "end": 232,
+   "text": "closeout_evidence_verified",
+   "path": "subject",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "closeout_evidence_verified",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 232,
+   "end": 298,
+   "text": "\n# Predicate applied to the value (e.g., eq, contains)\npredicate: "
+  },
+  {
+   "type": "field",
+   "start": 298,
+   "end": 304,
+   "text": "truthy",
+   "path": "predicate",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "truthy",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 304,
+   "end": 354,
+   "text": "\n# Expected value used by the predicate\nexpected: "
+  },
+  {
+   "type": "field",
+   "start": 354,
+   "end": 356,
+   "text": "''",
+   "path": "expected",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 356,
+   "end": 385,
+   "text": "\n# e.g., system:deskops\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 385,
+   "end": 407,
+   "text": "\n- primitive:condition",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "primitive:condition"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 407,
+   "end": 415,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 415,
+   "end": 443,
+   "text": "Durable evidence is verified",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Durable evidence is verified",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 443,
+   "end": 507,
+   "text": "\n\n## Summary\n\n_Summarize the predicate this condition checks._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 507,
+   "end": 586,
+   "text": "Task references must point to a real atom, test, or git commit before closeout.",
+   "path": "summary",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Task references must point to a real atom, test, or git commit before closeout.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

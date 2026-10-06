@@ -1,0 +1,71 @@
+{
+ "text": "# TTTTTTTTTT\n\n## Body\n\nBBBBBBBBBB",
+ "spans": [
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 2,
+   "end": 12
+  },
+  {
+   "meta": {
+    "path": "body",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 23,
+   "end": 33
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 2,
+   "text": "# "
+  },
+  {
+   "type": "field",
+   "start": 2,
+   "end": 12,
+   "text": "TTTTTTTTTT",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "TTTTTTTTTT",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 12,
+   "end": 23,
+   "text": "\n\n## Body\n\n"
+  },
+  {
+   "type": "field",
+   "start": 23,
+   "end": 33,
+   "text": "BBBBBBBBBB",
+   "path": "body",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "BBBBBBBBBB",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

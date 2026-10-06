@@ -1,0 +1,265 @@
+{
+ "text": "---\n# edge-xxx\nid: edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-ready-to-closeout\n# active | archived\nstatus: active\n# Source node identifier\nsource: operator-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-ready-for-testing\n# Target node identifier\ntarget: checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-closeout-ready\n# Optional condition identifier guarding the transition\ncondition_ref: ''\n# e.g., system:deskops\ntags:\n- primitive:edge\n---\n\n# Testing-ready operator to closeout gate\n\n## Summary\n\n_Summarize the transition this edge represents._\n\nReady-for-testing state entered.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 19,
+   "end": 112
+  },
+  {
+   "meta": {
+    "path": "status",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 141,
+   "end": 147
+  },
+  {
+   "meta": {
+    "path": "source",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 181,
+   "end": 278
+  },
+  {
+   "meta": {
+    "path": "target",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 312,
+   "end": 407
+  },
+  {
+   "meta": {
+    "path": "condition_ref",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 479,
+   "end": 481
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 510,
+   "end": 527
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 535,
+   "end": 574
+  },
+  {
+   "meta": {
+    "path": "summary",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 638,
+   "end": 670
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 19,
+   "text": "---\n# edge-xxx\nid: "
+  },
+  {
+   "type": "field",
+   "start": 19,
+   "end": 112,
+   "text": "edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-ready-to-closeout",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-ready-to-closeout",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 112,
+   "end": 141,
+   "text": "\n# active | archived\nstatus: "
+  },
+  {
+   "type": "field",
+   "start": 141,
+   "end": 147,
+   "text": "active",
+   "path": "status",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "active",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 147,
+   "end": 181,
+   "text": "\n# Source node identifier\nsource: "
+  },
+  {
+   "type": "field",
+   "start": 181,
+   "end": 278,
+   "text": "operator-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-ready-for-testing",
+   "path": "source",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "operator-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-ready-for-testing",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 278,
+   "end": 312,
+   "text": "\n# Target node identifier\ntarget: "
+  },
+  {
+   "type": "field",
+   "start": 312,
+   "end": 407,
+   "text": "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-closeout-ready",
+   "path": "target",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-closeout-ready",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 407,
+   "end": 479,
+   "text": "\n# Optional condition identifier guarding the transition\ncondition_ref: "
+  },
+  {
+   "type": "field",
+   "start": 479,
+   "end": 481,
+   "text": "''",
+   "path": "condition_ref",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 481,
+   "end": 510,
+   "text": "\n# e.g., system:deskops\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 510,
+   "end": 527,
+   "text": "\n- primitive:edge",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "primitive:edge"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 527,
+   "end": 535,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 535,
+   "end": 574,
+   "text": "Testing-ready operator to closeout gate",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Testing-ready operator to closeout gate",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 574,
+   "end": 638,
+   "text": "\n\n## Summary\n\n_Summarize the transition this edge represents._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 638,
+   "end": 670,
+   "text": "Ready-for-testing state entered.",
+   "path": "summary",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Ready-for-testing state entered.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

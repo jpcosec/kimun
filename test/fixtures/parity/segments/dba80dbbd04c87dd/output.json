@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-selfdoc-kgdb_sync-graph_is_current\nsystem: sldb\nmodule: sldb.sldb.selfdoc.kgdb_sync\nqualname: graph_is_current\nkind: FunctionDef\nsource_path: sldb/selfdoc/kgdb_sync.py\nsource_span: '34:43'\nsource_sha256: 34432781a0be42fa613c2a8be784bc5786bf028a651ce7410dd8f613e3348972\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.selfdoc.kgdb_sync:graph_is_current; contract-sha256:a1f9a092d4e6720aabe1fa05a4ed7b6aa27ef8de4b5f82c853338d55cc6fb84a\n---\n\n# graph_is_current\n\n## Signature\n\ngraph_is_current(snapshot: dict, output: Path)\n\n## Docstring\n\nCheck that KGDB retained every expected node with its source hash.\n\n## Imports\n\n[\"__future__\", \"json\", \"pathlib\", \"subprocess\", \"tempfile\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 64
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 73,
+   "end": 77
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 86,
+   "end": 113
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 124,
+   "end": 140
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 147,
+   "end": 158
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 172,
+   "end": 197
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 211,
+   "end": 218
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 234,
+   "end": 298
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 318,
+   "end": 432
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 439,
+   "end": 441
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 454,
+   "end": 598
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 606,
+   "end": 622
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 638,
+   "end": 684
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 700,
+   "end": 766
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 780,
+   "end": 839
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 853,
+   "end": 868
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 887,
+   "end": 902
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 64,
+   "text": "python-sldb-sldb-sldb-selfdoc-kgdb_sync-graph_is_current",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-selfdoc-kgdb_sync-graph_is_current",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 64,
+   "end": 73,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 73,
+   "end": 77,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 77,
+   "end": 86,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 86,
+   "end": 113,
+   "text": "sldb.sldb.selfdoc.kgdb_sync",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.selfdoc.kgdb_sync",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 113,
+   "end": 124,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 124,
+   "end": 140,
+   "text": "graph_is_current",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "graph_is_current",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 140,
+   "end": 147,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 147,
+   "end": 158,
+   "text": "FunctionDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "FunctionDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 158,
+   "end": 172,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 172,
+   "end": 197,
+   "text": "sldb/selfdoc/kgdb_sync.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/selfdoc/kgdb_sync.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 197,
+   "end": 211,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 211,
+   "end": 218,
+   "text": "'34:43'",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "34:43",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 218,
+   "end": 234,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 234,
+   "end": 298,
+   "text": "34432781a0be42fa613c2a8be784bc5786bf028a651ce7410dd8f613e3348972",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "34432781a0be42fa613c2a8be784bc5786bf028a651ce7410dd8f613e3348972",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 298,
+   "end": 318,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 318,
+   "end": 432,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 432,
+   "end": 439,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 439,
+   "end": 441,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 441,
+   "end": 454,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 454,
+   "end": 598,
+   "text": "python-ast:python:sldb.sldb.selfdoc.kgdb_sync:graph_is_current; contract-sha256:a1f9a092d4e6720aabe1fa05a4ed7b6aa27ef8de4b5f82c853338d55cc6fb84a",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.selfdoc.kgdb_sync:graph_is_current; contract-sha256:a1f9a092d4e6720aabe1fa05a4ed7b6aa27ef8de4b5f82c853338d55cc6fb84a",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 598,
+   "end": 606,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 606,
+   "end": 622,
+   "text": "graph_is_current",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "graph_is_current",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 622,
+   "end": 638,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 638,
+   "end": 684,
+   "text": "graph_is_current(snapshot: dict, output: Path)",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "graph_is_current(snapshot: dict, output: Path)",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 684,
+   "end": 700,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 700,
+   "end": 766,
+   "text": "Check that KGDB retained every expected node with its source hash.",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Check that KGDB retained every expected node with its source hash.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 766,
+   "end": 780,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 780,
+   "end": 839,
+   "text": "[\"__future__\", \"json\", \"pathlib\", \"subprocess\", \"tempfile\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\"__future__\", \"json\", \"pathlib\", \"subprocess\", \"tempfile\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 839,
+   "end": 853,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 853,
+   "end": 868,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 868,
+   "end": 887,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 887,
+   "end": 902,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

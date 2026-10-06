@@ -1,0 +1,12 @@
+{
+ "title": "Durable evidence is verified",
+ "id": "condition-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-has-closeout-evidence",
+ "status": "active",
+ "summary": "Task references must point to a real atom, test, or git commit before closeout.",
+ "tags": [
+  "primitive:condition"
+ ],
+ "subject": "closeout_evidence_verified",
+ "predicate": "truthy",
+ "expected": ""
+}

@@ -1,0 +1,311 @@
+{
+ "text": "---\nname: extends\ndirection: directed\ncardinality: many_to_many\naxis: WHAT\nsource_types:\n- sldb_model\ntarget_types:\n- sldb_model\ncondition: ''\n---\n\n# extends\n\n## Description\n\nThe model inherits from that model (base_models); instances of the source are instances of the target.",
+ "spans": [
+  {
+   "meta": {
+    "path": "name",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 10,
+   "end": 17
+  },
+  {
+   "meta": {
+    "path": "direction",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 29,
+   "end": 37
+  },
+  {
+   "meta": {
+    "path": "cardinality",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 51,
+   "end": 63
+  },
+  {
+   "meta": {
+    "path": "axis",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 70,
+   "end": 74
+  },
+  {
+   "meta": {
+    "path": "source_types",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 4
+   },
+   "start": 88,
+   "end": 101
+  },
+  {
+   "meta": {
+    "path": "target_types",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 5
+   },
+   "start": 115,
+   "end": 128
+  },
+  {
+   "meta": {
+    "path": "condition",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 140,
+   "end": 142
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 150,
+   "end": 157
+  },
+  {
+   "meta": {
+    "path": "description",
+    "marker": "rev",
+    "traits": [
+     "markdown"
+    ],
+    "_order": 8
+   },
+   "start": 175,
+   "end": 277
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 10,
+   "text": "---\nname: "
+  },
+  {
+   "type": "field",
+   "start": 10,
+   "end": 17,
+   "text": "extends",
+   "path": "name",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "extends",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 17,
+   "end": 29,
+   "text": "\ndirection: "
+  },
+  {
+   "type": "field",
+   "start": 29,
+   "end": 37,
+   "text": "directed",
+   "path": "direction",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "enum",
+   "value": "directed",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 37,
+   "end": 51,
+   "text": "\ncardinality: "
+  },
+  {
+   "type": "field",
+   "start": 51,
+   "end": 63,
+   "text": "many_to_many",
+   "path": "cardinality",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "enum",
+   "value": "many_to_many",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 63,
+   "end": 70,
+   "text": "\naxis: "
+  },
+  {
+   "type": "field",
+   "start": 70,
+   "end": 74,
+   "text": "WHAT",
+   "path": "axis",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "WHAT",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 74,
+   "end": 88,
+   "text": "\nsource_types:"
+  },
+  {
+   "type": "field",
+   "start": 88,
+   "end": 101,
+   "text": "\n- sldb_model",
+   "path": "source_types",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "sldb_model"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 101,
+   "end": 115,
+   "text": "\ntarget_types:"
+  },
+  {
+   "type": "field",
+   "start": 115,
+   "end": 128,
+   "text": "\n- sldb_model",
+   "path": "target_types",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "sldb_model"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 128,
+   "end": 140,
+   "text": "\ncondition: "
+  },
+  {
+   "type": "field",
+   "start": 140,
+   "end": 142,
+   "text": "''",
+   "path": "condition",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 142,
+   "end": 150,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 150,
+   "end": 157,
+   "text": "extends",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "extends",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 157,
+   "end": 175,
+   "text": "\n\n## Description\n\n"
+  },
+  {
+   "type": "field",
+   "start": 175,
+   "end": 277,
+   "text": "The model inherits from that model (base_models); instances of the source are instances of the target.",
+   "path": "description",
+   "marker": "rev",
+   "traits": [
+    "markdown"
+   ],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "The model inherits from that model (base_models); instances of the source are instances of the target.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-store-io-lock-storeiolock-__init__\nsystem: sldb\nmodule: sldb.sldb.store.io.lock\nqualname: StoreIOLock.__init__\nkind: FunctionDef\nsource_path: sldb/store/io/lock.py\nsource_span: '28:29'\nsource_sha256: 6fa5455447ec3c1c665e273d60af2964bdc3ad65bc18764074a65b7f2c9d1f2a\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.store.io.lock:StoreIOLock.__init__; contract-sha256:a510be437143b6c6a9f3e13efdfcfd64e02b561ea940eea8c62fe8a45daac99a\n---\n\n# StoreIOLock.__init__\n\n## Signature\n\n__init__(self, store_path: Path)\n\n## Docstring\n\nNot documented.\n\n## Imports\n\n[\"contextlib\", \"fcntl\", \"os\", \"pathlib\", \"sldb.store.layout\", \"sldb.store.models\", \"tempfile\", \"yaml\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 64
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 73,
+   "end": 77
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 86,
+   "end": 109
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 120,
+   "end": 140
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 147,
+   "end": 158
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 172,
+   "end": 193
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 207,
+   "end": 214
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 230,
+   "end": 294
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 314,
+   "end": 428
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 435,
+   "end": 437
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 450,
+   "end": 594
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 602,
+   "end": 622
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 638,
+   "end": 670
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 686,
+   "end": 701
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 715,
+   "end": 817
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 831,
+   "end": 846
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 865,
+   "end": 880
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 64,
+   "text": "python-sldb-sldb-sldb-store-io-lock-storeiolock-__init__",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-store-io-lock-storeiolock-__init__",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 64,
+   "end": 73,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 73,
+   "end": 77,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 77,
+   "end": 86,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 86,
+   "end": 109,
+   "text": "sldb.sldb.store.io.lock",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.store.io.lock",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 109,
+   "end": 120,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 120,
+   "end": 140,
+   "text": "StoreIOLock.__init__",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "StoreIOLock.__init__",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 140,
+   "end": 147,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 147,
+   "end": 158,
+   "text": "FunctionDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "FunctionDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 158,
+   "end": 172,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 172,
+   "end": 193,
+   "text": "sldb/store/io/lock.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/store/io/lock.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 193,
+   "end": 207,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 207,
+   "end": 214,
+   "text": "'28:29'",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "28:29",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 214,
+   "end": 230,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 230,
+   "end": 294,
+   "text": "6fa5455447ec3c1c665e273d60af2964bdc3ad65bc18764074a65b7f2c9d1f2a",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "6fa5455447ec3c1c665e273d60af2964bdc3ad65bc18764074a65b7f2c9d1f2a",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 294,
+   "end": 314,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 314,
+   "end": 428,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 428,
+   "end": 435,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 435,
+   "end": 437,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 437,
+   "end": 450,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 450,
+   "end": 594,
+   "text": "python-ast:python:sldb.sldb.store.io.lock:StoreIOLock.__init__; contract-sha256:a510be437143b6c6a9f3e13efdfcfd64e02b561ea940eea8c62fe8a45daac99a",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.store.io.lock:StoreIOLock.__init__; contract-sha256:a510be437143b6c6a9f3e13efdfcfd64e02b561ea940eea8c62fe8a45daac99a",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 594,
+   "end": 602,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 602,
+   "end": 622,
+   "text": "StoreIOLock.__init__",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "StoreIOLock.__init__",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 622,
+   "end": 638,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 638,
+   "end": 670,
+   "text": "__init__(self, store_path: Path)",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "__init__(self, store_path: Path)",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 670,
+   "end": 686,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 686,
+   "end": 701,
+   "text": "Not documented.",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 701,
+   "end": 715,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 715,
+   "end": 817,
+   "text": "[\"contextlib\", \"fcntl\", \"os\", \"pathlib\", \"sldb.store.layout\", \"sldb.store.models\", \"tempfile\", \"yaml\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\"contextlib\", \"fcntl\", \"os\", \"pathlib\", \"sldb.store.layout\", \"sldb.store.models\", \"tempfile\", \"yaml\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 817,
+   "end": 831,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 831,
+   "end": 846,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 846,
+   "end": 865,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 865,
+   "end": 880,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

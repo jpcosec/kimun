@@ -1,0 +1,39 @@
+{
+ "text": "# T",
+ "spans": [
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 2,
+   "end": 3
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 2,
+   "text": "# "
+  },
+  {
+   "type": "field",
+   "start": 2,
+   "end": 3,
+   "text": "T",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "T",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

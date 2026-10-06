@@ -1,0 +1,301 @@
+{
+ "text": "---\nid: surface-sldb-help\nsystem: sldb\nsurface: help\ntags:\n- system:sldb\n- domain:retrieval\n- kind:software\n- impl:external\n- entity:cli_surface\nprovenance: parser:sldb.cli.parser:build_parser#help; contract-sha256:3a232bac71000b48414029113e6c0651e15a539fe9609d760f282d62fb6e89a7\n---\n\n# help\n\n## Purpose\n\nCurated first-use guidance. Groups 1 command(s).\n\n## How It Works\n\nRegistered under src/sldb/cli/parsers/ as the 'help' subparser. Each command dispatches to its handler over the .sldb store.\n\n## Commands\n\n- sldb help",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 25
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 34,
+   "end": 38
+  },
+  {
+   "meta": {
+    "path": "surface",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 48,
+   "end": 52
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 58,
+   "end": 144
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "optrev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 157,
+   "end": 279
+  },
+  {
+   "meta": {
+    "path": "surface",
+    "marker": "render",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 287,
+   "end": 291
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 305,
+   "end": 353
+  },
+  {
+   "meta": {
+    "path": "how_it_works",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 372,
+   "end": 496
+  },
+  {
+   "meta": {
+    "path": "commands",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 511,
+   "end": 522
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 25,
+   "text": "surface-sldb-help",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "surface-sldb-help",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 25,
+   "end": 34,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 34,
+   "end": 38,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 38,
+   "end": 48,
+   "text": "\nsurface: "
+  },
+  {
+   "type": "field",
+   "start": 48,
+   "end": 52,
+   "text": "help",
+   "path": "surface",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "help",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 52,
+   "end": 58,
+   "text": "\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 58,
+   "end": 144,
+   "text": "\n- system:sldb\n- domain:retrieval\n- kind:software\n- impl:external\n- entity:cli_surface",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [
+    "system:sldb",
+    "domain:retrieval",
+    "kind:software",
+    "impl:external",
+    "entity:cli_surface"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 144,
+   "end": 157,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 157,
+   "end": 279,
+   "text": "parser:sldb.cli.parser:build_parser#help; contract-sha256:3a232bac71000b48414029113e6c0651e15a539fe9609d760f282d62fb6e89a7",
+   "path": "provenance",
+   "marker": "optrev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "parser:sldb.cli.parser:build_parser#help; contract-sha256:3a232bac71000b48414029113e6c0651e15a539fe9609d760f282d62fb6e89a7",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 279,
+   "end": 287,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 287,
+   "end": 291,
+   "text": "help",
+   "path": "surface",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "help",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 291,
+   "end": 305,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 305,
+   "end": 353,
+   "text": "Curated first-use guidance. Groups 1 command(s).",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Curated first-use guidance. Groups 1 command(s).",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 353,
+   "end": 372,
+   "text": "\n\n## How It Works\n\n"
+  },
+  {
+   "type": "field",
+   "start": 372,
+   "end": 496,
+   "text": "Registered under src/sldb/cli/parsers/ as the 'help' subparser. Each command dispatches to its handler over the .sldb store.",
+   "path": "how_it_works",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Registered under src/sldb/cli/parsers/ as the 'help' subparser. Each command dispatches to its handler over the .sldb store.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 496,
+   "end": 511,
+   "text": "\n\n## Commands\n\n"
+  },
+  {
+   "type": "field",
+   "start": 511,
+   "end": 522,
+   "text": "- sldb help",
+   "path": "commands",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "- sldb help",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

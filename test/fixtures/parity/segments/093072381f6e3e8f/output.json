@@ -1,0 +1,344 @@
+{
+ "text": "---\n# checklist-xxx\nid: checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-closeout-ready\n# draft | active | complete | archived\nstatus: active\n# List of condition-xxx paths\ncondition_refs:\n- condition-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-ready-for-closeout\n- condition-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-has-closeout-evidence\n# all | any\nmode: all\n# e.g., system:deskops\ntags:\n- primitive:checklist\n---\n\n# Closeout Ready\n\n## Summary\n\n_Summarize what this checklist proves._\n\nConfirms the task is ready for closeout.\n\n## Items\n\n_List the human-readable checks in this checklist._\n\n- Task is ready for closeout\n- Durable evidence is verified\n- Pill knowledge is graduated to atoms when required",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 24,
+   "end": 115
+  },
+  {
+   "meta": {
+    "path": "status",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 163,
+   "end": 169
+  },
+  {
+   "meta": {
+    "path": "condition_refs",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 215,
+   "end": 414
+  },
+  {
+   "meta": {
+    "path": "mode",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 433,
+   "end": 436
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 465,
+   "end": 487
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 495,
+   "end": 509
+  },
+  {
+   "meta": {
+    "path": "summary",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 564,
+   "end": 604
+  },
+  {
+   "meta": {
+    "path": "items/0",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 7
+   },
+   "start": 671,
+   "end": 697
+  },
+  {
+   "meta": {
+    "path": "items/1",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 8
+   },
+   "start": 700,
+   "end": 728
+  },
+  {
+   "meta": {
+    "path": "items/2",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 9
+   },
+   "start": 731,
+   "end": 781
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 24,
+   "text": "---\n# checklist-xxx\nid: "
+  },
+  {
+   "type": "field",
+   "start": 24,
+   "end": 115,
+   "text": "checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-closeout-ready",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-closeout-ready",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 115,
+   "end": 163,
+   "text": "\n# draft | active | complete | archived\nstatus: "
+  },
+  {
+   "type": "field",
+   "start": 163,
+   "end": 169,
+   "text": "active",
+   "path": "status",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "active",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 169,
+   "end": 215,
+   "text": "\n# List of condition-xxx paths\ncondition_refs:"
+  },
+  {
+   "type": "field",
+   "start": 215,
+   "end": 414,
+   "text": "\n- condition-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-ready-for-closeout\n- condition-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-has-closeout-evidence",
+   "path": "condition_refs",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "condition-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-ready-for-closeout",
+    "condition-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-has-closeout-evidence"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 414,
+   "end": 433,
+   "text": "\n# all | any\nmode: "
+  },
+  {
+   "type": "field",
+   "start": 433,
+   "end": 436,
+   "text": "all",
+   "path": "mode",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "all",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 436,
+   "end": 465,
+   "text": "\n# e.g., system:deskops\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 465,
+   "end": 487,
+   "text": "\n- primitive:checklist",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "primitive:checklist"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 487,
+   "end": 495,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 495,
+   "end": 509,
+   "text": "Closeout Ready",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Closeout Ready",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 509,
+   "end": 564,
+   "text": "\n\n## Summary\n\n_Summarize what this checklist proves._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 564,
+   "end": 604,
+   "text": "Confirms the task is ready for closeout.",
+   "path": "summary",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Confirms the task is ready for closeout.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 604,
+   "end": 671,
+   "text": "\n\n## Items\n\n_List the human-readable checks in this checklist._\n\n- "
+  },
+  {
+   "type": "field",
+   "start": 671,
+   "end": 697,
+   "text": "Task is ready for closeout",
+   "path": "items/0",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Task is ready for closeout",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 697,
+   "end": 700,
+   "text": "\n- "
+  },
+  {
+   "type": "field",
+   "start": 700,
+   "end": 728,
+   "text": "Durable evidence is verified",
+   "path": "items/1",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Durable evidence is verified",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 728,
+   "end": 731,
+   "text": "\n- "
+  },
+  {
+   "type": "field",
+   "start": 731,
+   "end": 781,
+   "text": "Pill knowledge is graduated to atoms when required",
+   "path": "items/2",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Pill knowledge is graduated to atoms when required",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

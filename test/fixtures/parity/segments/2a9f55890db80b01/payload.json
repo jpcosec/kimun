@@ -1,0 +1,12 @@
+{
+ "title": "Testing gate to testing-ready operator",
+ "id": "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-testing-to-ready",
+ "status": "active",
+ "summary": "Testing gate passed.",
+ "tags": [
+  "primitive:edge"
+ ],
+ "source": "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-testing-ready",
+ "target": "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-ready-for-testing",
+ "condition_ref": ""
+}

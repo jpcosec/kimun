@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-core-handlers-table-tablenodehandler-_extract_row_records\nsystem: sldb\nmodule: sldb.sldb.core.handlers.table\nqualname: TableNodeHandler._extract_row_records\nkind: FunctionDef\nsource_path: sldb/core/handlers/table.py\nsource_span: 56:61\nsource_sha256: 8131410648829b7c483d47b065caa7a597bc207af018e652e5706ea94cf19253\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.core.handlers.table:TableNodeHandler._extract_row_records;\n  contract-sha256:dcb7ce9c19df64842cad2cb0cd619991b747089d1077a07fe66f3d03c4450573\n---\n\n# TableNodeHandler._extract_row_records\n\n## Signature\n\n_extract_row_records(self, data_rows: list[SLDBNode], col_markers: dict[int, Any], patterns: dict[int, str])\n\n## Docstring\n\nNot documented.\n\n## Imports\n\n[\"__future__\", \"re\", \"sldb.core.handlers.base\", \"sldb.core.handlers.utils\", \"sldb.core.node\", \"typing\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 87
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 96,
+   "end": 100
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 109,
+   "end": 138
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 149,
+   "end": 186
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 193,
+   "end": 204
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 218,
+   "end": 245
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 259,
+   "end": 264
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 280,
+   "end": 344
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 364,
+   "end": 478
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 485,
+   "end": 487
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 500,
+   "end": 669
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 677,
+   "end": 714
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 730,
+   "end": 838
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 854,
+   "end": 869
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 883,
+   "end": 986
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 1000,
+   "end": 1015
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 1034,
+   "end": 1049
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 87,
+   "text": "python-sldb-sldb-sldb-core-handlers-table-tablenodehandler-_extract_row_records",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-core-handlers-table-tablenodehandler-_extract_row_records",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 87,
+   "end": 96,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 96,
+   "end": 100,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 100,
+   "end": 109,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 109,
+   "end": 138,
+   "text": "sldb.sldb.core.handlers.table",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.core.handlers.table",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 138,
+   "end": 149,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 149,
+   "end": 186,
+   "text": "TableNodeHandler._extract_row_records",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "TableNodeHandler._extract_row_records",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 186,
+   "end": 193,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 193,
+   "end": 204,
+   "text": "FunctionDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "FunctionDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 204,
+   "end": 218,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 218,
+   "end": 245,
+   "text": "sldb/core/handlers/table.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/core/handlers/table.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 245,
+   "end": 259,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 259,
+   "end": 264,
+   "text": "56:61",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "56:61",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 264,
+   "end": 280,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 280,
+   "end": 344,
+   "text": "8131410648829b7c483d47b065caa7a597bc207af018e652e5706ea94cf19253",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "8131410648829b7c483d47b065caa7a597bc207af018e652e5706ea94cf19253",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 344,
+   "end": 364,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 364,
+   "end": 478,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 478,
+   "end": 485,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 485,
+   "end": 487,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 487,
+   "end": 500,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 500,
+   "end": 669,
+   "text": "python-ast:python:sldb.sldb.core.handlers.table:TableNodeHandler._extract_row_records;\n  contract-sha256:dcb7ce9c19df64842cad2cb0cd619991b747089d1077a07fe66f3d03c4450573",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.core.handlers.table:TableNodeHandler._extract_row_records; contract-sha256:dcb7ce9c19df64842cad2cb0cd619991b747089d1077a07fe66f3d03c4450573",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 669,
+   "end": 677,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 677,
+   "end": 714,
+   "text": "TableNodeHandler._extract_row_records",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "TableNodeHandler._extract_row_records",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 714,
+   "end": 730,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 730,
+   "end": 838,
+   "text": "_extract_row_records(self, data_rows: list[SLDBNode], col_markers: dict[int, Any], patterns: dict[int, str])",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "_extract_row_records(self, data_rows: list[SLDBNode], col_markers: dict[int, Any], patterns: dict[int, str])",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 838,
+   "end": 854,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 854,
+   "end": 869,
+   "text": "Not documented.",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 869,
+   "end": 883,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 883,
+   "end": 986,
+   "text": "[\"__future__\", \"re\", \"sldb.core.handlers.base\", \"sldb.core.handlers.utils\", \"sldb.core.node\", \"typing\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\"__future__\", \"re\", \"sldb.core.handlers.base\", \"sldb.core.handlers.utils\", \"sldb.core.node\", \"typing\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 986,
+   "end": 1000,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1000,
+   "end": 1015,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1015,
+   "end": 1034,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1034,
+   "end": 1049,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

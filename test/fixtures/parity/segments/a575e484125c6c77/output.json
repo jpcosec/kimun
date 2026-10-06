@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-cli-federated_utils-_ensure_federated_model_entry\nsystem: sldb\nmodule: sldb.sldb.cli.federated_utils\nqualname: _ensure_federated_model_entry\nkind: FunctionDef\nsource_path: sldb/cli/federated_utils.py\nsource_span: 83:89\nsource_sha256: 989d0dea7e5ec21db5de0847a8755dedfcc4fe98ea87c63f7b934a511391c88a\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.cli.federated_utils:_ensure_federated_model_entry;\n  contract-sha256:fd489a52eb54da45ef86343ddf5ffbe53353a01dc779641442a3b7956ca11346\n---\n\n# _ensure_federated_model_entry\n\n## Signature\n\n_ensure_federated_model_entry(store_path: Path, root: Path, store_index: Any, model_type: type[StructuredNLDoc], model_ref: str, model_path: Path)\n\n## Docstring\n\nNot documented.\n\n## Imports\n\n[\"__future__\", \"pathlib\", \"sldb.cli.model_utils\", \"sldb.models.structured_doc\", \"sldb.store.io\", \"sldb.store.layout\", \"sldb.store.models\", \"sldb.store.ops\", \"sldb.store.resolver\", \"sldb.store.semantic_tags\", \"typing\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 79
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 88,
+   "end": 92
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 101,
+   "end": 130
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 141,
+   "end": 170
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 177,
+   "end": 188
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 202,
+   "end": 229
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 243,
+   "end": 248
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 264,
+   "end": 328
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 348,
+   "end": 462
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 469,
+   "end": 471
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 484,
+   "end": 645
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 653,
+   "end": 682
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 698,
+   "end": 844
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 860,
+   "end": 875
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 889,
+   "end": 1106
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 1120,
+   "end": 1135
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 1154,
+   "end": 1169
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 79,
+   "text": "python-sldb-sldb-sldb-cli-federated_utils-_ensure_federated_model_entry",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-cli-federated_utils-_ensure_federated_model_entry",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 79,
+   "end": 88,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 88,
+   "end": 92,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 92,
+   "end": 101,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 101,
+   "end": 130,
+   "text": "sldb.sldb.cli.federated_utils",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.cli.federated_utils",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 130,
+   "end": 141,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 141,
+   "end": 170,
+   "text": "_ensure_federated_model_entry",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "_ensure_federated_model_entry",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 170,
+   "end": 177,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 177,
+   "end": 188,
+   "text": "FunctionDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "FunctionDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 188,
+   "end": 202,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 202,
+   "end": 229,
+   "text": "sldb/cli/federated_utils.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/cli/federated_utils.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 229,
+   "end": 243,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 243,
+   "end": 248,
+   "text": "83:89",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "83:89",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 248,
+   "end": 264,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 264,
+   "end": 328,
+   "text": "989d0dea7e5ec21db5de0847a8755dedfcc4fe98ea87c63f7b934a511391c88a",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "989d0dea7e5ec21db5de0847a8755dedfcc4fe98ea87c63f7b934a511391c88a",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 328,
+   "end": 348,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 348,
+   "end": 462,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 462,
+   "end": 469,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 469,
+   "end": 471,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 471,
+   "end": 484,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 484,
+   "end": 645,
+   "text": "python-ast:python:sldb.sldb.cli.federated_utils:_ensure_federated_model_entry;\n  contract-sha256:fd489a52eb54da45ef86343ddf5ffbe53353a01dc779641442a3b7956ca11346",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.cli.federated_utils:_ensure_federated_model_entry; contract-sha256:fd489a52eb54da45ef86343ddf5ffbe53353a01dc779641442a3b7956ca11346",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 645,
+   "end": 653,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 653,
+   "end": 682,
+   "text": "_ensure_federated_model_entry",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "_ensure_federated_model_entry",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 682,
+   "end": 698,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 698,
+   "end": 844,
+   "text": "_ensure_federated_model_entry(store_path: Path, root: Path, store_index: Any, model_type: type[StructuredNLDoc], model_ref: str, model_path: Path)",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "_ensure_federated_model_entry(store_path: Path, root: Path, store_index: Any, model_type: type[StructuredNLDoc], model_ref: str, model_path: Path)",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 844,
+   "end": 860,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 860,
+   "end": 875,
+   "text": "Not documented.",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 875,
+   "end": 889,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 889,
+   "end": 1106,
+   "text": "[\"__future__\", \"pathlib\", \"sldb.cli.model_utils\", \"sldb.models.structured_doc\", \"sldb.store.io\", \"sldb.store.layout\", \"sldb.store.models\", \"sldb.store.ops\", \"sldb.store.resolver\", \"sldb.store.semantic_tags\", \"typing\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\"__future__\", \"pathlib\", \"sldb.cli.model_utils\", \"sldb.models.structured_doc\", \"sldb.store.io\", \"sldb.store.layout\", \"sldb.store.models\", \"sldb.store.ops\", \"sldb.store.resolver\", \"sldb.store.semantic_tags\", \"typing\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1106,
+   "end": 1120,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1120,
+   "end": 1135,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1135,
+   "end": 1154,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1154,
+   "end": 1169,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

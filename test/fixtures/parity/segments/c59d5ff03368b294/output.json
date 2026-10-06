@@ -1,0 +1,147 @@
+{
+ "text": "# SLDB Desk Standards\n\n## Purpose\n\nThis desk exists to make the repo's current operational state explicit, queryable, and durable without mixing every workflow decision directly into generic SLDB infrastructure.\n\nThe desk should explain what the repo is trying to deliver next, what local execution rules apply, and what decisions or pills future work should inherit before more code changes happen.\n\n## Task Rules\n\n1. Every non-trivial delivery slice should have a task document before or during execution.\n2. If the execution depends on a local architectural decision or recurring rule, write a pill instead of relying on chat memory.\n3. Update the board when a task closes so the current desk state remains queryable.\n4. Validate new desk docs against their local models before tracking them.\n5. Rebuild the store after tracking or materially changing desk docs.\n6. Keep SLDB generic where possible; if a behavior is really desk workflow semantics, push it toward `deskops`.\n\n## Current Priority\n\nThe current priority is to keep the SLDB desk surface useful as local project state while moving reusable workflow semantics toward `deskops`: standards, spec, board, tasks, pills, and local drawer notes belong here only when they describe SLDB-specific work, while inbox request routing belongs to `deskops`.",
+ "spans": [
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 2,
+   "end": 21
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [
+     "markdown"
+    ],
+    "_order": 1
+   },
+   "start": 35,
+   "end": 399
+  },
+  {
+   "meta": {
+    "path": "task_rules",
+    "marker": "rev",
+    "traits": [
+     "markdown"
+    ],
+    "_order": 2
+   },
+   "start": 416,
+   "end": 977
+  },
+  {
+   "meta": {
+    "path": "current_priority",
+    "marker": "rev",
+    "traits": [
+     "markdown"
+    ],
+    "_order": 3
+   },
+   "start": 1000,
+   "end": 1309
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 2,
+   "text": "# "
+  },
+  {
+   "type": "field",
+   "start": 2,
+   "end": 21,
+   "text": "SLDB Desk Standards",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "SLDB Desk Standards",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 21,
+   "end": 35,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 35,
+   "end": 399,
+   "text": "This desk exists to make the repo's current operational state explicit, queryable, and durable without mixing every workflow decision directly into generic SLDB infrastructure.\n\nThe desk should explain what the repo is trying to deliver next, what local execution rules apply, and what decisions or pills future work should inherit before more code changes happen.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [
+    "markdown"
+   ],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "This desk exists to make the repo's current operational state explicit, queryable, and durable without mixing every workflow decision directly into generic SLDB infrastructure.\n\nThe desk should explain what the repo is trying to deliver next, what local execution rules apply, and what decisions or pills future work should inherit before more code changes happen.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 399,
+   "end": 416,
+   "text": "\n\n## Task Rules\n\n"
+  },
+  {
+   "type": "field",
+   "start": 416,
+   "end": 977,
+   "text": "1. Every non-trivial delivery slice should have a task document before or during execution.\n2. If the execution depends on a local architectural decision or recurring rule, write a pill instead of relying on chat memory.\n3. Update the board when a task closes so the current desk state remains queryable.\n4. Validate new desk docs against their local models before tracking them.\n5. Rebuild the store after tracking or materially changing desk docs.\n6. Keep SLDB generic where possible; if a behavior is really desk workflow semantics, push it toward `deskops`.",
+   "path": "task_rules",
+   "marker": "rev",
+   "traits": [
+    "markdown"
+   ],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "1. Every non-trivial delivery slice should have a task document before or during execution.\n2. If the execution depends on a local architectural decision or recurring rule, write a pill instead of relying on chat memory.\n3. Update the board when a task closes so the current desk state remains queryable.\n4. Validate new desk docs against their local models before tracking them.\n5. Rebuild the store after tracking or materially changing desk docs.\n6. Keep SLDB generic where possible; if a behavior is really desk workflow semantics, push it toward `deskops`.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 977,
+   "end": 1000,
+   "text": "\n\n## Current Priority\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1000,
+   "end": 1309,
+   "text": "The current priority is to keep the SLDB desk surface useful as local project state while moving reusable workflow semantics toward `deskops`: standards, spec, board, tasks, pills, and local drawer notes belong here only when they describe SLDB-specific work, while inbox request routing belongs to `deskops`.",
+   "path": "current_priority",
+   "marker": "rev",
+   "traits": [
+    "markdown"
+   ],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "The current priority is to keep the SLDB desk surface useful as local project state while moving reusable workflow semantics toward `deskops`: standards, spec, board, tasks, pills, and local drawer notes belong here only when they describe SLDB-specific work, while inbox request routing belongs to `deskops`.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

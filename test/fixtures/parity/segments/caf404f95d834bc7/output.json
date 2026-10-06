@@ -1,0 +1,265 @@
+{
+ "text": "---\n# edge-xxx\nid: edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-to-close\n# active | archived\nstatus: active\n# Source node identifier\nsource: checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-ready\n# Target node identifier\ntarget: operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-close\n# Optional condition identifier guarding the transition\ncondition_ref: ''\n# e.g., system:deskops\ntags:\n- primitive:edge\n---\n\n# Closeout gate to close operator\n\n## Summary\n\n_Summarize the transition this edge represents._\n\nCloseout gate passed.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 19,
+   "end": 102
+  },
+  {
+   "meta": {
+    "path": "status",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 131,
+   "end": 137
+  },
+  {
+   "meta": {
+    "path": "source",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 171,
+   "end": 256
+  },
+  {
+   "meta": {
+    "path": "target",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 290,
+   "end": 365
+  },
+  {
+   "meta": {
+    "path": "condition_ref",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 437,
+   "end": 439
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 468,
+   "end": 485
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 493,
+   "end": 524
+  },
+  {
+   "meta": {
+    "path": "summary",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 588,
+   "end": 609
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 19,
+   "text": "---\n# edge-xxx\nid: "
+  },
+  {
+   "type": "field",
+   "start": 19,
+   "end": 102,
+   "text": "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-to-close",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-to-close",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 102,
+   "end": 131,
+   "text": "\n# active | archived\nstatus: "
+  },
+  {
+   "type": "field",
+   "start": 131,
+   "end": 137,
+   "text": "active",
+   "path": "status",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "active",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 137,
+   "end": 171,
+   "text": "\n# Source node identifier\nsource: "
+  },
+  {
+   "type": "field",
+   "start": 171,
+   "end": 256,
+   "text": "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-ready",
+   "path": "source",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-ready",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 256,
+   "end": 290,
+   "text": "\n# Target node identifier\ntarget: "
+  },
+  {
+   "type": "field",
+   "start": 290,
+   "end": 365,
+   "text": "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-close",
+   "path": "target",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-close",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 365,
+   "end": 437,
+   "text": "\n# Optional condition identifier guarding the transition\ncondition_ref: "
+  },
+  {
+   "type": "field",
+   "start": 437,
+   "end": 439,
+   "text": "''",
+   "path": "condition_ref",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 439,
+   "end": 468,
+   "text": "\n# e.g., system:deskops\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 468,
+   "end": 485,
+   "text": "\n- primitive:edge",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "primitive:edge"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 485,
+   "end": 493,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 493,
+   "end": 524,
+   "text": "Closeout gate to close operator",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Closeout gate to close operator",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 524,
+   "end": 588,
+   "text": "\n\n## Summary\n\n_Summarize the transition this edge represents._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 588,
+   "end": 609,
+   "text": "Closeout gate passed.",
+   "path": "summary",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Closeout gate passed.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

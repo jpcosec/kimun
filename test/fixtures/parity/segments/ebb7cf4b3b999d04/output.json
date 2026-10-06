@@ -1,0 +1,39 @@
+{
+ "text": "# My Book",
+ "spans": [
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 2,
+   "end": 9
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 2,
+   "text": "# "
+  },
+  {
+   "type": "field",
+   "start": 2,
+   "end": 9,
+   "text": "My Book",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "My Book",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

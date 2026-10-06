@@ -1,0 +1,12 @@
+{
+ "title": "Closeout gate to close operator",
+ "id": "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-to-close",
+ "status": "active",
+ "summary": "Closeout gate passed.",
+ "tags": [
+  "primitive:edge"
+ ],
+ "source": "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-ready",
+ "target": "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-close",
+ "condition_ref": ""
+}

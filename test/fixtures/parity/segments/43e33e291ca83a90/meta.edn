@@ -1,0 +1,1 @@
+{:op :extract_sections :fn "sldb.api.records.extract.extract_sections" :tests ["tests/test_field_ownership.py::test_multiple_section_template_still_refuses_when_counts_differ"]}

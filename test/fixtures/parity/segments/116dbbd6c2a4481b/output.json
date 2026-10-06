@@ -1,0 +1,397 @@
+{
+ "text": "---\nid: cmd-sldb-docs-untrack\nsystem: sldb\ncommand_path: docs untrack\nsynopsis: Remove a tracked doc from the store.\ntags:\n- system:sldb\n- domain:retrieval\n- kind:software\n- impl:external\n- entity:cli_command\nprovenance: parser:sldb.cli.parser:build_parser#docs untrack; contract-sha256:48d4898f4305f8577a52df6af2f17dc55f26dea12df3af154140c84a86b346e5\n---\n\n# docs untrack\n\n## Synopsis\n\nRemove a tracked doc from the store.\n\n## Purpose\n\nThe `sldb docs untrack` command: Remove a tracked doc from the store.\n\n## How It Works\n\nImplemented under src/sldb/cli/parsers/ as the argparse subcommand 'untrack'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.\n\n## Arguments\n\n```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"doc\"\n      ],\n      \"required\": true,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Doc name or tracked path\"\n    },\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path\"\n    },\n    {\n      \"names\": [\n        \"--pythonpath\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Project path\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```\n\n## Usage\n\ndocs untrack",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 29
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 38,
+   "end": 42
+  },
+  {
+   "meta": {
+    "path": "command_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 57,
+   "end": 69
+  },
+  {
+   "meta": {
+    "path": "synopsis",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 80,
+   "end": 116
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 122,
+   "end": 208
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "optrev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 221,
+   "end": 351
+  },
+  {
+   "meta": {
+    "path": "command_path",
+    "marker": "render",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 359,
+   "end": 371
+  },
+  {
+   "meta": {
+    "path": "synopsis",
+    "marker": "render",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 386,
+   "end": 422
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 436,
+   "end": 505
+  },
+  {
+   "meta": {
+    "path": "how_it_works",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 524,
+   "end": 708
+  },
+  {
+   "meta": {
+    "path": "arguments",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 724,
+   "end": 1605
+  },
+  {
+   "meta": {
+    "path": "usage",
+    "marker": "rev",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 1617,
+   "end": 1629
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 29,
+   "text": "cmd-sldb-docs-untrack",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "cmd-sldb-docs-untrack",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 29,
+   "end": 38,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 38,
+   "end": 42,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 42,
+   "end": 57,
+   "text": "\ncommand_path: "
+  },
+  {
+   "type": "field",
+   "start": 57,
+   "end": 69,
+   "text": "docs untrack",
+   "path": "command_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs untrack",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 69,
+   "end": 80,
+   "text": "\nsynopsis: "
+  },
+  {
+   "type": "field",
+   "start": 80,
+   "end": 116,
+   "text": "Remove a tracked doc from the store.",
+   "path": "synopsis",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Remove a tracked doc from the store.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 116,
+   "end": 122,
+   "text": "\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 122,
+   "end": 208,
+   "text": "\n- system:sldb\n- domain:retrieval\n- kind:software\n- impl:external\n- entity:cli_command",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [
+    "system:sldb",
+    "domain:retrieval",
+    "kind:software",
+    "impl:external",
+    "entity:cli_command"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 208,
+   "end": 221,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 221,
+   "end": 351,
+   "text": "parser:sldb.cli.parser:build_parser#docs untrack; contract-sha256:48d4898f4305f8577a52df6af2f17dc55f26dea12df3af154140c84a86b346e5",
+   "path": "provenance",
+   "marker": "optrev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "parser:sldb.cli.parser:build_parser#docs untrack; contract-sha256:48d4898f4305f8577a52df6af2f17dc55f26dea12df3af154140c84a86b346e5",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 351,
+   "end": 359,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 359,
+   "end": 371,
+   "text": "docs untrack",
+   "path": "command_path",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs untrack",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 371,
+   "end": 386,
+   "text": "\n\n## Synopsis\n\n"
+  },
+  {
+   "type": "field",
+   "start": 386,
+   "end": 422,
+   "text": "Remove a tracked doc from the store.",
+   "path": "synopsis",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "block",
+   "kind": "string",
+   "value": "Remove a tracked doc from the store.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 422,
+   "end": 436,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 436,
+   "end": 505,
+   "text": "The `sldb docs untrack` command: Remove a tracked doc from the store.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "The `sldb docs untrack` command: Remove a tracked doc from the store.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 505,
+   "end": 524,
+   "text": "\n\n## How It Works\n\n"
+  },
+  {
+   "type": "field",
+   "start": 524,
+   "end": 708,
+   "text": "Implemented under src/sldb/cli/parsers/ as the argparse subcommand 'untrack'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.",
+   "path": "how_it_works",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Implemented under src/sldb/cli/parsers/ as the argparse subcommand 'untrack'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 708,
+   "end": 724,
+   "text": "\n\n## Arguments\n\n"
+  },
+  {
+   "type": "field",
+   "start": 724,
+   "end": 1605,
+   "text": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"doc\"\n      ],\n      \"required\": true,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Doc name or tracked path\"\n    },\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path\"\n    },\n    {\n      \"names\": [\n        \"--pythonpath\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Project path\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+   "path": "arguments",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"doc\"\n      ],\n      \"required\": true,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Doc name or tracked path\"\n    },\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path\"\n    },\n    {\n      \"names\": [\n        \"--pythonpath\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Project path\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1605,
+   "end": 1617,
+   "text": "\n\n## Usage\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1617,
+   "end": 1629,
+   "text": "docs untrack",
+   "path": "usage",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "docs untrack",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

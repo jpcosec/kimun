@@ -1,0 +1,1 @@
+{:op :render_with_spans :fn "sldb.core.segments.instrumented_render.render_with_spans" :tests ["tests/test_segment_structure.py::test_field_paths_addresses_and_values_follow_the_fields_space" "tests/test_segment_structure.py::test_literals_and_fields_tile_the_text_in_reading_order"]}

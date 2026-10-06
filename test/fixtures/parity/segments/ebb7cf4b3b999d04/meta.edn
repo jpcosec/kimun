@@ -1,0 +1,1 @@
+{:op :render_with_spans :fn "sldb.core.segments.instrumented_render.render_with_spans" :tests ["tests/test_serve.py::test_document_segments_returns_literals_and_field_spans" "tests/test_serve.py::test_document_segments_unrenderable_doc_returns_422"]}

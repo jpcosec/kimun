@@ -1,0 +1,397 @@
+{
+ "text": "---\nid: cmd-sldb-docs-list\nsystem: sldb\ncommand_path: docs list\nsynopsis: List tracked documents.\ntags:\n- system:sldb\n- domain:retrieval\n- kind:software\n- impl:external\n- entity:cli_command\nprovenance: parser:sldb.cli.parser:build_parser#docs list; contract-sha256:49fa1cc6ce0e6c19eab4f1c2d3d43a0885c4a0432c4e64ad83bb7e32c32b816d\n---\n\n# docs list\n\n## Synopsis\n\nList tracked documents.\n\n## Purpose\n\nThe `sldb docs list` command: List tracked documents.\n\n## How It Works\n\nImplemented under src/sldb/cli/parsers/ as the argparse subcommand 'list'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.\n\n## Arguments\n\n```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path\"\n    },\n    {\n      \"names\": [\n        \"--format\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"text\\\"\",\n      \"choices\": [\n        \"\\\"text\\\"\",\n        \"\\\"json\\\"\",\n        \"\\\"yaml\\\"\"\n      ],\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```\n\n## Usage\n\ndocs list",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 26
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 35,
+   "end": 39
+  },
+  {
+   "meta": {
+    "path": "command_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 54,
+   "end": 63
+  },
+  {
+   "meta": {
+    "path": "synopsis",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 74,
+   "end": 97
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 103,
+   "end": 189
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "optrev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 202,
+   "end": 329
+  },
+  {
+   "meta": {
+    "path": "command_path",
+    "marker": "render",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 337,
+   "end": 346
+  },
+  {
+   "meta": {
+    "path": "synopsis",
+    "marker": "render",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 361,
+   "end": 384
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 398,
+   "end": 451
+  },
+  {
+   "meta": {
+    "path": "how_it_works",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 470,
+   "end": 651
+  },
+  {
+   "meta": {
+    "path": "arguments",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 667,
+   "end": 1323
+  },
+  {
+   "meta": {
+    "path": "usage",
+    "marker": "rev",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 1335,
+   "end": 1344
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 26,
+   "text": "cmd-sldb-docs-list",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "cmd-sldb-docs-list",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 26,
+   "end": 35,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 35,
+   "end": 39,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 39,
+   "end": 54,
+   "text": "\ncommand_path: "
+  },
+  {
+   "type": "field",
+   "start": 54,
+   "end": 63,
+   "text": "docs list",
+   "path": "command_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs list",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 63,
+   "end": 74,
+   "text": "\nsynopsis: "
+  },
+  {
+   "type": "field",
+   "start": 74,
+   "end": 97,
+   "text": "List tracked documents.",
+   "path": "synopsis",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "List tracked documents.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 97,
+   "end": 103,
+   "text": "\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 103,
+   "end": 189,
+   "text": "\n- system:sldb\n- domain:retrieval\n- kind:software\n- impl:external\n- entity:cli_command",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [
+    "system:sldb",
+    "domain:retrieval",
+    "kind:software",
+    "impl:external",
+    "entity:cli_command"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 189,
+   "end": 202,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 202,
+   "end": 329,
+   "text": "parser:sldb.cli.parser:build_parser#docs list; contract-sha256:49fa1cc6ce0e6c19eab4f1c2d3d43a0885c4a0432c4e64ad83bb7e32c32b816d",
+   "path": "provenance",
+   "marker": "optrev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "parser:sldb.cli.parser:build_parser#docs list; contract-sha256:49fa1cc6ce0e6c19eab4f1c2d3d43a0885c4a0432c4e64ad83bb7e32c32b816d",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 329,
+   "end": 337,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 337,
+   "end": 346,
+   "text": "docs list",
+   "path": "command_path",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs list",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 346,
+   "end": 361,
+   "text": "\n\n## Synopsis\n\n"
+  },
+  {
+   "type": "field",
+   "start": 361,
+   "end": 384,
+   "text": "List tracked documents.",
+   "path": "synopsis",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "block",
+   "kind": "string",
+   "value": "List tracked documents.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 384,
+   "end": 398,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 398,
+   "end": 451,
+   "text": "The `sldb docs list` command: List tracked documents.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "The `sldb docs list` command: List tracked documents.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 451,
+   "end": 470,
+   "text": "\n\n## How It Works\n\n"
+  },
+  {
+   "type": "field",
+   "start": 470,
+   "end": 651,
+   "text": "Implemented under src/sldb/cli/parsers/ as the argparse subcommand 'list'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.",
+   "path": "how_it_works",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Implemented under src/sldb/cli/parsers/ as the argparse subcommand 'list'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 651,
+   "end": 667,
+   "text": "\n\n## Arguments\n\n"
+  },
+  {
+   "type": "field",
+   "start": 667,
+   "end": 1323,
+   "text": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path\"\n    },\n    {\n      \"names\": [\n        \"--format\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"text\\\"\",\n      \"choices\": [\n        \"\\\"text\\\"\",\n        \"\\\"json\\\"\",\n        \"\\\"yaml\\\"\"\n      ],\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+   "path": "arguments",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path\"\n    },\n    {\n      \"names\": [\n        \"--format\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"text\\\"\",\n      \"choices\": [\n        \"\\\"text\\\"\",\n        \"\\\"json\\\"\",\n        \"\\\"yaml\\\"\"\n      ],\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1323,
+   "end": 1335,
+   "text": "\n\n## Usage\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1335,
+   "end": 1344,
+   "text": "docs list",
+   "path": "usage",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "docs list",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

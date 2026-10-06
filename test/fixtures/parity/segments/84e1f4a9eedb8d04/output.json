@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-store-catalog_reconcile-reconcile_catalog\nsystem: sldb\nmodule: sldb.sldb.store.catalog_reconcile\nqualname: reconcile_catalog\nkind: FunctionDef\nsource_path: sldb/store/catalog_reconcile.py\nsource_span: '11:20'\nsource_sha256: 2366a9592e71784bdbda865aad3694f669de6aba61ae25d69b2f42b499755d7a\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.store.catalog_reconcile:reconcile_catalog;\n  contract-sha256:28eb87e1f68726b84e9c74f80ed305c784cde41885bb99130ce8b6809e2cb135\n---\n\n# reconcile_catalog\n\n## Signature\n\nreconcile_catalog(catalog: Path, search_root: Path, apply: bool)\n\n## Docstring\n\nCompare an explicit subtree with a catalog; mutate only with apply.\n\n## Imports\n\n[\"__future__\", \"pathlib\", \"sldb.store.io\", \"sldb.store.layout\", \"sldb.store.models\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 71
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 80,
+   "end": 84
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 93,
+   "end": 126
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 137,
+   "end": 154
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 161,
+   "end": 172
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 186,
+   "end": 217
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 231,
+   "end": 238
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 254,
+   "end": 318
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 338,
+   "end": 452
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 459,
+   "end": 461
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 474,
+   "end": 627
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 635,
+   "end": 652
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 668,
+   "end": 732
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 748,
+   "end": 815
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 829,
+   "end": 913
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 927,
+   "end": 942
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 961,
+   "end": 976
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 71,
+   "text": "python-sldb-sldb-sldb-store-catalog_reconcile-reconcile_catalog",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-store-catalog_reconcile-reconcile_catalog",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 71,
+   "end": 80,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 80,
+   "end": 84,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 84,
+   "end": 93,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 93,
+   "end": 126,
+   "text": "sldb.sldb.store.catalog_reconcile",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.store.catalog_reconcile",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 126,
+   "end": 137,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 137,
+   "end": 154,
+   "text": "reconcile_catalog",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "reconcile_catalog",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 154,
+   "end": 161,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 161,
+   "end": 172,
+   "text": "FunctionDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "FunctionDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 172,
+   "end": 186,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 186,
+   "end": 217,
+   "text": "sldb/store/catalog_reconcile.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/store/catalog_reconcile.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 217,
+   "end": 231,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 231,
+   "end": 238,
+   "text": "'11:20'",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "11:20",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 238,
+   "end": 254,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 254,
+   "end": 318,
+   "text": "2366a9592e71784bdbda865aad3694f669de6aba61ae25d69b2f42b499755d7a",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "2366a9592e71784bdbda865aad3694f669de6aba61ae25d69b2f42b499755d7a",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 318,
+   "end": 338,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 338,
+   "end": 452,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 452,
+   "end": 459,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 459,
+   "end": 461,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 461,
+   "end": 474,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 474,
+   "end": 627,
+   "text": "python-ast:python:sldb.sldb.store.catalog_reconcile:reconcile_catalog;\n  contract-sha256:28eb87e1f68726b84e9c74f80ed305c784cde41885bb99130ce8b6809e2cb135",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.store.catalog_reconcile:reconcile_catalog; contract-sha256:28eb87e1f68726b84e9c74f80ed305c784cde41885bb99130ce8b6809e2cb135",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 627,
+   "end": 635,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 635,
+   "end": 652,
+   "text": "reconcile_catalog",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "reconcile_catalog",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 652,
+   "end": 668,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 668,
+   "end": 732,
+   "text": "reconcile_catalog(catalog: Path, search_root: Path, apply: bool)",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "reconcile_catalog(catalog: Path, search_root: Path, apply: bool)",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 732,
+   "end": 748,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 748,
+   "end": 815,
+   "text": "Compare an explicit subtree with a catalog; mutate only with apply.",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Compare an explicit subtree with a catalog; mutate only with apply.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 815,
+   "end": 829,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 829,
+   "end": 913,
+   "text": "[\"__future__\", \"pathlib\", \"sldb.store.io\", \"sldb.store.layout\", \"sldb.store.models\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\"__future__\", \"pathlib\", \"sldb.store.io\", \"sldb.store.layout\", \"sldb.store.models\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 913,
+   "end": 927,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 927,
+   "end": 942,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 942,
+   "end": 961,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 961,
+   "end": 976,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

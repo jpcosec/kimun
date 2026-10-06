@@ -1,0 +1,18 @@
+[
+ {
+  "title": "Same",
+  "slug": "same",
+  "level": 1,
+  "path": "same",
+  "line_start": 1,
+  "line_end": 2
+ },
+ {
+  "title": "Same",
+  "slug": "same-2",
+  "level": 1,
+  "path": "same-2",
+  "line_start": 3,
+  "line_end": 4
+ }
+]

@@ -1,0 +1,269 @@
+{
+ "text": "---\n# checklist-xxx\nid: checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-execution-ready\n# draft | active | complete | archived\nstatus: active\n# List of condition-xxx paths\ncondition_refs: []\n# all | any\nmode: all\n# e.g., system:deskops\ntags:\n- primitive:checklist\n---\n\n# Execution Ready\n\n## Summary\n\n_Summarize what this checklist proves._\n\nConfirms the task is ready to enter active execution.\n\n## Items\n\n_List the human-readable checks in this checklist._\n\n- Task can enter active execution",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 24,
+   "end": 125
+  },
+  {
+   "meta": {
+    "path": "status",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 173,
+   "end": 179
+  },
+  {
+   "meta": {
+    "path": "condition_refs",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 226,
+   "end": 228
+  },
+  {
+   "meta": {
+    "path": "mode",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 247,
+   "end": 250
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 279,
+   "end": 301
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 309,
+   "end": 324
+  },
+  {
+   "meta": {
+    "path": "summary",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 379,
+   "end": 432
+  },
+  {
+   "meta": {
+    "path": "items/0",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 7
+   },
+   "start": 499,
+   "end": 530
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 24,
+   "text": "---\n# checklist-xxx\nid: "
+  },
+  {
+   "type": "field",
+   "start": 24,
+   "end": 125,
+   "text": "checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-execution-ready",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-execution-ready",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 125,
+   "end": 173,
+   "text": "\n# draft | active | complete | archived\nstatus: "
+  },
+  {
+   "type": "field",
+   "start": 173,
+   "end": 179,
+   "text": "active",
+   "path": "status",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "active",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 179,
+   "end": 226,
+   "text": "\n# List of condition-xxx paths\ncondition_refs: "
+  },
+  {
+   "type": "field",
+   "start": 226,
+   "end": 228,
+   "text": "[]",
+   "path": "condition_refs",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 228,
+   "end": 247,
+   "text": "\n# all | any\nmode: "
+  },
+  {
+   "type": "field",
+   "start": 247,
+   "end": 250,
+   "text": "all",
+   "path": "mode",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "all",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 250,
+   "end": 279,
+   "text": "\n# e.g., system:deskops\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 279,
+   "end": 301,
+   "text": "\n- primitive:checklist",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "primitive:checklist"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 301,
+   "end": 309,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 309,
+   "end": 324,
+   "text": "Execution Ready",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Execution Ready",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 324,
+   "end": 379,
+   "text": "\n\n## Summary\n\n_Summarize what this checklist proves._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 379,
+   "end": 432,
+   "text": "Confirms the task is ready to enter active execution.",
+   "path": "summary",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Confirms the task is ready to enter active execution.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 432,
+   "end": 499,
+   "text": "\n\n## Items\n\n_List the human-readable checks in this checklist._\n\n- "
+  },
+  {
+   "type": "field",
+   "start": 499,
+   "end": 530,
+   "text": "Task can enter active execution",
+   "path": "items/0",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Task can enter active execution",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

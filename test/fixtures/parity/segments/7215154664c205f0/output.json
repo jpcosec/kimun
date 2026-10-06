@@ -1,0 +1,397 @@
+{
+ "text": "---\nid: cmd-sldb-inbox\nsystem: sldb\ncommand_path: inbox\nsynopsis: Log unclear points or suggestions into the repo desk.\ntags:\n- system:sldb\n- domain:retrieval\n- kind:software\n- impl:external\n- entity:cli_command\nprovenance: parser:sldb.cli.parser:build_parser#inbox; contract-sha256:b37fc2b83589982b1a055c20bfd6530f3c12e39a9b782fc5064574784b15ec1c\n---\n\n# inbox\n\n## Synopsis\n\nLog unclear points or suggestions into the repo desk.\n\n## Purpose\n\nThe `sldb inbox` command: Log unclear points or suggestions into the repo desk.\n\n## How It Works\n\nImplemented under src/sldb/cli/parsers/ as the argparse subcommand 'inbox'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.\n\n## Arguments\n\n```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"message\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": \"?\",\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Inbox note body\"\n    },\n    {\n      \"names\": [\n        \"--kind\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"unclear\\\"\",\n      \"choices\": [\n        \"\\\"unclear\\\"\",\n        \"\\\"suggestion\\\"\"\n      ],\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Type of desk note to write\"\n    },\n    {\n      \"names\": [\n        \"--title\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Short title for the note\"\n    },\n    {\n      \"names\": [\n        \"--desk-root\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Desk root directory override\"\n    },\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path used to resolve the target project root\"\n    },\n    {\n      \"names\": [\n        \"--pythonpath\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Project path used when auto-tracking inbox notes\"\n    },\n    {\n      \"names\": [\n        \"--author\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"cli\\\"\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Source label for the inbox note\"\n    },\n    {\n      \"names\": [\n        \"--list\"\n      ],\n      \"required\": false,\n      \"default\": \"false\",\n      \"choices\": null,\n      \"nargs\": 0,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreTrueAction\",\n      \"const\": \"true\",\n      \"help\": \"List desk inbox notes\"\n    },\n    {\n      \"names\": [\n        \"--show\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Show one inbox note\"\n    },\n    {\n      \"names\": [\n        \"--limit\"\n      ],\n      \"required\": false,\n      \"default\": \"20\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": \"builtins.int\",\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Limit listed notes\"\n    },\n    {\n      \"names\": [\n        \"--format\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"text\\\"\",\n      \"choices\": [\n        \"\\\"text\\\"\",\n        \"\\\"json\\\"\",\n        \"\\\"yaml\\\"\"\n      ],\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```\n\n## Usage\n\ninbox",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 22
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 31,
+   "end": 35
+  },
+  {
+   "meta": {
+    "path": "command_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 50,
+   "end": 55
+  },
+  {
+   "meta": {
+    "path": "synopsis",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 66,
+   "end": 119
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 125,
+   "end": 211
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "optrev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 224,
+   "end": 347
+  },
+  {
+   "meta": {
+    "path": "command_path",
+    "marker": "render",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 355,
+   "end": 360
+  },
+  {
+   "meta": {
+    "path": "synopsis",
+    "marker": "render",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 375,
+   "end": 428
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 442,
+   "end": 521
+  },
+  {
+   "meta": {
+    "path": "how_it_works",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 540,
+   "end": 722
+  },
+  {
+   "meta": {
+    "path": "arguments",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 738,
+   "end": 4065
+  },
+  {
+   "meta": {
+    "path": "usage",
+    "marker": "rev",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 4077,
+   "end": 4082
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 22,
+   "text": "cmd-sldb-inbox",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "cmd-sldb-inbox",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 22,
+   "end": 31,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 31,
+   "end": 35,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 35,
+   "end": 50,
+   "text": "\ncommand_path: "
+  },
+  {
+   "type": "field",
+   "start": 50,
+   "end": 55,
+   "text": "inbox",
+   "path": "command_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "inbox",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 55,
+   "end": 66,
+   "text": "\nsynopsis: "
+  },
+  {
+   "type": "field",
+   "start": 66,
+   "end": 119,
+   "text": "Log unclear points or suggestions into the repo desk.",
+   "path": "synopsis",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Log unclear points or suggestions into the repo desk.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 119,
+   "end": 125,
+   "text": "\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 125,
+   "end": 211,
+   "text": "\n- system:sldb\n- domain:retrieval\n- kind:software\n- impl:external\n- entity:cli_command",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [
+    "system:sldb",
+    "domain:retrieval",
+    "kind:software",
+    "impl:external",
+    "entity:cli_command"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 211,
+   "end": 224,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 224,
+   "end": 347,
+   "text": "parser:sldb.cli.parser:build_parser#inbox; contract-sha256:b37fc2b83589982b1a055c20bfd6530f3c12e39a9b782fc5064574784b15ec1c",
+   "path": "provenance",
+   "marker": "optrev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "parser:sldb.cli.parser:build_parser#inbox; contract-sha256:b37fc2b83589982b1a055c20bfd6530f3c12e39a9b782fc5064574784b15ec1c",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 347,
+   "end": 355,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 355,
+   "end": 360,
+   "text": "inbox",
+   "path": "command_path",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "inbox",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 360,
+   "end": 375,
+   "text": "\n\n## Synopsis\n\n"
+  },
+  {
+   "type": "field",
+   "start": 375,
+   "end": 428,
+   "text": "Log unclear points or suggestions into the repo desk.",
+   "path": "synopsis",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "block",
+   "kind": "string",
+   "value": "Log unclear points or suggestions into the repo desk.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 428,
+   "end": 442,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 442,
+   "end": 521,
+   "text": "The `sldb inbox` command: Log unclear points or suggestions into the repo desk.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "The `sldb inbox` command: Log unclear points or suggestions into the repo desk.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 521,
+   "end": 540,
+   "text": "\n\n## How It Works\n\n"
+  },
+  {
+   "type": "field",
+   "start": 540,
+   "end": 722,
+   "text": "Implemented under src/sldb/cli/parsers/ as the argparse subcommand 'inbox'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.",
+   "path": "how_it_works",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Implemented under src/sldb/cli/parsers/ as the argparse subcommand 'inbox'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 722,
+   "end": 738,
+   "text": "\n\n## Arguments\n\n"
+  },
+  {
+   "type": "field",
+   "start": 738,
+   "end": 4065,
+   "text": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"message\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": \"?\",\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Inbox note body\"\n    },\n    {\n      \"names\": [\n        \"--kind\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"unclear\\\"\",\n      \"choices\": [\n        \"\\\"unclear\\\"\",\n        \"\\\"suggestion\\\"\"\n      ],\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Type of desk note to write\"\n    },\n    {\n      \"names\": [\n        \"--title\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Short title for the note\"\n    },\n    {\n      \"names\": [\n        \"--desk-root\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Desk root directory override\"\n    },\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path used to resolve the target project root\"\n    },\n    {\n      \"names\": [\n        \"--pythonpath\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Project path used when auto-tracking inbox notes\"\n    },\n    {\n      \"names\": [\n        \"--author\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"cli\\\"\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Source label for the inbox note\"\n    },\n    {\n      \"names\": [\n        \"--list\"\n      ],\n      \"required\": false,\n      \"default\": \"false\",\n      \"choices\": null,\n      \"nargs\": 0,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreTrueAction\",\n      \"const\": \"true\",\n      \"help\": \"List desk inbox notes\"\n    },\n    {\n      \"names\": [\n        \"--show\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Show one inbox note\"\n    },\n    {\n      \"names\": [\n        \"--limit\"\n      ],\n      \"required\": false,\n      \"default\": \"20\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": \"builtins.int\",\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Limit listed notes\"\n    },\n    {\n      \"names\": [\n        \"--format\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"text\\\"\",\n      \"choices\": [\n        \"\\\"text\\\"\",\n        \"\\\"json\\\"\",\n        \"\\\"yaml\\\"\"\n      ],\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+   "path": "arguments",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"message\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": \"?\",\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Inbox note body\"\n    },\n    {\n      \"names\": [\n        \"--kind\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"unclear\\\"\",\n      \"choices\": [\n        \"\\\"unclear\\\"\",\n        \"\\\"suggestion\\\"\"\n      ],\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Type of desk note to write\"\n    },\n    {\n      \"names\": [\n        \"--title\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Short title for the note\"\n    },\n    {\n      \"names\": [\n        \"--desk-root\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Desk root directory override\"\n    },\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path used to resolve the target project root\"\n    },\n    {\n      \"names\": [\n        \"--pythonpath\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Project path used when auto-tracking inbox notes\"\n    },\n    {\n      \"names\": [\n        \"--author\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"cli\\\"\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Source label for the inbox note\"\n    },\n    {\n      \"names\": [\n        \"--list\"\n      ],\n      \"required\": false,\n      \"default\": \"false\",\n      \"choices\": null,\n      \"nargs\": 0,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreTrueAction\",\n      \"const\": \"true\",\n      \"help\": \"List desk inbox notes\"\n    },\n    {\n      \"names\": [\n        \"--show\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Show one inbox note\"\n    },\n    {\n      \"names\": [\n        \"--limit\"\n      ],\n      \"required\": false,\n      \"default\": \"20\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": \"builtins.int\",\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Limit listed notes\"\n    },\n    {\n      \"names\": [\n        \"--format\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"text\\\"\",\n      \"choices\": [\n        \"\\\"text\\\"\",\n        \"\\\"json\\\"\",\n        \"\\\"yaml\\\"\"\n      ],\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 4065,
+   "end": 4077,
+   "text": "\n\n## Usage\n\n"
+  },
+  {
+   "type": "field",
+   "start": 4077,
+   "end": 4082,
+   "text": "inbox",
+   "path": "usage",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "inbox",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

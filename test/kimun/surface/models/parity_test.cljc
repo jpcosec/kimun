@@ -25,13 +25,16 @@
    :input (slurp? dir "input.md")
    :payload (some-> (slurp? dir "payload.json") (yaml/parse-string :keywords false))
    :rendered (slurp? dir "rendered.md")
-   :error (some-> (slurp? dir "error.json") json/parse-string)})
+   :error (some-> (slurp? dir "error.json") json/parse-string)
+   :ctx (let [refs (some-> (slurp? dir "refs.json") json/parse-string)
+              models (some-> (slurp? dir "ref-models.edn") edn/read-string)]
+          (when (or refs models) {:ref-text #(get refs %) :ref-model #(get models %)}))})
 
 (defn- norm [v] (json/parse-string (json/generate-string v)))
 
 (defn check
   "nil when kimun reproduces case `c`, else a short reason string."
-  [{:keys [meta descriptor input payload rendered error]}]
+  [{:keys [meta descriptor input payload rendered error ctx]}]
   (try
     (case (:op meta)
       :extract (if error
@@ -40,9 +43,9 @@
                  (let [got (norm (extract/extract descriptor input))]
                    (when (not= got (norm payload)) "payload differs")))
       :render (if error
-                (try (render/render descriptor payload) "expected an error"
+                (try (render/render descriptor payload ctx) "expected an error"
                      (catch clojure.lang.ExceptionInfo e (when-not (:type (ex-data e)) "untyped error")))
-                (let [out (render/render descriptor payload)]
+                (let [out (render/render descriptor payload ctx)]
                   (cond (not= (str/trim out) (str/trim rendered)) "render differs"
                         :else nil))))
     (catch Throwable t (str "threw: " (or (ex-message t) (class t))))))

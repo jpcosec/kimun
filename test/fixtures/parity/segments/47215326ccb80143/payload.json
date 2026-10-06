@@ -1,0 +1,50 @@
+{
+ "title": "Desk Board",
+ "id": "board-sldb-desk",
+ "status": "",
+ "summary": "",
+ "tags": [
+  "system:sldb",
+  "system:deskops",
+  "workspace:desk",
+  "topic:routing"
+ ],
+ "routine": "",
+ "current_node": "",
+ "history": [],
+ "scope": "sldb-local-desk",
+ "purpose": "",
+ "tasks": [
+  "desk/tasks/task-congelar-journal-autoridad-arbol.md",
+  "desk/tasks/task-build-code-self-documentation.md",
+  "desk/tasks/task-unify-store-context-and-federation.md",
+  "desk/tasks/task-correct-ast-ownership-and-section-contracts.md",
+  "desk/tasks/task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges.md",
+  "desk/tasks/task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges.md",
+  "desk/tasks/task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion.md",
+  "desk/tasks/task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico.md"
+ ],
+ "pills": [
+  "desk/pills/pill-015-self-documentation-boundaries.md",
+  "desk/pills/pill-001-sldb-vs-deskops-boundary.md",
+  "desk/pills/pill-002-onboarding-surface-before-depth.md",
+  "desk/pills/pill-003-template-marker-roundtrip-contract.md",
+  "desk/pills/pill-004-store-init-idempotency.md",
+  "desk/pills/pill-005-store-health-is-sldb-owned.md",
+  "desk/pills/pill-006-model-registration-is-queryable.md",
+  "desk/pills/pill-007-sldb-text-layer-vs-kgdb-graph-layer.md",
+  "desk/pills/pill-008-sldb-cli-document-contract.md",
+  "desk/pills/pill-009-cli-error-and-serialization-failure-mode.md",
+  "desk/pills/pill-010-active-board-slice-execution-map.md",
+  "desk/pills/pill-011-addressability-task-execution-context.md",
+  "desk/pills/pill-012-query-task-execution-context.md",
+  "desk/pills/pill-013-composition-task-execution-context.md",
+  "desk/pills/pill-014-semantic-export-task-execution-context.md"
+ ],
+ "rituals": [
+  "desk/rituals/execution.md",
+  "desk/rituals/testing.md",
+  "desk/rituals/closeout.md"
+ ],
+ "notes": "Current review follow-up: CLI self-documentation is active; shared store context/federation and AST ownership/section contracts are separate open tasks. Their task files define scope and validation. Historical rows below have not been reclassified.\n\n- Mapear arquitectura real de SLDB [active] - _Describe the concrete result this task must produce._"
+}

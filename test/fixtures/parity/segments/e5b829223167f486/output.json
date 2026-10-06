@@ -1,0 +1,344 @@
+{
+ "text": "---\n# checklist-xxx\nid: checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-closeout-ready\n# draft | active | complete | archived\nstatus: active\n# List of condition-xxx paths\ncondition_refs:\n- condition-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-ready-for-closeout\n- condition-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-has-closeout-evidence\n# all | any\nmode: all\n# e.g., system:deskops\ntags:\n- primitive:checklist\n---\n\n# Closeout Ready\n\n## Summary\n\n_Summarize what this checklist proves._\n\nConfirms the task is ready for closeout.\n\n## Items\n\n_List the human-readable checks in this checklist._\n\n- Task is ready for closeout\n- Durable evidence is verified\n- Pill knowledge is graduated to atoms when required",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 24,
+   "end": 119
+  },
+  {
+   "meta": {
+    "path": "status",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 167,
+   "end": 173
+  },
+  {
+   "meta": {
+    "path": "condition_refs",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 219,
+   "end": 426
+  },
+  {
+   "meta": {
+    "path": "mode",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 445,
+   "end": 448
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 477,
+   "end": 499
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 507,
+   "end": 521
+  },
+  {
+   "meta": {
+    "path": "summary",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 576,
+   "end": 616
+  },
+  {
+   "meta": {
+    "path": "items/0",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 7
+   },
+   "start": 683,
+   "end": 709
+  },
+  {
+   "meta": {
+    "path": "items/1",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 8
+   },
+   "start": 712,
+   "end": 740
+  },
+  {
+   "meta": {
+    "path": "items/2",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 9
+   },
+   "start": 743,
+   "end": 793
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 24,
+   "text": "---\n# checklist-xxx\nid: "
+  },
+  {
+   "type": "field",
+   "start": 24,
+   "end": 119,
+   "text": "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-closeout-ready",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-closeout-ready",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 119,
+   "end": 167,
+   "text": "\n# draft | active | complete | archived\nstatus: "
+  },
+  {
+   "type": "field",
+   "start": 167,
+   "end": 173,
+   "text": "active",
+   "path": "status",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "active",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 173,
+   "end": 219,
+   "text": "\n# List of condition-xxx paths\ncondition_refs:"
+  },
+  {
+   "type": "field",
+   "start": 219,
+   "end": 426,
+   "text": "\n- condition-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-ready-for-closeout\n- condition-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-has-closeout-evidence",
+   "path": "condition_refs",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "condition-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-ready-for-closeout",
+    "condition-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-has-closeout-evidence"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 426,
+   "end": 445,
+   "text": "\n# all | any\nmode: "
+  },
+  {
+   "type": "field",
+   "start": 445,
+   "end": 448,
+   "text": "all",
+   "path": "mode",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "all",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 448,
+   "end": 477,
+   "text": "\n# e.g., system:deskops\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 477,
+   "end": 499,
+   "text": "\n- primitive:checklist",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "primitive:checklist"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 499,
+   "end": 507,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 507,
+   "end": 521,
+   "text": "Closeout Ready",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Closeout Ready",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 521,
+   "end": 576,
+   "text": "\n\n## Summary\n\n_Summarize what this checklist proves._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 576,
+   "end": 616,
+   "text": "Confirms the task is ready for closeout.",
+   "path": "summary",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Confirms the task is ready for closeout.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 616,
+   "end": 683,
+   "text": "\n\n## Items\n\n_List the human-readable checks in this checklist._\n\n- "
+  },
+  {
+   "type": "field",
+   "start": 683,
+   "end": 709,
+   "text": "Task is ready for closeout",
+   "path": "items/0",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Task is ready for closeout",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 709,
+   "end": 712,
+   "text": "\n- "
+  },
+  {
+   "type": "field",
+   "start": 712,
+   "end": 740,
+   "text": "Durable evidence is verified",
+   "path": "items/1",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Durable evidence is verified",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 740,
+   "end": 743,
+   "text": "\n- "
+  },
+  {
+   "type": "field",
+   "start": 743,
+   "end": 793,
+   "text": "Pill knowledge is graduated to atoms when required",
+   "path": "items/2",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Pill knowledge is graduated to atoms when required",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

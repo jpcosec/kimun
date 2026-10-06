@@ -1,0 +1,314 @@
+{
+ "text": "---\n# routine-xxx\nid: routine-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion\n# active | archived\nstatus: active\n# Initial node identifier\nentrypoint: checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-execution-ready\n# Ordered or grouped primitive identifiers\ndecomposition:\n- checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-execution-ready\n- operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-activate\n- checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-testing-ready\n- operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-ready-for-testing\n- checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-closeout-ready\n- operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-close\n# Edge identifiers composing the graph\nedges:\n- edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-execution-to-activate\n- edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-activate-to-testing\n- edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-testing-to-ready\n- edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-ready-to-closeout\n- edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-closeout-to-close\n- edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-close-to-complete\n# Terminal node identifiers\nterminal_nodes:\n- complete\n# e.g., system:deskops\ntags:\n- workspace:desk\n- primitive:routine\n---\n\n# Routine for Comando de porte sldb stores migrate-legacy-edges y error de migracion\n\n## Summary\n\n_Summarize what this routine does and how its nodes fit together._\n\nActionable routine for Comando de porte sldb stores migrate-legacy-edges y error de migracion.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 22,
+   "end": 105
+  },
+  {
+   "meta": {
+    "path": "status",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 134,
+   "end": 140
+  },
+  {
+   "meta": {
+    "path": "entrypoint",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 179,
+   "end": 280
+  },
+  {
+   "meta": {
+    "path": "decomposition",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 338,
+   "end": 941
+  },
+  {
+   "meta": {
+    "path": "edges",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 987,
+   "end": 1598
+  },
+  {
+   "meta": {
+    "path": "terminal_nodes",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 1642,
+   "end": 1653
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 1682,
+   "end": 1719
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 1727,
+   "end": 1809
+  },
+  {
+   "meta": {
+    "path": "summary",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 1891,
+   "end": 1985
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 22,
+   "text": "---\n# routine-xxx\nid: "
+  },
+  {
+   "type": "field",
+   "start": 22,
+   "end": 105,
+   "text": "routine-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "routine-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 105,
+   "end": 134,
+   "text": "\n# active | archived\nstatus: "
+  },
+  {
+   "type": "field",
+   "start": 134,
+   "end": 140,
+   "text": "active",
+   "path": "status",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "active",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 140,
+   "end": 179,
+   "text": "\n# Initial node identifier\nentrypoint: "
+  },
+  {
+   "type": "field",
+   "start": 179,
+   "end": 280,
+   "text": "checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-execution-ready",
+   "path": "entrypoint",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-execution-ready",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 280,
+   "end": 338,
+   "text": "\n# Ordered or grouped primitive identifiers\ndecomposition:"
+  },
+  {
+   "type": "field",
+   "start": 338,
+   "end": 941,
+   "text": "\n- checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-execution-ready\n- operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-activate\n- checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-testing-ready\n- operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-ready-for-testing\n- checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-closeout-ready\n- operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-close",
+   "path": "decomposition",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-execution-ready",
+    "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-activate",
+    "checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-testing-ready",
+    "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-ready-for-testing",
+    "checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-closeout-ready",
+    "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-close"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 941,
+   "end": 987,
+   "text": "\n# Edge identifiers composing the graph\nedges:"
+  },
+  {
+   "type": "field",
+   "start": 987,
+   "end": 1598,
+   "text": "\n- edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-execution-to-activate\n- edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-activate-to-testing\n- edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-testing-to-ready\n- edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-ready-to-closeout\n- edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-closeout-to-close\n- edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-close-to-complete",
+   "path": "edges",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-execution-to-activate",
+    "edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-activate-to-testing",
+    "edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-testing-to-ready",
+    "edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-ready-to-closeout",
+    "edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-closeout-to-close",
+    "edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-close-to-complete"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1598,
+   "end": 1642,
+   "text": "\n# Terminal node identifiers\nterminal_nodes:"
+  },
+  {
+   "type": "field",
+   "start": 1642,
+   "end": 1653,
+   "text": "\n- complete",
+   "path": "terminal_nodes",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "complete"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1653,
+   "end": 1682,
+   "text": "\n# e.g., system:deskops\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 1682,
+   "end": 1719,
+   "text": "\n- workspace:desk\n- primitive:routine",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "workspace:desk",
+    "primitive:routine"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1719,
+   "end": 1727,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 1727,
+   "end": 1809,
+   "text": "Routine for Comando de porte sldb stores migrate-legacy-edges y error de migracion",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Routine for Comando de porte sldb stores migrate-legacy-edges y error de migracion",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1809,
+   "end": 1891,
+   "text": "\n\n## Summary\n\n_Summarize what this routine does and how its nodes fit together._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1891,
+   "end": 1985,
+   "text": "Actionable routine for Comando de porte sldb stores migrate-legacy-edges y error de migracion.",
+   "path": "summary",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Actionable routine for Comando de porte sldb stores migrate-legacy-edges y error de migracion.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

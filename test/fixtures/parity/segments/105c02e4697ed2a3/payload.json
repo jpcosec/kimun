@@ -1,0 +1,13 @@
+{
+ "title": "has_section",
+ "name": "has_section",
+ "direction": "directed",
+ "cardinality": "one_to_many",
+ "axis": "WHERE",
+ "source_types": [],
+ "target_types": [
+  "sldb_section"
+ ],
+ "condition": "",
+ "description": "The document contains this section."
+}

@@ -1,0 +1,343 @@
+{
+ "text": "---\nid: task-correct-ast-ownership-and-section-contracts\nstatus: open\nsummary: ''\ntags:\n- system:sldb\n- workspace:desk\n- topic:ast\nroutine: ''\ncurrent_node: ''\nhistory: []\nreferences:\n- docs/documentation-review.md\n- docs/ast_query_primitives.md\n- desk/tasks/task-design-sldb-ast-query-primitives.md\ndepends_on: []\npills:\n- desk/pills/pill-015-self-documentation-boundaries.md\nfiles: []\nchecklists: []\ntask_type: ''\ninherits_from: []\ninherit_acceptance_context: false\natoms: []\n---\n\n# Correct AST ownership and section contracts\n\n## Rationale\n\n_Explain why this task exists or the business driver behind it._\n\nSLDBGuide demonstrates incorrect field ownership when rendered lines differ from template lines. Section spans currently identify headings, and persisted and fallback outputs differ.\n\n## Goal\n\n_Describe the concrete result this task must produce._\n\nMake field ownership and section boundaries reliable enough for structural queries and documentation provenance.\n\n## Scope\n\n_State what is in scope and what is out of scope._\n\nField-to-heading identity mapping, nested field ownership, heading versus body spans, persisted/fallback schema parity, and regression examples. This follows up the historical AST design task; it does not introduce the old hardcoded get_block/get_section API.\n\n## Implementation Path\n\n_Outline the expected implementation route or affected surface._\n\nInspect cli/graph_ops/map_fields.py, extract.py, build_ir.py, and section persistence. Map structural identities rather than comparing line offsets in different texts.\n\n## Validation\n\n_List the checks required before this task can close._\n\n- Reproduce and fix SLDBGuide ownership with frontmatter and expanded lists.\n- Verify full section boundaries, nested headings, and repeated titles.\n- Assert the same section schema before and after index rebuild.\n\n## Done When\n\n_Name the observable condition that makes the task complete._\n\nOwnership now follows template heading order rather than rendered line offsets, and section spans cover the complete body. Regression coverage covers expanded lists and nested boundaries. Stable addressing for repeated sibling headings remains a design gap; keep this task open until it is decided and the delivery audit is complete.",
+ "spans": [
+  {
+   "meta": {
+    "path": "frontmatter",
+    "marker": "rev",
+    "traits": [
+     "dict"
+    ],
+    "_order": 0
+   },
+   "start": 4,
+   "end": 477
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 485,
+   "end": 528
+  },
+  {
+   "meta": {
+    "path": "why",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 610,
+   "end": 792
+  },
+  {
+   "meta": {
+    "path": "goal",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 859,
+   "end": 971
+  },
+  {
+   "meta": {
+    "path": "scope",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 1035,
+   "end": 1294
+  },
+  {
+   "meta": {
+    "path": "implementation_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 1386,
+   "end": 1553
+  },
+  {
+   "meta": {
+    "path": "validation/0",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 6
+   },
+   "start": 1628,
+   "end": 1702
+  },
+  {
+   "meta": {
+    "path": "validation/1",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 7
+   },
+   "start": 1705,
+   "end": 1774
+  },
+  {
+   "meta": {
+    "path": "validation/2",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 8
+   },
+   "start": 1777,
+   "end": 1839
+  },
+  {
+   "meta": {
+    "path": "done_when",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 1918,
+   "end": 2251
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 4,
+   "text": "---\n"
+  },
+  {
+   "type": "field",
+   "start": 4,
+   "end": 477,
+   "text": "id: task-correct-ast-ownership-and-section-contracts\nstatus: open\nsummary: ''\ntags:\n- system:sldb\n- workspace:desk\n- topic:ast\nroutine: ''\ncurrent_node: ''\nhistory: []\nreferences:\n- docs/documentation-review.md\n- docs/ast_query_primitives.md\n- desk/tasks/task-design-sldb-ast-query-primitives.md\ndepends_on: []\npills:\n- desk/pills/pill-015-self-documentation-boundaries.md\nfiles: []\nchecklists: []\ntask_type: ''\ninherits_from: []\ninherit_acceptance_context: false\natoms: []",
+   "path": "frontmatter",
+   "marker": "rev",
+   "traits": [
+    "dict"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "object",
+   "value": null,
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 477,
+   "end": 485,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 485,
+   "end": 528,
+   "text": "Correct AST ownership and section contracts",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Correct AST ownership and section contracts",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 528,
+   "end": 610,
+   "text": "\n\n## Rationale\n\n_Explain why this task exists or the business driver behind it._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 610,
+   "end": 792,
+   "text": "SLDBGuide demonstrates incorrect field ownership when rendered lines differ from template lines. Section spans currently identify headings, and persisted and fallback outputs differ.",
+   "path": "why",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "SLDBGuide demonstrates incorrect field ownership when rendered lines differ from template lines. Section spans currently identify headings, and persisted and fallback outputs differ.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 792,
+   "end": 859,
+   "text": "\n\n## Goal\n\n_Describe the concrete result this task must produce._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 859,
+   "end": 971,
+   "text": "Make field ownership and section boundaries reliable enough for structural queries and documentation provenance.",
+   "path": "goal",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Make field ownership and section boundaries reliable enough for structural queries and documentation provenance.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 971,
+   "end": 1035,
+   "text": "\n\n## Scope\n\n_State what is in scope and what is out of scope._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1035,
+   "end": 1294,
+   "text": "Field-to-heading identity mapping, nested field ownership, heading versus body spans, persisted/fallback schema parity, and regression examples. This follows up the historical AST design task; it does not introduce the old hardcoded get_block/get_section API.",
+   "path": "scope",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Field-to-heading identity mapping, nested field ownership, heading versus body spans, persisted/fallback schema parity, and regression examples. This follows up the historical AST design task; it does not introduce the old hardcoded get_block/get_section API.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1294,
+   "end": 1386,
+   "text": "\n\n## Implementation Path\n\n_Outline the expected implementation route or affected surface._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1386,
+   "end": 1553,
+   "text": "Inspect cli/graph_ops/map_fields.py, extract.py, build_ir.py, and section persistence. Map structural identities rather than comparing line offsets in different texts.",
+   "path": "implementation_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Inspect cli/graph_ops/map_fields.py, extract.py, build_ir.py, and section persistence. Map structural identities rather than comparing line offsets in different texts.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1553,
+   "end": 1628,
+   "text": "\n\n## Validation\n\n_List the checks required before this task can close._\n\n- "
+  },
+  {
+   "type": "field",
+   "start": 1628,
+   "end": 1702,
+   "text": "Reproduce and fix SLDBGuide ownership with frontmatter and expanded lists.",
+   "path": "validation/0",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Reproduce and fix SLDBGuide ownership with frontmatter and expanded lists.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1702,
+   "end": 1705,
+   "text": "\n- "
+  },
+  {
+   "type": "field",
+   "start": 1705,
+   "end": 1774,
+   "text": "Verify full section boundaries, nested headings, and repeated titles.",
+   "path": "validation/1",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Verify full section boundaries, nested headings, and repeated titles.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1774,
+   "end": 1777,
+   "text": "\n- "
+  },
+  {
+   "type": "field",
+   "start": 1777,
+   "end": 1839,
+   "text": "Assert the same section schema before and after index rebuild.",
+   "path": "validation/2",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Assert the same section schema before and after index rebuild.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1839,
+   "end": 1918,
+   "text": "\n\n## Done When\n\n_Name the observable condition that makes the task complete._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1918,
+   "end": 2251,
+   "text": "Ownership now follows template heading order rather than rendered line offsets, and section spans cover the complete body. Regression coverage covers expanded lists and nested boundaries. Stable addressing for repeated sibling headings remains a design gap; keep this task open until it is decided and the delivery audit is complete.",
+   "path": "done_when",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Ownership now follows template heading order rather than rendered line offsets, and section spans cover the complete body. Regression coverage covers expanded lists and nested boundaries. Stable addressing for repeated sibling headings remains a design gap; keep this task open until it is decided and the delivery audit is complete.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

@@ -1,0 +1,41 @@
+{
+ "model": "ExtractableDoc",
+ "text": "#    T\n\n## Body\n\nB",
+ "payload": {
+  "title": "T",
+  "body": "B"
+ },
+ "canonical_text": "# T\n\n## Body\n\nB",
+ "fields": [
+  {
+   "type": "field",
+   "start": 5,
+   "end": 6,
+   "text": "T",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "T",
+   "alignment": "exact"
+  },
+  {
+   "type": "field",
+   "start": 17,
+   "end": 18,
+   "text": "B",
+   "path": "body",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "B",
+   "alignment": "exact"
+  }
+ ],
+ "unmatched": [],
+ "coverage": 0.1111
+}

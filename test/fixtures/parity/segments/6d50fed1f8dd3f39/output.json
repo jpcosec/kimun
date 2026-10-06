@@ -1,0 +1,397 @@
+{
+ "text": "---\nid: cmd-sldb-example\nsystem: sldb\ncommand_path: example\nsynopsis: Unpack the bundled SLDB reference example.\ntags:\n- system:sldb\n- domain:retrieval\n- kind:software\n- impl:external\n- entity:cli_command\nprovenance: parser:sldb.cli.parser:build_parser#example; contract-sha256:a79207ee248dc6268dcdffa7431d62e7825f5eaee5bb3a5c50f26f499f072125\n---\n\n# example\n\n## Synopsis\n\nUnpack the bundled SLDB reference example.\n\n## Purpose\n\nThe `sldb example` command: ==SUPPRESS==\n\n## How It Works\n\nImplemented under src/sldb/cli/parsers/ as the argparse subcommand 'example'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.\n\n## Arguments\n\n```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"path\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\".\\\"\",\n      \"choices\": null,\n      \"nargs\": \"?\",\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```\n\n## Usage\n\nexample",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 24
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 33,
+   "end": 37
+  },
+  {
+   "meta": {
+    "path": "command_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 52,
+   "end": 59
+  },
+  {
+   "meta": {
+    "path": "synopsis",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 70,
+   "end": 112
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 118,
+   "end": 204
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "optrev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 217,
+   "end": 342
+  },
+  {
+   "meta": {
+    "path": "command_path",
+    "marker": "render",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 350,
+   "end": 357
+  },
+  {
+   "meta": {
+    "path": "synopsis",
+    "marker": "render",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 372,
+   "end": 414
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 428,
+   "end": 468
+  },
+  {
+   "meta": {
+    "path": "how_it_works",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 487,
+   "end": 671
+  },
+  {
+   "meta": {
+    "path": "arguments",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 687,
+   "end": 1003
+  },
+  {
+   "meta": {
+    "path": "usage",
+    "marker": "rev",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 1015,
+   "end": 1022
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 24,
+   "text": "cmd-sldb-example",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "cmd-sldb-example",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 24,
+   "end": 33,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 33,
+   "end": 37,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 37,
+   "end": 52,
+   "text": "\ncommand_path: "
+  },
+  {
+   "type": "field",
+   "start": 52,
+   "end": 59,
+   "text": "example",
+   "path": "command_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "example",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 59,
+   "end": 70,
+   "text": "\nsynopsis: "
+  },
+  {
+   "type": "field",
+   "start": 70,
+   "end": 112,
+   "text": "Unpack the bundled SLDB reference example.",
+   "path": "synopsis",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Unpack the bundled SLDB reference example.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 112,
+   "end": 118,
+   "text": "\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 118,
+   "end": 204,
+   "text": "\n- system:sldb\n- domain:retrieval\n- kind:software\n- impl:external\n- entity:cli_command",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [
+    "system:sldb",
+    "domain:retrieval",
+    "kind:software",
+    "impl:external",
+    "entity:cli_command"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 204,
+   "end": 217,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 217,
+   "end": 342,
+   "text": "parser:sldb.cli.parser:build_parser#example; contract-sha256:a79207ee248dc6268dcdffa7431d62e7825f5eaee5bb3a5c50f26f499f072125",
+   "path": "provenance",
+   "marker": "optrev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "parser:sldb.cli.parser:build_parser#example; contract-sha256:a79207ee248dc6268dcdffa7431d62e7825f5eaee5bb3a5c50f26f499f072125",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 342,
+   "end": 350,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 350,
+   "end": 357,
+   "text": "example",
+   "path": "command_path",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "example",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 357,
+   "end": 372,
+   "text": "\n\n## Synopsis\n\n"
+  },
+  {
+   "type": "field",
+   "start": 372,
+   "end": 414,
+   "text": "Unpack the bundled SLDB reference example.",
+   "path": "synopsis",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "block",
+   "kind": "string",
+   "value": "Unpack the bundled SLDB reference example.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 414,
+   "end": 428,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 428,
+   "end": 468,
+   "text": "The `sldb example` command: ==SUPPRESS==",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "The `sldb example` command: ==SUPPRESS==",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 468,
+   "end": 487,
+   "text": "\n\n## How It Works\n\n"
+  },
+  {
+   "type": "field",
+   "start": 487,
+   "end": 671,
+   "text": "Implemented under src/sldb/cli/parsers/ as the argparse subcommand 'example'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.",
+   "path": "how_it_works",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Implemented under src/sldb/cli/parsers/ as the argparse subcommand 'example'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 671,
+   "end": 687,
+   "text": "\n\n## Arguments\n\n"
+  },
+  {
+   "type": "field",
+   "start": 687,
+   "end": 1003,
+   "text": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"path\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\".\\\"\",\n      \"choices\": null,\n      \"nargs\": \"?\",\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+   "path": "arguments",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"path\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\".\\\"\",\n      \"choices\": null,\n      \"nargs\": \"?\",\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1003,
+   "end": 1015,
+   "text": "\n\n## Usage\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1015,
+   "end": 1022,
+   "text": "example",
+   "path": "usage",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "example",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

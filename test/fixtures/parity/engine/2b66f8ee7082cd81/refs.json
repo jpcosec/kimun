@@ -1,0 +1,3 @@
+{
+ "/tmp/pytest-of-jp/pytest-8/test_ritual_doc_renders_compos0/step-a.md": "# Validate draft\n\n## Action\n\nRun model validation against tracked docs.\n\n## Outcome\n\nA promotable contract draft."
+}

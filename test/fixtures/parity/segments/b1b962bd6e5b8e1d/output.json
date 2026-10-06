@@ -1,0 +1,339 @@
+{
+ "text": "# AST View\n\n## Related Concepts\n\n- [Semantic vs Physical Search](semantic-vs-physical.atom.md)\n- [Tracked Document](tracked-document.atom.md)\n- [Store](store.atom.md)\n\n## What It Is\n\nThe AST view is SLDB's normalized graph representation of stores, models, documents, sections, fields, and their semantic or physical relationships.\n\n## Why It Matters\n\nIt lets users inspect what SLDB thinks exists, which is often the fastest way to debug a confusing query result or understand how a tracked doc is indexed.\n\n## How It Works\n\n`ast show` serializes a store, model, document, or field target into a normalized payload. For tracked documents, the output can include sections, field ownership, context index entries, and graph edges.\n\n## When It Shows Up\n\nYou encounter the AST when debugging store shape, checking section ownership, understanding semantic versus physical indexing, or building other tooling on top of the normalized graph.\n\n## Where It Lives\n\nThe view is materialized by the CLI graph helpers and exposed through `sldb ast show` and `sldb ast schema`.\n\n## Who Uses It\n\nAdvanced users and tooling use the AST when they need more than the high-level command outputs.",
+ "spans": [
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 2,
+   "end": 10
+  },
+  {
+   "meta": {
+    "path": "related_concepts/0",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 1
+   },
+   "start": 35,
+   "end": 94
+  },
+  {
+   "meta": {
+    "path": "related_concepts/1",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 2
+   },
+   "start": 97,
+   "end": 141
+  },
+  {
+   "meta": {
+    "path": "related_concepts/2",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 3
+   },
+   "start": 144,
+   "end": 166
+  },
+  {
+   "meta": {
+    "path": "what_it_is",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 183,
+   "end": 331
+  },
+  {
+   "meta": {
+    "path": "why_it_matters",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 352,
+   "end": 507
+  },
+  {
+   "meta": {
+    "path": "how_it_works",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 526,
+   "end": 729
+  },
+  {
+   "meta": {
+    "path": "when_it_shows_up",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 752,
+   "end": 936
+  },
+  {
+   "meta": {
+    "path": "where_it_lives",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 957,
+   "end": 1065
+  },
+  {
+   "meta": {
+    "path": "who_uses_it",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 1083,
+   "end": 1178
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 2,
+   "text": "# "
+  },
+  {
+   "type": "field",
+   "start": 2,
+   "end": 10,
+   "text": "AST View",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "AST View",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 10,
+   "end": 35,
+   "text": "\n\n## Related Concepts\n\n- "
+  },
+  {
+   "type": "field",
+   "start": 35,
+   "end": 94,
+   "text": "[Semantic vs Physical Search](semantic-vs-physical.atom.md)",
+   "path": "related_concepts/0",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "[Semantic vs Physical Search](semantic-vs-physical.atom.md)",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 94,
+   "end": 97,
+   "text": "\n- "
+  },
+  {
+   "type": "field",
+   "start": 97,
+   "end": 141,
+   "text": "[Tracked Document](tracked-document.atom.md)",
+   "path": "related_concepts/1",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "[Tracked Document](tracked-document.atom.md)",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 141,
+   "end": 144,
+   "text": "\n- "
+  },
+  {
+   "type": "field",
+   "start": 144,
+   "end": 166,
+   "text": "[Store](store.atom.md)",
+   "path": "related_concepts/2",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "[Store](store.atom.md)",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 166,
+   "end": 183,
+   "text": "\n\n## What It Is\n\n"
+  },
+  {
+   "type": "field",
+   "start": 183,
+   "end": 331,
+   "text": "The AST view is SLDB's normalized graph representation of stores, models, documents, sections, fields, and their semantic or physical relationships.",
+   "path": "what_it_is",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "The AST view is SLDB's normalized graph representation of stores, models, documents, sections, fields, and their semantic or physical relationships.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 331,
+   "end": 352,
+   "text": "\n\n## Why It Matters\n\n"
+  },
+  {
+   "type": "field",
+   "start": 352,
+   "end": 507,
+   "text": "It lets users inspect what SLDB thinks exists, which is often the fastest way to debug a confusing query result or understand how a tracked doc is indexed.",
+   "path": "why_it_matters",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "It lets users inspect what SLDB thinks exists, which is often the fastest way to debug a confusing query result or understand how a tracked doc is indexed.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 507,
+   "end": 526,
+   "text": "\n\n## How It Works\n\n"
+  },
+  {
+   "type": "field",
+   "start": 526,
+   "end": 729,
+   "text": "`ast show` serializes a store, model, document, or field target into a normalized payload. For tracked documents, the output can include sections, field ownership, context index entries, and graph edges.",
+   "path": "how_it_works",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "`ast show` serializes a store, model, document, or field target into a normalized payload. For tracked documents, the output can include sections, field ownership, context index entries, and graph edges.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 729,
+   "end": 752,
+   "text": "\n\n## When It Shows Up\n\n"
+  },
+  {
+   "type": "field",
+   "start": 752,
+   "end": 936,
+   "text": "You encounter the AST when debugging store shape, checking section ownership, understanding semantic versus physical indexing, or building other tooling on top of the normalized graph.",
+   "path": "when_it_shows_up",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "You encounter the AST when debugging store shape, checking section ownership, understanding semantic versus physical indexing, or building other tooling on top of the normalized graph.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 936,
+   "end": 957,
+   "text": "\n\n## Where It Lives\n\n"
+  },
+  {
+   "type": "field",
+   "start": 957,
+   "end": 1065,
+   "text": "The view is materialized by the CLI graph helpers and exposed through `sldb ast show` and `sldb ast schema`.",
+   "path": "where_it_lives",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "The view is materialized by the CLI graph helpers and exposed through `sldb ast show` and `sldb ast schema`.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1065,
+   "end": 1083,
+   "text": "\n\n## Who Uses It\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1083,
+   "end": 1178,
+   "text": "Advanced users and tooling use the AST when they need more than the high-level command outputs.",
+   "path": "who_uses_it",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Advanced users and tooling use the AST when they need more than the high-level command outputs.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-models-structured_doc-structurednldoc-__pydantic_init_subclass__\nsystem: sldb\nmodule: sldb.sldb.models.structured_doc\nqualname: StructuredNLDoc.__pydantic_init_subclass__\nkind: FunctionDef\nsource_path: sldb/models/structured_doc.py\nsource_span: '24:28'\nsource_sha256: 8a69fbd0a87837a6a8fa46eb6fe9263af2a645288458d8ecaaaf86ac1498b4a6\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.models.structured_doc:StructuredNLDoc.__pydantic_init_subclass__;\n  contract-sha256:e025055a4c9efb540b42d1180adec87d7a11793645025a7066aa23ab437341be\n---\n\n# StructuredNLDoc.__pydantic_init_subclass__\n\n## Signature\n\n__pydantic_init_subclass__(cls, **kwargs)\n\n## Docstring\n\nNot documented.\n\n## Imports\n\n[\"__future__\", \"importlib\", \"pathlib\", \"pydantic\", \"typing\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 94
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 103,
+   "end": 107
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 116,
+   "end": 147
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 158,
+   "end": 200
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 207,
+   "end": 218
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 232,
+   "end": 261
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 275,
+   "end": 282
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 298,
+   "end": 362
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 382,
+   "end": 496
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 503,
+   "end": 505
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 518,
+   "end": 694
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 702,
+   "end": 744
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 760,
+   "end": 801
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 817,
+   "end": 832
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 846,
+   "end": 906
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 920,
+   "end": 935
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 954,
+   "end": 969
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 94,
+   "text": "python-sldb-sldb-sldb-models-structured_doc-structurednldoc-__pydantic_init_subclass__",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-models-structured_doc-structurednldoc-__pydantic_init_subclass__",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 94,
+   "end": 103,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 103,
+   "end": 107,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 107,
+   "end": 116,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 116,
+   "end": 147,
+   "text": "sldb.sldb.models.structured_doc",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.models.structured_doc",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 147,
+   "end": 158,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 158,
+   "end": 200,
+   "text": "StructuredNLDoc.__pydantic_init_subclass__",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "StructuredNLDoc.__pydantic_init_subclass__",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 200,
+   "end": 207,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 207,
+   "end": 218,
+   "text": "FunctionDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "FunctionDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 218,
+   "end": 232,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 232,
+   "end": 261,
+   "text": "sldb/models/structured_doc.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/models/structured_doc.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 261,
+   "end": 275,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 275,
+   "end": 282,
+   "text": "'24:28'",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "24:28",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 282,
+   "end": 298,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 298,
+   "end": 362,
+   "text": "8a69fbd0a87837a6a8fa46eb6fe9263af2a645288458d8ecaaaf86ac1498b4a6",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "8a69fbd0a87837a6a8fa46eb6fe9263af2a645288458d8ecaaaf86ac1498b4a6",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 362,
+   "end": 382,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 382,
+   "end": 496,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 496,
+   "end": 503,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 503,
+   "end": 505,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 505,
+   "end": 518,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 518,
+   "end": 694,
+   "text": "python-ast:python:sldb.sldb.models.structured_doc:StructuredNLDoc.__pydantic_init_subclass__;\n  contract-sha256:e025055a4c9efb540b42d1180adec87d7a11793645025a7066aa23ab437341be",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.models.structured_doc:StructuredNLDoc.__pydantic_init_subclass__; contract-sha256:e025055a4c9efb540b42d1180adec87d7a11793645025a7066aa23ab437341be",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 694,
+   "end": 702,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 702,
+   "end": 744,
+   "text": "StructuredNLDoc.__pydantic_init_subclass__",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "StructuredNLDoc.__pydantic_init_subclass__",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 744,
+   "end": 760,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 760,
+   "end": 801,
+   "text": "__pydantic_init_subclass__(cls, **kwargs)",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "__pydantic_init_subclass__(cls, **kwargs)",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 801,
+   "end": 817,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 817,
+   "end": 832,
+   "text": "Not documented.",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 832,
+   "end": 846,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 846,
+   "end": 906,
+   "text": "[\"__future__\", \"importlib\", \"pathlib\", \"pydantic\", \"typing\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\"__future__\", \"importlib\", \"pathlib\", \"pydantic\", \"typing\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 906,
+   "end": 920,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 920,
+   "end": 935,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 935,
+   "end": 954,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 954,
+   "end": 969,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

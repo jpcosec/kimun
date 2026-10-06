@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-store-query_engine-structural_queries-structuralqueryengine-_glob_fields\nsystem: sldb\nmodule: sldb.sldb.store.query_engine.structural_queries\nqualname: StructuralQueryEngine._glob_fields\nkind: FunctionDef\nsource_path: sldb/store/query_engine/structural_queries.py\nsource_span: '54:57'\nsource_sha256: 4e7ad9b7e20f85ce3c4526b5581393fb00dbc13b39a8e4b036c7f3d3d1ff0a73\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.store.query_engine.structural_queries:StructuralQueryEngine._glob_fields;\n  contract-sha256:a0c302be94ac1df4d7d4b7bfc3ab20704335a4ea4384ec64abaeb4ef3b766ed8\n---\n\n# StructuralQueryEngine._glob_fields\n\n## Signature\n\n_glob_fields(cls, doc, field_pattern: str, base_scope: str, results: list[str])\n\n## Docstring\n\nNot documented.\n\n## Imports\n\n[\"__future__\", \"fnmatch\", \"pathlib\", \"re\", \"sldb.store.query_engine.filter\", \"sldb.store.query_engine.store_prefix\", \"sldb.store.query_engine.structural\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 102
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 111,
+   "end": 115
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 124,
+   "end": 171
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 182,
+   "end": 216
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 223,
+   "end": 234
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 248,
+   "end": 293
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 307,
+   "end": 314
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 330,
+   "end": 394
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 414,
+   "end": 528
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 535,
+   "end": 537
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 550,
+   "end": 734
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 742,
+   "end": 776
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 792,
+   "end": 871
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 887,
+   "end": 902
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 916,
+   "end": 1070
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 1084,
+   "end": 1099
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 1118,
+   "end": 1133
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 102,
+   "text": "python-sldb-sldb-sldb-store-query_engine-structural_queries-structuralqueryengine-_glob_fields",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-store-query_engine-structural_queries-structuralqueryengine-_glob_fields",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 102,
+   "end": 111,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 111,
+   "end": 115,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 115,
+   "end": 124,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 124,
+   "end": 171,
+   "text": "sldb.sldb.store.query_engine.structural_queries",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.store.query_engine.structural_queries",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 171,
+   "end": 182,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 182,
+   "end": 216,
+   "text": "StructuralQueryEngine._glob_fields",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "StructuralQueryEngine._glob_fields",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 216,
+   "end": 223,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 223,
+   "end": 234,
+   "text": "FunctionDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "FunctionDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 234,
+   "end": 248,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 248,
+   "end": 293,
+   "text": "sldb/store/query_engine/structural_queries.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/store/query_engine/structural_queries.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 293,
+   "end": 307,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 307,
+   "end": 314,
+   "text": "'54:57'",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "54:57",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 314,
+   "end": 330,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 330,
+   "end": 394,
+   "text": "4e7ad9b7e20f85ce3c4526b5581393fb00dbc13b39a8e4b036c7f3d3d1ff0a73",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "4e7ad9b7e20f85ce3c4526b5581393fb00dbc13b39a8e4b036c7f3d3d1ff0a73",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 394,
+   "end": 414,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 414,
+   "end": 528,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 528,
+   "end": 535,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 535,
+   "end": 537,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 537,
+   "end": 550,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 550,
+   "end": 734,
+   "text": "python-ast:python:sldb.sldb.store.query_engine.structural_queries:StructuralQueryEngine._glob_fields;\n  contract-sha256:a0c302be94ac1df4d7d4b7bfc3ab20704335a4ea4384ec64abaeb4ef3b766ed8",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.store.query_engine.structural_queries:StructuralQueryEngine._glob_fields; contract-sha256:a0c302be94ac1df4d7d4b7bfc3ab20704335a4ea4384ec64abaeb4ef3b766ed8",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 734,
+   "end": 742,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 742,
+   "end": 776,
+   "text": "StructuralQueryEngine._glob_fields",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "StructuralQueryEngine._glob_fields",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 776,
+   "end": 792,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 792,
+   "end": 871,
+   "text": "_glob_fields(cls, doc, field_pattern: str, base_scope: str, results: list[str])",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "_glob_fields(cls, doc, field_pattern: str, base_scope: str, results: list[str])",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 871,
+   "end": 887,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 887,
+   "end": 902,
+   "text": "Not documented.",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 902,
+   "end": 916,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 916,
+   "end": 1070,
+   "text": "[\"__future__\", \"fnmatch\", \"pathlib\", \"re\", \"sldb.store.query_engine.filter\", \"sldb.store.query_engine.store_prefix\", \"sldb.store.query_engine.structural\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\"__future__\", \"fnmatch\", \"pathlib\", \"re\", \"sldb.store.query_engine.filter\", \"sldb.store.query_engine.store_prefix\", \"sldb.store.query_engine.structural\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1070,
+   "end": 1084,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1084,
+   "end": 1099,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1099,
+   "end": 1118,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1118,
+   "end": 1133,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

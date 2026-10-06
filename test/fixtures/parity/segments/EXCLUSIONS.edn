@@ -1,0 +1,21 @@
+;; Segments parity corpus: cases kimun deliberately does not reproduce, {"<case id>" "<reason>"}
+;; (same format as ../engine/EXCLUSIONS.edn). Initially reserved for cases whose template uses a
+;; construct retired in kimun (docs/v2/07 §8: `⸢py•` markers, `{{ }}` Jinja); the recorder also flags
+;; those with :retired "07 §8" in meta.edn. The v1 suite reaches the segment and field-ownership
+;; entry points with no such template, so the collection is empty.
+;; Added when the corpus was first replayed: the text differs from v1 ONLY by that `from_drawer: ''` line
+;; (checked case by case).
+{"2fb738ec39fdb4e6"
+ "deskops TaskDoc drops an empty `from_drawer` from its frontmatter in Python code of the model class (custom serializer / render_payload), not in the engine; a model is data in v2 (docs/v2/07 §1), so kimun renders the declared default `from_drawer: ''` and every later offset shifts by that one line — same reason as ../engine/EXCLUSIONS.edn [render_with_spans]"
+ "50afa1e0237b59c4"
+ "deskops TaskDoc drops an empty `from_drawer` from its frontmatter in Python code of the model class (custom serializer / render_payload), not in the engine; a model is data in v2 (docs/v2/07 §1), so kimun renders the declared default `from_drawer: ''` and every later offset shifts by that one line — same reason as ../engine/EXCLUSIONS.edn [render_with_spans]"
+ "5abf9d0d4a29f856"
+ "deskops TaskDoc drops an empty `from_drawer` from its frontmatter in Python code of the model class (custom serializer / render_payload), not in the engine; a model is data in v2 (docs/v2/07 §1), so kimun renders the declared default `from_drawer: ''` and every later offset shifts by that one line — same reason as ../engine/EXCLUSIONS.edn [render_with_spans]"
+ "97952361564d1769"
+ "deskops TaskDoc drops an empty `from_drawer` from its frontmatter in Python code of the model class (custom serializer / render_payload), not in the engine; a model is data in v2 (docs/v2/07 §1), so kimun renders the declared default `from_drawer: ''` and every later offset shifts by that one line — same reason as ../engine/EXCLUSIONS.edn [render_with_spans]"
+ "9bf0df56266490dd"
+ "deskops TaskDoc drops an empty `from_drawer` from its frontmatter in Python code of the model class (custom serializer / render_payload), not in the engine; a model is data in v2 (docs/v2/07 §1), so kimun renders the declared default `from_drawer: ''` and every later offset shifts by that one line — same reason as ../engine/EXCLUSIONS.edn [render_with_spans]"
+ "a5a6965839074fa3"
+ "deskops TaskDoc drops an empty `from_drawer` from its frontmatter in Python code of the model class (custom serializer / render_payload), not in the engine; a model is data in v2 (docs/v2/07 §1), so kimun renders the declared default `from_drawer: ''` and every later offset shifts by that one line — same reason as ../engine/EXCLUSIONS.edn [render_with_spans]"
+ "f8524289b333ce65"
+ "deskops TaskDoc drops an empty `from_drawer` from its frontmatter in Python code of the model class (custom serializer / render_payload), not in the engine; a model is data in v2 (docs/v2/07 §1), so kimun renders the declared default `from_drawer: ''` and every later offset shifts by that one line — same reason as ../engine/EXCLUSIONS.edn [render_with_spans]"}

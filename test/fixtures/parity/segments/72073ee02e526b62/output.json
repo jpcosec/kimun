@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-store-runtime_cache-cached_document\nsystem: sldb\nmodule: sldb.sldb.store.runtime_cache\nqualname: cached_document\nkind: FunctionDef\nsource_path: sldb/store/runtime_cache.py\nsource_span: 68:75\nsource_sha256: 268fb05766c0b59434a5e0d1d9b098d373e5250d83de20b10e42bbfd3aa9f511\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.store.runtime_cache:cached_document; contract-sha256:085ececce127e66a7fa2274aac03ca391ff6ca768dcfe9eaee9dbd3fe9a09c41\n---\n\n# cached_document\n\n## Signature\n\ncached_document(entry: Any, root: Path, s_path: Path, s_name: str, m_name: str, model_type: type, loader: Callable[[], Any])\n\n## Docstring\n\nOne document by its leaf key: (path, hash_c[, mtime, size]).\n\n## Imports\n\n[\"__future__\", \"dataclasses\", \"os\", \"pathlib\", \"sldb.store\", \"sldb.store.io\", \"sldb.store.layout\", \"typing\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 65
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 74,
+   "end": 78
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 87,
+   "end": 116
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 127,
+   "end": 142
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 149,
+   "end": 160
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 174,
+   "end": 201
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 215,
+   "end": 220
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 236,
+   "end": 300
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 320,
+   "end": 434
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 441,
+   "end": 443
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 456,
+   "end": 601
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 609,
+   "end": 624
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 640,
+   "end": 764
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 780,
+   "end": 840
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 854,
+   "end": 962
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 976,
+   "end": 991
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 1010,
+   "end": 1025
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 65,
+   "text": "python-sldb-sldb-sldb-store-runtime_cache-cached_document",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-store-runtime_cache-cached_document",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 65,
+   "end": 74,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 74,
+   "end": 78,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 78,
+   "end": 87,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 87,
+   "end": 116,
+   "text": "sldb.sldb.store.runtime_cache",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.store.runtime_cache",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 116,
+   "end": 127,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 127,
+   "end": 142,
+   "text": "cached_document",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "cached_document",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 142,
+   "end": 149,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 149,
+   "end": 160,
+   "text": "FunctionDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "FunctionDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 160,
+   "end": 174,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 174,
+   "end": 201,
+   "text": "sldb/store/runtime_cache.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/store/runtime_cache.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 201,
+   "end": 215,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 215,
+   "end": 220,
+   "text": "68:75",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "68:75",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 220,
+   "end": 236,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 236,
+   "end": 300,
+   "text": "268fb05766c0b59434a5e0d1d9b098d373e5250d83de20b10e42bbfd3aa9f511",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "268fb05766c0b59434a5e0d1d9b098d373e5250d83de20b10e42bbfd3aa9f511",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 300,
+   "end": 320,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 320,
+   "end": 434,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 434,
+   "end": 441,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 441,
+   "end": 443,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 443,
+   "end": 456,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 456,
+   "end": 601,
+   "text": "python-ast:python:sldb.sldb.store.runtime_cache:cached_document; contract-sha256:085ececce127e66a7fa2274aac03ca391ff6ca768dcfe9eaee9dbd3fe9a09c41",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.store.runtime_cache:cached_document; contract-sha256:085ececce127e66a7fa2274aac03ca391ff6ca768dcfe9eaee9dbd3fe9a09c41",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 601,
+   "end": 609,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 609,
+   "end": 624,
+   "text": "cached_document",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "cached_document",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 624,
+   "end": 640,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 640,
+   "end": 764,
+   "text": "cached_document(entry: Any, root: Path, s_path: Path, s_name: str, m_name: str, model_type: type, loader: Callable[[], Any])",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "cached_document(entry: Any, root: Path, s_path: Path, s_name: str, m_name: str, model_type: type, loader: Callable[[], Any])",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 764,
+   "end": 780,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 780,
+   "end": 840,
+   "text": "One document by its leaf key: (path, hash_c[, mtime, size]).",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "One document by its leaf key: (path, hash_c[, mtime, size]).",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 840,
+   "end": 854,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 854,
+   "end": 962,
+   "text": "[\"__future__\", \"dataclasses\", \"os\", \"pathlib\", \"sldb.store\", \"sldb.store.io\", \"sldb.store.layout\", \"typing\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\"__future__\", \"dataclasses\", \"os\", \"pathlib\", \"sldb.store\", \"sldb.store.io\", \"sldb.store.layout\", \"typing\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 962,
+   "end": 976,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 976,
+   "end": 991,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 991,
+   "end": 1010,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1010,
+   "end": 1025,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

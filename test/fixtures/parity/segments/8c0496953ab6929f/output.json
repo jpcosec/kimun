@@ -1,0 +1,397 @@
+{
+ "text": "---\nid: cmd-sldb-models-template-edit\nsystem: sldb\ncommand_path: models template edit\nsynopsis: Write a template draft for a registered model.\ntags:\n- system:sldb\n- domain:retrieval\n- kind:software\n- impl:external\n- entity:cli_command\nprovenance: parser:sldb.cli.parser:build_parser#models template edit; contract-sha256:488f84deb77dbb9e599f2a5acf480adaa41dc5c18b27dbea53a2e0a1b43233f4\n---\n\n# models template edit\n\n## Synopsis\n\nWrite a template draft for a registered model.\n\n## Purpose\n\nThe `sldb models template edit` command: Write a template draft for a registered model.\n\n## How It Works\n\nImplemented under src/sldb/cli/parsers/ as the argparse subcommand 'edit'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.\n\n## Arguments\n\n```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"model\"\n      ],\n      \"required\": true,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Model name\"\n    },\n    {\n      \"names\": [\n        \"--input\"\n      ],\n      \"required\": true,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Template markdown path\"\n    },\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path\"\n    },\n    {\n      \"names\": [\n        \"--pythonpath\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Project path\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```\n\n## Usage\n\nmodels template edit",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 37
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 46,
+   "end": 50
+  },
+  {
+   "meta": {
+    "path": "command_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 65,
+   "end": 85
+  },
+  {
+   "meta": {
+    "path": "synopsis",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 96,
+   "end": 142
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 148,
+   "end": 234
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "optrev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 247,
+   "end": 385
+  },
+  {
+   "meta": {
+    "path": "command_path",
+    "marker": "render",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 393,
+   "end": 413
+  },
+  {
+   "meta": {
+    "path": "synopsis",
+    "marker": "render",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 428,
+   "end": 474
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 488,
+   "end": 575
+  },
+  {
+   "meta": {
+    "path": "how_it_works",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 594,
+   "end": 775
+  },
+  {
+   "meta": {
+    "path": "arguments",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 791,
+   "end": 1939
+  },
+  {
+   "meta": {
+    "path": "usage",
+    "marker": "rev",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 1951,
+   "end": 1971
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 37,
+   "text": "cmd-sldb-models-template-edit",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "cmd-sldb-models-template-edit",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 37,
+   "end": 46,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 46,
+   "end": 50,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 50,
+   "end": 65,
+   "text": "\ncommand_path: "
+  },
+  {
+   "type": "field",
+   "start": 65,
+   "end": 85,
+   "text": "models template edit",
+   "path": "command_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "models template edit",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 85,
+   "end": 96,
+   "text": "\nsynopsis: "
+  },
+  {
+   "type": "field",
+   "start": 96,
+   "end": 142,
+   "text": "Write a template draft for a registered model.",
+   "path": "synopsis",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Write a template draft for a registered model.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 142,
+   "end": 148,
+   "text": "\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 148,
+   "end": 234,
+   "text": "\n- system:sldb\n- domain:retrieval\n- kind:software\n- impl:external\n- entity:cli_command",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [
+    "system:sldb",
+    "domain:retrieval",
+    "kind:software",
+    "impl:external",
+    "entity:cli_command"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 234,
+   "end": 247,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 247,
+   "end": 385,
+   "text": "parser:sldb.cli.parser:build_parser#models template edit; contract-sha256:488f84deb77dbb9e599f2a5acf480adaa41dc5c18b27dbea53a2e0a1b43233f4",
+   "path": "provenance",
+   "marker": "optrev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "parser:sldb.cli.parser:build_parser#models template edit; contract-sha256:488f84deb77dbb9e599f2a5acf480adaa41dc5c18b27dbea53a2e0a1b43233f4",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 385,
+   "end": 393,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 393,
+   "end": 413,
+   "text": "models template edit",
+   "path": "command_path",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "models template edit",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 413,
+   "end": 428,
+   "text": "\n\n## Synopsis\n\n"
+  },
+  {
+   "type": "field",
+   "start": 428,
+   "end": 474,
+   "text": "Write a template draft for a registered model.",
+   "path": "synopsis",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "block",
+   "kind": "string",
+   "value": "Write a template draft for a registered model.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 474,
+   "end": 488,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 488,
+   "end": 575,
+   "text": "The `sldb models template edit` command: Write a template draft for a registered model.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "The `sldb models template edit` command: Write a template draft for a registered model.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 575,
+   "end": 594,
+   "text": "\n\n## How It Works\n\n"
+  },
+  {
+   "type": "field",
+   "start": 594,
+   "end": 775,
+   "text": "Implemented under src/sldb/cli/parsers/ as the argparse subcommand 'edit'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.",
+   "path": "how_it_works",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Implemented under src/sldb/cli/parsers/ as the argparse subcommand 'edit'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 775,
+   "end": 791,
+   "text": "\n\n## Arguments\n\n"
+  },
+  {
+   "type": "field",
+   "start": 791,
+   "end": 1939,
+   "text": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"model\"\n      ],\n      \"required\": true,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Model name\"\n    },\n    {\n      \"names\": [\n        \"--input\"\n      ],\n      \"required\": true,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Template markdown path\"\n    },\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path\"\n    },\n    {\n      \"names\": [\n        \"--pythonpath\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Project path\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+   "path": "arguments",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"model\"\n      ],\n      \"required\": true,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Model name\"\n    },\n    {\n      \"names\": [\n        \"--input\"\n      ],\n      \"required\": true,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Template markdown path\"\n    },\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path\"\n    },\n    {\n      \"names\": [\n        \"--pythonpath\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Project path\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1939,
+   "end": 1951,
+   "text": "\n\n## Usage\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1951,
+   "end": 1971,
+   "text": "models template edit",
+   "path": "usage",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "models template edit",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

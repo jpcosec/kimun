@@ -1,0 +1,379 @@
+{
+ "text": "---\nid: task-build-code-self-documentation\nstatus: active\nsummary: ''\ntags:\n- system:sldb\n- workspace:desk\n- topic:selfdoc\nroutine: ''\ncurrent_node: ''\nhistory: []\nreferences:\n- docs/documentation-review.md\n- docs/architecture/code-docstring-indexing.spec.md\n- docs/architecture/code-docstring-indexing-handoff.md\ndepends_on: []\npills:\n- desk/pills/pill-015-self-documentation-boundaries.md\nfiles: []\nchecklists: []\ntask_type: ''\ninherits_from: []\ninherit_acceptance_context: false\natoms: []\n---\n\n# Build code-derived self-documentation\n\n## Rationale\n\n_Explain why this task exists or the business driver behind it._\n\nSLDB should document its own executable interfaces using tracked records derived from code. Handwritten inventories have drifted from the parser and source tree.\n\n## Goal\n\n_Describe the concrete result this task must produce._\n\nProvide repeatable scan, materialization, tracking, and freshness checks for code documentation.\n\n## Scope\n\n_State what is in scope and what is out of scope._\n\nFirst slice: argparse CLI inventory to CliCommandDoc and SurfaceDoc, preserving authored explanations and detecting removed commands without deleting them. Later slices: Python symbols/docstrings, source hashes and rename handling, spec2viz architecture views. Domain semantics remain declared or reviewed.\n\n## Implementation Path\n\n_Outline the expected implementation route or affected surface._\n\nAdd a typed parser adapter and selfdoc scan/sync/check commands, anchor outputs to the selected store, reuse the existing document models and tracking operations, and apply the workflow to this repository.\n\nCLI slice implemented: selfdoc scan/sync/check, typed argument and group facts, contract fingerprints, preserved author fields, obsolete-command reporting, and tracked command/surface records. The repository materialized 89 CLI records and preserved author fields in existing documents. `selfdoc python-scan|python-sync|python-check` provides and tracks a static AST inventory with qualified IDs, source hashes/spans, signatures, docstrings, imports, conservative rename candidates, and an optional hash-pinned spec2viz reference; generated facts preserve authored purpose, architecture, and tags. Semantic grouping and review workflows remain active work.\n\nThe next slice is specified in `docs/architecture/code-docstring-indexing.spec.md`, with pilot module/class docstrings in `src/sldb/selfdoc/python_symbol.py`. The contract reuses SLDB metadata and spec2viz classification, derives structure and selected contextual tags from the AST, and keeps graph persistence in KGDB. Parsing this metadata and migrating legacy generated identities remain pending; the pilot is not an implemented semantic pipeline. The continuation handoff separates small annotation batches from adapter implementation and records known limitations in rename/check reporting.\n\nBatch 2 (2026-09-14): annotated the four declarations in `selfdoc/planned_document.py` and `selfdoc/report.py` following the pilot frontmatter format. Fixture validation, the 305-test focused suite, `python-sync` (`ok: true`, 4 written, no findings) and `python-check` (`ok: true`, zero written) all passed; results and the next batch are recorded in the handoff. Docstring metadata interpretation remains unimplemented.\n\nBatch-2 review corrected inaccurate rename-uniqueness and exit-status claims in source documentation, plus the handoff's imported-versus-nested class mistake. Spec sections 4.1–4.2 now separate import bindings from definition/containment and annotation references, with concrete `command.py` acceptance cases. Import extraction/resolution and the known runtime reporting fixes remain pending; the next annotation batch is explicitly bounded in the handoff.\n\nFollow-up implementation (2026-09-14): Python checks now propagate a non-current report as exit status 1, and rename candidates require exactly one matching candidate. `python-sync` writes a producer-scoped KGDB source graph at `.kgdb/python-source.graph.json`; `python-check` treats its absence or stale AST/source evidence as drift. The graph carries AST containment, import bindings, and resolved annotation-reference edges with spans/hashes, so graph-aware tools can inspect code context without re-deriving it from docstrings. Strict frontmatter validation, tag inheritance, re-export/shadowing resolution, typed relation registration, and spec2viz projection remain active work.\n\n## Validation\n\n_List the checks required before this task can close._\n\n- Verify parser defaults, required options, mutually exclusive groups, nested commands, and hidden-command policy.\n- Verify preservation of authored sections, freshness detection, missing tracking, removal reporting, and no writes during check.\n- Verify repeated sync is a no-op and queries reach generated records.\n- Extend coverage to Python symbols and architecture integration in subsequent slices.\n\n## Done When\n\n_Name the observable condition that makes the task complete._\n\nCLI and Python source inventories, provenance and incremental synchronization are implemented and tested. The first CLI slice alone does not close this task.",
+ "spans": [
+  {
+   "meta": {
+    "path": "frontmatter",
+    "marker": "rev",
+    "traits": [
+     "dict"
+    ],
+    "_order": 0
+   },
+   "start": 4,
+   "end": 491
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 499,
+   "end": 536
+  },
+  {
+   "meta": {
+    "path": "why",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 618,
+   "end": 779
+  },
+  {
+   "meta": {
+    "path": "goal",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 846,
+   "end": 942
+  },
+  {
+   "meta": {
+    "path": "scope",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 1006,
+   "end": 1312
+  },
+  {
+   "meta": {
+    "path": "implementation_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 1404,
+   "end": 4430
+  },
+  {
+   "meta": {
+    "path": "validation/0",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 6
+   },
+   "start": 4505,
+   "end": 4617
+  },
+  {
+   "meta": {
+    "path": "validation/1",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 7
+   },
+   "start": 4620,
+   "end": 4747
+  },
+  {
+   "meta": {
+    "path": "validation/2",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 8
+   },
+   "start": 4750,
+   "end": 4818
+  },
+  {
+   "meta": {
+    "path": "validation/3",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 9
+   },
+   "start": 4821,
+   "end": 4905
+  },
+  {
+   "meta": {
+    "path": "done_when",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 4984,
+   "end": 5141
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 4,
+   "text": "---\n"
+  },
+  {
+   "type": "field",
+   "start": 4,
+   "end": 491,
+   "text": "id: task-build-code-self-documentation\nstatus: active\nsummary: ''\ntags:\n- system:sldb\n- workspace:desk\n- topic:selfdoc\nroutine: ''\ncurrent_node: ''\nhistory: []\nreferences:\n- docs/documentation-review.md\n- docs/architecture/code-docstring-indexing.spec.md\n- docs/architecture/code-docstring-indexing-handoff.md\ndepends_on: []\npills:\n- desk/pills/pill-015-self-documentation-boundaries.md\nfiles: []\nchecklists: []\ntask_type: ''\ninherits_from: []\ninherit_acceptance_context: false\natoms: []",
+   "path": "frontmatter",
+   "marker": "rev",
+   "traits": [
+    "dict"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "object",
+   "value": null,
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 491,
+   "end": 499,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 499,
+   "end": 536,
+   "text": "Build code-derived self-documentation",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Build code-derived self-documentation",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 536,
+   "end": 618,
+   "text": "\n\n## Rationale\n\n_Explain why this task exists or the business driver behind it._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 618,
+   "end": 779,
+   "text": "SLDB should document its own executable interfaces using tracked records derived from code. Handwritten inventories have drifted from the parser and source tree.",
+   "path": "why",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "SLDB should document its own executable interfaces using tracked records derived from code. Handwritten inventories have drifted from the parser and source tree.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 779,
+   "end": 846,
+   "text": "\n\n## Goal\n\n_Describe the concrete result this task must produce._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 846,
+   "end": 942,
+   "text": "Provide repeatable scan, materialization, tracking, and freshness checks for code documentation.",
+   "path": "goal",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Provide repeatable scan, materialization, tracking, and freshness checks for code documentation.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 942,
+   "end": 1006,
+   "text": "\n\n## Scope\n\n_State what is in scope and what is out of scope._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1006,
+   "end": 1312,
+   "text": "First slice: argparse CLI inventory to CliCommandDoc and SurfaceDoc, preserving authored explanations and detecting removed commands without deleting them. Later slices: Python symbols/docstrings, source hashes and rename handling, spec2viz architecture views. Domain semantics remain declared or reviewed.",
+   "path": "scope",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "First slice: argparse CLI inventory to CliCommandDoc and SurfaceDoc, preserving authored explanations and detecting removed commands without deleting them. Later slices: Python symbols/docstrings, source hashes and rename handling, spec2viz architecture views. Domain semantics remain declared or reviewed.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1312,
+   "end": 1404,
+   "text": "\n\n## Implementation Path\n\n_Outline the expected implementation route or affected surface._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1404,
+   "end": 4430,
+   "text": "Add a typed parser adapter and selfdoc scan/sync/check commands, anchor outputs to the selected store, reuse the existing document models and tracking operations, and apply the workflow to this repository.\n\nCLI slice implemented: selfdoc scan/sync/check, typed argument and group facts, contract fingerprints, preserved author fields, obsolete-command reporting, and tracked command/surface records. The repository materialized 89 CLI records and preserved author fields in existing documents. `selfdoc python-scan|python-sync|python-check` provides and tracks a static AST inventory with qualified IDs, source hashes/spans, signatures, docstrings, imports, conservative rename candidates, and an optional hash-pinned spec2viz reference; generated facts preserve authored purpose, architecture, and tags. Semantic grouping and review workflows remain active work.\n\nThe next slice is specified in `docs/architecture/code-docstring-indexing.spec.md`, with pilot module/class docstrings in `src/sldb/selfdoc/python_symbol.py`. The contract reuses SLDB metadata and spec2viz classification, derives structure and selected contextual tags from the AST, and keeps graph persistence in KGDB. Parsing this metadata and migrating legacy generated identities remain pending; the pilot is not an implemented semantic pipeline. The continuation handoff separates small annotation batches from adapter implementation and records known limitations in rename/check reporting.\n\nBatch 2 (2026-09-14): annotated the four declarations in `selfdoc/planned_document.py` and `selfdoc/report.py` following the pilot frontmatter format. Fixture validation, the 305-test focused suite, `python-sync` (`ok: true`, 4 written, no findings) and `python-check` (`ok: true`, zero written) all passed; results and the next batch are recorded in the handoff. Docstring metadata interpretation remains unimplemented.\n\nBatch-2 review corrected inaccurate rename-uniqueness and exit-status claims in source documentation, plus the handoff's imported-versus-nested class mistake. Spec sections 4.1–4.2 now separate import bindings from definition/containment and annotation references, with concrete `command.py` acceptance cases. Import extraction/resolution and the known runtime reporting fixes remain pending; the next annotation batch is explicitly bounded in the handoff.\n\nFollow-up implementation (2026-09-14): Python checks now propagate a non-current report as exit status 1, and rename candidates require exactly one matching candidate. `python-sync` writes a producer-scoped KGDB source graph at `.kgdb/python-source.graph.json`; `python-check` treats its absence or stale AST/source evidence as drift. The graph carries AST containment, import bindings, and resolved annotation-reference edges with spans/hashes, so graph-aware tools can inspect code context without re-deriving it from docstrings. Strict frontmatter validation, tag inheritance, re-export/shadowing resolution, typed relation registration, and spec2viz projection remain active work.",
+   "path": "implementation_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Add a typed parser adapter and selfdoc scan/sync/check commands, anchor outputs to the selected store, reuse the existing document models and tracking operations, and apply the workflow to this repository.\n\nCLI slice implemented: selfdoc scan/sync/check, typed argument and group facts, contract fingerprints, preserved author fields, obsolete-command reporting, and tracked command/surface records. The repository materialized 89 CLI records and preserved author fields in existing documents. `selfdoc python-scan|python-sync|python-check` provides and tracks a static AST inventory with qualified IDs, source hashes/spans, signatures, docstrings, imports, conservative rename candidates, and an optional hash-pinned spec2viz reference; generated facts preserve authored purpose, architecture, and tags. Semantic grouping and review workflows remain active work.\n\nThe next slice is specified in `docs/architecture/code-docstring-indexing.spec.md`, with pilot module/class docstrings in `src/sldb/selfdoc/python_symbol.py`. The contract reuses SLDB metadata and spec2viz classification, derives structure and selected contextual tags from the AST, and keeps graph persistence in KGDB. Parsing this metadata and migrating legacy generated identities remain pending; the pilot is not an implemented semantic pipeline. The continuation handoff separates small annotation batches from adapter implementation and records known limitations in rename/check reporting.\n\nBatch 2 (2026-09-14): annotated the four declarations in `selfdoc/planned_document.py` and `selfdoc/report.py` following the pilot frontmatter format. Fixture validation, the 305-test focused suite, `python-sync` (`ok: true`, 4 written, no findings) and `python-check` (`ok: true`, zero written) all passed; results and the next batch are recorded in the handoff. Docstring metadata interpretation remains unimplemented.\n\nBatch-2 review corrected inaccurate rename-uniqueness and exit-status claims in source documentation, plus the handoff's imported-versus-nested class mistake. Spec sections 4.1–4.2 now separate import bindings from definition/containment and annotation references, with concrete `command.py` acceptance cases. Import extraction/resolution and the known runtime reporting fixes remain pending; the next annotation batch is explicitly bounded in the handoff.\n\nFollow-up implementation (2026-09-14): Python checks now propagate a non-current report as exit status 1, and rename candidates require exactly one matching candidate. `python-sync` writes a producer-scoped KGDB source graph at `.kgdb/python-source.graph.json`; `python-check` treats its absence or stale AST/source evidence as drift. The graph carries AST containment, import bindings, and resolved annotation-reference edges with spans/hashes, so graph-aware tools can inspect code context without re-deriving it from docstrings. Strict frontmatter validation, tag inheritance, re-export/shadowing resolution, typed relation registration, and spec2viz projection remain active work.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 4430,
+   "end": 4505,
+   "text": "\n\n## Validation\n\n_List the checks required before this task can close._\n\n- "
+  },
+  {
+   "type": "field",
+   "start": 4505,
+   "end": 4617,
+   "text": "Verify parser defaults, required options, mutually exclusive groups, nested commands, and hidden-command policy.",
+   "path": "validation/0",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Verify parser defaults, required options, mutually exclusive groups, nested commands, and hidden-command policy.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 4617,
+   "end": 4620,
+   "text": "\n- "
+  },
+  {
+   "type": "field",
+   "start": 4620,
+   "end": 4747,
+   "text": "Verify preservation of authored sections, freshness detection, missing tracking, removal reporting, and no writes during check.",
+   "path": "validation/1",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Verify preservation of authored sections, freshness detection, missing tracking, removal reporting, and no writes during check.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 4747,
+   "end": 4750,
+   "text": "\n- "
+  },
+  {
+   "type": "field",
+   "start": 4750,
+   "end": 4818,
+   "text": "Verify repeated sync is a no-op and queries reach generated records.",
+   "path": "validation/2",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Verify repeated sync is a no-op and queries reach generated records.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 4818,
+   "end": 4821,
+   "text": "\n- "
+  },
+  {
+   "type": "field",
+   "start": 4821,
+   "end": 4905,
+   "text": "Extend coverage to Python symbols and architecture integration in subsequent slices.",
+   "path": "validation/3",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Extend coverage to Python symbols and architecture integration in subsequent slices.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 4905,
+   "end": 4984,
+   "text": "\n\n## Done When\n\n_Name the observable condition that makes the task complete._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 4984,
+   "end": 5141,
+   "text": "CLI and Python source inventories, provenance and incremental synchronization are implemented and tested. The first CLI slice alone does not close this task.",
+   "path": "done_when",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "CLI and Python source inventories, provenance and incremental synchronization are implemented and tested. The first CLI slice alone does not close this task.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

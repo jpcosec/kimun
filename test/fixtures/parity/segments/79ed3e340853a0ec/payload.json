@@ -1,0 +1,15 @@
+{
+ "title": "AST query task execution context",
+ "id": "pill-012-query-task-execution-context",
+ "tags": [
+  "system:sldb",
+  "topic:query",
+  "topic:execution"
+ ],
+ "what": "This task defines the first public query primitives that operate on SLDB document structure itself. It should describe what a user or downstream tool can ask about a document's structural units once addressability is defined.",
+ "why": "SLDB already exposes store structural queries, but those queries are centered on tracked model/doc/field payload access. This task is about document-structure queries over AST-like units, not just store payload lookup.",
+ "when": "Apply this pill when designing document-local queries, selecting which structural units are queryable, or deciding what a stable query result shape should return.",
+ "where": "Read these first:\n\n- `desk/tasks/task-design-sldb-ast-query-primitives.md`\n- `desk/pills/pill-011-addressability-task-execution-context.md`\n- `src/sldb/cli/commands/query.py`\n- `src/sldb/store/query_engine/structural.py`\n- `src/sldb/store/query_engine/structural_queries.py`\n- `src/sldb/core/ast.py`\n- `docs/architecture/sldb-text-layer-vs-kgdb-graph-layer.md`\n\nQuestions this pill covers:\n\n- what unit types can be queried\n- which queries require canonical addresses versus derived selectors\n- what queries should return: text, metadata, structural nodes, or addresses\n- which primitives belong in document-local APIs versus store-level CLI surfaces",
+ "how": "Anchor the design in the addressability model. Show how each primitive consumes an address or selector and what stable result shape it returns.\n\nProduce a durable design that names:\n\n- the minimum query primitive set\n- example inputs and outputs\n- relation to existing `st` structural query surfaces\n- follow-up implementation tasks if runtime work should be staged",
+ "how_not": "Do not silently overload current `st.{Model}.doc.field` semantics and call that AST query design if the result still cannot name or return meaningful document subunits."
+}

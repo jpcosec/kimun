@@ -1,0 +1,397 @@
+{
+ "text": "---\nid: cmd-sldb-stores-init\nsystem: sldb\ncommand_path: stores init\nsynopsis: Init .sldb store.\ntags:\n- system:sldb\n- domain:retrieval\n- kind:software\n- impl:external\n- entity:cli_command\nprovenance: parser:sldb.cli.parser:build_parser#stores init; contract-sha256:ae366f29de24a73e9855d287e9ae4095b38eb0d2ee4a4ffbc183261f0b8ac81c\n---\n\n# stores init\n\n## Synopsis\n\nInit .sldb store.\n\n## Purpose\n\nThe `sldb stores init` command: Init .sldb store.\n\n## How It Works\n\nImplemented under src/sldb/cli/parsers/ as the argparse subcommand 'init'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.\n\n## Arguments\n\n```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"--path\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\".\\\"\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    },\n    {\n      \"names\": [\n        \"--force\"\n      ],\n      \"required\": false,\n      \"default\": \"false\",\n      \"choices\": null,\n      \"nargs\": 0,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreTrueAction\",\n      \"const\": \"true\",\n      \"help\": \"\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```\n\n## Usage\n\nstores init",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 28
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 37,
+   "end": 41
+  },
+  {
+   "meta": {
+    "path": "command_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 56,
+   "end": 67
+  },
+  {
+   "meta": {
+    "path": "synopsis",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 78,
+   "end": 95
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 101,
+   "end": 187
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "optrev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 200,
+   "end": 329
+  },
+  {
+   "meta": {
+    "path": "command_path",
+    "marker": "render",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 337,
+   "end": 348
+  },
+  {
+   "meta": {
+    "path": "synopsis",
+    "marker": "render",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 363,
+   "end": 380
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 394,
+   "end": 443
+  },
+  {
+   "meta": {
+    "path": "how_it_works",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 462,
+   "end": 643
+  },
+  {
+   "meta": {
+    "path": "arguments",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 659,
+   "end": 1238
+  },
+  {
+   "meta": {
+    "path": "usage",
+    "marker": "rev",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 1250,
+   "end": 1261
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 28,
+   "text": "cmd-sldb-stores-init",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "cmd-sldb-stores-init",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 28,
+   "end": 37,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 37,
+   "end": 41,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 41,
+   "end": 56,
+   "text": "\ncommand_path: "
+  },
+  {
+   "type": "field",
+   "start": 56,
+   "end": 67,
+   "text": "stores init",
+   "path": "command_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "stores init",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 67,
+   "end": 78,
+   "text": "\nsynopsis: "
+  },
+  {
+   "type": "field",
+   "start": 78,
+   "end": 95,
+   "text": "Init .sldb store.",
+   "path": "synopsis",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Init .sldb store.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 95,
+   "end": 101,
+   "text": "\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 101,
+   "end": 187,
+   "text": "\n- system:sldb\n- domain:retrieval\n- kind:software\n- impl:external\n- entity:cli_command",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [
+    "system:sldb",
+    "domain:retrieval",
+    "kind:software",
+    "impl:external",
+    "entity:cli_command"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 187,
+   "end": 200,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 200,
+   "end": 329,
+   "text": "parser:sldb.cli.parser:build_parser#stores init; contract-sha256:ae366f29de24a73e9855d287e9ae4095b38eb0d2ee4a4ffbc183261f0b8ac81c",
+   "path": "provenance",
+   "marker": "optrev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "parser:sldb.cli.parser:build_parser#stores init; contract-sha256:ae366f29de24a73e9855d287e9ae4095b38eb0d2ee4a4ffbc183261f0b8ac81c",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 329,
+   "end": 337,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 337,
+   "end": 348,
+   "text": "stores init",
+   "path": "command_path",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "stores init",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 348,
+   "end": 363,
+   "text": "\n\n## Synopsis\n\n"
+  },
+  {
+   "type": "field",
+   "start": 363,
+   "end": 380,
+   "text": "Init .sldb store.",
+   "path": "synopsis",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "block",
+   "kind": "string",
+   "value": "Init .sldb store.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 380,
+   "end": 394,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 394,
+   "end": 443,
+   "text": "The `sldb stores init` command: Init .sldb store.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "The `sldb stores init` command: Init .sldb store.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 443,
+   "end": 462,
+   "text": "\n\n## How It Works\n\n"
+  },
+  {
+   "type": "field",
+   "start": 462,
+   "end": 643,
+   "text": "Implemented under src/sldb/cli/parsers/ as the argparse subcommand 'init'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.",
+   "path": "how_it_works",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Implemented under src/sldb/cli/parsers/ as the argparse subcommand 'init'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 643,
+   "end": 659,
+   "text": "\n\n## Arguments\n\n"
+  },
+  {
+   "type": "field",
+   "start": 659,
+   "end": 1238,
+   "text": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"--path\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\".\\\"\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    },\n    {\n      \"names\": [\n        \"--force\"\n      ],\n      \"required\": false,\n      \"default\": \"false\",\n      \"choices\": null,\n      \"nargs\": 0,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreTrueAction\",\n      \"const\": \"true\",\n      \"help\": \"\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+   "path": "arguments",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"--path\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\".\\\"\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    },\n    {\n      \"names\": [\n        \"--force\"\n      ],\n      \"required\": false,\n      \"default\": \"false\",\n      \"choices\": null,\n      \"nargs\": 0,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreTrueAction\",\n      \"const\": \"true\",\n      \"help\": \"\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1238,
+   "end": 1250,
+   "text": "\n\n## Usage\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1250,
+   "end": 1261,
+   "text": "stores init",
+   "path": "usage",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "stores init",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

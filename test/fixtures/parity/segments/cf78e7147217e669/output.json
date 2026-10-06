@@ -1,0 +1,71 @@
+{
+ "text": "# T\n\n## Body\n\nB",
+ "spans": [
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 2,
+   "end": 3
+  },
+  {
+   "meta": {
+    "path": "body",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 14,
+   "end": 15
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 2,
+   "text": "# "
+  },
+  {
+   "type": "field",
+   "start": 2,
+   "end": 3,
+   "text": "T",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "T",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 3,
+   "end": 14,
+   "text": "\n\n## Body\n\n"
+  },
+  {
+   "type": "field",
+   "start": 14,
+   "end": 15,
+   "text": "B",
+   "path": "body",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "B",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

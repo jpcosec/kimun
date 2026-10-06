@@ -1,0 +1,301 @@
+{
+ "text": "---\nid: surface-sldb-stores\nsystem: sldb\nsurface: stores\ntags:\n- system:sldb\n- domain:retrieval\n- kind:software\n- impl:external\n- entity:cli_surface\nprovenance: parser:sldb.cli.parser:build_parser#stores; contract-sha256:f69d5af091f96a41b632dbbdf690f23ddcf94ab1e3aa23ecf9049050b242a292\n---\n\n# stores\n\n## Purpose\n\nStore lifecycle and federation. Groups 7 command(s).\n\n## How It Works\n\nRegistered under src/sldb/cli/parsers/ as the 'stores' subparser. Each command dispatches to its handler over the .sldb store.\n\n## Commands\n\n- sldb stores add\n- sldb stores check\n- sldb stores init\n- sldb stores list\n- sldb stores reconcile\n- sldb stores semantic-export\n- sldb stores semantic-map\n- sldb stores update",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 27
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 36,
+   "end": 40
+  },
+  {
+   "meta": {
+    "path": "surface",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 50,
+   "end": 56
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 62,
+   "end": 148
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "optrev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 161,
+   "end": 285
+  },
+  {
+   "meta": {
+    "path": "surface",
+    "marker": "render",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 293,
+   "end": 299
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 313,
+   "end": 365
+  },
+  {
+   "meta": {
+    "path": "how_it_works",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 384,
+   "end": 510
+  },
+  {
+   "meta": {
+    "path": "commands",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 525,
+   "end": 702
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 27,
+   "text": "surface-sldb-stores",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "surface-sldb-stores",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 27,
+   "end": 36,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 36,
+   "end": 40,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 40,
+   "end": 50,
+   "text": "\nsurface: "
+  },
+  {
+   "type": "field",
+   "start": 50,
+   "end": 56,
+   "text": "stores",
+   "path": "surface",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "stores",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 56,
+   "end": 62,
+   "text": "\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 62,
+   "end": 148,
+   "text": "\n- system:sldb\n- domain:retrieval\n- kind:software\n- impl:external\n- entity:cli_surface",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [
+    "system:sldb",
+    "domain:retrieval",
+    "kind:software",
+    "impl:external",
+    "entity:cli_surface"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 148,
+   "end": 161,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 161,
+   "end": 285,
+   "text": "parser:sldb.cli.parser:build_parser#stores; contract-sha256:f69d5af091f96a41b632dbbdf690f23ddcf94ab1e3aa23ecf9049050b242a292",
+   "path": "provenance",
+   "marker": "optrev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "parser:sldb.cli.parser:build_parser#stores; contract-sha256:f69d5af091f96a41b632dbbdf690f23ddcf94ab1e3aa23ecf9049050b242a292",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 285,
+   "end": 293,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 293,
+   "end": 299,
+   "text": "stores",
+   "path": "surface",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "stores",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 299,
+   "end": 313,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 313,
+   "end": 365,
+   "text": "Store lifecycle and federation. Groups 7 command(s).",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Store lifecycle and federation. Groups 7 command(s).",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 365,
+   "end": 384,
+   "text": "\n\n## How It Works\n\n"
+  },
+  {
+   "type": "field",
+   "start": 384,
+   "end": 510,
+   "text": "Registered under src/sldb/cli/parsers/ as the 'stores' subparser. Each command dispatches to its handler over the .sldb store.",
+   "path": "how_it_works",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Registered under src/sldb/cli/parsers/ as the 'stores' subparser. Each command dispatches to its handler over the .sldb store.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 510,
+   "end": 525,
+   "text": "\n\n## Commands\n\n"
+  },
+  {
+   "type": "field",
+   "start": 525,
+   "end": 702,
+   "text": "- sldb stores add\n- sldb stores check\n- sldb stores init\n- sldb stores list\n- sldb stores reconcile\n- sldb stores semantic-export\n- sldb stores semantic-map\n- sldb stores update",
+   "path": "commands",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "- sldb stores add\n- sldb stores check\n- sldb stores init\n- sldb stores list\n- sldb stores reconcile\n- sldb stores semantic-export\n- sldb stores semantic-map\n- sldb stores update",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

@@ -1,0 +1,12 @@
+{
+ "title": "Testing gate to testing-ready operator",
+ "id": "edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-testing-to-ready",
+ "status": "active",
+ "summary": "Testing gate passed.",
+ "tags": [
+  "primitive:edge"
+ ],
+ "source": "checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-testing-ready",
+ "target": "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-ready-for-testing",
+ "condition_ref": ""
+}

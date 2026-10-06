@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-cli-selfdoc_registry-documentationregistry-_document_maps\nsystem: sldb\nmodule: sldb.sldb.cli.selfdoc_registry\nqualname: DocumentationRegistry._document_maps\nkind: FunctionDef\nsource_path: sldb/cli/selfdoc_registry.py\nsource_span: '28:33'\nsource_sha256: eca840c26e448dbfc0f8045a859e413743788c35bc84b0bd8c36bb03611bb7b6\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.cli.selfdoc_registry:DocumentationRegistry._document_maps;\n  contract-sha256:82fe4c8118819c6acdb773aecf1d710b6a4034a894691cf963ecae48e28cb61b\n---\n\n# DocumentationRegistry._document_maps\n\n## Signature\n\n_document_maps(self, entry, name: str)\n\n## Docstring\n\nNot documented.\n\n## Imports\n\n[\"__future__\", \"pathlib\", \"sldb.selfdoc.planned_document\", \"sldb.store.hashing\", \"sldb.store.io\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 87
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 96,
+   "end": 100
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 109,
+   "end": 139
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 150,
+   "end": 186
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 193,
+   "end": 204
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 218,
+   "end": 246
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 260,
+   "end": 267
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 283,
+   "end": 347
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 367,
+   "end": 481
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 488,
+   "end": 490
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 503,
+   "end": 672
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 680,
+   "end": 716
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 732,
+   "end": 770
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 786,
+   "end": 801
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 815,
+   "end": 912
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 926,
+   "end": 941
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 960,
+   "end": 975
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 87,
+   "text": "python-sldb-sldb-sldb-cli-selfdoc_registry-documentationregistry-_document_maps",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-cli-selfdoc_registry-documentationregistry-_document_maps",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 87,
+   "end": 96,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 96,
+   "end": 100,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 100,
+   "end": 109,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 109,
+   "end": 139,
+   "text": "sldb.sldb.cli.selfdoc_registry",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.cli.selfdoc_registry",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 139,
+   "end": 150,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 150,
+   "end": 186,
+   "text": "DocumentationRegistry._document_maps",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "DocumentationRegistry._document_maps",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 186,
+   "end": 193,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 193,
+   "end": 204,
+   "text": "FunctionDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "FunctionDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 204,
+   "end": 218,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 218,
+   "end": 246,
+   "text": "sldb/cli/selfdoc_registry.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/cli/selfdoc_registry.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 246,
+   "end": 260,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 260,
+   "end": 267,
+   "text": "'28:33'",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "28:33",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 267,
+   "end": 283,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 283,
+   "end": 347,
+   "text": "eca840c26e448dbfc0f8045a859e413743788c35bc84b0bd8c36bb03611bb7b6",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "eca840c26e448dbfc0f8045a859e413743788c35bc84b0bd8c36bb03611bb7b6",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 347,
+   "end": 367,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 367,
+   "end": 481,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 481,
+   "end": 488,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 488,
+   "end": 490,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 490,
+   "end": 503,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 503,
+   "end": 672,
+   "text": "python-ast:python:sldb.sldb.cli.selfdoc_registry:DocumentationRegistry._document_maps;\n  contract-sha256:82fe4c8118819c6acdb773aecf1d710b6a4034a894691cf963ecae48e28cb61b",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.cli.selfdoc_registry:DocumentationRegistry._document_maps; contract-sha256:82fe4c8118819c6acdb773aecf1d710b6a4034a894691cf963ecae48e28cb61b",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 672,
+   "end": 680,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 680,
+   "end": 716,
+   "text": "DocumentationRegistry._document_maps",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "DocumentationRegistry._document_maps",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 716,
+   "end": 732,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 732,
+   "end": 770,
+   "text": "_document_maps(self, entry, name: str)",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "_document_maps(self, entry, name: str)",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 770,
+   "end": 786,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 786,
+   "end": 801,
+   "text": "Not documented.",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 801,
+   "end": 815,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 815,
+   "end": 912,
+   "text": "[\"__future__\", \"pathlib\", \"sldb.selfdoc.planned_document\", \"sldb.store.hashing\", \"sldb.store.io\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\"__future__\", \"pathlib\", \"sldb.selfdoc.planned_document\", \"sldb.store.hashing\", \"sldb.store.io\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 912,
+   "end": 926,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 926,
+   "end": 941,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 941,
+   "end": 960,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 960,
+   "end": 975,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

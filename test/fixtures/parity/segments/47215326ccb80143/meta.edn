@@ -1,0 +1,1 @@
+{:op :render_with_spans :fn "sldb.core.segments.instrumented_render.render_with_spans" :tests ["tests/test_document_segments.py::test_every_segment_text_matches_its_own_offsets" "tests/test_document_segments.py::test_segments_concatenate_back_into_the_document_text"]}

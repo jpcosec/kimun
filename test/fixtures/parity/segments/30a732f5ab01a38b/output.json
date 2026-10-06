@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-models-surface_doc-surfacedoc\nsystem: sldb\nmodule: sldb.sldb.models.surface_doc\nqualname: SurfaceDoc\nkind: ClassDef\nsource_path: sldb/models/surface_doc.py\nsource_span: 9:64\nsource_sha256: 7e32d542249bbc5dbe84d178bc3ca2db796cedc03618fa114ecd846eae06b3ee\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.models.surface_doc:SurfaceDoc; contract-sha256:295619df66fb1b610490299bda0d16ad371c78889a9fcb91d789d7c572a3c7af\n---\n\n# SurfaceDoc\n\n## Signature\n\nNot applicable.\n\n## Docstring\n\nA CLI surface / subsystem: the README-equivalent for a command group.\n\n## Imports\n\n[\".knowledge_tag\", \"__future__\", \"pydantic\", \"sldb.models.structured_doc\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 59
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 68,
+   "end": 72
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 81,
+   "end": 109
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 120,
+   "end": 130
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 137,
+   "end": 145
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 159,
+   "end": 185
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 199,
+   "end": 203
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 219,
+   "end": 283
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 303,
+   "end": 417
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 424,
+   "end": 426
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 439,
+   "end": 578
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 586,
+   "end": 596
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 612,
+   "end": 627
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 643,
+   "end": 712
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 726,
+   "end": 800
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 814,
+   "end": 829
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 848,
+   "end": 863
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 59,
+   "text": "python-sldb-sldb-sldb-models-surface_doc-surfacedoc",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-models-surface_doc-surfacedoc",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 59,
+   "end": 68,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 68,
+   "end": 72,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 72,
+   "end": 81,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 81,
+   "end": 109,
+   "text": "sldb.sldb.models.surface_doc",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.models.surface_doc",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 109,
+   "end": 120,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 120,
+   "end": 130,
+   "text": "SurfaceDoc",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "SurfaceDoc",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 130,
+   "end": 137,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 137,
+   "end": 145,
+   "text": "ClassDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "ClassDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 145,
+   "end": 159,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 159,
+   "end": 185,
+   "text": "sldb/models/surface_doc.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/models/surface_doc.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 185,
+   "end": 199,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 199,
+   "end": 203,
+   "text": "9:64",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "9:64",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 203,
+   "end": 219,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 219,
+   "end": 283,
+   "text": "7e32d542249bbc5dbe84d178bc3ca2db796cedc03618fa114ecd846eae06b3ee",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "7e32d542249bbc5dbe84d178bc3ca2db796cedc03618fa114ecd846eae06b3ee",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 283,
+   "end": 303,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 303,
+   "end": 417,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 417,
+   "end": 424,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 424,
+   "end": 426,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 426,
+   "end": 439,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 439,
+   "end": 578,
+   "text": "python-ast:python:sldb.sldb.models.surface_doc:SurfaceDoc; contract-sha256:295619df66fb1b610490299bda0d16ad371c78889a9fcb91d789d7c572a3c7af",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.models.surface_doc:SurfaceDoc; contract-sha256:295619df66fb1b610490299bda0d16ad371c78889a9fcb91d789d7c572a3c7af",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 578,
+   "end": 586,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 586,
+   "end": 596,
+   "text": "SurfaceDoc",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "SurfaceDoc",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 596,
+   "end": 612,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 612,
+   "end": 627,
+   "text": "Not applicable.",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not applicable.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 627,
+   "end": 643,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 643,
+   "end": 712,
+   "text": "A CLI surface / subsystem: the README-equivalent for a command group.",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "A CLI surface / subsystem: the README-equivalent for a command group.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 712,
+   "end": 726,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 726,
+   "end": 800,
+   "text": "[\".knowledge_tag\", \"__future__\", \"pydantic\", \"sldb.models.structured_doc\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\".knowledge_tag\", \"__future__\", \"pydantic\", \"sldb.models.structured_doc\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 800,
+   "end": 814,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 814,
+   "end": 829,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 829,
+   "end": 848,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 848,
+   "end": 863,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

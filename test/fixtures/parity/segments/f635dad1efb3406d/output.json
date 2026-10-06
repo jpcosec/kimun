@@ -1,0 +1,314 @@
+{
+ "text": "---\n# routine-xxx\nid: routine-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico\n# active | archived\nstatus: active\n# Initial node identifier\nentrypoint: checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-ready\n# Ordered or grouped primitive identifiers\ndecomposition:\n- checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-ready\n- operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-activate\n- checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-testing-ready\n- operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-ready-for-testing\n- checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-ready\n- operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-close\n# Edge identifiers composing the graph\nedges:\n- edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-to-activate\n- edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-activate-to-testing\n- edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-testing-to-ready\n- edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-ready-to-closeout\n- edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-to-close\n- edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-close-to-complete\n# Terminal node identifiers\nterminal_nodes:\n- complete\n# e.g., system:deskops\ntags:\n- workspace:desk\n- primitive:routine\n---\n\n# Routine for Borrar la capa runtime/edges y podar el surface publico\n\n## Summary\n\n_Summarize what this routine does and how its nodes fit together._\n\nActionable routine for Borrar la capa runtime/edges y podar el surface publico.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 22,
+   "end": 90
+  },
+  {
+   "meta": {
+    "path": "status",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 119,
+   "end": 125
+  },
+  {
+   "meta": {
+    "path": "entrypoint",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 164,
+   "end": 250
+  },
+  {
+   "meta": {
+    "path": "decomposition",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 308,
+   "end": 821
+  },
+  {
+   "meta": {
+    "path": "edges",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 867,
+   "end": 1388
+  },
+  {
+   "meta": {
+    "path": "terminal_nodes",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 1432,
+   "end": 1443
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 1472,
+   "end": 1509
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 1517,
+   "end": 1584
+  },
+  {
+   "meta": {
+    "path": "summary",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 1666,
+   "end": 1745
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 22,
+   "text": "---\n# routine-xxx\nid: "
+  },
+  {
+   "type": "field",
+   "start": 22,
+   "end": 90,
+   "text": "routine-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "routine-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 90,
+   "end": 119,
+   "text": "\n# active | archived\nstatus: "
+  },
+  {
+   "type": "field",
+   "start": 119,
+   "end": 125,
+   "text": "active",
+   "path": "status",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "active",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 125,
+   "end": 164,
+   "text": "\n# Initial node identifier\nentrypoint: "
+  },
+  {
+   "type": "field",
+   "start": 164,
+   "end": 250,
+   "text": "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-ready",
+   "path": "entrypoint",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-ready",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 250,
+   "end": 308,
+   "text": "\n# Ordered or grouped primitive identifiers\ndecomposition:"
+  },
+  {
+   "type": "field",
+   "start": 308,
+   "end": 821,
+   "text": "\n- checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-ready\n- operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-activate\n- checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-testing-ready\n- operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-ready-for-testing\n- checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-ready\n- operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-close",
+   "path": "decomposition",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-ready",
+    "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-activate",
+    "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-testing-ready",
+    "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-ready-for-testing",
+    "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-ready",
+    "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-close"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 821,
+   "end": 867,
+   "text": "\n# Edge identifiers composing the graph\nedges:"
+  },
+  {
+   "type": "field",
+   "start": 867,
+   "end": 1388,
+   "text": "\n- edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-to-activate\n- edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-activate-to-testing\n- edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-testing-to-ready\n- edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-ready-to-closeout\n- edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-to-close\n- edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-close-to-complete",
+   "path": "edges",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-to-activate",
+    "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-activate-to-testing",
+    "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-testing-to-ready",
+    "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-ready-to-closeout",
+    "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-to-close",
+    "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-close-to-complete"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1388,
+   "end": 1432,
+   "text": "\n# Terminal node identifiers\nterminal_nodes:"
+  },
+  {
+   "type": "field",
+   "start": 1432,
+   "end": 1443,
+   "text": "\n- complete",
+   "path": "terminal_nodes",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "complete"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1443,
+   "end": 1472,
+   "text": "\n# e.g., system:deskops\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 1472,
+   "end": 1509,
+   "text": "\n- workspace:desk\n- primitive:routine",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "workspace:desk",
+    "primitive:routine"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1509,
+   "end": 1517,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 1517,
+   "end": 1584,
+   "text": "Routine for Borrar la capa runtime/edges y podar el surface publico",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Routine for Borrar la capa runtime/edges y podar el surface publico",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1584,
+   "end": 1666,
+   "text": "\n\n## Summary\n\n_Summarize what this routine does and how its nodes fit together._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1666,
+   "end": 1745,
+   "text": "Actionable routine for Borrar la capa runtime/edges y podar el surface publico.",
+   "path": "summary",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Actionable routine for Borrar la capa runtime/edges y podar el surface publico.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

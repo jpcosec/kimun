@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-selfdoc-python_source_facts-pythonsourcefacts-visit_annassign\nsystem: sldb\nmodule: sldb.sldb.selfdoc.python_source_facts\nqualname: PythonSourceFacts.visit_AnnAssign\nkind: FunctionDef\nsource_path: sldb/selfdoc/python_source_facts.py\nsource_span: '49:52'\nsource_sha256: acfb4b747242ce6236dc7a3f826524f0b39c13c3e6847aafd9a19593ec84de4f\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.selfdoc.python_source_facts:PythonSourceFacts.visit_AnnAssign;\n  contract-sha256:92b1947bb6ac9d3ae25c3c9d9ca272928568753aa82288551673e6f3800061ea\n---\n\n# PythonSourceFacts.visit_AnnAssign\n\n## Signature\n\nvisit_AnnAssign(self, node: ast.AnnAssign)\n\n## Docstring\n\nNot documented.\n\n## Imports\n\n[\".python_source_values\", \"__future__\", \"ast\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 91
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 100,
+   "end": 104
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 113,
+   "end": 150
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 161,
+   "end": 194
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 201,
+   "end": 212
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 226,
+   "end": 261
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 275,
+   "end": 282
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 298,
+   "end": 362
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 382,
+   "end": 496
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 503,
+   "end": 505
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 518,
+   "end": 691
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 699,
+   "end": 732
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 748,
+   "end": 790
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 806,
+   "end": 821
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 835,
+   "end": 881
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 895,
+   "end": 910
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 929,
+   "end": 944
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 91,
+   "text": "python-sldb-sldb-sldb-selfdoc-python_source_facts-pythonsourcefacts-visit_annassign",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-selfdoc-python_source_facts-pythonsourcefacts-visit_annassign",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 91,
+   "end": 100,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 100,
+   "end": 104,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 104,
+   "end": 113,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 113,
+   "end": 150,
+   "text": "sldb.sldb.selfdoc.python_source_facts",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.selfdoc.python_source_facts",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 150,
+   "end": 161,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 161,
+   "end": 194,
+   "text": "PythonSourceFacts.visit_AnnAssign",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "PythonSourceFacts.visit_AnnAssign",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 194,
+   "end": 201,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 201,
+   "end": 212,
+   "text": "FunctionDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "FunctionDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 212,
+   "end": 226,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 226,
+   "end": 261,
+   "text": "sldb/selfdoc/python_source_facts.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/selfdoc/python_source_facts.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 261,
+   "end": 275,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 275,
+   "end": 282,
+   "text": "'49:52'",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "49:52",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 282,
+   "end": 298,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 298,
+   "end": 362,
+   "text": "acfb4b747242ce6236dc7a3f826524f0b39c13c3e6847aafd9a19593ec84de4f",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "acfb4b747242ce6236dc7a3f826524f0b39c13c3e6847aafd9a19593ec84de4f",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 362,
+   "end": 382,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 382,
+   "end": 496,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 496,
+   "end": 503,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 503,
+   "end": 505,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 505,
+   "end": 518,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 518,
+   "end": 691,
+   "text": "python-ast:python:sldb.sldb.selfdoc.python_source_facts:PythonSourceFacts.visit_AnnAssign;\n  contract-sha256:92b1947bb6ac9d3ae25c3c9d9ca272928568753aa82288551673e6f3800061ea",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.selfdoc.python_source_facts:PythonSourceFacts.visit_AnnAssign; contract-sha256:92b1947bb6ac9d3ae25c3c9d9ca272928568753aa82288551673e6f3800061ea",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 691,
+   "end": 699,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 699,
+   "end": 732,
+   "text": "PythonSourceFacts.visit_AnnAssign",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "PythonSourceFacts.visit_AnnAssign",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 732,
+   "end": 748,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 748,
+   "end": 790,
+   "text": "visit_AnnAssign(self, node: ast.AnnAssign)",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "visit_AnnAssign(self, node: ast.AnnAssign)",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 790,
+   "end": 806,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 806,
+   "end": 821,
+   "text": "Not documented.",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 821,
+   "end": 835,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 835,
+   "end": 881,
+   "text": "[\".python_source_values\", \"__future__\", \"ast\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\".python_source_values\", \"__future__\", \"ast\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 881,
+   "end": 895,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 895,
+   "end": 910,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 910,
+   "end": 929,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 929,
+   "end": 944,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}
