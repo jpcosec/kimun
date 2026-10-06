@@ -22,6 +22,8 @@
             [clojure.string :as str]
             [kimun.cli.errors :as errors]
             [kimun.cli.out :as out]
+            [kimun.surface.http.routes :as routes]
+            [kimun.surface.http.views :as views]
             #?(:clj [org.httpkit.server :as hk])))
 
 ;; ---------------------------------------------------------------- envelope -> status
@@ -129,74 +131,20 @@
 
 ;; ---------------------------------------------------------- command routes
 
-(defn run-command
+(def run-command
   "Runs `argv` through the CLI of ctx (`:run`, default `kimun.cli.main/run`)
    with `--store` and `--format json` appended; returns its envelope."
-  [ctx argv]
-  (let [run (or (:run ctx) #?(:clj (requiring-resolve 'kimun.cli.main/run)))
-        argv (cond-> (vec argv) (:store ctx) (into ["--store" (str (:store ctx))]) true (into ["--format" "json"]))]
-    (:envelope (run argv (or (:env ctx) {}) (str (or (:cwd ctx) "."))))))
+  views/run-command)
 
-(defn command-route
-  "A route handler that runs a CLI command. `tokens` is the fixed command, e.g.
-   `[\"journal\" \"show\"]`. Options: `:query` `{param \"--flag\"}` forwards
-   those query/path parameters as flags when present; `:positional` `[param …]`
-   appends those parameters as positional arguments; `:required` `[param …]`
-   rejects a request lacking one with a usage failure (400); `:argv-fn`
-   `(fn [request])` returning extra argv, for anything else. The result is the
-   command's own envelope."
-  [tokens & {:keys [query positional required argv-fn]}]
-  (fn [request ctx]
-    (let [params (merge (:query-params request) (:path-params request))
-          missing (first (remove #(contains? params %) required))]
-      (if missing
-        (fail :serve/missing-parameter (str "Missing parameter: " (name missing)) {:parameter (name missing)} 6)
-        (run-command ctx (-> (vec tokens)
-                             (into (keep #(get params %) positional))
-                             (into (mapcat (fn [[k flag]] (when (contains? params k) [flag (get params k)])) query))
-                             (into (when argv-fn (argv-fn request)))))))))
-
-(defn- health
-  "`/health`: the store's verdict (`stores check`) as `{:status :findings :action}`;
-   200 even when degraded, as in v1."
-  [_request ctx]
-  (let [e (run-command ctx ["stores" "check"])]
-    (out/ok "health"
-            {:store (:store e) :revision (:revision e)
-             :data (if (:ok e)
-                     {:status "ok" :findings [] :action nil}
-                     {:status "degraded"
-                      :findings [{:kind (get-in e [:error :type]) :message (get-in e [:error :message])}]
-                      :action "run: kimun stores verify"})})))
-
-(defn- ingest
-  "`POST /docs/ingest` `{name, markdown}`: writes the markdown to a temporary
-   file and runs `docs ingest FILE --name NAME`."
-  [request ctx]
-  (let [{:keys [name markdown]} (:json request)]
-    (if-not (and (string? name) (seq name) (string? markdown))
-      (fail :serve/bad-body "Expected {name: str, markdown: str}." {} 6)
-      (let [dir (fs/create-temp-dir {:prefix "kimun-serve-"})
-            file (str (fs/path dir "document.md"))]
-        (try (spit file markdown)
-             (run-command ctx ["docs" "ingest" file "--name" name])
-             (finally (fs/delete-tree dir)))))))
+(def command-route
+  "A route handler that runs a CLI command (see `kimun.surface.http.views/command-route`)."
+  views/command-route)
 
 (def routes
-  "The routing table (a vector of route entries; see the namespace docstring).
-   To expose a new command, add one entry here or pass your own vector to
-   `handler`/`start!`."
-  [{:method :get :path "/health" :handler health}
-   {:method :get :path "/stores" :handler (command-route ["stores" "show"])}
-   {:method :get :path "/stores/check" :handler (command-route ["stores" "check"])}
-   {:method :get :path "/stores/links" :handler (command-route ["stores" "links"])}
-   {:method :get :path "/docs" :handler (command-route ["docs" "list"])}
-   {:method :get :path "/docs/render"
-    :handler (command-route ["docs" "render"] :positional [:name] :required [:name])}
-   {:method :get :path "/journal"
-    :handler (command-route ["journal" "show"] :query {:limit "--limit" :by "--by" :tree "--tree"})}
-   {:method :get :path "/journal/verify" :handler (command-route ["journal" "verify"])}
-   {:method :post :path "/docs/ingest" :write? true :handler ingest}])
+  "The routing table (a vector of route entries; see the namespace docstring),
+   defined in `kimun.surface.http.routes`. To expose a new command, add one
+   entry there or pass your own vector to `handler`/`start!`."
+  routes/routes)
 
 ;; ------------------------------------------------------------------ handler
 
