@@ -12,7 +12,15 @@
             [sldb.kernel.store :as store]))
 
 (def env {"USER" "tester"})
-(defn- run [cwd & argv] (:envelope (main/run argv env cwd)))
+(defn- run
+  "The envelope of a CLI run. An invalid store makes `stores check` the failure
+   `store/invalid` (exit 5) whose error data is the whole report: it is lifted
+   to `:data`/`:warnings` so an assertion reads one shape either way."
+  [cwd & argv]
+  (let [e (:envelope (main/run argv env cwd))]
+    (if (= "store/invalid" (get-in e [:error :type]))
+      (assoc e :data (get-in e [:error :data]) :warnings (get-in e [:error :data :warnings]))
+      e)))
 (defn- file [p & parts] (str (apply fs/path p parts)))
 
 (def ticket

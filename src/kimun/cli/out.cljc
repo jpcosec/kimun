@@ -81,6 +81,7 @@
     "json" (json/generate-string envelope {:pretty true})
     "edn" (pr-str envelope)
     "text" (if (:ok envelope) (text-success envelope) (text-failure envelope))
+    "ast" (pr-str (or (get-in envelope [:data :ast]) envelope))
     "yaml" (yaml/generate-string (json/parse-string (json/generate-string envelope))
                                  :dumper-options {:flow-style :block})
     "md" (cond (not (:ok envelope)) (text-failure envelope)

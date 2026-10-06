@@ -11,7 +11,15 @@
             [sldb.host.default :as host]))
 
 (def env {"USER" "tester"})
-(defn- run [cwd & argv] (:envelope (main/run argv env cwd)))
+(defn- run
+  "The envelope of a CLI run. An invalid store makes `stores check` the failure
+   `store/invalid` (exit 5) whose error data is the whole report: it is lifted
+   to `:data`/`:warnings` so an assertion reads one shape either way."
+  [cwd & argv]
+  (let [e (:envelope (main/run argv env cwd))]
+    (if (= "store/invalid" (get-in e [:error :type]))
+      (assoc e :data (get-in e [:error :data]) :warnings (get-in e [:error :data :warnings]))
+      e)))
 
 (def ticket
   (pr-str {:model/name "TicketDoc" :model/version 1 :base []
@@ -127,7 +135,7 @@
     (is (= [] (:warnings (run p "stores" "check"))))
     (spit (file p "login.md") "# T\n\nStatus: closed\n")
     (let [chk (run p "stores" "check")]
-      (is (true? (:ok chk)))
+      (is (= [false 5 "store/invalid"] [(:ok chk) (:exit chk) (get-in chk [:error :type])]) "an edited file makes the store invalid: check fails, as v1's did")
       (is (= [{:document "login" :model "TicketDoc" :state :intact :category :edited}]
              (mapv #(select-keys % [:document :model :state :category]) (get-in chk [:data :documents :findings]))))
       (is (= "docs/file-modified" (:type (first (:warnings chk))))))

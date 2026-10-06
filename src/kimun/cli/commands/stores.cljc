@@ -64,25 +64,33 @@
    corrupt), `:documents` is the `kimun.surface.diagnostics/report` plus
    `:tracked`: `{:tracked :valid :summary :checked :counts :models :documents
    :findings}`; every finding is also a warning `{:type :message :category
-   :model :document :path :action}` naming the command that repairs it."
+   :model :document :path :action}` naming the command that repairs it. A
+   store that is not valid (anything beyond `:ok` and `:reformatted`) is the
+   failure `store/invalid`, exit 5, carrying the same data plus `:warnings`."
   [_args opts {:keys [env cwd]}]
   (let [{:keys [descriptor store path] :as opened} (cli-store/open! (cli-store/resolve-store opts env cwd))
         link-report (cli-store/links path)
         report (diagnose opened)]
-    (out/ok "stores check" {:store (store-ref descriptor path)
-                            :revision (:head store)
-                            :data (cond-> {:name (:name descriptor)
-                                           :path path
-                                           :hash-alg (:hash-alg descriptor)
-                                           :revisions (count (:revisions store))
-                                           :trees (count (:trees store))
-                                           :objects (count (:objects store))
-                                           :head (:head store)
-                                           :links link-report}
-                                    (or (seq (:documents report)) (seq (:findings report)))
-                                    (assoc :documents (assoc report :tracked (count (:documents report)))))
-                            :warnings (into (mapv link-warning (remove #(= :ok (:status %)) link-report))
-                                            (map finding-warning) (:findings report))})))
+    (let [data (cond-> {:name (:name descriptor)
+                        :path path
+                        :hash-alg (:hash-alg descriptor)
+                        :revisions (count (:revisions store))
+                        :trees (count (:trees store))
+                        :objects (count (:objects store))
+                        :head (:head store)
+                        :links link-report}
+                 (or (seq (:documents report)) (seq (:findings report)))
+                 (assoc :documents (assoc report :tracked (count (:documents report)))))
+          warnings (into (mapv link-warning (remove #(= :ok (:status %)) link-report))
+                         (map finding-warning) (:findings report))]
+      (if (false? (:valid report))
+        ;; an invalid store is a failure a script can see (v1 exited non-zero);
+        ;; the whole report travels in the error data, warnings included
+        (out/failure :store/invalid (:summary report) (assoc data :warnings warnings) 5)
+        (out/ok "stores check" {:store (store-ref descriptor path)
+                                :revision (:head store)
+                                :data data
+                                :warnings warnings})))))
 
 (defn health
   "`stores health`: the verdict of the store (`kimun.surface.diagnostics/health`):

@@ -7,7 +7,7 @@
 
 (def formats
   "Accepted values of `--format`."
-  #{"json" "edn" "text" "md" "yaml"})
+  #{"json" "edn" "text" "md" "yaml" "ast"})
 
 (def spec
   "babashka.cli spec of the global options; each command group adds its own

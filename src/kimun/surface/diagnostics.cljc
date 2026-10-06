@@ -138,7 +138,10 @@
    :document :path :state :action :message :inspect :needs-human :content-ok
    :fields-ok}` plus `:fields` (edited), `:error` (unextractable), `:noise`
    and `:undeclared` (the noisy headings as written; v1 `undeclared`).
-   `:valid` is false when anything is neither `:ok` nor `:reformatted`."
+   `:valid` is false when anything is neither `:ok` nor `:reformatted` —
+   except `:noise` on a file that still matches what was recorded, which is
+   reported and asks for a human but does not block (v1: noise already tracked
+   is reported without blocking); noise brought in by a hand edit does block."
   ([store read-file] (report store read-file {}))
   ([store read-file {:keys [verify]}]
    (let [docs (mapv #(diagnose store read-file %) (tdocs/documents store))
@@ -148,7 +151,7 @@
                     :inspect "kimun stores verify" :bad (vec (:bad verify))
                     :message (str (count (:bad verify)) " object(s) do not hash to their name — kimun stores verify names them; restore the store from a clone or backup")})
          counts (frequencies (map :category docs))
-         valid? (and (nil? corrupt) (every? (comp clean :category) docs))]
+         valid? (and (nil? corrupt) (every? #(or (clean (:category %)) (and (= :noise (:category %)) (:content-ok %))) docs))]
      {:valid valid? :summary (summary valid? docs models counts corrupt) :checked (count docs) :counts counts
       :models models :documents docs
       :findings (into (if corrupt [corrupt] []) (remove #(= :ok (:category %))) docs)})))
