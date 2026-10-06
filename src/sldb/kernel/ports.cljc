@@ -26,6 +26,28 @@
   (words [this s] "Vector of [start end] grapheme-offset ranges of the UAX #29 word segments of `s`, in order and covering it.")
   (sentences [this s] "Vector of [start end] grapheme-offset ranges of the UAX #29 sentence segments of `s`, in order and covering it."))
 
+;; Optional port: a host without it gets eager plain maps (the kernel falls back).
+(defprotocol LazyMaps
+  "Map values computed on demand, so a store value can describe a whole store
+   without loading it."
+  (lazy-map [this lookup ks overlay]
+    "A persistent map (map?, get, contains?, assoc, dissoc, merge, update, seq,
+     count, keys, vals, = all work) whose entries are computed on demand:
+     `(lookup k)` -> the value, or nil when `k` is absent; called at most once
+     per key for this map and every map derived from it (the adapter memoises,
+     per process, for as long as such a map is alive). `(ks)` -> every key
+     `lookup` answers; called only by seq/count/keys/vals/=. `overlay` is a
+     plain map of entries that win over `lookup`; assoc/merge add to it and
+     dissoc hides a key, none of them calling `lookup` or `ks`."))
+
+(defn lazy-maps
+  "The LazyMaps of a host value, or nil when the host has none (optional port)."
+  [host] (:lazy-maps host))
+
+(defn lazy-maps?
+  "True when `host` carries the optional LazyMaps port."
+  [host] (some? (lazy-maps host)))
+
 (defn segmenter
   "The TextSegmenter of a host value."
   [host] (:segmenter host))

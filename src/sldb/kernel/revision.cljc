@@ -11,7 +11,8 @@
     :head <rev-id|nil>               ; latest revision
     :heads {tree-id rev-id}          ; last revision that touched each tree
     :revisions {rev-id Revision}}
-   The two views are maintained only by `refresh-views`; kernel code asks through
+   The two views are built only by `lazy-store` (host with the LazyMaps port)
+   or `refresh-views` (eager fallback); kernel code asks through
    the accessors below (all of them load through `get-object`).
 
    Revision {:trees     <mmap root: tree-id -> [descriptor-id merkle-root]>
@@ -31,6 +32,7 @@
             [sldb.kernel.tree :as tree]
             [sldb.kernel.plan :as plan]
             [sldb.kernel.mmap :as mmap]
+            [sldb.kernel.ports :as ports]
             [sldb.kernel.legacy.revision :as legacy]
             [sldb.kernel.err :as err]))
 
@@ -167,16 +169,45 @@
   ([store tid rev-id]
    (if (= rev-id (:head store)) (committed-tree store tid) (load-tree store tid rev-id))))
 
+(defn lazy-store
+  "The store value over `base`, a map with :host :capabilities :format-version
+   :objects :revisions :head :heads (and optionally :trees, entries already in
+   memory for the head). When the host has the optional LazyMaps port the result
+   is a lazy map whose views of the head are computed on demand and never when
+   nobody asks: :trees is a lazy map tree-id -> committed tree (`load-tree` per
+   tree on lookup, `tree-ids` to enumerate) and :edges is the set of active
+   edge ids, materialised on first access. Without the port (or for format 1)
+   `base` is returned as is: the caller keeps the eager views (`refresh-views`)."
+  [base]
+  (if-let [lm (when-not (legacy? base) (ports/lazy-maps (:host base)))]
+    (let [head (:head base)
+          core (select-keys base [:host :format-version :objects :revisions :head])
+          trees (ports/lazy-map lm #(load-tree core % head) #(tree-ids core head) (or (:trees base) {}))]
+      (ports/lazy-map lm
+                      (fn [k] (when (= :edges k) (set (active-edges core head))))
+                      (constantly [:edges])
+                      (assoc (dissoc base :edges) :trees trees)))
+    base))
+
 (defn refresh-views
-  "THE one place where the eager views of the head are maintained, in O(plan):
+  "The EAGER views of the head, for hosts without the LazyMaps port, in O(plan):
    `trees'` {tree-id committed-tree} of the trees the transaction touched is
    merged into :trees, and the net edge delta (`added`/`removed` id sets) is
-   applied to :edges. A lazy store replaces this function by views computed from
-   the head Revision (`load-tree` per tree, `active-edges`)."
+   applied to :edges. With the port, `lazy-store` computes the same views from
+   the head Revision instead."
   [store trees' added removed]
   (-> store
       (update :trees merge trees')
       (update :edges #(reduce conj (reduce disj % removed) added))))
+
+(defn- head-views
+  "`store` (already at its new head: :objects :revisions :head :heads updated)
+   with the views of that head: lazy when the host has the port, else eager."
+  [store trees' added removed]
+  (if (ports/lazy-maps? (:host store))
+    ;; dissoc + seq on a lazy store force nothing; the touched trees are in memory already
+    (lazy-store (assoc (into {} (dissoc store :trees :edges)) :trees trees'))
+    (refresh-views store trees' added removed)))
 
 ;; ---------------------------------------------------------------- working state
 
@@ -585,10 +616,10 @@
                           (assoc rev-id rev tx-id resolved-plan))
           store' (-> store
                      (update :objects merge new-objects)
-                     (refresh-views trees' (:e+ ws) (:e- ws))
                      (assoc :head rev-id)
                      (update :heads merge (into {} (map (fn [tid] [tid rev-id])) touched))
-                     (assoc-in [:revisions rev-id] rev))]
+                     (assoc-in [:revisions rev-id] rev)
+                     (head-views trees' (:e+ ws) (:e- ws)))]
       {:store store' :transaction tx :revision rev :revision-id rev-id
        :aliases aliases :edges-added (vec (sort (:edges-added ws))) :superseded (:superseded ws)
        :rebased-from (:rebased-from plan') :new-objects new-objects})))
