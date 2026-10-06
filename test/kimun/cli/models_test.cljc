@@ -116,6 +116,7 @@
 (deftest field-remove-and-template-edits
   ;; v1: test_remove_model_field_edits_the_draft, test_edit_model_template_writes_the_draft_template,
   ;;     test_validate_model_draft_rejects_template_referencing_unknown_fields
+;;     test_cli_v2::test_models_fields_remove_requires_existing_field_and_bumps_version
   (let [p (project) _ (run p "models" "define" "-f" ticket)
         _ (run p "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--default" "5")
         _ (run p "models" "field-remove" "TicketDoc" "--field" "priority")
@@ -123,6 +124,8 @@
     (is (not (str/includes? (pr-str d) "priority")))
     (is (= (:template ticket-d) (:template d)) "removing the field restores the template")
     (is (= 1 (:exit (run p "models" "field-remove" "TicketDoc" "--field" "ghost"))))
+    (is (= 3 (some #(when (= "TicketDoc" (:name %)) (:version %)) (:data (run p "models" "list"))))
+        "add and remove each defined a version; the refused removal defined none")
     (is (= (:template ticket-d) (:data (run p "models" "template" "TicketDoc"))))
     (let [bad (run p "models" "template" "TicketDoc" "-f" (write! p "t.md" "# ⸢rev•headline⸥\n"))]
       (is (= [3 "models/invalid" ["headline"]] [(:exit bad) (get-in bad [:error :type]) (get-in bad [:error :data :fields])])))
