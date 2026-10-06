@@ -115,6 +115,80 @@
     (testing "removing everything returns to the empty map"
       (is (= (:root start) (:root (step big (zipmap ks (repeat mmap/removal)))))))))
 
+;; A leaf does not record its depth: the leaf of an old map can be the node of
+;; a subtree one or more levels away in the new map. `:new` must not hold it.
+
+(defn- hx "A 64-hex key whose path starts with `prefix`." [prefix]
+  (apply str prefix (repeat (- 64 (clojure.core/count prefix)) "0")))
+
+(defn- fresh-only?
+  "True when `:new` of state `after` holds exactly the nodes reachable from its
+   root that are not reachable from the root of `before`."
+  [before after]
+  (= (set (keys (:new after)))
+     (reduce disj (reachable (:objs after) (:root after)) (reachable (:objs before) (:root before)))))
+
+(deftest a-split-does-not-emit-the-old-leaf-again
+  (testing "counterexample of new-objects-hash-to-their-ids-and-close-the-root (seeds 1791284032337, 1791284909047)"
+    (let [before (build {(hid 0) true})
+          after (step before (into {"tree-0" true} (for [i (range 1 16)] [(hid i) true])))
+          r (get (:objs after) (:root after))]
+      (is (mmap/branch? r))
+      (is (= (:root before) (get (:children r) (subs (hid 0) 0 1)))
+          "the child holding only the old entry is the old root leaf, one level down")
+      (is (not (contains? (:new after) (:root before))))
+      (is (fresh-only? before after))
+      (is (= (:root after) (:root (mmap/from-entries h (into {"tree-0" true} (for [i (range 16)] [(hid i) true]))))))))
+  (testing "the old leaf survives several levels down a chain of single-child branches"
+    (let [old (into {} (for [i (range B)] [(hx (str "abc" (format "%x" i))) i]))
+          before (build old)
+          after (step before {(hx "abd") :d})
+          chain (take-while some? (iterate #(some->> (mmap/child-ids (get (:objs after) %)) seq first) (:root after)))]
+      (is (= 4 (clojure.core/count (:new after))) "the three branches down to the split point and the leaf of the new key")
+      (is (not (contains? (:new after) (:root before))))
+      (is (= (:root before) (get (:children (get (:objs after) (nth chain 2))) "c")) "the old root leaf, three levels down")
+      (is (fresh-only? before after))
+      (is (= (:root after) (:root (mmap/from-entries h (assoc old (hx "abd") :d)))))
+      (testing "and a rewritten old leaf is new"
+        (let [after (step before {(hx "abd") :d (hx "abc0") :changed})]
+          (is (fresh-only? before after))
+          (is (= 5 (clojure.core/count (:new after)))))))))
+
+(deftest a-collapse-does-not-emit-the-surviving-leaf-again
+  (let [keep (into {} (for [i (range 3)] [(hx (str "a" i)) i]))
+        gone (into {} (for [i (range B)] [(hx (str "b" (format "%x" i))) i]))
+        before (build (merge keep gone))
+        kept-leaf (get (:children (get (:objs before) (:root before))) "a")]
+    (testing "all the entries left sit in one untouched child: the root becomes that child, nothing is new, nothing is loaded below it"
+      (let [[load calls] (counting (:objs before))
+            r (mmap/update-many h load (:root before) (zipmap (keys gone) (repeat mmap/removal)))]
+        (is (= {:root kept-leaf :new {}} r))
+        (is (= (:root (build keep)) kept-leaf))
+        (is (not (some #{kept-leaf} @calls)))))
+    (testing "through two levels"
+      (let [deep (into {} (for [i (range 3)] [(hx (str "cc" i)) i]))
+            side (into {} (for [i (range B)] [(hx (str "cd" (format "%x" i))) i]))
+            before (build (merge deep side gone))
+            after (step before (zipmap (concat (keys side) (keys gone)) (repeat mmap/removal)))]
+        (is (= {} (:new after)))
+        (is (= (:root (build deep)) (:root after)))
+        (is (contains? (reachable (:objs before) (:root before)) (:root after)))))
+    (testing "a collapse that changes the surviving leaf, or merges two children, is one new leaf"
+      (let [a (step before (assoc (zipmap (keys gone) (repeat mmap/removal)) (hx "a0") :changed))
+            b (step before (zipmap (drop 2 (sort (keys gone))) (repeat mmap/removal)))]
+        (is (fresh-only? before a))
+        (is (= 1 (clojure.core/count (:new a))))
+        (is (= (:root a) (:root (build (assoc keep (hx "a0") :changed)))))
+        (is (fresh-only? before b))
+        (is (= 1 (clojure.core/count (:new b))))
+        (is (mmap/leaf? (get (:objs b) (:root b))))))
+    (testing "a branch that loses a child but stays a branch is new, its untouched children are not"
+      (let [more (into {} (for [i (range B)] [(hx (str "e" (format "%x" i))) i]))
+            before (build (merge keep gone more))
+            after (step before (zipmap (keys gone) (repeat mmap/removal)))]
+        (is (= [(:root after)] (keys (:new after))))
+        (is (fresh-only? before after))))))
+
 (deftest no-ops-create-nothing
   (let [m (into {} (for [i (range 500)] [(hid i) [i]]))
         {:keys [root objs]} (build m)]
@@ -243,6 +317,45 @@
       (and (= (model-diff a (reduce model-step a changes)) (mmap/diff objs (:root sa) (:root near)))
            (= (model-diff a b) (mmap/diff objs (:root sa) (:root sb)))
            (= (model-diff b a) (mmap/diff objs (:root sb) (:root sa)))))))
+
+(defn- gen-keys-under
+  "Generator of 64-hex keys (their own path) under one of `prefixes`."
+  [prefixes]
+  (gen/fmap (fn [[prefix i]] (hx (str prefix (format "%x" i)))) (gen/tuple (gen/elements prefixes) (gen/choose 0 15))))
+
+(def gen-moving-leaf-ops
+  "Change batches built so that a leaf moves between depths: a few entries under
+   one deep prefix (one leaf), then entries under sibling prefixes at several
+   depths (the leaf overflows and the first entries stay together, levels down),
+   then their removal (the branches collapse back onto that leaf), then noise."
+  (let [side-prefixes ["0" "1" "a0" "a1" "ab0" "ab1" "abd"]
+        gen-change (gen/frequency [[3 gen/small-integer] [2 (gen/return mmap/removal)]])]
+    (gen/fmap (fn [[kept side noise]]
+                (let [side (apply dissoc side (keys kept))]
+                  (concat [kept side (zipmap (keys side) (repeat mmap/removal))] noise)))
+              (gen/tuple (gen/map (gen-keys-under ["abc"]) gen/small-integer {:min-elements 1 :max-elements B})
+                         (gen/map (gen-keys-under side-prefixes) gen/small-integer {:max-elements 40})
+                         (gen/vector (gen/map (gen-keys-under (conj side-prefixes "abc")) gen-change {:max-elements 25})
+                                     0 4)))))
+
+(defn- new-is-exactly-the-fresh-reachable-nodes [ops]
+  (loop [s start model {} ops ops]
+    (or (empty? ops)
+        (let [s' (step s (first ops))
+              model' (model-step model (first ops))]
+          (and (every? (fn [[id o]] (and (mmap/node? o) (= id (canon/digest h o)))) (:new s'))
+               (fresh-only? s s')
+               (= model' (into {} (mmap/entries (:objs s') (:root s'))))
+               (= (:root s') (:root (mmap/from-entries h model')))
+               (recur s' model' (rest ops)))))))
+
+(defspec new-is-exactly-the-nodes-not-reachable-from-the-old-root 60
+  (prop/for-all [ops (gen/vector gen-changes 1 8)]
+    (new-is-exactly-the-fresh-reachable-nodes ops)))
+
+(defspec moved-leaves-are-never-emitted-again 60
+  (prop/for-all [ops gen-moving-leaf-ops]
+    (new-is-exactly-the-fresh-reachable-nodes ops)))
 
 (defspec new-objects-hash-to-their-ids-and-close-the-root 60
   (prop/for-all [ops (gen/vector gen-changes 1 8)]

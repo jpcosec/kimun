@@ -157,16 +157,36 @@
 
 ;; ---------------------------------------------------------------- writes
 ;; In-memory results while updating: nil (empty subtree), an id string (child
-;; not visited), {:ref id :n n} (visited, unchanged), {:leaf entries :n n} or
-;; {:branch {slice result} :n n} (new, not hashed yet). Only what survives to
-;; the end is hashed by `seal`, so `:new` never holds discarded intermediates.
+;; not visited), {:ref id :n n} (an EXISTING node, reachable from the old root:
+;; the node visited when unchanged, or a leaf of the old map that now sits at
+;; another depth), {:leaf entries :n n} or {:branch {slice result} :n n} (new,
+;; not hashed yet). Only what survives to the end is hashed by `seal`, so `:new`
+;; never holds discarded intermediates.
+;;
+;; A leaf object does not record its depth, so the same leaf can be the node of
+;; a subtree at two depths. Exactly two moves produce that, and both must reuse
+;; the old id instead of emitting the node again (`:new` holds no node reachable
+;; from the old root):
+;;   split    — a leaf overflows and all its old entries, untouched, fall under
+;;              one slice: that child IS the old leaf, one or more levels down;
+;;   collapse — a branch falls to <= leaf-capacity entries and they all come from
+;;              one untouched child: the collapsed leaf IS that child, moved up.
+;; A branch can never coincide with an older node at another depth (it holds
+;; > leaf-capacity entries spread over the slices of its own depth).
 
-(defn- build [depth pes]
+(defn- build
+  "In-memory result for the sorted [path k v] `pes` at `depth`. `old` is nil or
+   {:id :entries} of the leaf being rewritten: a leaf with exactly those entries
+   is that node, referenced instead of rebuilt."
+  [depth pes old]
   (let [n (cnt pes)]
     (cond
       (zero? n) nil
-      (<= n leaf-capacity) {:leaf (mapv (fn [[_ k v]] [k v]) pes) :n n}
-      :else {:branch (into {} (map (fn [grp] [(slice (ffirst grp) depth) (build (inc depth) (vec grp))]))
+      (<= n leaf-capacity) (let [es (mapv (fn [[_ k v]] [k v]) pes)]
+                             (if (and old (= es (:entries old)))
+                               {:ref (:id old) :n n}
+                               {:leaf es :n n}))
+      :else {:branch (into {} (map (fn [grp] [(slice (ffirst grp) depth) (build (inc depth) (vec grp) old)]))
                            (partition-by #(slice (first %) depth) pes))
              :n n})))
 
@@ -188,6 +208,17 @@
     (:leaf r)   (:leaf r)
     :else       (mapcat #(res-entries load (val %)) (sort-by key (:branch r)))))
 
+(defn- sole-existing-leaf
+  "{:ref id :n n} when the `n` (<= leaf-capacity) entries left under a collapsing
+   branch all sit in ONE child that already exists (not visited, or visited and
+   referenced): by the canonical shape that child is a leaf holding exactly those
+   entries, so the collapsed leaf is that very node. nil otherwise."
+  [kids n]
+  (when (= 1 (cnt kids))
+    (let [r (val (first kids))]
+      (cond (string? r) {:ref r :n n}
+            (:ref r)    {:ref (:ref r) :n n}))))
+
 (defn- upd
   "[result delta] of applying `changes` (sorted [path k v]) under node `id` (nil = empty)."
   [host load id depth changes]
@@ -197,11 +228,13 @@
             pes (merge-entries host old changes)]
         (if (= old (mapv (fn [[_ k v]] [k v]) pes))
           [(when id {:ref id :n (cnt old)}) 0]
-          [(build depth pes) (- (cnt pes) (cnt old))]))
+          [(build depth pes (when id {:id id :entries old})) (- (cnt pes) (cnt old))]))
       (let [[kids delta changed?]
             (reduce (fn [[kids delta changed?] [sl grp]]
                       (let [[r d] (upd host load (get kids sl) (inc depth) grp)
-                            same? (if r (some? (:ref r)) (nil? (get kids sl)))]
+                            was (get kids sl)
+                            ;; a :ref to ANOTHER id is a change: an old leaf that moved up
+                            same? (if r (and (some? was) (= was (:ref r))) (nil? was))]
                         [(if r (assoc kids sl r) (dissoc kids sl)) (+ delta d) (or changed? (not same?))]))
                     [(:children obj) 0 false]
                     (sort-by key (group-by #(slice (first %) depth) changes)))
@@ -209,7 +242,9 @@
         (cond
           (not changed?) [{:ref id :n (:count obj)} 0]
           (zero? n) [nil delta]
-          (<= n leaf-capacity) [{:leaf (vec (res-entries load {:branch kids})) :n n} delta]
+          (<= n leaf-capacity) [(or (sole-existing-leaf kids n)
+                                    {:leaf (vec (res-entries load {:branch kids})) :n n})
+                                delta]
           :else [{:branch kids :n n} delta])))))
 
 (defn- seal
@@ -249,13 +284,16 @@
 (defn update-many
   "Applies `changes`, a map k -> v (set) or k -> `removal` (remove), to the map
    rooted at `root`. Returns `{:root id :new {id node}}` where `:new` holds
-   exactly the node objects of the result that did not exist at the same
-   position before: nothing when nothing changes (same value written again,
-   absent key removed), and never a discarded intermediate. A new node may
-   coincide with an object already in the CAS elsewhere; writing it again is
+   exactly the node objects reachable from the new root that are NOT reachable
+   from `root`: nothing when nothing changes (same value written again, absent
+   key removed), never a discarded intermediate, and never a node of the old
+   map — also when a split or a collapse leaves an old leaf at another depth
+   (the new root may then be the id of an old non-root leaf, with `:new` empty).
+   The CAS is not probed: a node equal to an object of OLDER history (a state
+   the map had before `root`) can reappear in `:new`; writing it again is
    idempotent. Loads only the nodes on the paths of the changed keys, plus —
-   when a removal collapses a branch — the at most `leaf-capacity` entries of
-   its other children."
+   when a removal collapses a branch whose entries do not all sit in one
+   untouched child — the at most `leaf-capacity` entries of its other children."
   [host load root changes]
   (let [pes (path-entries host changes)]
     (if (empty? pes)
@@ -273,7 +311,7 @@
                                      kvs))]
     (doseq [[[p k] [p' k']] (map vector pes (rest pes))]
       (when (= p p') (fail :mmap/path-collision "two keys with the same path" {:keys [k k'] :path p})))
-    (finish host (build 0 pes))))
+    (finish host (build 0 pes nil))))
 
 ;; ---------------------------------------------------------------- diff
 
