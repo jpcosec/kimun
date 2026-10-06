@@ -44,19 +44,66 @@
           (store? nested) (str nested)
           :else (str p))))
 
+(def ^:private link-name-re #"[A-Za-z0-9][A-Za-z0-9._-]*")
+
+(declare links)
+
+(defn- registry-stores
+  "`.kimun` directories whose registries are searched for a link name: the
+   `$KIMUN_STORE` store when set, then every store found walking up from
+   `cwd` (the current store first, then its ancestors)."
+  [env cwd]
+  (let [from-env (when (seq (get env "KIMUN_STORE")) (normalize-store-path (get env "KIMUN_STORE")))
+        walk (loop [dir (fs/absolutize cwd) acc []]
+               (if dir
+                 (let [c (fs/path dir dirname)]
+                   (recur (fs/parent dir) (if (store? c) (conj acc (str c)) acc)))
+                 acc))]
+    (distinct (concat (when (and from-env (store? from-env)) [from-env]) walk))))
+
+(defn- link-target
+  "The `.kimun` directory that link `link-name` points to in the nearest
+   registry (see `registry-stores`) that has it, or nil. A link whose target
+   is not a store raises `:cli/no-store` naming the link and its registry."
+  [link-name env cwd]
+  (some (fn [reg]
+          (when-let [l (first (filter #(= link-name (:name %)) (links reg)))]
+            (if (= :ok (:status l))
+              (:resolved l)
+              (err/raise :cli/no-store
+                         (str "link " (pr-str link-name) " in " (descriptor-path reg)
+                              " points to " (:resolved l) ", which is not a kimun store")
+                         {:path (:resolved l) :name link-name :registry reg}))))
+        (registry-stores env cwd)))
+
 (defn resolve-store
   "Store directory for `opts` (parsed options), `env` (environment map) and
-   `cwd`: `--store` > `KIMUN_STORE` > `(discover cwd)`. Nil when none."
+   `cwd`: `--store` > `KIMUN_STORE` > `(discover cwd)`. Nil when none.
+   A relative `--store` value is read against `cwd`, never against the
+   process directory. A `--store` value that is not an existing path (neither itself nor
+   holding a `.kimun`) and looks like a link name is looked up as a link
+   registered in the current store or an ancestor store (nearest wins); an
+   existing path always wins over a link of the same name. A bare name that
+   is neither raises `:cli/no-store` (exit 5) saying it is not a registered
+   link either; any other missing path is returned as before (`open!`
+   raises)."
   [opts env cwd]
-  (cond (:store opts) (normalize-store-path (:store opts))
+  (cond (:store opts)
+        (let [v (str (:store opts))
+              at (str (if (fs/absolute? v) v (fs/path (or cwd ".") v)))]
+          (if (or (fs/exists? at) (not (re-matches link-name-re v)))
+            (normalize-store-path at)
+            (or (link-target v env cwd)
+                (let [p (normalize-store-path at)]
+                  (err/raise :cli/no-store
+                             (str "no kimun store at " p "; " (pr-str v) " is not a registered link either (current or ancestor stores)")
+                             {:path p :name v})))))
         (seq (get env "KIMUN_STORE")) (normalize-store-path (get env "KIMUN_STORE"))
         :else (discover cwd)))
 
 (defn backend
   "The files backend of store directory `dir`."
   [dir] (fs-store/backend (str dir)))
-
-(def ^:private link-name-re #"[A-Za-z0-9][A-Za-z0-9._-]*")
 
 (defn- validate-links!
   "Raises `:store/invalid-links` unless every link of `descriptor` is
