@@ -1,0 +1,18 @@
+{
+ "id": "cmd-sldb-example",
+ "system": "sldb",
+ "command_path": "example",
+ "synopsis": "Unpack the bundled SLDB reference example.",
+ "purpose": "The `sldb example` command: ==SUPPRESS==",
+ "how_it_works": "Implemented under src/sldb/cli/parsers/ as the argparse subcommand 'example'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.",
+ "arguments": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"path\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\".\\\"\",\n      \"choices\": null,\n      \"nargs\": \"?\",\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+ "usage": "example",
+ "tags": [
+  "system:sldb",
+  "domain:retrieval",
+  "kind:software",
+  "impl:external",
+  "entity:cli_command"
+ ],
+ "provenance": "parser:sldb.cli.parser:build_parser#example; contract-sha256:a79207ee248dc6268dcdffa7431d62e7825f5eaee5bb3a5c50f26f499f072125"
+}

@@ -1,0 +1,339 @@
+{
+ "text": "# StructuredNLDoc Model\n\n## Related Concepts\n\n- [Model Reference](model-reference.atom.md)\n- [Payload Inputs](payload-inputs.atom.md)\n- [Tracked Document](tracked-document.atom.md)\n\n## What It Is\n\nA `StructuredNLDoc` model is the Pydantic-based contract that tells SLDB how to render Markdown, extract typed payload data from Markdown, and validate roundtrip behavior.\n\n## Why It Matters\n\nIt is the contract boundary that turns free-form Markdown into a typed document workflow instead of an unstructured text file.\n\n## How It Works\n\nThe model declares fields with descriptions and a `__template__`. SLDB uses the template markers to map between Markdown structure and typed field values. Optional semantics attach higher-level concepts to the model.\n\n## When It Shows Up\n\nYou encounter it when creating a new model, registering one, validating idempotency, rendering docs, extracting payloads, or querying tracked docs.\n\n## Where It Lives\n\nIt lives in Python code. Common examples are app-local docs modules and this repo's `docs/models.py`.\n\n## Who Uses It\n\nModel authors, CLI users, and automation all rely on the `StructuredNLDoc` contract whenever Markdown must remain human-readable while still being machine-structured.",
+ "spans": [
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 2,
+   "end": 23
+  },
+  {
+   "meta": {
+    "path": "related_concepts/0",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 1
+   },
+   "start": 48,
+   "end": 90
+  },
+  {
+   "meta": {
+    "path": "related_concepts/1",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 2
+   },
+   "start": 93,
+   "end": 133
+  },
+  {
+   "meta": {
+    "path": "related_concepts/2",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 3
+   },
+   "start": 136,
+   "end": 180
+  },
+  {
+   "meta": {
+    "path": "what_it_is",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 197,
+   "end": 368
+  },
+  {
+   "meta": {
+    "path": "why_it_matters",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 389,
+   "end": 515
+  },
+  {
+   "meta": {
+    "path": "how_it_works",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 534,
+   "end": 750
+  },
+  {
+   "meta": {
+    "path": "when_it_shows_up",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 773,
+   "end": 920
+  },
+  {
+   "meta": {
+    "path": "where_it_lives",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 941,
+   "end": 1042
+  },
+  {
+   "meta": {
+    "path": "who_uses_it",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 1060,
+   "end": 1226
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 2,
+   "text": "# "
+  },
+  {
+   "type": "field",
+   "start": 2,
+   "end": 23,
+   "text": "StructuredNLDoc Model",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "StructuredNLDoc Model",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 23,
+   "end": 48,
+   "text": "\n\n## Related Concepts\n\n- "
+  },
+  {
+   "type": "field",
+   "start": 48,
+   "end": 90,
+   "text": "[Model Reference](model-reference.atom.md)",
+   "path": "related_concepts/0",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "[Model Reference](model-reference.atom.md)",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 90,
+   "end": 93,
+   "text": "\n- "
+  },
+  {
+   "type": "field",
+   "start": 93,
+   "end": 133,
+   "text": "[Payload Inputs](payload-inputs.atom.md)",
+   "path": "related_concepts/1",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "[Payload Inputs](payload-inputs.atom.md)",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 133,
+   "end": 136,
+   "text": "\n- "
+  },
+  {
+   "type": "field",
+   "start": 136,
+   "end": 180,
+   "text": "[Tracked Document](tracked-document.atom.md)",
+   "path": "related_concepts/2",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "[Tracked Document](tracked-document.atom.md)",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 180,
+   "end": 197,
+   "text": "\n\n## What It Is\n\n"
+  },
+  {
+   "type": "field",
+   "start": 197,
+   "end": 368,
+   "text": "A `StructuredNLDoc` model is the Pydantic-based contract that tells SLDB how to render Markdown, extract typed payload data from Markdown, and validate roundtrip behavior.",
+   "path": "what_it_is",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "A `StructuredNLDoc` model is the Pydantic-based contract that tells SLDB how to render Markdown, extract typed payload data from Markdown, and validate roundtrip behavior.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 368,
+   "end": 389,
+   "text": "\n\n## Why It Matters\n\n"
+  },
+  {
+   "type": "field",
+   "start": 389,
+   "end": 515,
+   "text": "It is the contract boundary that turns free-form Markdown into a typed document workflow instead of an unstructured text file.",
+   "path": "why_it_matters",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "It is the contract boundary that turns free-form Markdown into a typed document workflow instead of an unstructured text file.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 515,
+   "end": 534,
+   "text": "\n\n## How It Works\n\n"
+  },
+  {
+   "type": "field",
+   "start": 534,
+   "end": 750,
+   "text": "The model declares fields with descriptions and a `__template__`. SLDB uses the template markers to map between Markdown structure and typed field values. Optional semantics attach higher-level concepts to the model.",
+   "path": "how_it_works",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "The model declares fields with descriptions and a `__template__`. SLDB uses the template markers to map between Markdown structure and typed field values. Optional semantics attach higher-level concepts to the model.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 750,
+   "end": 773,
+   "text": "\n\n## When It Shows Up\n\n"
+  },
+  {
+   "type": "field",
+   "start": 773,
+   "end": 920,
+   "text": "You encounter it when creating a new model, registering one, validating idempotency, rendering docs, extracting payloads, or querying tracked docs.",
+   "path": "when_it_shows_up",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "You encounter it when creating a new model, registering one, validating idempotency, rendering docs, extracting payloads, or querying tracked docs.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 920,
+   "end": 941,
+   "text": "\n\n## Where It Lives\n\n"
+  },
+  {
+   "type": "field",
+   "start": 941,
+   "end": 1042,
+   "text": "It lives in Python code. Common examples are app-local docs modules and this repo's `docs/models.py`.",
+   "path": "where_it_lives",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "It lives in Python code. Common examples are app-local docs modules and this repo's `docs/models.py`.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1042,
+   "end": 1060,
+   "text": "\n\n## Who Uses It\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1060,
+   "end": 1226,
+   "text": "Model authors, CLI users, and automation all rely on the `StructuredNLDoc` contract whenever Markdown must remain human-readable while still being machine-structured.",
+   "path": "who_uses_it",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Model authors, CLI users, and automation all rely on the `StructuredNLDoc` contract whenever Markdown must remain human-readable while still being machine-structured.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

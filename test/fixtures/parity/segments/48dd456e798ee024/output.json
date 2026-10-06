@@ -1,0 +1,265 @@
+{
+ "text": "---\n# edge-xxx\nid: edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-execution-to-activate\n# active | archived\nstatus: active\n# Source node identifier\nsource: checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-execution-ready\n# Target node identifier\ntarget: operator-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-activate\n# Optional condition identifier guarding the transition\ncondition_ref: ''\n# e.g., system:deskops\ntags:\n- primitive:edge\n---\n\n# Execution gate to activation\n\n## Summary\n\n_Summarize the transition this edge represents._\n\nExecution gate passed.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 19,
+   "end": 112
+  },
+  {
+   "meta": {
+    "path": "status",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 141,
+   "end": 147
+  },
+  {
+   "meta": {
+    "path": "source",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 181,
+   "end": 273
+  },
+  {
+   "meta": {
+    "path": "target",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 307,
+   "end": 391
+  },
+  {
+   "meta": {
+    "path": "condition_ref",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 463,
+   "end": 465
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 494,
+   "end": 511
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 519,
+   "end": 547
+  },
+  {
+   "meta": {
+    "path": "summary",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 611,
+   "end": 633
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 19,
+   "text": "---\n# edge-xxx\nid: "
+  },
+  {
+   "type": "field",
+   "start": 19,
+   "end": 112,
+   "text": "edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-execution-to-activate",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-execution-to-activate",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 112,
+   "end": 141,
+   "text": "\n# active | archived\nstatus: "
+  },
+  {
+   "type": "field",
+   "start": 141,
+   "end": 147,
+   "text": "active",
+   "path": "status",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "active",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 147,
+   "end": 181,
+   "text": "\n# Source node identifier\nsource: "
+  },
+  {
+   "type": "field",
+   "start": 181,
+   "end": 273,
+   "text": "checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-execution-ready",
+   "path": "source",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-execution-ready",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 273,
+   "end": 307,
+   "text": "\n# Target node identifier\ntarget: "
+  },
+  {
+   "type": "field",
+   "start": 307,
+   "end": 391,
+   "text": "operator-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-activate",
+   "path": "target",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "operator-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-activate",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 391,
+   "end": 463,
+   "text": "\n# Optional condition identifier guarding the transition\ncondition_ref: "
+  },
+  {
+   "type": "field",
+   "start": 463,
+   "end": 465,
+   "text": "''",
+   "path": "condition_ref",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 465,
+   "end": 494,
+   "text": "\n# e.g., system:deskops\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 494,
+   "end": 511,
+   "text": "\n- primitive:edge",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "primitive:edge"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 511,
+   "end": 519,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 519,
+   "end": 547,
+   "text": "Execution gate to activation",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Execution gate to activation",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 547,
+   "end": 611,
+   "text": "\n\n## Summary\n\n_Summarize the transition this edge represents._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 611,
+   "end": 633,
+   "text": "Execution gate passed.",
+   "path": "summary",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Execution gate passed.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

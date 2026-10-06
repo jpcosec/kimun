@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-core-ingest-manifest-_update_existing\nsystem: sldb\nmodule: sldb.sldb.core.ingest.manifest\nqualname: _update_existing\nkind: FunctionDef\nsource_path: sldb/core/ingest/manifest.py\nsource_span: '49:57'\nsource_sha256: 0bc47ade684fcf50b0c834e0836e2dbbc14a422339f973dec465dd52f6880b6d\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.core.ingest.manifest:_update_existing; contract-sha256:0d8dbd1dc0e00b5f7755ab0a6cc480ee786bb0e35b0dca886da7fdf9b29585eb\n---\n\n# _update_existing\n\n## Signature\n\n_update_existing(m_path: Path, entries: list[RawSourceEntry], entry: RawSourceEntry, c_hash: str, notes: str)\n\n## Docstring\n\nNot documented.\n\n## Imports\n\n[\"__future__\", \"csv\", \"datetime\", \"hashlib\", \"pathlib\", \"wiki_compiler.contracts\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 67
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 76,
+   "end": 80
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 89,
+   "end": 119
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 130,
+   "end": 146
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 153,
+   "end": 164
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 178,
+   "end": 206
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 220,
+   "end": 227
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 243,
+   "end": 307
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 327,
+   "end": 441
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 448,
+   "end": 450
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 463,
+   "end": 610
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 618,
+   "end": 634
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 650,
+   "end": 759
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 775,
+   "end": 790
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 804,
+   "end": 886
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 900,
+   "end": 915
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 934,
+   "end": 949
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 67,
+   "text": "python-sldb-sldb-sldb-core-ingest-manifest-_update_existing",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-core-ingest-manifest-_update_existing",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 67,
+   "end": 76,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 76,
+   "end": 80,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 80,
+   "end": 89,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 89,
+   "end": 119,
+   "text": "sldb.sldb.core.ingest.manifest",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.core.ingest.manifest",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 119,
+   "end": 130,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 130,
+   "end": 146,
+   "text": "_update_existing",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "_update_existing",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 146,
+   "end": 153,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 153,
+   "end": 164,
+   "text": "FunctionDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "FunctionDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 164,
+   "end": 178,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 178,
+   "end": 206,
+   "text": "sldb/core/ingest/manifest.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/core/ingest/manifest.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 206,
+   "end": 220,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 220,
+   "end": 227,
+   "text": "'49:57'",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "49:57",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 227,
+   "end": 243,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 243,
+   "end": 307,
+   "text": "0bc47ade684fcf50b0c834e0836e2dbbc14a422339f973dec465dd52f6880b6d",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "0bc47ade684fcf50b0c834e0836e2dbbc14a422339f973dec465dd52f6880b6d",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 307,
+   "end": 327,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 327,
+   "end": 441,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 441,
+   "end": 448,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 448,
+   "end": 450,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 450,
+   "end": 463,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 463,
+   "end": 610,
+   "text": "python-ast:python:sldb.sldb.core.ingest.manifest:_update_existing; contract-sha256:0d8dbd1dc0e00b5f7755ab0a6cc480ee786bb0e35b0dca886da7fdf9b29585eb",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.core.ingest.manifest:_update_existing; contract-sha256:0d8dbd1dc0e00b5f7755ab0a6cc480ee786bb0e35b0dca886da7fdf9b29585eb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 610,
+   "end": 618,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 618,
+   "end": 634,
+   "text": "_update_existing",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "_update_existing",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 634,
+   "end": 650,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 650,
+   "end": 759,
+   "text": "_update_existing(m_path: Path, entries: list[RawSourceEntry], entry: RawSourceEntry, c_hash: str, notes: str)",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "_update_existing(m_path: Path, entries: list[RawSourceEntry], entry: RawSourceEntry, c_hash: str, notes: str)",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 759,
+   "end": 775,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 775,
+   "end": 790,
+   "text": "Not documented.",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 790,
+   "end": 804,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 804,
+   "end": 886,
+   "text": "[\"__future__\", \"csv\", \"datetime\", \"hashlib\", \"pathlib\", \"wiki_compiler.contracts\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\"__future__\", \"csv\", \"datetime\", \"hashlib\", \"pathlib\", \"wiki_compiler.contracts\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 886,
+   "end": 900,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 900,
+   "end": 915,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 915,
+   "end": 934,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 934,
+   "end": 949,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

@@ -1,0 +1,267 @@
+{
+ "text": "---\n# unclear | suggestion\nkind: suggestion\n# e.g., other_repo\nsender_project: deskops\n# e.g., target_repo\n# ISO 8601 timestamp\ncreated_at: '2026-06-14T00:00:01'\n# open | closed\nstatus: closed\n# project identity that acknowledged the note\nacknowledged_by: sldb\n# ISO 8601 timestamp, set when acknowledged\nacknowledged_at: '2026-09-23T19:30:00'\n---\n\n# Stabilize `models add` error output\n\n_Describe the incoming message with enough evidence to triage._\n\n## Scope\n\n- Non-existent model reference should produce a clear error: `Model 'FooBar' not found. Available models: ...`\n- Store-not-found should say which path was tried\n- Duplicate registration should be a no-op (exit 0) with an \"already registered\" info line\n- Exit codes: registered (0), already-exists (0), invalid-ref (1+), store-error (2+)\n\n## Motivation\n\nFirst-time `deskops init` users see raw Python tracebacks when model registration fails. SLDB should own clean CLI error output for its own commands.\n\n## Existing pills\n\n- `desk/pills/pill-001-sldb-vs-deskops-boundary.md`\n\n## Done When\n\n- `sldb models add nonexistent.Model --store <path>` says \"not found\" and lists available models, exits non-zero\n- `sldb models add deskops.models.TaskDoc --store <path>` twice: second exits 0 with info message\n- No raw traceback reaches stderr in any of the above\n\n## Resolution\n\nCommit e25c46e \"fix(cli): `models add` emite errores limpios y códigos de salida estables\": ref inválida da \"Model 'X' not found. Available models: ...\" con rc 1, store ausente dice la ruta intentada con rc 2, y el duplicado es un no-op rc 0 con \"already registered\" — sin tracebacks. Regresión en `tests/store/test_cli_store.py`.",
+ "spans": [
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 33,
+   "end": 43
+  },
+  {
+   "meta": {
+    "path": "sender_project",
+    "marker": "optrev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 79,
+   "end": 86
+  },
+  {
+   "meta": {
+    "path": "created_at",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 140,
+   "end": 161
+  },
+  {
+   "meta": {
+    "path": "status",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 186,
+   "end": 192
+  },
+  {
+   "meta": {
+    "path": "acknowledged_by",
+    "marker": "optrev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 256,
+   "end": 260
+  },
+  {
+   "meta": {
+    "path": "acknowledged_at",
+    "marker": "optrev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 322,
+   "end": 343
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 351,
+   "end": 386
+  },
+  {
+   "meta": {
+    "path": "body",
+    "marker": "rev",
+    "traits": [
+     "markdown"
+    ],
+    "_order": 7
+   },
+   "start": 453,
+   "end": 1664
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 33,
+   "text": "---\n# unclear | suggestion\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 33,
+   "end": 43,
+   "text": "suggestion",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "enum",
+   "value": "suggestion",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 43,
+   "end": 79,
+   "text": "\n# e.g., other_repo\nsender_project: "
+  },
+  {
+   "type": "field",
+   "start": 79,
+   "end": 86,
+   "text": "deskops",
+   "path": "sender_project",
+   "marker": "optrev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "deskops",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 86,
+   "end": 140,
+   "text": "\n# e.g., target_repo\n# ISO 8601 timestamp\ncreated_at: "
+  },
+  {
+   "type": "field",
+   "start": 140,
+   "end": 161,
+   "text": "'2026-06-14T00:00:01'",
+   "path": "created_at",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "2026-06-14T00:00:01",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 161,
+   "end": 186,
+   "text": "\n# open | closed\nstatus: "
+  },
+  {
+   "type": "field",
+   "start": 186,
+   "end": 192,
+   "text": "closed",
+   "path": "status",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "enum",
+   "value": "closed",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 192,
+   "end": 256,
+   "text": "\n# project identity that acknowledged the note\nacknowledged_by: "
+  },
+  {
+   "type": "field",
+   "start": 256,
+   "end": 260,
+   "text": "sldb",
+   "path": "acknowledged_by",
+   "marker": "optrev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 260,
+   "end": 322,
+   "text": "\n# ISO 8601 timestamp, set when acknowledged\nacknowledged_at: "
+  },
+  {
+   "type": "field",
+   "start": 322,
+   "end": 343,
+   "text": "'2026-09-23T19:30:00'",
+   "path": "acknowledged_at",
+   "marker": "optrev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "2026-09-23T19:30:00",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 343,
+   "end": 351,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 351,
+   "end": 386,
+   "text": "Stabilize `models add` error output",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Stabilize `models add` error output",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 386,
+   "end": 453,
+   "text": "\n\n_Describe the incoming message with enough evidence to triage._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 453,
+   "end": 1664,
+   "text": "## Scope\n\n- Non-existent model reference should produce a clear error: `Model 'FooBar' not found. Available models: ...`\n- Store-not-found should say which path was tried\n- Duplicate registration should be a no-op (exit 0) with an \"already registered\" info line\n- Exit codes: registered (0), already-exists (0), invalid-ref (1+), store-error (2+)\n\n## Motivation\n\nFirst-time `deskops init` users see raw Python tracebacks when model registration fails. SLDB should own clean CLI error output for its own commands.\n\n## Existing pills\n\n- `desk/pills/pill-001-sldb-vs-deskops-boundary.md`\n\n## Done When\n\n- `sldb models add nonexistent.Model --store <path>` says \"not found\" and lists available models, exits non-zero\n- `sldb models add deskops.models.TaskDoc --store <path>` twice: second exits 0 with info message\n- No raw traceback reaches stderr in any of the above\n\n## Resolution\n\nCommit e25c46e \"fix(cli): `models add` emite errores limpios y códigos de salida estables\": ref inválida da \"Model 'X' not found. Available models: ...\" con rc 1, store ausente dice la ruta intentada con rc 2, y el duplicado es un no-op rc 0 con \"already registered\" — sin tracebacks. Regresión en `tests/store/test_cli_store.py`.",
+   "path": "body",
+   "marker": "rev",
+   "traits": [
+    "markdown"
+   ],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "## Scope\n\n- Non-existent model reference should produce a clear error: `Model 'FooBar' not found. Available models: ...`\n- Store-not-found should say which path was tried\n- Duplicate registration should be a no-op (exit 0) with an \"already registered\" info line\n- Exit codes: registered (0), already-exists (0), invalid-ref (1+), store-error (2+)\n\n## Motivation\n\nFirst-time `deskops init` users see raw Python tracebacks when model registration fails. SLDB should own clean CLI error output for its own commands.\n\n## Existing pills\n\n- `desk/pills/pill-001-sldb-vs-deskops-boundary.md`\n\n## Done When\n\n- `sldb models add nonexistent.Model --store <path>` says \"not found\" and lists available models, exits non-zero\n- `sldb models add deskops.models.TaskDoc --store <path>` twice: second exits 0 with info message\n- No raw traceback reaches stderr in any of the above\n\n## Resolution\n\nCommit e25c46e \"fix(cli): `models add` emite errores limpios y códigos de salida estables\": ref inválida da \"Model 'X' not found. Available models: ...\" con rc 1, store ausente dice la ruta intentada con rc 2, y el duplicado es un no-op rc 0 con \"already registered\" — sin tracebacks. Regresión en `tests/store/test_cli_store.py`.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

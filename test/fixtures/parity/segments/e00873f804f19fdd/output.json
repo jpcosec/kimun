@@ -1,0 +1,271 @@
+{
+ "text": "---\n# checklist-xxx\nid: checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-testing-ready\n# draft | active | complete | archived\nstatus: active\n# List of condition-xxx paths\ncondition_refs:\n- condition-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-has-validation\n# all | any\nmode: all\n# e.g., system:deskops\ntags:\n- primitive:checklist\n---\n\n# Testing Ready\n\n## Summary\n\n_Summarize what this checklist proves._\n\nConfirms the task is ready for testing handoff.\n\n## Items\n\n_List the human-readable checks in this checklist._\n\n- Validation exists",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 24,
+   "end": 118
+  },
+  {
+   "meta": {
+    "path": "status",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 166,
+   "end": 172
+  },
+  {
+   "meta": {
+    "path": "condition_refs",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 218,
+   "end": 316
+  },
+  {
+   "meta": {
+    "path": "mode",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 335,
+   "end": 338
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 367,
+   "end": 389
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 397,
+   "end": 410
+  },
+  {
+   "meta": {
+    "path": "summary",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 465,
+   "end": 512
+  },
+  {
+   "meta": {
+    "path": "items/0",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 7
+   },
+   "start": 579,
+   "end": 596
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 24,
+   "text": "---\n# checklist-xxx\nid: "
+  },
+  {
+   "type": "field",
+   "start": 24,
+   "end": 118,
+   "text": "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-testing-ready",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-testing-ready",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 118,
+   "end": 166,
+   "text": "\n# draft | active | complete | archived\nstatus: "
+  },
+  {
+   "type": "field",
+   "start": 166,
+   "end": 172,
+   "text": "active",
+   "path": "status",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "active",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 172,
+   "end": 218,
+   "text": "\n# List of condition-xxx paths\ncondition_refs:"
+  },
+  {
+   "type": "field",
+   "start": 218,
+   "end": 316,
+   "text": "\n- condition-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-has-validation",
+   "path": "condition_refs",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "condition-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-has-validation"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 316,
+   "end": 335,
+   "text": "\n# all | any\nmode: "
+  },
+  {
+   "type": "field",
+   "start": 335,
+   "end": 338,
+   "text": "all",
+   "path": "mode",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "all",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 338,
+   "end": 367,
+   "text": "\n# e.g., system:deskops\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 367,
+   "end": 389,
+   "text": "\n- primitive:checklist",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "primitive:checklist"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 389,
+   "end": 397,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 397,
+   "end": 410,
+   "text": "Testing Ready",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Testing Ready",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 410,
+   "end": 465,
+   "text": "\n\n## Summary\n\n_Summarize what this checklist proves._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 465,
+   "end": 512,
+   "text": "Confirms the task is ready for testing handoff.",
+   "path": "summary",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Confirms the task is ready for testing handoff.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 512,
+   "end": 579,
+   "text": "\n\n## Items\n\n_List the human-readable checks in this checklist._\n\n- "
+  },
+  {
+   "type": "field",
+   "start": 579,
+   "end": 596,
+   "text": "Validation exists",
+   "path": "items/0",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Validation exists",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

@@ -1,0 +1,265 @@
+{
+ "text": "---\n# edge-xxx\nid: edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-ready-to-closeout\n# active | archived\nstatus: active\n# Source node identifier\nsource: operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-ready-for-testing\n# Target node identifier\ntarget: checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-closeout-ready\n# Optional condition identifier guarding the transition\ncondition_ref: ''\n# e.g., system:deskops\ntags:\n- primitive:edge\n---\n\n# Testing-ready operator to closeout gate\n\n## Summary\n\n_Summarize the transition this edge represents._\n\nReady-for-testing state entered.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 19,
+   "end": 117
+  },
+  {
+   "meta": {
+    "path": "status",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 146,
+   "end": 152
+  },
+  {
+   "meta": {
+    "path": "source",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 186,
+   "end": 288
+  },
+  {
+   "meta": {
+    "path": "target",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 322,
+   "end": 422
+  },
+  {
+   "meta": {
+    "path": "condition_ref",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 494,
+   "end": 496
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 525,
+   "end": 542
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 550,
+   "end": 589
+  },
+  {
+   "meta": {
+    "path": "summary",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 653,
+   "end": 685
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 19,
+   "text": "---\n# edge-xxx\nid: "
+  },
+  {
+   "type": "field",
+   "start": 19,
+   "end": 117,
+   "text": "edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-ready-to-closeout",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-ready-to-closeout",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 117,
+   "end": 146,
+   "text": "\n# active | archived\nstatus: "
+  },
+  {
+   "type": "field",
+   "start": 146,
+   "end": 152,
+   "text": "active",
+   "path": "status",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "active",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 152,
+   "end": 186,
+   "text": "\n# Source node identifier\nsource: "
+  },
+  {
+   "type": "field",
+   "start": 186,
+   "end": 288,
+   "text": "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-ready-for-testing",
+   "path": "source",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-ready-for-testing",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 288,
+   "end": 322,
+   "text": "\n# Target node identifier\ntarget: "
+  },
+  {
+   "type": "field",
+   "start": 322,
+   "end": 422,
+   "text": "checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-closeout-ready",
+   "path": "target",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-closeout-ready",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 422,
+   "end": 494,
+   "text": "\n# Optional condition identifier guarding the transition\ncondition_ref: "
+  },
+  {
+   "type": "field",
+   "start": 494,
+   "end": 496,
+   "text": "''",
+   "path": "condition_ref",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 496,
+   "end": 525,
+   "text": "\n# e.g., system:deskops\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 525,
+   "end": 542,
+   "text": "\n- primitive:edge",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "primitive:edge"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 542,
+   "end": 550,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 550,
+   "end": 589,
+   "text": "Testing-ready operator to closeout gate",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Testing-ready operator to closeout gate",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 589,
+   "end": 653,
+   "text": "\n\n## Summary\n\n_Summarize the transition this edge represents._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 653,
+   "end": 685,
+   "text": "Ready-for-testing state entered.",
+   "path": "summary",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Ready-for-testing state entered.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

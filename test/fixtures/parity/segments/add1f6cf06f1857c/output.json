@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-store-diagnostics_models-store_diagnosis-storediagnosis-is_valid\nsystem: sldb\nmodule: sldb.sldb.store.diagnostics_models.store_diagnosis\nqualname: StoreDiagnosis.is_valid\nkind: FunctionDef\nsource_path: sldb/store/diagnostics_models/store_diagnosis.py\nsource_span: '15:18'\nsource_sha256: 5d52c463c180fbfd8453ca498110ec4bd2b724221a2da010030f1a46bf7fee3e\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.store.diagnostics_models.store_diagnosis:StoreDiagnosis.is_valid;\n  contract-sha256:d90c9286444f298814fc0703e8b27e18cbd4a4ee3e873d4501fbb5022bd5196d\n---\n\n# StoreDiagnosis.is_valid\n\n## Signature\n\nis_valid(self)\n\n## Docstring\n\nReturns True if the store is in a valid state.\n\n## Imports\n\n[\"__future__\", \"dataclasses\", \"enum\", \"sldb.store.diagnostics_models.diagnosis_note\", \"sldb.store.diagnostics_models.model_diagnosis\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 94
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 103,
+   "end": 107
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 116,
+   "end": 166
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 177,
+   "end": 200
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 207,
+   "end": 218
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 232,
+   "end": 280
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 294,
+   "end": 301
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 317,
+   "end": 381
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 401,
+   "end": 515
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 522,
+   "end": 524
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 537,
+   "end": 713
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 721,
+   "end": 744
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 760,
+   "end": 774
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 790,
+   "end": 836
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 850,
+   "end": 984
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 998,
+   "end": 1013
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 1032,
+   "end": 1047
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 94,
+   "text": "python-sldb-sldb-sldb-store-diagnostics_models-store_diagnosis-storediagnosis-is_valid",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-store-diagnostics_models-store_diagnosis-storediagnosis-is_valid",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 94,
+   "end": 103,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 103,
+   "end": 107,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 107,
+   "end": 116,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 116,
+   "end": 166,
+   "text": "sldb.sldb.store.diagnostics_models.store_diagnosis",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.store.diagnostics_models.store_diagnosis",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 166,
+   "end": 177,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 177,
+   "end": 200,
+   "text": "StoreDiagnosis.is_valid",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "StoreDiagnosis.is_valid",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 200,
+   "end": 207,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 207,
+   "end": 218,
+   "text": "FunctionDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "FunctionDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 218,
+   "end": 232,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 232,
+   "end": 280,
+   "text": "sldb/store/diagnostics_models/store_diagnosis.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/store/diagnostics_models/store_diagnosis.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 280,
+   "end": 294,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 294,
+   "end": 301,
+   "text": "'15:18'",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "15:18",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 301,
+   "end": 317,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 317,
+   "end": 381,
+   "text": "5d52c463c180fbfd8453ca498110ec4bd2b724221a2da010030f1a46bf7fee3e",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "5d52c463c180fbfd8453ca498110ec4bd2b724221a2da010030f1a46bf7fee3e",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 381,
+   "end": 401,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 401,
+   "end": 515,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 515,
+   "end": 522,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 522,
+   "end": 524,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 524,
+   "end": 537,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 537,
+   "end": 713,
+   "text": "python-ast:python:sldb.sldb.store.diagnostics_models.store_diagnosis:StoreDiagnosis.is_valid;\n  contract-sha256:d90c9286444f298814fc0703e8b27e18cbd4a4ee3e873d4501fbb5022bd5196d",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.store.diagnostics_models.store_diagnosis:StoreDiagnosis.is_valid; contract-sha256:d90c9286444f298814fc0703e8b27e18cbd4a4ee3e873d4501fbb5022bd5196d",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 713,
+   "end": 721,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 721,
+   "end": 744,
+   "text": "StoreDiagnosis.is_valid",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "StoreDiagnosis.is_valid",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 744,
+   "end": 760,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 760,
+   "end": 774,
+   "text": "is_valid(self)",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "is_valid(self)",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 774,
+   "end": 790,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 790,
+   "end": 836,
+   "text": "Returns True if the store is in a valid state.",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Returns True if the store is in a valid state.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 836,
+   "end": 850,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 850,
+   "end": 984,
+   "text": "[\"__future__\", \"dataclasses\", \"enum\", \"sldb.store.diagnostics_models.diagnosis_note\", \"sldb.store.diagnostics_models.model_diagnosis\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\"__future__\", \"dataclasses\", \"enum\", \"sldb.store.diagnostics_models.diagnosis_note\", \"sldb.store.diagnostics_models.model_diagnosis\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 984,
+   "end": 998,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 998,
+   "end": 1013,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1013,
+   "end": 1032,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1032,
+   "end": 1047,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

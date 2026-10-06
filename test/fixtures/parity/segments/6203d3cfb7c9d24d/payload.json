@@ -1,0 +1,12 @@
+{
+ "title": "Testing gate to testing-ready operator",
+ "id": "edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-testing-to-ready",
+ "status": "active",
+ "summary": "Testing gate passed.",
+ "tags": [
+  "primitive:edge"
+ ],
+ "source": "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-testing-ready",
+ "target": "operator-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-ready-for-testing",
+ "condition_ref": ""
+}

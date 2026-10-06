@@ -1,0 +1,31 @@
+{
+ "sections": [
+  {
+   "path": "memo2",
+   "title": "Memo2",
+   "breadcrumbs": [
+    "Memo2"
+   ],
+   "about": [
+    "Memo2",
+    "memo2",
+    "representation.markdown",
+    "source.document.markdown",
+    "type.note.memo"
+   ],
+   "semantic_tags": [
+    "representation.markdown",
+    "source.document.markdown",
+    "type.note.memo"
+   ],
+   "slug": "memo2",
+   "level": 1,
+   "line_start": 1,
+   "line_end": 3
+  }
+ ],
+ "known_fields": [
+  "status",
+  "title"
+ ]
+}

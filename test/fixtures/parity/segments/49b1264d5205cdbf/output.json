@@ -1,0 +1,271 @@
+{
+ "text": "---\n# checklist-xxx\nid: checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-testing-ready\n# draft | active | complete | archived\nstatus: active\n# List of condition-xxx paths\ncondition_refs:\n- condition-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-has-validation\n# all | any\nmode: all\n# e.g., system:deskops\ntags:\n- primitive:checklist\n---\n\n# Testing Ready\n\n## Summary\n\n_Summarize what this checklist proves._\n\nConfirms the task is ready for testing handoff.\n\n## Items\n\n_List the human-readable checks in this checklist._\n\n- Validation exists",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 24,
+   "end": 108
+  },
+  {
+   "meta": {
+    "path": "status",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 156,
+   "end": 162
+  },
+  {
+   "meta": {
+    "path": "condition_refs",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 208,
+   "end": 296
+  },
+  {
+   "meta": {
+    "path": "mode",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 315,
+   "end": 318
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 347,
+   "end": 369
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 377,
+   "end": 390
+  },
+  {
+   "meta": {
+    "path": "summary",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 445,
+   "end": 492
+  },
+  {
+   "meta": {
+    "path": "items/0",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 7
+   },
+   "start": 559,
+   "end": 576
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 24,
+   "text": "---\n# checklist-xxx\nid: "
+  },
+  {
+   "type": "field",
+   "start": 24,
+   "end": 108,
+   "text": "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-testing-ready",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-testing-ready",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 108,
+   "end": 156,
+   "text": "\n# draft | active | complete | archived\nstatus: "
+  },
+  {
+   "type": "field",
+   "start": 156,
+   "end": 162,
+   "text": "active",
+   "path": "status",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "active",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 162,
+   "end": 208,
+   "text": "\n# List of condition-xxx paths\ncondition_refs:"
+  },
+  {
+   "type": "field",
+   "start": 208,
+   "end": 296,
+   "text": "\n- condition-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-has-validation",
+   "path": "condition_refs",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "condition-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-has-validation"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 296,
+   "end": 315,
+   "text": "\n# all | any\nmode: "
+  },
+  {
+   "type": "field",
+   "start": 315,
+   "end": 318,
+   "text": "all",
+   "path": "mode",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "all",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 318,
+   "end": 347,
+   "text": "\n# e.g., system:deskops\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 347,
+   "end": 369,
+   "text": "\n- primitive:checklist",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "primitive:checklist"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 369,
+   "end": 377,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 377,
+   "end": 390,
+   "text": "Testing Ready",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Testing Ready",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 390,
+   "end": 445,
+   "text": "\n\n## Summary\n\n_Summarize what this checklist proves._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 445,
+   "end": 492,
+   "text": "Confirms the task is ready for testing handoff.",
+   "path": "summary",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Confirms the task is ready for testing handoff.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 492,
+   "end": 559,
+   "text": "\n\n## Items\n\n_List the human-readable checks in this checklist._\n\n- "
+  },
+  {
+   "type": "field",
+   "start": 559,
+   "end": 576,
+   "text": "Validation exists",
+   "path": "items/0",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Validation exists",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

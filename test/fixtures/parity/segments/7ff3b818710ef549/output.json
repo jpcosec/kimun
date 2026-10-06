@@ -1,0 +1,203 @@
+{
+ "text": "---\n# unclear | suggestion\nkind: suggestion\n# e.g., other_repo\nsender_project: deskops\n# e.g., target_repo\n# ISO 8601 timestamp\ncreated_at: '2026-06-14T00:00:00'\n# open | closed\nstatus: open\n# project identity that acknowledged the note\n# ISO 8601 timestamp, set when acknowledged\n---\n\n# Stabilize `stores init` failure handling\n\n_Describe the incoming message with enough evidence to triage._\n\n## Scope\n\n- `stores init` should be idempotent: if `.sldb/` exists, report it clearly and exit 0\n- Partial init failures (created dirs but no index) should roll back or leave a detectable partial state\n- Exit codes should distinguish: already-exists (0), created (0), partial-failure (1+), precondition-error (2+)\n- Stderr output for failures should be actionable, not raw tracebacks\n\n## Motivation\n\nDeskops needs to report safe, clear output to first-time users. Currently a bare `sldb stores init` failure propagates as a cryptic subprocess error.\n\n## Existing pills\n\n- `desk/pills/pill-001-sldb-vs-deskops-boundary.md` — SLDB owns store contracts, deskops owns workflow\n\n## Done When\n\n- `sldb stores init` run twice in the same directory: first exits 0 creates store, second exits 0 says \"already exists\"\n- Forced init failure (readonly parent dir) exits non-zero with actionable stderr and no partial `.sldb/` left behind\n- Deskops `init` can read the exit code and report the right user message",
+ "spans": [
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 33,
+   "end": 43
+  },
+  {
+   "meta": {
+    "path": "sender_project",
+    "marker": "optrev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 79,
+   "end": 86
+  },
+  {
+   "meta": {
+    "path": "created_at",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 140,
+   "end": 161
+  },
+  {
+   "meta": {
+    "path": "status",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 186,
+   "end": 190
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 288,
+   "end": 328
+  },
+  {
+   "meta": {
+    "path": "body",
+    "marker": "rev",
+    "traits": [
+     "markdown"
+    ],
+    "_order": 5
+   },
+   "start": 395,
+   "end": 1394
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 33,
+   "text": "---\n# unclear | suggestion\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 33,
+   "end": 43,
+   "text": "suggestion",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "enum",
+   "value": "suggestion",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 43,
+   "end": 79,
+   "text": "\n# e.g., other_repo\nsender_project: "
+  },
+  {
+   "type": "field",
+   "start": 79,
+   "end": 86,
+   "text": "deskops",
+   "path": "sender_project",
+   "marker": "optrev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "deskops",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 86,
+   "end": 140,
+   "text": "\n# e.g., target_repo\n# ISO 8601 timestamp\ncreated_at: "
+  },
+  {
+   "type": "field",
+   "start": 140,
+   "end": 161,
+   "text": "'2026-06-14T00:00:00'",
+   "path": "created_at",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "2026-06-14T00:00:00",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 161,
+   "end": 186,
+   "text": "\n# open | closed\nstatus: "
+  },
+  {
+   "type": "field",
+   "start": 186,
+   "end": 190,
+   "text": "open",
+   "path": "status",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "enum",
+   "value": "open",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 190,
+   "end": 288,
+   "text": "\n# project identity that acknowledged the note\n# ISO 8601 timestamp, set when acknowledged\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 288,
+   "end": 328,
+   "text": "Stabilize `stores init` failure handling",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Stabilize `stores init` failure handling",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 328,
+   "end": 395,
+   "text": "\n\n_Describe the incoming message with enough evidence to triage._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 395,
+   "end": 1394,
+   "text": "## Scope\n\n- `stores init` should be idempotent: if `.sldb/` exists, report it clearly and exit 0\n- Partial init failures (created dirs but no index) should roll back or leave a detectable partial state\n- Exit codes should distinguish: already-exists (0), created (0), partial-failure (1+), precondition-error (2+)\n- Stderr output for failures should be actionable, not raw tracebacks\n\n## Motivation\n\nDeskops needs to report safe, clear output to first-time users. Currently a bare `sldb stores init` failure propagates as a cryptic subprocess error.\n\n## Existing pills\n\n- `desk/pills/pill-001-sldb-vs-deskops-boundary.md` — SLDB owns store contracts, deskops owns workflow\n\n## Done When\n\n- `sldb stores init` run twice in the same directory: first exits 0 creates store, second exits 0 says \"already exists\"\n- Forced init failure (readonly parent dir) exits non-zero with actionable stderr and no partial `.sldb/` left behind\n- Deskops `init` can read the exit code and report the right user message",
+   "path": "body",
+   "marker": "rev",
+   "traits": [
+    "markdown"
+   ],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "## Scope\n\n- `stores init` should be idempotent: if `.sldb/` exists, report it clearly and exit 0\n- Partial init failures (created dirs but no index) should roll back or leave a detectable partial state\n- Exit codes should distinguish: already-exists (0), created (0), partial-failure (1+), precondition-error (2+)\n- Stderr output for failures should be actionable, not raw tracebacks\n\n## Motivation\n\nDeskops needs to report safe, clear output to first-time users. Currently a bare `sldb stores init` failure propagates as a cryptic subprocess error.\n\n## Existing pills\n\n- `desk/pills/pill-001-sldb-vs-deskops-boundary.md` — SLDB owns store contracts, deskops owns workflow\n\n## Done When\n\n- `sldb stores init` run twice in the same directory: first exits 0 creates store, second exits 0 says \"already exists\"\n- Forced init failure (readonly parent dir) exits non-zero with actionable stderr and no partial `.sldb/` left behind\n- Deskops `init` can read the exit code and report the right user message",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

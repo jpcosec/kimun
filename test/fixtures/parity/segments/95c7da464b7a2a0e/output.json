@@ -1,0 +1,299 @@
+{
+ "text": "---\n# pill-xxx\nid: pill-011-addressability-task-execution-context\n# e.g., language:python, library:pydantic\ntags:\n- system:sldb\n- topic:addressability\n- topic:execution\n---\n\n# Addressability task execution context\n\n## What\n\n_Define the context or guardrail this pill carries._\n\nThis task defines how SLDB names meaningful textual units inside authored documents. The output is an addressability contract for document-local structure, not a graph identity system.\n\n## Why\n\n_Explain why this context matters for safe execution._\n\nThree existing surfaces already need a stable notion of what textual unit is being referenced:\n\n- structural query design\n- composition inputs and references\n- semantic export provenance\n\nWithout an explicit contract, each surface will invent its own selectors.\n\n## When\n\n_Describe when an agent should apply this pill._\n\nApply this pill when defining canonical versus derived addresses, deciding which document subunits are meaningfully addressable, or reasoning about edit stability and provenance.\n\n## Where\n\n_Name the files, surfaces, or scope this pill applies to._\n\nRead these first:\n\n- `desk/tasks/task-define-sldb-addressability-model.md`\n- `docs/architecture/sldb-text-layer-vs-kgdb-graph-layer.md`\n- `src/sldb/core/ast.py`\n- `src/sldb/core/node.py`\n- `src/sldb/models/structured_doc.py`\n- `src/sldb/store/query_engine/structural.py`\n- `src/sldb/store/export.py`\n- `docs/architecture/semantic-export-boundary.md`\n\nRelevant unit types to evaluate:\n\n- whole document\n- section / subsection\n- field\n- list item\n- table row\n- paragraph or block\n- composition target fragments\n\n## How\n\n_Describe the correct way to apply this guidance._\n\nUse existing repo behaviors as evidence, then define the missing contract. Prefer examples that show how the same unit would be referenced by a document author, a structural query, a composition feature, and a semantic export payload.\n\nAt minimum, produce a durable contract that answers:\n\n- the addressable unit inventory\n- canonical address shapes\n- derived address shapes\n- edit-stability rules\n- provenance implications for export\n\nIf implementation is still unsafe afterward, extract follow-up tasks instead of forcing code prematurely.\n\n## How Not\n\n_Describe the shortcut or failure mode to avoid._\n\nDo not equate textual location with graph identity, and do not treat the existing `st.{Model}.doc.field` store query surface as automatically sufficient for AST-like document addressability.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 19,
+   "end": 65
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 113,
+   "end": 168
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 176,
+   "end": 213
+  },
+  {
+   "meta": {
+    "path": "what",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 278,
+   "end": 462
+  },
+  {
+   "meta": {
+    "path": "why",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 528,
+   "end": 789
+  },
+  {
+   "meta": {
+    "path": "when",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 850,
+   "end": 1028
+  },
+  {
+   "meta": {
+    "path": "where",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 1100,
+   "end": 1608
+  },
+  {
+   "meta": {
+    "path": "how",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 1670,
+   "end": 2211
+  },
+  {
+   "meta": {
+    "path": "how_not",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 2276,
+   "end": 2466
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 19,
+   "text": "---\n# pill-xxx\nid: "
+  },
+  {
+   "type": "field",
+   "start": 19,
+   "end": 65,
+   "text": "pill-011-addressability-task-execution-context",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "pill-011-addressability-task-execution-context",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 65,
+   "end": 113,
+   "text": "\n# e.g., language:python, library:pydantic\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 113,
+   "end": 168,
+   "text": "\n- system:sldb\n- topic:addressability\n- topic:execution",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "system:sldb",
+    "topic:addressability",
+    "topic:execution"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 168,
+   "end": 176,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 176,
+   "end": 213,
+   "text": "Addressability task execution context",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Addressability task execution context",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 213,
+   "end": 278,
+   "text": "\n\n## What\n\n_Define the context or guardrail this pill carries._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 278,
+   "end": 462,
+   "text": "This task defines how SLDB names meaningful textual units inside authored documents. The output is an addressability contract for document-local structure, not a graph identity system.",
+   "path": "what",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "This task defines how SLDB names meaningful textual units inside authored documents. The output is an addressability contract for document-local structure, not a graph identity system.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 462,
+   "end": 528,
+   "text": "\n\n## Why\n\n_Explain why this context matters for safe execution._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 528,
+   "end": 789,
+   "text": "Three existing surfaces already need a stable notion of what textual unit is being referenced:\n\n- structural query design\n- composition inputs and references\n- semantic export provenance\n\nWithout an explicit contract, each surface will invent its own selectors.",
+   "path": "why",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Three existing surfaces already need a stable notion of what textual unit is being referenced:\n\n- structural query design\n- composition inputs and references\n- semantic export provenance\n\nWithout an explicit contract, each surface will invent its own selectors.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 789,
+   "end": 850,
+   "text": "\n\n## When\n\n_Describe when an agent should apply this pill._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 850,
+   "end": 1028,
+   "text": "Apply this pill when defining canonical versus derived addresses, deciding which document subunits are meaningfully addressable, or reasoning about edit stability and provenance.",
+   "path": "when",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Apply this pill when defining canonical versus derived addresses, deciding which document subunits are meaningfully addressable, or reasoning about edit stability and provenance.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1028,
+   "end": 1100,
+   "text": "\n\n## Where\n\n_Name the files, surfaces, or scope this pill applies to._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1100,
+   "end": 1608,
+   "text": "Read these first:\n\n- `desk/tasks/task-define-sldb-addressability-model.md`\n- `docs/architecture/sldb-text-layer-vs-kgdb-graph-layer.md`\n- `src/sldb/core/ast.py`\n- `src/sldb/core/node.py`\n- `src/sldb/models/structured_doc.py`\n- `src/sldb/store/query_engine/structural.py`\n- `src/sldb/store/export.py`\n- `docs/architecture/semantic-export-boundary.md`\n\nRelevant unit types to evaluate:\n\n- whole document\n- section / subsection\n- field\n- list item\n- table row\n- paragraph or block\n- composition target fragments",
+   "path": "where",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Read these first:\n\n- `desk/tasks/task-define-sldb-addressability-model.md`\n- `docs/architecture/sldb-text-layer-vs-kgdb-graph-layer.md`\n- `src/sldb/core/ast.py`\n- `src/sldb/core/node.py`\n- `src/sldb/models/structured_doc.py`\n- `src/sldb/store/query_engine/structural.py`\n- `src/sldb/store/export.py`\n- `docs/architecture/semantic-export-boundary.md`\n\nRelevant unit types to evaluate:\n\n- whole document\n- section / subsection\n- field\n- list item\n- table row\n- paragraph or block\n- composition target fragments",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1608,
+   "end": 1670,
+   "text": "\n\n## How\n\n_Describe the correct way to apply this guidance._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1670,
+   "end": 2211,
+   "text": "Use existing repo behaviors as evidence, then define the missing contract. Prefer examples that show how the same unit would be referenced by a document author, a structural query, a composition feature, and a semantic export payload.\n\nAt minimum, produce a durable contract that answers:\n\n- the addressable unit inventory\n- canonical address shapes\n- derived address shapes\n- edit-stability rules\n- provenance implications for export\n\nIf implementation is still unsafe afterward, extract follow-up tasks instead of forcing code prematurely.",
+   "path": "how",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Use existing repo behaviors as evidence, then define the missing contract. Prefer examples that show how the same unit would be referenced by a document author, a structural query, a composition feature, and a semantic export payload.\n\nAt minimum, produce a durable contract that answers:\n\n- the addressable unit inventory\n- canonical address shapes\n- derived address shapes\n- edit-stability rules\n- provenance implications for export\n\nIf implementation is still unsafe afterward, extract follow-up tasks instead of forcing code prematurely.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 2211,
+   "end": 2276,
+   "text": "\n\n## How Not\n\n_Describe the shortcut or failure mode to avoid._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 2276,
+   "end": 2466,
+   "text": "Do not equate textual location with graph identity, and do not treat the existing `st.{Model}.doc.field` store query surface as automatically sufficient for AST-like document addressability.",
+   "path": "how_not",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Do not equate textual location with graph identity, and do not treat the existing `st.{Model}.doc.field` store query surface as automatically sufficient for AST-like document addressability.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

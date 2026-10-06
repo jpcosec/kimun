@@ -1,0 +1,295 @@
+{
+ "text": "---\nid: surface-sldb-selfdoc\nsystem: sldb\nsurface: selfdoc\ntags: []\nprovenance: parser:sldb.cli.parser:build_parser#selfdoc; contract-sha256:49987e1e27aa7139caac796142bb45ff7fcaa89e5075c9a79bb711d9e8549d37\n---\n\n# selfdoc\n\n## Purpose\n\nNot documented.\n\n## How It Works\n\nNot documented.\n\n## Commands\n\n- sldb selfdoc check\n- sldb selfdoc python-check\n- sldb selfdoc python-scan\n- sldb selfdoc python-sync\n- sldb selfdoc scan\n- sldb selfdoc sync",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 28
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 37,
+   "end": 41
+  },
+  {
+   "meta": {
+    "path": "surface",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 51,
+   "end": 58
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 65,
+   "end": 67
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "optrev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 80,
+   "end": 205
+  },
+  {
+   "meta": {
+    "path": "surface",
+    "marker": "render",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 213,
+   "end": 220
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 234,
+   "end": 249
+  },
+  {
+   "meta": {
+    "path": "how_it_works",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 268,
+   "end": 283
+  },
+  {
+   "meta": {
+    "path": "commands",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 298,
+   "end": 440
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 28,
+   "text": "surface-sldb-selfdoc",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "surface-sldb-selfdoc",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 28,
+   "end": 37,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 37,
+   "end": 41,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 41,
+   "end": 51,
+   "text": "\nsurface: "
+  },
+  {
+   "type": "field",
+   "start": 51,
+   "end": 58,
+   "text": "selfdoc",
+   "path": "surface",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "selfdoc",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 58,
+   "end": 65,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 65,
+   "end": 67,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 67,
+   "end": 80,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 80,
+   "end": 205,
+   "text": "parser:sldb.cli.parser:build_parser#selfdoc; contract-sha256:49987e1e27aa7139caac796142bb45ff7fcaa89e5075c9a79bb711d9e8549d37",
+   "path": "provenance",
+   "marker": "optrev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "parser:sldb.cli.parser:build_parser#selfdoc; contract-sha256:49987e1e27aa7139caac796142bb45ff7fcaa89e5075c9a79bb711d9e8549d37",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 205,
+   "end": 213,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 213,
+   "end": 220,
+   "text": "selfdoc",
+   "path": "surface",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "selfdoc",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 220,
+   "end": 234,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 234,
+   "end": 249,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 249,
+   "end": 268,
+   "text": "\n\n## How It Works\n\n"
+  },
+  {
+   "type": "field",
+   "start": 268,
+   "end": 283,
+   "text": "Not documented.",
+   "path": "how_it_works",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 283,
+   "end": 298,
+   "text": "\n\n## Commands\n\n"
+  },
+  {
+   "type": "field",
+   "start": 298,
+   "end": 440,
+   "text": "- sldb selfdoc check\n- sldb selfdoc python-check\n- sldb selfdoc python-scan\n- sldb selfdoc python-sync\n- sldb selfdoc scan\n- sldb selfdoc sync",
+   "path": "commands",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "- sldb selfdoc check\n- sldb selfdoc python-check\n- sldb selfdoc python-scan\n- sldb selfdoc python-sync\n- sldb selfdoc scan\n- sldb selfdoc sync",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

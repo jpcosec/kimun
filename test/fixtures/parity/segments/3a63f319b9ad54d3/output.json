@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-cli-commands-sections_find-findsectionscli-_get_find_matches\nsystem: sldb\nmodule: sldb.sldb.cli.commands.sections_find\nqualname: FindSectionsCLI._get_find_matches\nkind: FunctionDef\nsource_path: sldb/cli/commands/sections_find.py\nsource_span: '14:23'\nsource_sha256: 0d8c84a37a601ec02d328328727e58d2d887bc5433b26dc34f3b4e5fd59216df\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.cli.commands.sections_find:FindSectionsCLI._get_find_matches;\n  contract-sha256:fcdff18f3c837fb1327328c79435274d317807584901959f28244f2c04095ad1\n---\n\n# FindSectionsCLI._get_find_matches\n\n## Signature\n\n_get_find_matches(self, args: Any)\n\n## Docstring\n\nNot documented.\n\n## Imports\n\n[\"__future__\", \"json\", \"sldb.cli.commands.find_filter\", \"sldb.cli.graph_ops\", \"typing\", \"yaml\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 90
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 99,
+   "end": 103
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 112,
+   "end": 148
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 159,
+   "end": 192
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 199,
+   "end": 210
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 224,
+   "end": 258
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 272,
+   "end": 279
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 295,
+   "end": 359
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 379,
+   "end": 493
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 500,
+   "end": 502
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 515,
+   "end": 687
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 695,
+   "end": 728
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 744,
+   "end": 778
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 794,
+   "end": 809
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 823,
+   "end": 918
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 932,
+   "end": 947
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 966,
+   "end": 981
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 90,
+   "text": "python-sldb-sldb-sldb-cli-commands-sections_find-findsectionscli-_get_find_matches",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-cli-commands-sections_find-findsectionscli-_get_find_matches",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 90,
+   "end": 99,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 99,
+   "end": 103,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 103,
+   "end": 112,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 112,
+   "end": 148,
+   "text": "sldb.sldb.cli.commands.sections_find",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.cli.commands.sections_find",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 148,
+   "end": 159,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 159,
+   "end": 192,
+   "text": "FindSectionsCLI._get_find_matches",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "FindSectionsCLI._get_find_matches",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 192,
+   "end": 199,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 199,
+   "end": 210,
+   "text": "FunctionDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "FunctionDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 210,
+   "end": 224,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 224,
+   "end": 258,
+   "text": "sldb/cli/commands/sections_find.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/cli/commands/sections_find.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 258,
+   "end": 272,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 272,
+   "end": 279,
+   "text": "'14:23'",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "14:23",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 279,
+   "end": 295,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 295,
+   "end": 359,
+   "text": "0d8c84a37a601ec02d328328727e58d2d887bc5433b26dc34f3b4e5fd59216df",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "0d8c84a37a601ec02d328328727e58d2d887bc5433b26dc34f3b4e5fd59216df",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 359,
+   "end": 379,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 379,
+   "end": 493,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 493,
+   "end": 500,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 500,
+   "end": 502,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 502,
+   "end": 515,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 515,
+   "end": 687,
+   "text": "python-ast:python:sldb.sldb.cli.commands.sections_find:FindSectionsCLI._get_find_matches;\n  contract-sha256:fcdff18f3c837fb1327328c79435274d317807584901959f28244f2c04095ad1",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.cli.commands.sections_find:FindSectionsCLI._get_find_matches; contract-sha256:fcdff18f3c837fb1327328c79435274d317807584901959f28244f2c04095ad1",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 687,
+   "end": 695,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 695,
+   "end": 728,
+   "text": "FindSectionsCLI._get_find_matches",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "FindSectionsCLI._get_find_matches",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 728,
+   "end": 744,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 744,
+   "end": 778,
+   "text": "_get_find_matches(self, args: Any)",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "_get_find_matches(self, args: Any)",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 778,
+   "end": 794,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 794,
+   "end": 809,
+   "text": "Not documented.",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 809,
+   "end": 823,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 823,
+   "end": 918,
+   "text": "[\"__future__\", \"json\", \"sldb.cli.commands.find_filter\", \"sldb.cli.graph_ops\", \"typing\", \"yaml\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\"__future__\", \"json\", \"sldb.cli.commands.find_filter\", \"sldb.cli.graph_ops\", \"typing\", \"yaml\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 918,
+   "end": 932,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 932,
+   "end": 947,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 947,
+   "end": 966,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 966,
+   "end": 981,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

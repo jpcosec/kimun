@@ -1,0 +1,300 @@
+{
+ "text": "---\n# pill-xxx\nid: pill-002-onboarding-surface-before-depth\n# e.g., language:python, library:pydantic\ntags:\n- system:sldb\n- topic:onboarding\n- topic:cli\n- workspace:desk\n---\n\n# Put a small onboarding surface before the deep system\n\n## What\n\n_Define the context or guardrail this pill carries._\n\nThe first-use layer for SLDB should stay small and legible before asking users to understand the full store, model, and workflow depth.\n\n## Why\n\n_Explain why this context matters for safe execution._\n\nA broad concept stack is easier to adopt when users first see a compact entry surface such as help, FAQ, docs explore, and a small number of clear examples.\n\n## When\n\n_Describe when an agent should apply this pill._\n\nApply this pill to changes affecting help, FAQ, documentation entry points, onboarding commands, or repo-first discovery surfaces.\n\n## Where\n\n_Name the files, surfaces, or scope this pill applies to._\n\n- `docs/faq.md`\n- CLI help and parser surfaces\n- onboarding-oriented docs and examples\n\n## How\n\n_Describe the correct way to apply this guidance._\n\nFavor a minimal top layer that points users to deeper capabilities only after the first-use path is understandable.\n\n## How Not\n\n_Describe the shortcut or failure mode to avoid._\n\nDo not force first-time users to reconstruct the full internal architecture before they can discover the next useful command or document.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 19,
+   "end": 59
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 107,
+   "end": 169
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 177,
+   "end": 230
+  },
+  {
+   "meta": {
+    "path": "what",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 295,
+   "end": 430
+  },
+  {
+   "meta": {
+    "path": "why",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 496,
+   "end": 652
+  },
+  {
+   "meta": {
+    "path": "when",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 713,
+   "end": 843
+  },
+  {
+   "meta": {
+    "path": "where",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 915,
+   "end": 1001
+  },
+  {
+   "meta": {
+    "path": "how",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 1063,
+   "end": 1178
+  },
+  {
+   "meta": {
+    "path": "how_not",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 1243,
+   "end": 1380
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 19,
+   "text": "---\n# pill-xxx\nid: "
+  },
+  {
+   "type": "field",
+   "start": 19,
+   "end": 59,
+   "text": "pill-002-onboarding-surface-before-depth",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "pill-002-onboarding-surface-before-depth",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 59,
+   "end": 107,
+   "text": "\n# e.g., language:python, library:pydantic\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 107,
+   "end": 169,
+   "text": "\n- system:sldb\n- topic:onboarding\n- topic:cli\n- workspace:desk",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "system:sldb",
+    "topic:onboarding",
+    "topic:cli",
+    "workspace:desk"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 169,
+   "end": 177,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 177,
+   "end": 230,
+   "text": "Put a small onboarding surface before the deep system",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Put a small onboarding surface before the deep system",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 230,
+   "end": 295,
+   "text": "\n\n## What\n\n_Define the context or guardrail this pill carries._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 295,
+   "end": 430,
+   "text": "The first-use layer for SLDB should stay small and legible before asking users to understand the full store, model, and workflow depth.",
+   "path": "what",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "The first-use layer for SLDB should stay small and legible before asking users to understand the full store, model, and workflow depth.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 430,
+   "end": 496,
+   "text": "\n\n## Why\n\n_Explain why this context matters for safe execution._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 496,
+   "end": 652,
+   "text": "A broad concept stack is easier to adopt when users first see a compact entry surface such as help, FAQ, docs explore, and a small number of clear examples.",
+   "path": "why",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "A broad concept stack is easier to adopt when users first see a compact entry surface such as help, FAQ, docs explore, and a small number of clear examples.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 652,
+   "end": 713,
+   "text": "\n\n## When\n\n_Describe when an agent should apply this pill._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 713,
+   "end": 843,
+   "text": "Apply this pill to changes affecting help, FAQ, documentation entry points, onboarding commands, or repo-first discovery surfaces.",
+   "path": "when",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Apply this pill to changes affecting help, FAQ, documentation entry points, onboarding commands, or repo-first discovery surfaces.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 843,
+   "end": 915,
+   "text": "\n\n## Where\n\n_Name the files, surfaces, or scope this pill applies to._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 915,
+   "end": 1001,
+   "text": "- `docs/faq.md`\n- CLI help and parser surfaces\n- onboarding-oriented docs and examples",
+   "path": "where",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "- `docs/faq.md`\n- CLI help and parser surfaces\n- onboarding-oriented docs and examples",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1001,
+   "end": 1063,
+   "text": "\n\n## How\n\n_Describe the correct way to apply this guidance._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1063,
+   "end": 1178,
+   "text": "Favor a minimal top layer that points users to deeper capabilities only after the first-use path is understandable.",
+   "path": "how",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Favor a minimal top layer that points users to deeper capabilities only after the first-use path is understandable.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1178,
+   "end": 1243,
+   "text": "\n\n## How Not\n\n_Describe the shortcut or failure mode to avoid._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1243,
+   "end": 1380,
+   "text": "Do not force first-time users to reconstruct the full internal architecture before they can discover the next useful command or document.",
+   "path": "how_not",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Do not force first-time users to reconstruct the full internal architecture before they can discover the next useful command or document.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

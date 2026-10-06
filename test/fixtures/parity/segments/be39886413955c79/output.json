@@ -1,0 +1,391 @@
+{
+ "text": "---\nid: cmd-sldb-legacy-compose\nsystem: sldb\ncommand_path: legacy compose\nsynopsis: Compose transclusions.\ntags: []\nprovenance: parser:sldb.cli.parser:build_parser#legacy compose; contract-sha256:0695742089fd09f86ef7123b8d55cca214b58b510981263e3528d2acc31f8e80\n---\n\n# legacy compose\n\n## Synopsis\n\nCompose transclusions.\n\n## Purpose\n\nNot documented.\n\n## How It Works\n\nNot documented.\n\n## Arguments\n\n```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"doc\"\n      ],\n      \"required\": true,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Doc name or path\"\n    },\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path\"\n    },\n    {\n      \"names\": [\n        \"-o\",\n        \"--output\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"-\\\"\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    },\n    {\n      \"names\": [\n        \"--format\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"markdown\\\"\",\n      \"choices\": [\n        \"\\\"markdown\\\"\",\n        \"\\\"json\\\"\",\n        \"\\\"yaml\\\"\"\n      ],\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```\n\n## Usage\n\nusage: sldb legacy compose [-h] [--store STORE] [-o OUTPUT]\n                           [--format {markdown,json,yaml}]\n                           doc",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 31
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 40,
+   "end": 44
+  },
+  {
+   "meta": {
+    "path": "command_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 59,
+   "end": 73
+  },
+  {
+   "meta": {
+    "path": "synopsis",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 84,
+   "end": 106
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 113,
+   "end": 115
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "optrev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 128,
+   "end": 260
+  },
+  {
+   "meta": {
+    "path": "command_path",
+    "marker": "render",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 268,
+   "end": 282
+  },
+  {
+   "meta": {
+    "path": "synopsis",
+    "marker": "render",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 297,
+   "end": 319
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 333,
+   "end": 348
+  },
+  {
+   "meta": {
+    "path": "how_it_works",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 367,
+   "end": 382
+  },
+  {
+   "meta": {
+    "path": "arguments",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 398,
+   "end": 1605
+  },
+  {
+   "meta": {
+    "path": "usage",
+    "marker": "rev",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 1617,
+   "end": 1766
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 31,
+   "text": "cmd-sldb-legacy-compose",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "cmd-sldb-legacy-compose",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 31,
+   "end": 40,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 40,
+   "end": 44,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 44,
+   "end": 59,
+   "text": "\ncommand_path: "
+  },
+  {
+   "type": "field",
+   "start": 59,
+   "end": 73,
+   "text": "legacy compose",
+   "path": "command_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "legacy compose",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 73,
+   "end": 84,
+   "text": "\nsynopsis: "
+  },
+  {
+   "type": "field",
+   "start": 84,
+   "end": 106,
+   "text": "Compose transclusions.",
+   "path": "synopsis",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Compose transclusions.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 106,
+   "end": 113,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 113,
+   "end": 115,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 115,
+   "end": 128,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 128,
+   "end": 260,
+   "text": "parser:sldb.cli.parser:build_parser#legacy compose; contract-sha256:0695742089fd09f86ef7123b8d55cca214b58b510981263e3528d2acc31f8e80",
+   "path": "provenance",
+   "marker": "optrev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "parser:sldb.cli.parser:build_parser#legacy compose; contract-sha256:0695742089fd09f86ef7123b8d55cca214b58b510981263e3528d2acc31f8e80",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 260,
+   "end": 268,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 268,
+   "end": 282,
+   "text": "legacy compose",
+   "path": "command_path",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "legacy compose",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 282,
+   "end": 297,
+   "text": "\n\n## Synopsis\n\n"
+  },
+  {
+   "type": "field",
+   "start": 297,
+   "end": 319,
+   "text": "Compose transclusions.",
+   "path": "synopsis",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "block",
+   "kind": "string",
+   "value": "Compose transclusions.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 319,
+   "end": 333,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 333,
+   "end": 348,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 348,
+   "end": 367,
+   "text": "\n\n## How It Works\n\n"
+  },
+  {
+   "type": "field",
+   "start": 367,
+   "end": 382,
+   "text": "Not documented.",
+   "path": "how_it_works",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 382,
+   "end": 398,
+   "text": "\n\n## Arguments\n\n"
+  },
+  {
+   "type": "field",
+   "start": 398,
+   "end": 1605,
+   "text": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"doc\"\n      ],\n      \"required\": true,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Doc name or path\"\n    },\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path\"\n    },\n    {\n      \"names\": [\n        \"-o\",\n        \"--output\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"-\\\"\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    },\n    {\n      \"names\": [\n        \"--format\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"markdown\\\"\",\n      \"choices\": [\n        \"\\\"markdown\\\"\",\n        \"\\\"json\\\"\",\n        \"\\\"yaml\\\"\"\n      ],\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+   "path": "arguments",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"doc\"\n      ],\n      \"required\": true,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Doc name or path\"\n    },\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path\"\n    },\n    {\n      \"names\": [\n        \"-o\",\n        \"--output\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"-\\\"\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    },\n    {\n      \"names\": [\n        \"--format\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"markdown\\\"\",\n      \"choices\": [\n        \"\\\"markdown\\\"\",\n        \"\\\"json\\\"\",\n        \"\\\"yaml\\\"\"\n      ],\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1605,
+   "end": 1617,
+   "text": "\n\n## Usage\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1617,
+   "end": 1766,
+   "text": "usage: sldb legacy compose [-h] [--store STORE] [-o OUTPUT]\n                           [--format {markdown,json,yaml}]\n                           doc",
+   "path": "usage",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "usage: sldb legacy compose [-h] [--store STORE] [-o OUTPUT]\n                           [--format {markdown,json,yaml}]\n                           doc",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

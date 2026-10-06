@@ -1,0 +1,71 @@
+{
+ "text": "# Current Source Tree\n\nVerified against the working tree on 2026-09-13. This is a map of responsibilities, not an exhaustive file inventory.\n\n## Repository Distribution\n\n```text\nsrc/sldb/\n├── __init__.py             public library exports\n├── __main__.py             module entry point\n├── core/\n│   ├── ast/                Markdown parser and node conversion\n│   ├── contracts/          marker and render contracts\n│   ├── ir/                 document, surface, meaning, graph models\n│   ├── extractor/          template recipe matching\n│   ├── handlers/           block value extraction\n│   ├── renderer_engine/    rendering handlers\n│   ├── ingest/             source ingestion utilities\n│   └── exceptions/         domain errors\n├── models/                 StructuredNLDoc and knowledge models\n├── runtime/                configuration and roundtrip validation\n├── links/                  explicit links, recovery, transclusion\n├── store/\n│   ├── io/                 index persistence and locks\n│   ├── models/             index schemas\n│   ├── ops.py              document tracking and hash cascade\n│   ├── query_engine/       structural and semantic queries\n│   └── export.py           semantic handoff\n├── cli/\n│   ├── main.py             entry point and error reporting\n│   ├── dispatcher.py       command routing\n│   ├── parsers/            argument definitions\n│   ├── commands/           handlers\n│   ├── graph_ops/          AST/IR construction and navigation\n│   └── serve/              HTTP routes and serialization\n├── assets/skills/          sldb init asset\n└── examples/               reference bundle and Pandoc example\n```\n\nStore layout, hashing, diagnostics, migration, and caches also have modules directly under `store/`. Consult the source for the exhaustive inventory.\n\n## Other Working Surfaces\n\n- `docs/`: explanations, reference documents, and historical designs.\n- `knowledge/`: command and surface records; coverage does not imply every record is complete.\n- `desk/`: project operational records.\n- `contracts/`: external integration contracts.\n- `tests/`: library, CLI, markers, links, composition, addressability, HTTP, caching, and store tests.\n- `.github/workflows/ci.yml`: tests and distribution build.\n\nThe old `src/nldb/` shim and top-level compatibility modules such as `sldb/structuredNLDoc.py` are absent. Public imports such as `from sldb import StructuredNLDoc` remain available through `src/sldb/__init__.py`.",
+ "spans": [
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 2,
+   "end": 21
+  },
+  {
+   "meta": {
+    "path": "body",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 23,
+   "end": 2450
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 2,
+   "text": "# "
+  },
+  {
+   "type": "field",
+   "start": 2,
+   "end": 21,
+   "text": "Current Source Tree",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Current Source Tree",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 21,
+   "end": 23,
+   "text": "\n\n"
+  },
+  {
+   "type": "field",
+   "start": 23,
+   "end": 2450,
+   "text": "Verified against the working tree on 2026-09-13. This is a map of responsibilities, not an exhaustive file inventory.\n\n## Repository Distribution\n\n```text\nsrc/sldb/\n├── __init__.py             public library exports\n├── __main__.py             module entry point\n├── core/\n│   ├── ast/                Markdown parser and node conversion\n│   ├── contracts/          marker and render contracts\n│   ├── ir/                 document, surface, meaning, graph models\n│   ├── extractor/          template recipe matching\n│   ├── handlers/           block value extraction\n│   ├── renderer_engine/    rendering handlers\n│   ├── ingest/             source ingestion utilities\n│   └── exceptions/         domain errors\n├── models/                 StructuredNLDoc and knowledge models\n├── runtime/                configuration and roundtrip validation\n├── links/                  explicit links, recovery, transclusion\n├── store/\n│   ├── io/                 index persistence and locks\n│   ├── models/             index schemas\n│   ├── ops.py              document tracking and hash cascade\n│   ├── query_engine/       structural and semantic queries\n│   └── export.py           semantic handoff\n├── cli/\n│   ├── main.py             entry point and error reporting\n│   ├── dispatcher.py       command routing\n│   ├── parsers/            argument definitions\n│   ├── commands/           handlers\n│   ├── graph_ops/          AST/IR construction and navigation\n│   └── serve/              HTTP routes and serialization\n├── assets/skills/          sldb init asset\n└── examples/               reference bundle and Pandoc example\n```\n\nStore layout, hashing, diagnostics, migration, and caches also have modules directly under `store/`. Consult the source for the exhaustive inventory.\n\n## Other Working Surfaces\n\n- `docs/`: explanations, reference documents, and historical designs.\n- `knowledge/`: command and surface records; coverage does not imply every record is complete.\n- `desk/`: project operational records.\n- `contracts/`: external integration contracts.\n- `tests/`: library, CLI, markers, links, composition, addressability, HTTP, caching, and store tests.\n- `.github/workflows/ci.yml`: tests and distribution build.\n\nThe old `src/nldb/` shim and top-level compatibility modules such as `sldb/structuredNLDoc.py` are absent. Public imports such as `from sldb import StructuredNLDoc` remain available through `src/sldb/__init__.py`.",
+   "path": "body",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Verified against the working tree on 2026-09-13. This is a map of responsibilities, not an exhaustive file inventory.\n\n## Repository Distribution\n\n```text\nsrc/sldb/\n├── __init__.py             public library exports\n├── __main__.py             module entry point\n├── core/\n│   ├── ast/                Markdown parser and node conversion\n│   ├── contracts/          marker and render contracts\n│   ├── ir/                 document, surface, meaning, graph models\n│   ├── extractor/          template recipe matching\n│   ├── handlers/           block value extraction\n│   ├── renderer_engine/    rendering handlers\n│   ├── ingest/             source ingestion utilities\n│   └── exceptions/         domain errors\n├── models/                 StructuredNLDoc and knowledge models\n├── runtime/                configuration and roundtrip validation\n├── links/                  explicit links, recovery, transclusion\n├── store/\n│   ├── io/                 index persistence and locks\n│   ├── models/             index schemas\n│   ├── ops.py              document tracking and hash cascade\n│   ├── query_engine/       structural and semantic queries\n│   └── export.py           semantic handoff\n├── cli/\n│   ├── main.py             entry point and error reporting\n│   ├── dispatcher.py       command routing\n│   ├── parsers/            argument definitions\n│   ├── commands/           handlers\n│   ├── graph_ops/          AST/IR construction and navigation\n│   └── serve/              HTTP routes and serialization\n├── assets/skills/          sldb init asset\n└── examples/               reference bundle and Pandoc example\n```\n\nStore layout, hashing, diagnostics, migration, and caches also have modules directly under `store/`. Consult the source for the exhaustive inventory.\n\n## Other Working Surfaces\n\n- `docs/`: explanations, reference documents, and historical designs.\n- `knowledge/`: command and surface records; coverage does not imply every record is complete.\n- `desk/`: project operational records.\n- `contracts/`: external integration contracts.\n- `tests/`: library, CLI, markers, links, composition, addressability, HTTP, caching, and store tests.\n- `.github/workflows/ci.yml`: tests and distribution build.\n\nThe old `src/nldb/` shim and top-level compatibility modules such as `sldb/structuredNLDoc.py` are absent. Public imports such as `from sldb import StructuredNLDoc` remain available through `src/sldb/__init__.py`.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

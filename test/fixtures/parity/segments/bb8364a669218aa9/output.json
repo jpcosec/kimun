@@ -1,0 +1,143 @@
+{
+ "text": "# T\n\nNote: N (end)\n\n- a\n- b",
+ "spans": [
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 2,
+   "end": 3
+  },
+  {
+   "meta": {
+    "path": "note",
+    "marker": "optrev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 11,
+   "end": 12
+  },
+  {
+   "meta": {
+    "path": "tags/0",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 2
+   },
+   "start": 22,
+   "end": 23
+  },
+  {
+   "meta": {
+    "path": "tags/1",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 3
+   },
+   "start": 26,
+   "end": 27
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 2,
+   "text": "# "
+  },
+  {
+   "type": "field",
+   "start": 2,
+   "end": 3,
+   "text": "T",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "T",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 3,
+   "end": 11,
+   "text": "\n\nNote: "
+  },
+  {
+   "type": "field",
+   "start": 11,
+   "end": 12,
+   "text": "N",
+   "path": "note",
+   "marker": "optrev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "N",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 12,
+   "end": 22,
+   "text": " (end)\n\n- "
+  },
+  {
+   "type": "field",
+   "start": 22,
+   "end": 23,
+   "text": "a",
+   "path": "tags/0",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "a",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 23,
+   "end": 26,
+   "text": "\n- "
+  },
+  {
+   "type": "field",
+   "start": 26,
+   "end": 27,
+   "text": "b",
+   "path": "tags/1",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "b",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

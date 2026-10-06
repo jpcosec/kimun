@@ -1,0 +1,265 @@
+{
+ "text": "---\n# operator-xxx\nid: operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-activate\n# active | archived\nstatus: active\n# Atomic runtime action, e.g., set_field, append_list\naction: set_field\n# Payload path modified by the operator\ntarget: status\n# Value used by the operator action\nvalue: active\n# e.g., system:deskops\ntags:\n- primitive:operator\n---\n\n# Activate task\n\n## Summary\n\n_Summarize the state transition this operator performs._\n\nMoves the task into active execution.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 23,
+   "end": 116
+  },
+  {
+   "meta": {
+    "path": "status",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 145,
+   "end": 151
+  },
+  {
+   "meta": {
+    "path": "action",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 214,
+   "end": 223
+  },
+  {
+   "meta": {
+    "path": "target",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 272,
+   "end": 278
+  },
+  {
+   "meta": {
+    "path": "value",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 322,
+   "end": 328
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 357,
+   "end": 378
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 386,
+   "end": 399
+  },
+  {
+   "meta": {
+    "path": "summary",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 471,
+   "end": 508
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 23,
+   "text": "---\n# operator-xxx\nid: "
+  },
+  {
+   "type": "field",
+   "start": 23,
+   "end": 116,
+   "text": "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-activate",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-activate",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 116,
+   "end": 145,
+   "text": "\n# active | archived\nstatus: "
+  },
+  {
+   "type": "field",
+   "start": 145,
+   "end": 151,
+   "text": "active",
+   "path": "status",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "active",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 151,
+   "end": 214,
+   "text": "\n# Atomic runtime action, e.g., set_field, append_list\naction: "
+  },
+  {
+   "type": "field",
+   "start": 214,
+   "end": 223,
+   "text": "set_field",
+   "path": "action",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "set_field",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 223,
+   "end": 272,
+   "text": "\n# Payload path modified by the operator\ntarget: "
+  },
+  {
+   "type": "field",
+   "start": 272,
+   "end": 278,
+   "text": "status",
+   "path": "target",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "status",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 278,
+   "end": 322,
+   "text": "\n# Value used by the operator action\nvalue: "
+  },
+  {
+   "type": "field",
+   "start": 322,
+   "end": 328,
+   "text": "active",
+   "path": "value",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "active",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 328,
+   "end": 357,
+   "text": "\n# e.g., system:deskops\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 357,
+   "end": 378,
+   "text": "\n- primitive:operator",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "primitive:operator"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 378,
+   "end": 386,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 386,
+   "end": 399,
+   "text": "Activate task",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Activate task",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 399,
+   "end": 471,
+   "text": "\n\n## Summary\n\n_Summarize the state transition this operator performs._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 471,
+   "end": 508,
+   "text": "Moves the task into active execution.",
+   "path": "summary",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Moves the task into active execution.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

@@ -1,0 +1,12 @@
+{
+ "title": "Ready for closeout",
+ "id": "condition-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-ready-for-closeout",
+ "status": "active",
+ "summary": "Task must be in ready_for_testing before closeout.",
+ "tags": [
+  "primitive:condition"
+ ],
+ "subject": "status",
+ "predicate": "equals",
+ "expected": "ready_for_testing"
+}

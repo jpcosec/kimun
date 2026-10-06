@@ -1,0 +1,397 @@
+{
+ "text": "---\nid: cmd-sldb-legacy-ls\nsystem: sldb\ncommand_path: legacy ls\nsynopsis: List raw nodes.\ntags:\n- system:sldb\n- domain:retrieval\n- kind:software\n- impl:external\n- entity:cli_command\nprovenance: parser:sldb.cli.parser:build_parser#legacy ls; contract-sha256:63daf0faff2bd65b3cfaccdff67236b194aeaf887b449ea566fb2f21268c910a\n---\n\n# legacy ls\n\n## Synopsis\n\nList raw nodes.\n\n## Purpose\n\nWalk the store as a tree without opening any file. `st` lists every registered model, `st.{Model}` its tracked docs, `st.{Model+}` the docs of the whole family, `st.{Model}.<doc>` the fields with their descriptions, `se` the top-level tag segments and `se.<prefix>` the child segments (or the docs tagged exactly `prefix` at a leaf).\n\n## How It Works\n\nImplemented under src/sldb/cli/parsers/legacy.py (parser) and src/sldb/cli/commands/query.py (QueryCLI), dispatched through LegacyCLI. The address root picks the engine: `st.` goes to sldb.store.query_engine.structural, `se.` to the semantic engine, `gse.` to the global semantic engine over linked stores. All of them load the store's runtime documents and select by address; nothing reads Markdown by hand.\n\n## Arguments\n\n```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"address\"\n      ],\n      \"required\": true,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Address (st.*, se.*)\"\n    },\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path\"\n    },\n    {\n      \"names\": [\n        \"--pythonpath\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Project path\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```\n\n## Usage\n\nsldb legacy ls st --store .sldb --pythonpath .\nsldb legacy ls 'st.{CliCommandDoc}' --store .sldb --pythonpath .\nsldb legacy ls 'st.{CliCommandDoc}.cmd-sldb-find' --store .sldb --pythonpath .\nsldb legacy ls se --store .sldb --pythonpath .",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 26
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 35,
+   "end": 39
+  },
+  {
+   "meta": {
+    "path": "command_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 54,
+   "end": 63
+  },
+  {
+   "meta": {
+    "path": "synopsis",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 74,
+   "end": 89
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 95,
+   "end": 181
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "optrev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 194,
+   "end": 321
+  },
+  {
+   "meta": {
+    "path": "command_path",
+    "marker": "render",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 329,
+   "end": 338
+  },
+  {
+   "meta": {
+    "path": "synopsis",
+    "marker": "render",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 353,
+   "end": 368
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 382,
+   "end": 715
+  },
+  {
+   "meta": {
+    "path": "how_it_works",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 734,
+   "end": 1142
+  },
+  {
+   "meta": {
+    "path": "arguments",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 1158,
+   "end": 2039
+  },
+  {
+   "meta": {
+    "path": "usage",
+    "marker": "rev",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 2051,
+   "end": 2288
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 26,
+   "text": "cmd-sldb-legacy-ls",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "cmd-sldb-legacy-ls",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 26,
+   "end": 35,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 35,
+   "end": 39,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 39,
+   "end": 54,
+   "text": "\ncommand_path: "
+  },
+  {
+   "type": "field",
+   "start": 54,
+   "end": 63,
+   "text": "legacy ls",
+   "path": "command_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "legacy ls",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 63,
+   "end": 74,
+   "text": "\nsynopsis: "
+  },
+  {
+   "type": "field",
+   "start": 74,
+   "end": 89,
+   "text": "List raw nodes.",
+   "path": "synopsis",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "List raw nodes.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 89,
+   "end": 95,
+   "text": "\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 95,
+   "end": 181,
+   "text": "\n- system:sldb\n- domain:retrieval\n- kind:software\n- impl:external\n- entity:cli_command",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [
+    "system:sldb",
+    "domain:retrieval",
+    "kind:software",
+    "impl:external",
+    "entity:cli_command"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 181,
+   "end": 194,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 194,
+   "end": 321,
+   "text": "parser:sldb.cli.parser:build_parser#legacy ls; contract-sha256:63daf0faff2bd65b3cfaccdff67236b194aeaf887b449ea566fb2f21268c910a",
+   "path": "provenance",
+   "marker": "optrev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "parser:sldb.cli.parser:build_parser#legacy ls; contract-sha256:63daf0faff2bd65b3cfaccdff67236b194aeaf887b449ea566fb2f21268c910a",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 321,
+   "end": 329,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 329,
+   "end": 338,
+   "text": "legacy ls",
+   "path": "command_path",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "legacy ls",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 338,
+   "end": 353,
+   "text": "\n\n## Synopsis\n\n"
+  },
+  {
+   "type": "field",
+   "start": 353,
+   "end": 368,
+   "text": "List raw nodes.",
+   "path": "synopsis",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "block",
+   "kind": "string",
+   "value": "List raw nodes.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 368,
+   "end": 382,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 382,
+   "end": 715,
+   "text": "Walk the store as a tree without opening any file. `st` lists every registered model, `st.{Model}` its tracked docs, `st.{Model+}` the docs of the whole family, `st.{Model}.<doc>` the fields with their descriptions, `se` the top-level tag segments and `se.<prefix>` the child segments (or the docs tagged exactly `prefix` at a leaf).",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Walk the store as a tree without opening any file. `st` lists every registered model, `st.{Model}` its tracked docs, `st.{Model+}` the docs of the whole family, `st.{Model}.<doc>` the fields with their descriptions, `se` the top-level tag segments and `se.<prefix>` the child segments (or the docs tagged exactly `prefix` at a leaf).",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 715,
+   "end": 734,
+   "text": "\n\n## How It Works\n\n"
+  },
+  {
+   "type": "field",
+   "start": 734,
+   "end": 1142,
+   "text": "Implemented under src/sldb/cli/parsers/legacy.py (parser) and src/sldb/cli/commands/query.py (QueryCLI), dispatched through LegacyCLI. The address root picks the engine: `st.` goes to sldb.store.query_engine.structural, `se.` to the semantic engine, `gse.` to the global semantic engine over linked stores. All of them load the store's runtime documents and select by address; nothing reads Markdown by hand.",
+   "path": "how_it_works",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Implemented under src/sldb/cli/parsers/legacy.py (parser) and src/sldb/cli/commands/query.py (QueryCLI), dispatched through LegacyCLI. The address root picks the engine: `st.` goes to sldb.store.query_engine.structural, `se.` to the semantic engine, `gse.` to the global semantic engine over linked stores. All of them load the store's runtime documents and select by address; nothing reads Markdown by hand.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1142,
+   "end": 1158,
+   "text": "\n\n## Arguments\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1158,
+   "end": 2039,
+   "text": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"address\"\n      ],\n      \"required\": true,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Address (st.*, se.*)\"\n    },\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path\"\n    },\n    {\n      \"names\": [\n        \"--pythonpath\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Project path\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+   "path": "arguments",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"address\"\n      ],\n      \"required\": true,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Address (st.*, se.*)\"\n    },\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path\"\n    },\n    {\n      \"names\": [\n        \"--pythonpath\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Project path\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 2039,
+   "end": 2051,
+   "text": "\n\n## Usage\n\n"
+  },
+  {
+   "type": "field",
+   "start": 2051,
+   "end": 2288,
+   "text": "sldb legacy ls st --store .sldb --pythonpath .\nsldb legacy ls 'st.{CliCommandDoc}' --store .sldb --pythonpath .\nsldb legacy ls 'st.{CliCommandDoc}.cmd-sldb-find' --store .sldb --pythonpath .\nsldb legacy ls se --store .sldb --pythonpath .",
+   "path": "usage",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "sldb legacy ls st --store .sldb --pythonpath .\nsldb legacy ls 'st.{CliCommandDoc}' --store .sldb --pythonpath .\nsldb legacy ls 'st.{CliCommandDoc}.cmd-sldb-find' --store .sldb --pythonpath .\nsldb legacy ls se --store .sldb --pythonpath .",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

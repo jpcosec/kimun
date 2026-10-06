@@ -1,0 +1,12 @@
+{
+ "title": "Validation exists",
+ "id": "condition-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-has-validation",
+ "status": "active",
+ "summary": "Task validation must exist before testing handoff.",
+ "tags": [
+  "primitive:condition"
+ ],
+ "subject": "validation",
+ "predicate": "not_empty",
+ "expected": ""
+}

@@ -1,0 +1,18 @@
+{
+ "id": "cmd-sldb-predicates-remove",
+ "system": "sldb",
+ "command_path": "predicates remove",
+ "synopsis": "Remove a predicate definition.",
+ "purpose": "The `sldb predicates remove` command: Remove a predicate definition.",
+ "how_it_works": "Implemented under src/sldb/cli/parsers/ as the argparse subcommand 'remove'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.",
+ "arguments": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"name\"\n      ],\n      \"required\": true,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Predicate name\"\n    },\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+ "usage": "predicates remove",
+ "tags": [
+  "system:sldb",
+  "domain:retrieval",
+  "kind:software",
+  "impl:external",
+  "entity:cli_command"
+ ],
+ "provenance": "parser:sldb.cli.parser:build_parser#predicates remove; contract-sha256:9befc14dbf8ac94f9b74c7bf5e8d89c01b6ce6720605daf355db80dfc660d240"
+}

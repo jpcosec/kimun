@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-selfdoc-python_symbol-pythonsymbol\nsystem: sldb\nmodule: sldb.sldb.selfdoc.python_symbol\nqualname: PythonSymbol\nkind: ClassDef\nsource_path: sldb/selfdoc/python_symbol.py\nsource_span: '17:44'\nsource_sha256: 7ac5b65bb0541e476b6e63be7cb5cd663bfe8f2337d79b989dd316d5ad895786\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.selfdoc.python_symbol:PythonSymbol; contract-sha256:90dc0ec4d3ea5a33734306879ea615f5a778c57bca302e623fac438a2c7b59c2\n---\n\n# PythonSymbol\n\n## Signature\n\nNot applicable.\n\n## Docstring\n\n---\nid: sldb.selfdoc.python_symbol.PythonSymbol\nkind: core\ntags: [type:code.symbol]\n\n---\nValidate and carry the static facts extracted from one Python declaration.\n\nThe scanner supplies lexical identity, AST kind, source location, signature,\ndocstring, enclosing-module imports, and a hash of the entire source file.\nThe materializer consumes these fields to build a tracked reference document.\nThe record does not resolve imports or establish runtime dependencies; its\nfile hash is not a symbol-level fingerprint. Field ``kind`` describes the AST\nnode, independently of the semantic ``kind`` in this docstring's metadata.\n\n## Imports\n\n[\"__future__\", \"pydantic\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 64
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 73,
+   "end": 77
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 86,
+   "end": 117
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 128,
+   "end": 140
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 147,
+   "end": 155
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 169,
+   "end": 198
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 212,
+   "end": 219
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 235,
+   "end": 299
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 319,
+   "end": 433
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 440,
+   "end": 442
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 455,
+   "end": 599
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 607,
+   "end": 619
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 635,
+   "end": 650
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 666,
+   "end": 1288
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 1302,
+   "end": 1328
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 1342,
+   "end": 1357
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 1376,
+   "end": 1391
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 64,
+   "text": "python-sldb-sldb-sldb-selfdoc-python_symbol-pythonsymbol",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-selfdoc-python_symbol-pythonsymbol",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 64,
+   "end": 73,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 73,
+   "end": 77,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 77,
+   "end": 86,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 86,
+   "end": 117,
+   "text": "sldb.sldb.selfdoc.python_symbol",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.selfdoc.python_symbol",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 117,
+   "end": 128,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 128,
+   "end": 140,
+   "text": "PythonSymbol",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "PythonSymbol",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 140,
+   "end": 147,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 147,
+   "end": 155,
+   "text": "ClassDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "ClassDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 155,
+   "end": 169,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 169,
+   "end": 198,
+   "text": "sldb/selfdoc/python_symbol.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/selfdoc/python_symbol.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 198,
+   "end": 212,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 212,
+   "end": 219,
+   "text": "'17:44'",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "17:44",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 219,
+   "end": 235,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 235,
+   "end": 299,
+   "text": "7ac5b65bb0541e476b6e63be7cb5cd663bfe8f2337d79b989dd316d5ad895786",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "7ac5b65bb0541e476b6e63be7cb5cd663bfe8f2337d79b989dd316d5ad895786",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 299,
+   "end": 319,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 319,
+   "end": 433,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 433,
+   "end": 440,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 440,
+   "end": 442,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 442,
+   "end": 455,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 455,
+   "end": 599,
+   "text": "python-ast:python:sldb.sldb.selfdoc.python_symbol:PythonSymbol; contract-sha256:90dc0ec4d3ea5a33734306879ea615f5a778c57bca302e623fac438a2c7b59c2",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.selfdoc.python_symbol:PythonSymbol; contract-sha256:90dc0ec4d3ea5a33734306879ea615f5a778c57bca302e623fac438a2c7b59c2",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 599,
+   "end": 607,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 607,
+   "end": 619,
+   "text": "PythonSymbol",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "PythonSymbol",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 619,
+   "end": 635,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 635,
+   "end": 650,
+   "text": "Not applicable.",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not applicable.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 650,
+   "end": 666,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 666,
+   "end": 1288,
+   "text": "---\nid: sldb.selfdoc.python_symbol.PythonSymbol\nkind: core\ntags: [type:code.symbol]\n\n---\nValidate and carry the static facts extracted from one Python declaration.\n\nThe scanner supplies lexical identity, AST kind, source location, signature,\ndocstring, enclosing-module imports, and a hash of the entire source file.\nThe materializer consumes these fields to build a tracked reference document.\nThe record does not resolve imports or establish runtime dependencies; its\nfile hash is not a symbol-level fingerprint. Field ``kind`` describes the AST\nnode, independently of the semantic ``kind`` in this docstring's metadata.",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "---\nid: sldb.selfdoc.python_symbol.PythonSymbol\nkind: core\ntags: [type:code.symbol]\n\n---\nValidate and carry the static facts extracted from one Python declaration.\n\nThe scanner supplies lexical identity, AST kind, source location, signature,\ndocstring, enclosing-module imports, and a hash of the entire source file.\nThe materializer consumes these fields to build a tracked reference document.\nThe record does not resolve imports or establish runtime dependencies; its\nfile hash is not a symbol-level fingerprint. Field ``kind`` describes the AST\nnode, independently of the semantic ``kind`` in this docstring's metadata.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1288,
+   "end": 1302,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1302,
+   "end": 1328,
+   "text": "[\"__future__\", \"pydantic\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\"__future__\", \"pydantic\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1328,
+   "end": 1342,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1342,
+   "end": 1357,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1357,
+   "end": 1376,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1376,
+   "end": 1391,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

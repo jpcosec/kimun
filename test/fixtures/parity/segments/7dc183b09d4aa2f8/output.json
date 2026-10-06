@@ -1,0 +1,26 @@
+[
+ {
+  "title": "⸢rev•title⸥",
+  "slug": "rev-title",
+  "level": 1,
+  "path": "rev-title",
+  "line_start": 1,
+  "line_end": 11
+ },
+ {
+  "title": "Tasks",
+  "slug": "tasks",
+  "level": 2,
+  "path": "rev-title/tasks",
+  "line_start": 5,
+  "line_end": 8
+ },
+ {
+  "title": "Semantic Tags",
+  "slug": "semantic-tags",
+  "level": 2,
+  "path": "rev-title/semantic-tags",
+  "line_start": 9,
+  "line_end": 11
+ }
+]

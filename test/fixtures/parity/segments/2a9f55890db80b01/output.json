@@ -1,0 +1,265 @@
+{
+ "text": "---\n# edge-xxx\nid: edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-testing-to-ready\n# active | archived\nstatus: active\n# Source node identifier\nsource: checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-testing-ready\n# Target node identifier\ntarget: operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-ready-for-testing\n# Optional condition identifier guarding the transition\ncondition_ref: ''\n# e.g., system:deskops\ntags:\n- primitive:edge\n---\n\n# Testing gate to testing-ready operator\n\n## Summary\n\n_Summarize the transition this edge represents._\n\nTesting gate passed.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 19,
+   "end": 101
+  },
+  {
+   "meta": {
+    "path": "status",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 130,
+   "end": 136
+  },
+  {
+   "meta": {
+    "path": "source",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 170,
+   "end": 254
+  },
+  {
+   "meta": {
+    "path": "target",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 288,
+   "end": 375
+  },
+  {
+   "meta": {
+    "path": "condition_ref",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 447,
+   "end": 449
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 478,
+   "end": 495
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 503,
+   "end": 541
+  },
+  {
+   "meta": {
+    "path": "summary",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 605,
+   "end": 625
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 19,
+   "text": "---\n# edge-xxx\nid: "
+  },
+  {
+   "type": "field",
+   "start": 19,
+   "end": 101,
+   "text": "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-testing-to-ready",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-testing-to-ready",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 101,
+   "end": 130,
+   "text": "\n# active | archived\nstatus: "
+  },
+  {
+   "type": "field",
+   "start": 130,
+   "end": 136,
+   "text": "active",
+   "path": "status",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "active",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 136,
+   "end": 170,
+   "text": "\n# Source node identifier\nsource: "
+  },
+  {
+   "type": "field",
+   "start": 170,
+   "end": 254,
+   "text": "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-testing-ready",
+   "path": "source",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-testing-ready",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 254,
+   "end": 288,
+   "text": "\n# Target node identifier\ntarget: "
+  },
+  {
+   "type": "field",
+   "start": 288,
+   "end": 375,
+   "text": "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-ready-for-testing",
+   "path": "target",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-ready-for-testing",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 375,
+   "end": 447,
+   "text": "\n# Optional condition identifier guarding the transition\ncondition_ref: "
+  },
+  {
+   "type": "field",
+   "start": 447,
+   "end": 449,
+   "text": "''",
+   "path": "condition_ref",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 449,
+   "end": 478,
+   "text": "\n# e.g., system:deskops\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 478,
+   "end": 495,
+   "text": "\n- primitive:edge",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "primitive:edge"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 495,
+   "end": 503,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 503,
+   "end": 541,
+   "text": "Testing gate to testing-ready operator",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Testing gate to testing-ready operator",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 541,
+   "end": 605,
+   "text": "\n\n## Summary\n\n_Summarize the transition this edge represents._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 605,
+   "end": 625,
+   "text": "Testing gate passed.",
+   "path": "summary",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Testing gate passed.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

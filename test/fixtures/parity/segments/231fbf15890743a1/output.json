@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-cli-graph_ops-iter_records_docs-_add_field_record\nsystem: sldb\nmodule: sldb.sldb.cli.graph_ops.iter_records_docs\nqualname: _add_field_record\nkind: FunctionDef\nsource_path: sldb/cli/graph_ops/iter_records_docs.py\nsource_span: 64:70\nsource_sha256: f64e2d67200da4d9da9d85cbd49c63d10eaef42fd316823c1ad503bd7d155bc1\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.cli.graph_ops.iter_records_docs:_add_field_record;\n  contract-sha256:cb51bce4ca02741ad3c11fa7fc6a596225cedeb09d99f20d79d0c0123bad5008\n---\n\n# _add_field_record\n\n## Signature\n\n_add_field_record(doc, field_path, value, owning_section, records)\n\n## Docstring\n\nNot documented.\n\n## Imports\n\n[\".build_ir\", \".extract\", \".flatten\", \".map_fields\", \".utils\", \"logging\", \"sldb.cli.search_record\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 79
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 88,
+   "end": 92
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 101,
+   "end": 142
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 153,
+   "end": 170
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 177,
+   "end": 188
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 202,
+   "end": 241
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 255,
+   "end": 260
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 276,
+   "end": 340
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 360,
+   "end": 474
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 481,
+   "end": 483
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 496,
+   "end": 657
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 665,
+   "end": 682
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 698,
+   "end": 764
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 780,
+   "end": 795
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 809,
+   "end": 908
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 922,
+   "end": 937
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 956,
+   "end": 971
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 79,
+   "text": "python-sldb-sldb-sldb-cli-graph_ops-iter_records_docs-_add_field_record",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-cli-graph_ops-iter_records_docs-_add_field_record",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 79,
+   "end": 88,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 88,
+   "end": 92,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 92,
+   "end": 101,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 101,
+   "end": 142,
+   "text": "sldb.sldb.cli.graph_ops.iter_records_docs",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.cli.graph_ops.iter_records_docs",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 142,
+   "end": 153,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 153,
+   "end": 170,
+   "text": "_add_field_record",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "_add_field_record",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 170,
+   "end": 177,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 177,
+   "end": 188,
+   "text": "FunctionDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "FunctionDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 188,
+   "end": 202,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 202,
+   "end": 241,
+   "text": "sldb/cli/graph_ops/iter_records_docs.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/cli/graph_ops/iter_records_docs.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 241,
+   "end": 255,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 255,
+   "end": 260,
+   "text": "64:70",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "64:70",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 260,
+   "end": 276,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 276,
+   "end": 340,
+   "text": "f64e2d67200da4d9da9d85cbd49c63d10eaef42fd316823c1ad503bd7d155bc1",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "f64e2d67200da4d9da9d85cbd49c63d10eaef42fd316823c1ad503bd7d155bc1",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 340,
+   "end": 360,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 360,
+   "end": 474,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 474,
+   "end": 481,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 481,
+   "end": 483,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 483,
+   "end": 496,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 496,
+   "end": 657,
+   "text": "python-ast:python:sldb.sldb.cli.graph_ops.iter_records_docs:_add_field_record;\n  contract-sha256:cb51bce4ca02741ad3c11fa7fc6a596225cedeb09d99f20d79d0c0123bad5008",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.cli.graph_ops.iter_records_docs:_add_field_record; contract-sha256:cb51bce4ca02741ad3c11fa7fc6a596225cedeb09d99f20d79d0c0123bad5008",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 657,
+   "end": 665,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 665,
+   "end": 682,
+   "text": "_add_field_record",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "_add_field_record",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 682,
+   "end": 698,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 698,
+   "end": 764,
+   "text": "_add_field_record(doc, field_path, value, owning_section, records)",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "_add_field_record(doc, field_path, value, owning_section, records)",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 764,
+   "end": 780,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 780,
+   "end": 795,
+   "text": "Not documented.",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 795,
+   "end": 809,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 809,
+   "end": 908,
+   "text": "[\".build_ir\", \".extract\", \".flatten\", \".map_fields\", \".utils\", \"logging\", \"sldb.cli.search_record\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\".build_ir\", \".extract\", \".flatten\", \".map_fields\", \".utils\", \"logging\", \"sldb.cli.search_record\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 908,
+   "end": 922,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 922,
+   "end": 937,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 937,
+   "end": 956,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 956,
+   "end": 971,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-selfdoc-python_materialize-_plan\nsystem: sldb\nmodule: sldb.sldb.selfdoc.python_materialize\nqualname: _plan\nkind: FunctionDef\nsource_path: sldb/selfdoc/python_materialize.py\nsource_span: '29:35'\nsource_sha256: 0b7a47eda31a2dd66c292231d723ab75919a6aa48b9102156805f94468645834\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.selfdoc.python_materialize:_plan; contract-sha256:dde948a77ef0fd20f9b92f06ebe1521af2988e4ad3eb12a0f77cecf79eea5a9d\n---\n\n# _plan\n\n## Signature\n\n_plan(record: PythonSymbol, system: str, output: Path, spec: str)\n\n## Docstring\n\nNot documented.\n\n## Imports\n\n[\".planned_document\", \".python_symbol\", \"__future__\", \"hashlib\", \"json\", \"pathlib\", \"re\", \"sldb.models.knowledge_surface\", \"sldb.runtime.validation\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 62
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 71,
+   "end": 75
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 84,
+   "end": 120
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 131,
+   "end": 136
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 143,
+   "end": 154
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 168,
+   "end": 202
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 216,
+   "end": 223
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 239,
+   "end": 303
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 323,
+   "end": 437
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 444,
+   "end": 446
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 459,
+   "end": 601
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 609,
+   "end": 614
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 630,
+   "end": 695
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 711,
+   "end": 726
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 740,
+   "end": 889
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 903,
+   "end": 918
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 937,
+   "end": 952
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 62,
+   "text": "python-sldb-sldb-sldb-selfdoc-python_materialize-_plan",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-selfdoc-python_materialize-_plan",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 62,
+   "end": 71,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 71,
+   "end": 75,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 75,
+   "end": 84,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 84,
+   "end": 120,
+   "text": "sldb.sldb.selfdoc.python_materialize",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.selfdoc.python_materialize",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 120,
+   "end": 131,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 131,
+   "end": 136,
+   "text": "_plan",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "_plan",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 136,
+   "end": 143,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 143,
+   "end": 154,
+   "text": "FunctionDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "FunctionDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 154,
+   "end": 168,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 168,
+   "end": 202,
+   "text": "sldb/selfdoc/python_materialize.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/selfdoc/python_materialize.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 202,
+   "end": 216,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 216,
+   "end": 223,
+   "text": "'29:35'",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "29:35",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 223,
+   "end": 239,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 239,
+   "end": 303,
+   "text": "0b7a47eda31a2dd66c292231d723ab75919a6aa48b9102156805f94468645834",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "0b7a47eda31a2dd66c292231d723ab75919a6aa48b9102156805f94468645834",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 303,
+   "end": 323,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 323,
+   "end": 437,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 437,
+   "end": 444,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 444,
+   "end": 446,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 446,
+   "end": 459,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 459,
+   "end": 601,
+   "text": "python-ast:python:sldb.sldb.selfdoc.python_materialize:_plan; contract-sha256:dde948a77ef0fd20f9b92f06ebe1521af2988e4ad3eb12a0f77cecf79eea5a9d",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.selfdoc.python_materialize:_plan; contract-sha256:dde948a77ef0fd20f9b92f06ebe1521af2988e4ad3eb12a0f77cecf79eea5a9d",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 601,
+   "end": 609,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 609,
+   "end": 614,
+   "text": "_plan",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "_plan",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 614,
+   "end": 630,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 630,
+   "end": 695,
+   "text": "_plan(record: PythonSymbol, system: str, output: Path, spec: str)",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "_plan(record: PythonSymbol, system: str, output: Path, spec: str)",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 695,
+   "end": 711,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 711,
+   "end": 726,
+   "text": "Not documented.",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 726,
+   "end": 740,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 740,
+   "end": 889,
+   "text": "[\".planned_document\", \".python_symbol\", \"__future__\", \"hashlib\", \"json\", \"pathlib\", \"re\", \"sldb.models.knowledge_surface\", \"sldb.runtime.validation\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\".planned_document\", \".python_symbol\", \"__future__\", \"hashlib\", \"json\", \"pathlib\", \"re\", \"sldb.models.knowledge_surface\", \"sldb.runtime.validation\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 889,
+   "end": 903,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 903,
+   "end": 918,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 918,
+   "end": 937,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 937,
+   "end": 952,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-cli-commands-explore_code-explorecode-_scan_python_file\nsystem: sldb\nmodule: sldb.sldb.cli.commands.explore_code\nqualname: ExploreCode._scan_python_file\nkind: FunctionDef\nsource_path: sldb/cli/commands/explore_code.py\nsource_span: '16:20'\nsource_sha256: c39f76924395aa49d16f6e7abc2e1c270a5fd745c3d49f76d1d021ad8ae6fe3f\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.cli.commands.explore_code:ExploreCode._scan_python_file;\n  contract-sha256:2667c270c9c044d2e67353e1f57fea62dcd6e19bca16f2e1d7830563da94c6fc\n---\n\n# ExploreCode._scan_python_file\n\n## Signature\n\n_scan_python_file(self, path: Path, term: str, regex: bool)\n\n## Docstring\n\nNot documented.\n\n## Imports\n\n[\".explore_hit\", \"ast\", \"pathlib\", \"re\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 85
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 94,
+   "end": 98
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 107,
+   "end": 142
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 153,
+   "end": 182
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 189,
+   "end": 200
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 214,
+   "end": 247
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 261,
+   "end": 268
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 284,
+   "end": 348
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 368,
+   "end": 482
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 489,
+   "end": 491
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 504,
+   "end": 671
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 679,
+   "end": 708
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 724,
+   "end": 783
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 799,
+   "end": 814
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 828,
+   "end": 868
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 882,
+   "end": 897
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 916,
+   "end": 931
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 85,
+   "text": "python-sldb-sldb-sldb-cli-commands-explore_code-explorecode-_scan_python_file",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-cli-commands-explore_code-explorecode-_scan_python_file",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 85,
+   "end": 94,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 94,
+   "end": 98,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 98,
+   "end": 107,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 107,
+   "end": 142,
+   "text": "sldb.sldb.cli.commands.explore_code",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.cli.commands.explore_code",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 142,
+   "end": 153,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 153,
+   "end": 182,
+   "text": "ExploreCode._scan_python_file",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "ExploreCode._scan_python_file",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 182,
+   "end": 189,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 189,
+   "end": 200,
+   "text": "FunctionDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "FunctionDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 200,
+   "end": 214,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 214,
+   "end": 247,
+   "text": "sldb/cli/commands/explore_code.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/cli/commands/explore_code.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 247,
+   "end": 261,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 261,
+   "end": 268,
+   "text": "'16:20'",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "16:20",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 268,
+   "end": 284,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 284,
+   "end": 348,
+   "text": "c39f76924395aa49d16f6e7abc2e1c270a5fd745c3d49f76d1d021ad8ae6fe3f",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "c39f76924395aa49d16f6e7abc2e1c270a5fd745c3d49f76d1d021ad8ae6fe3f",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 348,
+   "end": 368,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 368,
+   "end": 482,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 482,
+   "end": 489,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 489,
+   "end": 491,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 491,
+   "end": 504,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 504,
+   "end": 671,
+   "text": "python-ast:python:sldb.sldb.cli.commands.explore_code:ExploreCode._scan_python_file;\n  contract-sha256:2667c270c9c044d2e67353e1f57fea62dcd6e19bca16f2e1d7830563da94c6fc",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.cli.commands.explore_code:ExploreCode._scan_python_file; contract-sha256:2667c270c9c044d2e67353e1f57fea62dcd6e19bca16f2e1d7830563da94c6fc",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 671,
+   "end": 679,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 679,
+   "end": 708,
+   "text": "ExploreCode._scan_python_file",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "ExploreCode._scan_python_file",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 708,
+   "end": 724,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 724,
+   "end": 783,
+   "text": "_scan_python_file(self, path: Path, term: str, regex: bool)",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "_scan_python_file(self, path: Path, term: str, regex: bool)",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 783,
+   "end": 799,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 799,
+   "end": 814,
+   "text": "Not documented.",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 814,
+   "end": 828,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 828,
+   "end": 868,
+   "text": "[\".explore_hit\", \"ast\", \"pathlib\", \"re\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\".explore_hit\", \"ast\", \"pathlib\", \"re\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 868,
+   "end": 882,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 882,
+   "end": 897,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 897,
+   "end": 916,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 916,
+   "end": 931,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "model": "SimpleBook",
+ "text": "# T\n\nparrafo suelto",
+ "payload": {
+  "title": "T"
+ },
+ "canonical_text": "# T",
+ "fields": [
+  {
+   "type": "field",
+   "start": 2,
+   "end": 3,
+   "text": "T",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "T",
+   "alignment": "exact"
+  }
+ ],
+ "unmatched": [
+  {
+   "start": 5,
+   "end": 19,
+   "text": "parrafo suelto"
+  }
+ ],
+ "coverage": 0.0526
+}

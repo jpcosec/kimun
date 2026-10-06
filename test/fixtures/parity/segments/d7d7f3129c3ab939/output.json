@@ -1,0 +1,311 @@
+{
+ "text": "---\nname: applies_to_source\ndirection: directed\ncardinality: many_to_many\naxis: WHAT\nsource_types:\n- relation_type\ntarget_types:\n- sldb_model\ncondition: ''\n---\n\n# applies_to_source\n\n## Description\n\nInstances of this model may be the source of edges of this relation type: the verbs a class can be subject of.",
+ "spans": [
+  {
+   "meta": {
+    "path": "name",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 10,
+   "end": 27
+  },
+  {
+   "meta": {
+    "path": "direction",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 39,
+   "end": 47
+  },
+  {
+   "meta": {
+    "path": "cardinality",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 61,
+   "end": 73
+  },
+  {
+   "meta": {
+    "path": "axis",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 80,
+   "end": 84
+  },
+  {
+   "meta": {
+    "path": "source_types",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 4
+   },
+   "start": 98,
+   "end": 114
+  },
+  {
+   "meta": {
+    "path": "target_types",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 5
+   },
+   "start": 128,
+   "end": 141
+  },
+  {
+   "meta": {
+    "path": "condition",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 153,
+   "end": 155
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 163,
+   "end": 180
+  },
+  {
+   "meta": {
+    "path": "description",
+    "marker": "rev",
+    "traits": [
+     "markdown"
+    ],
+    "_order": 8
+   },
+   "start": 198,
+   "end": 308
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 10,
+   "text": "---\nname: "
+  },
+  {
+   "type": "field",
+   "start": 10,
+   "end": 27,
+   "text": "applies_to_source",
+   "path": "name",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "applies_to_source",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 27,
+   "end": 39,
+   "text": "\ndirection: "
+  },
+  {
+   "type": "field",
+   "start": 39,
+   "end": 47,
+   "text": "directed",
+   "path": "direction",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "enum",
+   "value": "directed",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 47,
+   "end": 61,
+   "text": "\ncardinality: "
+  },
+  {
+   "type": "field",
+   "start": 61,
+   "end": 73,
+   "text": "many_to_many",
+   "path": "cardinality",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "enum",
+   "value": "many_to_many",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 73,
+   "end": 80,
+   "text": "\naxis: "
+  },
+  {
+   "type": "field",
+   "start": 80,
+   "end": 84,
+   "text": "WHAT",
+   "path": "axis",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "WHAT",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 84,
+   "end": 98,
+   "text": "\nsource_types:"
+  },
+  {
+   "type": "field",
+   "start": 98,
+   "end": 114,
+   "text": "\n- relation_type",
+   "path": "source_types",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "relation_type"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 114,
+   "end": 128,
+   "text": "\ntarget_types:"
+  },
+  {
+   "type": "field",
+   "start": 128,
+   "end": 141,
+   "text": "\n- sldb_model",
+   "path": "target_types",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "sldb_model"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 141,
+   "end": 153,
+   "text": "\ncondition: "
+  },
+  {
+   "type": "field",
+   "start": 153,
+   "end": 155,
+   "text": "''",
+   "path": "condition",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 155,
+   "end": 163,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 163,
+   "end": 180,
+   "text": "applies_to_source",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "applies_to_source",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 180,
+   "end": 198,
+   "text": "\n\n## Description\n\n"
+  },
+  {
+   "type": "field",
+   "start": 198,
+   "end": 308,
+   "text": "Instances of this model may be the source of edges of this relation type: the verbs a class can be subject of.",
+   "path": "description",
+   "marker": "rev",
+   "traits": [
+    "markdown"
+   ],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Instances of this model may be the source of edges of this relation type: the verbs a class can be subject of.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-store-query_engine-semantic_utils-_local_semantic_docs\nsystem: sldb\nmodule: sldb.sldb.store.query_engine.semantic_utils\nqualname: _local_semantic_docs\nkind: FunctionDef\nsource_path: sldb/store/query_engine/semantic_utils.py\nsource_span: '23:27'\nsource_sha256: 2a9758ec86c0e3dc96e0f854ff3a90a1ad45615c8193cb5f543433b1d7d9ffa0\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.store.query_engine.semantic_utils:_local_semantic_docs;\n  contract-sha256:4f131e7f5046bc345f2238377e88920eeb5c63d84fbdebb966fe151c85fe75f6\n---\n\n# _local_semantic_docs\n\n## Signature\n\n_local_semantic_docs(store_path: Path, resolve_model_ref, pythonpath: str | None=None)\n\n## Docstring\n\nLoads docs and the semantic index, rebuilding if necessary.\n\n## Imports\n\n[\"__future__\", \"pathlib\", \"re\", \"sldb.store.io\", \"sldb.store.layout\", \"sldb.store.query\", \"sldb.store.query_engine.models\", \"typing\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 84
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 93,
+   "end": 97
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 106,
+   "end": 149
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 160,
+   "end": 180
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 187,
+   "end": 198
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 212,
+   "end": 253
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 267,
+   "end": 274
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 290,
+   "end": 354
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 374,
+   "end": 488
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 495,
+   "end": 497
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 510,
+   "end": 676
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 684,
+   "end": 704
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 720,
+   "end": 806
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 822,
+   "end": 881
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 895,
+   "end": 1028
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 1042,
+   "end": 1057
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 1076,
+   "end": 1091
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 84,
+   "text": "python-sldb-sldb-sldb-store-query_engine-semantic_utils-_local_semantic_docs",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-store-query_engine-semantic_utils-_local_semantic_docs",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 84,
+   "end": 93,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 93,
+   "end": 97,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 97,
+   "end": 106,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 106,
+   "end": 149,
+   "text": "sldb.sldb.store.query_engine.semantic_utils",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.store.query_engine.semantic_utils",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 149,
+   "end": 160,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 160,
+   "end": 180,
+   "text": "_local_semantic_docs",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "_local_semantic_docs",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 180,
+   "end": 187,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 187,
+   "end": 198,
+   "text": "FunctionDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "FunctionDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 198,
+   "end": 212,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 212,
+   "end": 253,
+   "text": "sldb/store/query_engine/semantic_utils.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/store/query_engine/semantic_utils.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 253,
+   "end": 267,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 267,
+   "end": 274,
+   "text": "'23:27'",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "23:27",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 274,
+   "end": 290,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 290,
+   "end": 354,
+   "text": "2a9758ec86c0e3dc96e0f854ff3a90a1ad45615c8193cb5f543433b1d7d9ffa0",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "2a9758ec86c0e3dc96e0f854ff3a90a1ad45615c8193cb5f543433b1d7d9ffa0",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 354,
+   "end": 374,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 374,
+   "end": 488,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 488,
+   "end": 495,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 495,
+   "end": 497,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 497,
+   "end": 510,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 510,
+   "end": 676,
+   "text": "python-ast:python:sldb.sldb.store.query_engine.semantic_utils:_local_semantic_docs;\n  contract-sha256:4f131e7f5046bc345f2238377e88920eeb5c63d84fbdebb966fe151c85fe75f6",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.store.query_engine.semantic_utils:_local_semantic_docs; contract-sha256:4f131e7f5046bc345f2238377e88920eeb5c63d84fbdebb966fe151c85fe75f6",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 676,
+   "end": 684,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 684,
+   "end": 704,
+   "text": "_local_semantic_docs",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "_local_semantic_docs",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 704,
+   "end": 720,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 720,
+   "end": 806,
+   "text": "_local_semantic_docs(store_path: Path, resolve_model_ref, pythonpath: str | None=None)",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "_local_semantic_docs(store_path: Path, resolve_model_ref, pythonpath: str | None=None)",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 806,
+   "end": 822,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 822,
+   "end": 881,
+   "text": "Loads docs and the semantic index, rebuilding if necessary.",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Loads docs and the semantic index, rebuilding if necessary.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 881,
+   "end": 895,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 895,
+   "end": 1028,
+   "text": "[\"__future__\", \"pathlib\", \"re\", \"sldb.store.io\", \"sldb.store.layout\", \"sldb.store.query\", \"sldb.store.query_engine.models\", \"typing\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\"__future__\", \"pathlib\", \"re\", \"sldb.store.io\", \"sldb.store.layout\", \"sldb.store.query\", \"sldb.store.query_engine.models\", \"typing\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1028,
+   "end": 1042,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1042,
+   "end": 1057,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1057,
+   "end": 1076,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1076,
+   "end": 1091,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

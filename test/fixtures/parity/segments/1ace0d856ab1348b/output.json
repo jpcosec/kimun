@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-cli-commands-stores-storescli-_print_reconcile\nsystem: sldb\nmodule: sldb.sldb.cli.commands.stores\nqualname: StoresCLI._print_reconcile\nkind: FunctionDef\nsource_path: sldb/cli/commands/stores.py\nsource_span: '43:47'\nsource_sha256: 4e65e4cb1a193336cf3a8a129e164fd75be5dbeac41bce3cb912500fe9534b9f\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.cli.commands.stores:StoresCLI._print_reconcile;\n  contract-sha256:a45a6e5e7c8fd6f9deeade2a9be493ba9d69010800e456e2bee40aa65864bc74\n---\n\n# StoresCLI._print_reconcile\n\n## Signature\n\n_print_reconcile(self, report: dict, encoding: str)\n\n## Docstring\n\nNot documented.\n\n## Imports\n\n[\"__future__\", \"json\", \"pathlib\", \"sldb.cli.commands.store\", \"sldb.cli.model_utils\", \"sldb.cli.store_context\", \"sldb.cli.utils\", \"sldb.store.catalog_reconcile\", \"sldb.store.export\", \"sldb.store.io\", \"sldb.store.resolver\", \"typing\", \"yaml\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 76
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 85,
+   "end": 89
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 98,
+   "end": 127
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 138,
+   "end": 164
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 171,
+   "end": 182
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 196,
+   "end": 223
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 237,
+   "end": 244
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 260,
+   "end": 324
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 344,
+   "end": 458
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 465,
+   "end": 467
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 480,
+   "end": 638
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 646,
+   "end": 672
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 688,
+   "end": 739
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 755,
+   "end": 770
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 784,
+   "end": 1023
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 1037,
+   "end": 1052
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 1071,
+   "end": 1086
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 76,
+   "text": "python-sldb-sldb-sldb-cli-commands-stores-storescli-_print_reconcile",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-cli-commands-stores-storescli-_print_reconcile",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 76,
+   "end": 85,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 85,
+   "end": 89,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 89,
+   "end": 98,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 98,
+   "end": 127,
+   "text": "sldb.sldb.cli.commands.stores",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.cli.commands.stores",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 127,
+   "end": 138,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 138,
+   "end": 164,
+   "text": "StoresCLI._print_reconcile",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "StoresCLI._print_reconcile",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 164,
+   "end": 171,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 171,
+   "end": 182,
+   "text": "FunctionDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "FunctionDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 182,
+   "end": 196,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 196,
+   "end": 223,
+   "text": "sldb/cli/commands/stores.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/cli/commands/stores.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 223,
+   "end": 237,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 237,
+   "end": 244,
+   "text": "'43:47'",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "43:47",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 244,
+   "end": 260,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 260,
+   "end": 324,
+   "text": "4e65e4cb1a193336cf3a8a129e164fd75be5dbeac41bce3cb912500fe9534b9f",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "4e65e4cb1a193336cf3a8a129e164fd75be5dbeac41bce3cb912500fe9534b9f",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 324,
+   "end": 344,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 344,
+   "end": 458,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 458,
+   "end": 465,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 465,
+   "end": 467,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 467,
+   "end": 480,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 480,
+   "end": 638,
+   "text": "python-ast:python:sldb.sldb.cli.commands.stores:StoresCLI._print_reconcile;\n  contract-sha256:a45a6e5e7c8fd6f9deeade2a9be493ba9d69010800e456e2bee40aa65864bc74",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.cli.commands.stores:StoresCLI._print_reconcile; contract-sha256:a45a6e5e7c8fd6f9deeade2a9be493ba9d69010800e456e2bee40aa65864bc74",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 638,
+   "end": 646,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 646,
+   "end": 672,
+   "text": "StoresCLI._print_reconcile",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "StoresCLI._print_reconcile",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 672,
+   "end": 688,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 688,
+   "end": 739,
+   "text": "_print_reconcile(self, report: dict, encoding: str)",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "_print_reconcile(self, report: dict, encoding: str)",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 739,
+   "end": 755,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 755,
+   "end": 770,
+   "text": "Not documented.",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 770,
+   "end": 784,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 784,
+   "end": 1023,
+   "text": "[\"__future__\", \"json\", \"pathlib\", \"sldb.cli.commands.store\", \"sldb.cli.model_utils\", \"sldb.cli.store_context\", \"sldb.cli.utils\", \"sldb.store.catalog_reconcile\", \"sldb.store.export\", \"sldb.store.io\", \"sldb.store.resolver\", \"typing\", \"yaml\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\"__future__\", \"json\", \"pathlib\", \"sldb.cli.commands.store\", \"sldb.cli.model_utils\", \"sldb.cli.store_context\", \"sldb.cli.utils\", \"sldb.store.catalog_reconcile\", \"sldb.store.export\", \"sldb.store.io\", \"sldb.store.resolver\", \"typing\", \"yaml\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1023,
+   "end": 1037,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1037,
+   "end": 1052,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1052,
+   "end": 1071,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1071,
+   "end": 1086,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

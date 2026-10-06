@@ -1,0 +1,26 @@
+[
+ {
+  "title": "Parent",
+  "slug": "parent",
+  "level": 1,
+  "path": "parent",
+  "line_start": 1,
+  "line_end": 4
+ },
+ {
+  "title": "Child",
+  "slug": "child",
+  "level": 2,
+  "path": "parent/child",
+  "line_start": 3,
+  "line_end": 4
+ },
+ {
+  "title": "Next",
+  "slug": "next",
+  "level": 1,
+  "path": "next",
+  "line_start": 5,
+  "line_end": 6
+ }
+]

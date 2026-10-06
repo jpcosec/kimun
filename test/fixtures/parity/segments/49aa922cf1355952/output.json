@@ -1,0 +1,397 @@
+{
+ "text": "---\nid: cmd-sldb-stores-semantic-export\nsystem: sldb\ncommand_path: stores semantic-export\nsynopsis: Export semantic payloads.\ntags:\n- system:sldb\n- domain:retrieval\n- kind:software\n- impl:external\n- entity:cli_command\nprovenance: parser:sldb.cli.parser:build_parser#stores semantic-export; contract-sha256:0108714d8a38c256b0da85f9c34d5b78d371c6fc29250ac98891f35142dd902d\n---\n\n# stores semantic-export\n\n## Synopsis\n\nExport semantic payloads.\n\n## Purpose\n\nThe `sldb stores semantic-export` command: Export semantic payloads.\n\n## How It Works\n\nImplemented under src/sldb/cli/parsers/ as the argparse subcommand 'semantic-export'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.\n\n## Arguments\n\n```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path\"\n    },\n    {\n      \"names\": [\n        \"--pythonpath\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Project path\"\n    },\n    {\n      \"names\": [\n        \"--format\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"kgdb\\\"\",\n      \"choices\": [\n        \"\\\"kgdb\\\"\"\n      ],\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    },\n    {\n      \"names\": [\n        \"--encoding\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"json\\\"\",\n      \"choices\": [\n        \"\\\"json\\\"\",\n        \"\\\"yaml\\\"\"\n      ],\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    },\n    {\n      \"names\": [\n        \"--output\",\n        \"-o\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"-\\\"\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Output path or -\"\n    },\n    {\n      \"names\": [\n        \"--rebuild\"\n      ],\n      \"required\": false,\n      \"default\": \"false\",\n      \"choices\": null,\n      \"nargs\": 0,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreTrueAction\",\n      \"const\": \"true\",\n      \"help\": \"Refresh semantic and section indexes\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```\n\n## Usage\n\nstores semantic-export",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 39
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 48,
+   "end": 52
+  },
+  {
+   "meta": {
+    "path": "command_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 67,
+   "end": 89
+  },
+  {
+   "meta": {
+    "path": "synopsis",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 100,
+   "end": 125
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 131,
+   "end": 217
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "optrev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 230,
+   "end": 370
+  },
+  {
+   "meta": {
+    "path": "command_path",
+    "marker": "render",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 378,
+   "end": 400
+  },
+  {
+   "meta": {
+    "path": "synopsis",
+    "marker": "render",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 415,
+   "end": 440
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 454,
+   "end": 522
+  },
+  {
+   "meta": {
+    "path": "how_it_works",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 541,
+   "end": 733
+  },
+  {
+   "meta": {
+    "path": "arguments",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 749,
+   "end": 2537
+  },
+  {
+   "meta": {
+    "path": "usage",
+    "marker": "rev",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 2549,
+   "end": 2571
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 39,
+   "text": "cmd-sldb-stores-semantic-export",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "cmd-sldb-stores-semantic-export",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 39,
+   "end": 48,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 48,
+   "end": 52,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 52,
+   "end": 67,
+   "text": "\ncommand_path: "
+  },
+  {
+   "type": "field",
+   "start": 67,
+   "end": 89,
+   "text": "stores semantic-export",
+   "path": "command_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "stores semantic-export",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 89,
+   "end": 100,
+   "text": "\nsynopsis: "
+  },
+  {
+   "type": "field",
+   "start": 100,
+   "end": 125,
+   "text": "Export semantic payloads.",
+   "path": "synopsis",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Export semantic payloads.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 125,
+   "end": 131,
+   "text": "\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 131,
+   "end": 217,
+   "text": "\n- system:sldb\n- domain:retrieval\n- kind:software\n- impl:external\n- entity:cli_command",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [
+    "system:sldb",
+    "domain:retrieval",
+    "kind:software",
+    "impl:external",
+    "entity:cli_command"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 217,
+   "end": 230,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 230,
+   "end": 370,
+   "text": "parser:sldb.cli.parser:build_parser#stores semantic-export; contract-sha256:0108714d8a38c256b0da85f9c34d5b78d371c6fc29250ac98891f35142dd902d",
+   "path": "provenance",
+   "marker": "optrev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "parser:sldb.cli.parser:build_parser#stores semantic-export; contract-sha256:0108714d8a38c256b0da85f9c34d5b78d371c6fc29250ac98891f35142dd902d",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 370,
+   "end": 378,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 378,
+   "end": 400,
+   "text": "stores semantic-export",
+   "path": "command_path",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "stores semantic-export",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 400,
+   "end": 415,
+   "text": "\n\n## Synopsis\n\n"
+  },
+  {
+   "type": "field",
+   "start": 415,
+   "end": 440,
+   "text": "Export semantic payloads.",
+   "path": "synopsis",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "block",
+   "kind": "string",
+   "value": "Export semantic payloads.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 440,
+   "end": 454,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 454,
+   "end": 522,
+   "text": "The `sldb stores semantic-export` command: Export semantic payloads.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "The `sldb stores semantic-export` command: Export semantic payloads.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 522,
+   "end": 541,
+   "text": "\n\n## How It Works\n\n"
+  },
+  {
+   "type": "field",
+   "start": 541,
+   "end": 733,
+   "text": "Implemented under src/sldb/cli/parsers/ as the argparse subcommand 'semantic-export'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.",
+   "path": "how_it_works",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Implemented under src/sldb/cli/parsers/ as the argparse subcommand 'semantic-export'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 733,
+   "end": 749,
+   "text": "\n\n## Arguments\n\n"
+  },
+  {
+   "type": "field",
+   "start": 749,
+   "end": 2537,
+   "text": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path\"\n    },\n    {\n      \"names\": [\n        \"--pythonpath\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Project path\"\n    },\n    {\n      \"names\": [\n        \"--format\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"kgdb\\\"\",\n      \"choices\": [\n        \"\\\"kgdb\\\"\"\n      ],\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    },\n    {\n      \"names\": [\n        \"--encoding\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"json\\\"\",\n      \"choices\": [\n        \"\\\"json\\\"\",\n        \"\\\"yaml\\\"\"\n      ],\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    },\n    {\n      \"names\": [\n        \"--output\",\n        \"-o\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"-\\\"\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Output path or -\"\n    },\n    {\n      \"names\": [\n        \"--rebuild\"\n      ],\n      \"required\": false,\n      \"default\": \"false\",\n      \"choices\": null,\n      \"nargs\": 0,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreTrueAction\",\n      \"const\": \"true\",\n      \"help\": \"Refresh semantic and section indexes\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+   "path": "arguments",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path\"\n    },\n    {\n      \"names\": [\n        \"--pythonpath\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Project path\"\n    },\n    {\n      \"names\": [\n        \"--format\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"kgdb\\\"\",\n      \"choices\": [\n        \"\\\"kgdb\\\"\"\n      ],\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    },\n    {\n      \"names\": [\n        \"--encoding\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"json\\\"\",\n      \"choices\": [\n        \"\\\"json\\\"\",\n        \"\\\"yaml\\\"\"\n      ],\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    },\n    {\n      \"names\": [\n        \"--output\",\n        \"-o\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"-\\\"\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Output path or -\"\n    },\n    {\n      \"names\": [\n        \"--rebuild\"\n      ],\n      \"required\": false,\n      \"default\": \"false\",\n      \"choices\": null,\n      \"nargs\": 0,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreTrueAction\",\n      \"const\": \"true\",\n      \"help\": \"Refresh semantic and section indexes\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 2537,
+   "end": 2549,
+   "text": "\n\n## Usage\n\n"
+  },
+  {
+   "type": "field",
+   "start": 2549,
+   "end": 2571,
+   "text": "stores semantic-export",
+   "path": "usage",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "stores semantic-export",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

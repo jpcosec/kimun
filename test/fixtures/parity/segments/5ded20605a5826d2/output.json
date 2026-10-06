@@ -1,0 +1,535 @@
+{
+ "text": "---\nid: move-20260914T160012-001\nat: '2026-09-14T16:00:12+00:00'\nspeaker: ''\noutcome: unico\nstate_before: libre\nstate_after: libre\nhash_before: 48b7771c29e37a8bc1a3b612f33aa49388ce718921967900740eef41cdbf0cae\nhash_after: 48b7771c29e37a8bc1a3b612f33aa49388ce718921967900740eef41cdbf0cae\nrefers_to: ''\n---\n\n# move-20260914T160012-001\n\n## Sentence\n\nwhat python symbols does sldb.sldb.selfdoc.command import\n\n## Record\n\n```yaml\nqueries:\n- pron graph python_symbol name = sldb.sldb.selfdoc.command → 1\n- kgdb edges_from(python:sldb.sldb.selfdoc.command, imports) → 5\nwrites: []\nedges:\n- source: python:sldb.sldb.selfdoc.command\n  target: python:external:__future__:annotations\n  relation: imports\n  metadata:\n    owner: python:sldb.sldb.selfdoc.command\n    module: __future__\n    name: annotations\n    alias: null\n    local: annotations\n    level: 0\n    line: 2\n    end: 2\n    target: python:external:__future__:annotations\n    origin: python_ast\n    path: sldb/selfdoc/command.py\n    sha256: bb7952aa96d78cb7a9f0d1c2953b8f341de9bc54f98843a001f95753d63ea532\n    line_start: 2\n    line_end: 2\n- source: python:sldb.sldb.selfdoc.command\n  target: python:external:pydantic:BaseModel\n  relation: imports\n  metadata:\n    owner: python:sldb.sldb.selfdoc.command\n    module: pydantic\n    name: BaseModel\n    alias: null\n    local: BaseModel\n    level: 0\n    line: 4\n    end: 4\n    target: python:external:pydantic:BaseModel\n    origin: python_ast\n    path: sldb/selfdoc/command.py\n    sha256: bb7952aa96d78cb7a9f0d1c2953b8f341de9bc54f98843a001f95753d63ea532\n    line_start: 4\n    line_end: 4\n- source: python:sldb.sldb.selfdoc.command\n  target: python:external:pydantic:Field\n  relation: imports\n  metadata:\n    owner: python:sldb.sldb.selfdoc.command\n    module: pydantic\n    name: Field\n    alias: null\n    local: Field\n    level: 0\n    line: 4\n    end: 4\n    target: python:external:pydantic:Field\n    origin: python_ast\n    path: sldb/selfdoc/command.py\n    sha256: bb7952aa96d78cb7a9f0d1c2953b8f341de9bc54f98843a001f95753d63ea532\n    line_start: 4\n    line_end: 4\n- source: python:sldb.sldb.selfdoc.command\n  target: python:sldb.sldb.selfdoc.argument:ArgumentRecord\n  relation: imports\n  metadata:\n    owner: python:sldb.sldb.selfdoc.command\n    module: sldb.sldb.selfdoc.argument\n    name: ArgumentRecord\n    alias: null\n    local: ArgumentRecord\n    level: 1\n    line: 5\n    end: 5\n    target: python:sldb.sldb.selfdoc.argument:ArgumentRecord\n    origin: python_ast\n    path: sldb/selfdoc/command.py\n    sha256: bb7952aa96d78cb7a9f0d1c2953b8f341de9bc54f98843a001f95753d63ea532\n    line_start: 5\n    line_end: 5\n- source: python:sldb.sldb.selfdoc.command\n  target: python:sldb.sldb.selfdoc.constraint:ExclusiveGroup\n  relation: imports\n  metadata:\n    owner: python:sldb.sldb.selfdoc.command\n    module: sldb.sldb.selfdoc.constraint\n    name: ExclusiveGroup\n    alias: null\n    local: ExclusiveGroup\n    level: 1\n    line: 6\n    end: 6\n    target: python:sldb.sldb.selfdoc.constraint:ExclusiveGroup\n    origin: python_ast\n    path: sldb/selfdoc/command.py\n    sha256: bb7952aa96d78cb7a9f0d1c2953b8f341de9bc54f98843a001f95753d63ea532\n    line_start: 6\n    line_end: 6\ninterpretation:\n  forma: read\n  items:\n  - wh('what')\n  - word('python symbols'→source_model:PythonSymbol)\n  - wh('does')\n  - unknown('sldb.sldb.selfdoc.command')\n  - word('import'→source_relation:imports)\n  parts:\n  - 'read · source_relation:imports · subject=the PythonSymbol [] sldb.sldb.selfdoc.command\n    · object=all PythonSymbol [] · payload={''asked'': ''object''}'\n  unknown: []\n  notes: []\nreads: []\ntrace:\n- 'interpretation: read'\n- pron graph python_symbol name = sldb.sldb.selfdoc.command → 1\n- kgdb edges_from(python:sldb.sldb.selfdoc.command, imports) → 5\n```",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 32
+  },
+  {
+   "meta": {
+    "path": "at",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 37,
+   "end": 64
+  },
+  {
+   "meta": {
+    "path": "speaker",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 74,
+   "end": 76
+  },
+  {
+   "meta": {
+    "path": "outcome",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 86,
+   "end": 91
+  },
+  {
+   "meta": {
+    "path": "state_before",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 106,
+   "end": 111
+  },
+  {
+   "meta": {
+    "path": "state_after",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 125,
+   "end": 130
+  },
+  {
+   "meta": {
+    "path": "hash_before",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 144,
+   "end": 208
+  },
+  {
+   "meta": {
+    "path": "hash_after",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 221,
+   "end": 285
+  },
+  {
+   "meta": {
+    "path": "refers_to",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 297,
+   "end": 299
+  },
+  {
+   "meta": {
+    "path": "id",
+    "marker": "render",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 307,
+   "end": 331
+  },
+  {
+   "meta": {
+    "path": "sentence",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 346,
+   "end": 403
+  },
+  {
+   "meta": {
+    "path": "record",
+    "marker": "rev",
+    "traits": [
+     "dict"
+    ],
+    "_order": 11
+   },
+   "start": 424,
+   "end": 3732
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 32,
+   "text": "move-20260914T160012-001",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "move-20260914T160012-001",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 32,
+   "end": 37,
+   "text": "\nat: "
+  },
+  {
+   "type": "field",
+   "start": 37,
+   "end": 64,
+   "text": "'2026-09-14T16:00:12+00:00'",
+   "path": "at",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "2026-09-14T16:00:12+00:00",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 64,
+   "end": 74,
+   "text": "\nspeaker: "
+  },
+  {
+   "type": "field",
+   "start": 74,
+   "end": 76,
+   "text": "''",
+   "path": "speaker",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 76,
+   "end": 86,
+   "text": "\noutcome: "
+  },
+  {
+   "type": "field",
+   "start": 86,
+   "end": 91,
+   "text": "unico",
+   "path": "outcome",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "unico",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 91,
+   "end": 106,
+   "text": "\nstate_before: "
+  },
+  {
+   "type": "field",
+   "start": 106,
+   "end": 111,
+   "text": "libre",
+   "path": "state_before",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "libre",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 111,
+   "end": 125,
+   "text": "\nstate_after: "
+  },
+  {
+   "type": "field",
+   "start": 125,
+   "end": 130,
+   "text": "libre",
+   "path": "state_after",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "libre",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 130,
+   "end": 144,
+   "text": "\nhash_before: "
+  },
+  {
+   "type": "field",
+   "start": 144,
+   "end": 208,
+   "text": "48b7771c29e37a8bc1a3b612f33aa49388ce718921967900740eef41cdbf0cae",
+   "path": "hash_before",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "48b7771c29e37a8bc1a3b612f33aa49388ce718921967900740eef41cdbf0cae",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 208,
+   "end": 221,
+   "text": "\nhash_after: "
+  },
+  {
+   "type": "field",
+   "start": 221,
+   "end": 285,
+   "text": "48b7771c29e37a8bc1a3b612f33aa49388ce718921967900740eef41cdbf0cae",
+   "path": "hash_after",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "48b7771c29e37a8bc1a3b612f33aa49388ce718921967900740eef41cdbf0cae",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 285,
+   "end": 297,
+   "text": "\nrefers_to: "
+  },
+  {
+   "type": "field",
+   "start": 297,
+   "end": 299,
+   "text": "''",
+   "path": "refers_to",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 299,
+   "end": 307,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 307,
+   "end": 331,
+   "text": "move-20260914T160012-001",
+   "path": "id",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "move-20260914T160012-001",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 331,
+   "end": 346,
+   "text": "\n\n## Sentence\n\n"
+  },
+  {
+   "type": "field",
+   "start": 346,
+   "end": 403,
+   "text": "what python symbols does sldb.sldb.selfdoc.command import",
+   "path": "sentence",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "what python symbols does sldb.sldb.selfdoc.command import",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 403,
+   "end": 424,
+   "text": "\n\n## Record\n\n```yaml\n"
+  },
+  {
+   "type": "field",
+   "start": 424,
+   "end": 3732,
+   "text": "queries:\n- pron graph python_symbol name = sldb.sldb.selfdoc.command → 1\n- kgdb edges_from(python:sldb.sldb.selfdoc.command, imports) → 5\nwrites: []\nedges:\n- source: python:sldb.sldb.selfdoc.command\n  target: python:external:__future__:annotations\n  relation: imports\n  metadata:\n    owner: python:sldb.sldb.selfdoc.command\n    module: __future__\n    name: annotations\n    alias: null\n    local: annotations\n    level: 0\n    line: 2\n    end: 2\n    target: python:external:__future__:annotations\n    origin: python_ast\n    path: sldb/selfdoc/command.py\n    sha256: bb7952aa96d78cb7a9f0d1c2953b8f341de9bc54f98843a001f95753d63ea532\n    line_start: 2\n    line_end: 2\n- source: python:sldb.sldb.selfdoc.command\n  target: python:external:pydantic:BaseModel\n  relation: imports\n  metadata:\n    owner: python:sldb.sldb.selfdoc.command\n    module: pydantic\n    name: BaseModel\n    alias: null\n    local: BaseModel\n    level: 0\n    line: 4\n    end: 4\n    target: python:external:pydantic:BaseModel\n    origin: python_ast\n    path: sldb/selfdoc/command.py\n    sha256: bb7952aa96d78cb7a9f0d1c2953b8f341de9bc54f98843a001f95753d63ea532\n    line_start: 4\n    line_end: 4\n- source: python:sldb.sldb.selfdoc.command\n  target: python:external:pydantic:Field\n  relation: imports\n  metadata:\n    owner: python:sldb.sldb.selfdoc.command\n    module: pydantic\n    name: Field\n    alias: null\n    local: Field\n    level: 0\n    line: 4\n    end: 4\n    target: python:external:pydantic:Field\n    origin: python_ast\n    path: sldb/selfdoc/command.py\n    sha256: bb7952aa96d78cb7a9f0d1c2953b8f341de9bc54f98843a001f95753d63ea532\n    line_start: 4\n    line_end: 4\n- source: python:sldb.sldb.selfdoc.command\n  target: python:sldb.sldb.selfdoc.argument:ArgumentRecord\n  relation: imports\n  metadata:\n    owner: python:sldb.sldb.selfdoc.command\n    module: sldb.sldb.selfdoc.argument\n    name: ArgumentRecord\n    alias: null\n    local: ArgumentRecord\n    level: 1\n    line: 5\n    end: 5\n    target: python:sldb.sldb.selfdoc.argument:ArgumentRecord\n    origin: python_ast\n    path: sldb/selfdoc/command.py\n    sha256: bb7952aa96d78cb7a9f0d1c2953b8f341de9bc54f98843a001f95753d63ea532\n    line_start: 5\n    line_end: 5\n- source: python:sldb.sldb.selfdoc.command\n  target: python:sldb.sldb.selfdoc.constraint:ExclusiveGroup\n  relation: imports\n  metadata:\n    owner: python:sldb.sldb.selfdoc.command\n    module: sldb.sldb.selfdoc.constraint\n    name: ExclusiveGroup\n    alias: null\n    local: ExclusiveGroup\n    level: 1\n    line: 6\n    end: 6\n    target: python:sldb.sldb.selfdoc.constraint:ExclusiveGroup\n    origin: python_ast\n    path: sldb/selfdoc/command.py\n    sha256: bb7952aa96d78cb7a9f0d1c2953b8f341de9bc54f98843a001f95753d63ea532\n    line_start: 6\n    line_end: 6\ninterpretation:\n  forma: read\n  items:\n  - wh('what')\n  - word('python symbols'→source_model:PythonSymbol)\n  - wh('does')\n  - unknown('sldb.sldb.selfdoc.command')\n  - word('import'→source_relation:imports)\n  parts:\n  - 'read · source_relation:imports · subject=the PythonSymbol [] sldb.sldb.selfdoc.command\n    · object=all PythonSymbol [] · payload={''asked'': ''object''}'\n  unknown: []\n  notes: []\nreads: []\ntrace:\n- 'interpretation: read'\n- pron graph python_symbol name = sldb.sldb.selfdoc.command → 1\n- kgdb edges_from(python:sldb.sldb.selfdoc.command, imports) → 5",
+   "path": "record",
+   "marker": "rev",
+   "traits": [
+    "dict"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "unknown",
+   "value": {
+    "queries": [
+     "pron graph python_symbol name = sldb.sldb.selfdoc.command → 1",
+     "kgdb edges_from(python:sldb.sldb.selfdoc.command, imports) → 5"
+    ],
+    "writes": [],
+    "edges": [
+     {
+      "source": "python:sldb.sldb.selfdoc.command",
+      "target": "python:external:__future__:annotations",
+      "relation": "imports",
+      "metadata": {
+       "owner": "python:sldb.sldb.selfdoc.command",
+       "module": "__future__",
+       "name": "annotations",
+       "alias": null,
+       "local": "annotations",
+       "level": 0,
+       "line": 2,
+       "end": 2,
+       "target": "python:external:__future__:annotations",
+       "origin": "python_ast",
+       "path": "sldb/selfdoc/command.py",
+       "sha256": "bb7952aa96d78cb7a9f0d1c2953b8f341de9bc54f98843a001f95753d63ea532",
+       "line_start": 2,
+       "line_end": 2
+      }
+     },
+     {
+      "source": "python:sldb.sldb.selfdoc.command",
+      "target": "python:external:pydantic:BaseModel",
+      "relation": "imports",
+      "metadata": {
+       "owner": "python:sldb.sldb.selfdoc.command",
+       "module": "pydantic",
+       "name": "BaseModel",
+       "alias": null,
+       "local": "BaseModel",
+       "level": 0,
+       "line": 4,
+       "end": 4,
+       "target": "python:external:pydantic:BaseModel",
+       "origin": "python_ast",
+       "path": "sldb/selfdoc/command.py",
+       "sha256": "bb7952aa96d78cb7a9f0d1c2953b8f341de9bc54f98843a001f95753d63ea532",
+       "line_start": 4,
+       "line_end": 4
+      }
+     },
+     {
+      "source": "python:sldb.sldb.selfdoc.command",
+      "target": "python:external:pydantic:Field",
+      "relation": "imports",
+      "metadata": {
+       "owner": "python:sldb.sldb.selfdoc.command",
+       "module": "pydantic",
+       "name": "Field",
+       "alias": null,
+       "local": "Field",
+       "level": 0,
+       "line": 4,
+       "end": 4,
+       "target": "python:external:pydantic:Field",
+       "origin": "python_ast",
+       "path": "sldb/selfdoc/command.py",
+       "sha256": "bb7952aa96d78cb7a9f0d1c2953b8f341de9bc54f98843a001f95753d63ea532",
+       "line_start": 4,
+       "line_end": 4
+      }
+     },
+     {
+      "source": "python:sldb.sldb.selfdoc.command",
+      "target": "python:sldb.sldb.selfdoc.argument:ArgumentRecord",
+      "relation": "imports",
+      "metadata": {
+       "owner": "python:sldb.sldb.selfdoc.command",
+       "module": "sldb.sldb.selfdoc.argument",
+       "name": "ArgumentRecord",
+       "alias": null,
+       "local": "ArgumentRecord",
+       "level": 1,
+       "line": 5,
+       "end": 5,
+       "target": "python:sldb.sldb.selfdoc.argument:ArgumentRecord",
+       "origin": "python_ast",
+       "path": "sldb/selfdoc/command.py",
+       "sha256": "bb7952aa96d78cb7a9f0d1c2953b8f341de9bc54f98843a001f95753d63ea532",
+       "line_start": 5,
+       "line_end": 5
+      }
+     },
+     {
+      "source": "python:sldb.sldb.selfdoc.command",
+      "target": "python:sldb.sldb.selfdoc.constraint:ExclusiveGroup",
+      "relation": "imports",
+      "metadata": {
+       "owner": "python:sldb.sldb.selfdoc.command",
+       "module": "sldb.sldb.selfdoc.constraint",
+       "name": "ExclusiveGroup",
+       "alias": null,
+       "local": "ExclusiveGroup",
+       "level": 1,
+       "line": 6,
+       "end": 6,
+       "target": "python:sldb.sldb.selfdoc.constraint:ExclusiveGroup",
+       "origin": "python_ast",
+       "path": "sldb/selfdoc/command.py",
+       "sha256": "bb7952aa96d78cb7a9f0d1c2953b8f341de9bc54f98843a001f95753d63ea532",
+       "line_start": 6,
+       "line_end": 6
+      }
+     }
+    ],
+    "interpretation": {
+     "forma": "read",
+     "items": [
+      "wh('what')",
+      "word('python symbols'→source_model:PythonSymbol)",
+      "wh('does')",
+      "unknown('sldb.sldb.selfdoc.command')",
+      "word('import'→source_relation:imports)"
+     ],
+     "parts": [
+      "read · source_relation:imports · subject=the PythonSymbol [] sldb.sldb.selfdoc.command · object=all PythonSymbol [] · payload={'asked': 'object'}"
+     ],
+     "unknown": [],
+     "notes": []
+    },
+    "reads": [],
+    "trace": [
+     "interpretation: read",
+     "pron graph python_symbol name = sldb.sldb.selfdoc.command → 1",
+     "kgdb edges_from(python:sldb.sldb.selfdoc.command, imports) → 5"
+    ]
+   },
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 3732,
+   "end": 3736,
+   "text": "\n```"
+  }
+ ]
+}

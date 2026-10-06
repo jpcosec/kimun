@@ -1,0 +1,29 @@
+{
+ "sections": [
+  {
+   "title": "A title",
+   "slug": "a-title",
+   "level": 1,
+   "path": "a-title",
+   "line_start": 1,
+   "line_end": 9
+  },
+  {
+   "title": "Section inside the body",
+   "slug": "section-inside-the-body",
+   "level": 2,
+   "path": "a-title/section-inside-the-body",
+   "line_start": 3,
+   "line_end": 6
+  },
+  {
+   "title": "Another one",
+   "slug": "another-one",
+   "level": 2,
+   "path": "a-title/another-one",
+   "line_start": 7,
+   "line_end": 9
+  }
+ ],
+ "known_fields": null
+}

@@ -1,0 +1,271 @@
+{
+ "text": "---\nid: task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico\nstatus: draft\nsummary: ''\ntags:\n- workspace:desk\n- artifact:task\nroutine: routine-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico\ncurrent_node: checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-ready\nhistory: []\nreferences: []\ndepends_on:\n- task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion\npills: []\nfiles: []\nchecklists:\n- checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-ready\n- checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-testing-ready\n- checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-ready\ntask_type: implementation\ninherits_from: []\ninherit_acceptance_context: false\natoms: []\n---\n\n# Borrar la capa runtime/edges y podar el surface publico\n\n## Rationale\n\n_Explain why this task exists or the business driver behind it._\n\nPaso final del retiro. Son ~1613 lineas en 30+ modulos. api/__init__.py se declara contrato publico para pron, kgdb y deskops, y ~20 simbolos de edges mueren (check_edges, edges_from/to, edge_node, edge_nodes_of_type, load_edge_index, init_relations, rebuild_edges, EdgeIndex, EdgeCheckReport, EdgeRebuildReport, serializers, node-id helpers). Handoff ya enviado al inbox de deskops.\n\n## Goal\n\n_Describe the concrete result this task must produce._\n\nBorrar edge_sync.py, edge_rebuild.py, edge_doc_contribution.py, edge_index/doc_contribution.py, models/doc_edges.py, models/edge_contribution.py, api/edges/rebuild_edges.py, cli/commands/edges.py, cli/parsers/edges.py, cli/serve/edges_routes.py, y podar api/__init__.py.\n\n## Scope\n\n_State what is in scope and what is out of scope._\n\nIN: borrado de la capa y poda del __all__. Los consumidores clase B (payload_save_steps, untrack_document, dag_writes, index_commit, selfdoc_write, derived_rebuild, export, ops) se reescriben contra el snapshot. OUT: EdgeNodeRecord/EdgeRecord SOBREVIVEN (los usa store/graph/convert.py:10-11) y los helpers node_ids se mueven a store/graph.\n\n## Implementation Path\n\n_Outline the expected implementation route or affected surface._\n\nSeguir el orden de la seccion 5 del plan: ningun paso intermedio deja main roto. cli/serve/lint_routes.py:62 consume check_edges y queda huerfano: hay que reescribirlo si o si.\n\n## Validation\n\n_List the checks required before this task can close._\n\n- PYTHONPATH=src python -m pytest -q\n\n## Done When\n\n_Name the observable condition that makes the task complete._\n\npytest verde; ningun modulo de la capa edges existe; api/__init__.py sin simbolos muertos; /lint funcionando contra la capa nueva.",
+ "spans": [
+  {
+   "meta": {
+    "path": "frontmatter",
+    "marker": "rev",
+    "traits": [
+     "dict"
+    ],
+    "_order": 0
+   },
+   "start": 4,
+   "end": 813
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 821,
+   "end": 876
+  },
+  {
+   "meta": {
+    "path": "why",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 958,
+   "end": 1341
+  },
+  {
+   "meta": {
+    "path": "goal",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 1408,
+   "end": 1678
+  },
+  {
+   "meta": {
+    "path": "scope",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 1742,
+   "end": 2082
+  },
+  {
+   "meta": {
+    "path": "implementation_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 2174,
+   "end": 2350
+  },
+  {
+   "meta": {
+    "path": "validation/0",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 6
+   },
+   "start": 2425,
+   "end": 2459
+  },
+  {
+   "meta": {
+    "path": "done_when",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 2538,
+   "end": 2668
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 4,
+   "text": "---\n"
+  },
+  {
+   "type": "field",
+   "start": 4,
+   "end": 813,
+   "text": "id: task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico\nstatus: draft\nsummary: ''\ntags:\n- workspace:desk\n- artifact:task\nroutine: routine-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico\ncurrent_node: checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-ready\nhistory: []\nreferences: []\ndepends_on:\n- task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion\npills: []\nfiles: []\nchecklists:\n- checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-ready\n- checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-testing-ready\n- checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-ready\ntask_type: implementation\ninherits_from: []\ninherit_acceptance_context: false\natoms: []",
+   "path": "frontmatter",
+   "marker": "rev",
+   "traits": [
+    "dict"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "object",
+   "value": null,
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 813,
+   "end": 821,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 821,
+   "end": 876,
+   "text": "Borrar la capa runtime/edges y podar el surface publico",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Borrar la capa runtime/edges y podar el surface publico",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 876,
+   "end": 958,
+   "text": "\n\n## Rationale\n\n_Explain why this task exists or the business driver behind it._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 958,
+   "end": 1341,
+   "text": "Paso final del retiro. Son ~1613 lineas en 30+ modulos. api/__init__.py se declara contrato publico para pron, kgdb y deskops, y ~20 simbolos de edges mueren (check_edges, edges_from/to, edge_node, edge_nodes_of_type, load_edge_index, init_relations, rebuild_edges, EdgeIndex, EdgeCheckReport, EdgeRebuildReport, serializers, node-id helpers). Handoff ya enviado al inbox de deskops.",
+   "path": "why",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Paso final del retiro. Son ~1613 lineas en 30+ modulos. api/__init__.py se declara contrato publico para pron, kgdb y deskops, y ~20 simbolos de edges mueren (check_edges, edges_from/to, edge_node, edge_nodes_of_type, load_edge_index, init_relations, rebuild_edges, EdgeIndex, EdgeCheckReport, EdgeRebuildReport, serializers, node-id helpers). Handoff ya enviado al inbox de deskops.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1341,
+   "end": 1408,
+   "text": "\n\n## Goal\n\n_Describe the concrete result this task must produce._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1408,
+   "end": 1678,
+   "text": "Borrar edge_sync.py, edge_rebuild.py, edge_doc_contribution.py, edge_index/doc_contribution.py, models/doc_edges.py, models/edge_contribution.py, api/edges/rebuild_edges.py, cli/commands/edges.py, cli/parsers/edges.py, cli/serve/edges_routes.py, y podar api/__init__.py.",
+   "path": "goal",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Borrar edge_sync.py, edge_rebuild.py, edge_doc_contribution.py, edge_index/doc_contribution.py, models/doc_edges.py, models/edge_contribution.py, api/edges/rebuild_edges.py, cli/commands/edges.py, cli/parsers/edges.py, cli/serve/edges_routes.py, y podar api/__init__.py.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1678,
+   "end": 1742,
+   "text": "\n\n## Scope\n\n_State what is in scope and what is out of scope._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1742,
+   "end": 2082,
+   "text": "IN: borrado de la capa y poda del __all__. Los consumidores clase B (payload_save_steps, untrack_document, dag_writes, index_commit, selfdoc_write, derived_rebuild, export, ops) se reescriben contra el snapshot. OUT: EdgeNodeRecord/EdgeRecord SOBREVIVEN (los usa store/graph/convert.py:10-11) y los helpers node_ids se mueven a store/graph.",
+   "path": "scope",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "IN: borrado de la capa y poda del __all__. Los consumidores clase B (payload_save_steps, untrack_document, dag_writes, index_commit, selfdoc_write, derived_rebuild, export, ops) se reescriben contra el snapshot. OUT: EdgeNodeRecord/EdgeRecord SOBREVIVEN (los usa store/graph/convert.py:10-11) y los helpers node_ids se mueven a store/graph.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 2082,
+   "end": 2174,
+   "text": "\n\n## Implementation Path\n\n_Outline the expected implementation route or affected surface._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 2174,
+   "end": 2350,
+   "text": "Seguir el orden de la seccion 5 del plan: ningun paso intermedio deja main roto. cli/serve/lint_routes.py:62 consume check_edges y queda huerfano: hay que reescribirlo si o si.",
+   "path": "implementation_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Seguir el orden de la seccion 5 del plan: ningun paso intermedio deja main roto. cli/serve/lint_routes.py:62 consume check_edges y queda huerfano: hay que reescribirlo si o si.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 2350,
+   "end": 2425,
+   "text": "\n\n## Validation\n\n_List the checks required before this task can close._\n\n- "
+  },
+  {
+   "type": "field",
+   "start": 2425,
+   "end": 2459,
+   "text": "PYTHONPATH=src python -m pytest -q",
+   "path": "validation/0",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "PYTHONPATH=src python -m pytest -q",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 2459,
+   "end": 2538,
+   "text": "\n\n## Done When\n\n_Name the observable condition that makes the task complete._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 2538,
+   "end": 2668,
+   "text": "pytest verde; ningun modulo de la capa edges existe; api/__init__.py sin simbolos muertos; /lint funcionando contra la capa nueva.",
+   "path": "done_when",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "pytest verde; ningun modulo de la capa edges existe; api/__init__.py sin simbolos muertos; /lint funcionando contra la capa nueva.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

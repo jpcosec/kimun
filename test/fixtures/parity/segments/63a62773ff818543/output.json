@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-cli-commands-selfdoc-selfdoccli-run\nsystem: sldb\nmodule: sldb.sldb.cli.commands.selfdoc\nqualname: SelfdocCLI.run\nkind: FunctionDef\nsource_path: sldb/cli/commands/selfdoc.py\nsource_span: '28:39'\nsource_sha256: 0868c8844cc32944cc6d9ef9e2aedbc3e9fcda9748090591f30ff558c8b490ae\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.cli.commands.selfdoc:SelfdocCLI.run; contract-sha256:60d58f5d6380b433e4d821af63b6fb74bcb8c96b754a84c38df0cc939a194393\n---\n\n# SelfdocCLI.run\n\n## Signature\n\nrun(self, args)\n\n## Docstring\n\nUse JSON stdout; existing lifecycle messages go to stderr.\n\n## Imports\n\n[\"__future__\", \"contextlib\", \"json\", \"pathlib\", \"sldb.cli.selfdoc_context\", \"sldb.cli.selfdoc_inspect\", \"sldb.cli.selfdoc_write\", \"sldb.selfdoc.kgdb_sync\", \"sldb.selfdoc.materialize\", \"sldb.selfdoc.parser\", \"sldb.selfdoc.python_materialize\", \"sldb.selfdoc.python_relation_registry\", \"sldb.selfdoc.python_scanner\", \"sldb.selfdoc.python_source_graph\", \"sldb.selfdoc.python_source_scan\", \"sldb.store.resolver\", \"sys\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 65
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 74,
+   "end": 78
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 87,
+   "end": 117
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 128,
+   "end": 142
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 149,
+   "end": 160
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 174,
+   "end": 202
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 216,
+   "end": 223
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 239,
+   "end": 303
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 323,
+   "end": 437
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 444,
+   "end": 446
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 459,
+   "end": 604
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 612,
+   "end": 626
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 642,
+   "end": 657
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 673,
+   "end": 731
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 745,
+   "end": 1159
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 1173,
+   "end": 1188
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 1207,
+   "end": 1222
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 65,
+   "text": "python-sldb-sldb-sldb-cli-commands-selfdoc-selfdoccli-run",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-cli-commands-selfdoc-selfdoccli-run",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 65,
+   "end": 74,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 74,
+   "end": 78,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 78,
+   "end": 87,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 87,
+   "end": 117,
+   "text": "sldb.sldb.cli.commands.selfdoc",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.cli.commands.selfdoc",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 117,
+   "end": 128,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 128,
+   "end": 142,
+   "text": "SelfdocCLI.run",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "SelfdocCLI.run",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 142,
+   "end": 149,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 149,
+   "end": 160,
+   "text": "FunctionDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "FunctionDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 160,
+   "end": 174,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 174,
+   "end": 202,
+   "text": "sldb/cli/commands/selfdoc.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/cli/commands/selfdoc.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 202,
+   "end": 216,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 216,
+   "end": 223,
+   "text": "'28:39'",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "28:39",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 223,
+   "end": 239,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 239,
+   "end": 303,
+   "text": "0868c8844cc32944cc6d9ef9e2aedbc3e9fcda9748090591f30ff558c8b490ae",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "0868c8844cc32944cc6d9ef9e2aedbc3e9fcda9748090591f30ff558c8b490ae",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 303,
+   "end": 323,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 323,
+   "end": 437,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 437,
+   "end": 444,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 444,
+   "end": 446,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 446,
+   "end": 459,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 459,
+   "end": 604,
+   "text": "python-ast:python:sldb.sldb.cli.commands.selfdoc:SelfdocCLI.run; contract-sha256:60d58f5d6380b433e4d821af63b6fb74bcb8c96b754a84c38df0cc939a194393",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.cli.commands.selfdoc:SelfdocCLI.run; contract-sha256:60d58f5d6380b433e4d821af63b6fb74bcb8c96b754a84c38df0cc939a194393",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 604,
+   "end": 612,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 612,
+   "end": 626,
+   "text": "SelfdocCLI.run",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "SelfdocCLI.run",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 626,
+   "end": 642,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 642,
+   "end": 657,
+   "text": "run(self, args)",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "run(self, args)",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 657,
+   "end": 673,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 673,
+   "end": 731,
+   "text": "Use JSON stdout; existing lifecycle messages go to stderr.",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Use JSON stdout; existing lifecycle messages go to stderr.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 731,
+   "end": 745,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 745,
+   "end": 1159,
+   "text": "[\"__future__\", \"contextlib\", \"json\", \"pathlib\", \"sldb.cli.selfdoc_context\", \"sldb.cli.selfdoc_inspect\", \"sldb.cli.selfdoc_write\", \"sldb.selfdoc.kgdb_sync\", \"sldb.selfdoc.materialize\", \"sldb.selfdoc.parser\", \"sldb.selfdoc.python_materialize\", \"sldb.selfdoc.python_relation_registry\", \"sldb.selfdoc.python_scanner\", \"sldb.selfdoc.python_source_graph\", \"sldb.selfdoc.python_source_scan\", \"sldb.store.resolver\", \"sys\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\"__future__\", \"contextlib\", \"json\", \"pathlib\", \"sldb.cli.selfdoc_context\", \"sldb.cli.selfdoc_inspect\", \"sldb.cli.selfdoc_write\", \"sldb.selfdoc.kgdb_sync\", \"sldb.selfdoc.materialize\", \"sldb.selfdoc.parser\", \"sldb.selfdoc.python_materialize\", \"sldb.selfdoc.python_relation_registry\", \"sldb.selfdoc.python_scanner\", \"sldb.selfdoc.python_source_graph\", \"sldb.selfdoc.python_source_scan\", \"sldb.store.resolver\", \"sys\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1159,
+   "end": 1173,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1173,
+   "end": 1188,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1188,
+   "end": 1207,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1207,
+   "end": 1222,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

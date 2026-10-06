@@ -1,0 +1,265 @@
+{
+ "text": "---\n# operator-xxx\nid: operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-activate\n# active | archived\nstatus: active\n# Atomic runtime action, e.g., set_field, append_list\naction: set_field\n# Payload path modified by the operator\ntarget: status\n# Value used by the operator action\nvalue: active\n# e.g., system:deskops\ntags:\n- primitive:operator\n---\n\n# Activate task\n\n## Summary\n\n_Summarize the state transition this operator performs._\n\nMoves the task into active execution.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 23,
+   "end": 101
+  },
+  {
+   "meta": {
+    "path": "status",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 130,
+   "end": 136
+  },
+  {
+   "meta": {
+    "path": "action",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 199,
+   "end": 208
+  },
+  {
+   "meta": {
+    "path": "target",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 257,
+   "end": 263
+  },
+  {
+   "meta": {
+    "path": "value",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 307,
+   "end": 313
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 342,
+   "end": 363
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 371,
+   "end": 384
+  },
+  {
+   "meta": {
+    "path": "summary",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 456,
+   "end": 493
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 23,
+   "text": "---\n# operator-xxx\nid: "
+  },
+  {
+   "type": "field",
+   "start": 23,
+   "end": 101,
+   "text": "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-activate",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-activate",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 101,
+   "end": 130,
+   "text": "\n# active | archived\nstatus: "
+  },
+  {
+   "type": "field",
+   "start": 130,
+   "end": 136,
+   "text": "active",
+   "path": "status",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "active",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 136,
+   "end": 199,
+   "text": "\n# Atomic runtime action, e.g., set_field, append_list\naction: "
+  },
+  {
+   "type": "field",
+   "start": 199,
+   "end": 208,
+   "text": "set_field",
+   "path": "action",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "set_field",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 208,
+   "end": 257,
+   "text": "\n# Payload path modified by the operator\ntarget: "
+  },
+  {
+   "type": "field",
+   "start": 257,
+   "end": 263,
+   "text": "status",
+   "path": "target",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "status",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 263,
+   "end": 307,
+   "text": "\n# Value used by the operator action\nvalue: "
+  },
+  {
+   "type": "field",
+   "start": 307,
+   "end": 313,
+   "text": "active",
+   "path": "value",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "active",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 313,
+   "end": 342,
+   "text": "\n# e.g., system:deskops\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 342,
+   "end": 363,
+   "text": "\n- primitive:operator",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "primitive:operator"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 363,
+   "end": 371,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 371,
+   "end": 384,
+   "text": "Activate task",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Activate task",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 384,
+   "end": 456,
+   "text": "\n\n## Summary\n\n_Summarize the state transition this operator performs._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 456,
+   "end": 493,
+   "text": "Moves the task into active execution.",
+   "path": "summary",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Moves the task into active execution.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

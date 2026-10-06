@@ -1,0 +1,300 @@
+{
+ "text": "---\n# pill-xxx\nid: pill-007-sldb-text-layer-vs-kgdb-graph-layer\n# e.g., language:python, library:pydantic\ntags:\n- system:sldb\n- system:kgdb\n- topic:architecture\n- topic:semantic-export\n---\n\n# Keep SLDB as the text layer and KGDB as the graph layer\n\n## What\n\n_Define the context or guardrail this pill carries._\n\nSLDB owns canonical readable documents, AST-like document structure, extraction, rendering, structural query, textual composition, and graph-ready export. KGDB owns graph-native persistence, traversal, equivalence, inference, and system-wide relational reasoning.\n\n## Why\n\n_Explain why this context matters for safe execution._\n\nA stable boundary keeps authored textual truth separate from downstream graph truth and prevents duplicated feature ownership across the ecosystem.\n\n## When\n\n_Describe when an agent should apply this pill._\n\nApply this pill when a proposed feature touches composition, semantic export, global traversal, provenance, or cross-repo knowledge architecture.\n\n## Where\n\n_Name the files, surfaces, or scope this pill applies to._\n\n- `docs/architecture/sldb-text-layer-vs-kgdb-graph-layer.md`\n- semantic export surfaces\n- downstream KGDB handoff design\n\n## How\n\n_Describe the correct way to apply this guidance._\n\nAsk whether the feature is primarily about authored text and document structure or graph-native relations and reasoning. Keep text-first behavior in SLDB and graph-first behavior in KGDB.\n\n## How Not\n\n_Describe the shortcut or failure mode to avoid._\n\nDo not move textual authoring and rendering into KGDB, and do not turn SLDB into the graph-native reasoning engine.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 19,
+   "end": 63
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 111,
+   "end": 184
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 192,
+   "end": 247
+  },
+  {
+   "meta": {
+    "path": "what",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 312,
+   "end": 575
+  },
+  {
+   "meta": {
+    "path": "why",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 641,
+   "end": 788
+  },
+  {
+   "meta": {
+    "path": "when",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 849,
+   "end": 994
+  },
+  {
+   "meta": {
+    "path": "where",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 1066,
+   "end": 1186
+  },
+  {
+   "meta": {
+    "path": "how",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 1248,
+   "end": 1435
+  },
+  {
+   "meta": {
+    "path": "how_not",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 1500,
+   "end": 1615
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 19,
+   "text": "---\n# pill-xxx\nid: "
+  },
+  {
+   "type": "field",
+   "start": 19,
+   "end": 63,
+   "text": "pill-007-sldb-text-layer-vs-kgdb-graph-layer",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "pill-007-sldb-text-layer-vs-kgdb-graph-layer",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 63,
+   "end": 111,
+   "text": "\n# e.g., language:python, library:pydantic\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 111,
+   "end": 184,
+   "text": "\n- system:sldb\n- system:kgdb\n- topic:architecture\n- topic:semantic-export",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "system:sldb",
+    "system:kgdb",
+    "topic:architecture",
+    "topic:semantic-export"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 184,
+   "end": 192,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 192,
+   "end": 247,
+   "text": "Keep SLDB as the text layer and KGDB as the graph layer",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Keep SLDB as the text layer and KGDB as the graph layer",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 247,
+   "end": 312,
+   "text": "\n\n## What\n\n_Define the context or guardrail this pill carries._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 312,
+   "end": 575,
+   "text": "SLDB owns canonical readable documents, AST-like document structure, extraction, rendering, structural query, textual composition, and graph-ready export. KGDB owns graph-native persistence, traversal, equivalence, inference, and system-wide relational reasoning.",
+   "path": "what",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "SLDB owns canonical readable documents, AST-like document structure, extraction, rendering, structural query, textual composition, and graph-ready export. KGDB owns graph-native persistence, traversal, equivalence, inference, and system-wide relational reasoning.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 575,
+   "end": 641,
+   "text": "\n\n## Why\n\n_Explain why this context matters for safe execution._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 641,
+   "end": 788,
+   "text": "A stable boundary keeps authored textual truth separate from downstream graph truth and prevents duplicated feature ownership across the ecosystem.",
+   "path": "why",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "A stable boundary keeps authored textual truth separate from downstream graph truth and prevents duplicated feature ownership across the ecosystem.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 788,
+   "end": 849,
+   "text": "\n\n## When\n\n_Describe when an agent should apply this pill._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 849,
+   "end": 994,
+   "text": "Apply this pill when a proposed feature touches composition, semantic export, global traversal, provenance, or cross-repo knowledge architecture.",
+   "path": "when",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Apply this pill when a proposed feature touches composition, semantic export, global traversal, provenance, or cross-repo knowledge architecture.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 994,
+   "end": 1066,
+   "text": "\n\n## Where\n\n_Name the files, surfaces, or scope this pill applies to._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1066,
+   "end": 1186,
+   "text": "- `docs/architecture/sldb-text-layer-vs-kgdb-graph-layer.md`\n- semantic export surfaces\n- downstream KGDB handoff design",
+   "path": "where",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "- `docs/architecture/sldb-text-layer-vs-kgdb-graph-layer.md`\n- semantic export surfaces\n- downstream KGDB handoff design",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1186,
+   "end": 1248,
+   "text": "\n\n## How\n\n_Describe the correct way to apply this guidance._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1248,
+   "end": 1435,
+   "text": "Ask whether the feature is primarily about authored text and document structure or graph-native relations and reasoning. Keep text-first behavior in SLDB and graph-first behavior in KGDB.",
+   "path": "how",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Ask whether the feature is primarily about authored text and document structure or graph-native relations and reasoning. Keep text-first behavior in SLDB and graph-first behavior in KGDB.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1435,
+   "end": 1500,
+   "text": "\n\n## How Not\n\n_Describe the shortcut or failure mode to avoid._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1500,
+   "end": 1615,
+   "text": "Do not move textual authoring and rendering into KGDB, and do not turn SLDB into the graph-native reasoning engine.",
+   "path": "how_not",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Do not move textual authoring and rendering into KGDB, and do not turn SLDB into the graph-native reasoning engine.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

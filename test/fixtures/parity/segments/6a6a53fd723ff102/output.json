@@ -1,0 +1,314 @@
+{
+ "text": "---\n# routine-xxx\nid: routine-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges\n# active | archived\nstatus: active\n# Initial node identifier\nentrypoint: checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-execution-ready\n# Ordered or grouped primitive identifiers\ndecomposition:\n- checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-execution-ready\n- operator-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-activate\n- checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-testing-ready\n- operator-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-ready-for-testing\n- checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-closeout-ready\n- operator-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-close\n# Edge identifiers composing the graph\nedges:\n- edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-execution-to-activate\n- edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-activate-to-testing\n- edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-testing-to-ready\n- edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-ready-to-closeout\n- edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-closeout-to-close\n- edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-close-to-complete\n# Terminal node identifiers\nterminal_nodes:\n- complete\n# e.g., system:deskops\ntags:\n- workspace:desk\n- primitive:routine\n---\n\n# Routine for Cerrar los gaps G1-G5 que bloquean el retiro de runtime/edges\n\n## Summary\n\n_Summarize what this routine does and how its nodes fit together._\n\nActionable routine for Cerrar los gaps G1-G5 que bloquean el retiro de runtime/edges.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 22,
+   "end": 96
+  },
+  {
+   "meta": {
+    "path": "status",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 125,
+   "end": 131
+  },
+  {
+   "meta": {
+    "path": "entrypoint",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 170,
+   "end": 262
+  },
+  {
+   "meta": {
+    "path": "decomposition",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 320,
+   "end": 869
+  },
+  {
+   "meta": {
+    "path": "edges",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 915,
+   "end": 1472
+  },
+  {
+   "meta": {
+    "path": "terminal_nodes",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 1516,
+   "end": 1527
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 1556,
+   "end": 1593
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 1601,
+   "end": 1674
+  },
+  {
+   "meta": {
+    "path": "summary",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 1756,
+   "end": 1841
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 22,
+   "text": "---\n# routine-xxx\nid: "
+  },
+  {
+   "type": "field",
+   "start": 22,
+   "end": 96,
+   "text": "routine-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "routine-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 96,
+   "end": 125,
+   "text": "\n# active | archived\nstatus: "
+  },
+  {
+   "type": "field",
+   "start": 125,
+   "end": 131,
+   "text": "active",
+   "path": "status",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "active",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 131,
+   "end": 170,
+   "text": "\n# Initial node identifier\nentrypoint: "
+  },
+  {
+   "type": "field",
+   "start": 170,
+   "end": 262,
+   "text": "checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-execution-ready",
+   "path": "entrypoint",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-execution-ready",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 262,
+   "end": 320,
+   "text": "\n# Ordered or grouped primitive identifiers\ndecomposition:"
+  },
+  {
+   "type": "field",
+   "start": 320,
+   "end": 869,
+   "text": "\n- checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-execution-ready\n- operator-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-activate\n- checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-testing-ready\n- operator-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-ready-for-testing\n- checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-closeout-ready\n- operator-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-close",
+   "path": "decomposition",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-execution-ready",
+    "operator-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-activate",
+    "checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-testing-ready",
+    "operator-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-ready-for-testing",
+    "checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-closeout-ready",
+    "operator-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-close"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 869,
+   "end": 915,
+   "text": "\n# Edge identifiers composing the graph\nedges:"
+  },
+  {
+   "type": "field",
+   "start": 915,
+   "end": 1472,
+   "text": "\n- edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-execution-to-activate\n- edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-activate-to-testing\n- edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-testing-to-ready\n- edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-ready-to-closeout\n- edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-closeout-to-close\n- edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-close-to-complete",
+   "path": "edges",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-execution-to-activate",
+    "edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-activate-to-testing",
+    "edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-testing-to-ready",
+    "edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-ready-to-closeout",
+    "edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-closeout-to-close",
+    "edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-close-to-complete"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1472,
+   "end": 1516,
+   "text": "\n# Terminal node identifiers\nterminal_nodes:"
+  },
+  {
+   "type": "field",
+   "start": 1516,
+   "end": 1527,
+   "text": "\n- complete",
+   "path": "terminal_nodes",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "complete"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1527,
+   "end": 1556,
+   "text": "\n# e.g., system:deskops\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 1556,
+   "end": 1593,
+   "text": "\n- workspace:desk\n- primitive:routine",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "workspace:desk",
+    "primitive:routine"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1593,
+   "end": 1601,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 1601,
+   "end": 1674,
+   "text": "Routine for Cerrar los gaps G1-G5 que bloquean el retiro de runtime/edges",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Routine for Cerrar los gaps G1-G5 que bloquean el retiro de runtime/edges",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1674,
+   "end": 1756,
+   "text": "\n\n## Summary\n\n_Summarize what this routine does and how its nodes fit together._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1756,
+   "end": 1841,
+   "text": "Actionable routine for Cerrar los gaps G1-G5 que bloquean el retiro de runtime/edges.",
+   "path": "summary",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Actionable routine for Cerrar los gaps G1-G5 que bloquean el retiro de runtime/edges.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

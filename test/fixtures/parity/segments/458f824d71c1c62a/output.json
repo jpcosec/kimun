@@ -1,0 +1,311 @@
+{
+ "text": "---\nname: semantic_parent\ndirection: directed\ncardinality: many_to_many\naxis: WHAT\nsource_types:\n- semantic_tag\ntarget_types:\n- semantic_tag\ncondition: ''\n---\n\n# semantic_parent\n\n## Description\n\nThis tag is a child of that tag in the semantic DAG.",
+ "spans": [
+  {
+   "meta": {
+    "path": "name",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 10,
+   "end": 25
+  },
+  {
+   "meta": {
+    "path": "direction",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 37,
+   "end": 45
+  },
+  {
+   "meta": {
+    "path": "cardinality",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 59,
+   "end": 71
+  },
+  {
+   "meta": {
+    "path": "axis",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 78,
+   "end": 82
+  },
+  {
+   "meta": {
+    "path": "source_types",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 4
+   },
+   "start": 96,
+   "end": 111
+  },
+  {
+   "meta": {
+    "path": "target_types",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 5
+   },
+   "start": 125,
+   "end": 140
+  },
+  {
+   "meta": {
+    "path": "condition",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 152,
+   "end": 154
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 162,
+   "end": 177
+  },
+  {
+   "meta": {
+    "path": "description",
+    "marker": "rev",
+    "traits": [
+     "markdown"
+    ],
+    "_order": 8
+   },
+   "start": 195,
+   "end": 247
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 10,
+   "text": "---\nname: "
+  },
+  {
+   "type": "field",
+   "start": 10,
+   "end": 25,
+   "text": "semantic_parent",
+   "path": "name",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "semantic_parent",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 25,
+   "end": 37,
+   "text": "\ndirection: "
+  },
+  {
+   "type": "field",
+   "start": 37,
+   "end": 45,
+   "text": "directed",
+   "path": "direction",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "enum",
+   "value": "directed",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 45,
+   "end": 59,
+   "text": "\ncardinality: "
+  },
+  {
+   "type": "field",
+   "start": 59,
+   "end": 71,
+   "text": "many_to_many",
+   "path": "cardinality",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "enum",
+   "value": "many_to_many",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 71,
+   "end": 78,
+   "text": "\naxis: "
+  },
+  {
+   "type": "field",
+   "start": 78,
+   "end": 82,
+   "text": "WHAT",
+   "path": "axis",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "WHAT",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 82,
+   "end": 96,
+   "text": "\nsource_types:"
+  },
+  {
+   "type": "field",
+   "start": 96,
+   "end": 111,
+   "text": "\n- semantic_tag",
+   "path": "source_types",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "semantic_tag"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 111,
+   "end": 125,
+   "text": "\ntarget_types:"
+  },
+  {
+   "type": "field",
+   "start": 125,
+   "end": 140,
+   "text": "\n- semantic_tag",
+   "path": "target_types",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "semantic_tag"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 140,
+   "end": 152,
+   "text": "\ncondition: "
+  },
+  {
+   "type": "field",
+   "start": 152,
+   "end": 154,
+   "text": "''",
+   "path": "condition",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 154,
+   "end": 162,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 162,
+   "end": 177,
+   "text": "semantic_parent",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "semantic_parent",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 177,
+   "end": 195,
+   "text": "\n\n## Description\n\n"
+  },
+  {
+   "type": "field",
+   "start": 195,
+   "end": 247,
+   "text": "This tag is a child of that tag in the semantic DAG.",
+   "path": "description",
+   "marker": "rev",
+   "traits": [
+    "markdown"
+   ],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "This tag is a child of that tag in the semantic DAG.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

@@ -1,0 +1,237 @@
+{
+ "text": "---\nid: atom-un-censo-de-importadores-por-substring-miente-hay-que-contarlo-sobre-el-ast\ntitle: 'Un censo de importadores por substring miente: hay que contarlo sobre el AST'\nfive_wh_one_plus: how_not\ntags:\n- system:sldb\n- topic:dead-code\n- topic:refactoring\n- topic:diagnostics\n- layer:cli\nprovenance: docs/architecture/superseded-code-audit.md\n---\n\n# Un censo de importadores por substring miente: hay que contarlo sobre el AST\n\n## Answer\n\nAntes de borrar un modulo por 'no tiene importadores', el censo tiene que contar nodos ast.Import/ast.ImportFrom, no lineas de grep. Un grep del nombre del modulo produce falsos positivos por prefijo que invierten la conclusion: contar 'cli.graph' matcheo 20 veces 'cli.graph_ops' (el arbol VIVO que gano el refactor) y contar 'model_source' matcheo 15 veces 'api.model_drafts.model_source' (el modulo destino al que los consumidores YA migraron). En los dos casos el grep decia 'esto tiene decenas de importadores, no lo borres' mientras el censo AST daba exact=0, submodules=0. El patron es estructural, no accidental: cuando un refactor deja un modulo viejo y uno nuevo, el nombre del nuevo suele CONTENER al del viejo, asi que el grep del muerto siempre encuentra al vivo. Corolario: el falso positivo empuja al lado seguro-aparente (no borrar), por eso no se detecta solo y el codigo muerto sobrevive refactors enteros.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 88
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 96,
+   "end": 174
+  },
+  {
+   "meta": {
+    "path": "five_wh_one_plus",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 193,
+   "end": 200
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 206,
+   "end": 290
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "optrev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 303,
+   "end": 345
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "render",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 353,
+   "end": 429
+  },
+  {
+   "meta": {
+    "path": "answer",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 442,
+   "end": 1366
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 88,
+   "text": "atom-un-censo-de-importadores-por-substring-miente-hay-que-contarlo-sobre-el-ast",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "atom-un-censo-de-importadores-por-substring-miente-hay-que-contarlo-sobre-el-ast",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 88,
+   "end": 96,
+   "text": "\ntitle: "
+  },
+  {
+   "type": "field",
+   "start": 96,
+   "end": 174,
+   "text": "'Un censo de importadores por substring miente: hay que contarlo sobre el AST'",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Un censo de importadores por substring miente: hay que contarlo sobre el AST",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 174,
+   "end": 193,
+   "text": "\nfive_wh_one_plus: "
+  },
+  {
+   "type": "field",
+   "start": 193,
+   "end": 200,
+   "text": "how_not",
+   "path": "five_wh_one_plus",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "enum",
+   "value": "how_not",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 200,
+   "end": 206,
+   "text": "\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 206,
+   "end": 290,
+   "text": "\n- system:sldb\n- topic:dead-code\n- topic:refactoring\n- topic:diagnostics\n- layer:cli",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [
+    "system:sldb",
+    "topic:dead-code",
+    "topic:refactoring",
+    "topic:diagnostics",
+    "layer:cli"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 290,
+   "end": 303,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 303,
+   "end": 345,
+   "text": "docs/architecture/superseded-code-audit.md",
+   "path": "provenance",
+   "marker": "optrev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/superseded-code-audit.md",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 345,
+   "end": 353,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 353,
+   "end": 429,
+   "text": "Un censo de importadores por substring miente: hay que contarlo sobre el AST",
+   "path": "title",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "Un censo de importadores por substring miente: hay que contarlo sobre el AST",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 429,
+   "end": 442,
+   "text": "\n\n## Answer\n\n"
+  },
+  {
+   "type": "field",
+   "start": 442,
+   "end": 1366,
+   "text": "Antes de borrar un modulo por 'no tiene importadores', el censo tiene que contar nodos ast.Import/ast.ImportFrom, no lineas de grep. Un grep del nombre del modulo produce falsos positivos por prefijo que invierten la conclusion: contar 'cli.graph' matcheo 20 veces 'cli.graph_ops' (el arbol VIVO que gano el refactor) y contar 'model_source' matcheo 15 veces 'api.model_drafts.model_source' (el modulo destino al que los consumidores YA migraron). En los dos casos el grep decia 'esto tiene decenas de importadores, no lo borres' mientras el censo AST daba exact=0, submodules=0. El patron es estructural, no accidental: cuando un refactor deja un modulo viejo y uno nuevo, el nombre del nuevo suele CONTENER al del viejo, asi que el grep del muerto siempre encuentra al vivo. Corolario: el falso positivo empuja al lado seguro-aparente (no borrar), por eso no se detecta solo y el codigo muerto sobrevive refactors enteros.",
+   "path": "answer",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Antes de borrar un modulo por 'no tiene importadores', el censo tiene que contar nodos ast.Import/ast.ImportFrom, no lineas de grep. Un grep del nombre del modulo produce falsos positivos por prefijo que invierten la conclusion: contar 'cli.graph' matcheo 20 veces 'cli.graph_ops' (el arbol VIVO que gano el refactor) y contar 'model_source' matcheo 15 veces 'api.model_drafts.model_source' (el modulo destino al que los consumidores YA migraron). En los dos casos el grep decia 'esto tiene decenas de importadores, no lo borres' mientras el censo AST daba exact=0, submodules=0. El patron es estructural, no accidental: cuando un refactor deja un modulo viejo y uno nuevo, el nombre del nuevo suele CONTENER al del viejo, asi que el grep del muerto siempre encuentra al vivo. Corolario: el falso positivo empuja al lado seguro-aparente (no borrar), por eso no se detecta solo y el codigo muerto sobrevive refactors enteros.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

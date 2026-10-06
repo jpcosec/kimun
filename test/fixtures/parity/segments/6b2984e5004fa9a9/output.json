@@ -1,0 +1,314 @@
+{
+ "text": "---\n# routine-xxx\nid: routine-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges\n# active | archived\nstatus: active\n# Initial node identifier\nentrypoint: checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-execution-ready\n# Ordered or grouped primitive identifiers\ndecomposition:\n- checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-execution-ready\n- operator-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-activate\n- checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-testing-ready\n- operator-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-ready-for-testing\n- checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-closeout-ready\n- operator-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-close\n# Edge identifiers composing the graph\nedges:\n- edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-execution-to-activate\n- edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-activate-to-testing\n- edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-testing-to-ready\n- edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-ready-to-closeout\n- edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-closeout-to-close\n- edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-close-to-complete\n# Terminal node identifiers\nterminal_nodes:\n- complete\n# e.g., system:deskops\ntags:\n- workspace:desk\n- primitive:routine\n---\n\n# Routine for Dar fuente propia al grafo: store/graph deja de leer runtime/edges\n\n## Summary\n\n_Summarize what this routine does and how its nodes fit together._\n\nActionable routine for Dar fuente propia al grafo: store/graph deja de leer runtime/edges.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 22,
+   "end": 100
+  },
+  {
+   "meta": {
+    "path": "status",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 129,
+   "end": 135
+  },
+  {
+   "meta": {
+    "path": "entrypoint",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 174,
+   "end": 270
+  },
+  {
+   "meta": {
+    "path": "decomposition",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 328,
+   "end": 901
+  },
+  {
+   "meta": {
+    "path": "edges",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 947,
+   "end": 1528
+  },
+  {
+   "meta": {
+    "path": "terminal_nodes",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 1572,
+   "end": 1583
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 1612,
+   "end": 1649
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 1657,
+   "end": 1735
+  },
+  {
+   "meta": {
+    "path": "summary",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 1817,
+   "end": 1907
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 22,
+   "text": "---\n# routine-xxx\nid: "
+  },
+  {
+   "type": "field",
+   "start": 22,
+   "end": 100,
+   "text": "routine-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "routine-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 100,
+   "end": 129,
+   "text": "\n# active | archived\nstatus: "
+  },
+  {
+   "type": "field",
+   "start": 129,
+   "end": 135,
+   "text": "active",
+   "path": "status",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "active",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 135,
+   "end": 174,
+   "text": "\n# Initial node identifier\nentrypoint: "
+  },
+  {
+   "type": "field",
+   "start": 174,
+   "end": 270,
+   "text": "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-execution-ready",
+   "path": "entrypoint",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-execution-ready",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 270,
+   "end": 328,
+   "text": "\n# Ordered or grouped primitive identifiers\ndecomposition:"
+  },
+  {
+   "type": "field",
+   "start": 328,
+   "end": 901,
+   "text": "\n- checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-execution-ready\n- operator-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-activate\n- checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-testing-ready\n- operator-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-ready-for-testing\n- checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-closeout-ready\n- operator-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-close",
+   "path": "decomposition",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-execution-ready",
+    "operator-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-activate",
+    "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-testing-ready",
+    "operator-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-ready-for-testing",
+    "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-closeout-ready",
+    "operator-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-close"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 901,
+   "end": 947,
+   "text": "\n# Edge identifiers composing the graph\nedges:"
+  },
+  {
+   "type": "field",
+   "start": 947,
+   "end": 1528,
+   "text": "\n- edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-execution-to-activate\n- edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-activate-to-testing\n- edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-testing-to-ready\n- edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-ready-to-closeout\n- edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-closeout-to-close\n- edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-close-to-complete",
+   "path": "edges",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-execution-to-activate",
+    "edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-activate-to-testing",
+    "edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-testing-to-ready",
+    "edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-ready-to-closeout",
+    "edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-closeout-to-close",
+    "edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-close-to-complete"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1528,
+   "end": 1572,
+   "text": "\n# Terminal node identifiers\nterminal_nodes:"
+  },
+  {
+   "type": "field",
+   "start": 1572,
+   "end": 1583,
+   "text": "\n- complete",
+   "path": "terminal_nodes",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "complete"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1583,
+   "end": 1612,
+   "text": "\n# e.g., system:deskops\ntags:"
+  },
+  {
+   "type": "field",
+   "start": 1612,
+   "end": 1649,
+   "text": "\n- workspace:desk\n- primitive:routine",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "workspace:desk",
+    "primitive:routine"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1649,
+   "end": 1657,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 1657,
+   "end": 1735,
+   "text": "Routine for Dar fuente propia al grafo: store/graph deja de leer runtime/edges",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "Routine for Dar fuente propia al grafo: store/graph deja de leer runtime/edges",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1735,
+   "end": 1817,
+   "text": "\n\n## Summary\n\n_Summarize what this routine does and how its nodes fit together._\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1817,
+   "end": 1907,
+   "text": "Actionable routine for Dar fuente propia al grafo: store/graph deja de leer runtime/edges.",
+   "path": "summary",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Actionable routine for Dar fuente propia al grafo: store/graph deja de leer runtime/edges.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

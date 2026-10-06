@@ -1,0 +1,309 @@
+{
+ "text": "---\nname: tagged_as\ndirection: directed\ncardinality: many_to_many\naxis: WHAT\nsource_types: []\ntarget_types:\n- semantic_tag\ncondition: ''\n---\n\n# tagged_as\n\n## Description\n\nThe model, document or section carries this semantic tag.",
+ "spans": [
+  {
+   "meta": {
+    "path": "name",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 10,
+   "end": 19
+  },
+  {
+   "meta": {
+    "path": "direction",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 31,
+   "end": 39
+  },
+  {
+   "meta": {
+    "path": "cardinality",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 53,
+   "end": 65
+  },
+  {
+   "meta": {
+    "path": "axis",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 72,
+   "end": 76
+  },
+  {
+   "meta": {
+    "path": "source_types",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 4
+   },
+   "start": 91,
+   "end": 93
+  },
+  {
+   "meta": {
+    "path": "target_types",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 5
+   },
+   "start": 107,
+   "end": 122
+  },
+  {
+   "meta": {
+    "path": "condition",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 134,
+   "end": 136
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 144,
+   "end": 153
+  },
+  {
+   "meta": {
+    "path": "description",
+    "marker": "rev",
+    "traits": [
+     "markdown"
+    ],
+    "_order": 8
+   },
+   "start": 171,
+   "end": 228
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 10,
+   "text": "---\nname: "
+  },
+  {
+   "type": "field",
+   "start": 10,
+   "end": 19,
+   "text": "tagged_as",
+   "path": "name",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "tagged_as",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 19,
+   "end": 31,
+   "text": "\ndirection: "
+  },
+  {
+   "type": "field",
+   "start": 31,
+   "end": 39,
+   "text": "directed",
+   "path": "direction",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "enum",
+   "value": "directed",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 39,
+   "end": 53,
+   "text": "\ncardinality: "
+  },
+  {
+   "type": "field",
+   "start": 53,
+   "end": 65,
+   "text": "many_to_many",
+   "path": "cardinality",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "enum",
+   "value": "many_to_many",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 65,
+   "end": 72,
+   "text": "\naxis: "
+  },
+  {
+   "type": "field",
+   "start": 72,
+   "end": 76,
+   "text": "WHAT",
+   "path": "axis",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "WHAT",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 76,
+   "end": 91,
+   "text": "\nsource_types: "
+  },
+  {
+   "type": "field",
+   "start": 91,
+   "end": 93,
+   "text": "[]",
+   "path": "source_types",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 93,
+   "end": 107,
+   "text": "\ntarget_types:"
+  },
+  {
+   "type": "field",
+   "start": 107,
+   "end": 122,
+   "text": "\n- semantic_tag",
+   "path": "target_types",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "semantic_tag"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 122,
+   "end": 134,
+   "text": "\ncondition: "
+  },
+  {
+   "type": "field",
+   "start": 134,
+   "end": 136,
+   "text": "''",
+   "path": "condition",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 136,
+   "end": 144,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 144,
+   "end": 153,
+   "text": "tagged_as",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "tagged_as",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 153,
+   "end": 171,
+   "text": "\n\n## Description\n\n"
+  },
+  {
+   "type": "field",
+   "start": 171,
+   "end": 228,
+   "text": "The model, document or section carries this semantic tag.",
+   "path": "description",
+   "marker": "rev",
+   "traits": [
+    "markdown"
+   ],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "The model, document or section carries this semantic tag.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

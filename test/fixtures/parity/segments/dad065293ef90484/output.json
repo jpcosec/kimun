@@ -1,0 +1,551 @@
+{
+ "text": "---\nid: python-sldb-sldb-sldb-store-query_engine-structural_queries-structuralqueryengine\nsystem: sldb\nmodule: sldb.sldb.store.query_engine.structural_queries\nqualname: StructuralQueryEngine\nkind: ClassDef\nsource_path: sldb/store/query_engine/structural_queries.py\nsource_span: 24:79\nsource_sha256: 4e7ad9b7e20f85ce3c4526b5581393fb00dbc13b39a8e4b036c7f3d3d1ff0a73\narchitecture_spec: docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd\ntags: []\nprovenance: python-ast:python:sldb.sldb.store.query_engine.structural_queries:StructuralQueryEngine;\n  contract-sha256:bf8bfda17df18a10c6702f2fa0fb843b6760777c906d1283d2b89a8e03e877e9\n---\n\n# StructuralQueryEngine\n\n## Signature\n\nNot applicable.\n\n## Docstring\n\nEngine for processing glob and find queries on structural nodes.\n\n## Imports\n\n[\"__future__\", \"fnmatch\", \"pathlib\", \"re\", \"sldb.store.query_engine.filter\", \"sldb.store.query_engine.store_prefix\", \"sldb.store.query_engine.structural\"]\n\n## Purpose\n\nNot documented.\n\n## Architecture\n\nNot documented.",
+ "spans": [
+  {
+   "meta": {
+    "path": "id",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 8,
+   "end": 89
+  },
+  {
+   "meta": {
+    "path": "system",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 98,
+   "end": 102
+  },
+  {
+   "meta": {
+    "path": "module",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 111,
+   "end": 158
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 169,
+   "end": 190
+  },
+  {
+   "meta": {
+    "path": "kind",
+    "marker": "rev",
+    "traits": [],
+    "_order": 4
+   },
+   "start": 197,
+   "end": 205
+  },
+  {
+   "meta": {
+    "path": "source_path",
+    "marker": "rev",
+    "traits": [],
+    "_order": 5
+   },
+   "start": 219,
+   "end": 264
+  },
+  {
+   "meta": {
+    "path": "source_span",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 278,
+   "end": 283
+  },
+  {
+   "meta": {
+    "path": "source_sha256",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 299,
+   "end": 363
+  },
+  {
+   "meta": {
+    "path": "architecture_spec",
+    "marker": "rev",
+    "traits": [],
+    "_order": 8
+   },
+   "start": 383,
+   "end": 497
+  },
+  {
+   "meta": {
+    "path": "tags",
+    "marker": "rev",
+    "traits": [],
+    "_order": 9
+   },
+   "start": 504,
+   "end": 506
+  },
+  {
+   "meta": {
+    "path": "provenance",
+    "marker": "rev",
+    "traits": [],
+    "_order": 10
+   },
+   "start": 519,
+   "end": 690
+  },
+  {
+   "meta": {
+    "path": "qualname",
+    "marker": "render",
+    "traits": [],
+    "_order": 11
+   },
+   "start": 698,
+   "end": 719
+  },
+  {
+   "meta": {
+    "path": "signature",
+    "marker": "rev",
+    "traits": [],
+    "_order": 12
+   },
+   "start": 735,
+   "end": 750
+  },
+  {
+   "meta": {
+    "path": "docstring",
+    "marker": "rev",
+    "traits": [],
+    "_order": 13
+   },
+   "start": 766,
+   "end": 830
+  },
+  {
+   "meta": {
+    "path": "imports",
+    "marker": "rev",
+    "traits": [],
+    "_order": 14
+   },
+   "start": 844,
+   "end": 998
+  },
+  {
+   "meta": {
+    "path": "purpose",
+    "marker": "rev",
+    "traits": [],
+    "_order": 15
+   },
+   "start": 1012,
+   "end": 1027
+  },
+  {
+   "meta": {
+    "path": "architecture",
+    "marker": "rev",
+    "traits": [],
+    "_order": 16
+   },
+   "start": 1046,
+   "end": 1061
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 8,
+   "text": "---\nid: "
+  },
+  {
+   "type": "field",
+   "start": 8,
+   "end": 89,
+   "text": "python-sldb-sldb-sldb-store-query_engine-structural_queries-structuralqueryengine",
+   "path": "id",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-sldb-sldb-sldb-store-query_engine-structural_queries-structuralqueryengine",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 89,
+   "end": 98,
+   "text": "\nsystem: "
+  },
+  {
+   "type": "field",
+   "start": 98,
+   "end": 102,
+   "text": "sldb",
+   "path": "system",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 102,
+   "end": 111,
+   "text": "\nmodule: "
+  },
+  {
+   "type": "field",
+   "start": 111,
+   "end": 158,
+   "text": "sldb.sldb.store.query_engine.structural_queries",
+   "path": "module",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb.sldb.store.query_engine.structural_queries",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 158,
+   "end": 169,
+   "text": "\nqualname: "
+  },
+  {
+   "type": "field",
+   "start": 169,
+   "end": 190,
+   "text": "StructuralQueryEngine",
+   "path": "qualname",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "StructuralQueryEngine",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 190,
+   "end": 197,
+   "text": "\nkind: "
+  },
+  {
+   "type": "field",
+   "start": 197,
+   "end": 205,
+   "text": "ClassDef",
+   "path": "kind",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "ClassDef",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 205,
+   "end": 219,
+   "text": "\nsource_path: "
+  },
+  {
+   "type": "field",
+   "start": 219,
+   "end": 264,
+   "text": "sldb/store/query_engine/structural_queries.py",
+   "path": "source_path",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "sldb/store/query_engine/structural_queries.py",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 264,
+   "end": 278,
+   "text": "\nsource_span: "
+  },
+  {
+   "type": "field",
+   "start": 278,
+   "end": 283,
+   "text": "24:79",
+   "path": "source_span",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "24:79",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 283,
+   "end": 299,
+   "text": "\nsource_sha256: "
+  },
+  {
+   "type": "field",
+   "start": 299,
+   "end": 363,
+   "text": "4e7ad9b7e20f85ce3c4526b5581393fb00dbc13b39a8e4b036c7f3d3d1ff0a73",
+   "path": "source_sha256",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "4e7ad9b7e20f85ce3c4526b5581393fb00dbc13b39a8e4b036c7f3d3d1ff0a73",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 363,
+   "end": 383,
+   "text": "\narchitecture_spec: "
+  },
+  {
+   "type": "field",
+   "start": 383,
+   "end": 497,
+   "text": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "path": "architecture_spec",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 497,
+   "end": 504,
+   "text": "\ntags: "
+  },
+  {
+   "type": "field",
+   "start": 504,
+   "end": 506,
+   "text": "[]",
+   "path": "tags",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "list",
+   "value": [],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 506,
+   "end": 519,
+   "text": "\nprovenance: "
+  },
+  {
+   "type": "field",
+   "start": 519,
+   "end": 690,
+   "text": "python-ast:python:sldb.sldb.store.query_engine.structural_queries:StructuralQueryEngine;\n  contract-sha256:bf8bfda17df18a10c6702f2fa0fb843b6760777c906d1283d2b89a8e03e877e9",
+   "path": "provenance",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "python-ast:python:sldb.sldb.store.query_engine.structural_queries:StructuralQueryEngine; contract-sha256:bf8bfda17df18a10c6702f2fa0fb843b6760777c906d1283d2b89a8e03e877e9",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 690,
+   "end": 698,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 698,
+   "end": 719,
+   "text": "StructuralQueryEngine",
+   "path": "qualname",
+   "marker": "render",
+   "traits": [],
+   "editable": false,
+   "display": "inline",
+   "kind": "string",
+   "value": "StructuralQueryEngine",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 719,
+   "end": 735,
+   "text": "\n\n## Signature\n\n"
+  },
+  {
+   "type": "field",
+   "start": 735,
+   "end": 750,
+   "text": "Not applicable.",
+   "path": "signature",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not applicable.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 750,
+   "end": 766,
+   "text": "\n\n## Docstring\n\n"
+  },
+  {
+   "type": "field",
+   "start": 766,
+   "end": 830,
+   "text": "Engine for processing glob and find queries on structural nodes.",
+   "path": "docstring",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Engine for processing glob and find queries on structural nodes.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 830,
+   "end": 844,
+   "text": "\n\n## Imports\n\n"
+  },
+  {
+   "type": "field",
+   "start": 844,
+   "end": 998,
+   "text": "[\"__future__\", \"fnmatch\", \"pathlib\", \"re\", \"sldb.store.query_engine.filter\", \"sldb.store.query_engine.store_prefix\", \"sldb.store.query_engine.structural\"]",
+   "path": "imports",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "[\"__future__\", \"fnmatch\", \"pathlib\", \"re\", \"sldb.store.query_engine.filter\", \"sldb.store.query_engine.store_prefix\", \"sldb.store.query_engine.structural\"]",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 998,
+   "end": 1012,
+   "text": "\n\n## Purpose\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1012,
+   "end": 1027,
+   "text": "Not documented.",
+   "path": "purpose",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 1027,
+   "end": 1046,
+   "text": "\n\n## Architecture\n\n"
+  },
+  {
+   "type": "field",
+   "start": 1046,
+   "end": 1061,
+   "text": "Not documented.",
+   "path": "architecture",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "Not documented.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

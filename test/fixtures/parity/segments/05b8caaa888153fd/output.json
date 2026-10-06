@@ -1,0 +1,311 @@
+{
+ "text": "---\nname: semantic_equivalent\ndirection: directed\ncardinality: many_to_many\naxis: WHAT\nsource_types:\n- semantic_tag\ntarget_types:\n- semantic_tag\ncondition: ''\n---\n\n# semantic_equivalent\n\n## Description\n\nThis local tag maps to that global tag across linked stores.",
+ "spans": [
+  {
+   "meta": {
+    "path": "name",
+    "marker": "rev",
+    "traits": [],
+    "_order": 0
+   },
+   "start": 10,
+   "end": 29
+  },
+  {
+   "meta": {
+    "path": "direction",
+    "marker": "rev",
+    "traits": [],
+    "_order": 1
+   },
+   "start": 41,
+   "end": 49
+  },
+  {
+   "meta": {
+    "path": "cardinality",
+    "marker": "rev",
+    "traits": [],
+    "_order": 2
+   },
+   "start": 63,
+   "end": 75
+  },
+  {
+   "meta": {
+    "path": "axis",
+    "marker": "rev",
+    "traits": [],
+    "_order": 3
+   },
+   "start": 82,
+   "end": 86
+  },
+  {
+   "meta": {
+    "path": "source_types",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 4
+   },
+   "start": 100,
+   "end": 115
+  },
+  {
+   "meta": {
+    "path": "target_types",
+    "marker": "rev",
+    "traits": [
+     "list"
+    ],
+    "_order": 5
+   },
+   "start": 129,
+   "end": 144
+  },
+  {
+   "meta": {
+    "path": "condition",
+    "marker": "rev",
+    "traits": [],
+    "_order": 6
+   },
+   "start": 156,
+   "end": 158
+  },
+  {
+   "meta": {
+    "path": "title",
+    "marker": "rev",
+    "traits": [],
+    "_order": 7
+   },
+   "start": 166,
+   "end": 185
+  },
+  {
+   "meta": {
+    "path": "description",
+    "marker": "rev",
+    "traits": [
+     "markdown"
+    ],
+    "_order": 8
+   },
+   "start": 203,
+   "end": 263
+  }
+ ],
+ "segments": [
+  {
+   "type": "literal",
+   "start": 0,
+   "end": 10,
+   "text": "---\nname: "
+  },
+  {
+   "type": "field",
+   "start": 10,
+   "end": 29,
+   "text": "semantic_equivalent",
+   "path": "name",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "semantic_equivalent",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 29,
+   "end": 41,
+   "text": "\ndirection: "
+  },
+  {
+   "type": "field",
+   "start": 41,
+   "end": 49,
+   "text": "directed",
+   "path": "direction",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "enum",
+   "value": "directed",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 49,
+   "end": 63,
+   "text": "\ncardinality: "
+  },
+  {
+   "type": "field",
+   "start": 63,
+   "end": 75,
+   "text": "many_to_many",
+   "path": "cardinality",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "enum",
+   "value": "many_to_many",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 75,
+   "end": 82,
+   "text": "\naxis: "
+  },
+  {
+   "type": "field",
+   "start": 82,
+   "end": 86,
+   "text": "WHAT",
+   "path": "axis",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "WHAT",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 86,
+   "end": 100,
+   "text": "\nsource_types:"
+  },
+  {
+   "type": "field",
+   "start": 100,
+   "end": 115,
+   "text": "\n- semantic_tag",
+   "path": "source_types",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "semantic_tag"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 115,
+   "end": 129,
+   "text": "\ntarget_types:"
+  },
+  {
+   "type": "field",
+   "start": 129,
+   "end": 144,
+   "text": "\n- semantic_tag",
+   "path": "target_types",
+   "marker": "rev",
+   "traits": [
+    "list"
+   ],
+   "editable": true,
+   "display": "inline",
+   "kind": "stringlist",
+   "value": [
+    "semantic_tag"
+   ],
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 144,
+   "end": 156,
+   "text": "\ncondition: "
+  },
+  {
+   "type": "field",
+   "start": 156,
+   "end": 158,
+   "text": "''",
+   "path": "condition",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 158,
+   "end": 166,
+   "text": "\n---\n\n# "
+  },
+  {
+   "type": "field",
+   "start": 166,
+   "end": 185,
+   "text": "semantic_equivalent",
+   "path": "title",
+   "marker": "rev",
+   "traits": [],
+   "editable": true,
+   "display": "inline",
+   "kind": "string",
+   "value": "semantic_equivalent",
+   "source": null,
+   "composition": null,
+   "children": []
+  },
+  {
+   "type": "literal",
+   "start": 185,
+   "end": 203,
+   "text": "\n\n## Description\n\n"
+  },
+  {
+   "type": "field",
+   "start": 203,
+   "end": 263,
+   "text": "This local tag maps to that global tag across linked stores.",
+   "path": "description",
+   "marker": "rev",
+   "traits": [
+    "markdown"
+   ],
+   "editable": true,
+   "display": "block",
+   "kind": "string",
+   "value": "This local tag maps to that global tag across linked stores.",
+   "source": null,
+   "composition": null,
+   "children": []
+  }
+ ]
+}

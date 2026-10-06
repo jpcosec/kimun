@@ -1,0 +1,1 @@
+{:op :build_extraction_segments :fn "sldb.api.segments.build_extraction_segments.build_extraction_segments" :tests ["tests/test_extraction_segments.py::test_canonical_markdown_locates_every_field_exactly" "tests/test_extraction_segments.py::test_coverage_is_a_fraction_of_the_meaningful_text" "tests/test_extraction_segments.py::test_fields_come_back_in_reading_order"]}
