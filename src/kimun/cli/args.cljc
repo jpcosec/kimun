@@ -16,6 +16,7 @@
    :format  {:ref "FMT" :desc "Output format: json | edn | text | md | yaml" :default "json" :validate formats}
    :actor   {:ref "NAME" :desc "Actor recorded in transactions (default human/$USER)"}
    :debug   {:desc "Print the stacktrace of an unexpected error to stderr" :coerce :boolean}
+   :wait    {:desc "When another process is writing the store, wait for it instead of failing with store/busy" :coerce :boolean}
    :help    {:desc "Show usage" :coerce :boolean}
    :version {:desc "Show version" :coerce :boolean}})
 

@@ -353,6 +353,10 @@
         by-name (some->> (:name opts) (tdocs/find-document store))]
     (cond by-arg (update-typed by-arg args opts ctx)
           by-name (update-typed by-name [(:name by-name) (get args 0)] opts ctx)
+          ;; a payload for a document nobody tracks: name it (v1: "Doc 'x' not registered.")
+          (or (:data opts) (seq (:set opts)))
+          (let [token (or (:name opts) (get args 0))]
+            (err/raise :docs/missing (str "no tracked document `" token "`: nothing to update with a payload") {:document token}))
           :else (update-doc args opts ctx))))
 
 (def spec

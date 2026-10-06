@@ -164,7 +164,13 @@ línea y reemplaza `heads.edn` (fichero temporal + `ATOMIC_MOVE`). **El log y la
 cambian juntos**: el perdedor no deja ninguna línea, el store sigue abriendo y pasando la
 verificación completa, y un reintento sobre un store recién abierto funciona. Sus objetos
 quedan sin referencia (§5). El lock se mantiene milisegundos: lo que dura comparar,
-agregar una línea y reemplazar un fichero de 154 bytes.
+agregar una línea y reemplazar un fichero de 154 bytes. Si **otro proceso** tiene el lock
+en ese momento, el commit falla enseguida con `store/busy` (exit 4, sin escribir nada más
+que objetos de escritura única) o, con la opción global `--wait` de la CLI
+(`fs-store/backend` con `{:wait? true}`), espera a que se libere y sigue (el contrato de
+v1: fallar rápido o esperar). Los hilos de un mismo proceso siempre esperan (monitor).
+Pruebas: `test/kimun/parity/closed_gaps_test.cljc` (la carrera determinista, cuatro
+escritores concurrentes, otro proceso con el lock sin y con `--wait`).
 
 **Ventana de caída**: entre agregar la línea al log y reemplazar `heads.edn`. Un proceso
 que muere ahí deja una última línea (entera o cortada) que las cabezas no registran. La

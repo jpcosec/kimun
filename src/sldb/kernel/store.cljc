@@ -57,7 +57,9 @@
      {:head nil :heads {}}) differ from `expected`: writes nothing, returns
      false. Otherwise: discards an :uncommitted log tail (`log-tail`; raises
      :store/error on an :inconsistent one, writing nothing), appends `tx` as a
-     log line, then replaces the heads with `new`; returns true."))
+     log line, then replaces the heads with `new`; returns true. An adapter
+     whose lock is held by another process may raise :store/busy instead of
+     waiting, having written nothing."))
 
 ;; ---------------------------------------------------------------- object cache (optional port)
 

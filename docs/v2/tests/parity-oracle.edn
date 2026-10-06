@@ -1,0 +1,46 @@
+;; v1 tests whose subject is the template engine: what the differential corpus proves for each.
+;; Checked by scripts/parity/coverage.py (see its docstring).
+{
+ "test_section_body_extraction.py::test_all_sections_filled_extract_in_order"
+ "Corpus extract cases of the three-section model: the payload of a document with every section filled equals v1's, in order."
+
+ "test_section_body_extraction.py::test_empty_section_does_not_shift_later_sections"
+ "Corpus extract case: an empty first section yields \"\" and beta/gamma keep their own bodies, identical to v1's payload (the regression is purely about the extraction payload)."
+
+ "test_section_body_extraction.py::test_multiple_empty_sections_do_not_shift"
+ "Corpus extract case: two empty sections then a filled one give v1's exact payload."
+
+ "test_section_body_extraction.py::test_repeated_extraction_is_stable_with_an_empty_section"
+ "Corpus extract case of the document with an empty section (shared with the shift test): kimun's payload equals v1's recorded one, and extraction is a pure function of the text so repeating it is stable."
+
+ "test_section_body_extraction.py::test_trailing_empty_section_stays_empty"
+ "Corpus extract case: a trailing empty section extracts as \"\" with the earlier bodies intact, equal to v1's payload."
+
+ "test_standalone.py::test_advanced_marker_families_render_and_extract"
+ "Corpus render case (render-only slug, the py marker left verbatim, the Jinja greeting) and extract case (optional and render-only fields absent from the payload) equal v1's."
+
+ "test_standalone.py::test_empty_optional_section_body_is_absent_not_empty"
+ "Corpus extract cases for None, empty and blank optional values: the key is absent from the payload and the required field keeps its value, as in v1."
+
+ "test_standalone.py::test_frontmatter_fields_render_and_extract"
+ "Corpus render case (document starts with the front-matter block and the field values) and extract case (payload equals the input) of the front-matter model."
+
+ "test_standalone.py::test_optional_section_body_survives_line_breaks"
+ "Corpus render and extract cases for the three values (one line, two lines, two paragraphs): the optrev section body is captured with its line breaks exactly like the rev one, as in v1's payloads."
+
+ "test_standalone.py::test_required_section_body_keeps_an_empty_value"
+ "Corpus render and extract cases: a required section rendered empty extracts as \"\" (key present) and the optional one as its value, equal to v1's payload."
+
+ "test_standalone.py::test_table_marker_infers_columns_and_preserves_empty_cells"
+ "Corpus render case (inferred columns, empty cell kept as `|  |`) and extract case (rows with the empty string) equal v1's."
+
+ "test_standalone.py::test_table_marker_renders_and_extracts_explicit_columns"
+ "Corpus render case (header, separator and rows of the explicit-column table) and extract case (payload rows) equal v1's."
+
+ "test_store_readme_doc.py::test_section_capture_extracts_full_markdown_sections"
+ "Corpus extract and render cases of the First/Second section model: the full-section payload (paragraphs, lists, fenced code) and the rendered Markdown equal v1's."
+
+ "test_store_readme_doc.py::test_store_readme_roundtrips_current_markdown"
+ "Corpus extract and render cases of the store README model and its Markdown: the payload (title, purpose, git_policy, command_map) and the rendered Markdown equal v1's; the test is about the engine roundtrip of that document, not about any store tracking it."
+
+}

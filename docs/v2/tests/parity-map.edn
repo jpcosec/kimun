@@ -1,0 +1,8 @@
+;; v1 tests covered by an existing kimun deftest that does not name them.
+;; Checked by scripts/parity/coverage.py (see its docstring).
+{
+ "store/test_document_formats.py::test_document_format_is_inherited_and_code_adapter_overrides_source"
+ {:test "kimun.surface.semantic-test/model-tags-follow-v1-flattening"
+  :note "v1 asserted flatten_model_semantics: a plain model yields representation.markdown + source.document.markdown, and a code-symbol model (base overriding the source key) yields representation.markdown + source.code.python + its own type/workspace tags. The kimun deftest asserts exactly this flattening: Plain gives the markdown defaults, a Child of a Base with source=code.python gets source.code.python and its own tags, a base replacing a key whole."}
+
+}

@@ -7,6 +7,7 @@
             [clojure.string :as str]
             [kimun.cli.args :as args]
             [kimun.cli.commands.direct :as direct]
+            [kimun.cli.commands.adapters :as adapters]
             [kimun.cli.commands.corpus :as corpus]
             [kimun.cli.commands.docs :as docs]
             [kimun.cli.commands.edges :as edges]
@@ -23,6 +24,7 @@
             [kimun.cli.commands.serve :as serve]
             [kimun.cli.commands.stores :as stores]
             [kimun.cli.errors :as errors]
+            [kimun.cli.store :as cli-store]
             [kimun.cli.out :as out]))
 
 (def groups
@@ -34,6 +36,7 @@
             (if-let [f (get links/commands sub)]
               (f args opts ctx)
               (docs/dispatch sub args opts ctx)))
+   "adapters" adapters/dispatch
    "edges" edges/dispatch
    "graph" graph/dispatch
    "predicates" predicates/dispatch
@@ -54,7 +57,7 @@
   "The option spec of every group, merged: a group declares its own options
    in its `spec` var, so adding a group never edits `kimun.cli.args`. Two
    groups may share an option name only with the same meaning."
-  (merge stores/spec docs/spec journal/spec serve/spec models/spec direct/spec links/spec semantic/spec fields/spec sections/spec find/spec corpus/spec index/spec predicates/spec edges/spec graph/spec))
+  (merge stores/spec docs/spec journal/spec serve/spec models/spec direct/spec links/spec semantic/spec fields/spec sections/spec find/spec corpus/spec index/spec predicates/spec edges/spec graph/spec adapters/spec))
 
 (def usage
   "Usage text shown by `kimun`, `kimun help` and `--help`."
@@ -105,6 +108,9 @@
              "  graph get ID · list [--type T] · query -f FILE.json · neighborhood ID [--depth N] [--direction D]"
              "  graph path FROM TO · cycles · order · components · central [--metric K] · isolated · similar ID"
              "  graph snapshot save|load FILE · export [-o FILE] · ingest-sldb FILE [-o OUT]"
+             "  adapters list · scan|sync|check ADAPTER PATH --system S [--factory M:A] [--language L] [-- adapter options]"
+             "                              code → documents through an out-of-process adapter: python-symbols, argparse-cli,"
+             "                              click-cli, treesitter-symbols, or the path of any executable (docs/v2/11)"
              "  fields get DOC PATH · schema MODEL [FIELD] · query FIELD [--where EXPR] [--model M]"
              "  fields set|append DOC PATH VALUE · unset|clear DOC PATH · clean DOC PATH [--dedupe] [--drop-empty]"
              "  sections list DOC · fields DOC SECTION · find [TERM] [--in physical|semantic|both] [--regex] [--fuzzy] [--where EXPR]"
@@ -120,6 +126,7 @@
              "  --format FMT    json (default) | edn | text | md"
              "  --actor NAME    actor recorded in transactions (default human/$USER)"
              "  --debug         print the stacktrace of an unexpected error to stderr"
+             "  --wait          if another process is writing the store, wait for it (default: fail with store/busy)"
              ""
              "exit codes: 0 ok · 1 missing · 2 ambiguous · 3 rejected · 4 conflict · 5 store · 6 usage · 7 capability · 70 unexpected"]))
 
@@ -169,7 +176,8 @@
     (if (false? (:ok parsed))
       {:envelope parsed :fmt (format-of argv)}
       (let [ctx {:env env :cwd cwd}
-            envelope (errors/wrap #(route parsed ctx argv))
+            envelope (binding [cli-store/*wait* (boolean (get-in parsed [:opts :wait]))]
+                       (errors/wrap #(route parsed ctx argv)))
             help? (= "help" (:command envelope))]
         {:envelope envelope
          :fmt (if help? "text" (get-in parsed [:opts :format]))

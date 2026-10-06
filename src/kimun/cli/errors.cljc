@@ -12,6 +12,7 @@
    :validate/missing 3
    :plan/conflict 4
    :store/stale 4
+   :store/busy 4
    :cli/no-store 5
    :cli/store-exists 5
    :cli/usage 6
@@ -20,7 +21,7 @@
 
 (def ^:private exit-by-namespace
   {"query" 3 "models" 3 "validate" 3 "docs" 3 "fields" 3 "sections" 3 "find" 3
-   "graph" 3 "edges" 3 "links" 3 "semantic" 3 "journal" 5 "migrate" 5 "serve" 5
+   "graph" 3 "edges" 3 "links" 3 "semantic" 3 "journal" 5 "migrate" 5 "serve" 5 "adapters" 5
    "store" 5 "markdown" 5 "index" 5})
 
 (def ^:private exit-by-name
@@ -35,7 +36,7 @@
    and the other command-group namespaces, e.g. a duplicate document). By
    name, in any namespace: `*/missing` and `*/empty` are 1, `*/ambiguous` 2,
    `*/conflict` and `*/stale` 4;
-   4 conflict/stale; 5 store errors, corruption, missing or duplicate store,
+   4 conflict/stale and `:store/busy` (another process holds the write lock); 5 store errors, corruption, missing or duplicate store,
    markdown and index errors; 6 usage; 70 anything else."
   ([type] (exit-for type nil))
   ([type data]

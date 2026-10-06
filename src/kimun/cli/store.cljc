@@ -100,9 +100,16 @@
         (seq (get env "KIMUN_STORE")) (normalize-store-path (get env "KIMUN_STORE"))
         :else (discover cwd)))
 
+(def ^:dynamic *wait*
+  "True while a command runs with `--wait` (bound by `kimun.cli.main/run`): the
+   backends `backend` makes then wait for another process's write lock instead
+   of failing with :store/busy."
+  false)
+
 (defn backend
-  "The files backend of store directory `dir`."
-  [dir] (fs-store/backend (str dir)))
+  "The files backend of store directory `dir` (waiting for the write lock when
+   `*wait*` is true)."
+  [dir] (fs-store/backend (str dir) {:wait? *wait*}))
 
 (defn- validate-links!
   "Raises `:store/invalid-links` unless every link of `descriptor` is

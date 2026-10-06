@@ -5,7 +5,10 @@
    `commit-tx!` runs under an exclusive `FileChannel` lock on <dir>/lock (it
    excludes other processes; a JVM monitor excludes the threads of this one,
    which the file lock alone rejects with OverlappingFileLockException). The
-   lock is released by closing the channel. Order inside the lock: compare the
+   lock is released by closing the channel. A lock held by another process
+   makes the commit fail at once with :store/busy (nothing written but the
+   write-once objects), or wait for it when the backend was made with
+   {:wait? true}. Order inside the lock: compare the
    heads, repair the log tail (the pure rule is sldb.kernel.store/log-tail),
    append the line, replace heads.edn by temp file + atomic move. Readers take
    no lock: heads.edn is replaced atomically and a line being appended is an
@@ -53,11 +56,19 @@
          tx))
      (defonce ^:private jvm-lock (Object.))
      (defn- with-store-lock
-       "Runs `f` holding the store's exclusive lock (other processes: file lock; this JVM: monitor)."
-       [dir f]
+       "Runs `f` holding the store's exclusive lock (other processes: file lock; this JVM: monitor).
+        When another process holds the file lock: with `wait?` blocks until it is released,
+        otherwise raises :store/busy at once, having written nothing."
+       [dir wait? f]
        (locking jvm-lock
          (let [ch (FileChannel/open (path dir "lock") (into-array StandardOpenOption [StandardOpenOption/CREATE StandardOpenOption/WRITE]))]
-           (try (.lock ch) (f) (finally (.close ch))))))
+           (try (if wait?
+                  (.lock ch)
+                  (when-not (.tryLock ch)
+                    (throw (ex-info (str "store: another process is writing " dir "; retry, or pass --wait to wait for it")
+                                    {:type :store/busy :path (str dir)}))))
+                (f)
+                (finally (.close ch))))))
      (defn- tail-lines
        "The last two non-blank lines of file `p` as
         [{:start byte-offset :terminated? bool :entry e}], reading only the end
@@ -95,7 +106,7 @@
        (with-open [ch (FileChannel/open p (into-array StandardOpenOption [StandardOpenOption/WRITE]))]
          (.truncate ch (long size))))))
 
-(defrecord FsBackend [dir cache heads-memo]
+(defrecord FsBackend [dir cache heads-memo wait?]
   store/ObjectCache
   (cached-object [_ id] (get @cache id))
   (cache-object! [_ id obj] (swap! cache assoc id obj) obj)
@@ -134,7 +145,7 @@
                    (catch Exception e
                      (throw (ex-info "store: heads.edn is unreadable" {:type :store/corrupt-heads :cause (ex-message e)})))))))
   (commit-tx! [_ expected tx new]
-    #?(:clj (with-store-lock dir
+    #?(:clj (with-store-lock dir wait?
               (fn []
                 (let [hp (path dir "heads.edn")
                       lp (path dir "log.edn")
@@ -164,8 +175,12 @@
   "A files backend rooted at `dir`, with its own empty object cache and heads
    memo (the parsed heads.edn of its last commit, reused by the next commit's
    comparison only when the file text is byte-identical): every call returns an
-   independent instance (no state shared between instances, none global)."
-  [dir] (->FsBackend dir (atom {}) (atom nil)))
+   independent instance (no state shared between instances, none global).
+   `opts` {:wait? true}: a commit that finds the lock held by another process
+   waits for it; by default it fails at once with :store/busy (v1's
+   `--wait` / fail-fast contract)."
+  ([dir] (backend dir {}))
+  ([dir {:keys [wait?]}] (->FsBackend dir (atom {}) (atom nil) (boolean wait?))))
 
 (defn cached-ids
   "Ids of the objects this backend instance has parsed so far (diagnostics and tests)."
