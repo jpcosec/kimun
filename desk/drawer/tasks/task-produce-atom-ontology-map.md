@@ -26,13 +26,19 @@ checklists: []
 
 ## Rationale
 
+_Explain why this task exists or the business driver behind it._
+
 The atom set is now large enough that planning and architecture work need one explicit ontology map showing how atoms are grouped, typed, and linked.
 
 ## Goal
 
+_Describe the concrete result this task must produce._
+
 Produce one planning-only ontology map for the current atom space.
 
 ## Scope
+
+_State what is in scope and what is out of scope._
 
 - **In-Scope**:
   - ontology axes for atoms
@@ -46,6 +52,8 @@ Produce one planning-only ontology map for the current atom space.
 
 ## Validation
 
+_List the checks required before this task can close._
+
 - Does the artifact define the ontology axes?
 - Does it map all domain groups explicitly?
 - Does it explain relation types and hub atoms?
@@ -53,4 +61,7 @@ Produce one planning-only ontology map for the current atom space.
 
 ## Done When
 
+_Name the observable condition that makes the task complete._
+
 The `atom-ontology-map.md` contract exists and provides an explicit ontology map for the current atom space.
+

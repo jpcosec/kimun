@@ -34,13 +34,19 @@ checklists: []
 
 ## Rationale
 
+_Explain why this task exists or the business driver behind it._
+
 The repo now has enough architecture and atom material that contradiction review should use broad discovery first and human-readable adjudication second.
 
 ## Goal
 
+_Describe the concrete result this task must produce._
+
 Produce one planning-only contradiction map that identifies real contradictions, wording drift, historical-only conflicts, and already-aligned concepts.
 
 ## Scope
+
+_State what is in scope and what is out of scope._
 
 - **In-Scope**:
   - documentation chunking and semantic grouping for discovery
@@ -53,6 +59,8 @@ Produce one planning-only contradiction map that identifies real contradictions,
 
 ## Validation
 
+_List the checks required before this task can close._
+
 - Does the artifact describe the discovery method?
 - Does it classify real contradictions vs wording drift vs historical-only conflicts?
 - Does it cite governing atoms and target docs?
@@ -60,4 +68,7 @@ Produce one planning-only contradiction map that identifies real contradictions,
 
 ## Done When
 
+_Name the observable condition that makes the task complete._
+
 The `documentation-contradiction-map.md` contract exists and records the contradiction map plus authority-aware resolutions.
+

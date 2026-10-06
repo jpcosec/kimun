@@ -29,13 +29,19 @@ checklists: []
 
 ## Rationale
 
+_Explain why this task exists or the business driver behind it._
+
 Governed by `query-engine.md`. The value of the structural graph is locked behind retrieval. This task ensures that the transition to Clojure-backed queries preserves every v1 inspection capability while improving performance via `DerivedIndexes`.
 
 ## Goal
 
+_Describe the concrete result this task must produce._
+
 Define the Phase 1 retrieval surface and mandatory indexes. Ensure that `stores / models / find` command groups have full structural support in the Clojure core.
 
 ## Scope
+
+_State what is in scope and what is out of scope._
 
 - **In-Scope**: 
   - `SectionIndex`, `FieldIndex`, and `SemanticIndex` (tag-based).
@@ -47,6 +53,8 @@ Define the Phase 1 retrieval surface and mandatory indexes. Ensure that `stores 
 
 ## Implementation Path
 
+_Outline the expected implementation route or affected surface._
+
 1. **Projection Strategy**: Map `DerivedIndexes` from `target-store_graph.yml` to the `GraphStore` materialization logic.
 2. **Query Surface**: Define the internal Clojure API for `find text`, `find links`, and `find refs`.
 3. **Performance Floor**: Set point query targets (<10ms) to ensure the system feels "instant."
@@ -54,11 +62,15 @@ Define the Phase 1 retrieval surface and mandatory indexes. Ensure that `stores 
 
 ## Validation
 
+_List the checks required before this task can close._
+
 - Does the contract keep the search engine replaceable behind a kernel-owned interface?
 - Does it cover all 4 derived index types from `target-store_graph.yml`?
 - Does it align with the `find` command group in `target-components.yml`?
 
 ## Done When
+
+_Name the observable condition that makes the task complete._
 
 The high-fidelity `query-and-index-parity-contract.md` is committed and approved.
 

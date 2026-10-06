@@ -112,7 +112,7 @@ nombra, para cada uno, el test del kernel que sostiene la promesa equivalente.
 | C2 | ids calificados entre stores enlazados (`test_linked_store_documents_come_back_qualified`, `…linked_stores_gap_G5`); `help edges` | E3 |
 | K1 | **disco**: 94 MB de datos pero 364 MB en disco, porque 80.435 de 82.787 objetos pesan menos de 4 KB y cada uno ocupa un bloque; meta 150 MB no cumplida. Arreglo: empaquetar objetos (packfiles al estilo git) | K2 |
 | K1 | `docs show` y `fields set` leen el descriptor de cada árbol para el índice por nombre (O(árboles)); constante requeriría un índice persistente en la Revision; no hay GC ni informe de objetos inalcanzables | K2 |
-| E1 | ~~**escala**: sobre el store migrado (1.586 revisiones, 36.718 objetos, 606 MB) abrir tarda ~200 s porque `open` reproduce el log y cada revisión reescribe los conjuntos completos de árboles y aristas | K1 |
+| E1 | (cerrado por K1) **escala**: sobre el store migrado (1.586 revisiones, 36.718 objetos, 606 MB) abrir tarda ~200 s porque `open` reproduce el log y cada revisión reescribe los conjuntos completos de árboles y aristas | K1 |
 | B2b | `find` como comando sobre campos y secciones (`test_find_field_shows_owning_section`, `test_find_section_where_predicates`): usar `kimun.surface.fields/rows` y `kimun.surface.sections/find-sections`; `fields query --global`, `sections find --global` | C1 |
 | B2b | `ast show` (`test_ast_show_document_has_sections`, `test_ast_show_field_nodes_have_owning_section`): `ast` se retira en `06 §8`; la parte de secciones y ownership ya está cubierta | E3 (n/a) |
 | C3 | la CLI de `graph` debe usar `kimun.surface.semantic/export->snapshot` (acepta contrato v1 y v2); direcciones `se.`/`gse.` entre stores | C2, C1 |

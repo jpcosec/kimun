@@ -32,11 +32,15 @@ checklists: []
 
 ## Rationale
 
+_Explain why this task exists or the business driver behind it._
+
 Specyaml is the documental nexus between `desk/atoms/` and the diagram
 projections. Without a schema, the four `spec2viz/*.yml` diverge and the
 edge to atoms stays implicit.
 
 ## Goal
+
+_Describe the concrete result this task must produce._
 
 Define the required shape of every specyaml document: top-level fields, node
 and edge rules, the `atoms:` cross-reference rule, the `views:` coverage rule,
@@ -44,12 +48,20 @@ and the versioning policy.
 
 ## Scope
 
+_State what is in scope and what is out of scope._
+
 - **In-Scope**: schema shape, kind vocabulary, referential integrity, atom
   cross-refs, spec↔vista symmetry, versioning.
 - **Out-of-Scope**: runtime implementation claims; node-level diagram coverage
   checks; replacing atom prose.
 
+## Implementation Path
+
+_Outline the expected implementation route or affected surface._
+
 ## Validation
+
+_List the checks required before this task can close._
 
 - Does the contract define all required fields and the kind vocabulary?
 - Does it make `atoms:` the only sanctioned spec→atom edge?
@@ -60,3 +72,8 @@ and the versioning policy.
 Contract delivered and machine-enforced; spec2viz files normalized to it
 (views + atoms fields, version 0.3) with validator green. No implementation
 claims.
+
+## Done When
+
+_Name the observable condition that makes the task complete._
+

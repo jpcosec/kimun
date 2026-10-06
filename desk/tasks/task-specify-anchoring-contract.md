@@ -28,13 +28,19 @@ checklists: []
 
 ## Rationale
 
+_Explain why this task exists or the business driver behind it._
+
 Grounded in `decision-links-and-anchors-are-canonical.md`. To maintain reliable cross-references, we must have stable addressability into document fragments. This task ensures that anchors are not just line-offsets, but structural "pins" into the graph.
 
 ## Goal
 
+_Describe the concrete result this task must produce._
+
 Define the taxonomy and resolution lifecycle for anchors. Mandate the use of `stable-selector.md` logic to ensure that anchors survive minor document refactors.
 
 ## Scope
+
+_State what is in scope and what is out of scope._
 
 - **In-Scope**: 
   - `AnchorNode` structure including `SourceHash` and `Locator`.
@@ -46,6 +52,8 @@ Define the taxonomy and resolution lifecycle for anchors. Mandate the use of `st
 
 ## Implementation Path
 
+_Outline the expected implementation route or affected surface._
+
 1. **Locator Strategy**: Map `target-anchoring.yml` nodes to implementation primitives.
 2. **Selection Logic**: Detail how `TextLocators` (char/paragraph) and `CodeLocators` (tree-sitter/syntax) are prioritized.
 3. **Resilience Pattern**: Define how `SampleText` is used as a verification fallback.
@@ -53,10 +61,15 @@ Define the taxonomy and resolution lifecycle for anchors. Mandate the use of `st
 
 ## Validation
 
+_List the checks required before this task can close._
+
 - Does the contract define "Resilience" for selectors?
 - Does it require `DocumentPath` and `SourceHash` for every `AnchorNode`?
 - Does it match the `AnchorNodes` contains list in `target-components.yml`?
 
 ## Done When
 
+_Name the observable condition that makes the task complete._
+
 The high-fidelity `anchoring-contract.md` is committed and approved.
+

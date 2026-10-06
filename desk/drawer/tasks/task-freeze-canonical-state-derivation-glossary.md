@@ -30,13 +30,19 @@ checklists: []
 
 ## Rationale
 
+_Explain why this task exists or the business driver behind it._
+
 The repo needs one clean vocabulary for authored inputs, canonical state, renders/materializations, projections, and derived indexes.
 
 ## Goal
 
+_Describe the concrete result this task must produce._
+
 Produce one planning-only glossary contract and align the most directly affected atoms to it.
 
 ## Scope
+
+_State what is in scope and what is out of scope._
 
 - **In-Scope**:
   - glossary definitions
@@ -49,6 +55,8 @@ Produce one planning-only glossary contract and align the most directly affected
 
 ## Validation
 
+_List the checks required before this task can close._
+
 - Does the artifact define the glossary terms explicitly?
 - Does it keep canonical authority in Clojure-owned database-backed state?
 - Does it distinguish input, render/materialization, projection, and derived index?
@@ -56,4 +64,7 @@ Produce one planning-only glossary contract and align the most directly affected
 
 ## Done When
 
+_Name the observable condition that makes the task complete._
+
 The `canonical-state-derivation-glossary.md` contract exists and the directly affected atoms align to it.
+

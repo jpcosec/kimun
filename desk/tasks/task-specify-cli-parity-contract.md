@@ -36,13 +36,19 @@ checklists: []
 
 ## Rationale
 
+_Explain why this task exists or the business driver behind it._
+
 Anchored in `plural-first-cli-surface.md`. The CLI is the primary product surface. To minimize user friction during the refactor, we must ensure that the command tree is preserved exactly as specified in the `target-components.yml`.
 
 ## Goal
 
+_Describe the concrete result this task must produce._
+
 Define the exact command-group surface and mandatory flags. Ensure that the Python orchestration layer correctly maps to the Clojure-backed `StoreBackedMode` and `DirectMode`.
 
 ## Scope
+
+_State what is in scope and what is out of scope._
 
 - **In-Scope**: 
   - All 10+ command groups from `target-components.yml`: `docs`, `ast`, `fields`, `sections`, `stores`, `models`, `find`, `faq`, `help`.
@@ -54,6 +60,8 @@ Define the exact command-group surface and mandatory flags. Ensure that the Pyth
 
 ## Implementation Path
 
+_Outline the expected implementation route or affected surface._
+
 1. **Interface Mapping**: Align the `PythonCLI` contains list from `target-components.yml` with the FFI call patterns.
 2. **Mode Definition**: Specify which commands operate in `DirectMode` vs `StoreBackedMode`.
 3. **UX Constraint**: Bind `cli-invocation-contract.md` to the implementation rules.
@@ -61,10 +69,15 @@ Define the exact command-group surface and mandatory flags. Ensure that the Pyth
 
 ## Validation
 
+_List the checks required before this task can close._
+
 - Does the contract match the `CommandGroups` list in `target-components.yml`?
 - Does it require mandatory JSON output support?
 - Does it align with the `cli_client` artifact in `target-runtime.yml`?
 
 ## Done When
 
+_Name the observable condition that makes the task complete._
+
 The high-fidelity `cli-parity-contract.md` is committed and approved.
+

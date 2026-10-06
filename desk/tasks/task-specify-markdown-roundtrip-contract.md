@@ -26,13 +26,19 @@ checklists: []
 
 ## Rationale
 
+_Explain why this task exists or the business driver behind it._
+
 Anchored in `reversible-document-family.md`. SLDB must guarantee that developer-authored Markdown is not degraded by the machine engine. Without strict byte-equivalent round-trip requirements, the system risks losing formatting, comments, or critical metadata during structural refactors.
 
 ## Goal
 
+_Describe the concrete result this task must produce._
+
 Define the absolute proof obligations for Markdown Import -> `CanonicalAST` -> Export reversibility. Ensure "Identity hash preservation" across the roundtrip.
 
 ## Scope
+
+_State what is in scope and what is out of scope._
 
 - **In-Scope**: 
   - Byte-equivalent round-trip for all `ReversibleDocs`.
@@ -44,6 +50,8 @@ Define the absolute proof obligations for Markdown Import -> `CanonicalAST` -> E
 
 ## Implementation Path
 
+_Outline the expected implementation route or affected surface._
+
 1. **Cycle Definition**: Map the `MarkdownImporter` -> `Rowan` -> `MarkdownEmitter` path.
 2. **Metadata Rule**: Mandate that hidden `id:` tags must be treated as first-class AST nodes.
 3. **Identity Checksum**: Require that `Source Document Hash` matches the re-rendered output checksum.
@@ -51,10 +59,15 @@ Define the absolute proof obligations for Markdown Import -> `CanonicalAST` -> E
 
 ## Validation
 
+_List the checks required before this task can close._
+
 - Does the contract require byte-equivalent output for non-modifying cycles?
 - Does it cover frontmatter and hidden ID tags?
 - Does it align with the `AST -> Markdown` edge in `target-components.yml`?
 
 ## Done When
 
+_Name the observable condition that makes the task complete._
+
 The high-fidelity `markdown-roundtrip-contract.md` is committed and approved.
+

@@ -27,13 +27,19 @@ checklists: []
 
 ## Rationale
 
+_Explain why this task exists or the business driver behind it._
+
 This task is governed by the `decision-v1-parity-before-scope-expansion.md` atom. Phase 1 is a structural migration of the canonical engine from Python to Clojure. To prevent architectural drift, we must freeze the product surface at the "v1 floor." This ensures that fundamental round-trip and storage invariants are replicated perfectly before any Phase 2 features (e.g., VisualUX, Semantic Search) are introduced.
 
 ## Goal
 
+_Describe the concrete result this task must produce._
+
 Formalize and lock the exact set of user-visible workflows, command groups, and structural invariants that constitute "v1 parity." This includes the transition from Python-owned ASTs to Clojure-owned `CanonicalAST` as the single source of truth.
 
 ## Scope
+
+_State what is in scope and what is out of scope._
 
 - **In-Scope**: 
   - All command groups specified in `target-components.yml`: `docs`, `ast`, `fields`, `sections`, `stores`, `models`, `find`.
@@ -47,6 +53,8 @@ Formalize and lock the exact set of user-visible workflows, command groups, and 
 
 ## Implementation Path
 
+_Outline the expected implementation route or affected surface._
+
 1. **Audit**: Map every v1 command and flag to its required internal behavior.
 2. **Translate**: Specify how Python orchestration sequences calls to the Clojure engine via the FFI boundary.
 3. **Formalize**: Define the "Parity Floor" in `raw/source/architecture-retired/contracts/phase-1-parity-contract.md`.
@@ -54,10 +62,15 @@ Formalize and lock the exact set of user-visible workflows, command groups, and 
 
 ## Validation
 
+_List the checks required before this task can close._
+
 - Attestation against `phase-1-v1-replication.md`.
 - Command tree must match `target-components.yml` exactly.
 - Validation of the "Reversible Document" requirement in the contract.
 
 ## Done When
 
+_Name the observable condition that makes the task complete._
+
 The high-fidelity `phase-1-parity-contract.md` is committed and approved as the boundary for all downstream implementation planning.
+

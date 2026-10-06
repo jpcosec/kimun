@@ -29,13 +29,19 @@ checklists: []
 
 ## Rationale
 
+_Explain why this task exists or the business driver behind it._
+
 Anchored in `immutable-append-only-database.md`. The local store is the foundation of system integrity. By mandating an append-only architecture, we ensure that no historical context is ever lost and every node remains uniquely identifiable via its content hash.
 
 ## Goal
 
+_Describe the concrete result this task must produce._
+
 Define the architecture and integrity requirements for the `.sldb` infrastructure. Mandate a kernel-owned `StorageBackend` boundary with replaceable engines (`redb` default, `CozoDB` alternative) and `Blake3` for content-addressed storage.
 
 ## Scope
+
+_State what is in scope and what is out of scope._
 
 - **In-Scope**: 
   - `ASTPersistence`, `RelationEdges`, and `AnchorNodes` storage.
@@ -48,6 +54,8 @@ Define the architecture and integrity requirements for the `.sldb` infrastructur
 
 ## Implementation Path
 
+_Outline the expected implementation route or affected surface._
+
 1. **Storage Mapping**: Align with `target-store_graph.yml` components.
 2. **Indexing Strategy**: Define the `SearchIndex` behind a kernel-owned, replaceable search interface with no fixed engine mandated.
 3. **Integrity Rule**: Bind `store-integrity-checks.md` to the validation lifecycle.
@@ -55,11 +63,15 @@ Define the architecture and integrity requirements for the `.sldb` infrastructur
 
 ## Validation
 
+_List the checks required before this task can close._
+
 - Does the contract enforce "Append-Only" immutability?
 - Does it keep persistence and indexing behind replaceable kernel-owned interfaces?
 - Does it match the `GraphStore` contains list in `target-components.yml`?
 
 ## Done When
+
+_Name the observable condition that makes the task complete._
 
 The high-fidelity `graph-store-contract.md` is committed and approved.
 

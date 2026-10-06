@@ -2,8 +2,11 @@ name: RepositoryDoc
 model_ref: deskops.models:RepositoryDoc
 path: /home/jp/proyectos/hum-ecosystem/tools/deskops/deskops/models/repository.py
 documents_index: .sldb/core/documents/RepositoryDoc.yaml
-sections_index: ''
-hash_b: 0ac9cff726e8ddd1c2cb31518c87b21095dd250c58abe29f2c54dbb253b61ef8
+sections_index: .sldb/runtime/sections/RepositoryDoc.yaml
+model_hash: bde9602b547fd86a5331f25053abc9feb4ed40a319cd7eb7d175403e8de86f02
+roster_hash: cbe7fe989ff14c5c750ae9b350848d14617425f9329bb31551b6aee871e0c871
+contract_hash: 6f208dca27c157ac31f933a27ba5cec68faf34bfeb80aa323b69d04fcee08587
+documents_count: 1
 version: 1
 canonical: false
 family: null

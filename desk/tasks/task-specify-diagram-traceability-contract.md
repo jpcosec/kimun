@@ -33,23 +33,35 @@ checklists: []
 
 ## Rationale
 
+_Explain why this task exists or the business driver behind it._
+
 The vistas HTML and the 14 puml files were handwritten in parallel with no
 declared link to specyaml or atoms. Diagrams must become registered
 projections with a generated render.
 
 ## Goal
 
+_Describe the concrete result this task must produce._
+
 Define the vista registry (`vistas/vistas.yml`), the puml traceability header,
 the generated-artifact rule for the HTML, and the validator checks.
 
 ## Scope
+
+_State what is in scope and what is out of scope._
 
 - **In-Scope**: registry shape, puml headers, generator/validator tooling,
   drift check, spec↔vista symmetry (shared with the schema contract).
 - **Out-of-Scope**: semantic diffing of Mermaid vs PlantUML renders;
   node-level coverage; runtime claims.
 
+## Implementation Path
+
+_Outline the expected implementation route or affected surface._
+
 ## Validation
+
+_List the checks required before this task can close._
 
 - Does every puml carry the header and match the registry?
 - Is the HTML regenerable byte-identical from registry + mmd sources?
@@ -60,3 +72,8 @@ the generated-artifact rule for the HTML, and the validator checks.
 Contract delivered; registry + 17 mmd sources extracted; 14 puml headers
 added; generator and validator in place with 0 errors (3 coverage warnings:
 vistas d03/d05/d06 sin spec). No implementation claims.
+
+## Done When
+
+_Name the observable condition that makes the task complete._
+

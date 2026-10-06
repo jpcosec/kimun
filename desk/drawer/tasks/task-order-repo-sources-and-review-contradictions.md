@@ -25,13 +25,19 @@ checklists: []
 
 ## Rationale
 
+_Explain why this task exists or the business driver behind it._
+
 The workspace already has frozen Phase 1 contracts, target architecture notes, historical reports, and workflow artifacts. A single ordering rule is needed so planning stays deterministic and historical docs do not override current contract truth.
 
 ## Goal
 
+_Describe the concrete result this task must produce._
+
 Define the authority order for repo sources and identify current contradictions or stale statements between workspace docs.
 
 ## Scope
+
+_State what is in scope and what is out of scope._
 
 - **In-Scope**:
   - source-authority order for this planning worktree
@@ -44,11 +50,15 @@ Define the authority order for repo sources and identify current contradictions 
 
 ## Implementation Path
 
+_Outline the expected implementation route or affected surface._
+
 1. Recover workspace guardrails and desk routing.
 2. Compare current contract docs, architecture docs, and historical reports.
 3. Write one contract artifact with precedence rules, contradictions, and normalization decisions.
 
 ## Validation
+
+_List the checks required before this task can close._
 
 - Does the artifact cite governing atoms and target architecture docs?
 - Does it define one unambiguous source order?
@@ -57,4 +67,7 @@ Define the authority order for repo sources and identify current contradictions 
 
 ## Done When
 
+_Name the observable condition that makes the task complete._
+
 The `repo-source-order-and-contradiction-review.md` contract exists and captures the authority order plus contradiction review for the current planning workspace.
+

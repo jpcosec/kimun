@@ -26,13 +26,19 @@ checklists: []
 
 ## Rationale
 
+_Explain why this task exists or the business driver behind it._
+
 Grounded in `decision-clojure-core-with-minimal-python.md`. To achieve "Canonical Truth in Clojure," we must strictly define where Python's orchestration ends and Clojure's structural reasoning begins. This prevents the "leaky abstraction" of the previous architecture where Python managed AST state.
 
 ## Goal
 
+_Describe the concrete result this task must produce._
+
 Formalize the FFI boundary using `PyO3` as specified in `decision-pyo3-ffi.md`. Define the ownership of the `GraphStore` handle and the lifecycle of data crossing the boundary.
 
 ## Scope
+
+_State what is in scope and what is out of scope._
 
 - **In-Scope**: 
   - **Python Responsibility**: CLI entrypoints, Git working tree management, workflow composition, and human-readable UX.
@@ -44,6 +50,8 @@ Formalize the FFI boundary using `PyO3` as specified in `decision-pyo3-ffi.md`. 
 
 ## Implementation Path
 
+_Outline the expected implementation route or affected surface._
+
 1. **Boundary Definition**: Specify the FFI surface for `init_store`, `ingest_document`, and `query_graph`.
 2. **Ownership Mapping**: Ensure the `python-cli-orchestration-layer.md` acts only as a shell.
 3. **Data Flow**: Use `FFI / API boundary` patterns from `target-runtime.yml`.
@@ -51,10 +59,15 @@ Formalize the FFI boundary using `PyO3` as specified in `decision-pyo3-ffi.md`. 
 
 ## Validation
 
+_List the checks required before this task can close._
+
 - Does the contract enforce "No Python Logic in Core"?
 - Is the `PyO3` substrate explicitly mandated?
 - Does it match the `ProductSurfaces` split in `target-components.yml`?
 
 ## Done When
 
+_Name the observable condition that makes the task complete._
+
 The `python-clojure-ownership-and-ffi-contract.md` is frozen and bound to all implementation tasks.
+

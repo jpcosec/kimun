@@ -30,13 +30,19 @@ checklists: []
 
 ## Rationale
 
+_Explain why this task exists or the business driver behind it._
+
 The root core docs define several operational architecture concepts that were only partially represented in atoms and spec2viz. Planning quality depends on making those concepts explicit, concise, and queryable.
 
 ## Goal
 
+_Describe the concrete result this task must produce._
+
 Normalize the missing concepts from the six core source docs into short atoms and aligned spec2viz surfaces.
 
 ## Scope
+
+_State what is in scope and what is out of scope._
 
 - **In-Scope**:
   - concise atoms for missing operational concepts
@@ -49,6 +55,8 @@ Normalize the missing concepts from the six core source docs into short atoms an
 
 ## Validation
 
+_List the checks required before this task can close._
+
 - Does the contract name the missing concepts and where they land?
 - Are new atoms brief, descriptive, and split instead of overloaded?
 - Do spec2viz views show the newly required surfaces?
@@ -56,4 +64,7 @@ Normalize the missing concepts from the six core source docs into short atoms an
 
 ## Done When
 
+_Name the observable condition that makes the task complete._
+
 The coverage contract exists and the missing concepts are represented in concise atoms plus aligned spec2viz views.
+
