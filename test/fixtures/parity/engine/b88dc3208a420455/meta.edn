@@ -1,0 +1,1 @@
+{:op :extract :tests ["tests/test_section_body_extraction.py::test_empty_section_does_not_shift_later_sections" "tests/test_section_body_extraction.py::test_repeated_extraction_is_stable_with_an_empty_section"]}

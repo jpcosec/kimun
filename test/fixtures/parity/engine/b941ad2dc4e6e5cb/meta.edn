@@ -1,0 +1,1 @@
+{:op :render :tests ["tests/selfdoc/test_sync.py::test_parser_drift_preserves_authored_explanations_and_examples"]}

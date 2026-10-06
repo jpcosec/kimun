@@ -1,0 +1,10 @@
+{
+ "id": "doc-001",
+ "status": "active",
+ "tags": [
+  "system:sldb",
+  "topic:frontmatter"
+ ],
+ "title": "Frontmatter metadata",
+ "body": "The body stays focused on human-readable content."
+}

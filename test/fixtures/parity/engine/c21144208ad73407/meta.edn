@@ -1,0 +1,1 @@
+{:op :extract :tests ["tests/selfdoc/test_preflight.py::test_invalid_existing_document_prevents_any_sync"]}

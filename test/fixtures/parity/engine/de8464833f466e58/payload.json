@@ -1,0 +1,11 @@
+{
+ "title": "My Standalone Doc",
+ "meta": {
+  "version": "1.0.0",
+  "status": "stable"
+ },
+ "items": [
+  "First",
+  "Second"
+ ]
+}

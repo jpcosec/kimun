@@ -120,6 +120,38 @@
                 (recur (inc i) nil (conj blocks b))
                 (recur (inc i) b blocks)))))))))
 
+(defn- frontmatter-end
+  "Index of the line closing a frontmatter block that opens on line 0 of
+   `lines`, or nil: `---`, then non-blank lines, then `---`. A blank line
+   before the closing fence means line 0 was a thematic break, not frontmatter."
+  [lines]
+  (when (and (>= (count lines) 3) (re-matches #"---[ \t]*" (strip-cr (first lines))))
+    (loop [i 1]
+      (when (< i (count lines))
+        (let [l (strip-cr (nth lines i))]
+          (cond (re-matches #"---[ \t]*" l) (when (> i 1) i)
+                (str/blank? l) nil
+                :else (recur (inc i))))))))
+
+(defn parse-document
+  "`parse` for a whole document (docs/v2/07 §5): a leading `---…---` block is
+   segmented as one `:frontmatter` block, kept byte for byte; the rest is
+   segmented by `parse`. Nested content (quotes, list items) never has
+   frontmatter and keeps using `parse`."
+  [s]
+  (let [lines (str/split s #"\n" -1)
+        end (frontmatter-end lines)]
+    (if-not end
+      (parse s)
+      (let [fm (vec (take (inc end) lines))
+            rest-text (str/join "\n" (drop (inc end) lines))
+            body (parse rest-text)
+            only? (= "" rest-text)]
+        (-> body
+            (update :blocks (fn [bs] (into [{:kind :frontmatter :lines fm :start 0}]
+                                           (map #(update % :start + (count fm)) bs))))
+            (assoc :trailing-newline? (if only? (str/ends-with? s "\n") (:trailing-newline? body))))))))
+
 (defn text
   "Reconstructs the original text from a CST (invariant 8)."
   [{:keys [blocks trailing-newline?]}]

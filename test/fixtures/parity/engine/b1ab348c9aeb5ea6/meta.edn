@@ -1,0 +1,1 @@
+{:op :extract :tests ["tests/store/test_optional_field_hash_neutral.py::test_render_absent_optrev_leaves_no_trace_in_frontmatter" "tests/store/test_optional_field_hash_neutral.py::test_roundtrip_exact_with_optional_field_absent_from_disk" "tests/store/test_optional_field_hash_neutral.py::test_roundtrip_exact_with_optional_field_model"]}

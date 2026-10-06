@@ -1,0 +1,1 @@
+{:model/name "Alias" :model/version 1 :base [] :fields [{:name "symbol" :type :string :required true :description "Word." :py/annotation "<class 'str'>"} {:name "ref" :type :string :required true :description "What it names." :py/annotation "<class 'str'>"}] :template "# ⸢rev•symbol⸥\n\nRef: ⸢rev•ref⸥"}

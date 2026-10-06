@@ -1,0 +1,14 @@
+{
+ "title": "Execution Ready",
+ "id": "checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-execution-ready",
+ "status": "active",
+ "summary": "Confirms the task is ready to enter active execution.",
+ "tags": [
+  "primitive:checklist"
+ ],
+ "items": [
+  "Task can enter active execution"
+ ],
+ "condition_refs": [],
+ "mode": "all"
+}

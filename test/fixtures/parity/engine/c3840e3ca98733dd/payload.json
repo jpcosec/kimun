@@ -1,0 +1,11 @@
+{
+ "title": "references",
+ "direction": "directed",
+ "condition": "",
+ "name": "references",
+ "cardinality": "many_to_many",
+ "axis": "WHAT",
+ "description": "A field the model declared in `__references__` holds this document's id; the edge carries the field name.",
+ "source_types": [],
+ "target_types": []
+}

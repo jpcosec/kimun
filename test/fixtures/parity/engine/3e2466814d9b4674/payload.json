@@ -1,0 +1,12 @@
+{
+ "title": "Close operator to complete",
+ "id": "edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-close-to-complete",
+ "status": "active",
+ "summary": "Task closed.",
+ "tags": [
+  "primitive:edge"
+ ],
+ "source": "operator-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-close",
+ "target": "complete",
+ "condition_ref": ""
+}

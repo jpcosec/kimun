@@ -1,0 +1,12 @@
+{
+ "title": "Close task",
+ "id": "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-close",
+ "status": "active",
+ "summary": "Closes the task in the operational runtime.",
+ "tags": [
+  "primitive:operator"
+ ],
+ "action": "set_field",
+ "target": "status",
+ "value": "closed"
+}

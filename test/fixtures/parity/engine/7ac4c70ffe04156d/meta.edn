@@ -1,0 +1,1 @@
+{:op :render :tests ["tests/test_serve.py::test_batch_save_delete_removes_the_file_it_created"]}

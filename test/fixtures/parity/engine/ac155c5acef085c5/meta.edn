@@ -1,0 +1,1 @@
+{:op :render :tests ["tests/test_composition.py::test_board_doc_renders_composed_task_summaries" "tests/test_composition.py::test_composition_refs_resolve_against_the_root_not_the_cwd"]}

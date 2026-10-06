@@ -1,0 +1,1 @@
+{:model/name "SimpleBook" :model/version 1 :base [] :fields [{:name "title" :type :string :required true :description "Book title." :py/annotation "<class 'str'>"}] :template "# ⸢rev•title⸥"}

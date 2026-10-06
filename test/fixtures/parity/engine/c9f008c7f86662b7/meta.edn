@@ -1,0 +1,1 @@
+{:op :render :tests ["tests/selfdoc/test_python_scanner.py::test_rename_candidates_reject_ambiguous_matches"]}

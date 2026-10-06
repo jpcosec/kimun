@@ -1,0 +1,12 @@
+{
+ "title": "Close task",
+ "id": "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-close",
+ "status": "active",
+ "summary": "Closes the task in the operational runtime.",
+ "tags": [
+  "primitive:operator"
+ ],
+ "action": "set_field",
+ "target": "status",
+ "value": "closed"
+}

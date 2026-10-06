@@ -1,0 +1,1 @@
+{:op :render :tests ["tests/store/test_store_name_relpaths.py::test_renamed_store_stays_fully_readable"]}

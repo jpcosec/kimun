@@ -1,0 +1,1 @@
+{:op :extract :tests ["tests/store/test_hashing.py::test_hash_fields_deterministic" "tests/store/test_hashing.py::test_hash_fields_differs_on_data_change" "tests/store/test_hashing.py::test_hash_fields_ignores_non_field_content"]}

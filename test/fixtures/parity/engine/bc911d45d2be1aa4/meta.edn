@@ -1,0 +1,1 @@
+{:op :render :tests ["tests/store/test_semantic_export.py::test_export_kgdb_semantic_payload_api" "tests/store/test_semantic_export.py::test_stores_semantic_export_kgdb_json_from_tracked_store"]}

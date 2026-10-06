@@ -1,0 +1,5 @@
+{
+ "title": "Improve model editing",
+ "status": "active",
+ "goal": "Support safer contract editing from the CLI."
+}

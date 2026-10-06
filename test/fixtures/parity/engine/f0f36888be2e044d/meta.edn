@@ -1,0 +1,1 @@
+{:op :render :tests ["tests/store/test_optional_field_hash_neutral.py::test_model_extension_is_neutral_for_document_that_does_not_use_field" "tests/store/test_optional_field_hash_neutral.py::test_render_is_byte_identical_to_model_without_the_field"]}

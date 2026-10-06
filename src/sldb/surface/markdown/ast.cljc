@@ -79,6 +79,7 @@
     :thematic-break {:type :thematic-break :attrs {}}
     :quote          (quote-block host b)
     :list           (list-block host b)
+    :frontmatter    (opaque "markdown/frontmatter" (cst/block-text b))
     :html           (opaque "markdown/html" (cst/block-text b))
     :table          (opaque "markdown/table" (cst/block-text b))))
 
@@ -88,4 +89,4 @@
 (defn parse
   "Markdown text → neutral AST `{:type :document :attrs {} :children [...]}`."
   [host s]
-  {:type :document :attrs {} :children (blocks host (cst/parse s))})
+  {:type :document :attrs {} :children (blocks host (cst/parse-document s))})

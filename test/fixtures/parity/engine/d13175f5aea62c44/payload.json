@@ -1,0 +1,16 @@
+{
+ "title": "Testing Ready",
+ "id": "checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-testing-ready",
+ "status": "active",
+ "summary": "Confirms the task is ready for testing handoff.",
+ "tags": [
+  "primitive:checklist"
+ ],
+ "items": [
+  "Validation exists"
+ ],
+ "condition_refs": [
+  "condition-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-has-validation"
+ ],
+ "mode": "all"
+}

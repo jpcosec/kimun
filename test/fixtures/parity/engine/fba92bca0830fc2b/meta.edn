@@ -1,0 +1,1 @@
+{:op :render :tests ["tests/test_validation_semantics.py::test_render_validity_allows_optrev_identity_mismatch" "tests/test_validation_semantics.py::test_strict_roundtrip_enforces_all_markers"]}

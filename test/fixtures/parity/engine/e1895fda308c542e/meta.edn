@@ -1,0 +1,1 @@
+{:op :render :tests ["tests/store/test_cli_store.py::test_doc_add_creates_file_and_tracks"]}
