@@ -41,8 +41,9 @@
   "`[tree-id tree]` of the `models` taxonomy in `store`, or nil when no model
    has been defined yet."
   [store]
-  (first (filter (fn [[_ t]] (let [d (:descriptor t)] (and (= :taxonomy (:kind d)) (= tree-name (:name d)))))
-                 (sort-by key (:trees store)))))
+  (let [trees (:trees store)]
+    (first (keep (fn [tid] (let [t (get trees tid)] (when (= :taxonomy (get-in t [:descriptor :kind])) [tid t])))
+                 (revision/trees-named store tree-name)))))
 
 (defn- read-node [store id]
   (let [c (:content (revision/get-object store id))]

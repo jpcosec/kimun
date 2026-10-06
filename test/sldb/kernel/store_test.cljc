@@ -362,6 +362,31 @@
              (is (= (views (store/open (fs/backend dir) h)) (views final)))))))))
 
 #?(:clj
+   (deftest trees-named-is-the-scan-of-the-trees-and-is-carried-across-commits
+     ;; the name index of a lazy store: built once, then updated with the trees each commit adds
+     ;; (two trees may share a name; ids ascending), always equal to scanning the :trees view
+     (let [scan (fn [st n] (vec (sort (keep (fn [[tid t]] (when (= n (get-in t [:descriptor :name])) tid)) (:trees st)))))
+           names ["d1" "d2" "d21" "dup" "none"]
+           dup-plan (fn [st i] (-> (doc-plan st i) (assoc-in [:ops 1 :tree :name] "dup")))]
+       (doseq [force? [true false]]
+         (testing (if force? "index forced before every commit" "index never forced in between")
+           (let [[dir b _] (docs-store! 2 0)
+                 st (reduce (fn [st [i plan]]
+                              (when force? (rev/trees-named st "d1"))
+                              (let [st' (:store (store/commit! b st (plan st i)))]
+                                (doseq [n names] (is (= (scan st' n) (rev/trees-named st' n)) (str "commit " i " name " n)))
+                                st'))
+                            (store/open b h)
+                            [[21 doc-plan] [22 dup-plan] [23 doc-plan] [24 dup-plan]])
+                 fresh (store/open (fs/backend dir) h)
+                 eager (store/open (fs/backend dir) (dissoc h :lazy-maps))]
+             (is (= 2 (count (rev/trees-named st "dup"))))
+             (doseq [n names]
+               (is (= (rev/trees-named fresh n) (rev/trees-named st n) (rev/trees-named eager n) (scan fresh n)))))))
+       (is (= [] (rev/trees-named (let [b (fs/backend (tmp-dir))] (store/init! b h {"jp" :all}) (store/open b h)) "d1"))
+           "an empty store"))))
+
+#?(:clj
    (deftest open-checks-heads-edn-and-the-head-revisions
      (let [damaged (fn [f] (let [[dir b s] (docs-store! 2 1)] (f dir b s) (ex-of #(store/open b h))))
            node-id (fn [s] (some (fn [[id o]] (when (:class o) id)) (:objects s)))]

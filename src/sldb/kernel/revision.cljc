@@ -199,7 +199,8 @@
    the result, so that `apply-plan` can tell whether somebody forced it and
    derive the next one from it in O(plan) (`head-views`). Without the port (or
    for format 1) `base` is returned as is: the caller keeps the eager views
-   (`refresh-views`)."
+   (`refresh-views`). The index of `trees-named` is a third such memo (base key
+   :tree-names, {name sorted-set-of-tree-ids}, also kept only in the metadata)."
   [base]
   (if-let [lm (when-not (legacy? base) (ports/lazy-maps (:host base)))]
     (let [head (:head base)
@@ -207,14 +208,29 @@
           ids (delay (tree-ids core head))   ; enumerated at most once per view lineage, not once per scan
           trees (or (:trees base) (ports/lazy-map lm #(load-tree core % head) #(deref ids) {}))
           known (:edges base)
-          edges (if known (doto (delay known) deref) (delay (set (active-edges core head))))]
+          edges (if known (doto (delay known) deref) (delay (set (active-edges core head))))
+          named (:tree-names base)
+          names (if named
+                  (doto (delay named) deref)
+                  (delay (reduce (fn [m tid] (update m (:name (tree-descriptor core tid head)) (fnil conj (sorted-set)) tid))
+                                 {} @ids)))]
       (with-meta
         (ports/lazy-map lm
                         (fn [k] (when (= :edges k) @edges))
                         (constantly [:edges])
-                        (assoc (dissoc base :edges) :trees trees))
-        {::edges-view edges}))
+                        (assoc (dissoc base :edges :tree-names) :trees trees))
+        {::edges-view edges ::names-view names}))
     base))
+
+(defn trees-named
+  "Ascending ids of the trees of the head whose descriptor :name is `name`.
+   On a lazy store (`lazy-store`) the index name -> tree ids is built on the
+   first call, once per view lineage (one descriptor per tree), and carried to
+   the next head in O(plan) by `apply-plan`; otherwise the :trees view is scanned."
+  [store name]
+  (if-let [names (::names-view (meta store))]
+    (vec (get @names name))
+    (vec (sort (keep (fn [[tid t]] (when (= name (get-in t [:descriptor :name])) tid)) (:trees store))))))
 
 (defn refresh-views
   "The EAGER views of the head, for hosts without the LazyMaps port, in O(plan):
@@ -239,10 +255,22 @@
   [store trees' added removed]
   (if (ports/lazy-maps? (:host store))
     (let [view (::edges-view (meta store))
-          edges (when (and view (realized? view)) (reduce conj (reduce disj @view removed) added))]
+          edges (when (and view (realized? view)) (reduce conj (reduce disj @view removed) added))
+          nview (::names-view (meta store))
+          ;; a touched tree leaves the name it had in the previous head (its old value is in
+          ;; the previous :trees view, already loaded by the transaction) and joins its new one
+          names (when (and nview (realized? nview))
+                  (reduce (fn [m [tid t]]
+                            (let [old (get-in (:trees store) [tid :descriptor :name])
+                                  m (if (some? (get (:trees store) tid))
+                                      (let [s (disj (get m old) tid)] (if (empty? s) (dissoc m old) (assoc m old s)))
+                                      m)]
+                              (update m (get-in t [:descriptor :name]) (fnil conj (sorted-set)) tid)))
+                          @nview trees'))]
       ;; dissoc + seq + merge on a lazy map force nothing
       (lazy-store (cond-> (assoc (into {} (dissoc store :trees :edges)) :trees (merge (:trees store) trees'))
-                    edges (assoc :edges edges))))
+                    edges (assoc :edges edges)
+                    names (assoc :tree-names names))))
     (refresh-views store trees' added removed)))
 
 ;; ---------------------------------------------------------------- working state

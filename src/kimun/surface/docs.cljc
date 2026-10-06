@@ -29,6 +29,7 @@
             [sldb.kernel.err :as err]
             [sldb.kernel.node :as node]
             [sldb.kernel.ports :as ports]
+            [sldb.kernel.revision :as revision]
             [sldb.kernel.tree :as tree]
             [sldb.surface.markdown.ast :as ast]
             [sldb.surface.markdown.plan :as md]))
@@ -68,9 +69,18 @@
 (defn- id-of [host n] (:id (node/make host (:class n) (:kind n) (:content n))))
 
 (defn- edges-by-from
-  "`{from-node-id [edge …]}` over the active edges of `store` (one pass)."
+  "`{from-node-id [edge …]}` over the active edges of `store` (one pass), each
+   vector in ascending edge id (the order `edges-from` gives for one node)."
   [store]
-  (group-by :from (keep #(let [e (get-in store [:objects %])] (when (:from e) e)) (:edges store))))
+  (group-by :from (keep #(let [e (get-in store [:objects %])] (when (:from e) e)) (sort (:edges store)))))
+
+(defn- edges-from
+  "`{root [edge …]}` for the active edges leaving each of `roots`, in ascending
+   edge id: the entries of `edges-by-from` for those nodes, read through the
+   kernel's incidence index instead of the whole edge set."
+  [store roots]
+  (into {} (map (fn [r] [r (filterv #(= r (:from %)) (map #(get-in store [:objects %]) (revision/edges-touching store r)))]))
+        roots))
 
 (defn- target [store e] (get-in store [:objects (:to e)]))
 (defn- model-node? [n] (= mstore/blob-format (get-in n [:content :format])))
@@ -127,12 +137,15 @@
 (defn find-document "The tracked document named or identified by `token`, or nil." [store token]
   ;; same answer as the first match of `documents`, describing only the trees that can match
   ;; (a document's :name is its tree's descriptor name and its :tree the tree id): every write
-  ;; (create, fields set, edit) resolves its document here, so it must not describe all of them
-  (let [current (mstore/models store) by-from (edges-by-from store)]
-    (->> (:trees store)
-         (filter (fn [[tid t]] (and (= :document (get-in t [:descriptor :kind]))
-                                    (or (= token tid) (= token (get-in t [:descriptor :name]))))))
-         (keep #(describe store current by-from %)) (sort-by (juxt :name :tree)) first)))
+  ;; (create, fields set, edit) resolves its document here, so it must cost what the matching
+  ;; trees cost: the name index of the kernel, then the edges of those roots only
+  (let [trees (:trees store)
+        cands (->> (cons token (revision/trees-named store token)) distinct
+                   (keep (fn [tid] (when-let [t (get trees tid)] [tid t])))
+                   (filter (fn [[_ t]] (= :document (get-in t [:descriptor :kind])))))]
+    (when (seq cands)
+      (let [current (mstore/models store) by-from (edges-from store (map (comp tree/root second) cands))]
+        (->> cands (keep #(describe store current by-from %)) (sort-by (juxt :name :tree)) first)))))
 
 (defn payload-of
   "`{:payload p}` of document `doc` under its model's current contract, or
