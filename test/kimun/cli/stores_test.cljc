@@ -366,11 +366,21 @@
         local (init-in a "shadow")
         e (run a "stores" "show" "--store" (str (fs/path local)))]
     (is (= "shadow" (get-in e [:data :name])))
-    (testing "a relative existing path (cwd-relative) is a path, not a link"
-      (let [cwd (System/getProperty "user.dir")
-            rel (str (fs/relativize cwd (fs/path local)))
-            e2 (run a "stores" "show" "--store" rel)]
+    (testing "a relative existing path is read against the command's cwd and is a path, not a link"
+      (let [e2 (run a "stores" "show" "--store" "shadow")]
         (is (= "shadow" (get-in e2 [:data :name])) (pr-str e2))))))
+
+;; A directory of the PROCESS cwd must not shadow a link: `--store` is relative to the
+;; command's cwd. The test process runs at the repository root, where `src/` exists.
+(deftest a-directory-of-the-process-cwd-does-not-shadow-a-link
+  (let [root (tmp)
+        a (init-in root "a")
+        _b (init-in root "b")
+        _ (run a "stores" "link" "src" "../b")
+        e (run a "stores" "show" "--store" "src")]
+    (is (fs/exists? (fs/path (System/getProperty "user.dir") "src")))
+    (is (true? (:ok e)) (pr-str e))
+    (is (= "b" (get-in e [:data :name])))))
 
 (deftest unknown-store-name-is-no-store-and-says-it-is-not-a-link
   (let [root (tmp)

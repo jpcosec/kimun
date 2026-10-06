@@ -78,7 +78,8 @@
 (defn resolve-store
   "Store directory for `opts` (parsed options), `env` (environment map) and
    `cwd`: `--store` > `KIMUN_STORE` > `(discover cwd)`. Nil when none.
-   A `--store` value that is not an existing path (neither itself nor
+   A relative `--store` value is read against `cwd`, never against the
+   process directory. A `--store` value that is not an existing path (neither itself nor
    holding a `.kimun`) and looks like a link name is looked up as a link
    registered in the current store or an ancestor store (nearest wins); an
    existing path always wins over a link of the same name. A bare name that
@@ -87,11 +88,12 @@
    raises)."
   [opts env cwd]
   (cond (:store opts)
-        (let [v (str (:store opts))]
-          (if (or (fs/exists? v) (store? (fs/path v dirname)) (not (re-matches link-name-re v)))
-            (normalize-store-path v)
+        (let [v (str (:store opts))
+              at (str (if (fs/absolute? v) v (fs/path (or cwd ".") v)))]
+          (if (or (fs/exists? at) (not (re-matches link-name-re v)))
+            (normalize-store-path at)
             (or (link-target v env cwd)
-                (let [p (normalize-store-path v)]
+                (let [p (normalize-store-path at)]
                   (err/raise :cli/no-store
                              (str "no kimun store at " p "; " (pr-str v) " is not a registered link either (current or ancestor stores)")
                              {:path p :name v})))))
