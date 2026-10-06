@@ -11,6 +11,7 @@
             [clojure.java.io :as io]
             [clojure.string :as str]
             [kimun.cli.commands.docs :as docs]
+            [kimun.cli.compose :as compose]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
             [kimun.surface.docs :as tdocs]
@@ -89,8 +90,9 @@
    read under the contract the store holds NOW (the one the document was
    written with) and only then rendered with the new one — extracting an old
    text with a new template misaligns every section after the first change.
-   Raises `:models/invalid` when a document lacks a required field without default."
-  [store descriptor]
+   `ctx` is the composition context (`kimun.cli.compose/context`), so a
+   composed field is re-expanded against the project root. Raises `:models/invalid` when a document lacks a required field without default."
+  [store descriptor ctx]
   (let [current (:descriptor (mstore/find-model store (:model/name descriptor)))
         known (set (map :name (:fields current)))
         added (remove #(or (known (:name %)) (contains? % :default) (not (:required %))) (:fields descriptor))]
@@ -106,7 +108,7 @@
                                                 ": give the field a default or fix the document first (" (ex-message e) ")")
                                            {:model (:model/name descriptor) :document (:name doc) :field (:field (ex-data e))})))]
              {:name (:name doc) :path (:path doc) :source (:source doc)
-              :text (str (render/render descriptor payload) "\n")})))))
+              :text (str (render/render descriptor payload ctx) "\n")})))))
 
 (defn- backfill!
   "Commits one `docs update` per document in `todo` (rewriting its file) on top
@@ -132,7 +134,7 @@
   [descriptor opts ctx command]
   (let [{:keys [backend store] d :descriptor path :path} (open-store opts ctx)
         _ (edit/check-template! (descriptor/validate! descriptor))
-        todo (filterv #(not= (:text %) (:source %)) (rewrites store descriptor))
+        todo (filterv #(not= (:text %) (:source %)) (rewrites store descriptor (compose/context store path)))
         r (mstore/define-plan host/host store descriptor {:actor (:actor opts) :timestamp (docs/timestamp)
                                :tree-id (ports/ulid (:ids host/host))})
         data (-> (dissoc r :plan) (assoc :unchanged? (boolean (:unchanged r)) :backfill (mapv :name todo)) (dissoc :unchanged))]

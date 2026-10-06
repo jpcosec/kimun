@@ -10,6 +10,8 @@
             [clj-yaml.core :as yaml]
             [clojure.string :as str]
             [clojure.walk :as walk]
+            [kimun.cli.compose :as compose]
+            [kimun.cli.linked :as linked]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
             [kimun.surface.docs :as tdocs]
@@ -199,21 +201,47 @@
                   :headings (:headings r)
                   :frontmatter (:frontmatter r)}))))
 
+(defn- bind-model!
+  "Commits the binding of the foreign model `m` (`kimun.cli.linked/import-plan`)
+   when there is one to write; returns the store to go on with."
+  [backend store m opts]
+  (if-let [plan (linked/import-plan host/host store m {:actor (:actor opts) :timestamp (timestamp)
+                                                       :tree-id (ports/ulid (:ids host/host))})]
+    (:store (store/commit! backend store plan))
+    store))
+
+(defn- refuse-tracked! [store name]
+  (when (tdocs/find-document store name)
+    (err/raise :docs/exists (str "a document named `" name "` already exists") {:document name})))
+
 (defn create
   "`docs create MODEL NAME --data FILE | --set field=value… [--path P]`:
-   renders the payload with the model, tracks it and writes the file (default
-   `NAME.md` in the working directory). Data: the document map."
-  [args opts {:keys [cwd] :as ctx}]
-  (let [model (require-arg! args 0 "a MODEL" "create") name (require-arg! args 1 "a document NAME" "create")
-        {:keys [backend descriptor store] store-path :path} (open opts ctx)
+   renders the payload with the model (its compositions expanded against the
+   project root, `kimun.cli.compose/context`), tracks it and writes the file
+   (default `NAME.md` in the working directory). MODEL may live in a linked
+   store — `ALIAS:Model`, or a bare name only a linked store defines — and
+   `--store` may be the ALIAS of a linked store (`kimun.cli.linked`); with an
+   alias `--path` is relative to that store's project root, as in v1. A
+   foreign model is bound in the store, in its own commit, only once the
+   document has passed every check. Data: the document map."
+  [args opts {:keys [env cwd]}]
+  (let [token (require-arg! args 0 "a MODEL" "create") name (require-arg! args 1 "a document NAME" "create")
+        {:keys [opened alias home]} (linked/target opts env cwd)
+        {:keys [backend descriptor store] store-path :path} opened
+        payload (read-payload opts cwd)
+        {model :name d :descriptor :as m} (linked/resolve-model opened home token)
         root (project-root store-path)
-        path (relative-path root (fs/path cwd (or (:path opts) (str name ".md"))))
-        {:keys [plan text]} (tdocs/create-plan host/host store model name (read-payload opts cwd)
-                                               {:doc (ports/ulid (:ids host/host)) :tree-id (ports/ulid (:ids host/host))
-                                                :path path :actor (:actor opts) :timestamp (timestamp)})
-        _ (refuse-noise! model (:descriptor (mstore/model store model)) name text)
+        path (relative-path root (fs/path (if alias root cwd) (or (:path opts) (str name ".md"))))
+        text (str (mrender/render d payload (compose/context store store-path)) "\n")
+        _ (refuse-tracked! store name)
+        _ (mextract/extract d text)
+        _ (refuse-noise! model d name text)
         _ (when (fs/exists? (fs/path root path))
             (err/raise :docs/conflict (str "the file " path " already exists; choose another --path") {:path path}))
+        store (bind-model! backend store m opts)
+        {:keys [plan]} (tdocs/track-plan host/host store model name text
+                                         {:doc (ports/ulid (:ids host/host)) :tree-id (ports/ulid (:ids host/host))
+                                          :path path :actor (:actor opts) :timestamp (timestamp) :operation "docs create"})
         r (store/commit! backend store plan)]
     (done "docs create" descriptor store-path r (:store r) name {:warnings (write-file! root path text)})))
 
@@ -221,21 +249,25 @@
   "`docs track MODEL FILE [--name N]`: tracks an existing Markdown file as a
    document of MODEL (the file is not rewritten). A file that does not
    round-trip — rendering its extracted payload gives another text — is
-   refused (`docs/not-idempotent`) unless `--force`. Data: the document map."
-  [args opts {:keys [cwd] :as ctx}]
-  (let [model (require-arg! args 0 "a MODEL" "track") file (require-arg! args 1 "a Markdown FILE" "track")
+   refused (`docs/not-idempotent`) unless `--force`. MODEL and `--store`
+   accept a linked store as in `docs create`. Data: the document map."
+  [args opts {:keys [env cwd]}]
+  (let [token (require-arg! args 0 "a MODEL" "track") file (require-arg! args 1 "a Markdown FILE" "track")
         [p text] (read-file! file cwd)
-        {:keys [backend descriptor store] store-path :path} (open opts ctx)
+        {:keys [opened home]} (linked/target opts env cwd)
+        {:keys [backend descriptor store] store-path :path} opened
         name (name-of opts p)
-        d (:descriptor (mstore/model store model))
+        {model :name d :descriptor :as m} (linked/resolve-model opened home token)
+        _ (refuse-tracked! store name)
         _ (when-not (:force opts)
             ;; noise first: a dropped frontmatter key would otherwise surface as a bare round-trip failure
             (refuse-noise! model d name text)
-            (let [again (mrender/render d (mextract/extract d text))]
+            (let [again (mrender/render d (mextract/extract d text) (compose/context store store-path))]
               (when (not= (str/trim again) (str/trim text))
                 (err/raise :docs/not-idempotent
                            (str "`" file "` does not round-trip under " model ": rendering what was extracted gives a different text; fix the file or pass --force")
                            {:document name :model model}))))
+        store (bind-model! backend store m opts)
         {:keys [plan]} (tdocs/track-plan host/host store model name text
                                          {:doc (ports/ulid (:ids host/host)) :tree-id (ports/ulid (:ids host/host))
                                           :path (relative-path (project-root store-path) p) :actor (:actor opts) :timestamp (timestamp)})
@@ -251,7 +283,8 @@
         root (project-root store-path)
         payload? (or (:data opts) (seq (:set opts)))
         m (when payload? (:descriptor (mstore/model store (:model doc))))
-        text (cond payload? (str (mrender/render m (merge (:payload (tdocs/document store (:name doc))) (read-payload opts cwd))) "\n")
+        text (cond payload? (str (mrender/render m (merge (:payload (tdocs/document store (:name doc))) (read-payload opts cwd))
+                                                    (compose/context store store-path)) "\n")
                    (get args 1) (second (read-file! (get args 1) cwd))
                    (:path doc) (second (read-file! (str (fs/path root (:path doc))) cwd))
                    :else (err/raise :cli/usage "`docs update` needs a FILE, --data or --set for a document without a file" {}))
