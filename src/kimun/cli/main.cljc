@@ -8,7 +8,9 @@
             [kimun.cli.args :as args]
             [kimun.cli.commands.direct :as direct]
             [kimun.cli.commands.docs :as docs]
+            [kimun.cli.commands.fields :as fields]
             [kimun.cli.commands.models :as models]
+            [kimun.cli.commands.sections :as sections]
             [kimun.cli.commands.semantic :as semantic]
             [kimun.cli.commands.journal :as journal]
             [kimun.cli.commands.links :as links]
@@ -26,6 +28,8 @@
             (if-let [f (get links/commands sub)]
               (f args opts ctx)
               (docs/dispatch sub args opts ctx)))
+   "fields" fields/dispatch
+   "sections" sections/dispatch
    "journal" journal/dispatch
    "semantic" semantic/dispatch
    "serve" serve/dispatch
@@ -38,7 +42,7 @@
   "The option spec of every group, merged: a group declares its own options
    in its `spec` var, so adding a group never edits `kimun.cli.args`. Two
    groups may share an option name only with the same meaning."
-  (merge stores/spec docs/spec journal/spec serve/spec models/spec direct/spec links/spec semantic/spec))
+  (merge stores/spec docs/spec journal/spec serve/spec models/spec direct/spec links/spec semantic/spec fields/spec sections/spec))
 
 (def usage
   "Usage text shown by `kimun`, `kimun help` and `--help`."
@@ -78,6 +82,9 @@
              "                              MODEL (or --model): X.edn | model NAME in the store | module:Class"
              "  docs recover DOC [--depth N] [--links-only]   the [[links]] of a document and where they resolve"
              "  docs compose DOC [-o FILE|-]                  expand ![[transclusions]] into composed Markdown"
+             "  fields get DOC PATH · schema MODEL [FIELD] · query FIELD [--where EXPR] [--model M]"
+             "  fields set|append DOC PATH VALUE · unset|clear DOC PATH · clean DOC PATH [--dedupe] [--drop-empty]"
+             "  sections list DOC · fields DOC SECTION · find [TERM] [--in physical|semantic|both] [--regex] [--fuzzy] [--where EXPR]"
              "  semantic show [TAG] | tags [PREFIX]            a tag (parents, children, equivalents, documents) or the DAG; list tags"
              "  semantic parent-add|parent-remove CHILD PARENT · equivalent-add A B · export [-o FILE]"
              "  journal show [--limit N] [--by ACTOR] [--tree NAME|ID]   the write history, newest first (a view of the log)"
