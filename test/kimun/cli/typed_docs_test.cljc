@@ -190,6 +190,25 @@
       (is (= [] (:warnings (run p "stores" "check"))))
       (is (true? (:ok (run p "stores" "verify")))))))
 
+;; v1: test_validate_reports_without_promoting (against documents), test_models_validate_rejects_draft_with_unknown_field_reference
+(deftest models-check-validates-the-documents
+  (let [p (project)]
+    (run p "docs" "create" "TicketDoc" "login" "--set" "title=T" "--set" "status=open")
+    (let [ok (run p "models" "check" "TicketDoc")]
+      (is (true? (:ok ok)) (pr-str ok))
+      (is (= 1 (get-in ok [:data :models 0 :documents]))))
+    (testing "a draft that the tracked document cannot satisfy is reported, and nothing is defined"
+      (spit (file p "draft.edn")
+            (pr-str {:model/name "TicketDoc" :model/version 1 :base []
+                     :fields [{:name "title" :type :string :required true :description "Title."}
+                              {:name "status" :type [:enum "todo" "done"] :required true :description "Status."}]
+                     :template "# ⸢rev•title⸥\n\nStatus: ⸢rev•status⸥\n"}))
+      (let [bad (run p "models" "check" "-f" "draft.edn")]
+        (is (false? (:ok bad)))
+        (is (= 3 (:exit bad)))
+        (is (re-find #"document `login`" (get-in bad [:error :message])))
+        (is (= 1 (:version (first (:data (run p "models" "list"))))))))))
+
 (deftest hashes-are-v1-s
   ;; v1: test_hash_text_deterministic, test_hash_text_sensitive, test_hash_text_hex_64, test_hash_fields_deterministic,
   ;;     test_hash_fields_ignores_non_field_content, test_hash_fields_differs_on_data_change

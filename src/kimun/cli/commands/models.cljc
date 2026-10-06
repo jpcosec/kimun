@@ -209,7 +209,9 @@
 (defn check
   "`models check [NAME] [-f DRAFT.edn]`: validates the draft file, the named
    model, or every model of the store (shape, types, defaults, bases defined,
-   `:state`). Data `{:ok :models [{:name :ok :errors [..]}]}`; any error is
+   `:state`) and, in a store, every document of each model against that
+   contract (a draft is checked against the documents of the model it would
+   replace). Data `{:ok :models [{:name :ok :errors [..] (:documents n)}]}`; any error is
    the failure `models/invalid` (exit 3) carrying the same report."
   [args opts {:keys [env cwd] :as ctx}]
   (let [dir (cli-store/resolve-store opts env cwd)
@@ -219,8 +221,15 @@
         targets (cond (:file opts) [(read-descriptor-file (:file opts) cwd)]
                       (first args) [(:descriptor (mstore/model (:store (or opened (open-store opts ctx))) (first args)))]
                       :else (mapv :descriptor defined))
-        report (mapv (fn [d] (let [errs (problems d (conj known (:model/name d)))]
-                               {:name (:model/name d) :ok (empty? errs) :errors errs}))
+        docs-of (fn [d] (if opened (tdocs/of-model (:store opened) (:model/name d)) []))
+        doc-errors (fn [d] (vec (for [doc (docs-of d)
+                                      :let [why (try (extract/extract d (:source doc)) nil
+                                                     (catch clojure.lang.ExceptionInfo e (ex-message e)))]
+                                      :when why]
+                                  (str "document `" (:name doc) "`: " why))))
+        report (mapv (fn [d] (let [errs (into (vec (problems d (conj known (:model/name d)))) (doc-errors d))]
+                               (cond-> {:name (:model/name d) :ok (empty? errs) :errors errs}
+                                 (seq (docs-of d)) (assoc :documents (count (docs-of d))))))
                      targets)]
     (if (every? :ok report)
       (out/ok "models check" {:store (when opened (store-ref (:descriptor opened) (:path opened)))
