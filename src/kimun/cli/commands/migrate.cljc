@@ -106,8 +106,10 @@
   "Migrates the v1 store at `v1-dir` into the kimun store at `dir` (created
    when absent, except on `:dry-run`). `opts`: `:export` (`(fn [model-ref])
    descriptor`), `:only`, `:limit`, `:force`, `:dry-run`, `:actor`, `:name`.
-   Returns `{:path :descriptor :head :report :elapsed-ms}`; raises
-   `:migrate/not-v1-store`."
+   When it committed anything it refreshes the store's open snapshot
+   (`kimun.cli.store/write-snapshot!`, from a fresh replay) so the commands
+   that follow do not replay the whole log. Returns `{:path :descriptor :head
+   :snapshot? :report :elapsed-ms}`; raises `:migrate/not-v1-store`."
   [dir v1-dir {:keys [dry-run actor] :as opts}]
   (let [plan (migrate/select (migrate/read-v1 (source-fns v1-dir)) opts)
         t0 (System/currentTimeMillis)
@@ -119,15 +121,18 @@
         store (or store {:head nil})
         [s1 ms] (fold define-model {:backend backend :store store :descs {} :known known} (:models plan) ctx)
         [s2 ds] (fold migrate-document s1 (:documents plan) ctx)
-        ls (if (cli-store/store? dir) (mapv #(link-store dir (:v1-root ctx) % dry-run) (:links plan)) [])]
+        ls (if (cli-store/store? dir) (mapv #(link-store dir (:v1-root ctx) % dry-run) (:links plan)) [])
+        changed? (and backend (not dry-run) (not= (:head store) (:head (:store s2))))]
     {:path dir :descriptor d :head (:head (:store s2))
+     :snapshot? (boolean (when changed? (cli-store/write-snapshot! dir (store/open backend host/host))))
      :report (migrate/report {:models ms :documents ds :links ls})
      :elapsed-ms (- (System/currentTimeMillis) t0)}))
 
 (defn migrate
   "`migrate --from-v1 [PATH]`: PATH (default `.sldb` beside the kimun store)
    is a v1 store directory or the project that holds it. Data: the report of
-   `kimun.surface.migrate/report` plus `:from`, `:dry-run?`, `:elapsed-ms`.
+   `kimun.surface.migrate/report` plus `:from`, `:dry-run?`, `:snapshot?`
+   (the open snapshot was refreshed) and `:elapsed-ms`.
    Fails `migrate/not-v1-store` (exit 5) when PATH is not one, `cli/usage`
    without `--from-v1`, and `migrate/nothing-migrated` (exit 5, the report in
    its data) when there was work and no item was migrated or already there."
@@ -145,7 +150,7 @@
         r (run! dir v1-dir {:export export :only (:only opts) :limit limit :force (:force opts) :dry-run (:dry-run opts)
                             :actor (or (:actor opts) (get env "USER") "kimun") :name (:name opts)})
         rep (:report r)
-        data (assoc rep :from (rel (fs/parent (:path r)) v1-dir) :dry-run? (boolean (:dry-run opts)) :elapsed-ms (:elapsed-ms r))
+        data (assoc rep :from (rel (fs/parent (:path r)) v1-dir) :dry-run? (boolean (:dry-run opts)) :snapshot? (:snapshot? r) :elapsed-ms (:elapsed-ms r))
         work (+ (get-in rep [:models :total]) (get-in rep [:documents :total]))
         landed (reduce + (for [k [:models :documents] b [:migrated :skipped]] (get-in rep [k b])))]
     (if (and (pos? work) (zero? landed))
