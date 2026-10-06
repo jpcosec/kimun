@@ -85,24 +85,28 @@
 
 (defn- rewrites
   "For each document of the model `descriptor` redefines: `{:name :path :text
-   :source}` with `:text` its Markdown under the new contract. Raises
-   `:models/invalid` when a document lacks a required field without default."
+   :source}` with `:text` its Markdown under the new contract. The payload is
+   read under the contract the store holds NOW (the one the document was
+   written with) and only then rendered with the new one — extracting an old
+   text with a new template misaligns every section after the first change.
+   Raises `:models/invalid` when a document lacks a required field without default."
   [store descriptor]
-  (vec (for [doc (tdocs/of-model store (:model/name descriptor))
-             :let [known (set (map :name (:fields (:descriptor (mstore/find-model store (:model/name descriptor))))))
-                   added (remove #(or (known (:name %)) (contains? % :default) (not (:required %))) (:fields descriptor))]]
-         (let [payload (try (let [p (extract/extract descriptor (:source doc))]
-                              (when-let [f (first (filter #(contains? #{nil ""} (get p (:name %))) added))]
-                                (throw (ex-info (str "no value for `" (:name f) "`") {:field (:name f)})))
-                              p)
-                            (catch clojure.lang.ExceptionInfo e
-                              (err/raise :models/invalid
-                                         (str "document `" (:name doc) "` lacks required field"
-                                              (when-let [f (:field (ex-data e))] (str " `" f "`"))
-                                              ": give the field a default or fix the document first (" (ex-message e) ")")
-                                         {:model (:model/name descriptor) :document (:name doc) :field (:field (ex-data e))})))]
-           {:name (:name doc) :path (:path doc) :source (:source doc)
-            :text (str (render/render descriptor payload) "\n")}))))
+  (let [current (:descriptor (mstore/find-model store (:model/name descriptor)))
+        known (set (map :name (:fields current)))
+        added (remove #(or (known (:name %)) (contains? % :default) (not (:required %))) (:fields descriptor))]
+    (vec (for [doc (tdocs/of-model store (:model/name descriptor))]
+           (let [payload (try (let [p (extract/extract (or current descriptor) (:source doc))]
+                                (when-let [f (first (filter #(contains? #{nil ""} (get p (:name %))) added))]
+                                  (throw (ex-info (str "no value for `" (:name f) "`") {:field (:name f)})))
+                                (descriptor/finalize descriptor p))
+                              (catch clojure.lang.ExceptionInfo e
+                                (err/raise :models/invalid
+                                           (str "document `" (:name doc) "` lacks required field"
+                                                (when-let [f (:field (ex-data e))] (str " `" f "`"))
+                                                ": give the field a default or fix the document first (" (ex-message e) ")")
+                                           {:model (:model/name descriptor) :document (:name doc) :field (:field (ex-data e))})))]
+             {:name (:name doc) :path (:path doc) :source (:source doc)
+              :text (str (render/render descriptor payload) "\n")})))))
 
 (defn- backfill!
   "Commits one `docs update` per document in `todo` (rewriting its file) on top

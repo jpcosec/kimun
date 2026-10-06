@@ -245,3 +245,25 @@
     (is (= [{:name "free"} {:name "t" :model "TicketDoc"}] (mapv #(select-keys % [:name :model]) (:data (run p "docs" "list")))))
     (is (= "# Free\n\ntext\n" (:data (run p "docs" "render" "free"))))
     (is (string? (:data (run p "docs" "render" "t"))) "a typed document renders its tree too")))
+
+(deftest backfill-reads-under-the-old-contract-and-renders-under-the-new
+  ;; regression (smoke 2026-10-06): the backfill extracted the old text with the
+  ;; NEW template, so a section added after `## Body` swallowed the body text
+  ;; and the default never appeared.
+  (let [proj (str (fs/create-temp-dir {:prefix "kimun-backfill-"}))
+        run (fn [& argv] (:envelope (main/run argv {"USER" "tester"} proj)))]
+    (run "stores" "init")
+    (spit (str (fs/path proj "ticket.edn")) (slurp "test/fixtures/models/ticket.edn"))
+    (is (true? (:ok (run "models" "define" "-f" "ticket.edn"))))
+    (is (true? (:ok (run "docs" "create" "TicketDoc" "login" "--set" "title=Broken login" "--set" "body=Users cannot log in."))))
+    (let [e (run "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--default" "5" "--backfill")
+          payload (get-in (run "docs" "show" "login") [:data :payload])
+          text (slurp (str (fs/path proj "login.md")))]
+      (is (true? (:ok e)) (pr-str e))
+      (is (= ["login"] (get-in e [:data :backfilled])))
+      (is (= "Users cannot log in." (get payload "body")) "the body keeps its text")
+      (is (= 5 (get payload "priority")) "the new field carries its default")
+      (is (= "Broken login" (get payload "title")))
+      (is (re-find #"## Body\n\nUsers cannot log in\." text))
+      (is (re-find #"(?i)priority[\s\S]*5" text))
+      (is (= "intact" (name (get-in (run "docs" "show" "login") [:data :state])))))))
