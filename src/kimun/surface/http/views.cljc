@@ -6,7 +6,6 @@
    commands and surface functions. Nothing here edits a command."
   (:require [babashka.fs :as fs]
             [cheshire.core :as json]
-            [clojure.string :as str]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
             [kimun.surface.docs :as docs]
@@ -150,7 +149,10 @@
   (case action
     "create" (override {"docs/exists" 409}
                        (with-payload payload #(run-command ctx ["docs" "create" (str model) (str id) "--data" %])))
-    "update" (with-payload payload #(run-command ctx ["docs" "update" (str id) "--data" %]))
+    "update" (let [e (shown ctx id)]
+               (if (:ok e)
+                 (with-payload payload #(run-command ctx ["docs" "update" (str id) "--data" %]))
+                 e))
     "delete" (run-command ctx ["docs" "delete" (str id) "--yes"])))
 
 (def ^:private order {"create" 0 "update" 1 "delete" 2})
@@ -217,7 +219,7 @@
 (defn- segment-failure [e]
   (let [t (some-> (ex-data e) :type name-or-str)]
     (fail (or (some-> (ex-data e) :type) :serve/segments) (ex-message e) (dissoc (ex-data e) :type)
-          (cond (nil? t) 70 (str/ends-with? t "missing") 1 :else 3))))
+          (cond (nil? t) 70 :else 3))))
 
 (defn document-segments
   "`GET /document/segments?id=`: `segments/document-segments` over the
@@ -238,7 +240,7 @@
   "`POST /extract/segments {model, markdown}`: `segments/extract-segments`."
   [request ctx]
   (let [{:keys [model markdown]} (:json request)]
-    (if-not (and (string? model) (string? markdown))
+    (if-not (and (string? model) (seq model) (string? markdown))
       (fail :serve/bad-body "Expected {model: str, markdown: str}." {} 6)
       (let [{:keys [store descriptor] p :path} (open-store ctx)
             m (mstore/model store model)]

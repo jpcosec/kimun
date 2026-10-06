@@ -34,6 +34,16 @@
     (let [e (handler request ctx)]
       (cond-> e (= "index/not-indexed" (some-> e :error :type str (str/replace #"^:" ""))) (assoc-in [:error :data :kind] "not_indexed")))))
 
+(defn- unknown-id-is-empty
+  "v1 answered an unknown `id` of `/edges` with 200 and no edges; the command
+   fails `edges/missing` (404): turn that one failure into the empty view."
+  [handler]
+  (fn [request ctx]
+    (let [e (handler request ctx)]
+      (if (and (not (:ok e)) (param request :id) (= "edges/missing" (some-> e :error :type str (str/replace #"^:" ""))))
+        (out/ok "edges show" {:store (:store e) :data {:from (param request :id) :to nil :relation nil :count 0 :edges [] :authored []}})
+        e))))
+
 (defn- ingest
   "`POST /docs/ingest` `{name, markdown}`: writes the markdown to a temporary
    file and runs `docs ingest FILE --name NAME`."
@@ -65,10 +75,17 @@
           :else (run-command ctx (cond-> ["docs" "track" model path] name (into ["--name" name]))))))
 
 (defn- untrack
-  "`POST /docs/untrack` `{doc}`: `docs untrack NAME` (the file stays)."
+  "`POST /docs/untrack` `{doc}` (or v1's `{name}`): `docs untrack NAME` (the file stays)."
   [request ctx]
-  (let [{doc :doc} (:json request)]
-    (if (and (string? doc) (seq doc)) (run-command ctx ["docs" "untrack" doc]) (v/missing-parameter :doc))))
+  (let [{:keys [doc name]} (:json request)
+        doc (or doc name)]
+    (if (and (string? doc) (seq doc))
+      (let [before (run-command ctx ["docs" "show" doc])
+            e (if (:ok before) (run-command ctx ["docs" "untrack" doc]) before)]
+        (if (:ok e)
+          (update e :data assoc :content-hash (get-in before [:data :content-hash]))
+          e))
+      (v/missing-parameter :doc))))
 
 (defn- document
   "`GET /document?id=`: the document map (`docs show`) with its AST (`docs show
@@ -80,6 +97,7 @@
             a (when (:ok s) (run-command ctx ["docs" "show" id "--ast"]))]
         (cond (not (:ok s)) s
               (not (:ok a)) a
+              (:error (:data s)) (fail :document/unbuildable (:error (:data s)) {:document id :state (:state (:data s))} 3)
               :else (assoc s :data (if only-ir?
                                      {:id id :ir (get-in a [:data :ast])}
                                      (assoc (:data s) :id id :ir (get-in a [:data :ast]))))))
@@ -187,13 +205,15 @@
    {:method :get :path "/sections" :handler (command-route ["sections" "list"] :positional [:doc] :required [:doc])}
    ;; find
    {:method :get :path "/find"
-    :handler (command-route ["find"] :positional [:q] :required [:q]
-                            :query {:in "--in" :type "--type" :where "--where" :select "--select" :limit "--limit"}
-                            :argv-fn (flag-argv :fuzzy "--fuzzy" :regex "--regex" :global "--global"))}
+    :handler (->> (command-route ["find"] :positional [:q] :required [:q]
+                                 :query {:in "--in" :type "--type" :where "--where" :select "--select" :limit "--limit"}
+                                 :argv-fn (flag-argv :fuzzy "--fuzzy" :regex "--regex" :global "--global"))
+                  (overriding {"query/bad-where" 400}))}
    ;; edges
    {:method :get :path "/edges"
-    :handler (command-route ["edges" "show"] :positional [:id]
-                            :query {:from "--from" :to "--to" :relation "--relation"})}
+    :handler (->> (command-route ["edges" "show"] :positional [:id]
+                                 :query {:from "--from" :to "--to" :relation "--relation"})
+                  unknown-id-is-empty)}
    {:method :get :path "/edges/node" :handler (command-route ["edges" "node"] :positional [:id] :required [:id])}
    {:method :get :path "/edges/nodes" :handler (command-route ["edges" "nodes"] :query {:type "--type"})}
    ;; graph analysis
