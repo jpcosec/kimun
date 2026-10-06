@@ -1,0 +1,169 @@
+;; v1 tests with no kimun counterpart by design: mechanism, why kimun has none, what holds the promise now.
+;; Checked by scripts/parity/coverage.py (see its docstring).
+{
+ "api/test_api_creation.py::test_cli_stores_init_still_exits_zero_on_an_existing_store"
+ "v1 `stores init` on an existing store was idempotent: exit 0 with the info 'Use --force to reinitialize.'. kimun refuses explicitly (cli/store-exists, exit 5) and has no --force (parity-v1.md deviation). A deliberate change, not a lost promise: the store is left intact. Equivalent: kimun.cli.stores-test/second-init-is-store-exists and kimun.parity.cli-store-test/second-store-init-leaves-the-store-intact."
+
+ "api/test_api_documents.py::test_payload_paths_are_the_cli_helpers"
+ "v1 checked that the api module re-exported the same deep_get/deep_set/deep_delete/ensure_list objects as cli.dict_utils (identity of two Python modules' helpers) plus their semantics. kimun has one surface (kimun.surface.* behind the CLI), no parallel api/cli helper copies, and payloads are edited through `docs update --set` and typed validation, not dict-path helpers (parity-v1.md: models are EDN data, surfaces retired per 06 §8). The module-identity promise has no equivalent; nested-key change reporting is held by kimun.cli.typed-docs-test/changed-paths-include-dotted-nested-keys."
+
+ "api/test_api_edges.py::test_a_write_leaves_a_shard_per_document_model_and_store"
+ "v1 mechanism: per-document, per-model and per-store edge-index shard files on a hash chain. kimun keeps no side-file indexes or shards (ledger, Desviaciones deliberadas): the graph is a view derived from (store, head), and a write only creates the tree objects on the path to the root. The equivalent promise (a write touches only what changed; unchanged subtrees are shared) is held by sldb.kernel.tree-test/dirty-set-is-exactly-the-path-to-root and sldb.kernel.tree-test/identical-subtrees-share-objects; at CLI level kimun.parity.edges-test/editing-one-document-changes-only-that-document."
+
+ "api/test_field_blocks.py::test_insert_field_block_with_and_without_final_newline"
+ "v1 edited the Python SOURCE of a model class (inserting a `name: type = Field(...)` block, with or without a final newline). kimun models are EDN data (ledger deviation), so there is no source text to splice. The promise that adding a field changes only that field is held by kimun.cli.models-test/field-add-adds-the-template-marker."
+
+ "api/test_field_blocks.py::test_remove_field_block_with_and_without_final_newline"
+ "v1 removed a field block from the Python source of a model class. Models are EDN data in kimun; removal is `models field-remove`, which restores the previous template and defines a new version, held by kimun.cli.models-test/field-remove-and-template-edits."
+
+ "api/test_migration_hash_names.py::test_migration_rewrites_keys_without_moving_hashes"
+ "(a) v1 api migrate_store_hash_names: rewriting the letter keys of every YAML index of a store to the semantic names, in place, without changing the store fingerprint. (b) kimun has no YAML indexes whose keys could be renamed (ledger, Desviaciones deliberadas: no side-file indexes, shards or caches); objects are content-addressed and immutable, so there is no in-place key rewrite at all. (c) No equivalent promise exists in kimun: a hash-name migration has no counterpart."
+
+ "api/test_migration_hash_names.py::test_migration_writes_semantic_names"
+ "(a) v1 api migrate_store_hash_names: after it runs, store_index.yaml carries store_hash and no longer hash_a. (b) kimun has no store_index.yaml nor any persisted hash key (ledger, Desviaciones deliberadas: no side-file indexes, shards or caches): the head is the content of heads.edn and was never named by a letter. (c) No equivalent promise exists in kimun: a hash-name migration has no counterpart."
+
+ "store/test_cli_store.py::test_doc_delete_purges_the_extraction_cache_entry"
+ "v1 kept an extraction cache file (runtime/cache/extracted.json) that `docs delete` had to purge. kimun keeps no side-file caches (parity-v1.md deviation: no side-file indexes/shards/caches); the document is a tree object plus a tracking entry. Equivalent promise (a deleted document leaves nothing describing it): kimun.cli.typed-docs-test/untrack-keeps-the-file-and-delete-removes-it."
+
+ "store/test_cli_store.py::test_get_store_context_readonly_falls_back_to_global"
+ "v1 read-only commands fell back to the global store in HOME/.sldb when no local store existed. kimun has no global store or fallback by design (parity-v1.md deviation: no global catalog in HOME); with no store a command fails with cli/no-store. Equivalent promise (resolution of a store from the cwd): kimun.cli.stores-test/discovery-walks-up-from-a-nested-directory; the no-store failure is ported in kimun.parity.cli-store-test/no-store-anywhere-says-how-to-init."
+
+ "store/test_cli_store.py::test_store_init_force_overwrites"
+ "v1 `stores init --force` re-initialised (wiped) an existing store. kimun has no --force on init: an existing store is never overwritten, init is refused with cli/store-exists (parity-v1.md deviation: no destructive re-init; a store is append-only history). Equivalent promise (second init does not clobber the store): kimun.cli.stores-test/second-init-is-store-exists."
+
+ "store/test_cli_store.py::test_store_init_registers_project_in_global_catalog"
+ "v1 `stores init` registered each project in a global catalog under HOME/.sldb with absolute paths. kimun has no home catalog by design (parity-v1.md deviation, 06 §5: absolute paths and a global catalog were the named vice); stores find each other through relative `stores link`. Equivalent promise (a store is discoverable and linkable without a global registry): kimun.cli.stores-test/link-stores-a-relative-path."
+
+ "store/test_diagnostics.py::test_letter_names_still_read_the_same_values"
+ "v1 mechanism: the letter aliases hash_a/hash_b/hash_c/hash_d (and *_ok, hash_c_expected...) kept as attributes beside the semantic names so stores and deskops keep reading the same keys. kimun has no persisted letter-named keys and no legacy readers (stores are re-created by migration, ledger), so there is nothing to alias; the report exposes only the semantic names. The semantic-name report shape is held by kimun.cli.diagnostics-test/check-lists-every-model-and-document-when-clean and kimun.cli.diagnostics-test/check-in-json-and-yaml."
+
+ "store/test_diagnostics.py::test_quiet_keeps_the_old_one_line_output"
+ "v1 mechanism: the `stores check --quiet` flag that keeps the pre-diagnostics one-line text 'FAIL: store integrity' for scripts pinned to it. kimun has no legacy output to keep compatible (the report is an envelope; scripts read --format json|yaml, the summary line is its :summary field, per 06 and the hardcoded-text retirement in 06 section 8). The one-line verdict is held by kimun.cli.diagnostics-test/check-lists-every-model-and-document-when-clean (summary starts with PASS: store integrity) and the machine-readable form by kimun.cli.diagnostics-test/check-in-json-and-yaml."
+
+ "store/test_diagnostics.py::test_report_explains_a_roster_only_failure_without_blaming_a_document"
+ "v1 mechanism: the printed text of the roster-only verdict ('roster-only', 'all N documents present are clean') for a tampered roster_hash in the models index file. kimun has no roster hash nor index files to tamper; its non-document failure is the corrupt finding with its own action (kimun stores verify), asserted to accuse no document in kimun.surface.diagnostics-test/a-failed-verification-is-the-finding-corrupt and kimun.cli.diagnostics-test/check-reports-a-tampered-object."
+
+ "store/test_diagnostics.py::test_roster_failure_over_absent_documents_names_no_damaged_document"
+ "v1 mechanism: the per-model roster hash (hash_b) over per-document shards, which could fail while every present document was clean (documents absent from a clone). kimun has no roster hash or shards: a model's documents are children in the Merkle tree and a missing file is a document-level finding (missing, a decision), while damage to the store is the store-level finding corrupt. The surviving promise, a failure no document explains accuses no document, is held by kimun.surface.diagnostics-test/a-failed-verification-is-the-finding-corrupt and kimun.cli.diagnostics-test/check-reports-a-tampered-object."
+
+ "store/test_documents_shards.py::test_migrates_a_legacy_single_file_documents_index_into_shards"
+ "(a) v1 in-place layout migration: a store still holding one documents index file per model is split into per-document shards the next time it is touched, keeping hash_b. (b) kimun has no shards and no side-file indexes to migrate (ledger, Desviaciones deliberadas: no side-file indexes, shards or caches; objects are immutable and content-addressed), and its only migration, `kimun migrate --from-v1`, reads the canonical v1 layout alone (core/store_index.yaml plus the per-document entries under core/documents), never the older single-file index. (c) There is no equivalent promise for the single-file layout: such a store has to be opened once by v1 before migrating. What kimun does promise about reading a v1 store is held by kimun.cli.migrate-test/fixture-store-lands-in-buckets."
+
+ "store/test_io_atomic_write.py::test_atomic_write_closes_each_descriptor_exactly_once"
+ "(a) v1 StoreIOUtils._atomic_write: the POSIX descriptor bookkeeping of its tempfile-then-rename (os.close called exactly once per write). (b) kimun rewrites no YAML index files (ledger, Desviaciones deliberadas: no side-file indexes, shards or caches); its store is write-once content-addressed objects plus one compare-and-swap of heads, written through java.nio, which owns the descriptors, so kimun code has no descriptor to close twice. (c) The promise behind it, a write lands whole and leaves nothing behind, is held by sldb.kernel.store-test/every-object-file-hashes-to-its-name-invariant-17 and kimun.parity.durability-test/a-write-leaves-no-temporary-file-behind."
+
+ "store/test_legacy_layout_migration.py::test_migrated_documents_are_readable_from_the_canonical_index"
+ "(a) v1: after the root-level legacy layout is upgraded on open, every document it listed is readable from the canonical documents index. (b) kimun has no in-place layout migration and does not read the root-level layout (single layout; ledger, Desviaciones deliberadas). (c) The equivalent promise for the one migration kimun has, that the documents of a v1 store are readable from the kimun store after migrating, is held by kimun.cli.migrate-test/fixture-store-lands-in-buckets (the 8 migrated documents are listed with relative paths) and kimun.cli.migrate-test/real-store-sample-extracts-as-in-v1 (their payloads equal v1's)."
+
+ "store/test_legacy_layout_migration.py::test_migrating_a_root_level_legacy_layout_is_idempotent"
+ "(a) v1 `migrate_store_layout` over a root-level legacy store: the first call migrates, the second reports nothing to do. (b) kimun has no in-place layout migration (single layout of immutable content-addressed objects; ledger, Desviaciones deliberadas) and does not read the root-level layout. (c) The equivalent promise for the one migration kimun has, that running it again changes nothing, is held by kimun.cli.migrate-test/fixture-store-lands-in-buckets (its block `re-running skips what is there`: 0 migrated, 8 skipped)."
+
+ "store/test_legacy_layout_migration.py::test_open_store_migrates_a_root_level_legacy_layout"
+ "(a) v1 `open_store` upgrading in place a store from before `.sldb/core` existed (every index at the store root) instead of crashing with FileNotFoundError. (b) kimun has a single on-disk layout (store.edn, heads.edn, log.edn, objects) and no in-place layout upgrades; its importer `kimun migrate --from-v1` reads only the canonical core layout (core/store_index.yaml), by the ledger's deliberate deviations (no side-file indexes, shards or caches; v1 layouts are not reproduced). (c) There is no equivalent promise for the root-level layout: such a store has to be opened once by v1 first. Reading the canonical v1 layout is held by kimun.cli.migrate-test/fixture-store-lands-in-buckets."
+
+ "store/test_merkle_shards.py::test_migrates_a_legacy_single_file_store_into_shards"
+ "(a) v1 in-place layout migration: single-file semantic and sections indexes are split into per-document shards and the old files removed. (b) kimun has no shards and stores no semantic or sections index at all (ledger, Desviaciones deliberadas: no side-file indexes, shards or caches); both are derived views of the head, and `kimun migrate --from-v1` does not read v1's derived indexes in any layout. (c) There is no equivalent migration promise. The promise that the derived views are rebuilt from the documents alone, never carried over, is held by kimun.surface.index.cache-test/a-stale-cache-is-rebuilt and, for the content of the views, by kimun.parity.shards-promises-test/the-store-answers-what-direct-extraction-gives."
+
+ "store/test_migration_hash_names.py::test_document_letter_aliases_still_load"
+ "(a) v1 DocumentEntry accepting the deprecated letter keys hash_c and hash_d as aliases of source_hash and content_hash when loading a persisted document shard. (b) kimun persists no document entries (ledger, Desviaciones deliberadas: no side-file indexes, shards or caches): source and content hashes are derived on read from the tree of the document and were never stored under letter names. (c) No equivalent promise exists in kimun: a hash-name migration has no counterpart. The v1 importer of kimun (migrate --from-v1) reads only source_hash and content_hash."
+
+ "store/test_migration_hash_names.py::test_model_letter_alias_still_loads"
+ "(a) v1 ModelsIndex accepting the deprecated letter key hash_b as an alias of model_hash when loading a persisted YAML index. (b) kimun persists no per-model index file (ledger, Desviaciones deliberadas: no side-file indexes; models are EDN data, not Python classes): a model is identified by the content address of its descriptor node, which never had a letter name. (c) No equivalent promise exists in kimun: a hash-name migration has no counterpart."
+
+ "store/test_migration_hash_names.py::test_store_letter_alias_still_loads"
+ "(a) v1 StoreIndex accepting the deprecated letter key hash_a as an alias of store_hash when loading a persisted YAML index. (b) kimun persists no index files and no Python models (ledger, Desviaciones deliberadas: no side-file indexes; models are EDN data, not Python classes): the identity of a store is the content address of its head and never had a letter name, so there is no key to alias. (c) No equivalent promise exists in kimun: a hash-name migration has no counterpart. The v1 importer of kimun (migrate --from-v1) reads only the semantic names of a v1 store; a v1 store still on letter keys runs v1's own migrate_store_hash_names first."
+
+ "store/test_resolver.py::test_find_local_store_with_core_layout"
+ "v1 accepted a store whose store_index.yaml lived under a core/ subdirectory (a second on-disk layout generation). kimun has a single layout (store.edn, heads.edn, log.edn + objects) and no layout migration of the same kind (parity-v1.md: side-file indexes retired). Equivalent promise (a store is found from its start dir): kimun.parity.resolver-test/finds-the-store-in-the-start-directory."
+
+ "store/test_resolver.py::test_global_store_path"
+ "v1 `global_store_path()` returned HOME/.sldb, the global catalog location. kimun has no global store (parity-v1.md deviation: no global catalog in HOME), so there is no path to resolve. Nothing holds an equivalent promise; stores are located by walk-up from the cwd, --store or $KIMUN_STORE (kimun.cli.stores-test/env-store-wins-over-walk-up-but-not-over-flag)."
+
+ "store/test_resolver.py::test_project_store_skips_home_global_store"
+ "v1 `find_project_store` ignored HOME/.sldb so the global catalog did not capture projects under HOME, while `ancestor_stores` still listed it. kimun has no global catalog in HOME (parity-v1.md deviation), so a store in HOME is an ordinary store and walk-up finds it like any ancestor. Equivalent promise (nearest store wins over ancestors): kimun.cli.models-test/nested-store-wins-over-ancestor."
+
+ "store/test_semantic_rebuild.py::test_default_values"
+ "v1 unit test of the RebuildReport dataclass defaults (counters docs_processed, docs_skipped_missing, ...) of the semantic-index rebuild. kimun has no such report object: `rebuild-indexes` is a pure projection of the head. The equivalent observable (the rebuild names the documents it could not read) is held by kimun.cli.index-test/rebuild-indexes-names-the-documents-it-could-not-read."
+
+ "store/test_semantic_rebuild.py::test_increment_fields"
+ "v1 unit test that the RebuildReport dataclass counters and verbose list are mutable accumulators. No such mutable report exists in kimun (the index is derived, not rebuilt incrementally with counters). Equivalent observable: kimun.cli.index-test/rebuild-indexes-names-the-documents-it-could-not-read."
+
+ "test_clean_code_rules.py::test_clean_code_rules"
+ "v1's own architecture lint over its Python source (max one class per file, functions <= 10 logic lines), parametrized per source file. kimun's equivalent is `bb lint` (scripts/check_rings.clj: rings and allowed requires), whose behaviour is held by kimun.lint-test/the-real-src-tree-is-clean and a-global-atom-in-the-kernel-fails-lint. The class-count and function-length rules have no kimun counterpart."
+
+ "test_cli_v2.py::test_ast_show_document_has_sections"
+ "v1 `sldb ast show` dumped the document IR (sections, structure, graph, context_index). `ast` is retired by 06 section 8. Equivalents: the section tree is held by kimun.cli.sections-test/list-shows-the-section-tree, and the IR over HTTP by kimun.surface.http.models-fields-test/ast-exposes-full-ir-and-sections."
+
+ "test_cli_v2.py::test_explore_searches_docs_and_docstrings"
+ "v1 `sldb explore` searched docs and Python docstrings through absolute-path indexes. Retired by 06 section 8 (its function is covered by `find` + `graph query`). Equivalent search promise: kimun.cli.find-test/find-supports-physical-and-semantic. Docstring search of Python code has no equivalent (kimun does not index source code)."
+
+ "test_cli_v2.py::test_faq_lists_and_selects_questions"
+ "v1 `sldb faq` listed and selected FAQ questions (a deskops model disguised as a command). Retired by 06 section 8 (`faq`, `inbox`: deskops declares them as descriptors, 07 s9). Nothing in kimun holds an equivalent promise; the FAQ content lives in deskops, outside kimun."
+
+ "test_cli_v2.py::test_help_topics"
+ "v1 `sldb help <topic>` printed hardcoded topic texts. Retired by docs/v2/06-superficies-y-cli.md section 8 (`help` textos hardcodeados; `--help` is derived from the command table, 09 s3). Equivalent promise now: the usage text printed by `--help`/no args, held by kimun.cli.main-test/no-args-and-help-print-usage-as-text. Per-topic texts have no equivalent."
+
+ "test_cli_v2.py::test_inbox_auto_tracks_when_model_registered"
+ "v1 `sldb inbox` auto-tracked the new note when its model (InboxNoteDoc) was registered. Retired by 06 section 8. The surviving promise, a created typed document is tracked in the store as a document of its model, is held by kimun.cli.typed-docs-test/create-writes-markdown-and-tracks-it and track-registers-an-existing-file."
+
+ "test_cli_v2.py::test_inbox_defaults_to_local_store_project_desk"
+ "v1 `sldb inbox` defaulted to the desk of the local store's project. Retired by 06 section 8; the notion of a hardcoded desk location is deskops', not kimun's. Path-relative-to-project-root for tracked documents is held by kimun.cli.typed-docs-test/create-writes-markdown-and-tracks-it (the `path` is relative to the project root)."
+
+ "test_cli_v2.py::test_inbox_lists_and_shows_notes"
+ "v1 `sldb inbox` list/show of desk notes. Retired by 06 section 8. Equivalent for typed documents: `docs list`/`docs show`, held by kimun.cli.typed-docs-test/create-writes-markdown-and-tracks-it."
+
+ "test_cli_v2.py::test_inbox_rejects_title_only_placeholder"
+ "v1 `sldb inbox` refused a title-only note. Retired by 06 section 8 (inbox is a deskops concern). The generic promise (a payload that does not satisfy the model writes nothing) is held by kimun.cli.typed-docs-test/create-writes-nothing-for-a-rejected-payload."
+
+ "test_cli_v2.py::test_inbox_writes_desk_note"
+ "v1 `sldb inbox TEXT` wrote a note file under the project desk. Retired by 06 section 8 (deskops owns inbox notes as model descriptors). The part of the promise that survives, writing a typed document as a Markdown file and tracking it, is held by kimun.cli.typed-docs-test/create-writes-markdown-and-tracks-it."
+
+ "test_cli_v2.py::test_models_create_stdout"
+ "v1 `models create --stdout` generated Python class source (`class X(StructuredNLDoc)` with pydantic Field) from a template and a fields YAML. kimun models are EDN data, not Python classes (ledger deviation), so there is no source generation. The equivalent, defining a model from a template plus typed fields, is `models define -f`, held by kimun.cli.models-test/define-registers-version-one and field-add-adds-the-template-marker."
+
+ "test_cli_v2.py::test_models_list_falls_back_to_global_when_no_local"
+ "v1 `models list` fell back to the global catalog in HOME when there was no local store. Ledger deviation (parity-v1.md, Federacion): no global catalog in HOME, stores are linked with relative paths. The opposite promise (no store -> typed failure, even with a store in HOME) is asserted in kimun.parity.cli-v2-test/models-list-without-a-store-fails-even-with-a-global-one."
+
+ "test_field_corpus.py::test_audit_reports_drift_per_field_and_keeps_indexes_apart"
+ "v1 `audit_fields` compared the persisted per-field embedding index (fields.*.json) against the documents and listed stale fields, keeping docs.* and fields.* index files apart. kimun has no side-file index to audit (ledger deviation: no side-file indexes/caches); field identity is content-addressed. The drift promise (an edit moves only the hash of its field) is held by kimun.surface.index.corpus-test/an-edit-moves-only-the-hash-of-its-field."
+
+ "test_runtime_cache.py::test_a_hand_edit_within_one_operation_is_not_required_to_be_seen"
+ "(a) v1 runtime_cache per-operation leaf sweep (new_operation): a permission rather than a guarantee, within one operation the in-memory document cache may keep serving the payload from before a hand edit. (b) kimun has no in-process document cache and no notion of operation (ledger, Desviaciones deliberadas: no side-file indexes, shards or caches; the one derived cache is keyed by the head of the store and file drift is read from disk by each command), so there is no staleness window to permit. (c) The guarantee side of it, the edit is seen by the next command, is held by kimun.parity.cache-promises-test/a-hand-edit-is-seen-by-the-next-command."
+
+ "test_runtime_cache.py::test_a_trusted_chain_skips_the_leaf_sweep"
+ "(a) v1 SLDB_TRUST_CHAIN switch of runtime_cache: skip the stat sweep of tracked files while the hash chain has not moved, serving a stale payload until stores update. (b) kimun has no leaf sweep to skip and no trust switch (ledger, Desviaciones deliberadas: no side-file indexes, shards or caches): answers come from the head of the store and the derived index is keyed by that head. (c) Its two halves are held by kimun.surface.index.cache-test/rebuild-writes-the-cache-and-a-read-hits-it (a cache is served as long as the head has not moved) and kimun.parity.cache-promises-test/a-hand-edit-is-always-seen-by-stores-update (stores update sees the hand edit regardless)."
+
+ "test_serve.py::test_graph_declares_models_whose_documents_are_missing"
+ "v1: documents of a model that cannot be resolved (broken Python import) vanished silently from /graph; the model had to be declared in `unavailable`. In kimun a document's model is a node in the same store, so documents cannot drop out for an unresolvable model. Healthy-case equivalent: kimun.surface.http.save-schema-test/graph-reports-no-unavailable-models-for-a-healthy-store."
+
+ "test_serve.py::test_models_endpoints_resolve_relative_imports_by_package_name"
+ "v1 regression: loading a model by file path broke `from .sibling import ...` inside a Python package (No module named kb_models.index_proxies). kimun models are EDN contracts with no Python imports (ledger deviation), so the bug class does not exist. Equivalent: the models endpoints answering from the store, held by kimun.surface.http.models-fields-test/models-endpoints-use-native-api; Python import by MODULE:CLASS is `models define --from-python`, held by kimun.cli.models-test/define-from-python."
+
+ "test_serve.py::test_schema_declares_models_that_cannot_load"
+ "v1 deleted the Python module of a registered model and expected /schema to list it under `unavailable` while describing the rest. A kimun model is an EDN node inside the store: a registered model cannot fail to import, so no store state makes it unavailable. The healthy-case promise (`unavailable` is empty and every model is described) is held by kimun.surface.http.save-schema-test/schema-reports-no-unavailable-models-for-a-healthy-store."
+
+ "test_serve.py::test_schema_degrades_per_model_instead_of_losing_the_response"
+ "v1: one model whose Python import breaks must not lose the whole /schema response. Same mechanism as the previous test (broken Python import), absent by design since models are EDN in the store. Healthy-case equivalent: kimun.surface.http.save-schema-test/schema-reports-no-unavailable-models-for-a-healthy-store; per-model integrity counts are reported by `models list` (:not-intact), held by kimun.cli.typed-docs-test/a-file-edited-outside-is-reported-then-reconciled."
+
+ "test_standalone.py::test_cli_init_force_overwrites"
+ "v1 `cli init --force` rewrote the skill file. The `init` skill-file surface is retired (06 §8); no equivalent promise, nothing is written."
+
+ "test_standalone.py::test_cli_init_refuses_overwrite_without_force"
+ "v1 `cli init` refused to overwrite its skill file without --force. The `init` skill-file surface is retired (06 §8), so there is no file to protect. No equivalent promise."
+
+ "test_standalone.py::test_cli_init_writes_skill_file"
+ "v1 `cli init` wrote the AI skill file (SKILL.md) into a directory. `project init|example` and the hardcoded help/skill texts are retired surfaces (docs/v2/06-superficies-y-cli.md §8; `--help` is derived from the anchors). No equivalent promise: kimun writes no skill file."
+
+ "test_standalone.py::test_example_bundle_roundtrips"
+ "v1 round-tripped the packaged reference bundle (SLDBGuide), whose template uses py• markers, which do not migrate (07 §8; its corpus cases are retired in EXCLUSIONS). The promise that extract/render/validate round-trip is held on migrated models by kimun.surface.models.engine-test/extract-of-render-is-identity and kimun.surface.models.engine-test/validate-covers-optrev."
+
+ "test_standalone.py::test_example_bundle_self_idempotency"
+ "v1 checked extract(render(extract(x))) == extract(x) on the reference bundle, which uses py• markers (retired, 07 §8; corpus cases excluded). The idempotency promise is held generally by kimun.surface.models.engine-test/extract-of-render-is-identity."
+
+ "test_standalone.py::test_python_markers_can_be_filtered_in_unsafe_mode"
+ "v1 filtered which py• expressions ran through python_expression_filter in unsafe mode. Both the unsafe mode and the filter vanish with py• (07 §8); kimun rejects the marker at define time, held by kimun.surface.models.engine-test/descriptor-validation. No filter promise remains."
+
+ "test_standalone.py::test_python_markers_render_in_unsafe_mode"
+ "v1 evaluated py• markers when configured with python_execution_mode=unsafe. py• does not migrate (07 §8): a define containing it is rejected (models/invalid), so no template ever executes code. That rejection is held by kimun.surface.models.engine-test/descriptor-validation."
+
+}
