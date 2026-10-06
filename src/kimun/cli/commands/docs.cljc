@@ -14,6 +14,7 @@
             [kimun.cli.store :as cli-store]
             [kimun.surface.docs :as tdocs]
             [kimun.surface.models.extract :as mextract]
+            [kimun.surface.models.noise :as noise]
             [kimun.surface.models.render :as mrender]
             [kimun.surface.models.store :as mstore]
             [sldb.host.default :as host]
@@ -182,6 +183,22 @@
   (out/ok command (merge {:store (store-ref descriptor store-path) :revision (:revision-id r)
                           :data (doc-data (tdocs/document store' name))} extra)))
 
+;; The refusal of v1's `refuse_structural_noise` + `refuse_undeclared_frontmatter`: a heading the
+;; template never declares is swallowed into a field, a frontmatter key it never declares is lost
+;; on the next render. Raised before anything is committed or written.
+(defn- refuse-noise!
+  [model-name descriptor name text]
+  (let [r (noise/structural-noise descriptor text)]
+    (when (noise/noisy? r)
+      (err/raise :docs/structural-noise
+                 (str "structural noise in `" name "`: " model-name " does not declare " (noise/describe r)
+                      ". A heading inside a field is a field the model is missing: define a model that extends "
+                      model-name " and declares those sections as optrev fields; an undeclared frontmatter key is lost on re-render")
+                 {:document name :model model-name
+                  :undeclared (mapv :raw (:headings r))
+                  :headings (:headings r)
+                  :frontmatter (:frontmatter r)}))))
+
 (defn create
   "`docs create MODEL NAME --data FILE | --set field=value… [--path P]`:
    renders the payload with the model, tracks it and writes the file (default
@@ -194,6 +211,7 @@
         {:keys [plan text]} (tdocs/create-plan host/host store model name (read-payload opts cwd)
                                                {:doc (ports/ulid (:ids host/host)) :tree-id (ports/ulid (:ids host/host))
                                                 :path path :actor (:actor opts) :timestamp (timestamp)})
+        _ (refuse-noise! model (:descriptor (mstore/model store model)) name text)
         _ (when (fs/exists? (fs/path root path))
             (err/raise :docs/conflict (str "the file " path " already exists; choose another --path") {:path path}))
         r (store/commit! backend store plan)]
@@ -211,6 +229,8 @@
         name (name-of opts p)
         d (:descriptor (mstore/model store model))
         _ (when-not (:force opts)
+            ;; noise first: a dropped frontmatter key would otherwise surface as a bare round-trip failure
+            (refuse-noise! model d name text)
             (let [again (mrender/render d (mextract/extract d text))]
               (when (not= (str/trim again) (str/trim text))
                 (err/raise :docs/not-idempotent
@@ -235,6 +255,7 @@
                    (get args 1) (second (read-file! (get args 1) cwd))
                    (:path doc) (second (read-file! (str (fs/path root (:path doc))) cwd))
                    :else (err/raise :cli/usage "`docs update` needs a FILE, --data or --set for a document without a file" {}))
+        _ (refuse-noise! (:model doc) (or (:descriptor (mstore/model store (:model doc))) {}) (:name doc) text)
         {:keys [plan unchanged?]} (tdocs/update-plan host/host store (:name doc) text {:actor (:actor opts) :timestamp (timestamp)})
         r (if plan (store/commit! backend store plan) {:store store :revision-id (:head store)})
         warnings (if (and payload? (:path doc)) (write-file! root (:path doc) text) [])]
@@ -260,13 +281,20 @@
                                 :data {:name name :path path :file-deleted? (boolean (and delete? f))}}))))
 
 (defn show
-  "`docs show NAME [--format md]`: the document map with payload, hashes and
-   `:markdown` (its source; `--format md` prints it)."
+  "`docs show NAME [--format md] [--ast]`: the document map with payload, hashes and
+   `:markdown` (its source; `--format md` prints it). With `--ast` (or `--format ast`,
+   once the global `--format` accepts it) the data is instead the document's SLDB-MD
+   AST (`sldb.surface.markdown.plan/store->ast`, docs/v2/04 §8) as `{:name :tree :ast}`;
+   an untyped document is resolved too."
   [args opts ctx]
   (let [{:keys [descriptor store] store-path :path} (open opts ctx)
-        d (tdocs/document store (require-arg! args 0 "a document NAME" "show"))]
+        token (require-arg! args 0 "a document NAME" "show")
+        ast? (or (:ast opts) (= "ast" (:format opts)))]
     (out/ok "docs show" {:store (store-ref descriptor store-path) :revision (:head store)
-                         :data (assoc (doc-data d) :markdown (:source d))})))
+                         :data (if ast?
+                                 (let [{:keys [name tree]} (resolve-document store token)]
+                                   {:name name :tree tree :ast (md/store->ast store tree)})
+                                 (let [d (tdocs/document store token)] (assoc (doc-data d) :markdown (:source d))))})))
 
 (defn status
   "`docs status`: `[{:name :path :status}]` comparing each tracked file with
@@ -296,6 +324,7 @@
    :path {:ref "PATH" :desc "File of the new document (docs create)"}
    :model {:ref "NAME" :desc "Only documents of this model (docs list)"}
    :force {:desc "Track a file that does not round-trip under its model (docs track)" :coerce :boolean}
+   :ast {:desc "Print the document's SLDB-MD AST instead of its payload (docs show)" :coerce :boolean}
    :yes {:desc "Confirm a destructive command (docs delete)" :coerce :boolean}})
 
 (def commands
