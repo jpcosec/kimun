@@ -5,6 +5,7 @@
    of the data when the command provides one, else the text form). Building an envelope never
    performs I/O; printing is the caller's job."
   (:require [cheshire.core :as json]
+            [clj-yaml.core :as yaml]
             [clojure.string :as str]))
 
 (defn type-name
@@ -80,6 +81,8 @@
     "json" (json/generate-string envelope {:pretty true})
     "edn" (pr-str envelope)
     "text" (if (:ok envelope) (text-success envelope) (text-failure envelope))
+    "yaml" (yaml/generate-string (json/parse-string (json/generate-string envelope))
+                                 :dumper-options {:flow-style :block})
     "md" (cond (not (:ok envelope)) (text-failure envelope)
                (string? (get-in envelope [:data :markdown])) (get-in envelope [:data :markdown])
                :else (text-success envelope))

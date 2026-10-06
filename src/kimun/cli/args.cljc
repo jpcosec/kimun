@@ -7,13 +7,13 @@
 
 (def formats
   "Accepted values of `--format`."
-  #{"json" "edn" "text" "md"})
+  #{"json" "edn" "text" "md" "yaml"})
 
 (def spec
   "babashka.cli spec of the global options; each command group adds its own
    through the `extra` argument of `parse` (`kimun.cli.main/group-specs`)."
   {:store   {:ref "PATH" :desc "Store directory (.kimun or its project dir)"}
-   :format  {:ref "FMT" :desc "Output format: json | edn | text" :default "json" :validate formats}
+   :format  {:ref "FMT" :desc "Output format: json | edn | text | md | yaml" :default "json" :validate formats}
    :actor   {:ref "NAME" :desc "Actor recorded in transactions (default human/$USER)"}
    :debug   {:desc "Print the stacktrace of an unexpected error to stderr" :coerce :boolean}
    :help    {:desc "Show usage" :coerce :boolean}
