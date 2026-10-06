@@ -32,8 +32,8 @@
   ;; v1: test_add_model_registers_version_one, test_load_registered_model_keeps_the_entry_inside_the_store_index
   (let [p (project) e (run p "models" "define" "-f" ticket)]
     (is (true? (:ok e)) (pr-str e))
-    (is (= {:name "TicketDoc" :version 1 :created? true :unchanged? false} (dissoc (:data e) :id)))
-    (is (= [{:name "TicketDoc" :version 1 :id (get-in e [:data :id]) :fields 4}] (:data (run p "models" "list"))))
+    (is (= {:name "TicketDoc" :version 1 :created? true :unchanged? false :backfill [] :backfilled []} (dissoc (:data e) :id)))
+    (is (= [{:name "TicketDoc" :version 1 :id (get-in e [:data :id]) :fields 4 :documents 0 :not-intact 0}] (:data (run p "models" "list"))))
     (is (= 1 (get-in (run p "stores" "check") [:data :trees])) "the models tree lives in the store")
     (is (true? (:ok (run p "stores" "verify"))))))
 

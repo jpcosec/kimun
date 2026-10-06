@@ -5,7 +5,8 @@
    store and the transaction vector; `verify` checks the revision DAG
    (every id hashes its content, every parent exists, the log agrees with the
    store's revisions and head). Pure: no I/O."
-  (:require [sldb.kernel.canon :as canon]
+  (:require [clojure.edn :as edn]
+            [sldb.kernel.canon :as canon]
             [sldb.kernel.plan :as plan]
             [sldb.kernel.revision :as revision]))
 
@@ -55,14 +56,17 @@
         parent (first (:parents rev))
         ch (changes store rev-id parent)
         touched (into (set (map :tree ch)) (filter string?) (plan/touched-trees (:plan tx)))]
-    {:revision rev-id
+    (merge
+     (when-let [m (some-> (get (:engines rev) "kimun/meta") edn/read-string)]
+       (select-keys m [:operation :address :fields]))
+     {:revision rev-id
      :parents (vec (:parents rev))
      :actor (:actor rev)
      :timestamp (:timestamp rev)
      :transaction (:id tx)
      :ops (frequencies (map :op (get-in tx [:plan :ops])))
      :trees (vec (sort-by :tree (map #(assoc (tree-info store %) :tree %) touched)))
-     :changes ch}))
+     :changes ch})))
 
 (defn- matches-tree? [e token]
   (boolean (some #(or (= token (:tree %)) (= token (:name %))) (:trees e))))
@@ -71,7 +75,10 @@
   "Journal entries of `store` for the logged transactions `txs`, newest first:
    `{:revision :parents :actor :timestamp :transaction :ops {op n}
      :trees [{:tree :name :kind}] :changes [{:tree :name :kind :created?
-     :nodes-added :nodes-removed :moved (:text {:before [..] :after [..]})}]}`.
+     :nodes-added :nodes-removed :moved (:text {:before [..] :after [..]})}]}`,
+   plus, when the writing command recorded them (`kimun.surface.docs`):
+   `:operation` (e.g. \"docs update\"), `:address` (`Model:doc`) and `:fields
+   {path {:before v :after v}}` with dotted paths for nested keys.
    Transactions whose revision is not in `store` are skipped (see `verify`).
    `opts`: `:actor` keeps entries by that actor, `:tree` those touching the tree
    with that id or name, `:limit` keeps the first n (newest)."

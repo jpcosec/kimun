@@ -8,6 +8,7 @@
             [clojure.string :as str]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
+            [kimun.surface.docs :as tdocs]
             [sldb.kernel.err :as err]
             [sldb.kernel.store :as store]))
 
@@ -35,13 +36,23 @@
    `{:name :path :hash-alg :revisions :trees :objects :head :links}` where
    `:links` is the `kimun.cli.store/links` report; a link whose target is
    missing or not a store is a warning `{:type \"link/missing\" :message …}`
-   (the command stays `:ok`)."
+   (the command stays `:ok`). When the store tracks typed documents, `:documents
+   {:tracked n :findings [{:name :model :state :file}]}` lists those whose file
+   was modified or is missing, or whose model was redefined, each also a warning."
   [_args opts {:keys [env cwd]}]
   (let [{:keys [descriptor store path]} (cli-store/open! (cli-store/resolve-store opts env cwd))
-        link-report (cli-store/links path)]
+        link-report (cli-store/links path)
+        root (fs/parent (fs/absolutize path))
+        typed (tdocs/documents store)
+        sync (into {} (map (juxt :name :status))
+                   (tdocs/sync-report store #(let [f (fs/path root %)] (when (fs/regular-file? f) (slurp (str f))))))
+        doc-report (vec (for [d typed
+                              :let [file (get sync (:name d) :none)]
+                              :when (or (not= :intact (:state d)) (contains? #{:modified :missing} file))]
+                          {:name (:name d) :model (:model d) :state (:state d) :file file}))]
     (out/ok "stores check" {:store (store-ref descriptor path)
                             :revision (:head store)
-                            :data {:name (:name descriptor)
+                            :data (cond-> {:name (:name descriptor)
                                    :path path
                                    :hash-alg (:hash-alg descriptor)
                                    :revisions (count (:revisions store))
@@ -49,7 +60,15 @@
                                    :objects (count (:objects store))
                                    :head (:head store)
                                    :links link-report}
-                            :warnings (mapv link-warning (remove #(= :ok (:status %)) link-report))})))
+                                  (seq typed) (assoc :documents {:tracked (count typed) :findings doc-report}))
+                            :warnings (into (mapv link-warning (remove #(= :ok (:status %)) link-report))
+                                            (map (fn [d]
+                                                   {:type (if (= :intact (:state d)) (str "docs/file-" (name (:file d))) (str "docs/" (name (:state d))))
+                                                    :message (str "document `" (:name d) "` (" (:model d) "): "
+                                                                  (if (= :intact (:state d))
+                                                                    (str "its file is " (name (:file d)) " since the last commit; run `docs update " (:name d) "`")
+                                                                    (str "its model was redefined; run `docs update " (:name d) "` or redefine with --backfill")))}))
+                                            doc-report)})))
 
 (defn verify
   "`stores verify`: recomputes the hash of every reachable object

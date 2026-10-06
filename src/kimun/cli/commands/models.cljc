@@ -13,7 +13,10 @@
             [kimun.cli.commands.docs :as docs]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
+            [kimun.surface.docs :as tdocs]
             [kimun.surface.models.descriptor :as descriptor]
+            [kimun.surface.models.extract :as extract]
+            [kimun.surface.models.render :as render]
             [kimun.surface.models.edit :as edit]
             [kimun.surface.models.store :as mstore]
             [sldb.host.default :as host]
@@ -29,7 +32,9 @@
    :field {:ref "NAME" :desc "Field name (models field-add)"}
    :type {:ref "TYPE" :desc "Field type: string|int|bool|text|yaml or EDN such as [:list :string]"}
    :default {:ref "VALUE" :desc "Field default (models field-add)"}
-   :required {:desc "The field is required (models field-add)" :coerce :boolean}})
+   :required {:desc "The field is required (models field-add)" :coerce :boolean}
+   :dry-run {:desc "Report the documents a redefinition would rewrite, without writing" :coerce :boolean}
+   :backfill {:desc "Rewrite the model's documents under the new contract" :coerce :boolean}})
 
 (defn- store-ref [descriptor path] {:name (:name descriptor) :path path})
 
@@ -78,15 +83,64 @@
               (:descriptor (mstore/model (:store (open-store opts ctx)) token))
               (err/raise :models/missing (str "no model `" token "`: not an .edn file, not module:Class, and no store to look it up in") {:model token})))))
 
-(defn- commit-define! [descriptor opts ctx command]
+(defn- rewrites
+  "For each document of the model `descriptor` redefines: `{:name :path :text
+   :source}` with `:text` its Markdown under the new contract. Raises
+   `:models/invalid` when a document lacks a required field without default."
+  [store descriptor]
+  (vec (for [doc (tdocs/of-model store (:model/name descriptor))
+             :let [known (set (map :name (:fields (:descriptor (mstore/find-model store (:model/name descriptor))))))
+                   added (remove #(or (known (:name %)) (contains? % :default) (not (:required %))) (:fields descriptor))]]
+         (let [payload (try (let [p (extract/extract descriptor (:source doc))]
+                              (when-let [f (first (filter #(contains? #{nil ""} (get p (:name %))) added))]
+                                (throw (ex-info (str "no value for `" (:name f) "`") {:field (:name f)})))
+                              p)
+                            (catch clojure.lang.ExceptionInfo e
+                              (err/raise :models/invalid
+                                         (str "document `" (:name doc) "` lacks required field"
+                                              (when-let [f (:field (ex-data e))] (str " `" f "`"))
+                                              ": give the field a default or fix the document first (" (ex-message e) ")")
+                                         {:model (:model/name descriptor) :document (:name doc) :field (:field (ex-data e))})))]
+           {:name (:name doc) :path (:path doc) :source (:source doc)
+            :text (str (render/render descriptor payload) "\n")}))))
+
+(defn- backfill!
+  "Commits one `docs update` per document in `todo` (rewriting its file) on top
+   of `store`; returns `{:store :revision :warnings}`."
+  [backend store todo opts root]
+  (reduce (fn [acc {:keys [name path text]}]
+            (let [{:keys [plan]} (tdocs/update-plan host/host (:store acc) name text
+                                                    {:actor (:actor opts) :timestamp (docs/timestamp) :operation "models backfill"})
+                  r (when plan (store/commit! backend (:store acc) plan))
+                  w (when (and r path)
+                      (try (spit (str (fs/path root path)) text) nil
+                           (catch Exception e [{:type "docs/file-not-written" :message (str "could not write " path ": " (ex-message e))}])))]
+              (cond-> acc r (assoc :store (:store r) :revision (:revision-id r)) w (update :warnings into w))))
+          {:store store :revision (:head store) :warnings []}
+          todo))
+
+(defn- commit-define!
+  "Defines `descriptor` (a new version when the contract moved). Over a model
+   that has documents: a document lacking a required field without default
+   rejects the define; `--dry-run` reports `:backfill` (the documents whose
+   text the new contract changes) without writing; `--backfill` rewrites them;
+   without it they stay as they are, reported `:superseded` until updated."
+  [descriptor opts ctx command]
   (let [{:keys [backend store] d :descriptor path :path} (open-store opts ctx)
         _ (edit/check-template! (descriptor/validate! descriptor))
+        todo (filterv #(not= (:text %) (:source %)) (rewrites store descriptor))
         r (mstore/define-plan host/host store descriptor {:actor (:actor opts) :timestamp (docs/timestamp)
                                :tree-id (ports/ulid (:ids host/host))})
-        applied (when (:plan r) (store/commit! backend store (:plan r)))]
-    (out/ok command {:store (store-ref d path)
-                     :revision (if applied (:revision-id applied) (:head store))
-                     :data (-> (dissoc r :plan) (assoc :unchanged? (boolean (:unchanged r))) (dissoc :unchanged))})))
+        data (-> (dissoc r :plan) (assoc :unchanged? (boolean (:unchanged r)) :backfill (mapv :name todo)) (dissoc :unchanged))]
+    (if (:dry-run opts)
+      (out/ok command {:store (store-ref d path) :revision (:head store) :data (assoc data :dry-run? true)})
+      (let [applied (when (:plan r) (store/commit! backend store (:plan r)))
+            store' (if applied (:store applied) store)
+            done (if (:backfill opts)
+                   (backfill! backend store' todo opts (str (fs/parent (fs/absolutize path))))
+                   {:store store' :revision (:head store') :warnings []})]
+        (out/ok command {:store (store-ref d path) :revision (:revision done) :warnings (:warnings done)
+                         :data (assoc data :backfilled (if (:backfill opts) (mapv :name todo) []))})))))
 
 (defn define
   "`models define -f X.edn | --from-python mod:Class [--pythonpath P]`: a new
@@ -100,12 +154,16 @@
     (commit-define! d opts ctx "models define")))
 
 (defn list-models
-  "`models list`: `[{:name :version :id :fields n}]` in definition order."
+  "`models list`: `[{:name :version :id :fields n :documents n :not-intact
+   n}]` in definition order (`:not-intact` counts documents not yet extracted
+   under the current contract)."
   [_args opts ctx]
   (let [{:keys [store] d :descriptor path :path} (open-store opts ctx)]
     (out/ok "models list" {:store (store-ref d path) :revision (:head store)
                            :data (mapv (fn [m] {:name (:name m) :version (:version m) :id (:id m)
-                                                :fields (count (:fields (:descriptor m)))})
+                                                :fields (count (:fields (:descriptor m)))
+                                                :documents (count (tdocs/of-model store (:name m)))
+                                                :not-intact (count (remove #(= :intact (:state %)) (tdocs/of-model store (:name m))))})
                                        (mstore/models store))})))
 
 (defn projection
