@@ -1,0 +1,7 @@
+{
+ "notes": "happy path",
+ "relation_type": "flows_to",
+ "source_id": "step-1",
+ "target_id": "step-2",
+ "title": "step1 flows_to step2"
+}

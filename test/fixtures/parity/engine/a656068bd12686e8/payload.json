@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Run appropriate docs subcommand.\nArgs:\n    args (Any): CLI args.\nReturns:\n    int: Exit code.",
+ "id": "python-sldb-sldb-sldb-cli-commands-docs-docscli-run",
+ "imports": "[\"__future__\", \"json\", \"sldb.cli.commands.doc\", \"sldb.cli.commands.explore\", \"sldb.cli.commands.links\", \"sldb.cli.graph_ops\", \"sldb.cli.store_context\", \"sldb.store.io\", \"typing\", \"yaml\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.commands.docs",
+ "provenance": "python-ast:python:sldb.sldb.cli.commands.docs:DocsCLI.run; contract-sha256:b017a181019052ba6d1111a99e4b5ef45f860757bf39a0c7ae395a19efd9ce98",
+ "purpose": "Not documented.",
+ "qualname": "DocsCLI.run",
+ "signature": "run(self, args: Any)",
+ "source_path": "sldb/cli/commands/docs.py",
+ "source_sha256": "c853813a19ddec0435375b07b14a4d388bfe6d1fc505bdc5dc3d5fc78a1b7744",
+ "source_span": "21:32",
+ "system": "sldb",
+ "tags": []
+}

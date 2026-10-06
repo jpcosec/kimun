@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-commands-store_semantic_map-semantic_map_store",
+ "imports": "[\"__future__\", \"sldb.cli.store_context\", \"sldb.store.io\", \"sldb.store.models\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.commands.store_semantic_map",
+ "provenance": "python-ast:python:sldb.sldb.cli.commands.store_semantic_map:semantic_map_store; contract-sha256:41b5cbb6a72f4e964bddd9f6555925e174bdd2e07f8840f16b0ea41431789d8f",
+ "purpose": "Not documented.",
+ "qualname": "semantic_map_store",
+ "signature": "semantic_map_store(args: Any)",
+ "source_path": "sldb/cli/commands/store_semantic_map.py",
+ "source_sha256": "c94bc2225e6e958fa664e8c6a680ec36ccd69a992b3fc577b9fde37f7d40258f",
+ "source_span": "7:14",
+ "system": "sldb",
+ "tags": []
+}

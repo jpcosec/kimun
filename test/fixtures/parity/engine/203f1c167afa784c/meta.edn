@@ -1,0 +1,1 @@
+{:op :extract :tests ["tests/test_serve.py::test_batch_save_partial_failure_reports_completed"]}

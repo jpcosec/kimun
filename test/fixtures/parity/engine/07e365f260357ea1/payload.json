@@ -1,0 +1,16 @@
+{
+ "how": "Treat existing valid stores as success, emit actionable failures for real precondition problems, and preserve a detectable clean state when creation fails.",
+ "how_not": "Do not leave half-created `.sldb/` trees behind, and do not return raw traceback-style output for common bootstrap failures.",
+ "id": "pill-004-store-init-idempotency",
+ "tags": [
+  "system:sldb",
+  "system:deskops",
+  "topic:store",
+  "topic:idempotency"
+ ],
+ "title": "`stores init` must be idempotent and fail safely",
+ "what": "`sldb stores init` must behave safely when called repeatedly and must fail without leaving a misleading partial store behind.",
+ "when": "Apply this pill when touching `stores init`, local bootstrap flows, or error handling around store creation.",
+ "where": "- `src/sldb/cli/commands/stores.py`\n- store creation helpers\n- deskops bootstrap integration points",
+ "why": "`deskops init` and direct users both depend on predictable bootstrap behavior. Ambiguous init failures make higher-level workflow tooling unreliable."
+}

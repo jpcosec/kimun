@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-store-catalog-_entry_path",
+ "imports": "[\"__future__\", \"pathlib\", \"sldb.store.io\", \"sldb.store.models\", \"sldb.store.resolver\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.store.catalog",
+ "provenance": "python-ast:python:sldb.sldb.store.catalog:_entry_path; contract-sha256:8616d76ceb9aa281dc11e46ba4dc8d396aa479403d40974d6d8d03ff1fe1d64d",
+ "purpose": "Not documented.",
+ "qualname": "_entry_path",
+ "signature": "_entry_path(store_path: Path, value: str)",
+ "source_path": "sldb/store/catalog.py",
+ "source_sha256": "b228b684b18fff860306e210b5a5f382a893a26ff0b15b4e0ac4d16af09c14d6",
+ "source_span": "24:26",
+ "system": "sldb",
+ "tags": []
+}

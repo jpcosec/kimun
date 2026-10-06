@@ -1,0 +1,10 @@
+{
+ "commands": "- widget run",
+ "how_it_works": "Not documented.",
+ "id": "surface-widget-run",
+ "provenance": "parser:fixture:build#run; contract-sha256:75cc554e25d20b42c0da48f93eb34feb20c539a17b851935d5dbebba872d01d7",
+ "purpose": "Not documented.",
+ "surface": "run",
+ "system": "widget",
+ "tags": []
+}

@@ -1,0 +1,15 @@
+{
+ "axis": "WHY",
+ "cardinality": "many_to_many",
+ "condition": "",
+ "description": "refines.",
+ "direction": "directed",
+ "name": "refines",
+ "source_types": [
+  "Spec"
+ ],
+ "target_types": [
+  "Spec"
+ ],
+ "title": "refines"
+}

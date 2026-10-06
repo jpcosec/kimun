@@ -1,0 +1,12 @@
+{
+ "condition_ref": "",
+ "id": "edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-closeout-to-close",
+ "source": "checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-closeout-ready",
+ "status": "active",
+ "summary": "Closeout gate passed.",
+ "tags": [
+  "primitive:edge"
+ ],
+ "target": "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-close",
+ "title": "Closeout gate to close operator"
+}

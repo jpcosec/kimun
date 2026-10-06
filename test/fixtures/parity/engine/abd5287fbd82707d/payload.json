@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-commands-find_format-findformatter-_serialize",
+ "imports": "[\"__future__\", \"json\", \"sldb.cli.graph_ops\", \"typing\", \"yaml\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.commands.find_format",
+ "provenance": "python-ast:python:sldb.sldb.cli.commands.find_format:FindFormatter._serialize; contract-sha256:cf620cb77ea70edbf7323a9032ca04a41c3b8017d9b05e0217a8fe9aa0bf4706",
+ "purpose": "Not documented.",
+ "qualname": "FindFormatter._serialize",
+ "signature": "_serialize(self, record: SearchRecord)",
+ "source_path": "sldb/cli/commands/find_format.py",
+ "source_sha256": "9f5f6e7edebc72677a7f60797681a85b9aa7685ecae7ba4a7043b2bde02f2876",
+ "source_span": "21:25",
+ "system": "sldb",
+ "tags": []
+}

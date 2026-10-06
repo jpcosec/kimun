@@ -1,0 +1,1 @@
+{:op :render :tests ["tests/test_composition.py::test_ritual_doc_renders_composed_step_details"]}

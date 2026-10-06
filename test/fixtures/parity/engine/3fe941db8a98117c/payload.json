@@ -1,0 +1,12 @@
+{
+ "condition_ref": "",
+ "id": "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-to-activate",
+ "source": "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-ready",
+ "status": "active",
+ "summary": "Execution gate passed.",
+ "tags": [
+  "primitive:edge"
+ ],
+ "target": "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-activate",
+ "title": "Execution gate to activation"
+}

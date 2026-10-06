@@ -1,0 +1,12 @@
+{
+ "semantic_tags": [
+  "project.sldb.database"
+ ],
+ "status": "draft",
+ "summary": "Pending review",
+ "tasks": [
+  "Ship CLI",
+  "Write docs"
+ ],
+ "title": "Roadmap"
+}

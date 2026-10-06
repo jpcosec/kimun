@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-core-ingest-source_parser-_clean_stem",
+ "imports": "[\"__future__\", \"pathlib\", \"re\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.core.ingest.source_parser",
+ "provenance": "python-ast:python:sldb.sldb.core.ingest.source_parser:_clean_stem; contract-sha256:42ddabaf1bc7692ca0d886d76598851b6b49313eb8e92eac9a7892d797a61540",
+ "purpose": "Not documented.",
+ "qualname": "_clean_stem",
+ "signature": "_clean_stem(p: Path)",
+ "source_path": "sldb/core/ingest/source_parser.py",
+ "source_sha256": "ba9df3223d1d53a4baa0ade32988650e622880510b5c2d714b7a675bfdcb0091",
+ "source_span": "35:36",
+ "system": "sldb",
+ "tags": []
+}

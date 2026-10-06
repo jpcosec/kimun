@@ -1,0 +1,1 @@
+{:op :extract :tests ["tests/test_store_readme_doc.py::test_store_readme_roundtrips_current_markdown"]}

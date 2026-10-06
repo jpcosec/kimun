@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-store-query_engine-filter-documentfilter-_eval_regex",
+ "imports": "[\"__future__\", \"re\", \"sldb.store.query_engine.models\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.store.query_engine.filter",
+ "provenance": "python-ast:python:sldb.sldb.store.query_engine.filter:DocumentFilter._eval_regex; contract-sha256:bde894ca515f3a515f896d5bee5f05e1ddc95fb29ff4619b2ae340e2de94ff7e",
+ "purpose": "Not documented.",
+ "qualname": "DocumentFilter._eval_regex",
+ "signature": "_eval_regex(cls, doc: RuntimeDocument, expression: str)",
+ "source_path": "sldb/store/query_engine/filter.py",
+ "source_sha256": "9d6a11ff3b7af9be0cd869ac595a8ccae6b259f672be65f078f668edc188eb80",
+ "source_span": "49:55",
+ "system": "sldb",
+ "tags": []
+}

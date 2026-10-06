@@ -1,0 +1,12 @@
+{
+ "condition_ref": "",
+ "id": "edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-execution-to-activate",
+ "source": "checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-execution-ready",
+ "status": "active",
+ "summary": "Execution gate passed.",
+ "tags": [
+  "primitive:edge"
+ ],
+ "target": "operator-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-activate",
+ "title": "Execution gate to activation"
+}

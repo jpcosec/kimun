@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-selfdoc-values-_json_default",
+ "imports": "[\"__future__\", \"enum\", \"json\", \"pathlib\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.selfdoc.values",
+ "provenance": "python-ast:python:sldb.sldb.selfdoc.values:_json_default; contract-sha256:5ef926b575da6bd560985e18b930718d5228ddc55e5ced22547d797f4337ce03",
+ "purpose": "Not documented.",
+ "qualname": "_json_default",
+ "signature": "_json_default(value: Any)",
+ "source_path": "sldb/selfdoc/values.py",
+ "source_sha256": "35ba02014132cd758beba41dc2ae3bca9aaab2fbb86ffce50b31f4c52682461c",
+ "source_span": "15:22",
+ "system": "sldb",
+ "tags": []
+}

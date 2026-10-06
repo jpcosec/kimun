@@ -1,0 +1,18 @@
+{
+ "arguments": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"address\"\n      ],\n      \"required\": true,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Address (st.*, se.*)\"\n    },\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path\"\n    },\n    {\n      \"names\": [\n        \"--pythonpath\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Project path\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+ "command_path": "legacy ls",
+ "how_it_works": "Implemented under src/sldb/cli/parsers/legacy.py (parser) and src/sldb/cli/commands/query.py (QueryCLI), dispatched through LegacyCLI. The address root picks the engine: `st.` goes to sldb.store.query_engine.structural, `se.` to the semantic engine, `gse.` to the global semantic engine over linked stores. All of them load the store's runtime documents and select by address; nothing reads Markdown by hand.",
+ "id": "cmd-sldb-legacy-ls",
+ "provenance": "parser:sldb.cli.parser:build_parser#legacy ls; contract-sha256:63daf0faff2bd65b3cfaccdff67236b194aeaf887b449ea566fb2f21268c910a",
+ "purpose": "Walk the store as a tree without opening any file. `st` lists every registered model, `st.{Model}` its tracked docs, `st.{Model+}` the docs of the whole family, `st.{Model}.<doc>` the fields with their descriptions, `se` the top-level tag segments and `se.<prefix>` the child segments (or the docs tagged exactly `prefix` at a leaf).",
+ "synopsis": "List raw nodes.",
+ "system": "sldb",
+ "tags": [
+  "system:sldb",
+  "domain:retrieval",
+  "kind:software",
+  "impl:external",
+  "entity:cli_command"
+ ],
+ "usage": "sldb legacy ls st --store .sldb --pythonpath .\nsldb legacy ls 'st.{CliCommandDoc}' --store .sldb --pythonpath .\nsldb legacy ls 'st.{CliCommandDoc}.cmd-sldb-find' --store .sldb --pythonpath .\nsldb legacy ls se --store .sldb --pythonpath ."
+}

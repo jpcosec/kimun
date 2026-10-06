@@ -1,0 +1,1 @@
+{:op :extract :tests ["tests/api/test_composition_ref_root.py::test_create_document_composes_against_the_project_root" "tests/api/test_composition_ref_root.py::test_document_segments_compose_against_the_project_root" "tests/api/test_composition_ref_root.py::test_save_document_payload_composes_against_the_project_root"]}

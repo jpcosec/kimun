@@ -1,0 +1,13 @@
+{
+ "axis": "WHAT",
+ "cardinality": "one_to_many",
+ "condition": "",
+ "description": "The model has this document as an instance.",
+ "direction": "directed",
+ "name": "has_document",
+ "source_types": [
+  "sldb_model"
+ ],
+ "target_types": [],
+ "title": "has_document"
+}

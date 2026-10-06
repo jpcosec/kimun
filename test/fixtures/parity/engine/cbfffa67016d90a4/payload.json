@@ -1,0 +1,15 @@
+{
+ "axis": "WHAT",
+ "cardinality": "one_to_many",
+ "condition": "",
+ "description": "The model declares this field; the field node carries its type and description.",
+ "direction": "directed",
+ "name": "has_field",
+ "source_types": [
+  "sldb_model"
+ ],
+ "target_types": [
+  "sldb_field"
+ ],
+ "title": "has_field"
+}

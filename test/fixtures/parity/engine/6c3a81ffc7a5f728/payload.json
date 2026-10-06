@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-store-models-predicate_entry-predicateentry",
+ "imports": "[\"pydantic\"]",
+ "kind": "ClassDef",
+ "module": "sldb.sldb.store.models.predicate_entry",
+ "provenance": "python-ast:python:sldb.sldb.store.models.predicate_entry:PredicateEntry; contract-sha256:9bd5231c7b06850767056b64de3520d3b9a4977ec08e6d88690fd02cef532c6f",
+ "purpose": "Not documented.",
+ "qualname": "PredicateEntry",
+ "signature": "Not applicable.",
+ "source_path": "sldb/store/models/predicate_entry.py",
+ "source_sha256": "3d2851ab3e293eeda89c9a613cb3344180016c388c0553157d8bf79ed3373aa2",
+ "source_span": "4:7",
+ "system": "sldb",
+ "tags": []
+}

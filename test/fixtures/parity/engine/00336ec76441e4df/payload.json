@@ -1,0 +1,12 @@
+{
+ "expected": "",
+ "id": "condition-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-has-implementation-path",
+ "predicate": "truthy",
+ "status": "active",
+ "subject": "implementation_path",
+ "summary": "Task implementation path must exist before execution.",
+ "tags": [
+  "primitive:condition"
+ ],
+ "title": "Implementation path exists"
+}

@@ -1,0 +1,59 @@
+{
+ "at": "2026-09-14T14:52:46+00:00",
+ "hash_after": "48b7771c29e37a8bc1a3b612f33aa49388ce718921967900740eef41cdbf0cae",
+ "hash_before": "48b7771c29e37a8bc1a3b612f33aa49388ce718921967900740eef41cdbf0cae",
+ "id": "move-20260914T145246-001",
+ "outcome": "unico",
+ "record": {
+  "edges": [
+   {
+    "metadata": {
+     "end": 18,
+     "expression": "list[ArgumentRecord]",
+     "line": 18,
+     "line_end": 18,
+     "line_start": 18,
+     "name": "ArgumentRecord",
+     "origin": "python_ast",
+     "owner": "python:sldb.sldb.selfdoc.command:CommandRecord",
+     "path": "sldb/selfdoc/command.py",
+     "sha256": "bb7952aa96d78cb7a9f0d1c2953b8f341de9bc54f98843a001f95753d63ea532",
+     "site": "arguments"
+    },
+    "relation": "references",
+    "source": "python:sldb.sldb.selfdoc.command:CommandRecord",
+    "target": "python:sldb.sldb.selfdoc.argument:ArgumentRecord"
+   }
+  ],
+  "interpretation": {
+   "forma": "read",
+   "items": [
+    "wh('what')",
+    "word('python symbols'→source_model:PythonSymbol)",
+    "word('references'→field:TaskDoc.references,source_relation:references)",
+    "unknown('ArgumentRecord')"
+   ],
+   "notes": [],
+   "parts": [
+    "read · source_relation:references · subject=all PythonSymbol [] · object=the PythonSymbol [] ArgumentRecord · payload={'asked': 'subject'}"
+   ],
+   "unknown": []
+  },
+  "queries": [
+   "pron graph python_symbol → 1",
+   "kgdb edges_to(python:sldb.sldb.selfdoc.argument:ArgumentRecord, references) → 1"
+  ],
+  "reads": [],
+  "trace": [
+   "interpretation: read",
+   "pron graph python_symbol → 1",
+   "kgdb edges_to(python:sldb.sldb.selfdoc.argument:ArgumentRecord, references) → 1"
+  ],
+  "writes": []
+ },
+ "refers_to": "",
+ "sentence": "what python symbols references ArgumentRecord",
+ "speaker": "",
+ "state_after": "libre",
+ "state_before": "libre"
+}

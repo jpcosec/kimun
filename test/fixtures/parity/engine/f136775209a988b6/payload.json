@@ -1,0 +1,12 @@
+{
+ "expected": "",
+ "id": "condition-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-has-closeout-evidence",
+ "predicate": "truthy",
+ "status": "active",
+ "subject": "closeout_evidence_verified",
+ "summary": "Task references must point to a real atom, test, or git commit before closeout.",
+ "tags": [
+  "primitive:condition"
+ ],
+ "title": "Durable evidence is verified"
+}

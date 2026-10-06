@@ -1,0 +1,14 @@
+{
+ "arguments": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"--limit\"\n      ],\n      \"required\": false,\n      \"default\": \"3\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": \"builtins.int\",\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+ "command_path": "run",
+ "how_it_works": "An authored explanation.",
+ "id": "cmd-widget-run",
+ "provenance": "parser:selfdoc_test_factory:build#run; contract-sha256:b3e3fbfa3dae7b60558ea881f0fc5bd9aeb9021e7f1b7944474827cbddb56665",
+ "purpose": "An authored purpose.",
+ "synopsis": "Run a widget.",
+ "system": "widget",
+ "tags": [
+  "topic:authored"
+ ],
+ "usage": "widget run --limit 1"
+}

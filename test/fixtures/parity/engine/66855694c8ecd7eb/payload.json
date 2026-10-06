@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-serve-schema-add_enum_values",
+ "imports": "[\"__future__\", \"enum\", \"pathlib\", \"sldb.cli.model_utils\", \"sldb.store.io\", \"types\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.serve.schema",
+ "provenance": "python-ast:python:sldb.sldb.cli.serve.schema:add_enum_values; contract-sha256:0a22d47cc3d091542b0af04bee298f5f4126aa77741ce6ad20b23b77ce0d5370",
+ "purpose": "Not documented.",
+ "qualname": "add_enum_values",
+ "signature": "add_enum_values(data: dict[str, Any], annotation: Any)",
+ "source_path": "sldb/cli/serve/schema.py",
+ "source_sha256": "d161558c30bb6e36413a54bb9d7cb9c3d79b7a1802c462c69ea450cd1eb72cca",
+ "source_span": "32:36",
+ "system": "sldb",
+ "tags": []
+}

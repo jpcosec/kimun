@@ -1,0 +1,16 @@
+{
+ "how": "Use the addressability contract as the source-side truth. Preserve enough information that a downstream graph node or edge can be traced back to the authored document unit it came from without pretending the source anchor is itself a graph identity.\n\nProduce a durable contract update that states:\n\n- what provenance anchors are required\n- which anchors are canonical versus derived\n- what the export payload must preserve for downstream traceability\n- whether new payload fields or clarified semantics are needed\n- follow-up implementation tasks if payload changes should be staged",
+ "how_not": "Do not make KGDB depend on undocumented `.sldb` runtime internals, and do not collapse textual provenance anchors into graph-global ids.",
+ "id": "pill-014-semantic-export-task-execution-context",
+ "tags": [
+  "system:sldb",
+  "system:kgdb",
+  "topic:semantic-export",
+  "topic:execution"
+ ],
+ "title": "Semantic export provenance task execution context",
+ "what": "This task tightens the SLDB-to-KGDB handoff contract so downstream graph systems receive enough source-side provenance to reason globally without losing the chain back to authored textual units.",
+ "when": "Apply this pill when defining export provenance, deciding which source anchors must survive export, or clarifying the boundary between SLDB textual identity and downstream graph identity.",
+ "where": "Read these first:\n\n- `desk/tasks/task-tighten-semantic-export-provenance-contract.md`\n- `desk/pills/pill-011-addressability-task-execution-context.md`\n- `docs/architecture/semantic-export-boundary.md`\n- `docs/architecture/sldb-text-layer-vs-kgdb-graph-layer.md`\n- `src/sldb/store/export.py`\n\nProvenance that may need explicit handling:\n\n- source document identity\n- addressable textual unit identity when relevant\n- model identity\n- semantic tags\n- extraction/hash lineage\n- how downstream systems distinguish source anchors from graph-native identities",
+ "why": "The repo already exports models, documents, sections, semantic tags, semantic DAG data, and hashes. The open question is whether that contract is explicit enough about document-subunit provenance once addressability, query, and composition become richer."
+}

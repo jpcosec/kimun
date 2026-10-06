@@ -1,0 +1,1 @@
+{:op :extract :tests ["tests/test_store_readme_doc.py::test_section_capture_extracts_full_markdown_sections"]}

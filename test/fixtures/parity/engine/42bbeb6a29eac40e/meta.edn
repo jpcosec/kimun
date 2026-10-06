@@ -1,0 +1,1 @@
+{:op :extract :tests ["tests/api/test_model_lifecycle.py::test_promote_with_backfill_rewrites_documents"]}

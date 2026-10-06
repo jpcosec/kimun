@@ -1,0 +1,1 @@
+{:op :extract :tests ["tests/test_address_surface.py::test_field_update_moves_the_model_hash_and_keeps_integrity"]}

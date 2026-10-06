@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "Not declared.",
+ "docstring": "Old.",
+ "id": "old",
+ "imports": "[]",
+ "kind": "ClassDef",
+ "module": "demo",
+ "provenance": "test",
+ "purpose": "Not documented.",
+ "qualname": "Old",
+ "signature": "Not applicable.",
+ "source_path": "old.py",
+ "source_sha256": "hash",
+ "source_span": "1:1",
+ "system": "demo",
+ "tags": []
+}

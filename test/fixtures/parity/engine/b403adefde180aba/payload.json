@@ -1,0 +1,34 @@
+{
+ "atoms": [],
+ "checklists": [
+  "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-execution-ready",
+  "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-testing-ready",
+  "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-closeout-ready"
+ ],
+ "current_node": "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-execution-ready",
+ "depends_on": [],
+ "done_when": "store/graph/ no llama a compose_edge_index ni lee runtime/edges/; pytest completo en 1015 passed 0 failed; las consultas de grafo devuelven los mismos resultados que antes (paridad demostrada con evidencia, no asumida).",
+ "files": [],
+ "goal": "Que store/graph/ construya su indice desde el snapshot portable (semantic export -> sldb_semantic_export_to_snapshot, graph/ingest_sldb.py:20) en vez de desde los shards de runtime/edges/.",
+ "history": [],
+ "id": "task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges",
+ "implementation_path": "Leer docs/architecture/edges-retirement-plan.md completo antes de tocar nada. El camino ya existe: store/export.py:18,43 (sldb_kgdb_semantic_export) -> graph/ingest_sldb.py:20 -> cli/parsers/graph.py:70 (graph ingest-sldb). Hay que hacer que ese sea el input por defecto de la capa graph.",
+ "inherit_acceptance_context": false,
+ "inherits_from": [],
+ "pills": [],
+ "references": [],
+ "routine": "routine-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges",
+ "scope": "IN: re-puntar la fuente del EdgeIndex de la capa graph. OUT: NO borrar todavia runtime/edges/ ni sus modulos; el borrado es una tarea posterior. Los gaps G1-G5 se atacan aparte.",
+ "status": "draft",
+ "summary": "",
+ "tags": [
+  "workspace:desk",
+  "artifact:task"
+ ],
+ "task_type": "implementation",
+ "title": "Dar fuente propia al grafo: store/graph deja de leer runtime/edges",
+ "validation": [
+  "PYTHONPATH=src python -m pytest -q"
+ ],
+ "why": "Hallazgo bloqueante de docs/architecture/edges-retirement-plan.md seccion 0: la capa NUEVA lee a la VIEJA. store/graph/ (analysis networkx, convert, executor, api.graph entero) obtiene su EdgeIndex de compose_edge_index sobre los shards de runtime/edges/ (store/edge_index/compose.py:21, compose.py:13,58; api/edges/edge_reading.py:14). Sin fuente propia, retirar edges rompe toda la capa de grafo. Este es el paso 1 y bloquea todo el retiro."
+}

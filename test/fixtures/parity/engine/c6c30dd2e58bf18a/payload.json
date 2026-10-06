@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-core-ingest-engine-_get_base_path",
+ "imports": "[\".manifest\", \".renderer\", \".scanner\", \".source_parser\", \"__future__\", \"pathlib\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.core.ingest.engine",
+ "provenance": "python-ast:python:sldb.sldb.core.ingest.engine:_get_base_path; contract-sha256:45ce78cfa50bbf2d9a3501b0a304819b1470dc5d2be7db7b84565fbadfdf179f",
+ "purpose": "Not documented.",
+ "qualname": "_get_base_path",
+ "signature": "_get_base_path(dst_dir: Path)",
+ "source_path": "sldb/core/ingest/engine.py",
+ "source_sha256": "413467393d6649abab8c91260e470908c64f6fc40179d6e05f35eba48264e6c5",
+ "source_span": "63:68",
+ "system": "sldb",
+ "tags": []
+}

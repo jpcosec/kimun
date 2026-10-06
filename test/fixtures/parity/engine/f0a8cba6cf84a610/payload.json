@@ -1,0 +1,33 @@
+{
+ "atoms": [],
+ "checklists": [],
+ "current_node": "",
+ "depends_on": [],
+ "done_when": "",
+ "files": [
+  "src/sldb/store/journal/",
+  "src/sldb/store/hashing.py"
+ ],
+ "goal": "",
+ "history": [],
+ "id": "task-congelar-journal-autoridad-arbol",
+ "implementation_path": "- `JournalEntry` ya tiene `actor` y `timestamp` (el \"quién\" y \"cuándo\" ya existen), `previous_value`/`new_value` (el diff), y `previous_hash`/`entry_hash` (cadena).\n- 24 sitios de escritura lo alimentan (`save_document_payload`, `edit_model_template`, `promote_model_draft`, `add_model`, `untrack_document`, `dag_writes`, etc.).\n- Es opcional: `SLDB_JOURNAL_OFF=1` lo apaga.\n\n**La dirección:**\n\n1. Árbol = autoridad. Hoy solo guarda hashes del estado actual; necesita guardar el pasado (snapshots contenido-direccionados, no necesariamente completos).\n2. Journal = lista fina de punteros: `(timestamp, actor, operation, address, raíz_antes → raíz_después)`.\n3. El diff se computa comparando dos árboles, no se guarda en el journal.\n\n**El punto que no se puede esquivar:** una vista necesita un árbol con memoria. Sin el pasado en el árbol, el journal no puede ser solo una interfaz.",
+ "inherit_acceptance_context": false,
+ "inherits_from": [],
+ "pills": [],
+ "references": [],
+ "routine": "",
+ "scope": "- registrar el estado actual del journal (qué es, qué tiene, quién lo escribe)\n- fijar la dirección: árbol = autoridad, journal = vista fina de punteros\n- la consecuencia estructural: para que el journal sea una vista, el árbol tiene que guardar el pasado\n\n**Fuera de scope (por ahora):**\n\n- implementar nada\n- mover código del journal\n- decidir el formato del snapshot contenido-direccionado",
+ "status": "draft",
+ "summary": "Congelar el journal; el arbol es la autoridad y el journal una vista derivada sobre el.",
+ "tags": [
+  "workspace:desk",
+  "artifact:task",
+  "system:sldb",
+  "topic:governance"
+ ],
+ "task_type": "design",
+ "title": "Congelar el journal y rediseñar la autoridad: el árbol guarda, el journal es una vista",
+ "validation": [],
+ "why": ""
+}

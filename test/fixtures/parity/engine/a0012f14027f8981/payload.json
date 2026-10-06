@@ -1,0 +1,12 @@
+{
+ "arguments": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"--path\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\".\\\"\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Subtree to discover\"\n    },\n    {\n      \"names\": [\n        \"--catalog\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Catalog store path; defaults to ~/.sldb\"\n    },\n    {\n      \"names\": [\n        \"--apply\"\n      ],\n      \"required\": false,\n      \"default\": \"false\",\n      \"choices\": null,\n      \"nargs\": 0,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreTrueAction\",\n      \"const\": \"true\",\n      \"help\": \"Replace catalog entries with discovered stores\"\n    },\n    {\n      \"names\": [\n        \"--format\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"text\\\"\",\n      \"choices\": [\n        \"\\\"text\\\"\",\n        \"\\\"json\\\"\",\n        \"\\\"yaml\\\"\"\n      ],\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+ "command_path": "stores reconcile",
+ "how_it_works": "Not documented.",
+ "id": "cmd-sldb-stores-reconcile",
+ "provenance": "parser:sldb.cli.parser:build_parser#stores reconcile; contract-sha256:fa5677737edd6da97f7720ab902239b5b8696e0a37d21e25444e1fe28127bfb1",
+ "purpose": "Not documented.",
+ "synopsis": "Explicitly reconcile a catalog against a subtree.",
+ "system": "sldb",
+ "tags": [],
+ "usage": "usage: sldb stores reconcile [-h] [--path PATH] [--catalog CATALOG] [--apply] [--format {text,json,yaml}]"
+}

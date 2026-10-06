@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Adds a semantic equivalence mapping to the store DAG.",
+ "id": "python-sldb-sldb-sldb-store-semantic-add_semantic_equivalence",
+ "imports": "[\"__future__\", \"collections\", \"dataclasses\", \"logging\", \"pathlib\", \"re\", \"sldb.store.codec\", \"sldb.store.io\", \"sldb.store.layout\", \"sldb.store.models\", \"sldb.store.semantic_doc_tags\", \"sldb.store.semantic_tags\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.store.semantic",
+ "provenance": "python-ast:python:sldb.sldb.store.semantic:add_semantic_equivalence; contract-sha256:3e44bb9cf660fe04c94ce304bef6a7a2a03cf6e6aaec89d92a8840a4136155df",
+ "purpose": "Not documented.",
+ "qualname": "add_semantic_equivalence",
+ "signature": "add_semantic_equivalence(store_path: Path, local_tag: str, global_tag: str)",
+ "source_path": "sldb/store/semantic.py",
+ "source_sha256": "e6ed1ae68f1402f97d9b5e9dec452672110b3d4539af26d4daf5d812e460d7e6",
+ "source_span": "121:127",
+ "system": "sldb",
+ "tags": []
+}

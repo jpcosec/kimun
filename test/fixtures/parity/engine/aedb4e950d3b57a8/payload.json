@@ -1,0 +1,37 @@
+{
+ "atoms": [],
+ "checklists": [],
+ "current_node": "",
+ "depends_on": [],
+ "done_when": "Nearest non-global ancestor context, ancestor/global aliases, FAQ/explore root anchoring, explicit init registration, cycle-safe transitive federation, and explicit catalog reconciliation are implemented and tested. Keep this task open until the delivery audit is complete.",
+ "files": [],
+ "goal": "Resolve project operations from the nearest enclosing store and make known stores discoverable through a maintained global catalog.",
+ "history": [],
+ "id": "task-unify-store-context-and-federation",
+ "implementation_path": "Start from store/resolver.py and cli/store_context.py. Define parent and global catalog behavior before changing lifecycle operations; cover nested stores, aliases, collisions, moved stores, and cycles.",
+ "inherit_acceptance_context": false,
+ "inherits_from": [],
+ "pills": [
+  "desk/pills/pill-015-self-documentation-boundaries.md"
+ ],
+ "references": [
+  "docs/documentation-review.md"
+ ],
+ "routine": "",
+ "scope": "Context/root resolution, FAQ and explore anchoring, ancestor alias lookup, global registration and reconciliation, federation traversal and deduplication. Preserve explicit store overrides. No unbounded filesystem scan on each query.",
+ "status": "open",
+ "summary": "",
+ "tags": [
+  "system:sldb",
+  "workspace:desk",
+  "topic:stores"
+ ],
+ "task_type": "",
+ "title": "Unify store context and federation",
+ "validation": [
+  "Run resolver and federation regression tests with isolated stores.",
+  "Verify identical project resolution from root and subdirectory.",
+  "Verify global catalog registration, stale-path reporting, and explicit overrides."
+ ],
+ "why": "Ancestor discovery exists, but FAQ, exploration, aliases, and the global registry do not share a consistent context contract."
+}

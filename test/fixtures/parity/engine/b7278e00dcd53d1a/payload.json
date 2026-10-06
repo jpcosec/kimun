@@ -1,0 +1,18 @@
+{
+ "arguments": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"name\"\n      ],\n      \"required\": true,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Class name\"\n    },\n    {\n      \"names\": [\n        \"--template\"\n      ],\n      \"required\": true,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Template markdown path\"\n    },\n    {\n      \"names\": [\n        \"--fields\"\n      ],\n      \"required\": true,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Field spec YAML path\"\n    },\n    {\n      \"names\": [\n        \"--output\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"-\\\"\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Output Python file or -\"\n    },\n    {\n      \"names\": [\n        \"--stdout\"\n      ],\n      \"required\": false,\n      \"default\": \"false\",\n      \"choices\": null,\n      \"nargs\": 0,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreTrueAction\",\n      \"const\": \"true\",\n      \"help\": \"Print generated code\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+ "command_path": "models create",
+ "how_it_works": "Implemented under src/sldb/cli/parsers/ as the argparse subcommand 'create'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.",
+ "id": "cmd-sldb-models-create",
+ "provenance": "parser:sldb.cli.parser:build_parser#models create; contract-sha256:5e5f6a4838d1f3ba3dfd8cb153f2753338153aae5c0da8c81571ce49258e0508",
+ "purpose": "The `sldb models create` command: Generate a StructuredNLDoc model.",
+ "synopsis": "Generate a StructuredNLDoc model.",
+ "system": "sldb",
+ "tags": [
+  "system:sldb",
+  "domain:retrieval",
+  "kind:software",
+  "impl:external",
+  "entity:cli_command"
+ ],
+ "usage": "models create"
+}

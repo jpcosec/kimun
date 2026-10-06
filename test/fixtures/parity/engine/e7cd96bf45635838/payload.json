@@ -1,0 +1,18 @@
+{
+ "axis": "WHAT",
+ "cardinality": "many_to_many",
+ "condition": "",
+ "description": "A Python lexical scope introduces a binding for the target through an import\nstatement. The edge preserves static import evidence and does not assert use.",
+ "direction": "directed",
+ "name": "imports",
+ "source_types": [
+  "python_module",
+  "python_symbol"
+ ],
+ "target_types": [
+  "python_module",
+  "python_symbol",
+  "python_external"
+ ],
+ "title": "imports"
+}

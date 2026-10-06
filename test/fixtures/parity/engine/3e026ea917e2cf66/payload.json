@@ -1,0 +1,18 @@
+{
+ "arguments": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"path\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\".\\\"\",\n      \"choices\": null,\n      \"nargs\": \"?\",\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    },\n    {\n      \"names\": [\n        \"--force\"\n      ],\n      \"required\": false,\n      \"default\": \"false\",\n      \"choices\": null,\n      \"nargs\": 0,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreTrueAction\",\n      \"const\": \"true\",\n      \"help\": \"\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+ "command_path": "init",
+ "how_it_works": "Implemented under src/sldb/cli/parsers/ as the argparse subcommand 'init'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.",
+ "id": "cmd-sldb-init",
+ "provenance": "parser:sldb.cli.parser:build_parser#init; contract-sha256:74e0986dc3590370dc5c67a46bcef8cbe79f47792cb014b23d185c592e281d6f",
+ "purpose": "The `sldb init` command: ==SUPPRESS==",
+ "synopsis": "Create a repository-local SLDB skill file.",
+ "system": "sldb",
+ "tags": [
+  "system:sldb",
+  "domain:retrieval",
+  "kind:software",
+  "impl:external",
+  "entity:cli_command"
+ ],
+ "usage": "init"
+}

@@ -1,0 +1,16 @@
+{
+ "commands": "- sldb render",
+ "how_it_works": "Registered under src/sldb/cli/parsers/ as the 'render' subparser. Each command dispatches to its handler over the .sldb store.",
+ "id": "surface-sldb-render",
+ "provenance": "parser:sldb.cli.parser:build_parser#render; contract-sha256:f291623e696b9043083c7c4aaa335ec1ac274015aae782062e2ff6cf6a096fb7",
+ "purpose": "Render Markdown from data. Groups 1 command(s).",
+ "surface": "render",
+ "system": "sldb",
+ "tags": [
+  "system:sldb",
+  "domain:retrieval",
+  "kind:software",
+  "impl:external",
+  "entity:cli_surface"
+ ]
+}

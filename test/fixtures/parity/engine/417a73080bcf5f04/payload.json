@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-links-recovery-_dedup_links",
+ "imports": "[\".parser\", \".resolver\", \"__future__\", \"collections.abc\", \"pathlib\", \"sldb.store.io\", \"sldb.store.predicates\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.links.recovery",
+ "provenance": "python-ast:python:sldb.sldb.links.recovery:_dedup_links; contract-sha256:c610a5ba40af7cd351d911b12a08dd2f9a0aba4be290b9e14d0180ac3011bcbc",
+ "purpose": "Not documented.",
+ "qualname": "_dedup_links",
+ "signature": "_dedup_links(links: list[dict])",
+ "source_path": "sldb/links/recovery.py",
+ "source_sha256": "5ebc1b48bd2273c75c593ad0f760e217e649eb76c7b119c653967b3f85e738f7",
+ "source_span": "14:18",
+ "system": "sldb",
+ "tags": []
+}

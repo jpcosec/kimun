@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-graph_ops-matches-_matches_term",
+ "imports": "[\"difflib\", \"re\", \"sldb.cli.search_record\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.graph_ops.matches",
+ "provenance": "python-ast:python:sldb.sldb.cli.graph_ops.matches:_matches_term; contract-sha256:9ee16e42ad40f81600161ffc003b4e3828aa7b14d9d9ce58fbc90f63f6c94e57",
+ "purpose": "Not documented.",
+ "qualname": "_matches_term",
+ "signature": "_matches_term(haystacks: list[str], term: str, regex: bool, fuzzy: bool)",
+ "source_path": "sldb/cli/graph_ops/matches.py",
+ "source_sha256": "8811d8ec2d8ab3e10840d5a4490cb8cff6c4577ea013d92bd8fbeb94aaab7f96",
+ "source_span": "29:35",
+ "system": "sldb",
+ "tags": []
+}

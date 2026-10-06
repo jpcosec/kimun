@@ -1,0 +1,1 @@
+{:op :extract :tests ["tests/api/test_structural_noise.py::test_the_cli_refusal_is_loud_and_exits_nonzero" "tests/api/test_structural_noise.py::test_the_refusal_leaves_the_document_untracked" "tests/api/test_structural_noise.py::test_track_refuses_a_document_whose_headings_the_model_does_not_declare"]}

@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "hash_b plus what the models index records about the class: version and semantics.",
+ "id": "python-sldb-sldb-sldb-store-built_cache-model_key",
+ "imports": "[\"__future__\", \"json\", \"pathlib\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.store.built_cache",
+ "provenance": "python-ast:python:sldb.sldb.store.built_cache:model_key; contract-sha256:0f1bb7c9f08f03576dc86382e464359a286f91f7a48e2e9015870395ada4f17a",
+ "purpose": "Not documented.",
+ "qualname": "model_key",
+ "signature": "model_key(m_idx: Any)",
+ "source_path": "sldb/store/built_cache.py",
+ "source_sha256": "88469bfec6d3de00247b4d49e9378e26851611f28b1bb21e9eaf30bd567cec5d",
+ "source_span": "29:31",
+ "system": "sldb",
+ "tags": []
+}

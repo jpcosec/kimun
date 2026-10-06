@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-store-hashing-hash_documents_index",
+ "imports": "[\"hashlib\", \"json\", \"sldb.store.codec\", \"sldb.store.models\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.store.hashing",
+ "provenance": "python-ast:python:sldb.sldb.store.hashing:hash_documents_index; contract-sha256:cfc118dd8a18c2d92d50ce34826884b9438c6c912e0bdaafc24d3f4dd6b35648",
+ "purpose": "Not documented.",
+ "qualname": "hash_documents_index",
+ "signature": "hash_documents_index(documents_index: DocumentsIndex)",
+ "source_path": "sldb/store/hashing.py",
+ "source_sha256": "e248d4ee89abcf1062dcb9606458aa00dabd9c3078f0597b0aa17f697c496b4e",
+ "source_span": "23:31",
+ "system": "sldb",
+ "tags": []
+}

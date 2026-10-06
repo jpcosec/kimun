@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-core-handlers-table-tablenodehandler-_build_marker_records",
+ "imports": "[\"__future__\", \"re\", \"sldb.core.handlers.base\", \"sldb.core.handlers.utils\", \"sldb.core.node\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.core.handlers.table",
+ "provenance": "python-ast:python:sldb.sldb.core.handlers.table:TableNodeHandler._build_marker_records; contract-sha256:9b2466a337c85904374bca790aa5aeb4b1bbcb45eb3b9643d446573bcd9d5a10",
+ "purpose": "Not documented.",
+ "qualname": "TableNodeHandler._build_marker_records",
+ "signature": "_build_marker_records(self, data_rows: list[SLDBNode], columns: list[str], hl: dict[str, int])",
+ "source_path": "sldb/core/handlers/table.py",
+ "source_sha256": "8131410648829b7c483d47b065caa7a597bc207af018e652e5706ea94cf19253",
+ "source_span": "83:91",
+ "system": "sldb",
+ "tags": []
+}

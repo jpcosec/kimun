@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-store-ops-storeoperations-_do_track",
+ "imports": "[\"__future__\", \"pathlib\", \"sldb.store.hashing\", \"sldb.store.io\", \"sldb.store.models\", \"sldb.store.semantic\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.store.ops",
+ "provenance": "python-ast:python:sldb.sldb.store.ops:StoreOperations._do_track; contract-sha256:230b141a5758025a27a9ececca2ebae12740a0997bbfa210e20fa5d1fd67003e",
+ "purpose": "Not documented.",
+ "qualname": "StoreOperations._do_track",
+ "signature": "_do_track(store_path, root, st_idx, m_type, m_entry, d_name, rel_path, text, res_ref, py_path)",
+ "source_path": "sldb/store/ops.py",
+ "source_sha256": "482248855b344d1c043a55c146e669bd313fb2e129c8249ef3a2ec8ca97e4adf",
+ "source_span": "35:45",
+ "system": "sldb",
+ "tags": []
+}

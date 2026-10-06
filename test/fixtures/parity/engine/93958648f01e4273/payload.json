@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-graph_ops-build_ast-_add_linked_documents",
+ "imports": "[\".utils\", \"sldb.cli.model_utils\", \"sldb.cli.store_context\", \"sldb.store.io\", \"sldb.store.query\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.graph_ops.build_ast",
+ "provenance": "python-ast:python:sldb.sldb.cli.graph_ops.build_ast:_add_linked_documents; contract-sha256:fdef58748eddb958e6993383e823fce4b057e5b9628cf50eacf47f56f25c43c3",
+ "purpose": "Not documented.",
+ "qualname": "_add_linked_documents",
+ "signature": "_add_linked_documents(ast, store_path, pythonpath)",
+ "source_path": "sldb/cli/graph_ops/build_ast.py",
+ "source_sha256": "a9aa8a478f71cfc1e3459ac0ae92ea6974b7e4d06b4bf26439061b9b675dd495",
+ "source_span": "39:44",
+ "system": "sldb",
+ "tags": []
+}

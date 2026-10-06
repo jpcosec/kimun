@@ -1,0 +1,15 @@
+{
+ "axis": "WHERE",
+ "cardinality": "many_to_one",
+ "condition": "capacity >= {party_size}",
+ "description": "assigned_to.",
+ "direction": "directed",
+ "name": "assigned_to",
+ "source_types": [
+  "Booking"
+ ],
+ "target_types": [
+  "Table"
+ ],
+ "title": "assigned_to"
+}

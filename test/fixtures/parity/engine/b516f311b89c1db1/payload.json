@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Helper to find the first leaf node with content.",
+ "id": "python-sldb-sldb-sldb-core-node-sldbnode-find_leaf_text",
+ "imports": "[\"__future__\", \"dataclasses\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.core.node",
+ "provenance": "python-ast:python:sldb.sldb.core.node:SLDBNode.find_leaf_text; contract-sha256:19d8591ae91c0fef70431f0a244a8981e6738353491ce0f0540c4d637bcd87bc",
+ "purpose": "Not documented.",
+ "qualname": "SLDBNode.find_leaf_text",
+ "signature": "find_leaf_text(self)",
+ "source_path": "sldb/core/node.py",
+ "source_sha256": "586ff411d7448d65e2ac03a1f20f4bd7375a040855b2c489a14625f96b256df4",
+ "source_span": "24:32",
+ "system": "sldb",
+ "tags": []
+}

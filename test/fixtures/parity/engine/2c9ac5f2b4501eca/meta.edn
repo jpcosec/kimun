@@ -1,0 +1,1 @@
+{:op :extract :tests ["tests/store/test_cli_store.py::test_doc_track_fails_idempotency" "tests/store/test_cli_store.py::test_doc_track_force_bypasses_idempotency"]}

@@ -1,0 +1,8 @@
+{
+ "condition": "",
+ "notes": "",
+ "relation_type": "assigned_to",
+ "source_id": "Booking:b1",
+ "target_id": "Table:t12",
+ "title": "b1-t12"
+}

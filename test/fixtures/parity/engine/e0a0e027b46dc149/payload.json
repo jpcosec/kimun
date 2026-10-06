@@ -1,0 +1,18 @@
+{
+ "arguments": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"term\"\n      ],\n      \"required\": true,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Search term or regex\"\n    },\n    {\n      \"names\": [\n        \"--source\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"all\\\"\",\n      \"choices\": [\n        \"\\\"all\\\"\",\n        \"\\\"docs\\\"\",\n        \"\\\"docstrings\\\"\"\n      ],\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    },\n    {\n      \"names\": [\n        \"--regex\"\n      ],\n      \"required\": false,\n      \"default\": \"false\",\n      \"choices\": null,\n      \"nargs\": 0,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreTrueAction\",\n      \"const\": \"true\",\n      \"help\": \"\"\n    },\n    {\n      \"names\": [\n        \"--docs-root\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"docs\\\"\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Docs directory to scan\"\n    },\n    {\n      \"names\": [\n        \"--code-root\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"src\\\"\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Python source directory to scan\"\n    },\n    {\n      \"names\": [\n        \"--max-results\"\n      ],\n      \"required\": false,\n      \"default\": \"20\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": \"builtins.int\",\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    },\n    {\n      \"names\": [\n        \"--format\"\n      ],\n      \"required\": false,\n      \"default\": \"\\\"text\\\"\",\n      \"choices\": [\n        \"\\\"text\\\"\",\n        \"\\\"json\\\"\",\n        \"\\\"yaml\\\"\"\n      ],\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"\"\n    },\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store used to anchor relative source roots\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+ "command_path": "explore",
+ "how_it_works": "Implemented under src/sldb/cli/parsers/ as the argparse subcommand 'explore'. It parses the listed arguments and dispatches to its handler in the sldb CLI runtime over the .sldb store.",
+ "id": "cmd-sldb-explore",
+ "provenance": "parser:sldb.cli.parser:build_parser#explore; contract-sha256:a613761e9381bfba81be759c3d73d96bc020a8bc3adc8211be387b3b949bd905",
+ "purpose": "The `sldb explore` command: Search markdown docs and Python docstrings.",
+ "synopsis": "Search markdown docs and Python docstrings.",
+ "system": "sldb",
+ "tags": [
+  "system:sldb",
+  "domain:retrieval",
+  "kind:software",
+  "impl:external",
+  "entity:cli_command"
+ ],
+ "usage": "explore"
+}

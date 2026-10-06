@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-graph_ops-utils-_add_tags",
+ "imports": "[\"re\", \"sldb.core.ir\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.graph_ops.utils",
+ "provenance": "python-ast:python:sldb.sldb.cli.graph_ops.utils:_add_tags; contract-sha256:cea1afd4aecae59c3f772019279e348169d3a14cdbc1c749f3ecae7bebb1bb42",
+ "purpose": "Not documented.",
+ "qualname": "_add_tags",
+ "signature": "_add_tags(semantic_tags: list[str], seen: set[str], terms: list[str])",
+ "source_path": "sldb/cli/graph_ops/utils.py",
+ "source_sha256": "ec41a05a3200b849b6fa19e117f58c12abe8283a081c94f69d04fad2748eb2b5",
+ "source_span": "41:45",
+ "system": "sldb",
+ "tags": []
+}

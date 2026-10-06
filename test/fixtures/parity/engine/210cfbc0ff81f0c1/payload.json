@@ -1,0 +1,5 @@
+{
+ "action": "Run model validation against tracked docs.",
+ "outcome": "A promotable contract draft.",
+ "title": "Validate draft"
+}

@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-store-layout-sections_index_relpath",
+ "imports": "[\"__future__\", \"pathlib\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.store.layout",
+ "provenance": "python-ast:python:sldb.sldb.store.layout:sections_index_relpath; contract-sha256:cdc01004a54152db66c17c2cfeb748d7a02671657be7367d910149a45f845729",
+ "purpose": "Not documented.",
+ "qualname": "sections_index_relpath",
+ "signature": "sections_index_relpath(model_name: str)",
+ "source_path": "sldb/store/layout.py",
+ "source_sha256": "d7d9f96ffd161b2f1bd1e642cfdb77800fe93561e627cd631b33a069395954ac",
+ "source_span": "58:59",
+ "system": "sldb",
+ "tags": []
+}

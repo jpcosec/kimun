@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-commands-fields-fieldscli-run",
+ "imports": "[\"sldb.cli.commands.fields_mutate\", \"sldb.cli.commands.fields_show\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.commands.fields",
+ "provenance": "python-ast:python:sldb.sldb.cli.commands.fields:FieldsCLI.run; contract-sha256:cc4fcb912e87247127e26f46d9cb052324f3b597b1e122522316e670bc7e163b",
+ "purpose": "Not documented.",
+ "qualname": "FieldsCLI.run",
+ "signature": "run(self, args: Any)",
+ "source_path": "sldb/cli/commands/fields.py",
+ "source_sha256": "71b32f6bd4be52dd48fa2bcb232bb9b7164ee99f1799f276032e41791c654ff9",
+ "source_span": "8:13",
+ "system": "sldb",
+ "tags": []
+}

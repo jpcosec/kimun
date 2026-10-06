@@ -1,0 +1,12 @@
+{
+ "action": "set_field",
+ "id": "operator-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-activate",
+ "status": "active",
+ "summary": "Moves the task into active execution.",
+ "tags": [
+  "primitive:operator"
+ ],
+ "target": "status",
+ "title": "Activate task",
+ "value": "active"
+}

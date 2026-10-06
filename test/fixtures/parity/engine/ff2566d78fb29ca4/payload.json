@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-serve-routes-ensure_save_request",
+ "imports": "[\"__future__\", \"http.server\", \"pathlib\", \"sldb.cli.commands.fields_save\", \"sldb.cli.model_utils\", \"sldb.cli.serve.responses\", \"sldb.cli.serve.schema\", \"sldb.store.export\", \"sldb.store.query\", \"typing\", \"urllib.parse\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.serve.routes",
+ "provenance": "python-ast:python:sldb.sldb.cli.serve.routes:ensure_save_request; contract-sha256:a22f4b561f35474721fa070c3f352c7e4a81279d0d4849eba1142bbeacea4486",
+ "purpose": "Not documented.",
+ "qualname": "ensure_save_request",
+ "signature": "ensure_save_request(doc_name: Any, payload: Any)",
+ "source_path": "sldb/cli/serve/routes.py",
+ "source_sha256": "2c5d6fc90b5900cdadf64088aed5d492e458476fb7f193f5aee56e1b8b914f8f",
+ "source_span": "83:87",
+ "system": "sldb",
+ "tags": []
+}

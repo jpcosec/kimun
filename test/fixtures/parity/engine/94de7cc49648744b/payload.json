@@ -1,0 +1,12 @@
+{
+ "expected": "ready_for_testing",
+ "id": "condition-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-ready-for-closeout",
+ "predicate": "equals",
+ "status": "active",
+ "subject": "status",
+ "summary": "Task must be in ready_for_testing before closeout.",
+ "tags": [
+  "primitive:condition"
+ ],
+ "title": "Ready for closeout"
+}

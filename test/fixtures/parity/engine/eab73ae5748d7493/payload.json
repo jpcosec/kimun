@@ -1,0 +1,12 @@
+{
+ "action": "set_field",
+ "id": "operator-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-close",
+ "status": "active",
+ "summary": "Closes the task in the operational runtime.",
+ "tags": [
+  "primitive:operator"
+ ],
+ "target": "status",
+ "title": "Close task",
+ "value": "closed"
+}

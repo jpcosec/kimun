@@ -1,0 +1,1 @@
+{:op :extract :tests ["tests/test_standalone.py::test_cli_extract_json" "tests/test_standalone.py::test_cli_extract_stdout_with_explicit_format" "tests/test_standalone.py::test_cli_validate_input_roundtrip"]}

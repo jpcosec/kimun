@@ -1,0 +1,12 @@
+{
+ "expected": "ready_for_testing",
+ "id": "condition-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-ready-for-closeout",
+ "predicate": "equals",
+ "status": "active",
+ "subject": "status",
+ "summary": "Task must be in ready_for_testing before closeout.",
+ "tags": [
+  "primitive:condition"
+ ],
+ "title": "Ready for closeout"
+}

@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-store-query_engine-global_semantic-globalsemanticengine-_has_global_tag",
+ "imports": "[\"__future__\", \"pathlib\", \"re\", \"sldb.store.io\", \"sldb.store.query\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.store.query_engine.global_semantic",
+ "provenance": "python-ast:python:sldb.sldb.store.query_engine.global_semantic:GlobalSemanticEngine._has_global_tag; contract-sha256:a0fe381f06abd4181ec1926fce486b928f6266a4459818bfc7c8476de31a670c",
+ "purpose": "Not documented.",
+ "qualname": "GlobalSemanticEngine._has_global_tag",
+ "signature": "_has_global_tag(cls, doc, global_tag: str)",
+ "source_path": "sldb/store/query_engine/global_semantic.py",
+ "source_sha256": "8f8ddfe323ac7486c8db6cef55798a6f0bc98e7412429555638d33199e264e11",
+ "source_span": "39:44",
+ "system": "sldb",
+ "tags": []
+}

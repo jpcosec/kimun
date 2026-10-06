@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-runtime-config-reset_config",
+ "imports": "[\"dataclasses\", \"os\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.runtime.config",
+ "provenance": "python-ast:python:sldb.sldb.runtime.config:reset_config; contract-sha256:10cc6892065edeb2f78d9d5bafb80086e85015353064f351499d53c5990b9037",
+ "purpose": "Not documented.",
+ "qualname": "reset_config",
+ "signature": "reset_config()",
+ "source_path": "sldb/runtime/config.py",
+ "source_sha256": "b5184766d47fa426428e63a458517019c3c252b39376498bfa1b77f038a62d87",
+ "source_span": "49:55",
+ "system": "sldb",
+ "tags": []
+}

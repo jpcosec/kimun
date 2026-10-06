@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-commands-find_filters-findfilters-_match_field",
+ "imports": "[\"__future__\", \"re\", \"sldb.cli.commands.find_utils\", \"sldb.cli.graph_ops\", \"sldb.store.query_engine.filter\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.commands.find_filters",
+ "provenance": "python-ast:python:sldb.sldb.cli.commands.find_filters:FindFilters._match_field; contract-sha256:7d1d9e4c4c145e90505e39f0e051da21175e01da28403be84419d6d282814b22",
+ "purpose": "Not documented.",
+ "qualname": "FindFilters._match_field",
+ "signature": "_match_field(self, record: SearchRecord, expression: str)",
+ "source_path": "sldb/cli/commands/find_filters.py",
+ "source_sha256": "7907f404552474956f43c2eb5cbb9e070a9fb97a28144b84c7912f6f4e4684c5",
+ "source_span": "26:31",
+ "system": "sldb",
+ "tags": []
+}

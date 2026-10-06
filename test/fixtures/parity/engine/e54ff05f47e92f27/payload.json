@@ -1,0 +1,16 @@
+{
+ "condition_refs": [
+  "condition-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-has-validation"
+ ],
+ "id": "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-testing-ready",
+ "items": [
+  "Validation exists"
+ ],
+ "mode": "all",
+ "status": "active",
+ "summary": "Confirms the task is ready for testing handoff.",
+ "tags": [
+  "primitive:checklist"
+ ],
+ "title": "Testing Ready"
+}

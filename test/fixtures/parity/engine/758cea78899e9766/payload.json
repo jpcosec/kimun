@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-dispatcher-cli-_load_3",
+ "imports": "[\"__future__\", \"sldb.cli.commands.help_texts\", \"sldb.cli.parser\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.dispatcher",
+ "provenance": "python-ast:python:sldb.sldb.cli.dispatcher:CLI._load_3; contract-sha256:531dfaacfef8a9f793e9b70a3cb22c64810dd1327a40ed86a25ace7623060649",
+ "purpose": "Not documented.",
+ "qualname": "CLI._load_3",
+ "signature": "_load_3(self)",
+ "source_path": "sldb/cli/dispatcher.py",
+ "source_sha256": "53357ad6f727e63011b4517f0e20555413669b91354668492cff9273cf1604ae",
+ "source_span": "34:43",
+ "system": "sldb",
+ "tags": []
+}

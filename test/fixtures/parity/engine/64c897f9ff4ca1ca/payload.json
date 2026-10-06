@@ -1,0 +1,12 @@
+{
+ "condition_ref": "",
+ "id": "edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-testing-to-ready",
+ "source": "checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-testing-ready",
+ "status": "active",
+ "summary": "Testing gate passed.",
+ "tags": [
+  "primitive:edge"
+ ],
+ "target": "operator-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-ready-for-testing",
+ "title": "Testing gate to testing-ready operator"
+}

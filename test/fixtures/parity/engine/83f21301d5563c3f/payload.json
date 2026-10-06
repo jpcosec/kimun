@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-section_record_cls-sectionrecord",
+ "imports": "[\"__future__\", \"dataclasses\"]",
+ "kind": "ClassDef",
+ "module": "sldb.sldb.cli.section_record_cls",
+ "provenance": "python-ast:python:sldb.sldb.cli.section_record_cls:SectionRecord; contract-sha256:79cfa019a57d2b189c13fae58567c1351b980338f5047c8c8101c70738a2820c",
+ "purpose": "Not documented.",
+ "qualname": "SectionRecord",
+ "signature": "Not applicable.",
+ "source_path": "sldb/cli/section_record_cls.py",
+ "source_sha256": "33a934cd1e39e63ad40c86b4256004a95d44137e9d9b168e783c08d41c4716c5",
+ "source_span": "5:11",
+ "system": "sldb",
+ "tags": []
+}

@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-core-template_extractor-templateextractor-_dive",
+ "imports": "[\"re\", \"sldb.core.exceptions\", \"sldb.core.node\", \"sldb.core.node_handler\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.core.template_extractor",
+ "provenance": "python-ast:python:sldb.sldb.core.template_extractor:TemplateExtractor._dive; contract-sha256:4508a0fa381d75b5792616e3c035359e09205b381edcb355669a2880a16e28ab",
+ "purpose": "Not documented.",
+ "qualname": "TemplateExtractor._dive",
+ "signature": "_dive(self, node: SLDBNode, current_path: list[int], state: dict[str, Any])",
+ "source_path": "sldb/core/template_extractor.py",
+ "source_sha256": "52a6fe9ed7aa107f7a7c572056c88bc1663f6697492ad3f3af3f853b65b0556b",
+ "source_span": "22:27",
+ "system": "sldb",
+ "tags": []
+}

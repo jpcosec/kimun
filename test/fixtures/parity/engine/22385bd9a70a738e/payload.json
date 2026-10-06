@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-parsers-legacy-add_raw_query_commands",
+ "imports": "[\"__future__\", \"argparse\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.parsers.legacy",
+ "provenance": "python-ast:python:sldb.sldb.cli.parsers.legacy:add_raw_query_commands; contract-sha256:ab3594f7232dd029bb1cabcf441c84b289efbd973313167380a53fd13ff793ae",
+ "purpose": "Not documented.",
+ "qualname": "add_raw_query_commands",
+ "signature": "add_raw_query_commands(s: argparse._SubParsersAction, hidden: bool=False)",
+ "source_path": "sldb/cli/parsers/legacy.py",
+ "source_sha256": "24591d53caa969728a9c8f70915dec0f6d29161a8febc930be353c0be810fcfe",
+ "source_span": "10:11",
+ "system": "sldb",
+ "tags": []
+}

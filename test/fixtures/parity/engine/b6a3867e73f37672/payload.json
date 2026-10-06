@@ -1,0 +1,12 @@
+{
+ "action": "set_field",
+ "id": "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-ready-for-testing",
+ "status": "active",
+ "summary": "Moves the task into the testing gate.",
+ "tags": [
+  "primitive:operator"
+ ],
+ "target": "status",
+ "title": "Mark ready for testing",
+ "value": "ready_for_testing"
+}

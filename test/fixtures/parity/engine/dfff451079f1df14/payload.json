@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-parsers-selfdoc-_output_options",
+ "imports": "[\"__future__\", \"argparse\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.parsers.selfdoc",
+ "provenance": "python-ast:python:sldb.sldb.cli.parsers.selfdoc:_output_options; contract-sha256:9ff45ea0db73615ada71fe6b337aae242b62fad43744302a5d97a0dcdc604a82",
+ "purpose": "Not documented.",
+ "qualname": "_output_options",
+ "signature": "_output_options(parser: argparse.ArgumentParser)",
+ "source_path": "sldb/cli/parsers/selfdoc.py",
+ "source_sha256": "076c872c21a9ded46ef73c9a35fcfcf93d2f1beab99be47996cdcf572fa7b199",
+ "source_span": "47:49",
+ "system": "sldb",
+ "tags": []
+}

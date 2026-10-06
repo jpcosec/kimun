@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-parsers-fields-_query",
+ "imports": "[\"__future__\", \"argparse\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.parsers.fields",
+ "provenance": "python-ast:python:sldb.sldb.cli.parsers.fields:_query; contract-sha256:0ac668a5dd88090f3232338a77cd1b7376c5d858c8d60a72336930d66a149c97",
+ "purpose": "Not documented.",
+ "qualname": "_query",
+ "signature": "_query(s)",
+ "source_path": "sldb/cli/parsers/fields.py",
+ "source_sha256": "95c142e51239061442abbb55256a74b018ddea0e8b2a684377fda844c5f06cd8",
+ "source_span": "16:22",
+ "system": "sldb",
+ "tags": []
+}

@@ -1,0 +1,1 @@
+{:op :extract :tests ["tests/test_extraction_segments.py::test_coverage_is_a_fraction_of_the_meaningful_text"]}

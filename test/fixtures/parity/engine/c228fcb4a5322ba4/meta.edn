@@ -1,0 +1,1 @@
+{:op :render :tests ["tests/test_serve.py::test_batch_save_invalid_payload_422" "tests/test_serve.py::test_docs_create_invalid_payload_422"]}

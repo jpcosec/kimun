@@ -1,0 +1,15 @@
+{
+ "axis": "WHAT",
+ "cardinality": "many_to_many",
+ "condition": "",
+ "description": "This local tag maps to that global tag across linked stores.",
+ "direction": "directed",
+ "name": "semantic_equivalent",
+ "source_types": [
+  "semantic_tag"
+ ],
+ "target_types": [
+  "semantic_tag"
+ ],
+ "title": "semantic_equivalent"
+}

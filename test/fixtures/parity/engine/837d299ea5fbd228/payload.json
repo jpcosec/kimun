@@ -1,0 +1,12 @@
+{
+ "expected": "",
+ "id": "condition-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-has-implementation-path",
+ "predicate": "truthy",
+ "status": "active",
+ "subject": "implementation_path",
+ "summary": "Task implementation path must exist before execution.",
+ "tags": [
+  "primitive:condition"
+ ],
+ "title": "Implementation path exists"
+}

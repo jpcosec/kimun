@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "('B', 'st.{M}.doc') for 'B:st.{M}.doc'; (None, address) for a local address.",
+ "id": "python-sldb-sldb-sldb-store-query_engine-store_prefix-split_store",
+ "imports": "[\"__future__\", \"pathlib\", \"re\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.store.query_engine.store_prefix",
+ "provenance": "python-ast:python:sldb.sldb.store.query_engine.store_prefix:split_store; contract-sha256:c99c429d06e93bdd3ebb1f71b285d511b6302e71e5a2be6f8683faf0e54b2807",
+ "purpose": "Not documented.",
+ "qualname": "split_store",
+ "signature": "split_store(address: str)",
+ "source_path": "sldb/store/query_engine/store_prefix.py",
+ "source_sha256": "aeb1e2830de6e7ff551e5e661380de0c7bbe02b9bb15e9a34c5827b65cedec00",
+ "source_span": "15:21",
+ "system": "sldb",
+ "tags": []
+}

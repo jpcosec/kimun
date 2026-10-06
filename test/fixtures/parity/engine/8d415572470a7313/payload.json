@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-store-runtime_cache-_remember",
+ "imports": "[\"__future__\", \"dataclasses\", \"os\", \"pathlib\", \"sldb.store\", \"sldb.store.io\", \"sldb.store.layout\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.store.runtime_cache",
+ "provenance": "python-ast:python:sldb.sldb.store.runtime_cache:_remember; contract-sha256:18f77fa511df2b81d709aa65a33546f12697478c3ff6213a4f9e767f1c179cbe",
+ "purpose": "Not documented.",
+ "qualname": "_remember",
+ "signature": "_remember(key: tuple, loaded: Any)",
+ "source_path": "sldb/store/runtime_cache.py",
+ "source_sha256": "268fb05766c0b59434a5e0d1d9b098d373e5250d83de20b10e42bbfd3aa9f511",
+ "source_span": "78:83",
+ "system": "sldb",
+ "tags": []
+}

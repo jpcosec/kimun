@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-graph-search_record-searchrecord",
+ "imports": "[\"dataclasses\", \"typing\"]",
+ "kind": "ClassDef",
+ "module": "sldb.sldb.cli.graph.search_record",
+ "provenance": "python-ast:python:sldb.sldb.cli.graph.search_record:SearchRecord; contract-sha256:a963851b5995de805214f08c24cb5a140722914be1bf9cdaa57162d5f7ec4652",
+ "purpose": "Not documented.",
+ "qualname": "SearchRecord",
+ "signature": "Not applicable.",
+ "source_path": "sldb/cli/graph/search_record.py",
+ "source_sha256": "5e21a12ba91f2c71c33b8b9d60ec16240b44237841e2204c05963b89c6e173cd",
+ "source_span": "5:25",
+ "system": "sldb",
+ "tags": []
+}

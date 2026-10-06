@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Globs semantic tags.",
+ "id": "python-sldb-sldb-sldb-store-query_engine-semantic-glob_semantic",
+ "imports": "[\"__future__\", \"pathlib\", \"sldb.store.query_engine.filter\", \"sldb.store.query_engine.semantic_utils\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.store.query_engine.semantic",
+ "provenance": "python-ast:python:sldb.sldb.store.query_engine.semantic:glob_semantic; contract-sha256:e7e8e9235b0e1917097bc67e11aa017ac551913ec3400440513456e87953ed82",
+ "purpose": "Not documented.",
+ "qualname": "glob_semantic",
+ "signature": "glob_semantic(store_path: Path, pattern: str, resolve_model_ref, pythonpath: str | None=None)",
+ "source_path": "sldb/store/query_engine/semantic.py",
+ "source_sha256": "d31573a0489cb9857a9eb18291413b3f7cc502f07d22964c07b0075331a475da",
+ "source_span": "25:29",
+ "system": "sldb",
+ "tags": []
+}

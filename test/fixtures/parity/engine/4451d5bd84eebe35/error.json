@@ -1,0 +1,1 @@
+{"type": "ValidationError", "message": "1 validation error for ComposedTaskDoc\nstatus\n  Field required [type=missing, input_value={'title': 'Missing Status', 'goal': 'Incomplete.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing"}

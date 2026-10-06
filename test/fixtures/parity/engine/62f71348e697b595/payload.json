@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-serve-routes-serialize_document",
+ "imports": "[\"__future__\", \"http.server\", \"pathlib\", \"sldb.cli.commands.fields_save\", \"sldb.cli.model_utils\", \"sldb.cli.serve.responses\", \"sldb.cli.serve.schema\", \"sldb.store.export\", \"sldb.store.query\", \"typing\", \"urllib.parse\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.serve.routes",
+ "provenance": "python-ast:python:sldb.sldb.cli.serve.routes:serialize_document; contract-sha256:375b58b9022c19bb395f8e79d9a9357348ce9a781287e6192e91caf2e0ce771a",
+ "purpose": "Not documented.",
+ "qualname": "serialize_document",
+ "signature": "serialize_document(doc: Any)",
+ "source_path": "sldb/cli/serve/routes.py",
+ "source_sha256": "2c5d6fc90b5900cdadf64088aed5d492e458476fb7f193f5aee56e1b8b914f8f",
+ "source_span": "52:53",
+ "system": "sldb",
+ "tags": []
+}

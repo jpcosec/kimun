@@ -1,0 +1,12 @@
+{
+ "condition_ref": "",
+ "id": "edge-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-closeout-to-close",
+ "source": "checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-closeout-ready",
+ "status": "active",
+ "summary": "Closeout gate passed.",
+ "tags": [
+  "primitive:edge"
+ ],
+ "target": "operator-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-close",
+ "title": "Closeout gate to close operator"
+}

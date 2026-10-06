@@ -1,0 +1,12 @@
+{
+ "action": "set_field",
+ "id": "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-activate",
+ "status": "active",
+ "summary": "Moves the task into active execution.",
+ "tags": [
+  "primitive:operator"
+ ],
+ "target": "status",
+ "title": "Activate task",
+ "value": "active"
+}

@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Enumeration of diagnostic outcomes for documents.",
+ "id": "python-sldb-sldb-sldb-store-diagnostics_models-diagnosis_note-diagnosisnote",
+ "imports": "[\"__future__\", \"dataclasses\", \"enum\"]",
+ "kind": "ClassDef",
+ "module": "sldb.sldb.store.diagnostics_models.diagnosis_note",
+ "provenance": "python-ast:python:sldb.sldb.store.diagnostics_models.diagnosis_note:DiagnosisNote; contract-sha256:0f307bf1a02a05e99ede3e60286e9820fd00dcdbbd3593eaf23d21a7287924ee",
+ "purpose": "Not documented.",
+ "qualname": "DiagnosisNote",
+ "signature": "Not applicable.",
+ "source_path": "sldb/store/diagnostics_models/diagnosis_note.py",
+ "source_sha256": "ed5ed216dc912a904a1dd50327228566e22f6acda078964c0462ef6bf06527f7",
+ "source_span": "6:11",
+ "system": "sldb",
+ "tags": []
+}

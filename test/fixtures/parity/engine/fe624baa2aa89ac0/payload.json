@@ -1,0 +1,8 @@
+{
+ "condition": "",
+ "notes": "",
+ "relation_type": "near",
+ "source_id": "Booking:b1",
+ "target_id": "Table:t14",
+ "title": "b1-near"
+}

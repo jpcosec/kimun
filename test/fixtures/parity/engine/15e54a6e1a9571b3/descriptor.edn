@@ -1,0 +1,1 @@
+{:model/name "TrailingNewlineDoc" :model/version 1 :base [] :fields [{:name "title" :type :string :required true :description "The document's title." :py/annotation "<class 'str'>"} {:name "body" :type :string :required true :description "A block value that may end in newlines." :py/annotation "<class 'str'>"}] :template "# ⸢rev•title⸥\n\n## Body\n\n⸢render•body⸥\n\n## After"}

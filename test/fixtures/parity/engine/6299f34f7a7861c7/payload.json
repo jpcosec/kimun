@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-commands-basic-basiccli-_get_format",
+ "imports": "[\"__future__\", \"json\", \"sldb.cli.model_utils\", \"sldb.cli.utils\", \"sldb.runtime.validation\", \"typing\", \"yaml\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.commands.basic",
+ "provenance": "python-ast:python:sldb.sldb.cli.commands.basic:BasicCLI._get_format; contract-sha256:aac80f4152a7f9b9ba10fa02f4836afe58fda3f1cc9774058336d9aceba12c66",
+ "purpose": "Not documented.",
+ "qualname": "BasicCLI._get_format",
+ "signature": "_get_format(self, args: Any)",
+ "source_path": "sldb/cli/commands/basic.py",
+ "source_sha256": "b1f1d73f3511af23384ef4baad5cfa03dcf27820bad667cddce56d7dbd85e73d",
+ "source_span": "28:31",
+ "system": "sldb",
+ "tags": []
+}

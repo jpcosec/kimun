@@ -1,0 +1,18 @@
+{
+ "arguments": "```json\n{\n  \"arguments\": [\n    {\n      \"names\": [\n        \"address\"\n      ],\n      \"required\": true,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Wildcard address\"\n    },\n    {\n      \"names\": [\n        \"--store\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Store path\"\n    },\n    {\n      \"names\": [\n        \"--pythonpath\"\n      ],\n      \"required\": false,\n      \"default\": \"null\",\n      \"choices\": null,\n      \"nargs\": null,\n      \"value_type\": null,\n      \"action\": \"argparse._StoreAction\",\n      \"const\": \"null\",\n      \"help\": \"Project path\"\n    }\n  ],\n  \"exclusive_groups\": []\n}\n```",
+ "command_path": "legacy glob",
+ "how_it_works": "Implemented under src/sldb/cli/parsers/legacy.py (parser) and src/sldb/cli/commands/query.py (QueryCLI), dispatched through LegacyCLI. The address root picks the engine: `st.` goes to sldb.store.query_engine.structural, `se.` to the semantic engine, `gse.` to the global semantic engine over linked stores. All of them load the store's runtime documents and select by address; nothing reads Markdown by hand.",
+ "id": "cmd-sldb-legacy-glob",
+ "provenance": "parser:sldb.cli.parser:build_parser#legacy glob; contract-sha256:0bf5b38142a6a39eaeda1a1f1ea922ee0fe0ae33f8891d998976d17096a14cc6",
+ "purpose": "Enumerate addresses before reading them. On `st.` the doc and field segments take shell patterns (`st.{Book}.chapter-*.title`). On `se.` a `*` matches one tag segment and `**` any depth (`se.type.**`).",
+ "synopsis": "Expand wildcard addresses.",
+ "system": "sldb",
+ "tags": [
+  "system:sldb",
+  "domain:retrieval",
+  "kind:software",
+  "impl:external",
+  "entity:cli_command"
+ ],
+ "usage": "sldb legacy glob 'st.{CliCommandDoc}.cmd-sldb-*.synopsis' --store .sldb --pythonpath .\nsldb legacy glob 'se.type.*' --store .sldb --pythonpath ."
+}

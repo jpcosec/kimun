@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-commands-inbox_create-raise_validation_error",
+ "imports": "[\"datetime\", \"pathlib\", \"re\", \"sldb.cli.commands.inbox_core\", \"sldb.cli.model_utils\", \"sldb.core.exceptions\", \"sldb.runtime.validation\", \"sldb.store.ops\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.commands.inbox_create",
+ "provenance": "python-ast:python:sldb.sldb.cli.commands.inbox_create:raise_validation_error; contract-sha256:589deea2d2d75a7f33f28eadf318f644f223fd4e65d52d2a76f4b94023a647a6",
+ "purpose": "Not documented.",
+ "qualname": "raise_validation_error",
+ "signature": "raise_validation_error()",
+ "source_path": "sldb/cli/commands/inbox_create.py",
+ "source_sha256": "516a3a599c3a78d5deb7ff51e1c0b7b7afb6ecb74722d896204b835c001d8713",
+ "source_span": "56:61",
+ "system": "sldb",
+ "tags": []
+}

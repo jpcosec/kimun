@@ -1,0 +1,12 @@
+{
+ "condition_ref": "",
+ "id": "edge-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-execution-to-activate",
+ "source": "checklist-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-execution-ready",
+ "status": "active",
+ "summary": "Execution gate passed.",
+ "tags": [
+  "primitive:edge"
+ ],
+ "target": "operator-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-activate",
+ "title": "Execution gate to activation"
+}

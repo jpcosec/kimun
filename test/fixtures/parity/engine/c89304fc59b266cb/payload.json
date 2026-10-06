@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-graph-utils-flatten_payload",
+ "imports": "[\".search_record\", \"difflib\", \"re\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.graph.utils",
+ "provenance": "python-ast:python:sldb.sldb.cli.graph.utils:flatten_payload; contract-sha256:f197cc81e218f9126d66150e9f64a6e08e1681de1bfdd2eaeed9afff47be3b90",
+ "purpose": "Not documented.",
+ "qualname": "flatten_payload",
+ "signature": "flatten_payload(payload: Any, prefix: str='')",
+ "source_path": "sldb/cli/graph/utils.py",
+ "source_sha256": "4d924c4e26c74e8b3f690c69aec2bfc49e6f45354485817713b5debc9840c9b2",
+ "source_span": "6:8",
+ "system": "sldb",
+ "tags": []
+}

@@ -1,0 +1,1 @@
+{:model/name "Dish" :model/version 1 :base [] :fields [{:name "title" :type :string :required true :description "Title." :py/annotation "<class 'str'>"} {:name "price" :type :int :required true :description "Price." :py/annotation "<class 'int'>"}] :template "# Dish\n\n## Title\n\n⸢rev•title⸥\n\n## Price\n\n⸢rev•price⸥"}

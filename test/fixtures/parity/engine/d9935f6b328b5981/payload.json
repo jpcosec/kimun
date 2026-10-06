@@ -1,0 +1,16 @@
+{
+ "commands": "- sldb fields append\n- sldb fields clean\n- sldb fields create\n- sldb fields query\n- sldb fields remove\n- sldb fields show\n- sldb fields update",
+ "how_it_works": "Registered under src/sldb/cli/parsers/ as the 'fields' subparser. Each command dispatches to its handler over the .sldb store.",
+ "id": "surface-sldb-fields",
+ "provenance": "parser:sldb.cli.parser:build_parser#fields; contract-sha256:8748c1d008f374e5692b73fd8189b12c0eac20a8a5c46ffed67c95c7524ad132",
+ "purpose": "Field inspection and mutation. Groups 7 command(s).",
+ "surface": "fields",
+ "system": "sldb",
+ "tags": [
+  "system:sldb",
+  "domain:retrieval",
+  "kind:software",
+  "impl:external",
+  "entity:cli_surface"
+ ]
+}

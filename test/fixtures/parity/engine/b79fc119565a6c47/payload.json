@@ -1,0 +1,15 @@
+{
+ "axis": "WHERE",
+ "cardinality": "many_to_many",
+ "condition": "",
+ "description": "near.",
+ "direction": "undirected",
+ "name": "near",
+ "source_types": [
+  "Table"
+ ],
+ "target_types": [
+  "Table"
+ ],
+ "title": "near"
+}

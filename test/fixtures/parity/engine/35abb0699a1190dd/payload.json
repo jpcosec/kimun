@@ -1,0 +1,30 @@
+{
+ "decomposition": [
+  "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-execution-ready",
+  "operator-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-activate",
+  "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-testing-ready",
+  "operator-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-ready-for-testing",
+  "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-closeout-ready",
+  "operator-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-close"
+ ],
+ "edges": [
+  "edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-execution-to-activate",
+  "edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-activate-to-testing",
+  "edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-testing-to-ready",
+  "edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-ready-to-closeout",
+  "edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-closeout-to-close",
+  "edge-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-close-to-complete"
+ ],
+ "entrypoint": "checklist-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges-execution-ready",
+ "id": "routine-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges",
+ "status": "active",
+ "summary": "Actionable routine for Dar fuente propia al grafo: store/graph deja de leer runtime/edges.",
+ "tags": [
+  "workspace:desk",
+  "primitive:routine"
+ ],
+ "terminal_nodes": [
+  "complete"
+ ],
+ "title": "Routine for Dar fuente propia al grafo: store/graph deja de leer runtime/edges"
+}

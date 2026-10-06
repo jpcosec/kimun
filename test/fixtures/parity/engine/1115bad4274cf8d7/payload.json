@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-runtime-validation-validator-_check_render_validity",
+ "imports": "[\"__future__\", \"sldb.core.ast\", \"sldb.core.data_extractor\", \"sldb.core.renderer\", \"sldb.core.template_extractor\", \"sldb.models.structured_doc\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.runtime.validation",
+ "provenance": "python-ast:python:sldb.sldb.runtime.validation:Validator._check_render_validity; contract-sha256:9f68cb4b194a4984e245f46096b3873fa57304a463ae6972077273e44c58b40f",
+ "purpose": "Not documented.",
+ "qualname": "Validator._check_render_validity",
+ "signature": "_check_render_validity(self, input_data: dict[str, Any], extracted: dict[str, Any])",
+ "source_path": "sldb/runtime/validation.py",
+ "source_sha256": "db153bd8ee9125446f462b8c23bf82f3cbf008d2d78c86de4ace69adb9021246",
+ "source_span": "38:40",
+ "system": "sldb",
+ "tags": []
+}

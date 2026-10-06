@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-store-ops-_get_rel",
+ "imports": "[\"__future__\", \"pathlib\", \"sldb.store.hashing\", \"sldb.store.io\", \"sldb.store.models\", \"sldb.store.semantic\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.store.ops",
+ "provenance": "python-ast:python:sldb.sldb.store.ops:_get_rel; contract-sha256:a87b30d5b8272394537ff8e488ed9eb901447025ff17e03b4380063ba434715d",
+ "purpose": "Not documented.",
+ "qualname": "_get_rel",
+ "signature": "_get_rel(path: Path, root: Path)",
+ "source_path": "sldb/store/ops.py",
+ "source_sha256": "482248855b344d1c043a55c146e669bd313fb2e129c8249ef3a2ec8ca97e4adf",
+ "source_span": "58:62",
+ "system": "sldb",
+ "tags": []
+}

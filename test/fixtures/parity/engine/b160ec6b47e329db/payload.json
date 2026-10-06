@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-commands-faq-faqcli-_print",
+ "imports": "[\"__future__\", \"json\", \"pathlib\", \"sldb.cli.commands.faq_entry\", \"sldb.cli.store_context\", \"typing\", \"yaml\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.commands.faq",
+ "provenance": "python-ast:python:sldb.sldb.cli.commands.faq:FAQCLI._print; contract-sha256:25f959d6322a67bf7600e33faf94f008457d73887c9cb6fcda7d320cbf71c379",
+ "purpose": "Not documented.",
+ "qualname": "FAQCLI._print",
+ "signature": "_print(self, payload: dict[str, Any], fmt: str)",
+ "source_path": "sldb/cli/commands/faq.py",
+ "source_sha256": "c33c4165d8a3b76024f21fa0645ccbe93b192492172a913578eb9a521da46ff3",
+ "source_span": "66:70",
+ "system": "sldb",
+ "tags": []
+}

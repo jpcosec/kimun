@@ -1,0 +1,1 @@
+{:op :extract :tests ["tests/store/test_documents_shards.py::test_hash_b_is_order_independent" "tests/store/test_documents_shards.py::test_hash_b_matches_a_full_scan_of_the_same_content" "tests/store/test_documents_shards.py::test_shard_aggregate_equals_direct_extraction" "tests/store/test_documents_shards.py::test_shard_aggregate_equals_direct_extraction_after_writes"]}

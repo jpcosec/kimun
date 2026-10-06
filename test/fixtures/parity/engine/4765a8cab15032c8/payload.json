@@ -1,0 +1,12 @@
+{
+ "expected": "",
+ "id": "condition-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion-pill-knowledge-graduated",
+ "predicate": "truthy",
+ "status": "active",
+ "subject": "pill_graduation_verified",
+ "summary": "Tasks with bound pills should reference an atom when durable pill knowledge was discovered; tasks without bound pills pass trivially.",
+ "tags": [
+  "primitive:condition"
+ ],
+ "title": "Pill knowledge is graduated when required"
+}

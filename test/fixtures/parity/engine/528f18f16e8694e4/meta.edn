@@ -1,0 +1,1 @@
+{:op :extract :tests ["tests/api/test_journal.py::test_write_cost_with_and_without_journal"]}

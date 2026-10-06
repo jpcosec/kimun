@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-commands-find_filters-findfilters-_match_section_contains",
+ "imports": "[\"__future__\", \"re\", \"sldb.cli.commands.find_utils\", \"sldb.cli.graph_ops\", \"sldb.store.query_engine.filter\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.commands.find_filters",
+ "provenance": "python-ast:python:sldb.sldb.cli.commands.find_filters:FindFilters._match_section_contains; contract-sha256:b9d809929b345ca94d74c2361f8ef2566c3f3d40d4caf0894c0db3464ce471df",
+ "purpose": "Not documented.",
+ "qualname": "FindFilters._match_section_contains",
+ "signature": "_match_section_contains(self, record: SearchRecord, expression: str)",
+ "source_path": "sldb/cli/commands/find_filters.py",
+ "source_sha256": "7907f404552474956f43c2eb5cbb9e070a9fb97a28144b84c7912f6f4e4684c5",
+ "source_span": "57:63",
+ "system": "sldb",
+ "tags": []
+}

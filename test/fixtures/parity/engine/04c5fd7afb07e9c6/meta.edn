@@ -1,0 +1,1 @@
+{:op :extract :tests ["tests/selfdoc/test_sync.py::test_missing_generated_file_is_recreated_and_tracking_repaired"]}

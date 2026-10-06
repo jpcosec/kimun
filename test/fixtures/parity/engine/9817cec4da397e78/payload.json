@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-graph_ops-ast_target-_ast_for_field",
+ "imports": "[\".build_ast\", \".build_ir\", \".extract\", \".fields\", \".resolve\", \"pathlib\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.graph_ops.ast_target",
+ "provenance": "python-ast:python:sldb.sldb.cli.graph_ops.ast_target:_ast_for_field; contract-sha256:0635823ffcc2821e74fa6a0d75d05c9061ef1c299816118649eb2a8cafafc81b",
+ "purpose": "Not documented.",
+ "qualname": "_ast_for_field",
+ "signature": "_ast_for_field(target, store_arg, pythonpath)",
+ "source_path": "sldb/cli/graph_ops/ast_target.py",
+ "source_sha256": "0a14ddff953c521bdbc1eafabb808ce1bea96fa9cf2ea2073482a8fcac773771",
+ "source_span": "41:44",
+ "system": "sldb",
+ "tags": []
+}

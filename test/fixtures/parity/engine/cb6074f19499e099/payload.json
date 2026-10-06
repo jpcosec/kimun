@@ -1,0 +1,8 @@
+{
+ "condition": "",
+ "notes": "",
+ "relation_type": "refines",
+ "source_id": "Spec:s2",
+ "target_id": "Spec:s1",
+ "title": "s2-s1"
+}

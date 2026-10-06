@@ -1,0 +1,1 @@
+{:op :extract :tests ["tests/test_cli_v2.py::test_models_fields_add_and_promote_bumps_model_version"]}

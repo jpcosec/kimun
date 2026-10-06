@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-parsers-models2-_create",
+ "imports": "[\"__future__\", \"argparse\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.parsers.models2",
+ "provenance": "python-ast:python:sldb.sldb.cli.parsers.models2:_create; contract-sha256:9cbc351a3e3e4f5416f16b4db4437b7d3f1669e3ea00ec4f56b995c8ba7248c4",
+ "purpose": "Not documented.",
+ "qualname": "_create",
+ "signature": "_create(s)",
+ "source_path": "sldb/cli/parsers/models2.py",
+ "source_sha256": "73e1ca58cb751414019c1101f03d3ce5bdba5a700216edf941296005f9c95bbf",
+ "source_span": "58:64",
+ "system": "sldb",
+ "tags": []
+}

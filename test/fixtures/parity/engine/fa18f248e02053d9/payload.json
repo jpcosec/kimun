@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-store-models-models_index-modelsindex",
+ "imports": "[\"pydantic\"]",
+ "kind": "ClassDef",
+ "module": "sldb.sldb.store.models.models_index",
+ "provenance": "python-ast:python:sldb.sldb.store.models.models_index:ModelsIndex; contract-sha256:012b1c8f1beb2972db79496ccc862d28392034c4a34a5daf60598908d267a92e",
+ "purpose": "Not documented.",
+ "qualname": "ModelsIndex",
+ "signature": "Not applicable.",
+ "source_path": "sldb/store/models/models_index.py",
+ "source_sha256": "bf8043136f0966821f1e17266bb7a5172775076f4b581b01678eb4a33a103df1",
+ "source_span": "4:15",
+ "system": "sldb",
+ "tags": []
+}

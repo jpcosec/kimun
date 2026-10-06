@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-core-extractor-recipe_matcher-recipematcher",
+ "imports": "[\"re\", \"sldb.core.node\", \"sldb.core.node_handler\", \"typing\"]",
+ "kind": "ClassDef",
+ "module": "sldb.sldb.core.extractor.recipe_matcher",
+ "provenance": "python-ast:python:sldb.sldb.core.extractor.recipe_matcher:RecipeMatcher; contract-sha256:b225962c68d84967c0b7e2e32c8b7942866af913e301f362d28975cdcb711619",
+ "purpose": "Not documented.",
+ "qualname": "RecipeMatcher",
+ "signature": "Not applicable.",
+ "source_path": "sldb/core/extractor/recipe_matcher.py",
+ "source_sha256": "91959257874437892d9a9a89d462ef06395b51fd30dd0323aa2ab9dcf29c9576",
+ "source_span": "6:39",
+ "system": "sldb",
+ "tags": []
+}

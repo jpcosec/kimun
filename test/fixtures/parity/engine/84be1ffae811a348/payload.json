@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-graph_old-utils-_annotation_name",
+ "imports": "[\"difflib\", \"re\", \"typing\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.graph_old.utils",
+ "provenance": "python-ast:python:sldb.sldb.cli.graph_old.utils:_annotation_name; contract-sha256:b3b532d7eb8e760aea26ce839f489079edb024f6231db7ff8babbdec826d8914",
+ "purpose": "Not documented.",
+ "qualname": "_annotation_name",
+ "signature": "_annotation_name(annotation: Any)",
+ "source_path": "sldb/cli/graph_old/utils.py",
+ "source_sha256": "d928c9732ff253c33eb222b90c266272760cede3083f1051807fb9b8d4956809",
+ "source_span": "9:14",
+ "system": "sldb",
+ "tags": []
+}

@@ -1,0 +1,11 @@
+{
+ "axis": "WHERE",
+ "cardinality": "one_to_many",
+ "condition": "",
+ "description": "A field the model declared in `__containment__` holds this document as a child; the edge carries the field name and the models the declaration allows.",
+ "direction": "directed",
+ "name": "contains",
+ "source_types": [],
+ "target_types": [],
+ "title": "contains"
+}

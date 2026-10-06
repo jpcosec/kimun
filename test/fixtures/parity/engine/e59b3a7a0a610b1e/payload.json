@@ -1,0 +1,16 @@
+{
+ "commands": "- sldb models add\n- sldb models create\n- sldb models fields add\n- sldb models fields remove\n- sldb models list\n- sldb models show\n- sldb models template edit\n- sldb models template show\n- sldb models update\n- sldb models validate",
+ "how_it_works": "Registered under src/sldb/cli/parsers/ as the 'models' subparser. Each command dispatches to its handler over the .sldb store.",
+ "id": "surface-sldb-models",
+ "provenance": "parser:sldb.cli.parser:build_parser#models; contract-sha256:9f518e03a6236384d309f13dc6e8628de221b30cd0641da2dc13a77fb1d92b28",
+ "purpose": "Model contracts and code generation. Groups 10 command(s).",
+ "surface": "models",
+ "system": "sldb",
+ "tags": [
+  "system:sldb",
+  "domain:retrieval",
+  "kind:software",
+  "impl:external",
+  "entity:cli_surface"
+ ]
+}

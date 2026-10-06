@@ -1,0 +1,18 @@
+{
+ "architecture": "Not documented.",
+ "architecture_spec": "docs/architecture/spec2viz/python-ast.yml; sha256=cece0196cfdf01c39315c3221d5fbe10e2953377809b62cfa800c0463d2146fd",
+ "docstring": "Not documented.",
+ "id": "python-sldb-sldb-sldb-cli-commands-links-linkcli-_print_recovery",
+ "imports": "[\"__future__\", \"json\", \"pathlib\", \"sldb.cli.store_context\", \"sldb.cli.utils\", \"sldb.links\", \"typing\", \"yaml\"]",
+ "kind": "FunctionDef",
+ "module": "sldb.sldb.cli.commands.links",
+ "provenance": "python-ast:python:sldb.sldb.cli.commands.links:LinkCLI._print_recovery; contract-sha256:b47433ff500b4ad313e740484fc0f6f1ff6ca51214da0216bca5c59baf0957a6",
+ "purpose": "Not documented.",
+ "qualname": "LinkCLI._print_recovery",
+ "signature": "_print_recovery(self, res: dict, fmt: str)",
+ "source_path": "sldb/cli/commands/links.py",
+ "source_sha256": "d1e137f7b7bc1443ea75145806be51651186e1cd5a9426fd2eb410ccb22ca911",
+ "source_span": "34:41",
+ "system": "sldb",
+ "tags": []
+}
