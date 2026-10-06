@@ -1,0 +1,292 @@
+{:recorded-documents 1551,
+ :comparison
+ {:status {:payload-differs 8, :payload-equal 1543},
+  :content-hash-vs-v1-live {:differs-with-payload 8, :equal 1543},
+  :content-hash-vs-v1-stored
+  {:differs-stale-v1-entry 2, :differs-with-payload 8, :equal 1541},
+  :source-hash-vs-v1-live {:equal 1551},
+  :paths-relative {true 1551},
+  :causes
+  {:field-only-in-kimun
+   {:fields 7,
+    :documents 7,
+    :models ["TaskDoc"],
+    :example
+    {:field "from_drawer",
+     :cause :field-only-in-kimun,
+     :v1 nil,
+     :kimun "\"\"",
+     :model "TaskDoc",
+     :name
+     "task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico"}},
+   :value-string
+   {:fields 1,
+    :documents 1,
+    :models ["InboxNoteDoc"],
+    :example
+    {:field "created_at",
+     :cause :value-string,
+     :v1 "\"2026-06-14T00:00:00\"",
+     :kimun "\"2026-06-14\"",
+     :model "InboxNoteDoc",
+     :name
+     "20260614-000000-suggestion-stabilize-stores-init-failures"}}},
+  :kimun-errors []},
+ :date "2026-10-06",
+ :v1-store ".sldb (sldb v1 own store)",
+ :performance
+ {:store
+  {:kimun-bytes 606339051,
+   :objects 36718,
+   :log-lines 1586,
+   :log-bytes 18097085},
+  :migration
+  {:strict-ms 318189,
+   :strict-docs 1504,
+   :docs-per-second 4.7,
+   :force-pass-ms 203815,
+   :rerun-ms 189864},
+  :commands
+  [{:command "--version", :exit 0, :ms 125}
+   {:command "stores check", :exit 0, :ms 173227}
+   {:command "docs list", :exit 0, :ms 180289}
+   {:command "docs show arch-code-docstring-indexing-handoff",
+    :exit 0,
+    :ms 200105}
+   {:command "stores verify", :exit 0, :ms 228375}],
+  :profile-ms
+  {:bb-startup-and-load 131.589734,
+   :read-log-file 499.168959,
+   :read-all-objects 3140.787156,
+   :kernel-open-replay 205679.477268,
+   :documents-listing 59.822354,
+   :extract-every-document 6020.63928}},
+ :differences
+ [{:name "20260614-000000-suggestion-stabilize-stores-init-failures",
+   :model "InboxNoteDoc",
+   :diffs
+   [{:field "created_at",
+     :cause :value-string,
+     :v1 "\"2026-06-14T00:00:00\"",
+     :kimun "\"2026-06-14\""}],
+   :hash-live :differs-with-payload}
+  {:name
+   "task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico",
+   :model "TaskDoc",
+   :diffs
+   [{:field "from_drawer",
+     :cause :field-only-in-kimun,
+     :v1 nil,
+     :kimun "\"\""}],
+   :hash-live :differs-with-payload}
+  {:name "task-build-code-self-documentation",
+   :model "TaskDoc",
+   :diffs
+   [{:field "from_drawer",
+     :cause :field-only-in-kimun,
+     :v1 nil,
+     :kimun "\"\""}],
+   :hash-live :differs-with-payload}
+  {:name
+   "task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges",
+   :model "TaskDoc",
+   :diffs
+   [{:field "from_drawer",
+     :cause :field-only-in-kimun,
+     :v1 nil,
+     :kimun "\"\""}],
+   :hash-live :differs-with-payload}
+  {:name
+   "task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion",
+   :model "TaskDoc",
+   :diffs
+   [{:field "from_drawer",
+     :cause :field-only-in-kimun,
+     :v1 nil,
+     :kimun "\"\""}],
+   :hash-live :differs-with-payload}
+  {:name "task-correct-ast-ownership-and-section-contracts",
+   :model "TaskDoc",
+   :diffs
+   [{:field "from_drawer",
+     :cause :field-only-in-kimun,
+     :v1 nil,
+     :kimun "\"\""}],
+   :hash-live :differs-with-payload}
+  {:name
+   "task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges",
+   :model "TaskDoc",
+   :diffs
+   [{:field "from_drawer",
+     :cause :field-only-in-kimun,
+     :v1 nil,
+     :kimun "\"\""}],
+   :hash-live :differs-with-payload}
+  {:name "task-unify-store-context-and-federation",
+   :model "TaskDoc",
+   :diffs
+   [{:field "from_drawer",
+     :cause :field-only-in-kimun,
+     :v1 nil,
+     :kimun "\"\""}],
+   :hash-live :differs-with-payload}],
+ :passes
+ [{:label "pass 1 (strict)",
+   :ok true,
+   :elapsed-ms 318189,
+   :models
+   {:total 35,
+    :migrated 35,
+    :skipped 0,
+    :failed 0,
+    :failed-by-reason {}},
+   :documents
+   {:total 1551,
+    :migrated 1504,
+    :skipped 0,
+    :failed 47,
+    :failed-by-reason {:no-round-trip 47}},
+   :links
+   {:total 0,
+    :migrated 0,
+    :skipped 0,
+    :failed 0,
+    :failed-by-reason {}}}
+  {:label "pass 2 (--force)",
+   :ok true,
+   :elapsed-ms 203815,
+   :models
+   {:total 35,
+    :migrated 0,
+    :skipped 35,
+    :failed 0,
+    :failed-by-reason {}},
+   :documents
+   {:total 1551,
+    :migrated 47,
+    :skipped 1504,
+    :failed 0,
+    :failed-by-reason {}},
+   :links
+   {:total 0,
+    :migrated 0,
+    :skipped 0,
+    :failed 0,
+    :failed-by-reason {}}}
+  {:label "pass 3 (re-run)",
+   :ok true,
+   :elapsed-ms 189864,
+   :models
+   {:total 35,
+    :migrated 0,
+    :skipped 35,
+    :failed 0,
+    :failed-by-reason {}},
+   :documents
+   {:total 1551,
+    :migrated 0,
+    :skipped 1551,
+    :failed 0,
+    :failed-by-reason {}},
+   :links
+   {:total 0,
+    :migrated 0,
+    :skipped 0,
+    :failed 0,
+    :failed-by-reason {}}}],
+ :per-model
+ {"ArchitectureNarrativeDoc"
+  {:documents 9, :payload-equal 9, :strict {:migrated 9, :failed 0}},
+  "AtomDoc"
+  {:documents 4, :payload-equal 4, :strict {:migrated 4, :failed 0}},
+  "AtomicDocumentDoc"
+  {:documents 10,
+   :payload-equal 10,
+   :strict {:migrated 10, :failed 0}},
+  "BoardDoc"
+  {:documents 2, :payload-equal 2, :strict {:migrated 0, :failed 2}},
+  "ChecklistDoc"
+  {:documents 12,
+   :payload-equal 12,
+   :strict {:migrated 12, :failed 0}},
+  "CliCommandDoc"
+  {:documents 68,
+   :payload-equal 68,
+   :strict {:migrated 68, :failed 0}},
+  "ConditionDoc"
+  {:documents 20,
+   :payload-equal 20,
+   :strict {:migrated 20, :failed 0}},
+  "DeskSpecDoc"
+  {:documents 1, :payload-equal 1, :strict {:migrated 1, :failed 0}},
+  "DeskStandardsDoc"
+  {:documents 1, :payload-equal 1, :strict {:migrated 1, :failed 0}},
+  "EdgeDoc"
+  {:documents 24,
+   :payload-equal 24,
+   :strict {:migrated 24, :failed 0}},
+  "FAQDoc"
+  {:documents 1, :payload-equal 1, :strict {:migrated 1, :failed 0}},
+  "InboxNoteDoc"
+  {:documents 5,
+   :payload-differs 1,
+   :payload-equal 4,
+   :strict {:migrated 0, :failed 5}},
+  "MoveDoc"
+  {:documents 37,
+   :payload-equal 37,
+   :strict {:migrated 21, :failed 16}},
+  "OperatorDoc"
+  {:documents 12,
+   :payload-equal 12,
+   :strict {:migrated 12, :failed 0}},
+  "PackagingDoc"
+  {:documents 1, :payload-equal 1, :strict {:migrated 1, :failed 0}},
+  "PillDoc"
+  {:documents 15,
+   :payload-equal 15,
+   :strict {:migrated 0, :failed 15}},
+  "PythonSymbolDoc"
+  {:documents 1279,
+   :payload-equal 1279,
+   :strict {:migrated 1279, :failed 0}},
+  "RelationTypeDoc"
+  {:documents 15,
+   :payload-equal 15,
+   :strict {:migrated 15, :failed 0}},
+  "RequestDoc"
+  {:documents 2, :payload-equal 2, :strict {:migrated 0, :failed 2}},
+  "RoutineDoc"
+  {:documents 4, :payload-equal 4, :strict {:migrated 4, :failed 0}},
+  "StoreReadmeDoc"
+  {:documents 1, :payload-equal 1, :strict {:migrated 1, :failed 0}},
+  "SurfaceDoc"
+  {:documents 21,
+   :payload-equal 21,
+   :strict {:migrated 21, :failed 0}},
+  "TaskDoc"
+  {:documents 7,
+   :payload-differs 7,
+   :strict {:migrated 0, :failed 7}}},
+ :model-failures [],
+ :documents
+ {:strict
+  {:total 1551,
+   :migrated 1504,
+   :skipped 0,
+   :failed 47,
+   :failed-by-reason {:no-round-trip 47}},
+  :after-force
+  {:total 1551,
+   :migrated 47,
+   :skipped 1504,
+   :failed 0,
+   :failed-by-reason {}},
+  :rerun
+  {:total 1551,
+   :migrated 0,
+   :skipped 1551,
+   :failed 0,
+   :failed-by-reason {}},
+  :not-migrated []},
+ :models {:migrated 35, :skipped 0, :failed 0, :failed-by-reason {}}}
