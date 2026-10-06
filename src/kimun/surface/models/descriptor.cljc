@@ -4,17 +4,72 @@
   (:require [clojure.string :as str]
             [sldb.kernel.err :as err]))
 
+(def scalar-types
+  "The scalar field types of 07 §2."
+  #{:string :int :bool :text :yaml})
+
+(defn type-valid?
+  "True when `t` is a field type of 07 §2: a scalar, `[:list T]`, `[:map T]`,
+   `[:enum v…]` with at least one string, or `[:ref Model]`."
+  [t]
+  (cond
+    (keyword? t) (contains? scalar-types t)
+    (and (vector? t) (contains? #{:list :map} (first t))) (and (= 2 (count t)) (type-valid? (second t)))
+    (and (vector? t) (= :enum (first t))) (and (next t) (every? string? (rest t)))
+    (and (vector? t) (= :ref (first t))) (and (= 2 (count t)) (string? (second t)))
+    :else false))
+
+(defn default-of-type?
+  "True when default value `v` belongs to field type `t`. `:yaml` and the
+   element types of collections accept any value."
+  [t v]
+  (cond
+    (nil? v) true
+    (contains? #{:string :text} t) (string? v)
+    (= :int t) (integer? v)
+    (= :bool t) (boolean? v)
+    (= :yaml t) true
+    (= :list (first t)) (sequential? v)
+    (= :map (first t)) (map? v)
+    (= :enum (first t)) (boolean (some #{v} (rest t)))
+    (= :ref (first t)) (string? v)
+    :else false))
+
+(defn- state-problem [{:keys [fields state]}]
+  (when state
+    (let [f (first (filter #(= (:field state) (:name %)) fields))]
+      (cond
+        (nil? f) (str "`:state :field` names no field: " (:field state))
+        (not (and (vector? (:type f)) (= :enum (first (:type f))))) "`:state :field` must be an `[:enum …]` field"
+        (not= (vec (rest (:type f))) (vec (:order state))) "`:state :order` must list exactly the enum values of its field"
+        (not (every? (set (:order state)) (:terminal state))) "`:state :terminal` must be a subset of `:order`"))))
+
 (defn validate!
   "Returns `descriptor` when it has the shape of 07 §2; raises `:models/invalid`
-   naming the first problem otherwise. `py•` markers are rejected (07 §8)."
-  [descriptor]
-  (let [bad (fn [why] (err/raise :models/invalid (str "descriptor: " why) {:model (:model/name descriptor)}))]
-    (when-not (and (string? (:model/name descriptor)) (re-matches #"[A-Z_][A-Za-z0-9_]*" (:model/name descriptor))) (bad "`:model/name` must be a capitalised identifier"))
-    (when-not (string? (:template descriptor)) (bad "`:template` must be a string"))
-    (when-not (and (vector? (:fields descriptor)) (every? #(string? (:name %)) (:fields descriptor))) (bad "`:fields` must be a vector of maps with a string `:name`"))
-    (when (apply distinct? (cons ::none (map :name (:fields descriptor)))) nil)
-    (when (str/includes? (:template descriptor) "⸢py•") (bad "`py•` markers do not migrate (docs/v2/07 §8): convert them to derived values"))
-    descriptor))
+   naming the first problem otherwise: name, version, template, fields (unique
+   string names, a valid type, a default of that type), `:base` as a vector of
+   names, `:state` coherent with its enum field. `py•` markers are rejected
+   (07 §8). With `{:known-models #{…}}` every `:base` must be one of them."
+  ([descriptor] (validate! descriptor {}))
+  ([descriptor {:keys [known-models]}]
+   (let [bad (fn [why] (err/raise :models/invalid (str "descriptor: " why) {:model (:model/name descriptor) :problem why}))
+         fields (:fields descriptor)]
+     (when-not (map? descriptor) (bad "must be a map"))
+     (when-not (and (string? (:model/name descriptor)) (re-matches #"[A-Z_][A-Za-z0-9_]*" (:model/name descriptor))) (bad "`:model/name` must be a capitalised identifier"))
+     (when (and (contains? descriptor :model/version) (not (and (integer? (:model/version descriptor)) (pos? (:model/version descriptor))))) (bad "`:model/version` must be an integer ≥ 1"))
+     (when-not (string? (:template descriptor)) (bad "`:template` must be a string"))
+     (when-not (and (vector? fields) (every? #(and (map? %) (string? (:name %))) fields)) (bad "`:fields` must be a vector of maps with a string `:name`"))
+     (when-let [dup (first (keep (fn [[n c]] (when (> c 1) n)) (frequencies (map :name fields))))] (bad (str "field `" dup "` is declared more than once")))
+     (doseq [f fields]
+       (when (and (contains? f :type) (not (type-valid? (:type f)))) (bad (str "field `" (:name f) "` has an unknown type " (pr-str (:type f)))))
+       (when (and (contains? f :type) (contains? f :default) (not (default-of-type? (:type f) (:default f))))
+         (bad (str "the default of field `" (:name f) "` is not of its type " (pr-str (:type f))))))
+     (when (and (contains? descriptor :base) (not (and (sequential? (:base descriptor)) (every? string? (:base descriptor))))) (bad "`:base` must be a vector of model names"))
+     (when known-models
+       (when-let [missing (first (remove (set known-models) (:base descriptor)))] (bad (str "base model `" missing "` is not defined"))))
+     (when-let [p (state-problem descriptor)] (bad p))
+     (when (str/includes? (:template descriptor) "⸢py•") (bad "`py•` markers do not migrate (docs/v2/07 §8): convert them to derived values"))
+     descriptor)))
 
 (defn- coerce [{:keys [name type]} v]
   (cond

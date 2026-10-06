@@ -8,6 +8,8 @@
   {:eval/missing 1
    :eval/ambiguous 2
    :docs/no-file 1
+   :models/no-file 1
+   :validate/missing 3
    :plan/conflict 4
    :store/stale 4
    :cli/no-store 5

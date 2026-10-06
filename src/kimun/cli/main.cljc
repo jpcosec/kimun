@@ -6,7 +6,9 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [kimun.cli.args :as args]
+            [kimun.cli.commands.direct :as direct]
             [kimun.cli.commands.docs :as docs]
+            [kimun.cli.commands.models :as models]
             [kimun.cli.commands.journal :as journal]
             [kimun.cli.commands.serve :as serve]
             [kimun.cli.commands.stores :as stores]
@@ -19,13 +21,17 @@
   {"stores" stores/dispatch
    "docs" docs/dispatch
    "journal" journal/dispatch
-   "serve" serve/dispatch})
+   "serve" serve/dispatch
+   "models" models/dispatch
+   "extract" (direct/dispatcher "extract")
+   "render" (direct/dispatcher "render")
+   "validate" (direct/dispatcher "validate")})
 
 (def group-specs
   "The option spec of every group, merged: a group declares its own options
    in its `spec` var, so adding a group never edits `kimun.cli.args`. Two
    groups may share an option name only with the same meaning."
-  (merge stores/spec docs/spec journal/spec serve/spec))
+  (merge stores/spec docs/spec journal/spec serve/spec models/spec direct/spec))
 
 (def usage
   "Usage text shown by `kimun`, `kimun help` and `--help`."
@@ -47,6 +53,14 @@
              "  docs update FILE --name N   re-ingest FILE into the existing document N (an outside edit)"
              "  docs render NAME|TREE       canonical Markdown of a document (--format text prints it raw)"
              "  docs list                   every document: name, tree id, root node"
+             "  models define -f X.edn | --from-python MOD:CLASS [--pythonpath P]   define a model or its next version"
+             "  models list | show NAME [--format md] | history NAME | check [NAME] [-f DRAFT.edn]"
+             "  models field-add NAME --field F --type T [--default D] [--required] | field-remove NAME --field F"
+             "  models template NAME [-f FILE]   show the template, or replace it (new version)"
+             "  extract [MODEL] --input DOC.md [-o FILE]        typed payload of a document (no store needed)"
+             "  render [MODEL] --data PAYLOAD.json|yaml [-o FILE]   Markdown of a payload"
+             "  validate [MODEL] --input DOC.md | --data FILE [--mode strict-roundtrip]"
+             "                              MODEL (or --model): X.edn | model NAME in the store | module:Class"
              "  journal show [--limit N] [--by ACTOR] [--tree NAME|ID]   the write history, newest first (a view of the log)"
              "  journal verify              check the revision chain, the log replay and every reachable object"
              "  serve [--port N] [--host H] [--token T] [--cors]   HTTP API over the commands (default 127.0.0.1:8787)"
@@ -54,7 +68,7 @@
              ""
              "options:"
              "  --store PATH    store directory (.kimun or its project dir); else $KIMUN_STORE, else walk-up"
-             "  --format FMT    json (default) | edn | text"
+             "  --format FMT    json (default) | edn | text | md"
              "  --actor NAME    actor recorded in transactions (default human/$USER)"
              "  --debug         print the stacktrace of an unexpected error to stderr"
              ""

@@ -1,7 +1,8 @@
 (ns kimun.cli.out
   "Result envelopes of the `kimun` CLI and their rendering (docs/v2/06 §B):
    every command returns one envelope value, `{:ok true …}` or `{:ok false …}`,
-   which `emit` renders as json, edn or text. Building an envelope never
+   which `emit` renders as json, edn, text or md (the `:markdown` projection
+   of the data when the command provides one, else the text form). Building an envelope never
    performs I/O; printing is the caller's job."
   (:require [cheshire.core :as json]
             [clojure.string :as str]))
@@ -79,4 +80,7 @@
     "json" (json/generate-string envelope {:pretty true})
     "edn" (pr-str envelope)
     "text" (if (:ok envelope) (text-success envelope) (text-failure envelope))
+    "md" (cond (not (:ok envelope)) (text-failure envelope)
+               (string? (get-in envelope [:data :markdown])) (get-in envelope [:data :markdown])
+               :else (text-success envelope))
     (json/generate-string envelope {:pretty true})))
