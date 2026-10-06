@@ -1,0 +1,9 @@
+;; Differences the kimun derivation is ASSERTED to have against the frozen v1 edge index (edges.json).
+;; Shape: a vector of maps, one of
+;;   {:relation "composes" :from "sldb://document/..." :to "sldb://..." :reason "why kimun cannot / must not reproduce it"}
+;;       one specific edge (:from/:to are v1 node ids, exactly as in edges.json),
+;;   {:relation "tagged_as" :reason "..."}
+;;       every edge of that relation (a per-relation entry).
+;; An entry means "kimun's set differs from v1's here, on purpose". The test fails on any difference
+;; NOT listed, and on a STALE entry (listed but the edge is in fact reproduced). A silent skip is not allowed.
+[]
