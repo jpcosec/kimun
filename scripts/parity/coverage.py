@@ -12,7 +12,9 @@ For each `def test_*` under v1's tests/ it reports exactly one status. Explicit 
               v1 function asserts the same promise; the deftest must exist
   ported    - a kimun test file names the v1 function in a line that is a port. A name
               that appears only in comments saying n/a / deferred / not ported / partial /
-              "no counterpart" is NOT a port (see `mentioned`)
+              "no counterpart" is NOT a port (see `mentioned`), and
+              test/kimun/parity/known_gaps_test.cljc never counts: it asserts what kimun
+              does INSTEAD of a promise
   oracle    - listed in parity-oracle.edn as a test whose SUBJECT is the template engine
               (extract / render / validate / segments) AND it produced recorded cases in
               a differential corpus (test/fixtures/parity/{engine,segments}/*/meta.edn)
@@ -40,6 +42,7 @@ prefixes), when there is any gap (unless --allow-gaps), or on any error above.
 """
 import argparse, ast, collections, json, pathlib, re, sys
 
+GAP_FILE = "known_gaps_test.cljc"
 STATUSES = ("ported", "mapped", "oracle", "n/a", "gap", "mentioned", "corpus", "open")
 UNCLASSIFIED = ("mentioned", "corpus", "open")
 NAME = re.compile(r"\btest_[A-Za-z0-9_]+")
@@ -90,6 +93,8 @@ def scan_mentions(root):
         for pat in pats:
             for p in sorted(d.rglob(pat)):
                 rel = str(p.relative_to(root))
+                if p.name == GAP_FILE:   # pins what kimun does instead of the promise: never a port
+                    continue
                 tainted = False
                 for i, line in enumerate(p.read_text(errors="replace").splitlines(), 1):
                     if not is_comment(line, mark):

@@ -1,0 +1,39 @@
+;; v1 promises kimun does not hold today; pinned in test/kimun/parity/known_gaps_test.cljc.
+;; Checked by scripts/parity/coverage.py (see its docstring).
+{
+ "api/test_api_documents.py::test_cli_save_payload_still_exits_with_the_message"
+ {:promise "Saving a payload for a document that is not tracked fails with a message naming the document (\"Doc 'ghost' not registered.\")."
+  :kimun "`docs update ghost --set title=x` answers cli/usage exit 6: \"`docs update` needs --name NAME (or a second token naming the document)\"; the message never mentions ghost and `docs update --name ghost --set ...` asks for a Markdown FILE."
+  :fix "In the docs update dispatch, when --set/--data is given and NAME is not a tracked document, return docs/missing (exit 1) naming NAME instead of falling through to the untyped FILE path."}
+
+ "api/test_api_edges.py::test_linked_store_documents_come_back_qualified"
+ {:promise "the edge index of a store with links includes the linked store's documents qualified by the link name (annex:Table:t99, semantics.store = annex, has_document edge from the model), and include_linked=False drops them"
+  :kimun "the edges view (edges nodes|node|show) holds only the local store's documents; `stores link` is not consulted by kimun.surface.edges"
+  :fix "in kimun.surface.edges build nodes/edges for each reachable linked store (kimun.cli.store linked-stores with its cycle guard) with ids qualified by the link name; add an include-linked option"}
+
+ "api/test_graph_source_parity.py::test_snapshot_save_keeps_the_legacy_route_for_linked_stores_gap_G5"
+ {:promise "graph export / snapshot of a store with links composes the linked store's documents (ids sldb://document/<link>:...) unless include_linked is false"
+  :kimun "`graph export` has no federation: it exports only the local store (ledger C3: addresses se./gse. between stores deferred)"
+  :fix "same change as the linked-store edges gap: have kimun.surface.graph.store/export read the federated edges view, with an include-linked flag"}
+
+ "store/test_io_atomic_write.py::test_atomic_write_survives_concurrent_writers"
+ {:promise "Many writers of the same store file leave a valid, readable store and no error other than a clean rejection."
+  :kimun "No lock between writers. sldb.kernel.store commit! appends the transaction to log.edn BEFORE the compare-and-swap of heads.edn, so a writer that loses the race is rejected with store/stale (exit 4) after its transaction is already in the log; every later command then fails with store/error (replayed transaction id differs from log). Reproduced deterministically in kimun.parity.known-gaps-test/a-writer-that-loses-the-race-leaves-the-store-unreadable; also seen with 4 in-process threads (store left unreadable) and with separate bb processes (a transient store/error: heads.edn does not match the replayed log)."
+  :fix "In the files backend (src/sldb/host/fs_store.cljc) take an exclusive FileChannel lock on the store directory around commit!'s critical section (re-read heads, compare, append the log line, write heads), failing with store/stale before anything is appended; or make replay ignore log lines that are not on the chain of heads.edn."}
+
+ "store/test_update_fault_tolerance.py::test_store_lock_fails_fast_when_busy"
+ {:promise "While another writer holds the store, a parallel write fails fast (busy) and the store stays intact."
+  :kimun "The losing writer does fail fast (store/stale, exit 4, message: reload and retry), but its transaction was already appended to log.edn, so the store is unreadable afterwards. Same deftest as above."
+  :fix "Same fix: do the heads comparison before appending to log.edn, under an exclusive lock in the files backend."}
+
+ "store/test_update_fault_tolerance.py::test_store_lock_wait_blocks_until_released"
+ {:promise "A writer that finds the store busy can wait (--wait) and then succeeds."
+  :kimun "There is no wait or retry: the losing writer is told to reload and retry, and the retry fails with store/error because the first attempt left its transaction in log.edn. Same deftest as above."
+  :fix "Same fix; once a lost race writes nothing, a plain retry of the command succeeds (an optional --wait could retry in the CLI)."}
+
+ "test_standalone.py::test_structured_nl_doc_requires_field_descriptions"
+ {:promise "A model whose field lacks a non-empty description is rejected at definition time (v1: TypeError \"fields must define a non-empty description: title\")."
+  :kimun "descriptor/validate! (and so `models define`) accepts a field with no :description or an empty one; 07 §2 lists :description among field keys but never requires it."
+  :fix "In kimun.surface.models.descriptor/validate! add `(when-not (non-blank-string? (:description f)) (bad ...))` per field (or only on the `models define` path if existing fixtures without descriptions must keep working)."}
+
+}
