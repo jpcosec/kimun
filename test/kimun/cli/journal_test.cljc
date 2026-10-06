@@ -102,21 +102,33 @@
 
 (defn- history
   "A project whose store has three committed transactions; returns
-   {:proj :dir :log (path) :lines (log lines) :revs [r1 r2 r3] :heads (path)}."
+   {:proj :dir :log (path) :lines (log lines) :revs [r1 r2 r3] :heads (path)
+    :heads-at [heads.edn text after each commit]}."
   []
   (let [proj (str (fs/create-temp-dir {:prefix "kimun-cli-journal-"}))
         dir (str (fs/path proj ".kimun"))
         log (str (fs/path dir "log.edn"))]
     (run proj "stores" "init" "--name" "p")
-    (doseq [text ["one" "two" "three"]]
-      (spit (str (fs/path proj "doc.md")) (str "# T\n\npara " text "\n"))
-      (if (= "one" text) (run proj "docs" "ingest" "doc.md") (run proj "docs" "update" "doc.md" "--name" "doc")))
-    (let [lines (str/split-lines (slurp log))]
-      {:proj proj :dir dir :log log :lines lines :heads (str (fs/path dir "heads.edn"))
+    (let [heads (str (fs/path dir "heads.edn"))
+          heads-at (vec (for [text ["one" "two" "three"]]
+                          (do (spit (str (fs/path proj "doc.md")) (str "# T\n\npara " text "\n"))
+                              (if (= "one" text) (run proj "docs" "ingest" "doc.md") (run proj "docs" "update" "doc.md" "--name" "doc"))
+                              (slurp heads))))
+          lines (str/split-lines (slurp log))]
+      {:proj proj :dir dir :log log :lines lines :heads heads :heads-at heads-at
        :revs (mapv #(:revision (edn/read-string %)) lines)})))
 
 (defn- point-heads-at!
-  "Rewrites heads.edn so that every head naming the last revision names `rev` instead."
+  "Puts back the heads.edn the store had when `rev` was its head: what a
+   writer that died before replacing the heads (or a heads.edn restored from
+   an older copy) leaves behind. (Format 2 records the per-tree heads as an
+   mmap root, so an older head needs the older root with it.)"
+  [{:keys [heads revs heads-at]} rev]
+  (spit heads (heads-at (.indexOf revs rev))))
+
+(defn- forge-head!
+  "Rewrites only the :head of heads.edn to `rev`, leaving the per-tree heads of
+   the last commit: a heads.edn no commit ever wrote."
   [{:keys [heads revs]} rev]
   (spit heads (str/replace (slurp heads) (peek revs) rev)))
 
@@ -141,7 +153,13 @@
       (let [e (jr proj "verify" {})]
         (is (true? (:ok e)) (pr-str e))
         (is (= 2 (get-in e [:data :revisions])))
-        (is (= (peek revs) (get-in e [:data :uncommitted-tail :revision])))))))
+        (is (= (peek revs) (get-in e [:data :uncommitted-tail :revision]))))))
+  (testing "the head one behind with the last commit's per-tree heads is no dead writer: it does not replay"
+    (let [{:keys [proj revs] :as h} (history)]
+      (forge-head! h (second revs))
+      (let [e (jr proj "verify" {})]
+        (is (= ["store/corrupt" 5] [(get-in e [:error :type]) (:exit e)]) (pr-str e))
+        (is (= [:replay-failed] (mapv :reason (get-in e [:error :data :bad]))))))))
 
 (deftest group-surface
   (is (= #{"show" "verify"} (set (keys j/commands))))

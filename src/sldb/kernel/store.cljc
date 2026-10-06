@@ -6,7 +6,9 @@
      <dir>/store.edn      {:format-version 2 :hash-alg :sha-256 :capabilities {...}}
      <dir>/objects/<id>   canonical EDN text of the hashed form of the object; H(file) == id
      <dir>/log.edn        one Transaction map {:id :plan :revision} per line, append-only
-     <dir>/heads.edn      {:head rev-id :heads {tree-id rev-id}}, written atomically
+     <dir>/heads.edn      format 2: {:head rev-id :heads-root mmap-root-id} (the per-tree heads
+                          tree-id -> rev-id are an mmap in the CAS); format 1: {:head rev-id
+                          :heads {tree-id rev-id}}; written atomically (`heads-record`)
      <dir>/lock           empty; the exclusive lock of `commit-tx!` is taken on it
 
    heads.edn is the commit point. A Transaction is committed when heads.edn
@@ -48,7 +50,7 @@
   (write-object! [b id content] "Writes objects/<id> once; existing objects are never rewritten.")
   (object-ids [b] "Ids present under objects/.")
   (read-log [b] "Vector of Transaction maps in log order; a final line cut short (unterminated and unreadable) is the entry {:torn-line n}.")
-  (read-heads [b] "{:head :heads}, or nil when absent; raises :store/corrupt-heads when the file cannot be read as EDN.")
+  (read-heads [b] "The heads.edn map (`heads-record`), or nil when absent; raises :store/corrupt-heads when the file cannot be read as EDN.")
   (commit-tx! [b expected tx new]
     "The single mutation of log and heads, atomic against other writers (one
      exclusive lock around all of it). When the current heads (absent =
@@ -103,8 +105,18 @@
 ;; ---------------------------------------------------------------- log tail
 
 (def no-heads
-  "The heads of a store without heads.edn (nothing committed)."
+  "The heads of a store without heads.edn (nothing committed), both formats."
   {:head nil :heads {}})
+
+(defn heads-record
+  "The heads.edn value of `store`, the commit point `commit-tx!` compares and
+   replaces: `no-heads` before the first commit; format 2 {:head rev-id
+   :heads-root id}, the root of the mmap tree-id -> rev-id in the CAS (its size
+   does not grow with the number of trees); format 1 {:head rev-id :heads {tree-id rev-id}}."
+  [store]
+  (cond (nil? (:head store)) no-heads
+        (revision/legacy? store) {:head (:head store) :heads (:heads store)}
+        :else {:head (:head store) :heads-root (:heads-root store)}))
 
 (defn transaction?
   "True for a well-formed log entry {:id :plan :revision}."
@@ -215,25 +227,31 @@
   [b host]
   (let [hd (read-heads b)
         store (replay-log b host (committed-log b))]
-    (when (and hd (not= hd {:head (:head store) :heads (:heads store)}))
-      (fail "heads.edn does not match the replayed log" {:file hd :replayed {:head (:head store) :heads (:heads store)}}))
+    (when (and hd (not= hd (heads-record store)))
+      (fail "heads.edn does not match the replayed log" {:file hd :replayed (heads-record store)}))
     store))
 
 (defn- revision-object? [o]
   (and (map? o) (contains? o :tx) (contains? o :parents) (contains? o :trees) (contains? o :edges)))
 
-(defn- well-formed-heads? [hd]
-  (and (map? hd) (= #{:head :heads} (set (keys hd)))
-       (map? (:heads hd)) (every? string? (keys (:heads hd))) (every? string? (vals (:heads hd)))
-       (if (nil? (:head hd)) (empty? (:heads hd)) (string? (:head hd)))))
+(defn- well-formed-heads?
+  "Format 2: `no-heads` or {:head id :heads-root id}; format 1: {:head id|nil :heads {tree-id rev-id}}."
+  [fv hd]
+  (and (map? hd)
+       (or (= no-heads hd)
+           (if (= 1 fv)
+             (and (= #{:head :heads} (set (keys hd)))
+                  (map? (:heads hd)) (every? string? (keys (:heads hd))) (every? string? (vals (:heads hd)))
+                  (string? (:head hd)))
+             (and (= #{:head :heads-root} (set (keys hd))) (string? (:head hd)) (string? (:heads-root hd)))))))
 
 (defn- checked-heads
   "heads.edn of `b` (absent = `no-heads`), raising :store/corrupt-heads when it
-   is not {:head id|nil :heads {tree-id rev-id}} (an unreadable file is the
+   is not the shape of format `fv` (`heads-record`; an unreadable file is the
    backend's to report, with the same type)."
-  [b]
+  [b fv]
   (let [hd (or (read-heads b) no-heads)]
-    (when-not (well-formed-heads? hd) (fail "heads.edn is malformed" {:type :store/corrupt-heads :heads hd}))
+    (when-not (well-formed-heads? fv hd) (fail "heads.edn is malformed" {:type :store/corrupt-heads :heads hd}))
     hd))
 
 (defn load-object
@@ -247,36 +265,44 @@
         (some->> (read-object b id) (deserialize id) (cache-object! b id)))
     (some->> (read-object b id) (deserialize id))))
 
-(defn- checked-head-revision
-  "The Revision object `id` named by the heads, read from `b` and checked:
-   present, H(content) == id, and a Revision. Raises :store/corrupt-head with
-   :reason :missing | :hash-mismatch | :not-a-revision."
-  [b host id]
+(defn- checked-head-object
+  "The object `id` named by heads.edn, read from `b` and checked: present,
+   H(content) == id, and of the expected shape (`ok?`, named `shape`: a
+   Revision for :head, an mmap node for :heads-root). Raises :store/corrupt-head
+   with :reason :missing | :hash-mismatch | :not-a-revision | :not-an-mmap-node."
+  [b host id ok? shape]
   (let [content (read-object b id)
-        bad (fn [reason] (fail (str "head revision " id ": " (name reason)) {:type :store/corrupt-head :id id :reason reason}))]
+        bad (fn [reason] (fail (str "head object " id ": " (name reason)) {:type :store/corrupt-head :id id :reason reason}))]
     (cond
       (nil? content) (bad :missing)
       (not= id (ports/digest-str (ports/hasher host) content)) (bad :hash-mismatch)
       ;; the hash is over the text just read; only then may the cache spare the parse or learn the object
       :else (let [o (or (when (caching? b) (cached-object b id)) (deserialize id content))]
-              (if (revision-object? o)
+              (if (ok? o)
                 (if (caching? b) (cache-object! b id o) o)
-                (bad :not-a-revision))))))
+                (bad shape))))))
 
 (defn- open-from-heads
   [b host capabilities]
   (let [lm (ports/lazy-maps host)
-        hd (checked-heads b)
-        head-ids (distinct (remove nil? (cons (:head hd) (vals (:heads hd)))))
-        heads (into {} (map (fn [id] [id (checked-head-revision b host id)])) head-ids)
+        hd (checked-heads b 2)
+        {:keys [head heads-root]} hd
+        checked (cond-> {}
+                  head (assoc head (checked-head-object b host head revision-object? :not-a-revision))
+                  heads-root (assoc heads-root (checked-head-object b host heads-root mmap/node? :not-an-mmap-node)))
         objects (ports/lazy-map lm
                                 (fn [id] (when (string? id) (load-object b id)))
                                 #(object-ids b)
-                                heads)
+                                checked)
+        load #(get objects %)
+        heads (if heads-root
+                (ports/lazy-map lm #(mmap/lookup host load heads-root % nil) #(mmap/keys load heads-root) {})
+                {})
+        head-ids #(distinct (remove nil? (cons head (vals heads))))
         revisions (ports/lazy-map lm
                                   (fn [id] (let [o (get objects id)] (when (revision-object? o) o)))
                                   ;; every revision = the ancestors of the heads (walks history: only when enumerated)
-                                  (fn [] (loop [todo (vec head-ids) seen #{}]
+                                  (fn [] (loop [todo (vec (head-ids)) seen #{}]
                                            (if-let [id (peek todo)]
                                              (if (seen id)
                                                (recur (pop todo) seen)
@@ -284,20 +310,23 @@
                                              seen)))
                                   {})]
     (revision/lazy-store {:host host :capabilities capabilities :format-version 2
-                          :objects objects :revisions revisions :head (:head hd) :heads (:heads hd)})))
+                          :objects objects :revisions revisions :head head :heads heads :heads-root heads-root})))
 
 (defn open
   "Opens the store in backend `b`.
 
    Format 2 on a host with the LazyMaps port: NO replay, the log is not read.
    CHECKS: store.edn exists and its :hash-alg is the host's; heads.edn is
-   well-formed ({:head id|nil :heads {tree-id rev-id}}, :store/corrupt-heads);
-   every distinct revision id it names is an object that exists, whose content
-   hashes to the id and is a Revision (:store/corrupt-head, :reason :missing |
-   :hash-mismatch | :not-a-revision). Reads exactly those objects: O(distinct
-   head ids), independent of the length of the history.
+   well-formed (`no-heads` or {:head id :heads-root id}, :store/corrupt-heads);
+   the :head object exists, its content hashes to the id and is a Revision,
+   and the :heads-root object exists, hashes to its id and is an mmap node
+   (:store/corrupt-head, :reason :missing | :hash-mismatch | :not-a-revision |
+   :not-an-mmap-node). Reads exactly those two objects, whatever the number
+   of trees or the length of the history.
    TRUSTS: that heads.edn names the heads the log leads to (it is the commit
-   point; `replay-open` checks it); every other object, which is read lazily
+   point; `replay-open` checks it); the per-tree heads below :heads-root (the
+   other mmap nodes and the Revisions they name, read on demand: `verify`
+   rehashes them, `replay-open` recomputes the root); every other object, which is read lazily
    on demand WITHOUT rehashing (`verify` checks them all); the :incidence map
    and every other derived structure inside the Revisions (`replay-open`
    recomputes them). An :uncommitted log tail is not looked for: the store
@@ -334,9 +363,9 @@
         new-objects (if (revision/legacy? store)
                       (into {} (remove #(contains? (:objects store) (key %))) (:objects s'))
                       (:new-objects r))
-        expected {:head (:head store) :heads (:heads store)}]
+        expected (heads-record store)]
     (doseq [[id obj] new-objects] (write-object! b id (serialize host obj)))
-    (when-not (commit-tx! b expected (:transaction r) {:head (:head s') :heads (:heads s')})
+    (when-not (commit-tx! b expected (:transaction r) (heads-record s'))
       (fail "heads moved since the store was loaded; reload and retry" {:type :store/stale :expected expected}))
     r))
 
@@ -351,13 +380,15 @@
 
 (defn- references
   "What object `o`, reached as `kind`, refers to: a seq of [id kind]. Kinds:
-   :obj (the id must be a stored object), :trees (a node of a Revision's :trees
+   :obj (the id must be a stored object), :heads (a node of the per-tree heads
+   mmap of heads.edn: its leaf values are Revisions, its keys tree ULIDs), :trees (a node of a Revision's :trees
    mmap: its leaf keys are tree ULIDs, not objects) and :soft (format-1 shapes
    and edge endpoints: followed only when stored, as before format 2)."
   [o kind]
   (let [as (fn [k ids] (for [id ids :when (string? id)] [id k]))]
     (cond
-      (mmap/branch? o) (as (if (= :trees kind) :trees :obj) (mmap/child-ids o))
+      (mmap/branch? o) (as (if (#{:trees :heads} kind) kind :obj) (mmap/child-ids o))
+      (and (mmap/leaf? o) (= :heads kind)) (as :obj (map second (:entries o)))
       (mmap/leaf? o) (as :obj (mapcat (fn [[k v]] (concat (when-not (= :trees kind) [k]) (cond (vector? v) v (and (map? v) (:set v)) [(:set v)]))) (:entries o)))
       (and (map? o) (:incidence o) (:tx o)) (concat (as :trees [(:trees o)]) (as :obj (concat [(:edges o) (:incidence o) (:tx o)] (:parents o))))
       (and (map? o) (:roots o) (:tx o))            (as :soft (concat (vals (:roots o)) [(:trees o) (:edges o) (:tx o)] (:parents o)))
@@ -373,14 +404,20 @@
    the transitive closure over id references, acyclic because ids are hashes.
    Format-2 Revisions are walked through their three mmaps (branch children,
    leaf keys, id vectors and the nested edge-id set of a hub
-   :incidence entry `{:set root}`); format-1 Revisions through :roots and the sets.
+   :incidence entry `{:set root}`), and the per-tree heads through the nodes of
+   the :heads-root mmap; format-1 Revisions through :roots and the sets.
    Never raises on damaged content: an id that a format-2 structure names but
    that is absent or unreadable IS in the result (so `verify` reports it) and
    the walk goes on with what it can still read; what was reachable only
    through an unreadable object is not in the result."
   [store]
   (let [objs (:objects store)]
-    (loop [todo (mapv #(vector % :obj) (remove nil? (cons (:head store) (vals (:heads store))))) seen #{}]
+    ;; format 2: the per-tree heads through the nodes of the heads mmap (a damaged one is
+    ;; reported like any other, never raised while enumerating a view); format 1: the :heads map
+    (loop [todo (if-let [r (:heads-root store)]
+                  (into [[r :heads]] (when (:head store) [[(:head store) :obj]]))
+                  (mapv #(vector % :obj) (remove nil? (cons (:head store) (vals (:heads store))))))
+           seen #{}]
       (if (empty? todo)
         seen
         (let [[id kind] (peek todo) more (pop todo)]

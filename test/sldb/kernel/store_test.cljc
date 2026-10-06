@@ -96,7 +96,7 @@
     (is (= heads-before (store/read-heads b)) "heads.edn untouched")
     (is (= log-before (slurp (str dir "/log.edn"))) "log.edn untouched, byte for byte")
     (let [reopened (store/open b h)]
-      (is (= heads-before {:head (:head reopened) :heads (:heads reopened)}) "the store still opens, at the winner's heads")
+      (is (= heads-before (store/heads-record reopened)) "the store still opens, at the winner's heads")
       (is (= {:head (:head reopened) :heads (:heads reopened)}
              (select-keys (store/replay-open b h) [:head :heads])) "the full replay agrees")
       (is (:ok? (store/verify b reopened)))
@@ -130,7 +130,9 @@
           (= expected (or (:heads old) store/no-heads)))))))
 
 (defn- ex-of [f] (try (f) nil (catch #?(:clj clojure.lang.ExceptionInfo :cljs :default) e (ex-data e))))
-(defn- heads-of [s] {:head (:head s) :heads (:heads s)})
+(defn- heads-of
+  "What heads.edn records for `s` (format 2: the per-tree heads as an mmap root)."
+  [s] (store/heads-record s))
 
 (deftest two-writers-on-the-same-loaded-store-the-loser-leaves-nothing-visible
   (doseq [[kind mk] [[:fs #(fs/backend (tmp-dir))] [:memory mem-backend]]
@@ -151,6 +153,7 @@
         (let [reopened (store/open b h)
               v (store/verify b reopened)]
           (is (= heads-before (heads-of reopened)) "opens at the winner's heads")
+          (is (= (into {} (:heads (:store winner))) (into {} (:heads reopened))) "the same per-tree heads")
           (is (= heads-before (heads-of (store/replay-open b h))) "passes the full replay verification")
           (is (:ok? v) (pr-str (:bad v)))
           (is (not (contains? v :uncommitted-tail)))
@@ -299,18 +302,20 @@
 
 #?(:clj
    (deftest open-reads-only-the-head-revisions-and-never-the-log
-     (let [sizes (for [extra [0 25]]
-                   (let [[_ b s] (docs-store! 3 extra)
+     ;; format 2: heads.edn names the head and the root of the per-tree heads mmap; open reads
+     ;; those two objects only, however many trees (per-tree heads) and revisions there are
+     (let [sizes (for [[docs extra] [[3 0] [3 25] [40 0]]]
+                   (let [[_ b s] (docs-store! docs extra)
                          reads (atom {})
-                         opened (store/open (counting-backend b reads) h)
-                         head-ids (set (cons (:head s) (vals (:heads s))))]
+                         opened (store/open (counting-backend b reads) h)]
                      (is (= (heads-of s) (heads-of opened)))
-                     (is (= head-ids (set (:objects @reads))) "exactly the head Revisions are read")
-                     (is (= (count head-ids) (count (:objects @reads))) "each once")
+                     (is (= #{(:head s) (:heads-root s)} (set (:objects @reads))) "exactly the head Revision and the heads root are read")
                      (is (nil? (:log @reads)) "the log is not read")
                      (is (nil? (:listings @reads)) "the backend is not listed")
-                     (count (:objects @reads))))]
-       (is (= [3 4] sizes) "25 more revisions cost one more read (the head itself): O(heads), not O(history)"))))
+                     (let [n (count (:objects @reads))]
+                       (is (= (into {} (:heads s)) (into {} (:heads opened))) "the per-tree heads, read on demand")
+                       n)))]
+       (is (= [2 2 2] sizes) "more revisions or more trees cost no read: O(1), not O(heads) nor O(history)"))))
 
 #?(:clj
    (deftest the-lazy-and-the-eager-store-show-the-same-views
@@ -394,14 +399,26 @@
               ((juxt :type :reason) (damaged (fn [dir _ s] (io/delete-file (io/file dir "objects" (:head s))))))))
        (is (= [:store/corrupt-head :hash-mismatch]
               ((juxt :type :reason) (damaged (fn [dir _ s] (tamper! dir (:head s)))))))
+       (is (= [:store/corrupt-head :missing]
+              ((juxt :type :reason) (damaged (fn [dir _ s] (io/delete-file (io/file dir "objects" (:heads-root s))))))))
        (is (= [:store/corrupt-head :hash-mismatch]
-              ((juxt :type :reason) (damaged (fn [dir _ s] (tamper! dir (first (remove #{(:head s)} (vals (:heads s)))))))))
-           "a per-tree head is checked like the head")
+              ((juxt :type :reason) (damaged (fn [dir _ s] (tamper! dir (:heads-root s)))))))
+       (is (= [:store/corrupt-head :not-an-mmap-node]
+              ((juxt :type :reason) (damaged (fn [dir _ s] (spit (str dir "/heads.edn") (pr-str (assoc (heads-of s) :heads-root (:head s)))))))))
+       (testing "a per-tree head other than the head is trusted by open and caught by verify"
+         (let [[dir b s] (docs-store! 2 1)
+               other (first (remove #{(:head s)} (vals (:heads s))))]
+           (tamper! dir other)
+           (let [opened (store/open (fs/backend dir) h)]
+             (is (= (heads-of s) (heads-of opened)))
+             (is (= [{:id other :reason :hash-mismatch}] (:bad (store/verify b opened)))))))
        (is (= [:store/corrupt-head :not-a-revision]
               ((juxt :type :reason) (damaged (fn [dir _ s] (spit (str dir "/heads.edn") (pr-str (assoc (heads-of s) :head (node-id s)))))))))
        (is (= :store/corrupt-heads (:type (damaged (fn [dir _ _] (spit (str dir "/heads.edn") "{:head \"abc"))))) "unreadable")
        (is (= :store/corrupt-heads (:type (damaged (fn [dir _ _] (spit (str dir "/heads.edn") "{:head 1 :heads []}"))))) "wrong shape")
-       (is (= :store/corrupt-heads (:type (damaged (fn [dir _ s] (spit (str dir "/heads.edn") (pr-str (:heads s))))))) "not {:head :heads}"))))
+       (is (= :store/corrupt-heads (:type (damaged (fn [dir _ s] (spit (str dir "/heads.edn") (pr-str (:heads s))))))) "not {:head :heads-root}")
+       (is (= :store/corrupt-heads (:type (damaged (fn [dir _ s] (spit (str dir "/heads.edn") (pr-str {:head (:head s) :heads (into {} (:heads s))}))))))
+           "the format-1 shape is not a format-2 heads.edn"))))
 
 #?(:clj
    (deftest a-tampered-object-is-detected-by-the-hash-check
@@ -470,7 +487,7 @@
            reads (atom {})
            b (counting-cached-backend fsb reads)
            all-ids (set (store/object-ids fsb))
-           head-ids (set (cons (:head s) (vals (:heads s))))
+           head-ids #{(:head s) (:heads-root s)}
            present (fn [] (filter all-ids (:objects @reads)))
            use! (fn [st] [(into {} (:objects st)) (store/reachable st) (into {} (:trees st)) (count (:revisions st))])]
        (is (empty? (fs/cached-ids fsb)) "a new instance starts empty")
@@ -483,7 +500,7 @@
          (reset! reads {})
          (let [o2 (store/open b h)]
            (is (= seen1 (use! o2)) "a second store value over the same backend sees the same objects")
-           (is (= (frequencies head-ids) (frequencies (present))) "and reads only the head Revisions again, to hash them")
+           (is (= (frequencies head-ids) (frequencies (present))) "and reads only the head Revision and the heads root again, to hash them")
            (is (identical? (get (:objects o1) (:head s)) (get (:objects o2) (:head s))) "parsed once: the same value"))
          (reset! reads {})
          (is (:ok? (store/verify b o1)))

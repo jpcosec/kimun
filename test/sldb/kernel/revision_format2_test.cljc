@@ -275,9 +275,11 @@
   (let [state (atom {:objects {} :written [] :listings 0 :log []})
         b (->CountingBackend state)
         plans (gen/generate g/gen-plan-sequence 30 7)
+        heads-roots (atom [])
         final (reduce (fn [s p]
                         (swap! state assoc :written [])
                         (let [r (store/commit! b s (assoc p :base (:head s)))]
+                          (swap! heads-roots conj (:heads-root (:store r)))
                           (is (= (set (keys (:new-objects r))) (set (:written @state))))
                           (is (= (count (:new-objects r)) (count (:written @state))) "each object once")
                           (is (every? (fn [[id o]] (= id (ports/digest-str (ports/hasher h) (store/serialize h o)))) (:new-objects r)))
@@ -290,7 +292,13 @@
     (is (= (set (keys (:objects final))) (set (keys (:objects @state)))))
     (is (= (select-keys final [:head :heads :revisions :trees :edges]) (select-keys (store/open b h) [:head :heads :revisions :trees :edges])))
     (is (:ok? (store/verify b final)))
-    (is (= (count (:objects final)) (:checked (store/verify b final))) "every object is reachable from the heads")))
+    (is (= (count (store/reachable final)) (:checked (store/verify b final))))
+    ;; heads.edn names the root of the per-tree heads mmap: the nodes a later commit replaced
+    ;; are the only objects no head reaches any more (nothing references an old heads root)
+    (let [mmap-nodes (fn mmap-nodes [id] (cons id (mapcat mmap-nodes (mmap/child-ids (get (:objects final) id)))))
+          old-heads (set (mapcat mmap-nodes (remove #{(:heads-root final)} @heads-roots)))
+          unreached (remove (set (store/reachable final)) (keys (:objects final)))]
+      (is (every? old-heads unreached) "every other object is reachable from the heads"))))
 
 ;; ---------------------------------------------------------------- format 1 through the store
 

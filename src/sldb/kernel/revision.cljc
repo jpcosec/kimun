@@ -9,7 +9,8 @@
     :trees {tree-id committed-tree}  ; VIEW of the head: current tree values (sldb.kernel.tree)
     :edges #{edge-id}                ; VIEW of the head: active non-ownership edge set
     :head <rev-id|nil>               ; latest revision
-    :heads {tree-id rev-id}          ; last revision that touched each tree
+    :heads {tree-id rev-id}          ; last revision that touched each tree (a VIEW of :heads-root on a lazy store)
+    :heads-root <mmap root|nil>      ; the same map as an mmap tree-id -> rev-id (nil before the first commit)
     :revisions {rev-id Revision}}
    The two views are built only by `lazy-store` (host with the LazyMaps port)
    or `refresh-views` (eager fallback); kernel code asks through
@@ -43,7 +44,7 @@
   "A format-2 store with no objects, trees, edges or revisions."
   [host capabilities]
   {:host host :capabilities capabilities :format-version 2
-   :objects {} :trees {} :edges #{} :head nil :heads {} :revisions {}})
+   :objects {} :trees {} :edges #{} :head nil :heads {} :heads-root nil :revisions {}})
 
 (defn legacy?
   "True for a format-1 store value (served by sldb.kernel.legacy.revision)."
@@ -214,7 +215,7 @@
   [base]
   (if-let [lm (when-not (legacy? base) (ports/lazy-maps (:host base)))]
     (let [head (:head base)
-          core (select-keys base [:host :format-version :objects :revisions :head])
+          core (select-keys base [:host :format-version :objects :revisions :head :heads-root])
           ids (delay (tree-ids core head))   ; enumerated at most once per view lineage, not once per scan
           trees (or (:trees base) (ports/lazy-map lm #(load-tree core % head) #(deref ids) {}))
           known (:edges base)
@@ -706,18 +707,22 @@
                :engines (or (:engines plan) {})
                :timestamp (:timestamp plan)}
           rev-id (canon/digest host rev)
+          ;; the per-tree heads live outside the Revision (each touched tree's value is rev-id)
+          hm (mmap/update-many host load (or (:heads-root store) (:root empty-map))
+                               (into {} (map (fn [tid] [tid rev-id])) touched))
           tx {:id tx-id :plan resolved-plan :revision rev-id}
           ;; every CAS object satisfies H(canonical-bytes object) == id (invariant 17):
           ;; the transaction is stored as its resolved plan; the Transaction map lives in the log
           new-objects (-> (:new ws)
                           (into (mapcat (fn [[_ [_ objs]]] objs)) committed)
-                          (cond-> (some #{(:root empty-map)} [(:root tm) (:root em) (:root im)]) (merge (:new empty-map)))
-                          (merge (:new tm) (:new em) (:new im))
+                          (cond-> (some #{(:root empty-map)} [(:root tm) (:root em) (:root im) (:root hm)]) (merge (:new empty-map)))
+                          (merge (:new tm) (:new em) (:new im) (:new hm))
                           (assoc rev-id rev tx-id resolved-plan))
           store' (-> store
                      (update :objects merge new-objects)
                      (assoc :head rev-id)
                      (update :heads merge (into {} (map (fn [tid] [tid rev-id])) touched))
+                     (assoc :heads-root (:root hm))
                      (assoc-in [:revisions rev-id] rev)
                      (head-views trees' (:e+ ws) (:e- ws)))]
       {:store store' :transaction tx :revision rev :revision-id rev-id
