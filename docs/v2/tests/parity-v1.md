@@ -60,6 +60,7 @@ nombra, para cada uno, el test del kernel que sostiene la promesa equivalente.
 |---|---|---|
 | S2 primer corte | hecho 2026-10-06 | `e444d4d`, `test/kimun/cli/docs_test.cljc` |
 | A4 enlaces | hecho 2026-10-06 | `13184d9`; `kimun.surface.links.{parser,resolver,recovery,composer}`; 8/8 de `test_links.py` a nivel de enlace, 13 tests |
+| A3 grafo | hecho 2026-10-06 | `4beff47`; `kimun.surface.graph.{model,traversal,analysis,query,io}`; 36 de 38 funciones de v1 (16+4+6+3+3+4), 2 de CLI diferidas a C2; pagerank, betweenness, grados, caminos, ciclos, componentes y capas reimplementados y contrastados con networkx 3.6.1 |
 | A2 `--where` | hecho 2026-10-06 | `1f701ec`; `kimun.surface.index.where` (`parse`, `matches?`); 10/10 funciones de v1 que tocan `--where`, 15 tests |
 
 ## Diferido por las tareas cerradas (lo recoge la tarea indicada)
@@ -69,10 +70,12 @@ nombra, para cada uno, el test del kernel que sostiene la promesa equivalente.
 | A4 | `docs recover\|compose` en CLI: aceptar nombre de documento rastreado en vez de ruta, `--format yaml`, `-o -`; `--include-transclusions` se acepta y se ignora, como en v1 | C5 |
 | A4 | **composiciones de modelo** (`test_composition.py` ×4, `api/test_composition_ref_root.py` ×3): un modelo declara `{nombre {source_field, model, template}}`; el slot `⸢render•nombre⸥` se expande cargando cada ref de `source_field`, extrayéndola con el modelo referido y rellenando `{campo}` en la plantilla de línea; refs inválidas o no resolubles se omiten en silencio; las refs relativas resuelven contra la raíz del proyecto (`ref_root`), nunca contra el cwd | B2 |
 | A2 | `find` sobre store real con direcciones `st.{Model}`, `st.{Base+}`; exit 3 y stdout vacío ante `query/bad-where`; dirección inválida ⇒ lista vacía | C1 |
+| A3 | `graph *` en CLI sobre store en disco (`test_the_cli_prints_each_analysis`, `…no_path_and_exits_nonzero`); constructor del índice de aristas, conversión snapshot⇄índice | C2 |
 | A2 | tests de direcciones/glob/semántica sin `--where` en `store/test_queries_expanded.py` (7 funciones) | C1, C3 |
 
 ## Desviaciones deliberadas respecto de v1 (acumuladas)
 
 - `--where` no reconocido es `query/bad-where` con posición, no `False` silencioso (`06 §5`). Regex inválida se rechaza al parsear. `>=`/`<=` entre tipos distintos da falso en vez de `TypeError`. Dialecto de regex: Java.
+- Grafo: el orden es determinista por id donde v1 heredaba el de networkx (camino, orden topológico, ciclos); `paths-between` no repite un camino por cada relación paralela; `gt`/`lt` entre tipos no comparables dan falso.
 - Enlaces: se informa `:ambiguous` cuando un mismo nivel de búsqueda da más de un candidato (v1 tomaba el primero). Los offsets son unidades de string de la plataforma.
 
