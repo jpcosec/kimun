@@ -333,6 +333,35 @@
            (is (= (views l2) (views (store/open (fs/backend dir) h)))))))))
 
 #?(:clj
+   (deftest the-views-are-carried-across-commits-in-o-plan-and-equal-a-fresh-open
+     ;; one process committing many times (generate, migrate): what a caller forced on the previous
+     ;; head is not recomputed on the next one, and the carried views are the views of a fresh open
+     (let [views (fn [st] {:trees (into {} (:trees st)) :edges (:edges st) :head (:head st) :heads (:heads st)})]
+       (doseq [force? [true false]]
+         (testing (if force? "views forced before every commit" "views never forced in between")
+           (let [[dir b _] (docs-store! 4 2)
+                 calls (atom {:load-tree 0 :active-edges 0})
+                 on? (atom true)
+                 fresh (fn [] (reset! on? false) (let [v (views (store/open (fs/backend dir) h))] (reset! on? true) v))
+                 load-tree rev/load-tree active-edges rev/active-edges
+                 final (with-redefs [rev/load-tree (fn [& a] (when @on? (swap! calls update :load-tree inc)) (apply load-tree a))
+                                     rev/active-edges (fn [& a] (when @on? (swap! calls update :active-edges inc)) (apply active-edges a))]
+                         (let [opened (store/open b h)
+                               _ (when force? (views opened))
+                               before @calls
+                               st (reduce (fn [st i]
+                                            (let [st' (:store (store/commit! b st (doc-plan st i)))]
+                                              (when force? (is (= (fresh) (views st')) (str "commit " i)))
+                                              st'))
+                                          opened (range 20 26))]
+                           (when force?
+                             (is (= (:active-edges before) (:active-edges @calls)) "the edge set is derived from the previous one, never re-enumerated")
+                             (is (<= (- (:load-tree @calls) (:load-tree before)) 6)
+                                 "at most the tree each of the 6 commits touched is loaded, never the others again"))
+                           st))]
+             (is (= (views (store/open (fs/backend dir) h)) (views final)))))))))
+
+#?(:clj
    (deftest open-checks-heads-edn-and-the-head-revisions
      (let [damaged (fn [f] (let [[dir b s] (docs-store! 2 1)] (f dir b s) (ex-of #(store/open b h))))
            node-id (fn [s] (some (fn [[id o]] (when (:class o) id)) (:objects s)))]

@@ -171,22 +171,32 @@
 
 (defn lazy-store
   "The store value over `base`, a map with :host :capabilities :format-version
-   :objects :revisions :head :heads (and optionally :trees, entries already in
-   memory for the head). When the host has the optional LazyMaps port the result
-   is a lazy map whose views of the head are computed on demand and never when
-   nobody asks: :trees is a lazy map tree-id -> committed tree (`load-tree` per
-   tree on lookup, `tree-ids` to enumerate) and :edges is the set of active
-   edge ids, materialised on first access. Without the port (or for format 1)
-   `base` is returned as is: the caller keeps the eager views (`refresh-views`)."
+   :objects :revisions :head :heads, and optionally views that ALREADY describe
+   that head and are kept as they are: :trees (a tree-id -> committed tree view)
+   and :edges (the set of active edge ids). When the host has the optional
+   LazyMaps port the result is a lazy map whose views of the head are computed
+   on demand and never when nobody asks: :trees is a lazy map tree-id ->
+   committed tree (`load-tree` per tree on lookup, `tree-ids` to enumerate) and
+   :edges is the set of active edge ids, materialised on first access. The
+   :edges view is a `delay` (a memo, not state) also kept in the metadata of
+   the result, so that `apply-plan` can tell whether somebody forced it and
+   derive the next one from it in O(plan) (`head-views`). Without the port (or
+   for format 1) `base` is returned as is: the caller keeps the eager views
+   (`refresh-views`)."
   [base]
   (if-let [lm (when-not (legacy? base) (ports/lazy-maps (:host base)))]
     (let [head (:head base)
           core (select-keys base [:host :format-version :objects :revisions :head])
-          trees (ports/lazy-map lm #(load-tree core % head) #(tree-ids core head) (or (:trees base) {}))]
-      (ports/lazy-map lm
-                      (fn [k] (when (= :edges k) (set (active-edges core head))))
-                      (constantly [:edges])
-                      (assoc (dissoc base :edges) :trees trees)))
+          ids (delay (tree-ids core head))   ; enumerated at most once per view lineage, not once per scan
+          trees (or (:trees base) (ports/lazy-map lm #(load-tree core % head) #(deref ids) {}))
+          known (:edges base)
+          edges (if known (doto (delay known) deref) (delay (set (active-edges core head))))]
+      (with-meta
+        (ports/lazy-map lm
+                        (fn [k] (when (= :edges k) @edges))
+                        (constantly [:edges])
+                        (assoc (dissoc base :edges) :trees trees))
+        {::edges-view edges}))
     base))
 
 (defn refresh-views
@@ -202,11 +212,20 @@
 
 (defn- head-views
   "`store` (already at its new head: :objects :revisions :head :heads updated)
-   with the views of that head: lazy when the host has the port, else eager."
+   with the views of that head: lazy when the host has the port, else eager.
+   Lazy views cost O(plan) per commit whatever the callers forced before: the
+   :trees view of the previous head is kept with the touched trees merged in
+   (untouched trees are equal in both heads and no plan removes a tree; what
+   the previous view already loaded stays loaded), and when the previous
+   :edges set was materialised the new one is that set plus the net delta of
+   the transaction (when it was not, it stays unmaterialised)."
   [store trees' added removed]
   (if (ports/lazy-maps? (:host store))
-    ;; dissoc + seq on a lazy store force nothing; the touched trees are in memory already
-    (lazy-store (assoc (into {} (dissoc store :trees :edges)) :trees trees'))
+    (let [view (::edges-view (meta store))
+          edges (when (and view (realized? view)) (reduce conj (reduce disj @view removed) added))]
+      ;; dissoc + seq + merge on a lazy map force nothing
+      (lazy-store (cond-> (assoc (into {} (dissoc store :trees :edges)) :trees (merge (:trees store) trees'))
+                    edges (assoc :edges edges))))
     (refresh-views store trees' added removed)))
 
 ;; ---------------------------------------------------------------- working state
