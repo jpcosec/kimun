@@ -182,6 +182,10 @@
       (is (= "docs/superseded" (:type (first (:warnings (run p "stores" "check")))))))
     (let [e (run p "models" "field-add" "TicketDoc" "--field" "area" "--type" "string" "--default" "core" "--backfill")]
       (is (= ["login"] (get-in e [:data :backfilled])))
+      (let [entry (first (:data (run p "journal" "show" "--limit" "1")))]
+        (is (= "models backfill" (:operation entry)))
+        (is (= {"priority" {:before nil :after 5} "area" {:before nil :after "core"}} (:fields entry))
+            "the journal names the fields the backfill added"))
       (is (str/includes? (slurp (file p "login.md")) "core"))
       (let [d (:data (run p "docs" "show" "login"))]
         (is (= :intact (:state d)))
@@ -226,6 +230,12 @@
       (spit (file p "b.md") "# T\n\nStatus: s\n")
       (let [b (run p "docs" "track" "TicketDoc" "b.md")]
         (is (= (get-in a [:data :content-hash]) (get-in b [:data :content-hash])) "same payload, same content hash")))))
+
+;; v1: test_changed_paths_include_dotted_nested_keys
+(deftest changed-paths-include-dotted-nested-keys
+  (is (= {"meta.owner" {:before "a" :after "b"} "tags" {:before ["x"] :after ["x" "y"]} "new" {:before nil :after 1}}
+         (tdocs/changed-fields {"meta" {"owner" "a" "kind" "k"} "tags" ["x"] "same" 1}
+                               {"meta" {"owner" "b" "kind" "k"} "tags" ["x" "y"] "same" 1 "new" 1}))))
 
 (deftest untyped-documents-still-work
   (let [p (project)]

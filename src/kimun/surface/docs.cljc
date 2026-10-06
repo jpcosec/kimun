@@ -67,8 +67,10 @@
    :content {:locator {:kind :file :path path} :sample (subs text 0 (min 80 (count text))) :fingerprint (fingerprint host text)}})
 (defn- id-of [host n] (:id (node/make host (:class n) (:kind n) (:content n))))
 
-(defn- edges-from [store root]
-  (for [eid (:edges store) :let [e (get-in store [:objects eid])] :when (= root (:from e))] e))
+(defn- edges-by-from
+  "`{from-node-id [edge …]}` over the active edges of `store` (one pass)."
+  [store]
+  (group-by :from (keep #(let [e (get-in store [:objects %])] (when (:from e) e)) (:edges store))))
 
 (defn- target [store e] (get-in store [:objects (:to e)]))
 (defn- model-node? [n] (= mstore/blob-format (get-in n [:content :format])))
@@ -76,8 +78,8 @@
 (defn- describe
   "The document map of the `:document` tree `[tid t]`, or nil when its root is
    not a typed-document root or it has been untracked."
-  [store current [tid t]]
-  (let [root (tree/root t) rn (get-in store [:objects root]) es (edges-from store root)]
+  [store current by-from [tid t]]
+  (let [root (tree/root t) rn (get-in store [:objects root]) es (get by-from root)]
     (when (and (get-in rn [:content :attrs :doc]) (seq es))
       (let [by (fn [pred] (filter #(pred (target store %)) es))
             model-ids (set (map :to (by model-node?)))
@@ -99,9 +101,9 @@
    `:state` is `:intact` (extracted under the current contract), `:superseded`
    (the model was redefined since) or `:orphan` (its model is gone)."
   [store]
-  (let [current (mstore/models store)]
+  (let [current (mstore/models store) by-from (edges-by-from store)]
     (->> (:trees store) (filter #(= :document (get-in (val %) [:descriptor :kind])))
-         (keep #(describe store current %)) (sort-by (juxt :name :tree)) vec)))
+         (keep #(describe store current by-from %)) (sort-by (juxt :name :tree)) vec)))
 
 (defn hidden-trees
   "Ids of `:document` trees that are typed-document roots no longer tracked
@@ -139,7 +141,7 @@
 
 ;; ---------------------------------------------------------------- plans
 
-(defn- changed-fields
+(defn changed-fields
   "`{path {:before v :after v}}` between two payloads; nested maps give dotted paths."
   [before after]
   (let [walk (fn walk [prefix a b]
@@ -212,13 +214,17 @@
         payload (extract/extract (:descriptor m) text)
         path (or path (:path doc))
         same? (and (= text (:source doc)) (= path (:path doc)) (= :intact (:state doc)))
+        ;; a superseded document's old text knows nothing of the fields the new contract
+        ;; added: what its text does not carry was not there before, whatever the default
+        raw (when (not= :intact (:state doc)) (extract/extract-raw (:template (:descriptor m)) (:source doc)))
+        before (cond->> (or (:payload doc) {}) raw (into {} (filter (fn [[k _]] (some? (get raw k))))))
         a (assoc-in (ast/parse host text) [:attrs :doc] (:doc doc))
         base (when-not same? (md/ast->update-plan host store (:tree doc) a {:actor actor :timestamp timestamp :base (:head store)}))]
     {:name (:name doc) :tree (:tree doc) :payload payload :before (:payload doc) :unchanged? same?
      :plan (when base
              (-> base
                  (assoc :engines (meta-engines {:operation (or operation "docs update") :address (str (:model doc) ":" (:name doc))
-                                                :fields (changed-fields (or (:payload doc) {}) payload)}))
+                                                :fields (changed-fields before payload)}))
                  (update :ops into (binding-ops host store (:root doc) {:model-id (:id m) :text text :path path :actor actor} doc))))}))
 
 (defn untrack-plan
