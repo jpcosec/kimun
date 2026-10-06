@@ -10,6 +10,7 @@
             [kimun.cli.commands.docs :as docs]
             [kimun.cli.commands.models :as models]
             [kimun.cli.commands.journal :as journal]
+            [kimun.cli.commands.links :as links]
             [kimun.cli.commands.serve :as serve]
             [kimun.cli.commands.stores :as stores]
             [kimun.cli.errors :as errors]
@@ -19,7 +20,11 @@
   "First token → group dispatch `(fn [subcommand args opts ctx] envelope)`,
    where `args` are the positional tokens after the subcommand."
   {"stores" stores/dispatch
-   "docs" docs/dispatch
+   "docs" (fn [sub args opts ctx]
+            ;; `docs recover|compose` live in kimun.cli.commands.links
+            (if-let [f (get links/commands sub)]
+              (f args opts ctx)
+              (docs/dispatch sub args opts ctx)))
    "journal" journal/dispatch
    "serve" serve/dispatch
    "models" models/dispatch
@@ -31,7 +36,7 @@
   "The option spec of every group, merged: a group declares its own options
    in its `spec` var, so adding a group never edits `kimun.cli.args`. Two
    groups may share an option name only with the same meaning."
-  (merge stores/spec docs/spec journal/spec serve/spec models/spec direct/spec))
+  (merge stores/spec docs/spec journal/spec serve/spec models/spec direct/spec links/spec))
 
 (def usage
   "Usage text shown by `kimun`, `kimun help` and `--help`."
@@ -66,6 +71,8 @@
              "  render [MODEL] --data PAYLOAD.json|yaml [-o FILE]   Markdown of a payload"
              "  validate [MODEL] --input DOC.md | --data FILE [--mode strict-roundtrip]"
              "                              MODEL (or --model): X.edn | model NAME in the store | module:Class"
+             "  docs recover DOC [--depth N] [--links-only]   the [[links]] of a document and where they resolve"
+             "  docs compose DOC [-o FILE|-]                  expand ![[transclusions]] into composed Markdown"
              "  journal show [--limit N] [--by ACTOR] [--tree NAME|ID]   the write history, newest first (a view of the log)"
              "  journal verify              check the revision chain, the log replay and every reachable object"
              "  serve [--port N] [--host H] [--token T] [--cors]   HTTP API over the commands (default 127.0.0.1:8787)"
