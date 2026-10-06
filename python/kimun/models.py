@@ -102,6 +102,14 @@ def descriptor(cls: type) -> dict:
         val = getattr(cls, attr, None)
         if val:
             d[Kw("py/" + key)] = _jsonable(val)
+    # The class's OWN semantics, not the MRO-merged view: `:base` carries the
+    # lineage and kimun.surface.semantic/model-tags merges it, as v1 did.
+    own = cls.__dict__.get("__semantics__")
+    if own:
+        d[Kw("semantics")] = _jsonable(own)
+    family = cls.__dict__.get("__family__")
+    if family:
+        d[Kw("py/family")] = _jsonable(family)
     return d
 
 

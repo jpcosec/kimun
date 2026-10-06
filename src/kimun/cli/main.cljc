@@ -9,6 +9,7 @@
             [kimun.cli.commands.direct :as direct]
             [kimun.cli.commands.docs :as docs]
             [kimun.cli.commands.models :as models]
+            [kimun.cli.commands.semantic :as semantic]
             [kimun.cli.commands.journal :as journal]
             [kimun.cli.commands.links :as links]
             [kimun.cli.commands.serve :as serve]
@@ -26,6 +27,7 @@
               (f args opts ctx)
               (docs/dispatch sub args opts ctx)))
    "journal" journal/dispatch
+   "semantic" semantic/dispatch
    "serve" serve/dispatch
    "models" models/dispatch
    "extract" (direct/dispatcher "extract")
@@ -36,7 +38,7 @@
   "The option spec of every group, merged: a group declares its own options
    in its `spec` var, so adding a group never edits `kimun.cli.args`. Two
    groups may share an option name only with the same meaning."
-  (merge stores/spec docs/spec journal/spec serve/spec models/spec direct/spec links/spec))
+  (merge stores/spec docs/spec journal/spec serve/spec models/spec direct/spec links/spec semantic/spec))
 
 (def usage
   "Usage text shown by `kimun`, `kimun help` and `--help`."
@@ -73,6 +75,8 @@
              "                              MODEL (or --model): X.edn | model NAME in the store | module:Class"
              "  docs recover DOC [--depth N] [--links-only]   the [[links]] of a document and where they resolve"
              "  docs compose DOC [-o FILE|-]                  expand ![[transclusions]] into composed Markdown"
+             "  semantic show [TAG] | tags [PREFIX]            a tag (parents, children, equivalents, documents) or the DAG; list tags"
+             "  semantic parent-add|parent-remove CHILD PARENT · equivalent-add A B · export [-o FILE]"
              "  journal show [--limit N] [--by ACTOR] [--tree NAME|ID]   the write history, newest first (a view of the log)"
              "  journal verify              check the revision chain, the log replay and every reachable object"
              "  serve [--port N] [--host H] [--token T] [--cors]   HTTP API over the commands (default 127.0.0.1:8787)"
