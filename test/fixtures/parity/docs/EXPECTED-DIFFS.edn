@@ -1,6 +1,4 @@
-{"InboxNoteDoc--20260614-000000-suggestion-stabilize-stores-init-failures"
- "engine: a frontmatter timestamp at exactly midnight (`created_at: 2026-06-14T00:00:00`) does not come back as v1's \"2026-06-14T00:00:00\"; the YAML date handling lives in kimun.surface.models (render/extract), owned by the engine task — to fix there, then drop this entry"
- "TaskDoc--task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico"
+{"TaskDoc--task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico"
  "deskops TaskDoc drops an empty `from_drawer` in Python code of the model class, not in the engine (same reason as test/fixtures/parity/engine/EXCLUSIONS.edn; docs/v2/07 §1)"
  "TaskDoc--task-build-code-self-documentation"
  "deskops TaskDoc drops an empty `from_drawer` in Python code of the model class, not in the engine (same reason as test/fixtures/parity/engine/EXCLUSIONS.edn; docs/v2/07 §1)"

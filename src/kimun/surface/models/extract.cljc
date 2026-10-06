@@ -11,17 +11,79 @@
             [kimun.surface.models.recipe :as recipe]
             [sldb.kernel.err :as err]))
 
+;; SnakeYAML resolves a date (`2026-06-14`) and a datetime to the same
+;; java.util.Date, so a midnight datetime cannot be told from a date after
+;; parsing. v1 (PyYAML) keeps them apart: a date prints "2026-06-14", a
+;; datetime "2026-06-14T00:00:00". Quoting date-only plain scalars before
+;; parsing makes them strings (v1's output); every Date left is a datetime.
+(def ^:private date-line
+  "A block line whose value is a bare date: optional dash/key prefix, the date,
+   optional trailing comment (PyYAML still reads a date there)."
+  #"^(\s*(?:(?:-\s+)+(?:[^\s:#'\"\[\]{},|>-][^:#\n]*:\s+)?|[^\s:#'\"\[\]{},|>-][^:#\n]*:\s+))(\d{4}-\d{2}-\d{2})(\s*(?:#.*)?)$")
+
+(def ^:private flow-line
+  "A block line whose value opens a flow collection: the dash/key prefix and
+   the flow text. A `[` or `{` anywhere else in a line is ordinary text."
+  #"^(\s*(?:(?:-\s+)+(?:[^\s:#'\"\[\]{},|>-][^:#\n]*:\s+)?|[^\s:#'\"\[\]{},|>-][^:#\n]*:\s+))([\[{].*)$")
+
+(def ^:private flow-date #"^(\d{4}-\d{2}-\d{2})\s*[,\]}]")
+
+(defn- quote-flow
+  "Quotes the bare dates of one line of flow text: a date token right after
+   `[`, `{`, `,` or `key: ` and right before `,`, `]`, `}`. Quoted strings and
+   a trailing comment are copied verbatim, so no text is ever rewritten."
+  [flow]
+  (let [n (count flow)]
+    (loop [i 0 quoted nil prev nil out (transient [])]
+      (if (>= i n)
+        (apply str (persistent! out))
+        (let [c (nth flow i)
+              spaced? (and (pos? i) (#{\space \tab} (nth flow (dec i))))]
+          (cond
+            quoted (recur (inc i)
+                          (when-not (and (= c quoted) (not (and (= quoted \") (pos? i) (= \\ (nth flow (dec i)))))) quoted)
+                          c (conj! out c))
+            (#{\' \"} c) (recur (inc i) c c (conj! out c))
+            (and (= c \#) spaced?) (apply str (persistent! (conj! out (subs flow i))))
+            (#{\space \tab} c) (recur (inc i) nil prev (conj! out c))
+            :else
+            (let [m (when (or (#{\[ \{ \,} prev) (and (= prev \:) spaced?))
+                      (re-find flow-date (subs flow i)))]
+              (if m
+                (recur (+ i 10) nil \' (conj! out (str "'" (second m) "'")))
+                (recur (inc i) nil c (conj! out c))))))))))
+
+(def ^:private block-indicator #"(?:^|[\s:-])[|>][-+0-9]*\s*(?:#.*)?$")
+
+(defn- indent-of [line] (count (take-while #(= \space %) line)))
+
+(defn- quote-line [line]
+  (cond (re-find date-line line) (str/replace line date-line "$1'$2'$3")
+        (re-find flow-line line) (let [[_ prefix flow] (re-find flow-line line)] (str prefix (quote-flow flow)))
+        :else line))
+
+(defn- quote-dates
+  "Quotes bare dates line by line, leaving the body of block scalars (`|`,
+   `>`, any chomping/indent indicator) untouched: every following line that
+   is blank or indented deeper than the indicator line."
+  [yaml-text]
+  (loop [lines (str/split yaml-text #"\n" -1) in-block nil out []]
+    (if-let [[line & more] (seq lines)]
+      (if (and in-block (or (str/blank? line) (> (indent-of line) in-block)))
+        (recur more in-block (conj out line))
+        (recur more (when (re-find block-indicator line) (indent-of line)) (conj out (quote-line line))))
+      (str/join "\n" out))))
+
 (defn- plain [v]
   (walk/postwalk (fn [x] (cond (map? x) (into {} (map (fn [[k v]] [(if (keyword? k) (name k) k) v])) x)
-                               (instance? java.util.Date x) (let [t (subs (.toString (.toInstant ^java.util.Date x)) 0 19)]
-                                                              (if (str/ends-with? t "T00:00:00") (subs t 0 10) t))
+                               (instance? java.util.Date x) (subs (.toString (.toInstant ^java.util.Date x)) 0 19)
                                (sequential? x) (vec x) :else x)) v))
 
 (defn- yaml-data [b r]
   (when (contains? #{"fence" "front_matter"} (:type b))
     (let [content (str/trim (:content b))
           clean (let [c (str/trim (str/replace content marker/pattern ""))] (if (seq c) c content))
-          data (try (plain (yaml/parse-string clean :keywords false))
+          data (try (plain (yaml/parse-string (quote-dates clean) :keywords false))
                     (catch Exception e
                       (err/raise :models/bad-yaml (str "Failed to parse YAML content for " (or (:name r) "<unknown>") ": " (ex-message e)) {})))]
       (if (:markers r)

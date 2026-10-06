@@ -174,3 +174,49 @@
       (is (= {"title" "Hi" "status" "s" "tags" [] "owner" "body"}
              (extract/extract d "---\nstatus: s\nowner: fm\n---\n\n# Hi\n\nOwner: body\n"))
           "on extraction the body marker's value beats the front matter's"))))
+
+;; ---------------------------------------------------------------- dates
+
+;; YAML timestamps in frontmatter. SnakeYAML parses a date and a datetime to
+;; the same java.util.Date, so extract quotes date-only scalars first. v1
+;; (PyYAML) returns: a date as "2026-06-14", a datetime as ISO with `T`, and
+;; that includes a datetime at exact midnight ("2026-06-14T00:00:00"), which
+;; must not be collapsed to a date.
+(def ^:private dates-doc
+  {:model/name "DatesDoc" :model/version 1
+   :fields [{:name "midnight" :type :string :required true}
+            {:name "later" :type :string :required true}
+            {:name "day" :type :string :required true}]
+   :template "---\nmidnight: ⸢rev•midnight⸥\nlater: ⸢rev•later⸥\nday: ⸢rev•day⸥\n---\n"})
+
+(deftest yaml-dates-roundtrip-as-v1
+  (let [md "---\nmidnight: 2026-06-14T00:00:00\nlater: 2026-06-14T01:02:03\nday: 2026-06-14\n---\n"]
+    (is (= {"midnight" "2026-06-14T00:00:00" "later" "2026-06-14T01:02:03" "day" "2026-06-14"}
+           (extract/extract dates-doc md)))))
+
+;; quote-dates must never rewrite text it should not: block scalar bodies,
+;; already-quoted values, multi-line plain scalars. A trailing comment and
+;; flow collections: PyYAML reads the date there, so v1 returns "2026-06-14".
+(def ^:private free-doc
+  {:model/name "FreeDoc" :model/version 1
+   :fields (mapv (fn [n] {:name n :type :any :required false}) ["a" "b" "c" "d"])
+   :template "---\na: ⸢optrev•a⸥\nb: ⸢optrev•b⸥\nc: ⸢optrev•c⸥\nd: ⸢optrev•d⸥\n---\n"})
+
+(deftest yaml-date-quoting-leaves-other-text-alone
+  (let [ex (fn [y] (extract/extract free-doc (str "---\n" y "\n---\n")))]
+    (testing "block scalar bodies are verbatim"
+      (is (= {"a" "x\nd: 2026-06-14\n- 2026-06-14\n" "b" "2026-06-14T00:00:00"}
+             (select-keys (ex "a: |\n  x\n  d: 2026-06-14\n  - 2026-06-14\nb: 2026-06-14T00:00:00") ["a" "b"])))
+      (is (= "x d: 2026-06-14" (get (ex "a: >\n  x\n  d: 2026-06-14") "a"))))
+    (testing "quoted, commented, multi-line plain"
+      (is (= {"a" "2026-06-14" "b" "2026-06-14" "c" "2026-06-14" "d" "foo 2026-06-14"}
+             (ex "a: \"2026-06-14\"\nb: '2026-06-14'\nc: 2026-06-14 # note\nd: foo\n  2026-06-14"))))
+    (testing "flow collections"
+      (is (= {"a" ["2026-06-14" "x"] "b" {"d" "2026-06-14"}}
+             (select-keys (ex "a: [2026-06-14, x]\nb: {d: 2026-06-14}") ["a" "b"]))))
+    (testing "a bracket in ordinary text is not a flow collection: the text comes back as written"
+      (is (= {"a" "Release [2026-06-14]" "b" "notes [2026-06-14, x]" "c" "a {d: 2026-06-14}"}
+             (ex "a: Release [2026-06-14]\nb: \"notes [2026-06-14, x]\"\nc: 'a {d: 2026-06-14}'"))))
+    (testing "inside a flow collection, quoted strings and the trailing comment are untouched"
+      (is (= {"a" ["x, 2026-06-14" "2026-06-15"] "b" {"s" "it's, 2026-06-14" "d" "2026-06-14"} "c" ["a 2026-06-14" "2026-06-14T00:00:00"]}
+             (ex "a: [\"x, 2026-06-14\", 2026-06-15] # c, 2026-01-01\nb: {s: 'it''s, 2026-06-14', d: 2026-06-14}\nc: [a 2026-06-14, 2026-06-14T00:00:00]"))))))
