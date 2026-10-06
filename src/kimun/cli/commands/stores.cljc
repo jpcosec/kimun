@@ -1,6 +1,6 @@
 (ns kimun.cli.commands.stores
   "The `kimun stores` group (docs/v2/06 §B): `init`, `check`, `health`,
-   `update`, `reconcile`, `verify`, `show`, and the federation commands `link`, `unlink` and `links`. Every
+   `update`, `reconcile`, `verify`, `upgrade`, `show`, and the federation commands `link`, `unlink` and `links`. Every
    command is `(fn [args opts ctx] envelope)` where `args` are the positional
    tokens after the subcommand and `ctx` is `{:env env :cwd cwd}`; `dispatch`
    routes a subcommand name."
@@ -13,7 +13,8 @@
             [kimun.surface.docs :as tdocs]
             [sldb.host.default :as host]
             [sldb.kernel.err :as err]
-            [sldb.kernel.store :as store]))
+            [sldb.kernel.store :as store]
+            [sldb.kernel.upgrade :as upgrade]))
 
 (defn- store-ref [descriptor path] {:name (:name descriptor) :path path})
 
@@ -185,6 +186,72 @@
                    {:checked checked :bad bad :path path}
                    5))))
 
+(def ^:private layout
+  "Entries of a store directory that the upgrade rebuilds, or drops: the
+   derived index is keyed by revision ids that the upgrade replaces
+   (`rebuild-indexes` writes it again)."
+  #{"objects" "log.edn" "heads.edn" "store.edn" "lock" "index"})
+
+(defn- stamp [] (str/replace (docs/timestamp) #"[^0-9]" ""))
+
+(defn upgrade-store
+  "`stores upgrade`: rewrites a format-1 store as a format-2 one
+   (`sldb.kernel.upgrade/upgrade!`: every transaction re-committed in log order
+   through the format-2 engine, then checked and fully verified). The new store
+   is built in the sibling directory `<store>.upgrade-<stamp>`; the original is
+   untouched until the new one verifies, then it is renamed to
+   `<store>.format-1-<stamp>` (a backup the user may delete) and the new one
+   takes its place. Files of the store directory other than the layout are
+   carried over (not `index/`, derived and keyed by the old revision ids).
+   `upgrade-format-1.edn` in the new store maps every old revision and
+   transaction id to its new id. A format-2 store is left as is
+   (`:upgraded false`). When a writer commits to the original meanwhile the
+   upgrade is abandoned with `store/stale` (exit 4). Data: `{:upgraded
+   :format-version :path}` plus, when upgraded, `{:transactions :head-before
+   :backup :map :dropped-tail :checked :seconds}`."
+  [_args opts {:keys [env cwd]}]
+  (let [dir0 (cli-store/resolve-store opts env cwd)
+        _ (when (or (nil? dir0) (not (cli-store/store? dir0))) (cli-store/open! dir0))
+        dir (str (fs/absolutize dir0))
+        b (cli-store/backend dir)
+        descriptor (store/read-descriptor b)
+        heads-file (str (fs/path dir "heads.edn"))
+        heads-text #(when (fs/exists? heads-file) (slurp heads-file))]
+    (if (= 2 (:format-version descriptor 1))
+      (out/ok "stores upgrade" {:store (store-ref descriptor dir)
+                                :revision (:head (store/read-heads b))
+                                :data {:upgraded false :format-version 2 :path dir}})
+      (let [t (stamp)
+            tmp (str dir ".upgrade-" t)
+            backup (str dir ".format-1-" t)
+            before (heads-text)
+            head-before (:head (store/read-heads b))
+            t0 (System/nanoTime)
+            r (try (upgrade/upgrade! b (cli-store/backend tmp) host/host)
+                   (catch Exception e (fs/delete-tree tmp) (throw e)))]
+        (when (not= before (heads-text))
+          (fs/delete-tree tmp)
+          (err/raise :store/stale (str "the store at " dir " changed while it was being upgraded; run the upgrade again") {:path dir}))
+        (doseq [f (fs/list-dir dir)
+                :let [n (str (fs/file-name f))]
+                :when (not (or (layout n) (str/includes? n ".tmp-")))]
+          (if (fs/directory? f) (fs/copy-tree f (fs/path tmp n)) (fs/copy f (fs/path tmp n))))
+        (spit (str (fs/path tmp "upgrade-format-1.edn"))
+              (pr-str {:from-format 1 :to-format 2 :head-before head-before :head (:head r)
+                       :revisions (into (sorted-map) (:revisions r)) :transaction-ids (into (sorted-map) (:transaction-ids r))}))
+        (fs/move dir backup {:atomic-move true})
+        (fs/move tmp dir {:atomic-move true})
+        (out/ok "stores upgrade" {:store (store-ref descriptor dir)
+                                  :revision (:head r)
+                                  :data {:upgraded true :format-version 2 :path dir
+                                         :transactions (:transactions r)
+                                         :head-before head-before
+                                         :backup backup
+                                         :map (str (fs/path dir "upgrade-format-1.edn"))
+                                         :dropped-tail (some-> (:dropped-tail r) (select-keys [:id :revision :torn-line]))
+                                         :checked (get-in r [:verify :checked])
+                                         :seconds (/ (Math/round (/ (- (System/nanoTime) t0) 1e7)) 100.0)}})))))
+
 (defn show
   "`stores show`: descriptor and heads without replaying the log:
    `{:name :path :hash-alg :links :head :capabilities}`."
@@ -251,7 +318,7 @@
 
 (def commands
   "Subcommand name → command fn."
-  {"init" init "check" check "verify" verify "show" show
+  {"init" init "check" check "verify" verify "upgrade" upgrade-store "show" show
    "link" link "unlink" unlink "links" links
    "health" health "update" update-store "reconcile" reconcile})
 

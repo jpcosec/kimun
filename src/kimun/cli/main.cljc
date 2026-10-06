@@ -68,6 +68,7 @@
              "  stores init [--name NAME]   create .kimun/ in the working directory (or --store PATH)"
              "  stores check                open the store (replay) and report revisions, trees, objects"
              "  stores verify               recompute the hash of every reachable object"
+             "  stores upgrade              rewrite a format-1 store as format 2 (keeps a backup)"
              "  stores show                 descriptor and heads without replay"
              "  stores health               verdict: ok | degraded (run: …) | needs-human (inspect: …)"
              "  stores update               apply the repairs that need no decision (reformatted files, moved contracts)"
