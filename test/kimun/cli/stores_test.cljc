@@ -321,3 +321,90 @@
     (is (= [:ok] (mapv :status (get-in e [:data :links]))))
     (is (= (str (fs/path moved "b" ".kimun")) (get-in e [:data :links 0 :resolved])))
     (is (= [] (:warnings e)))))
+
+;; ------------------------------------------------------------ --store NAME
+
+(def ^:private ticket-model
+  (pr-str {:model/name "TicketDoc" :model/version 1 :base []
+           :fields [{:name "title" :type :string :required true :description "Title."}]
+           :template "# ⸢rev•title⸥\n"}))
+
+(deftest store-alias-is-resolved-from-an-ancestor-registry
+  ;; v1: test_store_alias_is_resolved_from_an_ancestor_registry
+  (let [root (tmp)
+        parent (init-in root "parent")
+        child (init-in parent "child")
+        remote (init-in root "remote")
+        _ (is (true? (:ok (run parent "stores" "link" "remote" remote))))
+        nested (str (fs/create-dirs (fs/path child "src")))
+        e (run nested "stores" "show" "--store" "remote")]
+    (is (true? (:ok e)) (pr-str e))
+    (is (= "remote" (get-in e [:data :name])) "reaches the linked store, not the child's own")
+    (is (= (str (fs/path remote ".kimun")) (get-in e [:data :path])))
+    (testing "no absolute path is stored for the link"
+      (is (not-any? #(fs/absolute? (:path %)) (:links (descriptor-of parent)))))))
+
+(deftest store-alias-registered-in-the-current-store-resolves
+  (let [root (tmp)
+        a (init-in root "a")
+        _b (init-in root "b")
+        _ (run a "stores" "link" "bee" "../b")
+        e (run a "stores" "show" "--store" "bee")]
+    (is (true? (:ok e)) (pr-str e))
+    (is (= "b" (get-in e [:data :name])))
+    (testing "the nearest registry wins"
+      (let [near (init-in a "near")
+            _ (run near "stores" "link" "bee" "../../a")
+            e2 (run near "stores" "show" "--store" "bee")]
+        (is (= "a" (get-in e2 [:data :name])))))))
+
+(deftest existing-path-wins-over-a-link-of-the-same-name
+  (let [root (tmp)
+        a (init-in root "a")
+        _b (init-in root "b")
+        _ (run a "stores" "link" "shadow" "../b")
+        local (init-in a "shadow")
+        e (run a "stores" "show" "--store" (str (fs/path local)))]
+    (is (= "shadow" (get-in e [:data :name])))
+    (testing "a relative existing path (cwd-relative) is a path, not a link"
+      (let [cwd (System/getProperty "user.dir")
+            rel (str (fs/relativize cwd (fs/path local)))
+            e2 (run a "stores" "show" "--store" rel)]
+        (is (= "shadow" (get-in e2 [:data :name])) (pr-str e2))))))
+
+(deftest unknown-store-name-is-no-store-and-says-it-is-not-a-link
+  (let [root (tmp)
+        a (init-in root "a")
+        e (run a "stores" "show" "--store" "nope")]
+    (is (false? (:ok e)))
+    (is (= 5 (:exit e)))
+    (is (= "cli/no-store" (get-in e [:error :type])))
+    (is (str/includes? (get-in e [:error :message]) "not a registered link"))
+    (is (= "nope" (get-in e [:error :data :name])))
+    (testing "a dangling link is reported, not silently skipped"
+      (let [d (init-in root "d")
+            _ (run a "stores" "link" "dd" "../d")
+            _ (fs/delete-tree (fs/path d ".kimun"))
+            e2 (run a "stores" "show" "--store" "dd")]
+        (is (= "cli/no-store" (get-in e2 [:error :type])))
+        (is (str/includes? (get-in e2 [:error :message]) "dd"))))))
+
+;; v1: test_docs_create_accepts_linked_store_alias. PARTIAL: `--store <alias>` now reaches
+;; the linked store (asserted here); the second half of the v1 promise (the file lands in
+;; the TARGET project, `target/desk/inbox/x.md`) is deferred: `docs create` writes relative
+;; to the cwd (stored path "../central/req-123.md"), it needs docs.cljc to root file
+;; writes/paths at the resolved store's project directory.
+;; v1: test_docs_create_uses_model_from_linked_store_namespace is deferred too: it needs the
+;; model looked up in a third store linked from the current one (federated model lookup).
+(deftest docs-create-through-a-linked-store-alias-tracks-in-the-target
+  (let [root (tmp)
+        central (init-in root "central")
+        target (init-in root "target")
+        _ (spit (str (fs/path target "ticket.edn")) ticket-model)
+        _ (is (true? (:ok (run target "models" "define" "-f" "ticket.edn"))))
+        _ (run central "stores" "link" "target" "../target")
+        e (run central "docs" "create" "TicketDoc" "req-123" "--set" "title=Need review" "--store" "target")]
+    (is (true? (:ok e)) (pr-str e))
+    (is (= "target" (get-in e [:store :name])))
+    (is (= ["req-123"] (mapv :name (get-in (run target "docs" "list") [:data]))))
+    (is (empty? (get-in (run central "docs" "list") [:data])) "nothing tracked in the central store")))
