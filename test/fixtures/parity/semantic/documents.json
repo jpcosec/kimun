@@ -1,0 +1,1482 @@
+[
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.documentation.architecture",
+   "workspace.docs.architecture"
+  ],
+  "model": "ArchitectureNarrativeDoc",
+  "name": "arch-code-docstring-indexing-handoff",
+  "path": "docs/architecture/code-docstring-indexing-handoff.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.documentation.architecture",
+   "workspace.docs.architecture"
+  ],
+  "model": "ArchitectureNarrativeDoc",
+  "name": "arch-code-docstring-indexing",
+  "path": "docs/architecture/code-docstring-indexing.spec.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.documentation.architecture",
+   "workspace.docs.architecture"
+  ],
+  "model": "ArchitectureNarrativeDoc",
+  "name": "arch-current-cli-tree",
+  "path": "docs/architecture/current-cli-tree.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.documentation.architecture",
+   "workspace.docs.architecture"
+  ],
+  "model": "ArchitectureNarrativeDoc",
+  "name": "arch-current-source-tree",
+  "path": "docs/architecture/current-source-tree.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.documentation.architecture",
+   "workspace.docs.architecture"
+  ],
+  "model": "ArchitectureNarrativeDoc",
+  "name": "arch-current-system-overview",
+  "path": "docs/architecture/current-system-overview.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "system:deskops",
+   "system:sldb",
+   "topic:diagnostics",
+   "topic:drift",
+   "topic:self-documentation",
+   "type.knowledge.atom",
+   "workspace.desk.atoms"
+  ],
+  "model": "AtomDoc",
+  "name": "atom-el-desk-puede-afirmar-lo-contrario-del-repo-y-nada-falla",
+  "path": "desk/atoms/atom-el-desk-puede-afirmar-lo-contrario-del-repo-y-nada-falla.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "system:deskops",
+    "topic:drift",
+    "topic:self-documentation",
+    "topic:diagnostics"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "layer:cli",
+   "representation.markdown",
+   "source.document.markdown",
+   "system:sldb",
+   "topic:dead-code",
+   "topic:diagnostics",
+   "topic:refactoring",
+   "type.knowledge.atom",
+   "workspace.desk.atoms"
+  ],
+  "model": "AtomDoc",
+  "name": "atom-un-censo-de-importadores-por-substring-miente-hay-que-contarlo-sobre-el-ast",
+  "path": "desk/atoms/atom-un-censo-de-importadores-por-substring-miente-hay-que-contarlo-sobre-el-ast.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "topic:dead-code",
+    "topic:refactoring",
+    "topic:diagnostics",
+    "layer:cli"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "system:sldb",
+   "topic:backward-compatibility",
+   "topic:diagnostics",
+   "topic:hashing",
+   "topic:merkle-tree",
+   "type.knowledge.atom",
+   "workspace.desk.atoms"
+  ],
+  "model": "AtomDoc",
+  "name": "atom-un-mapa-de-hashes-vacio-significa-no-se-pudo-calcular-nunca-nada-cambio",
+  "path": "desk/atoms/atom-un-mapa-de-hashes-vacio-significa-no-se-pudo-calcular-nunca-nada-cambio.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "topic:hashing",
+    "topic:merkle-tree",
+    "topic:diagnostics",
+    "topic:backward-compatibility"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "system:deskops",
+   "system:sldb",
+   "topic:documentation",
+   "topic:drift",
+   "topic:workflow",
+   "type.knowledge.atom",
+   "workspace.desk.atoms"
+  ],
+  "model": "AtomDoc",
+  "name": "atom-una-task-de-diseno-entrega-un-documento-y-su-doc-puede-decir-que-lo-disenado-no-existe",
+  "path": "desk/atoms/atom-una-task-de-diseno-entrega-un-documento-y-su-doc-puede-decir-que-lo-disenado-no-existe.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "system:deskops",
+    "topic:workflow",
+    "topic:drift",
+    "topic:documentation"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.documentation.atom",
+   "workspace.docs.atoms"
+  ],
+  "model": "AtomicDocumentDoc",
+  "name": "atom-address-space",
+  "path": "docs/atoms/address-space.atom.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.documentation.atom",
+   "workspace.docs.atoms"
+  ],
+  "model": "AtomicDocumentDoc",
+  "name": "atom-ast-view",
+  "path": "docs/atoms/ast-view.atom.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.documentation.atom",
+   "workspace.docs.atoms"
+  ],
+  "model": "AtomicDocumentDoc",
+  "name": "atom-compose-vs-recover",
+  "path": "docs/atoms/compose-vs-recover.atom.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.documentation.atom",
+   "workspace.docs.atoms"
+  ],
+  "model": "AtomicDocumentDoc",
+  "name": "atom-model-reference",
+  "path": "docs/atoms/model-reference.atom.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.documentation.atom",
+   "workspace.docs.atoms"
+  ],
+  "model": "AtomicDocumentDoc",
+  "name": "atom-payload-inputs",
+  "path": "docs/atoms/payload-inputs.atom.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "system:deskops",
+   "system:sldb",
+   "topic:routing",
+   "type.workflow.board",
+   "workspace.desk",
+   "workspace:desk"
+  ],
+  "model": "BoardDoc",
+  "name": "Board",
+  "path": "desk/tasks/Board.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "system:deskops",
+    "workspace:desk",
+    "topic:routing"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "system:deskops",
+   "system:sldb",
+   "topic:routing",
+   "type.workflow.board",
+   "workspace.desk",
+   "workspace:desk"
+  ],
+  "model": "BoardDoc",
+  "name": "desk-board",
+  "path": "desk/tasks/Board.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "system:deskops",
+    "workspace:desk",
+    "topic:routing"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "primitive:checklist",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.checklist",
+   "workspace.desk.primitives"
+  ],
+  "model": "ChecklistDoc",
+  "name": "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-ready",
+  "path": "desk/primitives/checklists/checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-ready.md",
+  "payload": {
+   "tags": [
+    "primitive:checklist"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "primitive:checklist",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.checklist",
+   "workspace.desk.primitives"
+  ],
+  "model": "ChecklistDoc",
+  "name": "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-ready",
+  "path": "desk/primitives/checklists/checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-ready.md",
+  "payload": {
+   "tags": [
+    "primitive:checklist"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "primitive:checklist",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.checklist",
+   "workspace.desk.primitives"
+  ],
+  "model": "ChecklistDoc",
+  "name": "checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-testing-ready",
+  "path": "desk/primitives/checklists/checklist-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-testing-ready.md",
+  "payload": {
+   "tags": [
+    "primitive:checklist"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "primitive:checklist",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.checklist",
+   "workspace.desk.primitives"
+  ],
+  "model": "ChecklistDoc",
+  "name": "checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-closeout-ready",
+  "path": "desk/primitives/checklists/checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-closeout-ready.md",
+  "payload": {
+   "tags": [
+    "primitive:checklist"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "primitive:checklist",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.checklist",
+   "workspace.desk.primitives"
+  ],
+  "model": "ChecklistDoc",
+  "name": "checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-execution-ready",
+  "path": "desk/primitives/checklists/checklist-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-execution-ready.md",
+  "payload": {
+   "tags": [
+    "primitive:checklist"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "domain:retrieval",
+   "entity:cli_command",
+   "impl:external",
+   "kind:software",
+   "representation.markdown",
+   "source.document.markdown",
+   "system:sldb",
+   "type.knowledge.cli_command",
+   "workspace.knowledge.commands"
+  ],
+  "model": "CliCommandDoc",
+  "name": "cmd-sldb-ast-schema",
+  "path": "knowledge/commands/cmd-sldb-ast-schema.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "domain:retrieval",
+    "kind:software",
+    "impl:external",
+    "entity:cli_command"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "domain:retrieval",
+   "entity:cli_command",
+   "impl:external",
+   "kind:software",
+   "representation.markdown",
+   "source.document.markdown",
+   "system:sldb",
+   "type.knowledge.cli_command",
+   "workspace.knowledge.commands"
+  ],
+  "model": "CliCommandDoc",
+  "name": "cmd-sldb-ast-show",
+  "path": "knowledge/commands/cmd-sldb-ast-show.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "domain:retrieval",
+    "kind:software",
+    "impl:external",
+    "entity:cli_command"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "domain:retrieval",
+   "entity:cli_command",
+   "impl:external",
+   "kind:software",
+   "representation.markdown",
+   "source.document.markdown",
+   "system:sldb",
+   "type.knowledge.cli_command",
+   "workspace.knowledge.commands"
+  ],
+  "model": "CliCommandDoc",
+  "name": "cmd-sldb-docs-compose",
+  "path": "knowledge/commands/cmd-sldb-docs-compose.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "domain:retrieval",
+    "kind:software",
+    "impl:external",
+    "entity:cli_command"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "domain:retrieval",
+   "entity:cli_command",
+   "impl:external",
+   "kind:software",
+   "representation.markdown",
+   "source.document.markdown",
+   "system:sldb",
+   "type.knowledge.cli_command",
+   "workspace.knowledge.commands"
+  ],
+  "model": "CliCommandDoc",
+  "name": "cmd-sldb-docs-create",
+  "path": "knowledge/commands/cmd-sldb-docs-create.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "domain:retrieval",
+    "kind:software",
+    "impl:external",
+    "entity:cli_command"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "domain:retrieval",
+   "entity:cli_command",
+   "impl:external",
+   "kind:software",
+   "representation.markdown",
+   "source.document.markdown",
+   "system:sldb",
+   "type.knowledge.cli_command",
+   "workspace.knowledge.commands"
+  ],
+  "model": "CliCommandDoc",
+  "name": "cmd-sldb-docs-explore",
+  "path": "knowledge/commands/cmd-sldb-docs-explore.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "domain:retrieval",
+    "kind:software",
+    "impl:external",
+    "entity:cli_command"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "primitive:condition",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.condition",
+   "workspace.desk.primitives"
+  ],
+  "model": "ConditionDoc",
+  "name": "condition-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-has-closeout-evidence",
+  "path": "desk/primitives/conditions/condition-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-has-closeout-evidence.md",
+  "payload": {
+   "tags": [
+    "primitive:condition"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "primitive:condition",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.condition",
+   "workspace.desk.primitives"
+  ],
+  "model": "ConditionDoc",
+  "name": "condition-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-has-implementation-path",
+  "path": "desk/primitives/conditions/condition-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-has-implementation-path.md",
+  "payload": {
+   "tags": [
+    "primitive:condition"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "primitive:condition",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.condition",
+   "workspace.desk.primitives"
+  ],
+  "model": "ConditionDoc",
+  "name": "condition-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-has-validation",
+  "path": "desk/primitives/conditions/condition-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-has-validation.md",
+  "payload": {
+   "tags": [
+    "primitive:condition"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "primitive:condition",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.condition",
+   "workspace.desk.primitives"
+  ],
+  "model": "ConditionDoc",
+  "name": "condition-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-pill-knowledge-graduated",
+  "path": "desk/primitives/conditions/condition-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-pill-knowledge-graduated.md",
+  "payload": {
+   "tags": [
+    "primitive:condition"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "primitive:condition",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.condition",
+   "workspace.desk.primitives"
+  ],
+  "model": "ConditionDoc",
+  "name": "condition-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-ready-for-closeout",
+  "path": "desk/primitives/conditions/condition-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-ready-for-closeout.md",
+  "payload": {
+   "tags": [
+    "primitive:condition"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.desk.spec",
+   "workspace.desk.governance"
+  ],
+  "model": "DeskSpecDoc",
+  "name": "desk-spec",
+  "path": "desk/SPEC.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.desk.standards",
+   "workspace.desk.governance"
+  ],
+  "model": "DeskStandardsDoc",
+  "name": "desk-standards",
+  "path": "desk/STANDARDS.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "primitive:edge",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.edge",
+   "workspace.desk.primitives"
+  ],
+  "model": "EdgeDoc",
+  "name": "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-activate-to-testing",
+  "path": "desk/primitives/edges/edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-activate-to-testing.md",
+  "payload": {
+   "tags": [
+    "primitive:edge"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "primitive:edge",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.edge",
+   "workspace.desk.primitives"
+  ],
+  "model": "EdgeDoc",
+  "name": "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-close-to-complete",
+  "path": "desk/primitives/edges/edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-close-to-complete.md",
+  "payload": {
+   "tags": [
+    "primitive:edge"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "primitive:edge",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.edge",
+   "workspace.desk.primitives"
+  ],
+  "model": "EdgeDoc",
+  "name": "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-to-close",
+  "path": "desk/primitives/edges/edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-closeout-to-close.md",
+  "payload": {
+   "tags": [
+    "primitive:edge"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "primitive:edge",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.edge",
+   "workspace.desk.primitives"
+  ],
+  "model": "EdgeDoc",
+  "name": "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-to-activate",
+  "path": "desk/primitives/edges/edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-execution-to-activate.md",
+  "payload": {
+   "tags": [
+    "primitive:edge"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "primitive:edge",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.edge",
+   "workspace.desk.primitives"
+  ],
+  "model": "EdgeDoc",
+  "name": "edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-ready-to-closeout",
+  "path": "desk/primitives/edges/edge-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-ready-to-closeout.md",
+  "payload": {
+   "tags": [
+    "primitive:edge"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.documentation.faq",
+   "workspace.docs.faq"
+  ],
+  "model": "FAQDoc",
+  "name": "faq",
+  "path": "docs/faq.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.desk.inbox-note",
+   "workspace.desk.inbox"
+  ],
+  "model": "InboxNoteDoc",
+  "name": "20260614-000000-suggestion-stabilize-stores-init-failures",
+  "path": "desk/inbox/20260614-000000-suggestion-stabilize-stores-init-failures.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.desk.inbox-note",
+   "workspace.desk.inbox"
+  ],
+  "model": "InboxNoteDoc",
+  "name": "20260614-000001-suggestion-stabilize-models-add-error-output",
+  "path": "desk/inbox/20260614-000001-suggestion-stabilize-models-add-error-output.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.desk.inbox-note",
+   "workspace.desk.inbox"
+  ],
+  "model": "InboxNoteDoc",
+  "name": "20260614-000002-suggestion-add-store-health-check-api",
+  "path": "desk/inbox/20260614-000002-suggestion-add-store-health-check-api.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.desk.inbox-note",
+   "workspace.desk.inbox"
+  ],
+  "model": "InboxNoteDoc",
+  "name": "20260614-000003-suggestion-add-model-registration-query-api",
+  "path": "desk/inbox/20260614-000003-suggestion-add-model-registration-query-api.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.desk.inbox-note",
+   "workspace.desk.inbox"
+  ],
+  "model": "InboxNoteDoc",
+  "name": "20260625-120000-suggestion-redesign-primitives-via-ast-and-nested-templates",
+  "path": "desk/inbox/20260625-120000-suggestion-redesign-primitives-via-ast-and-nested-templates.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.pron.move",
+   "workspace.knowledge.ledger"
+  ],
+  "model": "MoveDoc",
+  "name": "move-20260914T144534-001",
+  "path": "ledger/move-20260914T144534-001.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.pron.move",
+   "workspace.knowledge.ledger"
+  ],
+  "model": "MoveDoc",
+  "name": "move-20260914T144608-001",
+  "path": "ledger/move-20260914T144608-001.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.pron.move",
+   "workspace.knowledge.ledger"
+  ],
+  "model": "MoveDoc",
+  "name": "move-20260914T144736-001",
+  "path": "ledger/move-20260914T144736-001.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.pron.move",
+   "workspace.knowledge.ledger"
+  ],
+  "model": "MoveDoc",
+  "name": "move-20260914T144748-001",
+  "path": "ledger/move-20260914T144748-001.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.pron.move",
+   "workspace.knowledge.ledger"
+  ],
+  "model": "MoveDoc",
+  "name": "move-20260914T144807-001",
+  "path": "ledger/move-20260914T144807-001.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "primitive:operator",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.operator",
+   "workspace.desk.primitives"
+  ],
+  "model": "OperatorDoc",
+  "name": "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-activate",
+  "path": "desk/primitives/operators/operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-activate.md",
+  "payload": {
+   "tags": [
+    "primitive:operator"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "primitive:operator",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.operator",
+   "workspace.desk.primitives"
+  ],
+  "model": "OperatorDoc",
+  "name": "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-close",
+  "path": "desk/primitives/operators/operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-close.md",
+  "payload": {
+   "tags": [
+    "primitive:operator"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "primitive:operator",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.operator",
+   "workspace.desk.primitives"
+  ],
+  "model": "OperatorDoc",
+  "name": "operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-ready-for-testing",
+  "path": "desk/primitives/operators/operator-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico-ready-for-testing.md",
+  "payload": {
+   "tags": [
+    "primitive:operator"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "primitive:operator",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.operator",
+   "workspace.desk.primitives"
+  ],
+  "model": "OperatorDoc",
+  "name": "operator-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-activate",
+  "path": "desk/primitives/operators/operator-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-activate.md",
+  "payload": {
+   "tags": [
+    "primitive:operator"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "primitive:operator",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.operator",
+   "workspace.desk.primitives"
+  ],
+  "model": "OperatorDoc",
+  "name": "operator-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-close",
+  "path": "desk/primitives/operators/operator-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges-close.md",
+  "payload": {
+   "tags": [
+    "primitive:operator"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.documentation.packaging",
+   "workspace.docs.packaging"
+  ],
+  "model": "PackagingDoc",
+  "name": "packaging-instructions",
+  "path": "docs/packaging instructions.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "system:deskops",
+   "system:sldb",
+   "topic:boundary",
+   "type.workflow.pill",
+   "workspace.desk",
+   "workspace:desk"
+  ],
+  "model": "PillDoc",
+  "name": "pill-001-sldb-vs-deskops-boundary",
+  "path": "desk/pills/pill-001-sldb-vs-deskops-boundary.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "system:deskops",
+    "topic:boundary",
+    "workspace:desk"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "system:sldb",
+   "topic:cli",
+   "topic:onboarding",
+   "type.workflow.pill",
+   "workspace.desk",
+   "workspace:desk"
+  ],
+  "model": "PillDoc",
+  "name": "pill-002-onboarding-surface-before-depth",
+  "path": "desk/pills/pill-002-onboarding-surface-before-depth.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "topic:onboarding",
+    "topic:cli",
+    "workspace:desk"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "language:python",
+   "representation.markdown",
+   "source.document.markdown",
+   "system:sldb",
+   "topic:roundtrip",
+   "topic:templates",
+   "type.workflow.pill",
+   "workspace.desk"
+  ],
+  "model": "PillDoc",
+  "name": "pill-003-template-marker-roundtrip-contract",
+  "path": "desk/pills/pill-003-template-marker-roundtrip-contract.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "topic:templates",
+    "topic:roundtrip",
+    "language:python"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "system:deskops",
+   "system:sldb",
+   "topic:idempotency",
+   "topic:store",
+   "type.workflow.pill",
+   "workspace.desk"
+  ],
+  "model": "PillDoc",
+  "name": "pill-004-store-init-idempotency",
+  "path": "desk/pills/pill-004-store-init-idempotency.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "system:deskops",
+    "topic:store",
+    "topic:idempotency"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "system:deskops",
+   "system:sldb",
+   "topic:health",
+   "topic:store",
+   "type.workflow.pill",
+   "workspace.desk"
+  ],
+  "model": "PillDoc",
+  "name": "pill-005-store-health-is-sldb-owned",
+  "path": "desk/pills/pill-005-store-health-is-sldb-owned.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "system:deskops",
+    "topic:store",
+    "topic:health"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.code.python",
+   "type.knowledge.code_symbol",
+   "workspace.knowledge.symbols"
+  ],
+  "model": "PythonSymbolDoc",
+  "name": "python-sldb-sldb-sldb-cli-commands-ast-astcli-_print",
+  "path": "knowledge/symbols/python-sldb-sldb-sldb-cli-commands-ast-astcli-_print.md",
+  "payload": {
+   "tags": []
+  }
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.code.python",
+   "type.knowledge.code_symbol",
+   "workspace.knowledge.symbols"
+  ],
+  "model": "PythonSymbolDoc",
+  "name": "python-sldb-sldb-sldb-cli-commands-ast-astcli-run",
+  "path": "knowledge/symbols/python-sldb-sldb-sldb-cli-commands-ast-astcli-run.md",
+  "payload": {
+   "tags": []
+  }
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.code.python",
+   "type.knowledge.code_symbol",
+   "workspace.knowledge.symbols"
+  ],
+  "model": "PythonSymbolDoc",
+  "name": "python-sldb-sldb-sldb-cli-commands-ast-astcli",
+  "path": "knowledge/symbols/python-sldb-sldb-sldb-cli-commands-ast-astcli.md",
+  "payload": {
+   "tags": []
+  }
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.code.python",
+   "type.knowledge.code_symbol",
+   "workspace.knowledge.symbols"
+  ],
+  "model": "PythonSymbolDoc",
+  "name": "python-sldb-sldb-sldb-cli-commands-basic-basiccli-_get_format",
+  "path": "knowledge/symbols/python-sldb-sldb-sldb-cli-commands-basic-basiccli-_get_format.md",
+  "payload": {
+   "tags": []
+  }
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.code.python",
+   "type.knowledge.code_symbol",
+   "workspace.knowledge.symbols"
+  ],
+  "model": "PythonSymbolDoc",
+  "name": "python-sldb-sldb-sldb-cli-commands-basic-basiccli-_print_validation",
+  "path": "knowledge/symbols/python-sldb-sldb-sldb-cli-commands-basic-basiccli-_print_validation.md",
+  "payload": {
+   "tags": []
+  }
+ },
+ {
+  "expected": [
+   "layer.topology",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.relation.type"
+  ],
+  "model": "RelationTypeDoc",
+  "name": "contains",
+  "path": "kgdb/relation_types/contains.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "layer.topology",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.relation.type"
+  ],
+  "model": "RelationTypeDoc",
+  "name": "imports",
+  "path": "kgdb/relation_types/imports.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "layer.topology",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.relation.type"
+  ],
+  "model": "RelationTypeDoc",
+  "name": "references",
+  "path": "kgdb/relation_types/references.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "layer.topology",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.relation.type"
+  ],
+  "model": "RelationTypeDoc",
+  "name": "reltype-applies_to_source",
+  "path": "kgdb/relation_types/applies_to_source.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "layer.topology",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.relation.type"
+  ],
+  "model": "RelationTypeDoc",
+  "name": "reltype-applies_to_target",
+  "path": "kgdb/relation_types/applies_to_target.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.documentation.request",
+   "workspace.docs.requests"
+  ],
+  "model": "RequestDoc",
+  "name": "req-knowledge-graph-integration",
+  "path": "docs/requests/sldb-knowledge-graph-integration.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.documentation.request",
+   "workspace.docs.requests"
+  ],
+  "model": "RequestDoc",
+  "name": "req-ontology-feature-request",
+  "path": "docs/requests/sldb-ontology-feature-request.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "primitive:routine",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.routine",
+   "workspace.desk.routines",
+   "workspace:desk"
+  ],
+  "model": "RoutineDoc",
+  "name": "routine-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico",
+  "path": "desk/routines/routine-task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico.md",
+  "payload": {
+   "tags": [
+    "workspace:desk",
+    "primitive:routine"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "primitive:routine",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.routine",
+   "workspace.desk.routines",
+   "workspace:desk"
+  ],
+  "model": "RoutineDoc",
+  "name": "routine-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges",
+  "path": "desk/routines/routine-task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges.md",
+  "payload": {
+   "tags": [
+    "workspace:desk",
+    "primitive:routine"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "primitive:routine",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.routine",
+   "workspace.desk.routines",
+   "workspace:desk"
+  ],
+  "model": "RoutineDoc",
+  "name": "routine-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion",
+  "path": "desk/routines/routine-task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion.md",
+  "payload": {
+   "tags": [
+    "workspace:desk",
+    "primitive:routine"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "primitive:routine",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.routine",
+   "workspace.desk.routines",
+   "workspace:desk"
+  ],
+  "model": "RoutineDoc",
+  "name": "routine-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges",
+  "path": "desk/routines/routine-task-dar-fuente-propia-al-grafo-store-graph-deja-de-leer-runtime-edges.md",
+  "payload": {
+   "tags": [
+    "workspace:desk",
+    "primitive:routine"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "type.documentation.store",
+   "workspace.sldb.store"
+  ],
+  "model": "StoreReadmeDoc",
+  "name": "sldb-readme",
+  "path": ".sldb/README.md",
+  "payload": {}
+ },
+ {
+  "expected": [
+   "domain:retrieval",
+   "entity:cli_surface",
+   "impl:external",
+   "kind:software",
+   "representation.markdown",
+   "source.document.markdown",
+   "system:sldb",
+   "type.knowledge.surface",
+   "workspace.knowledge.surfaces"
+  ],
+  "model": "SurfaceDoc",
+  "name": "surface-sldb-ast",
+  "path": "knowledge/surfaces/surface-sldb-ast.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "domain:retrieval",
+    "kind:software",
+    "impl:external",
+    "entity:cli_surface"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "domain:retrieval",
+   "entity:cli_surface",
+   "impl:external",
+   "kind:software",
+   "representation.markdown",
+   "source.document.markdown",
+   "system:sldb",
+   "type.knowledge.surface",
+   "workspace.knowledge.surfaces"
+  ],
+  "model": "SurfaceDoc",
+  "name": "surface-sldb-docs",
+  "path": "knowledge/surfaces/surface-sldb-docs.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "domain:retrieval",
+    "kind:software",
+    "impl:external",
+    "entity:cli_surface"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "domain:retrieval",
+   "entity:cli_surface",
+   "impl:external",
+   "kind:software",
+   "representation.markdown",
+   "source.document.markdown",
+   "system:sldb",
+   "type.knowledge.surface",
+   "workspace.knowledge.surfaces"
+  ],
+  "model": "SurfaceDoc",
+  "name": "surface-sldb-example",
+  "path": "knowledge/surfaces/surface-sldb-example.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "domain:retrieval",
+    "kind:software",
+    "impl:external",
+    "entity:cli_surface"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "domain:retrieval",
+   "entity:cli_surface",
+   "impl:external",
+   "kind:software",
+   "representation.markdown",
+   "source.document.markdown",
+   "system:sldb",
+   "type.knowledge.surface",
+   "workspace.knowledge.surfaces"
+  ],
+  "model": "SurfaceDoc",
+  "name": "surface-sldb-explore",
+  "path": "knowledge/surfaces/surface-sldb-explore.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "domain:retrieval",
+    "kind:software",
+    "impl:external",
+    "entity:cli_surface"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "domain:retrieval",
+   "entity:cli_surface",
+   "impl:external",
+   "kind:software",
+   "representation.markdown",
+   "source.document.markdown",
+   "system:sldb",
+   "type.knowledge.surface",
+   "workspace.knowledge.surfaces"
+  ],
+  "model": "SurfaceDoc",
+  "name": "surface-sldb-extract",
+  "path": "knowledge/surfaces/surface-sldb-extract.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "domain:retrieval",
+    "kind:software",
+    "impl:external",
+    "entity:cli_surface"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "artifact:task",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.task",
+   "workspace.desk",
+   "workspace:desk"
+  ],
+  "model": "TaskDoc",
+  "name": "task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico",
+  "path": "desk/tasks/task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico.md",
+  "payload": {
+   "tags": [
+    "workspace:desk",
+    "artifact:task"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "system:sldb",
+   "topic:selfdoc",
+   "type.workflow.task",
+   "workspace.desk",
+   "workspace:desk"
+  ],
+  "model": "TaskDoc",
+  "name": "task-build-code-self-documentation",
+  "path": "desk/tasks/task-build-code-self-documentation.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "workspace:desk",
+    "topic:selfdoc"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "artifact:task",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.task",
+   "workspace.desk",
+   "workspace:desk"
+  ],
+  "model": "TaskDoc",
+  "name": "task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges",
+  "path": "desk/tasks/task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges.md",
+  "payload": {
+   "tags": [
+    "workspace:desk",
+    "artifact:task"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "artifact:task",
+   "representation.markdown",
+   "source.document.markdown",
+   "type.workflow.task",
+   "workspace.desk",
+   "workspace:desk"
+  ],
+  "model": "TaskDoc",
+  "name": "task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion",
+  "path": "desk/tasks/task-comando-de-porte-sldb-stores-migrate-legacy-edges-y-error-de-migracion.md",
+  "payload": {
+   "tags": [
+    "workspace:desk",
+    "artifact:task"
+   ]
+  }
+ },
+ {
+  "expected": [
+   "representation.markdown",
+   "source.document.markdown",
+   "system:sldb",
+   "topic:ast",
+   "type.workflow.task",
+   "workspace.desk",
+   "workspace:desk"
+  ],
+  "model": "TaskDoc",
+  "name": "task-correct-ast-ownership-and-section-contracts",
+  "path": "desk/tasks/task-correct-ast-ownership-and-section-contracts.md",
+  "payload": {
+   "tags": [
+    "system:sldb",
+    "workspace:desk",
+    "topic:ast"
+   ]
+  }
+ }
+]

@@ -1,0 +1,4 @@
+;; Documents of the differential fixture whose v1 `semantic_tags` kimun does not
+;; reproduce: [{:model "…" :name "…" :reason "…"}]. Listed documents are asserted to
+;; differ (a stale entry fails the test); every other one must match exactly.
+[]
