@@ -7,6 +7,9 @@
             [clojure.string :as str]
             [babashka.fs :as fs]
             [kimun.cli.commands.journal :as j]
+            [kimun.cli.errors :as errors]
+            [kimun.cli.store :as cstore]
+            [sldb.kernel.store :as kstore]
             [kimun.cli.main :as main]
             [kimun.cli.out :as out]))
 
@@ -107,3 +110,43 @@
   (let [dir (str (fs/create-temp-dir {:prefix "kimun-cli-journal-"}))
         ex (try (jr dir "show" {}) (catch Exception e e))]
     (is (= :cli/no-store (:type (ex-data ex))))))
+
+;; Two writers that opened the same heads: the loser is store/stale (exit 4), wrote
+;; no log line, and the store stays readable; a writer dead mid-commit is reported.
+(deftest a-losing-writer-is-stale-and-leaves-the-store-readable
+  (let [proj (project)
+        dir (str (fs/path proj ".kimun"))
+        a (cstore/open! dir)
+        b (cstore/open! dir)
+        actor (:actor (:plan (peek (kstore/read-log (:backend a)))))
+        plan (fn [s i]
+               {:plan/version 1 :engines {} :base (:head s) :actor actor :timestamp "2026-08-29T12:00:00.000Z"
+                :ops [{:op :add-node :node {:class :sign :kind :block :content {:format :markdown :type :document :attrs {:name (str "w" i)}}} :as :r}
+                      {:op :new-tree :tree {:kind :document :name (str "w" i)} :id (str "01ARZ3NDEKTSV4RRFFQ69G000" i) :root :r}]})
+        _ (kstore/commit! (:backend a) (:store a) (plan (:store a) 1))
+        log-before (slurp (str (fs/path dir "log.edn")))
+        e (try (kstore/commit! (:backend b) (:store b) (plan (:store b) 2)) nil
+               (catch clojure.lang.ExceptionInfo e (ex-data e)))]
+    (is (= :store/stale (:type e)))
+    (is (= 4 (errors/exit-for (:type e))))
+    (is (= log-before (slurp (str (fs/path dir "log.edn")))) "no line from the loser")
+    (is (true? (:ok (jr proj "verify" {}))))
+    (is (true? (:ok (run proj "stores" "verify"))))
+    (testing "the retry on a fresh open! succeeds, and the CLI keeps writing"
+      (let [c (cstore/open! dir)]
+        (kstore/commit! (:backend c) (:store c) (plan (:store c) 2)))
+      (spit (str (fs/path proj "doc.md")) "# T\n\npara after the race\n")
+      (is (true? (:ok (run proj "docs" "update" "doc.md" "--name" "doc"))))
+      (is (true? (:ok (jr proj "verify" {})))))
+    (testing "a line left by a writer that died before recording its heads is reported, not fatal"
+      (let [lines (count (kstore/read-log (:backend a)))]
+        (spit (str (fs/path dir "log.edn")) "{:id \"dead\" :plan" :append true)
+        (let [v (jr proj "verify" {})]
+          (is (true? (:ok v)) (pr-str v))
+          (is (= {:torn-line (inc lines)} (get-in v [:data :uncommitted-tail]))))
+        (is (= {:torn-line (inc lines)} (get-in (run proj "stores" "verify") [:data :uncommitted-tail])))
+        (is (true? (:ok (jr proj "show" {}))))
+        (spit (str (fs/path proj "doc.md")) "# T\n\npara after the crash\n")
+        (is (true? (:ok (run proj "docs" "update" "doc.md" "--name" "doc"))) "the next commit discards it")
+        (is (= (inc lines) (count (kstore/read-log (:backend a)))))
+        (is (nil? (get-in (jr proj "verify" {}) [:data :uncommitted-tail])))))))

@@ -162,15 +162,18 @@
 
 (defn verify
   "`stores verify`: recomputes the hash of every reachable object
-   (`sldb.kernel.store/verify`). Data `{:checked :bad}`; a mismatch is the
+   (`sldb.kernel.store/verify`). Data `{:checked :bad}`, plus `:uncommitted-tail`
+   when the log ends with a line the heads do not record; a mismatch is the
    failure `store/corrupt` (exit 5) carrying `:bad`."
   [_args opts {:keys [env cwd]}]
   (let [{:keys [backend descriptor store path]} (cli-store/open! (cli-store/resolve-store opts env cwd))
-        {:keys [ok? checked bad]} (store/verify backend store)]
+        {:keys [ok? checked bad uncommitted-tail]} (store/verify backend store)]
     (if ok?
       (out/ok "stores verify" {:store (store-ref descriptor path)
                                :revision (:head store)
-                               :data {:checked checked :bad bad}})
+                               :data (cond-> {:checked checked :bad bad}
+                                       ;; a writer died mid-commit: reported, not a failure; the next commit discards it
+                                       uncommitted-tail (assoc :uncommitted-tail (select-keys uncommitted-tail [:id :revision :torn-line])))})
       (out/failure :store/corrupt
                    (str (count bad) " object(s) do not hash to their name in " path)
                    {:checked checked :bad bad :path path}

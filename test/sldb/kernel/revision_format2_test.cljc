@@ -152,11 +152,13 @@
   (read-object [_ id] (get-in @state [:objects id]))
   (write-object! [_ id content] (swap! state #(-> % (assoc-in [:objects id] content) (update :written conj id))))
   (object-ids [_] (swap! state update :listings inc) (keys (:objects @state)))
-  (append-tx! [_ tx] (swap! state update :log conj tx))
   (read-log [_] (:log @state))
   (read-heads [_] (:heads @state))
-  (cas-heads! [_ expected new]
-    (if (= expected (or (:heads @state) {:head nil :heads {}})) (do (swap! state assoc :heads new) true) false)))
+  (commit-tx! [_ expected tx new]
+    (let [[old _] (swap-vals! state (fn [st] (if (= expected (or (:heads st) store/no-heads))
+                                              (-> st (update :log conj tx) (assoc :heads new))
+                                              st)))]
+      (= expected (or (:heads old) store/no-heads)))))
 
 (deftest commit-writes-exactly-the-new-objects-and-never-lists-the-backend
   (let [state (atom {:objects {} :written [] :listings 0 :log []})

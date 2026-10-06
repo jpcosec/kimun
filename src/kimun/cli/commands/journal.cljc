@@ -32,7 +32,7 @@
   [_args opts {:keys [env cwd]}]
   (let [limit (parse-limit (:limit opts))
         {:keys [backend descriptor store path]} (cli-store/open! (cli-store/resolve-store opts env cwd))
-        es (journal/entries store (store/read-log backend)
+        es (journal/entries store (store/committed-log backend)
                             {:actor (:by opts) :tree (:tree opts) :limit limit})]
     (out/ok "journal show" {:store (store-ref descriptor path)
                             :revision (:head store)
@@ -57,15 +57,17 @@
         (corrupt (str dir) (str "the log does not replay in " dir ": " (ex-message opened))
                  {:bad [{:reason :replay-failed :message (ex-message opened)}]}))
       (let [{:keys [backend descriptor store path]} opened
-            txs (store/read-log backend)
+            txs (store/committed-log backend)
             r (journal/verify store txs)
             o (store/verify backend store)
             bad (into (:bad r) (:bad o))]
         (if (empty? bad)
           (out/ok "journal verify" {:store (store-ref descriptor path)
                                     :revision (:head store)
-                                    :data {:revisions (:revisions r) :checked (:checked r)
-                                           :objects (:checked o) :bad []}})
+                                    :data (cond-> {:revisions (:revisions r) :checked (:checked r)
+                                                   :objects (:checked o) :bad []}
+                                            ;; a writer died mid-commit: reported, not a failure; the next commit discards it
+                                            (:uncommitted-tail o) (assoc :uncommitted-tail (select-keys (:uncommitted-tail o) [:id :revision :torn-line])))})
           (corrupt path (str (count bad) " problem(s) in the journal of " path)
                    {:revisions (:revisions r) :checked (:checked r) :objects (:checked o) :bad bad}))))))
 
