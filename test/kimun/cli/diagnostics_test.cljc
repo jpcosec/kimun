@@ -155,7 +155,8 @@
         hub-inner (first (mmap/child-ids (get objs hub-root)))
         ;; one object per kind: the generic branch and leaf are none of the objects named above
         ;; (ids vary per run, and a leaf of :edges can be the very leaf of a hub's set)
-        taken #{(:trees rev) (:edges rev) (:incidence rev) hub-root hub-inner}
+        ;; (the root of the per-tree heads is checked by open itself: see the table below)
+        taken #{(:trees rev) (:edges rev) (:incidence rev) hub-root hub-inner (:heads-root s)}
         branch (first (filter #(and (mmap/branch? (get objs %)) (not (taken %)) (some (complement taken) (mmap/child-ids (get objs %)))) ids))
         tree-obj (first (filter #(let [o (get objs %)] (and (map? o) (:node o) (contains? o :children))) ids))
         older (first (remove heads (keys (:revisions s))))
@@ -163,9 +164,11 @@
                  :mmap-branch branch :mmap-leaf (first (remove taken (mmap/child-ids (get objs branch))))
                  :hub-set-root hub-root :hub-set-inner hub-inner
                  :trees-root (:trees rev) :edges-root (:edges rev) :incidence-root (:incidence rev)
-                 :older-revision older}]
+                 :older-revision older
+                 ;; the head of another tree: format 2 reads it through the heads mmap on demand, so verify (not open) checks it
+                 :tree-head (first (remove #{(:head s)} (vals (:heads s))))}]
     (is (every? string? (vals victims)) "the store has one object of every kind")
-    (is (= (count victims) (count (set (vals victims)))) "ten different objects")
+    (is (= (count victims) (count (set (vals victims)))) "eleven different objects")
     (is (and (mmap/branch? (get objs hub-root)) (> (mmap/node-count (get objs hub-root)) rev/hub-threshold)) "the hub set is a nested mmap")
     (doseq [[kind id] victims
             [mode reason] [[:altered :hash-mismatch] [:unparseable :hash-mismatch] [:deleted :missing]]]
@@ -185,10 +188,10 @@
           (is (= ["store/corrupt" 5 bad] [(get-in sverify [:error :type]) (out/exit-code sverify) (get-in sverify [:error :data :bad])]))
           (is (= ["store/corrupt" 5 bad] [(get-in jverify [:error :type]) (out/exit-code jverify) (get-in jverify [:error :data :bad])]))
           (is (= :needs-human (get-in (run p "stores" "health") [:data :status]))))))
-    (doseq [mode [:altered :unparseable :deleted]]
-      (testing (str "head Revision " mode ": open itself refuses, every command reports it, nothing raises")
-        (let [id (:head s)
-              p (damaged-copy p0 id mode)
+    (doseq [[what id] [["head Revision" (:head s)] ["root of the per-tree heads" (:heads-root s)]]
+            mode [:altered :unparseable :deleted]]
+      (testing (str what " " mode ": open itself refuses, every command reports it, nothing raises")
+        (let [p (damaged-copy p0 id mode)
               reason (if (= :deleted mode) :missing :hash-mismatch)
               opened (try (cli-store/open! (file p ".kimun")) (catch Exception e (ex-data e)))
               full (store/verify-full (fs-store/backend (file p ".kimun")) (:host s))]
@@ -201,10 +204,11 @@
               (is (str/includes? (pr-str (:error e)) id) (str argv)))))))))
 
 (deftest check-reports-a-tampered-object-whichever-it-is
-  ;; the random-victim property the table above replaces as the main test: any reachable object but the head Revisions
+  ;; the random-victim property the table above replaces as the main test: any reachable object but
+  ;; the two that open itself checks (the head Revision and the root of the per-tree heads, see the table)
   (let [p0 (project)
         s (:store (cli-store/open! (file p0 ".kimun")))
-        heads (set (cons (:head s) (vals (:heads s))))
+        heads #{(:head s) (:heads-root s)}
         candidates (vec (remove heads (sort (store/reachable s))))]
     (doseq [id (take 6 (shuffle candidates))]
       (let [p (damaged-copy p0 id (rand-nth [:altered :unparseable :deleted]))
