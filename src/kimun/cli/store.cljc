@@ -2,9 +2,8 @@
   "Locating, opening and creating the `.kimun/` store of the CLI (docs/v2/06
    §B): discovery walks up from the working directory, `--store` and
    `KIMUN_STORE` override it, and every open goes through
-   `sldb.kernel.store/open` (replay from the log) with the standard host."
+   `sldb.kernel.store/open` with the standard host."
   (:require [babashka.fs :as fs]
-            [clojure.edn :as edn]
             [sldb.host.default :as host]
             [sldb.host.fs-store :as fs-store]
             [sldb.kernel.err :as err]
@@ -123,56 +122,12 @@
     (when-let [dup (->> links (map :name) frequencies (some (fn [[n c]] (when (> c 1) n))))]
       (bad (str "duplicate link name " dup) {:name dup}))))
 
-;; ------------------------------------------------- open snapshot (derived)
-
-(defn snapshot-path
-  "File of the optional open snapshot of store directory `dir`:
-   `index/open-snapshot.edn`, derived and never authoritative (docs/v2/06 §4)."
-  [dir] (str (fs/path dir "index" "open-snapshot.edn")))
-
-(defn- snapshot-key
-  "What a snapshot must match to be used: the heads on disk and the size of the log."
-  [dir]
-  (let [h (fs/path dir "heads.edn") l (fs/path dir "log.edn")]
-    {:heads (when (fs/exists? h) (edn/read-string (slurp (str h))))
-     :log-bytes (if (fs/exists? l) (fs/size l) 0)}))
-
-(defn write-snapshot!
-  "Writes the replayed `store` of `dir` as its open snapshot (through a
-   temporary file, so a reader never sees half of it). Returns the path, or
-   nil when `store` is not what the heads on disk say or writing failed: the
-   snapshot is an optimisation, never a reason to fail."
-  [dir store]
-  (try
-    (let [k (snapshot-key dir) p (snapshot-path dir) tmp (str p ".tmp")]
-      (when (= (:heads k) {:head (:head store) :heads (:heads store)})
-        (fs/create-dirs (fs/parent p))
-        (spit tmp (pr-str (assoc k :snapshot/version 1 :store (dissoc store :host))))
-        (fs/move tmp p {:replace-existing true})
-        p))
-    (catch Exception _ nil)))
-
-(defn read-snapshot
-  "The store value of `dir`'s open snapshot with `host` attached, or nil when
-   there is none, it is unreadable, or it does not match the heads on disk and
-   the size of the log (a commit after it was written): the caller replays."
-  [dir host]
-  (let [p (snapshot-path dir)]
-    (when (fs/regular-file? p)
-      (try
-        (let [s (edn/read-string (slurp p)) k (snapshot-key dir)]
-          (when (and (= 1 (:snapshot/version s)) (some? (:heads k)) (= k (select-keys s [:heads :log-bytes]))
-                     (= (:heads k) {:head (get-in s [:store :head]) :heads (get-in s [:store :heads])}))
-            (assoc (:store s) :host host)))
-        (catch Exception _ nil)))))
-
 (defn open!
   "Opens the store at `dir`: `{:backend b :descriptor d :store s :path dir}`,
-   with `s` replayed by `sldb.kernel.store/open`. Raises `:cli/no-store`
+   with `s` opened by `sldb.kernel.store/open`. Raises `:cli/no-store`
    (message names the path) when `dir` is nil or holds no `store.edn`, and
    `:store/invalid-links` when the descriptor's `:links` are malformed or
-   absolute. When a valid open snapshot exists (`read-snapshot`) it is used
-   instead of the replay; otherwise the log is replayed as always."
+   absolute."
   [dir]
   (when (or (nil? dir) (not (store? dir)))
     (err/raise :cli/no-store
@@ -185,7 +140,7 @@
     (validate-links! descriptor dir)
     {:backend b
      :descriptor descriptor
-     :store (or (read-snapshot dir host/host) (store/open b host/host))
+     :store (store/open b host/host)
      :path (str dir)}))
 
 (defn default-name
