@@ -73,6 +73,10 @@
                                     :head (:head heads)
                                     :capabilities (:capabilities descriptor)}}))))
 
+(def spec
+  "Options of the `stores` group (babashka.cli spec, merged by `kimun.cli.main`)."
+  {:name {:ref "NAME" :desc "Store name (stores init)"}})
+
 (def commands
   "Subcommand name → command fn."
   {"init" init "check" check "verify" verify "show" show})

@@ -126,6 +126,10 @@
                          :revision (:head store)
                          :data (documents store)})))
 
+(def spec
+  "Options of the `docs` group (babashka.cli spec, merged by `kimun.cli.main`)."
+  {:name {:ref "NAME" :desc "Document name (docs ingest, docs update)"}})
+
 (def commands
   "Subcommand name → command fn `(fn [args opts ctx] envelope)`."
   {"ingest" ingest "update" update-doc "render" render "list" list-docs})

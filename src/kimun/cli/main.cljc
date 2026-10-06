@@ -17,6 +17,12 @@
   {"stores" stores/dispatch
    "docs" docs/dispatch})
 
+(def group-specs
+  "The option spec of every group, merged: a group declares its own options
+   in its `spec` var, so adding a group never edits `kimun.cli.args`. Two
+   groups may share an option name only with the same meaning."
+  (merge stores/spec docs/spec))
+
 (def usage
   "Usage text shown by `kimun`, `kimun help` and `--help`."
   (str/join "\n"
@@ -85,7 +91,7 @@
    failure envelope through `kimun.cli.errors/wrap`."
   [argv env cwd]
   (let [argv (vec argv)
-        parsed (errors/wrap #(args/parse argv env))]
+        parsed (errors/wrap #(args/parse argv env group-specs))]
     (if (false? (:ok parsed))
       {:envelope parsed :fmt (format-of argv)}
       (let [ctx {:env env :cwd cwd}

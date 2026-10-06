@@ -7,9 +7,7 @@
 (def ^:private exit-by-type
   {:eval/missing 1
    :eval/ambiguous 2
-   :docs/missing 1
    :docs/no-file 1
-   :docs/ambiguous 2
    :plan/conflict 4
    :store/stale 4
    :cli/no-store 5
@@ -19,15 +17,22 @@
    :eval/not-available 6})
 
 (def ^:private exit-by-namespace
-  {"query" 3 "models" 3 "validate" 3 "docs" 3
+  {"query" 3 "models" 3 "validate" 3 "docs" 3 "fields" 3 "sections" 3 "find" 3
+   "graph" 3 "edges" 3 "links" 3 "semantic" 3 "journal" 5 "migrate" 5 "serve" 5
    "store" 5 "markdown" 5 "index" 5})
+
+(def ^:private exit-by-name
+  "Exit code by the *name* of an error type, whatever its namespace: the
+   convention every command group follows without editing this file."
+  {"missing" 1 "empty" 1 "ambiguous" 2 "conflict" 4 "stale" 4})
 
 (defn exit-for
   "Exit code for error `type` (a namespaced keyword) with its `data`: 0 for nil;
    1 missing; 2 ambiguous; 3 rejection (`:plan/rejected` unless the failed
    check is `:capability`, which is 7; `:query/*`, `:models/*`, `:validate/*`,
-   `:docs/*` such as a duplicate document); `:docs/missing` and `:docs/no-file`
-   are 1, `:docs/ambiguous` 2;
+   and the other command-group namespaces, e.g. a duplicate document). By
+   name, in any namespace: `*/missing` and `*/empty` are 1, `*/ambiguous` 2,
+   `*/conflict` and `*/stale` 4;
    4 conflict/stale; 5 store errors, corruption, missing or duplicate store,
    markdown and index errors; 6 usage; 70 anything else."
   ([type] (exit-for type nil))
@@ -36,6 +41,7 @@
      (nil? type) 0
      (= :plan/rejected type) (if (= :capability (:check data)) 7 3)
      (contains? exit-by-type type) (exit-by-type type)
+     (and (keyword? type) (contains? exit-by-name (name type))) (exit-by-name (name type))
      (and (keyword? type) (contains? exit-by-namespace (namespace type))) (exit-by-namespace (namespace type))
      :else 70)))
 

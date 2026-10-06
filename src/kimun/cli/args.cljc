@@ -10,11 +10,11 @@
   #{"json" "edn" "text"})
 
 (def spec
-  "babashka.cli spec of the global options."
+  "babashka.cli spec of the global options; each command group adds its own
+   through the `extra` argument of `parse` (`kimun.cli.main/group-specs`)."
   {:store   {:ref "PATH" :desc "Store directory (.kimun or its project dir)"}
    :format  {:ref "FMT" :desc "Output format: json | edn | text" :default "json" :validate formats}
    :actor   {:ref "NAME" :desc "Actor recorded in transactions (default human/$USER)"}
-   :name    {:ref "NAME" :desc "Store name (stores init)"}
    :debug   {:desc "Print the stacktrace of an unexpected error to stderr" :coerce :boolean}
    :help    {:desc "Show usage" :coerce :boolean}
    :version {:desc "Show version" :coerce :boolean}})
@@ -30,15 +30,24 @@
     (when (and (contains? opts k) (not (string? v)))
       (err/raise :cli/usage (str "option --" (name k) " needs a value") {:option k}))))
 
+(defn- value-options
+  "Keys of `spec` that take a value: everything not coerced to a boolean or a
+   collection."
+  [spec]
+  (for [[k v] spec :when (not (contains? #{:boolean :booleans} (:coerce v))) :when (not (vector? (:coerce v)))] k))
+
 (defn parse
-  "Parses `argv` into `{:args [tokens…] :opts {…}}`. Unknown options raise the
-   babashka.cli ex-info (`:type :org.babashka/cli`); a value-taking option
-   without a value raises `:cli/usage`. `:actor` defaults from `env`
-   (`default-actor`), `:format` to \"json\"."
-  ([argv] (parse argv {}))
-  ([argv env]
-   (let [{:keys [args opts]} (cli/parse-args (vec argv) {:spec spec :restrict true})
+  "Parses `argv` into `{:args [tokens…] :opts {…}}` against the global `spec`
+   merged with `extra` (the option specs of the command groups). Unknown
+   options raise the babashka.cli ex-info (`:type :org.babashka/cli`); a
+   value-taking option without a value raises `:cli/usage`. `:actor` defaults
+   from `env` (`default-actor`), `:format` to \"json\"."
+  ([argv] (parse argv {} {}))
+  ([argv env] (parse argv env {}))
+  ([argv env extra]
+   (let [full (merge extra spec)
+         {:keys [args opts]} (cli/parse-args (vec argv) {:spec full :restrict true})
          opts (or opts {})]
-     (doseq [k [:store :actor :name :format]] (require-string! opts k))
+     (doseq [k (value-options full)] (require-string! opts k))
      {:args (vec (or args []))
       :opts (merge {:format "json" :actor (default-actor env)} opts)})))
