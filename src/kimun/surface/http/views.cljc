@@ -102,7 +102,9 @@
 
 (defn schema
   "`GET /schema`: every model with `{:id :model_ref :version :fields :containment
-   :references :semantics :template}`; a model whose entry cannot be built is
+   :references :semantics :template}` — containment and references are what the
+   descriptor carries from a v1 class (`:py/containment`, `:py/references`), empty
+   when it declares none; a model whose entry cannot be built is
    listed in `unavailable` (`{:model :model_ref :reason}`) instead of failing."
   [_request ctx]
   (let [{:keys [store descriptor] p :path} (open-store ctx)
@@ -110,7 +112,7 @@
                 (try (let [d (:descriptor m)]
                        {:ok {:id (:name m) :model (:name m) :model_ref (:name m) :version (:version m)
                              :fields (mapv field-view (:fields d)) :base (:base d)
-                             :containment (get d :containment []) :references (get d :references [])
+                             :containment (or (:containment d) (:py/containment d) {}) :references (or (:references d) (:py/references d) [])
                              :semantics (get d :semantics []) :template (:template d) :state (:state d)}})
                      (catch #?(:clj Exception :cljs :default) e
                        {:unavailable {:model (:name m) :model_ref (:name m) :reason (ex-message e)}})))]

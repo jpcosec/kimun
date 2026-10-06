@@ -214,6 +214,25 @@
         (is (empty? (:containment bare)))
         (is (empty? (:references bare)))))))
 
+;; v1 test_schema_includes_model_graph_dunders, the half the port above left weak: a model
+;; that DOES declare containment and references (what the exporter carries from a v1 class
+;; as :py/containment and :py/references) shows them in /schema.
+(deftest schema-carries-declared-containment-and-references
+  (with-server (fn [proj]
+                 (define! proj "linked.edn"
+                          (pr-str {:model/name "LinkedBook" :base [] :semantics {"type" ["book"] "workspace" ["library"]}
+                                   :fields [{:name "title" :type :string :required true :description "Title."}]
+                                   :template "# ⸢rev•title⸥\n"
+                                   :py/containment {"chapters" ["ChapterDoc"] "notes" ["NoteDoc"]}
+                                   :py/references ["owner_id" "related"]})))
+    (fn [base _]
+      (let [r (req :get (str base "/schema"))
+            m (first (filter #(= "LinkedBook" (:id %)) (get-in r [:json :data :models])))]
+        (is (= 200 (:status r)))
+        (is (= {:chapters ["ChapterDoc"] :notes ["NoteDoc"]} (:containment m)))
+        (is (= ["owner_id" "related"] (:references m)))
+        (is (= {:type ["book"] :workspace ["library"]} (:semantics m)))))))
+
 ;; n/a: test_schema_declares_models_that_cannot_load — kimun models are EDN descriptors
 ;; stored in the store, with no module to import: a registered model cannot fail to load
 ;; (v1 deleted/broke a Python module after registering it).
