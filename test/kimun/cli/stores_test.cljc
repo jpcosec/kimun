@@ -160,4 +160,164 @@
   (let [e (run (tmp) "stores" "nope")]
     (is (= 6 (:exit e)))
     (is (= "cli/usage" (get-in e [:error :type])))
-    (is (= ["check" "init" "show" "verify"] (get-in e [:error :data :known])))))
+    (is (= ["check" "init" "link" "links" "show" "unlink" "verify"] (get-in e [:error :data :known])))))
+
+;; ------------------------------------------------------------------ federation
+
+(defn- init-in
+  "Creates a project dir `name` under `root` with a store of the same name; returns the project dir."
+  [root nm]
+  (let [proj (str (fs/create-dirs (fs/path root nm)))]
+    (run proj "stores" "init" "--name" nm)
+    proj))
+
+(defn- descriptor-of [proj]
+  (edn/read-string (slurp (str (fs/path proj ".kimun" "store.edn")))))
+
+(deftest link-stores-a-relative-path
+  ;; v1: test_store_add_links_other_store, test_link_store_records_link_and_refuses_duplicates
+  (let [root (tmp)
+        a (init-in root "a")
+        _b (init-in root "b")
+        e (run a "stores" "link" "bee" "../b")]
+    (is (true? (:ok e)) (pr-str e))
+    (is (= "stores link" (:command e)))
+    (is (= {:name "bee" :path "../../b/.kimun"} (get-in e [:data :link])))
+    (is (= [{:name "bee" :path "../../b/.kimun"}] (:links (descriptor-of a))))
+    (is (str/includes? (slurp (str (fs/path a ".kimun" "store.edn")))
+                       ":links [{:name \"bee\", :path \"../../b/.kimun\"}]"))
+    (is (= (str (fs/path root "b" ".kimun")) (get-in e [:data :resolved])))
+    (testing "by .kimun directory, absolute"
+      (let [c (init-in root "c")
+            e2 (run a "stores" "link" "cee" (str (fs/path c ".kimun")))]
+        (is (true? (:ok e2)) (pr-str e2))
+        (is (= "../../c/.kimun" (get-in e2 [:data :link :path])))))
+    (testing "no stored path is absolute"
+      (is (not-any? #(fs/absolute? (:path %)) (:links (descriptor-of a)))))
+    (testing "check and show print the links"
+      (is (= 2 (count (get-in (run a "stores" "check") [:data :links]))))
+      (is (= 2 (count (get-in (run a "stores" "show") [:data :links])))))))
+
+(deftest link-rejects-duplicates-self-bad-names-and-non-stores
+  ;; v1: test_store_add_fails_if_already_linked, test_store_add_fails_on_invalid_path,
+  ;;     test_link_store_refuses_a_directory_without_store
+  (let [root (tmp)
+        a (init-in root "a")
+        b (init-in root "b")
+        _ (run a "stores" "link" "bee" b)
+        before (slurp (str (fs/path a ".kimun" "store.edn")))]
+    (testing "duplicate name"
+      (let [e (run a "stores" "link" "bee" b)]
+        (is (false? (:ok e)))
+        (is (= "store/link-exists" (get-in e [:error :type])))
+        (is (= 5 (:exit e)))))
+    (testing "self link, by project and by .kimun"
+      (doseq [p [a (str (fs/path a ".kimun")) "."]]
+        (let [e (run a "stores" "link" "me" p)]
+          (is (= "store/self-link" (get-in e [:error :type])) (pr-str e))
+          (is (= 5 (:exit e))))))
+    (testing "target without a store"
+      (let [nothing (str (fs/create-dirs (fs/path root "nothing")))
+            e (run a "stores" "link" "x" nothing)
+            e2 (run a "stores" "link" "y" (str (fs/path root "nonexistent")))]
+        (is (= "store/not-a-store" (get-in e [:error :type])))
+        (is (= 5 (:exit e)))
+        (is (= "store/not-a-store" (get-in e2 [:error :type])))))
+    (testing "invalid names"
+      (doseq [n ["" "a/b" " x" ".x"]]
+        (let [e (run a "stores" "link" n b)]
+          (is (= "store/invalid-link-name" (get-in e [:error :type])) (pr-str n))
+          (is (= 5 (:exit e))))))
+    (testing "wrong arity is usage"
+      (is (= 6 (:exit (run a "stores" "link" "only-name"))))
+      (is (= 6 (:exit (run a "stores" "unlink")))))
+    (is (= before (slurp (str (fs/path a ".kimun" "store.edn")))) "failures leave store.edn untouched")))
+
+(deftest unlink-removes-a-link
+  (let [root (tmp)
+        a (init-in root "a")
+        b (init-in root "b")
+        _ (run a "stores" "link" "bee" b)
+        e (run a "stores" "unlink" "bee")]
+    (is (true? (:ok e)) (pr-str e))
+    (is (= "bee" (get-in e [:data :unlinked :name])))
+    (is (= [] (:links (descriptor-of a))))
+    (let [again (run a "stores" "unlink" "bee")]
+      (is (= "store/missing" (get-in again [:error :type])))
+      (is (= 1 (:exit again)))
+      (is (= [] (get-in again [:error :data :known]))))))
+
+(deftest links-and-check-report-a-missing-target-as-a-warning
+  (let [root (tmp)
+        a (init-in root "a")
+        b (init-in root "b")
+        _ (run a "stores" "link" "bee" b)
+        ok (run a "stores" "links")]
+    (is (= [:ok] (mapv :status (get-in ok [:data :links]))))
+    (is (= [] (:warnings ok)))
+    (is (= [] (:warnings (run a "stores" "check"))))
+    (fs/delete-tree (fs/path b ".kimun"))
+    (doseq [cmd ["links" "check"]]
+      (let [e (run a "stores" cmd)]
+        (is (true? (:ok e)) (pr-str e))
+        (is (= [:missing] (mapv :status (get-in e [:data :links]))))
+        (is (= 1 (count (:warnings e))))
+        (is (= "link/missing" (get-in e [:warnings 0 :type])))
+        (is (str/includes? (get-in e [:warnings 0 :message]) "bee"))))
+    (testing "a directory without store.edn"
+      (fs/create-dirs (fs/path b ".kimun"))
+      (is (= [:not-a-store] (mapv :status (get-in (run a "stores" "links") [:data :links])))))))
+
+(deftest hand-edited-absolute-links-are-rejected-on-open
+  (let [root (tmp)
+        a (init-in root "a")
+        b (init-in root "b")
+        f (str (fs/path a ".kimun" "store.edn"))]
+    (spit f (pr-str (assoc (descriptor-of a) :links [{:name "bee" :path (str (fs/path b ".kimun"))}])))
+    (let [e (run a "stores" "check")]
+      (is (false? (:ok e)))
+      (is (= "store/invalid-links" (get-in e [:error :type])))
+      (is (= 5 (:exit e))))))
+
+(deftest cycles-do-not-loop
+  (let [root (tmp)
+        a (init-in root "a")
+        b (init-in root "b")
+        _ (run a "stores" "link" "bee" b)
+        _ (run b "stores" "link" "ay" a)
+        da (str (fs/path a ".kimun"))]
+    (is (true? (:ok (run a "stores" "check"))))
+    (is (true? (:ok (run b "stores" "links"))))
+    (testing "direct links only by default"
+      (is (= ["bee"] (mapv :name (cli-store/linked-stores da)))))
+    (testing "transitive terminates and never returns the origin"
+      (is (= ["bee"] (mapv :name (cli-store/linked-stores da {:transitive? true})))))
+    (testing "a chain is followed transitively, named by path"
+      (let [c (init-in root "c")
+            _ (run b "stores" "link" "cee" c)]
+        (is (= ["bee"] (mapv :name (cli-store/linked-stores da))))
+        (is (= ["bee" "bee/cee"] (mapv :name (cli-store/linked-stores da {:transitive? true}))))
+        (is (every? #(some? (get-in % [:open :store])) (cli-store/linked-stores da)))))))
+
+(deftest linked-stores-skips-unreachable-targets
+  (let [root (tmp)
+        a (init-in root "a")
+        b (init-in root "b")
+        c (init-in root "c")
+        _ (run a "stores" "link" "bee" b)
+        _ (run a "stores" "link" "cee" c)
+        _ (fs/delete-tree (fs/path b ".kimun"))]
+    (is (= ["cee"] (mapv :name (cli-store/linked-stores (str (fs/path a ".kimun"))))))))
+
+(deftest moving-both-stores-together-keeps-the-link-valid
+  (let [root (tmp)
+        a (init-in root "a")
+        b (init-in root "b")
+        _ (run a "stores" "link" "bee" b)
+        moved (str (fs/path (tmp) "elsewhere"))
+        _ (fs/move root moved)
+        e (run (str (fs/path moved "a")) "stores" "links")]
+    (is (true? (:ok e)) (pr-str e))
+    (is (= [:ok] (mapv :status (get-in e [:data :links]))))
+    (is (= (str (fs/path moved "b" ".kimun")) (get-in e [:data :links 0 :resolved])))
+    (is (= [] (:warnings e)))))

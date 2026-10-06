@@ -1,19 +1,27 @@
 (ns kimun.cli.commands.stores
-  "The `kimun stores` group (docs/v2/06 §B): `init`, `check`, `verify`
-   and `show`. Every command is `(fn [opts ctx] envelope)` where `ctx` is
-   `{:env env :cwd cwd}`; `dispatch` routes a subcommand name."
+  "The `kimun stores` group (docs/v2/06 §B): `init`, `check`, `verify`,
+   `show`, and the federation commands `link`, `unlink` and `links`. Every
+   command is `(fn [args opts ctx] envelope)` where `args` are the positional
+   tokens after the subcommand and `ctx` is `{:env env :cwd cwd}`; `dispatch`
+   routes a subcommand name."
   (:require [babashka.fs :as fs]
             [clojure.string :as str]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
+            [sldb.kernel.err :as err]
             [sldb.kernel.store :as store]))
 
 (defn- store-ref [descriptor path] {:name (:name descriptor) :path path})
 
+(defn- link-warning [{:keys [name status resolved]}]
+  {:type (str "link/" (clojure.core/name status))
+   :message (str "link " name " -> " resolved
+                 (if (= :missing status) ": target does not exist" ": target is not a kimun store"))})
+
 (defn init
   "`stores init`: creates the store at `--store` (if given) or `<cwd>/.kimun`
    with `--name` and `--actor`. Data: `{:path :name :actor :capabilities}`."
-  [opts {:keys [cwd]}]
+  [_args opts {:keys [cwd]}]
   (let [dir (if (:store opts)
               (cli-store/normalize-store-path (:store opts))
               (str (fs/path (fs/absolutize cwd) cli-store/dirname)))
@@ -24,9 +32,13 @@
 
 (defn check
   "`stores check`: opens the store (replaying the log) and reports
-   `{:name :path :hash-alg :revisions :trees :objects :head :links}`."
-  [opts {:keys [env cwd]}]
-  (let [{:keys [descriptor store path]} (cli-store/open! (cli-store/resolve-store opts env cwd))]
+   `{:name :path :hash-alg :revisions :trees :objects :head :links}` where
+   `:links` is the `kimun.cli.store/links` report; a link whose target is
+   missing or not a store is a warning `{:type \"link/missing\" :message …}`
+   (the command stays `:ok`)."
+  [_args opts {:keys [env cwd]}]
+  (let [{:keys [descriptor store path]} (cli-store/open! (cli-store/resolve-store opts env cwd))
+        link-report (cli-store/links path)]
     (out/ok "stores check" {:store (store-ref descriptor path)
                             :revision (:head store)
                             :data {:name (:name descriptor)
@@ -36,13 +48,14 @@
                                    :trees (count (:trees store))
                                    :objects (count (:objects store))
                                    :head (:head store)
-                                   :links (vec (or (:links descriptor) []))}})))
+                                   :links link-report}
+                            :warnings (mapv link-warning (remove #(= :ok (:status %)) link-report))})))
 
 (defn verify
   "`stores verify`: recomputes the hash of every reachable object
    (`sldb.kernel.store/verify`). Data `{:checked :bad}`; a mismatch is the
    failure `store/corrupt` (exit 5) carrying `:bad`."
-  [opts {:keys [env cwd]}]
+  [_args opts {:keys [env cwd]}]
   (let [{:keys [backend descriptor store path]} (cli-store/open! (cli-store/resolve-store opts env cwd))
         {:keys [ok? checked bad]} (store/verify backend store)]
     (if ok?
@@ -57,7 +70,7 @@
 (defn show
   "`stores show`: descriptor and heads without replaying the log:
    `{:name :path :hash-alg :links :head :capabilities}`."
-  [opts {:keys [env cwd]}]
+  [_args opts {:keys [env cwd]}]
   (let [dir (cli-store/resolve-store opts env cwd)]
     (when (or (nil? dir) (not (cli-store/store? dir)))
       (cli-store/open! dir))
@@ -73,21 +86,62 @@
                                     :head (:head heads)
                                     :capabilities (:capabilities descriptor)}}))))
 
+(defn- need-args
+  "Raises the usage failure when `args` has not exactly `n` tokens."
+  [command usage args n]
+  (when (not= n (count args))
+    (err/raise :cli/usage (str "usage: kimun stores " usage) {:command command})))
+
+(defn link
+  "`stores link NAME PATH`: links the current store to the store at PATH (a
+   `.kimun` or a project directory) by NAME, persisting a path relative to
+   this store. Data: `{:link {:name :path} :resolved}`."
+  [args opts {:keys [env cwd]}]
+  (need-args "stores link" "link NAME PATH" args 2)
+  (let [dir (cli-store/resolve-store opts env cwd)
+        {:keys [path descriptor store]} (cli-store/open! dir)
+        l (cli-store/link! path (first args) (second args) cwd)]
+    (out/ok "stores link" {:store (store-ref descriptor path)
+                           :revision (:head store)
+                           :data {:link l
+                                  :resolved (:resolved (first (filter #(= (:name l) (:name %)) (cli-store/links path))))}})))
+
+(defn unlink
+  "`stores unlink NAME`: removes the link NAME. Data: `{:unlinked {:name :path}}`."
+  [args opts {:keys [env cwd]}]
+  (need-args "stores unlink" "unlink NAME" args 1)
+  (let [{:keys [path descriptor store]} (cli-store/open! (cli-store/resolve-store opts env cwd))]
+    (out/ok "stores unlink" {:store (store-ref descriptor path)
+                             :revision (:head store)
+                             :data {:unlinked (cli-store/unlink! path (first args))}})))
+
+(defn links
+  "`stores links`: lists the links with their status. Data:
+   `{:links [{:name :path :resolved :status}]}`; broken links are warnings."
+  [_args opts {:keys [env cwd]}]
+  (let [{:keys [path descriptor store]} (cli-store/open! (cli-store/resolve-store opts env cwd))
+        report (cli-store/links path)]
+    (out/ok "stores links" {:store (store-ref descriptor path)
+                            :revision (:head store)
+                            :data {:links report}
+                            :warnings (mapv link-warning (remove #(= :ok (:status %)) report))})))
+
 (def spec
   "Options of the `stores` group (babashka.cli spec, merged by `kimun.cli.main`)."
   {:name {:ref "NAME" :desc "Store name (stores init)"}})
 
 (def commands
   "Subcommand name → command fn."
-  {"init" init "check" check "verify" verify "show" show})
+  {"init" init "check" check "verify" verify "show" show
+   "link" link "unlink" unlink "links" links})
 
 (defn dispatch
-  "Runs subcommand `sub` of the `stores` group (positional `_args` unused);
+  "Runs subcommand `sub` of the `stores` group (`args` are the positional tokens);
    an unknown or missing subcommand is the failure `cli/usage` listing the
    known ones."
-  [sub _args opts ctx]
+  [sub args opts ctx]
   (if-let [f (get commands sub)]
-    (f opts ctx)
+    (f (vec args) opts ctx)
     (out/failure :cli/usage
                  (str (if sub (str "unknown subcommand `stores " sub "`") "missing subcommand for `stores`")
                       "; expected one of: " (str/join ", " (sort (keys commands))))
