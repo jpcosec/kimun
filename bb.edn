@@ -23,7 +23,7 @@
         :task (shell "bb" "scripts/check_rings.clj")}
   oracle {:doc "Independent Python re-implementation of canonical-bytes checks the frozen node ids (docs/v2/tests/promises.md)."
           :task (shell "python3" "scripts/canon_oracle.py")}
-  test {:doc "Run the kernel test suite on Babashka (clojure.test + test.check) after lint. Exit code 1 on any failure."
+  test {:doc "Run the kernel test suite on Babashka (clojure.test + test.check) after lint. Times every namespace, prints the slowest, and exits 1 on any failure."
         :depends [lint]
         :task (let [started (System/currentTimeMillis)
                     tmp (fs/path (System/getProperty "java.io.tmpdir"))
@@ -43,7 +43,22 @@
                     nses (sort (map ->ns (fs/glob "test" "**/*_test.cljc")))]
                 (if (empty? nses)
                   (println "no test namespaces under test/ yet")
-                  (do (doseq [n nses] (require n))
-                      (let [{:keys [fail error] :as r} (try (apply t/run-tests nses) (finally (sweep!)))]
-                        (println r)
-                        (when (pos? (+ fail error)) (System/exit 1))))))}}}
+                  (do
+                    (doseq [n nses] (require n))
+                    (try
+                      (let [results (mapv (fn [n]
+                                            (let [t0 (System/currentTimeMillis)
+                                                  r (try (t/run-tests n)
+                                                         (catch Throwable _ {:test 1 :pass 0 :fail 0 :error 1}))]
+                                              (assoc r :ns n :ms (- (System/currentTimeMillis) t0))))
+                                          nses)
+                            fail (reduce + (map :fail results))
+                            error (reduce + (map :error results))
+                            pass (reduce + (map :pass results))
+                            ms (reduce + (map :ms results))]
+                        (println (str "\nRan " (count nses) " namespaces in " (quot ms 1000) " s"))
+                        (doseq [r (take 12 (sort-by :ms > results))]
+                          (println (format "  %7d ms  %s" (:ms r) (:ns r))))
+                        (println {:test (count nses) :pass pass :fail fail :error error})
+                        (when (pos? (+ fail error)) (System/exit 1)))
+                      (finally (sweep!))))))}}}
