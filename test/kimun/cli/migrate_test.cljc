@@ -14,6 +14,7 @@
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.commands.migrate :as cmd]
             [kimun.cli.errors :as errors]
+            [kimun.cli.main]
             [kimun.cli.store :as cli-store]
             [kimun.surface.docs :as tdocs]
             [kimun.surface.migrate :as migrate]))
@@ -145,3 +146,10 @@
         (is (<= 40 (count fresh)) "most of the frozen sample must still be comparable; re-freeze when the v1 files moved on")
         (when (< (count fresh) (count recs))
           (println "NOTE kimun.cli.migrate-test: " (- (count recs) (count fresh)) "of" (count recs) "frozen documents changed in v1 since the freeze and were not compared"))))))
+
+(deftest migrate-is-reachable-from-the-cli
+  ;; regression: the group existed but was never registered in kimun.cli.main
+  (let [e (:envelope (kimun.cli.main/run ["migrate" "--from-v1" "/nonexistent-kimun-v1"] {"USER" "tester"}
+                                         (str (babashka.fs/create-temp-dir {:prefix "kimun-mig-cli-"}))))]
+    (is (not= "org.babashka/cli" (get-in e [:error :type])) (pr-str e))
+    (is (= "migrate/not-v1-store" (get-in e [:error :type])) (pr-str e))))

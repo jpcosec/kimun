@@ -15,6 +15,7 @@
             [kimun.cli.commands.find :as find]
             [kimun.cli.commands.graph :as graph]
             [kimun.cli.commands.index :as index]
+            [kimun.cli.commands.migrate :as migrate]
             [kimun.cli.commands.models :as models]
             [kimun.cli.commands.predicates :as predicates]
             [kimun.cli.commands.sections :as sections]
@@ -37,6 +38,7 @@
               (f args opts ctx)
               (docs/dispatch sub args opts ctx)))
    "adapters" adapters/dispatch
+   "migrate" migrate/dispatch
    "edges" edges/dispatch
    "graph" graph/dispatch
    "predicates" predicates/dispatch
@@ -57,7 +59,7 @@
   "The option spec of every group, merged: a group declares its own options
    in its `spec` var, so adding a group never edits `kimun.cli.args`. Two
    groups may share an option name only with the same meaning."
-  (merge stores/spec docs/spec journal/spec serve/spec models/spec direct/spec links/spec semantic/spec fields/spec sections/spec find/spec corpus/spec index/spec predicates/spec edges/spec graph/spec adapters/spec))
+  (merge stores/spec docs/spec journal/spec serve/spec models/spec direct/spec links/spec semantic/spec fields/spec sections/spec find/spec corpus/spec index/spec predicates/spec edges/spec graph/spec adapters/spec migrate/spec))
 
 (def usage
   "Usage text shown by `kimun`, `kimun help` and `--help`."
@@ -111,6 +113,8 @@
              "  adapters list · scan|sync|check ADAPTER PATH --system S [--factory M:A] [--language L] [-- adapter options]"
              "                              code → documents through an out-of-process adapter: python-symbols, argparse-cli,"
              "                              click-cli, treesitter-symbols, or the path of any executable (docs/v2/11)"
+             "  migrate --from-v1 [PATH] [--pythonpath P] [--dry-run] [--only MODEL] [--limit N] [--force]"
+             "                              bring a sldb v1 store (.sldb) into this kimun store; idempotent"
              "  fields get DOC PATH · schema MODEL [FIELD] · query FIELD [--where EXPR] [--model M]"
              "  fields set|append DOC PATH VALUE · unset|clear DOC PATH · clean DOC PATH [--dedupe] [--drop-empty]"
              "  sections list DOC · fields DOC SECTION · find [TERM] [--in physical|semantic|both] [--regex] [--fuzzy] [--where EXPR]"
