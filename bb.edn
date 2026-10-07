@@ -22,7 +22,16 @@
           :task (shell "python3" "scripts/canon_oracle.py")}
   test {:doc "Run the kernel test suite on Babashka (clojure.test + test.check) after lint. Exit code 1 on any failure."
         :depends [lint]
-        :task (let [->ns (fn [p]
+        :task (let [started (System/currentTimeMillis)
+                    tmp (fs/path (System/getProperty "java.io.tmpdir"))
+                    ;; the tests create temp stores (fs/create-temp-dir "kimun-…"); remove
+                    ;; the ones THIS run created, whatever the outcome, so /tmp does not fill up
+                    sweep! (fn []
+                             (doseq [d (fs/list-dir tmp (fn [p] (str/starts-with? (str (fs/file-name p)) "kimun-")))
+                                     :when (and (fs/directory? d)
+                                                (>= (.toMillis (fs/last-modified-time d)) started))]
+                               (fs/delete-tree d)))
+                    ->ns (fn [p]
                            (-> (str (fs/relativize "test" p))
                                (str/replace (re-pattern "\\.cljc$") "")
                                (str/replace "_" "-")
@@ -32,6 +41,6 @@
                 (if (empty? nses)
                   (println "no test namespaces under test/ yet")
                   (do (doseq [n nses] (require n))
-                      (let [{:keys [fail error] :as r} (apply t/run-tests nses)]
+                      (let [{:keys [fail error] :as r} (try (apply t/run-tests nses) (finally (sweep!)))]
                         (println r)
                         (when (pos? (+ fail error)) (System/exit 1))))))}}}
