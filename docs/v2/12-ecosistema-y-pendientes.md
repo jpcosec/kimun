@@ -115,7 +115,7 @@ líneas del motor (`f13c67d`, `f016c75`) no están reconciliadas (sí comparten 
 
 ## 5. Orden acordado (2026-10-06)
 
-1. Limpieza: subir commits, borrar worktrees y benchmarks, arreglar o archivar `hum-core`/`hum`.
+1. Limpieza — **hecha 2026-10-06**: kimun y sldb subidos a GitHub; 21 worktrees fusionados y sus ramas borrados; 14 GB de temporales en `/tmp` borrados y `bb test` ahora barre los que crea. Queda para decidir: `hum-core` y `hum` importan `sldb.core.ingest`, que sldb retiró el 2026-09-24 (`d0df139`, "isla muerta"); arreglar o archivar. El `.sldb/` del desk de kimun sigue con archivos sin commitear.
 2. Bug del contrato de documentos `superseded` (§1, ítem 1).
 3. ~~Primer consumidor real de kimun~~ — postergado por la decisión 18 (v1 sigue en v1).
 3b. Prototipo del pod de tree-sitter y medición de diferencias de corte contra el corpus.
