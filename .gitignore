@@ -37,3 +37,4 @@ dist/
 .kimun/session.edn
 .kimun/lock
 resources/git-sha
+.herdr-coordination.md
