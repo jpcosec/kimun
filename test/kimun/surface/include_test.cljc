@@ -71,23 +71,24 @@
 (deftest diff-findings
   (let [cfg (inc/parse cfg-text)
         p (inc/plan cfg ["models/A.edn" "docs/a.md" "docs/skip.md"])
-        inputs {:tracked #{"docs/skip.md" ".kimun/store.edn" "other/x.md"}
+        inputs {:tracked #{"docs/skip.md" "docs/ghost.md" ".kimun/store.edn" "other/x.md"}
                 :files #{"other/x.md"}
                 :store-documents #{"docs/only-store.md"}}
         {:keys [ok? findings]} (inc/diff cfg p inputs)]
     (is (false? ok?))
-    (testing "every finding kind fires on the input crafted for it"
+    (testing "every finding kind fires on the input crafted for it, excluded paths excepted"
       (is (= ["docs/a.md" "models/A.edn"] (:declared-not-tracked findings)))
-      (is (= ["docs/skip.md"] (:tracked-undeclared findings)))
+      (is (= ["docs/ghost.md"] (:tracked-undeclared findings)))
+      (is (not (some #{"docs/skip.md"} (:tracked-undeclared findings))))
       (is (= ["docs/a.md" "models/A.edn"] (:declared-missing findings)))
       (is (= ["docs/only-store.md"] (:store-undeclared findings)))
       (is (= ["docs/a.md"] (:declared-not-in-store findings)))
       (is (= [".kimun/store.edn"] (:store-tracked findings))))
-    (testing "kinds limits the computation; a clean input is :ok?"
+    (testing "kinds limits the computation; a clean input (with an excluded tracked path) is :ok?"
       (let [limited (:findings (inc/diff cfg p inputs [:store-tracked]))]
         (is (= [".kimun/store.edn"] (:store-tracked limited)))
         (is (every? empty? (vals (dissoc limited :store-tracked)))))
-      (is (true? (:ok? (inc/diff cfg p {:tracked #{"docs/a.md" "models/A.edn"}
+      (is (true? (:ok? (inc/diff cfg p {:tracked #{"docs/a.md" "models/A.edn" "docs/skip.md"}
                                         :files #{"docs/a.md" "models/A.edn"}
                                         :store-documents #{"docs/a.md"}})))))))
 

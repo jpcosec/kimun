@@ -27,7 +27,7 @@ repo**. Un repo puede ignorar su store (se construye al vuelo) o versionarlo
 | `:models` | globs de descriptores EDN (`desk/models/*.edn`) que se definen, en orden base-primero. |
 | `:documents` | reglas `{:glob … :model …}`, **gana la primera coincidencia**. |
 | `:force` | conjunto de rutas, o `:force true` en una regla: documentos que no ida-vuelta (no se puede re-renderizar lo extraído y obtener el mismo texto). |
-| `:exclude` | globs que la declaración **no** gestiona (opcional). Un excluido que git sí sigue es deriva: decide y cámbialo. |
+| `:exclude` | globs que la declaración **no** gestiona (opcional). Un camino excluido es explícitamente "no un documento kimun": no produce ningún hallazgo, aunque git lo siga. |
 
 ### Globs
 
@@ -49,8 +49,8 @@ bin/kimun include status             # recuentos: modelos, documentos por modelo
 
 `check` compara contra `git ls-files` y el store y falla con `:include/drift`
 (salida 3) si algo no cuadra. Con `--staged` solo mira el conjunto preparado:
-rechaza ficheros del store cuando `:store :git` es `:ignore`, y documentos bajo
-un glob gestionado que la declaración no reclama (excluidos o sin regla).
+rechaza ficheros del store cuando `:store :git` es `:ignore`, y documentos que
+git sigue bajo un glob gestionado y que la declaración no declara ni excluye.
 
 `gitignore` escribe entre `# >>> kimun include (managed) >>>` y
 `# <<< kimun include <<<` la ruta del store (cuando `:ignore`) y un
@@ -73,14 +73,19 @@ que lo mueve a `<store>.bak-<marca>`.
 :models ["desk/models/*.edn"]          ; 17 modelos
 ```
 
-Declara 543 documentos. Los directorios cuyos documentos comparten modelo usan
-una regla por directorio (`desk/primitives/checklists/**/*.md`, etc.). En los
-directorios con ficheros versionados que **no** son del mundo kimun
-(`desk/atoms/testing.md`, `desk/tasks/Board.md`, las notas viejas de
-`desk/inbox`, los rituales de ciclo, `desk/contexts/pills.md`), la regla es más
-estrecha —per-fichero en `desk/atoms`, o un glob como `desk/tasks/task-*.md`—
-para no reclamarlos: `:exclude` no se usa porque excluir algo que git sigue es
-deriva y `check` debe quedar limpio.
+Declara 543 documentos con **una regla por directorio**: en cada directorio
+todos los documentos comparten modelo, así que basta
+`desk/atoms/**/*.md`, `desk/tasks/**/*.md`, etc. Donde solo parte del
+directorio necesita `:force`, `:force` es el conjunto de rutas (los 185 átomos y
+los 4 pills forzados); donde todo lo necesita, la regla lleva `:force true`
+(inbox y tasks).
+
+Los ficheros que git sigue en esos directorios pero que **no** son documentos
+del mundo kimun se enumeran en `:exclude` (`desk/atoms/testing.md`,
+`desk/tasks/Board.md`, las notas viejas de `desk/inbox`, los rituales de ciclo,
+`desk/contexts/pills.md`): excluidos, no producen hallazgo aunque sigan en git.
+Los directorios sin ninguna regla (`desk/drawer`) no son área gestionada y no
+necesitan exclusión.
 
 El store es `.kimun/`, ignorado (`.gitignore`, bloque gestionado) y construido
 al vuelo:

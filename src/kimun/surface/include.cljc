@@ -164,9 +164,10 @@
    paths, `:files` the working-tree paths, `:store-documents` the paths of the
    store's documents. Returns `{:ok? bool :findings {kind [path]}}`, every kind
    of `finding-kinds` always present. `kinds` limits which kinds are computed.
-   A tracked path that an `:exclude` glob keeps out of the plan is reported
-   under `:tracked-undeclared`: git still versions a path the declaration says
-   it does not manage."
+   Paths matched by an `:exclude` glob are explicitly not kimun documents, so a
+   tracked excluded path is no finding: `:tracked-undeclared` only reports a
+   path that git tracks, falls under a managed glob and is neither declared nor
+   excluded."
   ([cfg p inputs] (diff cfg p inputs finding-kinds))
   ([cfg p {:keys [tracked files store-documents]} kinds]
    (let [tracked (set (map normalize-path tracked))
@@ -175,6 +176,7 @@
          model-paths (set (map normalize-path (:models p)))
          doc-paths (set (map (comp normalize-path :path) (:documents p)))
          declared (into model-paths doc-paths)
+         excluded? (fn [path] (some #(re-matches % path) (map compile-glob (:exclude cfg))))
          managed (map compile-glob (managed-globs cfg))
          store-path (normalize-path (get-in cfg [:store :path]))
          under-store? (fn [path] (or (= path store-path) (str/starts-with? path (str store-path "/"))))
@@ -182,6 +184,7 @@
          raw {:declared-not-tracked (sort (remove tracked declared))
               :tracked-undeclared (sort (for [path tracked
                                               :when (and (not (declared path))
+                                                         (not (excluded? path))
                                                          (some #(re-matches % path) managed))]
                                           path))
               :declared-missing (sort (remove files declared))

@@ -88,14 +88,22 @@
     (is (= 1 (get-in c [:error :data :findings :store-tracked])))
     (is (= 0 (get-in c [:error :data :findings :tracked-undeclared])))))
 
-(deftest staged-undeclared-document-is-rejected
+(deftest staged-excluded-document-is-not-a-finding
   (run-include "include" "build")
   (git! *repo* "add" "docs/skip.md")
   (let [c (run-include "include" "check" "--staged")]
-    (is (false? (:ok c)))
-    (is (= 3 (:exit c)))
-    (is (= 1 (get-in c [:error :data :findings :tracked-undeclared])))
-    (is (= 0 (get-in c [:error :data :findings :store-tracked])))))
+    (testing "an excluded path is explicitly not a kimun document, tracked or staged"
+      (is (:ok c) (pr-str c)))))
+
+(deftest tracked-file-under-a-managed-glob-is-a-finding
+  (testing "a tracked path under a managed glob, neither declared nor excluded, drifts"
+    (write! *repo* "docs/ghost.md" "# ghost\n")
+    (git! *repo* "add" "-f" "docs/ghost.md")
+    (git! *repo* "commit" "-qm" "ghost")
+    (fs/delete (fs/path *repo* "docs/ghost.md"))
+    (let [c (run-include "include" "check")]
+      (is (false? (:ok c)))
+      (is (= ["docs/ghost.md"] (get-in c [:error :data :paths :tracked-undeclared]))))))
 
 (deftest gitignore-is-idempotent-and-preserves-foreign-lines
   (write! *repo* ".gitignore" "foreign/\n*.tmp\n")
