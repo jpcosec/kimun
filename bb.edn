@@ -49,10 +49,11 @@
                             fail (reduce + (map :fail results))
                             error (reduce + (map :error results))
                             pass (reduce + (map :pass results))
+                            tests (reduce + (map :test results))
                             ms (reduce + (map :ms results))]
                         (println (str "\nRan " (count nses) " namespaces in " (quot ms 1000) " s"))
                         (doseq [r (take 12 (sort-by :ms > results))]
                           (println (format "  %7d ms  %s" (:ms r) (:ns r))))
-                        (println {:test (count nses) :pass pass :fail fail :error error})
+                        (println {:test tests :pass pass :fail fail :error error :namespaces (count nses)})
                         (when (pos? (+ fail error)) (System/exit 1)))
                       (finally (fs/delete-tree root)))))}}}
