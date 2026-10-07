@@ -74,7 +74,7 @@ drawer (§6).
 | 5 | primer slice: SHA-256, backend de archivos, validación solo en Babashka, M/G como datos | `02 §8.1`, `atom-first-slice-runtime-choices` |
 | 6 | **árboles de posiciones** (Git-like): un nodo puede ocurrir N veces en un árbol; ownership por path; op `:detach` | `02 §3.1, §5.1`, `atom-decision-trees-are-trees-of-positions-git-like` |
 | 7 | superficie Markdown como **perfil cerrado** (SLDB-MD): fuera del perfil = opaco; marcas inline viven en el bloque, las hojas de texto son puras y compartidas; `_` nunca es énfasis; párrafos canónicos de una línea | `04`, `atom-sldb-md-profile-…`, `atom-inline-marks-live-on-the-block-…` |
-| 8 | no hay Lisp aparte (EDN + SCI); cero Rust (WASM ajeno); kernel `.cljc` con hosts como adaptadores | `02 §8`, atoms `decision-*` |
+| 8 | no hay Lisp aparte (EDN + SCI); ~~cero Rust (WASM ajeno)~~ — reemplazado por la decisión 19 (2026-10-06); kernel `.cljc` con hosts como adaptadores | `02 §8`, atoms `decision-*` |
 | 9 | los estados deterministas son **tres** (`intact`/`superseded`/`orphan`), se calculan **por extremo** y la arista toma el peor; `drifted` es un `orphan` que la reconciliación supo nombrar, no un cuarto estado | `02 §6.2, §6.5`, `atom-anchor-state-is-derived-and-computed-per-endpoint`, `atom-drifted-is-a-reconciled-orphan` |
 | 10 | una propuesta de reconciliación vive **fuera del pool**; aceptarla es una transacción `supersedes` cuya única evidencia es el actor: responde quien acepta, no el heurístico | `02 §6.5`, inv. 18 |
 | 11 | el `:fingerprint` externo es `<alg>:<hex>` con el algoritmo del store; el kernel valida la forma y compara, y qué bytes se digieren es contrato del motor emisor | `02 §6.4`, `atom-external-fingerprint-form-and-who-computes-it` |
@@ -84,6 +84,8 @@ drawer (§6).
 | 15 | rutas **relativas** en `store.edn` (`:links`), índices y export; nunca absolutas (vicio v1) | `06 §5` |
 | 16 | toda escritura (evaluador incluido) es un `TransactionPlan`; los derivados se invalidan por `anchor/states` sobre aristas `derived`, sin tracker aparte | `09 §3–4` |
 | 17 | **tres nombres para tres cosas** (2026-09-07): el producto v2 es **`kimun`** (Mapudungun *kimün*); **`pron`** es la KB **y** su evaluador Python en un solo paquete (repo `jpcosec/pron`, pip `pron`), que importa `kinesis`; `knowledge` queda congelado como el legacy de julio. Nada de v2 usa la palabra `knowledge` como identificador | `08 §0` |
+| 18 | **v1 sigue en v1** (2026-10-06): los consumidores de sldb v1 (deskops, pron, legos, UIs…) se quedan en v1 por ahora; kimun avanza sin migrarlos. Como kimun no está desplegado, sus stores y su historial se pueden regenerar cuando haga falta ("retrackear"): la paridad byte a byte con v1 es referencia, no obligación | `12-ecosistema-y-pendientes.md` |
+| 19 | **política de lenguajes** (2026-10-06): la lógica de alto nivel se escribe mayormente en Clojure (kernel `.cljc`, superficies, CLI). Se admiten servicios nativos (Rust, C, Zig, Go…) si son fácilmente portables y empaquetables por plataforma, y plugins en cualquier lenguaje (Python, Java, JS/TS…) para no reimplementar lo que ya existe. Condición: pocos y con frontera clara — un protocolo documentado (adaptadores fuera de proceso, `11-adaptadores.md`; pods de Babashka), nunca lógica de dominio repartida entre lenguajes. Primer candidato: tree-sitter (C) como pod para el parseo de Markdown y código | `11-adaptadores.md` |
 
 ## 4. Cómo se trabaja (y por qué)
 

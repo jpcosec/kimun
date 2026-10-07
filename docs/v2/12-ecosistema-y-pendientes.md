@@ -105,10 +105,19 @@ Estado del repo: raíz sin commits, falta `MIGRATION.md`, no existe el layout de
 líneas del motor (`f13c67d`, `f016c75`) no están reconciliadas (sí comparten historia vía
 `origin/main`, contra lo que dice el README); persistencia mínima (un YAML por WiGame).
 
-## 4. Orden acordado (2026-10-06)
+## 4. Decisiones del 2026-10-06 (ver `05-estado.md`, 18 y 19)
+
+- v1 sigue en v1: no se migran consumidores por ahora; kimun se puede regenerar ("retrackear").
+- Lógica de alto nivel en Clojure; servicios nativos portables y plugins en cualquier lenguaje, con
+  frontera clara. tree-sitter (C) como pod pasa a ser candidato a parser único de Markdown: reemplazaría
+  `kimun.surface.models.blocks` (imitación de markdown-it) y el parser propio de `sldb.surface.markdown`;
+  las diferencias de corte contra v1 se revisan y pasan a ser la nueva referencia.
+
+## 5. Orden acordado (2026-10-06)
 
 1. Limpieza: subir commits, borrar worktrees y benchmarks, arreglar o archivar `hum-core`/`hum`.
 2. Bug del contrato de documentos `superseded` (§1, ítem 1).
-3. Primer consumidor real de kimun: UIs por HTTP (barato) o deskops (impacto).
+3. ~~Primer consumidor real de kimun~~ — postergado por la decisión 18 (v1 sigue en v1).
+3b. Prototipo del pod de tree-sitter y medición de diferencias de corte contra el corpus.
 4. En paralelo: consolidar wittgenstein y diseñar la frontera kimun↔wittgenstein (adaptador que lee
    S/M de kimun y escribe hechos G con evidencia en aristas).
