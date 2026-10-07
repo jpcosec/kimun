@@ -14,8 +14,10 @@ Status: **2.0.0-alpha.1** — milestone S0 (repo, `stores` CLI group, packaging)
 
 ```bash
 bb lint && bb test && bb oracle     # rings/docstrings, suite, canonical-bytes oracle
-bb desk   # build this repo's desk store (.kimun) from desk/models and the manifest
+bb desk   # build this repo's desk store (.kimun) from kimun.include.edn (alias of `kimun include build`)
 bin/kimun --version             # dev launcher (needs bb ≥ 1.13 on PATH)
+bin/kimun include check         # this repo versions what kimun.include.edn declares (docs/v2/13)
+bin/kimun include status        # models, documents by model, forced, tracked, findings
 bin/kimun stores init --name my-kb
 bin/kimun stores check --format text
 bb jar                              # target/kimun.jar (built-in bb uberjar)

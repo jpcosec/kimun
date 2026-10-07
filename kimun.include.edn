@@ -1,0 +1,237 @@
+{:include/version 1
+ :store {:path ".kimun" :git :ignore}
+ :models ["desk/models/*.edn"]
+ :documents [{:glob "desk/atoms/addressability-layer.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/agent-provider.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/alias.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/anchor-comment.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/anchor-sample.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/append-only-event-log.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/artifact.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/ast-anchor.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/ast-as-the-debugging-surface.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/ast-command-group.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/ast-locator.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/ast-persistence.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/atom-addressability-class-per-node.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-addressability-report-per-document.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-anchor-state-is-derived-and-computed-per-endpoint.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-canonical-content-and-node-hashing.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-canonical-projected-or-asserted.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-conflictset-on-failed-compare-and-swap.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-decision-first-slice-kernel-semantics-confirmed.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-decision-no-rust-in-the-repository.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-decision-no-separate-lisp-metalanguage.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-decision-pure-cljc-kernel-with-hosts-as-adapters.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-decision-trees-are-trees-of-positions-git-like.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-drifted-is-a-reconciled-orphan.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-evidence-edges-and-anchor-states.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-evidence-required-per-edge-type.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-external-fingerprint-form-and-who-computes-it.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-first-slice-runtime-choices.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-git-object-model-as-the-v2-roadmap.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-identity-is-the-content-hash-succession-is-a-recorded-edge.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-inline-marks-live-on-the-block-text-leaves-stay-plain.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-lossless-cst-and-canonical-render-for-markdown.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-re-anchoring-rules-under-succession.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-replace-semantics-inside-a-transaction.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-reversibility-scope-in-v2.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-revision-id-edge-set-and-diff.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-sldb-md-profile-a-closed-canonical-markdown-subset.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-smg-as-persisted-layers.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-smg-node-pool.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-stand-off-addresses-are-virtual-until-referenced.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-stand-off-annotation-below-the-paragraph.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-transactionplan-edn-schema-and-validation.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-tree-as-index.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-tree-identity-tree-objects-and-heads.md" :model "AtomDoc"}
+             {:glob "desk/atoms/atom-w-i-context-node-and-index.md" :model "AtomDoc"}
+             {:glob "desk/atoms/authorship-state.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/backup-export.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/cache.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/canonical-address.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/canonical-ast.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/canonical-existence.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/canonical-identity.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/canonicalizer.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/capability-model.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/cli-invocation-contract.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/cli-workflow-surface.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/clojure-code-linting.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/clojure-core.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/clojure-patterns.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/clojure-testing.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/code-linting.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/compatibility-surface.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/compose-rendered-document-view.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/concept-binding.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/conformance-suite.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/content-addressed-store.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/corruption-state.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/create-document-workflow.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/decision-graph-store-over-yaml-indexes.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/decision-links-and-anchors-are-canonical.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/decision-relation-ast-extensibility.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/decision-search-index-library.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/degraded-mode.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/dependency-edge.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/dependency-index.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/derived-address.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/derived-edge.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/derived-index.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/direct-mode.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/docs-command-group.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/document-head.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/document-materializer.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/document-path.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/document-source.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/document-tracker.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/dom-locator.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/draft-first-model-edits.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/effect-outbox.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/effect-plan.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/embeddings.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/emitter-compiler.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/event-bus.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/external-anchor-resolver.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/external-anchor.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/failure-model.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/faq-command-group.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/field-and-section-navigation.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/field-binding.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/field-descriptions-are-required-contract.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/field-index.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/field-path.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/fields-command-group.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/find-command-group.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/fragment-id.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/garbage-collection.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/git-orchestration-in-python.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/golden-fixture.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/graph-projection.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/graph-store.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/hash-field.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/help-command-group.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/highlighting-engine.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/hook-binding.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/hook-runtime.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/how-to-get-data-out-of-sldb.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/immutable-append-only-database.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/importer-translator.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/kernel-api.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/lead-paragraph-anchor-rule.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/legacy-cli-aliases.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/link-edge.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/link-editor.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/link-reference.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/local-anchor-resolver.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/local-anchor.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/local-vs-global-store-precedence.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/locator-strategy.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/markdown-emitter.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/markdown-importer.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/markdown-text-surface.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/matrix-adapter.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/merkle-index.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/migration-unit.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/model-browser.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/model-reference-format.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/models-command-group.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/node.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/observability-surface.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/ownership-edge.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/page-locator.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/parser.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/patterns.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/payload-input-forms.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/physical-search.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/plural-first-cli-surface.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/ports-and-adapters.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/primitive-operation.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/projection-edge.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/projection-plan.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/projection-spec.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/projection-surface.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/projection.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/prosemirror-adapter.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/provenance-record.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/python-cli-orchestration-layer.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/python-code-linting.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/python-patterns.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/python-testing.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/query-engine.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/query-plan.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/recover-link-resolution.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/reference-behavior.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/reference-edge.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/relation-ast-extensibility.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/relation-ast.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/renderer.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/repository-registry.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/retention-policy.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/revision.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/schema-binding.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/search-projection.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/section-index.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/sections-command-group.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/semantic-edge.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/semantic-export-boundary.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/semantic-exporter.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/semantic-indexing.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/semantic-provider.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/semantic-query-hint.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/semantic-reference.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/semantic-role.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/semantic-search.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/semantic-tag.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/shallow-title-plus-body-default.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/snapshots.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/source-document-hash.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/source-locator.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/source-manager.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/stable-selector.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/storage-backend.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/store-backed-mode.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/store-edge.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/store-infrastructure.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/store-integrity-checks.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/store-recovery.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/stores-command-group.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/structured-text.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/structurednldoc-contract.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/syntax-locator.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/template-browser.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/temporal-layer.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/text-anchor.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/text-as-graph.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/text-locator.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/threat-model.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/track-existing-document-workflow.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/tracked-document-identity.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/transaction-log.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/transaction-plan.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/transaction.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/transclusion-reference.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/tree-sitter-adapter.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/tree-spine.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/type-contract.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/update-tracked-document-workflow.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/visual-graph-explorer.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/visual-ux-surface.md" :model "AtomDoc" :force true}
+             {:glob "desk/atoms/what-a-store-is.md" :model "AtomDoc" :force true}
+             {:glob "desk/contexts/pill-*.md" :model "PillDoc"}
+             {:glob "desk/inbox/202608*" :model "InboxNoteDoc" :force true}
+             {:glob "desk/inbox/202609*" :model "InboxNoteDoc" :force true}
+             {:glob "desk/primitives/checklists/**/*.md" :model "ChecklistDoc"}
+             {:glob "desk/primitives/conditions/**/*.md" :model "ConditionDoc"}
+             {:glob "desk/primitives/edges/**/*.md" :model "EdgeDoc"}
+             {:glob "desk/primitives/operators/**/*.md" :model "OperatorDoc"}
+             {:glob "desk/registry/**/*.md" :model "RepositoryDoc"}
+             {:glob "desk/routines/**/*.md" :model "RoutineDoc"}
+             {:glob "desk/rituals/ritual-*.md" :model "RitualDoc"}
+             {:glob "desk/tasks/task-*.md" :model "TaskDoc" :force true}]
+ :force #{"desk/contexts/pill-planning-contracts.md"
+          "desk/contexts/pill-python-guidelines.md"
+          "desk/contexts/pill-rust-guidelines.md"
+          "desk/contexts/pill-specyaml-traceability.md"}
+}

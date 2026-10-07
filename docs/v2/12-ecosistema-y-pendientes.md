@@ -39,7 +39,7 @@
 ### Orden (sin código)
 - Commits sin subir: kimun 108, sldb 14.
 - 21 worktrees en `/home/jp/proyectos/kimun-worktrees`; ~1,4 GB de benchmarks en `/tmp/kimun-bench`, `/tmp/kimun-parity`.
-- El store del desk se construye al vuelo con `bb desk` desde `desk/models/*.edn` y `desk/kimun-manifest.edn`; los stores nunca se commitean (regla del dueño, 2026-10-07).
+- El store del desk se construye al vuelo con `bb desk` (alias de `kimun include build`) desde `kimun.include.edn`, que declara qué de este repo se versiona (modelos y documentos); los stores nunca se commitean (regla del dueño, 2026-10-07).
 - sldb v1: 233 commits después del tag `v1-frozen`; el congelamiento no se respeta.
 - `~/.sldb`: 49 stores enlazados, 37 ya no existen.
 
@@ -114,7 +114,7 @@ líneas del motor (`f13c67d`, `f016c75`) no están reconciliadas (sí comparten 
 
 ## 5. Orden acordado (2026-10-06)
 
-1. Limpieza — **hecha 2026-10-06**: kimun y sldb subidos a GitHub; 21 worktrees fusionados y sus ramas borrados; 14 GB de temporales en `/tmp` borrados y `bb test` ahora barre los que crea. El store del desk se construye al vuelo con `bb desk` desde `desk/models/*.edn` y `desk/kimun-manifest.edn` (regla del dueño, 2026-10-07: los stores nunca se commitean).
+1. Limpieza — **hecha 2026-10-06**: kimun y sldb subidos a GitHub; 21 worktrees fusionados y sus ramas borrados; 14 GB de temporales en `/tmp` borrados y `bb test` ahora barre los que crea. El store del desk se construye al vuelo con `bb desk` (alias de `kimun include build`) desde `kimun.include.edn` (regla del dueño, 2026-10-07: los stores nunca se commitean).
 2. Bug del contrato de documentos `superseded` (§1, ítem 1).
 3. ~~Primer consumidor real de kimun~~ — postergado por la decisión 18 (v1 sigue en v1).
 3b. Prototipo del pod de tree-sitter y medición de diferencias de corte contra el corpus.

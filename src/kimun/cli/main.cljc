@@ -14,6 +14,7 @@
             [kimun.cli.commands.fields :as fields]
             [kimun.cli.commands.find :as find]
             [kimun.cli.commands.graph :as graph]
+            [kimun.cli.commands.include :as include]
             [kimun.cli.commands.index :as index]
             [kimun.cli.commands.migrate :as migrate]
             [kimun.cli.commands.models :as models]
@@ -51,6 +52,7 @@
    "semantic" semantic/dispatch
    "serve" serve/dispatch
    "models" models/dispatch
+   "include" include/dispatch
    "extract" (direct/dispatcher "extract")
    "render" (direct/dispatcher "render")
    "validate" (direct/dispatcher "validate")})
@@ -59,7 +61,7 @@
   "The option spec of every group, merged: a group declares its own options
    in its `spec` var, so adding a group never edits `kimun.cli.args`. Two
    groups may share an option name only with the same meaning."
-  (merge stores/spec docs/spec journal/spec serve/spec models/spec direct/spec links/spec semantic/spec fields/spec sections/spec find/spec corpus/spec index/spec predicates/spec edges/spec graph/spec adapters/spec migrate/spec))
+  (merge stores/spec docs/spec journal/spec serve/spec models/spec include/spec direct/spec links/spec semantic/spec fields/spec sections/spec find/spec corpus/spec index/spec predicates/spec edges/spec graph/spec adapters/spec migrate/spec))
 
 (def usage
   "Usage text shown by `kimun`, `kimun help` and `--help`."
@@ -89,6 +91,8 @@
              "  docs track MODEL FILE [--name N]   track an existing Markdown file as a document of MODEL"
              "  docs update NAME [FILE] [--data F | --set k=v]   re-read the file or apply a payload"
              "  docs show NAME [--format md] · docs status · docs untrack NAME · docs delete NAME"
+             "  include check [--staged] · gitignore [--write] · hook --install|--uninstall · build [--rebuild] · status"
+             "                              what this repo versions in git, from kimun.include.edn"
              "  models define|field-add … [--dry-run | --backfill]   documents of a redefined model: list or rewrite them"
              "  models define -f X.edn | --from-python MOD:CLASS [--pythonpath P]   define a model or its next version"
              "  models list | show NAME [--format md] | history NAME | check [NAME] [-f DRAFT.edn]"

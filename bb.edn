@@ -7,8 +7,8 @@
   cli {:doc "Run the kimun CLI in-process: bb cli stores check --format text"
        :task (let [p (apply shell {:continue true} "bb" "-m" "kimun.cli.main" *command-line-args*)]
                (System/exit (:exit p)))}
-  desk {:doc "Build .kimun from desk/models and desk/kimun-manifest.edn"
-        :task (let [p (apply shell {:continue true} "bb" "scripts/desk/build.clj" *command-line-args*)]
+  desk {:doc "Build this repo's desk store (.kimun) from kimun.include.edn (thin alias of `kimun include build`); --rebuild moves an existing store aside."
+        :task (let [p (apply shell {:continue true} "bb" "-m" "kimun.cli.main" "include" "build" *command-line-args*)]
                 (System/exit (:exit p)))}
   jar {:doc "Build target/kimun.jar with the built-in `bb uberjar` (src + resources, main kimun.cli.main); stamps resources/git-sha. Named `jar` on purpose: a task named `uberjar` would shadow the built-in it calls and recurse."
        :task (let [sha (-> (shell {:out :string :continue true} "git" "rev-parse" "--short" "HEAD") :out str/trim)]
