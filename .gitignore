@@ -18,8 +18,8 @@ build/
 dist/
 *.egg-info/
 
-.sldb/runtime/
-.sldb/.config/
+# sldb v1 legacy store: retired from this repo (desk lives in .kimun/)
+.sldb/
 
 .DS_Store
 # Rust build artifacts
@@ -35,4 +35,5 @@ target/
 dist/
 .kimun/index/
 .kimun/session.edn
+.kimun/lock
 resources/git-sha

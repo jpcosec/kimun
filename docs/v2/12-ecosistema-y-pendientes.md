@@ -39,10 +39,9 @@
 ### Orden (sin código)
 - Commits sin subir: kimun 108, sldb 14.
 - 21 worktrees en `/home/jp/proyectos/kimun-worktrees`; ~1,4 GB de benchmarks en `/tmp/kimun-bench`, `/tmp/kimun-parity`.
-- `.sldb/` del desk de kimun con archivos sin commitear.
+- El desk de kimun se movió a `.kimun` el 2026-10-06; se gestiona con comandos `kimun` (`docs`, `fields`, `find`, `journal`) en lugar de la CLI de deskops.
 - sldb v1: 233 commits después del tag `v1-frozen`; el congelamiento no se respeta.
 - `~/.sldb`: 49 stores enlazados, 37 ya no existen.
-- `hum-core` y `hum/workflow` importan `sldb.core.ingest`, que ya no existe (rotos).
 
 ## 2. Consumidores y superficies
 
@@ -115,7 +114,7 @@ líneas del motor (`f13c67d`, `f016c75`) no están reconciliadas (sí comparten 
 
 ## 5. Orden acordado (2026-10-06)
 
-1. Limpieza — **hecha 2026-10-06**: kimun y sldb subidos a GitHub; 21 worktrees fusionados y sus ramas borrados; 14 GB de temporales en `/tmp` borrados y `bb test` ahora barre los que crea. Queda para decidir: `hum-core` y `hum` importan `sldb.core.ingest`, que sldb retiró el 2026-09-24 (`d0df139`, "isla muerta"); arreglar o archivar. El `.sldb/` del desk de kimun sigue con archivos sin commitear.
+1. Limpieza — **hecha 2026-10-06**: kimun y sldb subidos a GitHub; 21 worktrees fusionados y sus ramas borrados; 14 GB de temporales en `/tmp` borrados y `bb test` ahora barre los que crea. El desk de kimun se movió a `.kimun` el 2026-10-06.
 2. Bug del contrato de documentos `superseded` (§1, ítem 1).
 3. ~~Primer consumidor real de kimun~~ — postergado por la decisión 18 (v1 sigue en v1).
 3b. Prototipo del pod de tree-sitter y medición de diferencias de corte contra el corpus.
