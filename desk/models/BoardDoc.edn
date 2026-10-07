@@ -1,0 +1,100 @@
+{:base ["OperationalArtifactDoc" "PrimitiveDoc"],
+ :fields
+ [{:description "Board title for one active routing surface.",
+   :name "title",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:description "Stable board identifier.",
+   :name "id",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:default "",
+   :description "Primitive lifecycle status.",
+   :name "status",
+   :py/annotation "<class 'str'>",
+   :required false,
+   :type :string}
+  {:default "",
+   :description "Short semantic summary for the primitive.",
+   :name "summary",
+   :py/annotation "<class 'str'>",
+   :required false,
+   :type :string}
+  {:default [],
+   :description
+   "Semantic tags placed at the end, using namespaced forms such as 'system:sldb' or 'workspace:desk'.",
+   :name "tags",
+   :py/annotation "list[str]",
+   :required false,
+   :type [:list :string]}
+  {:default "",
+   :description
+   "Primary routine identifier that makes the artifact actionable.",
+   :name "routine",
+   :py/annotation "<class 'str'>",
+   :required false,
+   :type :string}
+  {:default "",
+   :description
+   "Current node in the operational routine or state machine.",
+   :name "current_node",
+   :py/annotation "<class 'str'>",
+   :required false,
+   :type :string}
+  {:default [],
+   :description "Operational transition history for the artifact.",
+   :name "history",
+   :py/annotation "list[str]",
+   :required false,
+   :type [:list :string]}
+  {:description "What area or workspace this board routes.",
+   :name "scope",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:description "Why this board exists and what it indexes.",
+   :name "purpose",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:default [],
+   :description
+   "Active task document references routed by this board.",
+   :name "tasks",
+   :py/annotation "list[str]",
+   :required false,
+   :type [:list :string]}
+  {:default [],
+   :description
+   "Active pill document references routed by this board.",
+   :name "pills",
+   :py/annotation "list[str]",
+   :required false,
+   :type [:list :string]}
+  {:default [],
+   :description "Ritual document references relevant to this board.",
+   :name "rituals",
+   :py/annotation "list[str]",
+   :required false,
+   :type [:list :string]}
+  {:default "No additional notes.",
+   :description
+   "Short operational notes about the current routed set.",
+   :name "notes",
+   :py/annotation "<class 'str'>",
+   :required false,
+   :type :string}],
+ :model/name "BoardDoc",
+ :model/version 1,
+ :py/compositions
+ {"task_summaries"
+  {"model" "deskops.models:TaskDoc",
+   "source_field" "tasks",
+   "template" "- {title} [{status}] - {goal}"}},
+ :py/containment
+ {"pills" ["PillDoc"], "rituals" ["RitualDoc"], "tasks" ["TaskDoc"]},
+ :semantics {"type" ["workflow" "board"], "workspace" ["desk"]},
+ :template
+ "---\n# board-xxx\nid: ⸢rev•id⸥\n# Affected workspace or domain\nscope: ⸢rev•scope⸥\n# List of task-xxx paths\ntasks: ⸢rev•tasks⸥\n# List of pill-xxx paths\npills: ⸢rev•pills⸥\n# List of ritual-xxx paths\nrituals: ⸢rev•rituals⸥\n# e.g., system:sldb, workspace:desk\ntags: ⸢rev•tags⸥\n---\n\n# ⸢rev•title⸥\n\n## Purpose\n\n_Explain what this board routes and why it exists._\n\n⸢rev•purpose⸥\n\n## Notes\n\n_Add short operational notes about the current routed set._\n\n⸢rev•notes⸥\n\n## Task Details\n\n_Generated from the task references above._\n\n⸢render•task_summaries⸥"}

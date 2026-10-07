@@ -1,0 +1,19 @@
+{:base [],
+ :fields
+ [{:description "Primary H1 heading for the FAQ document.",
+   :name "title",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:description
+   "Full FAQ body after the H1, including questions, answers, command examples, and cross-references to atom docs.",
+   :name "body",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}],
+ :model/name "FAQDoc",
+ :model/version 1,
+ :semantics
+ {"type" ["documentation" "faq"], "workspace" ["docs" "faq"]},
+ :template
+ "# ⸢rev•title⸥\n\n_Write the FAQ content, including questions, answers, command examples, and references._\n\n⸢rev•body⸥"}

@@ -1,0 +1,60 @@
+{:base [],
+ :fields
+ [{:description
+   "Inbox note type indicating unresolved confusion or an improvement proposal.",
+   :name "kind",
+   :py/annotation "typing.Literal['unclear', 'suggestion']",
+   :required true,
+   :type [:enum "unclear" "suggestion"]}
+  {:description
+   "Project that sent the inbox message, resolved from the repo registry when possible.",
+   :name "sender_project",
+   :py/annotation "typing.Optional[str]",
+   :required false,
+   :type :string}
+  {:description
+   "Project the inbox note targets, resolved from the shared desk identity contract.",
+   :name "target_project",
+   :py/annotation "typing.Optional[str]",
+   :required false,
+   :type :string}
+  {:description "Timestamp for when the inbox note was created.",
+   :name "created_at",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:description
+   "Whether the inbox note is still open or already handled.",
+   :name "status",
+   :py/annotation "typing.Literal['open', 'closed']",
+   :required true,
+   :type [:enum "open" "closed"]}
+  {:description
+   "Project identity that acknowledged and closed the inbox note.",
+   :name "acknowledged_by",
+   :py/annotation "typing.Optional[str]",
+   :required false,
+   :type :string}
+  {:description
+   "Timestamp for when the inbox note was acknowledged and closed.",
+   :name "acknowledged_at",
+   :py/annotation "typing.Optional[str]",
+   :required false,
+   :type :string}
+  {:description "Inbox note title shown as the H1 heading.",
+   :name "title",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:description
+   "Markdown body describing the question or suggestion in detail.",
+   :name "body",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}],
+ :model/name "InboxNoteDoc",
+ :model/version 1,
+ :semantics
+ {"type" ["desk" "inbox-note"], "workspace" ["desk" "inbox"]},
+ :template
+ "---\n# unclear | suggestion\nkind: ⸢rev•kind⸥\n# e.g., other_repo\nsender_project: ⸢optrev•sender_project⸥\n# e.g., target_repo\ntarget_project: ⸢optrev•target_project⸥\n# ISO 8601 timestamp\ncreated_at: ⸢rev•created_at⸥\n# open | closed\nstatus: ⸢rev•status⸥\n# project identity that acknowledged the note\nacknowledged_by: ⸢optrev•acknowledged_by⸥\n# ISO 8601 timestamp, set when acknowledged\nacknowledged_at: ⸢optrev•acknowledged_at⸥\n---\n\n# ⸢rev•title⸥\n\n_Describe the incoming message with enough evidence to triage._\n\n⸢rev,markdown•body⸥\n"}

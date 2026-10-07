@@ -30,11 +30,10 @@ target/
 *.dll**/target/
 **/*.rs.bk
 
-# kimun (S0)
+# kimun (S0): the store is built on the run (bb desk) from desk/models and
+# desk/kimun-manifest.edn; never committed.
+.kimun/
 target/
 dist/
-.kimun/index/
-.kimun/session.edn
-.kimun/lock
 resources/git-sha
 .herdr-coordination.md

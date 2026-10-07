@@ -1,0 +1,34 @@
+{:base [],
+ :fields
+ [{:description "Short step title.",
+   :name "title",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:description "Stable step identifier.",
+   :name "id",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:description "What the step should do.",
+   :name "action",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:description "What the step should produce or confirm.",
+   :name "outcome",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:default [],
+   :description
+   "Semantic tags placed at the end, using namespaced forms such as 'topic:testing' or 'workspace:desk'.",
+   :name "tags",
+   :py/annotation "list[str]",
+   :required false,
+   :type [:list :string]}],
+ :model/name "StepDoc",
+ :model/version 1,
+ :semantics {"type" ["workflow" "step"], "workspace" ["desk"]},
+ :template
+ "---\n# step-xxx\nid: ⸢rev•id⸥\n# e.g., topic:testing, workspace:desk\ntags: ⸢rev•tags⸥\n---\n\n# ⸢rev•title⸥\n\n## Action\n\n_Describe the action this step performs._\n\n⸢rev•action⸥\n\n## Outcome\n\n_Describe the result or evidence this step should produce._\n\n⸢rev•outcome⸥"}

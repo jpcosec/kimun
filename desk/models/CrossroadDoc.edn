@@ -1,0 +1,31 @@
+{:base [],
+ :fields
+ [{:description
+   "Stable identifier: 'crossroad-' plus the path with dots written as '--'.",
+   :name "id",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:description
+   "Domain path this crossroad describes, e.g. pizzeria.carta.",
+   :name "path",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:description "Short title of the domain area.",
+   :name "title",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:description
+   "Written description of what hangs below this path; must not be empty.",
+   :name "content",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}],
+ :model/name "CrossroadDoc",
+ :model/version 1,
+ :semantics
+ {"type" ["knowledge" "crossroad"], "workspace" ["desk" "atoms"]},
+ :template
+ "---\nid: ⸢rev•id⸥\npath: ⸢rev•path⸥\ntitle: ⸢rev•title⸥\n---\n\n# ⸢render•title⸥\n\n## Content\n\n⸢rev,markdown•content⸥"}

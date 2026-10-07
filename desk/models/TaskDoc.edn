@@ -1,0 +1,170 @@
+{:base ["OperationalArtifactDoc" "PrimitiveDoc"],
+ :fields
+ [{:description "Short action-oriented task title.",
+   :name "title",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:description "Stable task identifier.",
+   :name "id",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:description "Current task state, typically active or blocked.",
+   :name "status",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:default "",
+   :description "Short semantic summary for the primitive.",
+   :name "summary",
+   :py/annotation "<class 'str'>",
+   :required false,
+   :type :string}
+  {:default [],
+   :description
+   "Semantic tags placed at the end, using namespaced forms such as 'system:sldb' or 'language:python'.",
+   :name "tags",
+   :py/annotation "list[str]",
+   :required false,
+   :type [:list :string]}
+  {:default "",
+   :description
+   "Primary routine identifier that makes the artifact actionable.",
+   :name "routine",
+   :py/annotation "<class 'str'>",
+   :required false,
+   :type :string}
+  {:default "",
+   :description
+   "Current node in the operational routine or state machine.",
+   :name "current_node",
+   :py/annotation "<class 'str'>",
+   :required false,
+   :type :string}
+  {:default [],
+   :description "Operational transition history for the artifact.",
+   :name "history",
+   :py/annotation "list[str]",
+   :required false,
+   :type [:list :string]}
+  {:description "YAML frontmatter containing task metadata",
+   :exclude true,
+   :name "frontmatter",
+   :py/annotation "dict | None",
+   :required false,
+   :type :yaml}
+  {:default "Not provided.",
+   :description "Rationale or business driver behind the task.",
+   :name "why",
+   :py/annotation "str | None",
+   :required false,
+   :type :string}
+  {:description "Concrete intended result for the task.",
+   :name "goal",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:description "What is in and out of scope for the task.",
+   :name "scope",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:default [],
+   :description
+   "Relevant references such as files, docs, commits, or commands.",
+   :name "references",
+   :py/annotation "list[str]",
+   :required false,
+   :type [:list :string]}
+  {:default [],
+   :description "Task identifiers that must complete first.",
+   :name "depends_on",
+   :py/annotation "list[str]",
+   :required false,
+   :type [:list :string]}
+  {:default [],
+   :description
+   "Pill identifiers required for safe execution of the task.",
+   :name "pills",
+   :py/annotation "list[str]",
+   :required false,
+   :type [:list :string]}
+  {:default [],
+   :description "Files or paths expected to change during the task.",
+   :name "files",
+   :py/annotation "list[str]",
+   :required false,
+   :type [:list :string]}
+  {:default [],
+   :description
+   "Checklist identifiers that verify the task's operational routine.",
+   :name "checklists",
+   :py/annotation "list[str]",
+   :required false,
+   :type [:list :string]}
+  {:description
+   "Suggested implementation path for completing the task.",
+   :name "implementation_path",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:default [],
+   :description "Tests, checks, or commands required before closure.",
+   :name "validation",
+   :py/annotation "list[str]",
+   :required false,
+   :type [:list :string]}
+  {:description "Observable completion rule for the task.",
+   :name "done_when",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:default "",
+   :description
+   "Workflow task type such as design, implementation, test, reflection, or closeout.",
+   :name "task_type",
+   :py/annotation "<class 'str'>",
+   :required false,
+   :type :string}
+  {:default [],
+   :description
+   "Task identifiers that provide inherited workflow context.",
+   :name "inherits_from",
+   :py/annotation "list[str]",
+   :required false,
+   :type [:list :string]}
+  {:default false,
+   :description
+   "Whether validation and done-when context should be inherited from referenced tasks.",
+   :name "inherit_acceptance_context",
+   :py/annotation "<class 'bool'>",
+   :required false,
+   :type :bool}
+  {:default [],
+   :description
+   "Workflow or knowledge atoms explicitly bound to the task.",
+   :name "atoms",
+   :py/annotation "list[str]",
+   :required false,
+   :type [:list :string]}
+  {:default "",
+   :description
+   "Repo-relative path of the desk/drawer/ file this task was authored from; empty when it was not.",
+   :name "from_drawer",
+   :py/annotation "<class 'str'>",
+   :required false,
+   :type :string}],
+ :model/name "TaskDoc",
+ :model/version 1,
+ :py/containment
+ {"atoms" ["AtomDoc"],
+  "checklists" ["ChecklistDoc"],
+  "current_node" ["ChecklistDoc" "StepDoc"],
+  "pills" ["PillDoc"],
+  "routine" ["RoutineDoc"]},
+ :py/references
+ ["references" "depends_on" "inherits_from" "from_drawer"],
+ :semantics {"type" ["workflow" "task"], "workspace" ["desk"]},
+ :template
+ "---\n⸢rev,dict•frontmatter⸥\n---\n\n# ⸢rev•title⸥\n\n## Rationale\n\n_Explain why this task exists or the business driver behind it._\n\n⸢rev•why⸥\n\n## Goal\n\n_Describe the concrete result this task must produce._\n\n⸢rev•goal⸥\n\n## Scope\n\n_State what is in scope and what is out of scope._\n\n⸢rev•scope⸥\n\n## Implementation Path\n\n_Outline the expected implementation route or affected surface._\n\n⸢rev•implementation_path⸥\n\n## Validation\n\n_List the checks required before this task can close._\n\n- ⸢rev,list•validation⸥\n\n## Done When\n\n_Name the observable condition that makes the task complete._\n\n⸢rev•done_when⸥"}

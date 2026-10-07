@@ -14,6 +14,7 @@ Status: **2.0.0-alpha.1** — milestone S0 (repo, `stores` CLI group, packaging)
 
 ```bash
 bb lint && bb test && bb oracle     # rings/docstrings, suite, canonical-bytes oracle
+bb desk   # build this repo's desk store (.kimun) from desk/models and the manifest
 bin/kimun --version             # dev launcher (needs bb ≥ 1.13 on PATH)
 bin/kimun stores init --name my-kb
 bin/kimun stores check --format text

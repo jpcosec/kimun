@@ -1,0 +1,44 @@
+{:base [],
+ :fields
+ [{:description "Short human-readable name of the repository.",
+   :name "name",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:description "Stable unique identifier for the repository.",
+   :name "id",
+   :py/annotation "typing.Optional[str]",
+   :required false,
+   :type :string}
+  {:description
+   "Relative path to the repository root from the ecosystem root.",
+   :name "path",
+   :py/annotation "typing.Optional[str]",
+   :required false,
+   :type :string}
+  {:default "active",
+   :description
+   "Current status of the repository (e.g., active, maintenance, archived).",
+   :name "status",
+   :py/annotation "<class 'str'>",
+   :required false,
+   :type :string}
+  {:description
+   "Markdown description of the repository's purpose and scope.",
+   :name "description",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:default [],
+   :description
+   "Semantic tags for categorization (e.g., type:tool, layer:infra).",
+   :name "tags",
+   :py/annotation "list[str]",
+   :required false,
+   :type [:list :string]}],
+ :model/name "RepositoryDoc",
+ :model/version 1,
+ :semantics
+ {"type" ["desk" "repository"], "workspace" ["desk" "registry"]},
+ :template
+ "---\n# repo-xxx\nid: ⸢rev•id⸥\n# Relative path to repository\npath: ⸢rev•path⸥\n# active | maintenance | archived\nstatus: ⸢rev•status⸥\n# e.g., type:tool, layer:infra\ntags: ⸢rev•tags⸥\n---\n\n# Repository: ⸢rev•name⸥\n\n## Description\n\n_Describe the repository purpose, scope, and role in the ecosystem._\n\n⸢rev,markdown•description⸥\n"}

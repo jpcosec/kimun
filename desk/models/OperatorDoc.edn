@@ -1,0 +1,54 @@
+{:base ["PrimitiveDoc"],
+ :fields
+ [{:description "Short primitive title.",
+   :name "title",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:description "Stable primitive identifier.",
+   :name "id",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:default "",
+   :description "Primitive lifecycle status.",
+   :name "status",
+   :py/annotation "<class 'str'>",
+   :required false,
+   :type :string}
+  {:default "",
+   :description "Short semantic summary for the primitive.",
+   :name "summary",
+   :py/annotation "<class 'str'>",
+   :required false,
+   :type :string}
+  {:default [],
+   :description
+   "Semantic tags placed at the end using namespaced forms.",
+   :name "tags",
+   :py/annotation "list[str]",
+   :required false,
+   :type [:list :string]}
+  {:description
+   "Atomic runtime action, such as set_field or append_list.",
+   :name "action",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:description "Payload path modified by the operator.",
+   :name "target",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:default "",
+   :description "Value used by the operator action.",
+   :name "value",
+   :py/annotation "<class 'str'>",
+   :required false,
+   :type :string}],
+ :model/name "OperatorDoc",
+ :model/version 1,
+ :semantics
+ {"type" ["workflow" "operator"], "workspace" ["desk" "primitives"]},
+ :template
+ "---\n# operator-xxx\nid: ⸢rev•id⸥\n# active | archived\nstatus: ⸢rev•status⸥\n# Atomic runtime action, e.g., set_field, append_list\naction: ⸢rev•action⸥\n# Payload path modified by the operator\ntarget: ⸢rev•target⸥\n# Value used by the operator action\nvalue: ⸢rev•value⸥\n# e.g., system:deskops\ntags: ⸢rev•tags⸥\n---\n\n# ⸢rev•title⸥\n\n## Summary\n\n_Summarize the state transition this operator performs._\n\n⸢rev•summary⸥"}

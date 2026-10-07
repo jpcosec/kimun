@@ -1,0 +1,46 @@
+{:base [],
+ :fields
+ [{:description
+   "Stable, unique protoatom identifier, conventionally 'proto-<slug>'.",
+   :name "id",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:description "Short title of the free knowledge unit.",
+   :name "title",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:default "",
+   :description
+   "Free markdown content, with no fixed question or structure.",
+   :name "content",
+   :py/annotation "<class 'str'>",
+   :required false,
+   :type :string}
+  {:default [],
+   :description
+   "Namespaced tags; a single domain:<path> tag places the protoatom in the domain tree.",
+   :name "tags",
+   :py/annotation
+   "list[typing.Annotated[str, FieldInfo(annotation=NoneType, required=True, description='Namespaced semantic tag in the form namespace:value.', metadata=[_PydanticGeneralMetadata(pattern='^[a-z][a-z0-9_]*:[a-z][a-z0-9_.-]*$')])]]",
+   :required false,
+   :type [:list :yaml]}
+  {:description
+   "Model:id of the document this protoatom was typed into; when set, the protoatom is a redirect stub.",
+   :name "typed_as",
+   :py/annotation "str | None",
+   :required false,
+   :type :string}
+  {:description
+   "Optional URL or path to the source of this knowledge.",
+   :name "provenance",
+   :py/annotation "str | None",
+   :required false,
+   :type :string}],
+ :model/name "ProtoAtomDoc",
+ :model/version 1,
+ :semantics
+ {"type" ["knowledge" "protoatom"], "workspace" ["desk" "atoms"]},
+ :template
+ "---\nid: ⸢rev•id⸥\ntitle: ⸢rev•title⸥\ntags: ⸢rev•tags⸥\ntyped_as: ⸢optrev•typed_as⸥\nprovenance: ⸢optrev•provenance⸥\n---\n\n# ⸢render•title⸥\n\n## Content\n\n⸢rev,markdown•content⸥"}

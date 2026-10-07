@@ -1,0 +1,2279 @@
+[{:name "addressability-layer",
+  :model "AtomDoc",
+  :path "desk/atoms/addressability-layer.md",
+  :force true}
+ {:name "agent-provider",
+  :model "AtomDoc",
+  :path "desk/atoms/agent-provider.md",
+  :force true}
+ {:name "alias",
+  :model "AtomDoc",
+  :path "desk/atoms/alias.md",
+  :force true}
+ {:name "anchor-comment",
+  :model "AtomDoc",
+  :path "desk/atoms/anchor-comment.md",
+  :force true}
+ {:name "anchor-sample",
+  :model "AtomDoc",
+  :path "desk/atoms/anchor-sample.md",
+  :force true}
+ {:name "append-only-event-log",
+  :model "AtomDoc",
+  :path "desk/atoms/append-only-event-log.md",
+  :force true}
+ {:name "artifact",
+  :model "AtomDoc",
+  :path "desk/atoms/artifact.md",
+  :force true}
+ {:name "ast-anchor",
+  :model "AtomDoc",
+  :path "desk/atoms/ast-anchor.md",
+  :force true}
+ {:name "ast-as-the-debugging-surface",
+  :model "AtomDoc",
+  :path "desk/atoms/ast-as-the-debugging-surface.md",
+  :force true}
+ {:name "ast-command-group",
+  :model "AtomDoc",
+  :path "desk/atoms/ast-command-group.md",
+  :force true}
+ {:name "ast-locator",
+  :model "AtomDoc",
+  :path "desk/atoms/ast-locator.md",
+  :force true}
+ {:name "ast-persistence",
+  :model "AtomDoc",
+  :path "desk/atoms/ast-persistence.md",
+  :force true}
+ {:name "atom-addressability-class-per-node",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-addressability-class-per-node.md"}
+ {:name "atom-addressability-report-per-document",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-addressability-report-per-document.md"}
+ {:name "atom-anchor-state-is-derived-and-computed-per-endpoint",
+  :model "AtomDoc",
+  :path
+  "desk/atoms/atom-anchor-state-is-derived-and-computed-per-endpoint.md"}
+ {:name "atom-canonical-content-and-node-hashing",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-canonical-content-and-node-hashing.md"}
+ {:name "atom-canonical-projected-or-asserted",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-canonical-projected-or-asserted.md"}
+ {:name "atom-conflictset-on-failed-compare-and-swap",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-conflictset-on-failed-compare-and-swap.md"}
+ {:name "atom-decision-first-slice-kernel-semantics-confirmed",
+  :model "AtomDoc",
+  :path
+  "desk/atoms/atom-decision-first-slice-kernel-semantics-confirmed.md"}
+ {:name "atom-decision-no-rust-in-the-repository",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-decision-no-rust-in-the-repository.md"}
+ {:name "atom-decision-no-separate-lisp-metalanguage",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-decision-no-separate-lisp-metalanguage.md"}
+ {:name "atom-decision-pure-cljc-kernel-with-hosts-as-adapters",
+  :model "AtomDoc",
+  :path
+  "desk/atoms/atom-decision-pure-cljc-kernel-with-hosts-as-adapters.md"}
+ {:name "atom-decision-trees-are-trees-of-positions-git-like",
+  :model "AtomDoc",
+  :path
+  "desk/atoms/atom-decision-trees-are-trees-of-positions-git-like.md"}
+ {:name "atom-drifted-is-a-reconciled-orphan",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-drifted-is-a-reconciled-orphan.md"}
+ {:name "atom-evidence-edges-and-anchor-states",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-evidence-edges-and-anchor-states.md"}
+ {:name "atom-evidence-required-per-edge-type",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-evidence-required-per-edge-type.md"}
+ {:name "atom-external-fingerprint-form-and-who-computes-it",
+  :model "AtomDoc",
+  :path
+  "desk/atoms/atom-external-fingerprint-form-and-who-computes-it.md"}
+ {:name "atom-first-slice-runtime-choices",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-first-slice-runtime-choices.md"}
+ {:name "atom-git-object-model-as-the-v2-roadmap",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-git-object-model-as-the-v2-roadmap.md"}
+ {:name
+  "atom-identity-is-the-content-hash-succession-is-a-recorded-edge",
+  :model "AtomDoc",
+  :path
+  "desk/atoms/atom-identity-is-the-content-hash-succession-is-a-recorded-edge.md"}
+ {:name "atom-inline-marks-live-on-the-block-text-leaves-stay-plain",
+  :model "AtomDoc",
+  :path
+  "desk/atoms/atom-inline-marks-live-on-the-block-text-leaves-stay-plain.md"}
+ {:name "atom-lossless-cst-and-canonical-render-for-markdown",
+  :model "AtomDoc",
+  :path
+  "desk/atoms/atom-lossless-cst-and-canonical-render-for-markdown.md"}
+ {:name "atom-re-anchoring-rules-under-succession",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-re-anchoring-rules-under-succession.md"}
+ {:name "atom-replace-semantics-inside-a-transaction",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-replace-semantics-inside-a-transaction.md"}
+ {:name "atom-reversibility-scope-in-v2",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-reversibility-scope-in-v2.md"}
+ {:name "atom-revision-id-edge-set-and-diff",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-revision-id-edge-set-and-diff.md"}
+ {:name "atom-sldb-md-profile-a-closed-canonical-markdown-subset",
+  :model "AtomDoc",
+  :path
+  "desk/atoms/atom-sldb-md-profile-a-closed-canonical-markdown-subset.md"}
+ {:name "atom-smg-as-persisted-layers",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-smg-as-persisted-layers.md"}
+ {:name "atom-smg-node-pool",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-smg-node-pool.md"}
+ {:name "atom-stand-off-addresses-are-virtual-until-referenced",
+  :model "AtomDoc",
+  :path
+  "desk/atoms/atom-stand-off-addresses-are-virtual-until-referenced.md"}
+ {:name "atom-stand-off-annotation-below-the-paragraph",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-stand-off-annotation-below-the-paragraph.md"}
+ {:name "atom-transactionplan-edn-schema-and-validation",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-transactionplan-edn-schema-and-validation.md"}
+ {:name "atom-tree-as-index",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-tree-as-index.md"}
+ {:name "atom-tree-identity-tree-objects-and-heads",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-tree-identity-tree-objects-and-heads.md"}
+ {:name "atom-w-i-context-node-and-index",
+  :model "AtomDoc",
+  :path "desk/atoms/atom-w-i-context-node-and-index.md"}
+ {:name "authorship-state",
+  :model "AtomDoc",
+  :path "desk/atoms/authorship-state.md",
+  :force true}
+ {:name "backup-export",
+  :model "AtomDoc",
+  :path "desk/atoms/backup-export.md",
+  :force true}
+ {:name "cache",
+  :model "AtomDoc",
+  :path "desk/atoms/cache.md",
+  :force true}
+ {:name "canonical-address",
+  :model "AtomDoc",
+  :path "desk/atoms/canonical-address.md",
+  :force true}
+ {:name "canonical-ast",
+  :model "AtomDoc",
+  :path "desk/atoms/canonical-ast.md",
+  :force true}
+ {:name "canonical-existence",
+  :model "AtomDoc",
+  :path "desk/atoms/canonical-existence.md",
+  :force true}
+ {:name "canonical-identity",
+  :model "AtomDoc",
+  :path "desk/atoms/canonical-identity.md",
+  :force true}
+ {:name "canonicalizer",
+  :model "AtomDoc",
+  :path "desk/atoms/canonicalizer.md",
+  :force true}
+ {:name "capability-model",
+  :model "AtomDoc",
+  :path "desk/atoms/capability-model.md",
+  :force true}
+ {:name "cli-invocation-contract",
+  :model "AtomDoc",
+  :path "desk/atoms/cli-invocation-contract.md",
+  :force true}
+ {:name "cli-workflow-surface",
+  :model "AtomDoc",
+  :path "desk/atoms/cli-workflow-surface.md",
+  :force true}
+ {:name "clojure-code-linting",
+  :model "AtomDoc",
+  :path "desk/atoms/clojure-code-linting.md",
+  :force true}
+ {:name "clojure-core",
+  :model "AtomDoc",
+  :path "desk/atoms/clojure-core.md",
+  :force true}
+ {:name "clojure-patterns",
+  :model "AtomDoc",
+  :path "desk/atoms/clojure-patterns.md",
+  :force true}
+ {:name "clojure-testing",
+  :model "AtomDoc",
+  :path "desk/atoms/clojure-testing.md",
+  :force true}
+ {:name "code-linting",
+  :model "AtomDoc",
+  :path "desk/atoms/code-linting.md",
+  :force true}
+ {:name "compatibility-surface",
+  :model "AtomDoc",
+  :path "desk/atoms/compatibility-surface.md",
+  :force true}
+ {:name "compose-rendered-document-view",
+  :model "AtomDoc",
+  :path "desk/atoms/compose-rendered-document-view.md",
+  :force true}
+ {:name "concept-binding",
+  :model "AtomDoc",
+  :path "desk/atoms/concept-binding.md",
+  :force true}
+ {:name "conformance-suite",
+  :model "AtomDoc",
+  :path "desk/atoms/conformance-suite.md",
+  :force true}
+ {:name "content-addressed-store",
+  :model "AtomDoc",
+  :path "desk/atoms/content-addressed-store.md",
+  :force true}
+ {:name "corruption-state",
+  :model "AtomDoc",
+  :path "desk/atoms/corruption-state.md",
+  :force true}
+ {:name "create-document-workflow",
+  :model "AtomDoc",
+  :path "desk/atoms/create-document-workflow.md",
+  :force true}
+ {:name "decision-graph-store-over-yaml-indexes",
+  :model "AtomDoc",
+  :path "desk/atoms/decision-graph-store-over-yaml-indexes.md",
+  :force true}
+ {:name "decision-links-and-anchors-are-canonical",
+  :model "AtomDoc",
+  :path "desk/atoms/decision-links-and-anchors-are-canonical.md",
+  :force true}
+ {:name "decision-relation-ast-extensibility",
+  :model "AtomDoc",
+  :path "desk/atoms/decision-relation-ast-extensibility.md",
+  :force true}
+ {:name "decision-search-index-library",
+  :model "AtomDoc",
+  :path "desk/atoms/decision-search-index-library.md",
+  :force true}
+ {:name "degraded-mode",
+  :model "AtomDoc",
+  :path "desk/atoms/degraded-mode.md",
+  :force true}
+ {:name "dependency-edge",
+  :model "AtomDoc",
+  :path "desk/atoms/dependency-edge.md",
+  :force true}
+ {:name "dependency-index",
+  :model "AtomDoc",
+  :path "desk/atoms/dependency-index.md",
+  :force true}
+ {:name "derived-address",
+  :model "AtomDoc",
+  :path "desk/atoms/derived-address.md",
+  :force true}
+ {:name "derived-edge",
+  :model "AtomDoc",
+  :path "desk/atoms/derived-edge.md",
+  :force true}
+ {:name "derived-index",
+  :model "AtomDoc",
+  :path "desk/atoms/derived-index.md",
+  :force true}
+ {:name "direct-mode",
+  :model "AtomDoc",
+  :path "desk/atoms/direct-mode.md",
+  :force true}
+ {:name "docs-command-group",
+  :model "AtomDoc",
+  :path "desk/atoms/docs-command-group.md",
+  :force true}
+ {:name "document-head",
+  :model "AtomDoc",
+  :path "desk/atoms/document-head.md",
+  :force true}
+ {:name "document-materializer",
+  :model "AtomDoc",
+  :path "desk/atoms/document-materializer.md",
+  :force true}
+ {:name "document-path",
+  :model "AtomDoc",
+  :path "desk/atoms/document-path.md",
+  :force true}
+ {:name "document-source",
+  :model "AtomDoc",
+  :path "desk/atoms/document-source.md",
+  :force true}
+ {:name "document-tracker",
+  :model "AtomDoc",
+  :path "desk/atoms/document-tracker.md",
+  :force true}
+ {:name "dom-locator",
+  :model "AtomDoc",
+  :path "desk/atoms/dom-locator.md",
+  :force true}
+ {:name "draft-first-model-edits",
+  :model "AtomDoc",
+  :path "desk/atoms/draft-first-model-edits.md",
+  :force true}
+ {:name "effect-outbox",
+  :model "AtomDoc",
+  :path "desk/atoms/effect-outbox.md",
+  :force true}
+ {:name "effect-plan",
+  :model "AtomDoc",
+  :path "desk/atoms/effect-plan.md",
+  :force true}
+ {:name "embeddings",
+  :model "AtomDoc",
+  :path "desk/atoms/embeddings.md",
+  :force true}
+ {:name "emitter-compiler",
+  :model "AtomDoc",
+  :path "desk/atoms/emitter-compiler.md",
+  :force true}
+ {:name "event-bus",
+  :model "AtomDoc",
+  :path "desk/atoms/event-bus.md",
+  :force true}
+ {:name "external-anchor",
+  :model "AtomDoc",
+  :path "desk/atoms/external-anchor.md",
+  :force true}
+ {:name "external-anchor-resolver",
+  :model "AtomDoc",
+  :path "desk/atoms/external-anchor-resolver.md",
+  :force true}
+ {:name "failure-model",
+  :model "AtomDoc",
+  :path "desk/atoms/failure-model.md",
+  :force true}
+ {:name "faq-command-group",
+  :model "AtomDoc",
+  :path "desk/atoms/faq-command-group.md",
+  :force true}
+ {:name "field-and-section-navigation",
+  :model "AtomDoc",
+  :path "desk/atoms/field-and-section-navigation.md",
+  :force true}
+ {:name "field-binding",
+  :model "AtomDoc",
+  :path "desk/atoms/field-binding.md",
+  :force true}
+ {:name "field-descriptions-are-required-contract",
+  :model "AtomDoc",
+  :path "desk/atoms/field-descriptions-are-required-contract.md",
+  :force true}
+ {:name "field-index",
+  :model "AtomDoc",
+  :path "desk/atoms/field-index.md",
+  :force true}
+ {:name "field-path",
+  :model "AtomDoc",
+  :path "desk/atoms/field-path.md",
+  :force true}
+ {:name "fields-command-group",
+  :model "AtomDoc",
+  :path "desk/atoms/fields-command-group.md",
+  :force true}
+ {:name "find-command-group",
+  :model "AtomDoc",
+  :path "desk/atoms/find-command-group.md",
+  :force true}
+ {:name "fragment-id",
+  :model "AtomDoc",
+  :path "desk/atoms/fragment-id.md",
+  :force true}
+ {:name "garbage-collection",
+  :model "AtomDoc",
+  :path "desk/atoms/garbage-collection.md",
+  :force true}
+ {:name "git-orchestration-in-python",
+  :model "AtomDoc",
+  :path "desk/atoms/git-orchestration-in-python.md",
+  :force true}
+ {:name "golden-fixture",
+  :model "AtomDoc",
+  :path "desk/atoms/golden-fixture.md",
+  :force true}
+ {:name "graph-projection",
+  :model "AtomDoc",
+  :path "desk/atoms/graph-projection.md",
+  :force true}
+ {:name "graph-store",
+  :model "AtomDoc",
+  :path "desk/atoms/graph-store.md",
+  :force true}
+ {:name "hash-field",
+  :model "AtomDoc",
+  :path "desk/atoms/hash-field.md",
+  :force true}
+ {:name "help-command-group",
+  :model "AtomDoc",
+  :path "desk/atoms/help-command-group.md",
+  :force true}
+ {:name "highlighting-engine",
+  :model "AtomDoc",
+  :path "desk/atoms/highlighting-engine.md",
+  :force true}
+ {:name "hook-binding",
+  :model "AtomDoc",
+  :path "desk/atoms/hook-binding.md",
+  :force true}
+ {:name "hook-runtime",
+  :model "AtomDoc",
+  :path "desk/atoms/hook-runtime.md",
+  :force true}
+ {:name "how-to-get-data-out-of-sldb",
+  :model "AtomDoc",
+  :path "desk/atoms/how-to-get-data-out-of-sldb.md",
+  :force true}
+ {:name "immutable-append-only-database",
+  :model "AtomDoc",
+  :path "desk/atoms/immutable-append-only-database.md",
+  :force true}
+ {:name "importer-translator",
+  :model "AtomDoc",
+  :path "desk/atoms/importer-translator.md",
+  :force true}
+ {:name "kernel-api",
+  :model "AtomDoc",
+  :path "desk/atoms/kernel-api.md",
+  :force true}
+ {:name "lead-paragraph-anchor-rule",
+  :model "AtomDoc",
+  :path "desk/atoms/lead-paragraph-anchor-rule.md",
+  :force true}
+ {:name "legacy-cli-aliases",
+  :model "AtomDoc",
+  :path "desk/atoms/legacy-cli-aliases.md",
+  :force true}
+ {:name "link-edge",
+  :model "AtomDoc",
+  :path "desk/atoms/link-edge.md",
+  :force true}
+ {:name "link-editor",
+  :model "AtomDoc",
+  :path "desk/atoms/link-editor.md",
+  :force true}
+ {:name "link-reference",
+  :model "AtomDoc",
+  :path "desk/atoms/link-reference.md",
+  :force true}
+ {:name "local-anchor",
+  :model "AtomDoc",
+  :path "desk/atoms/local-anchor.md",
+  :force true}
+ {:name "local-anchor-resolver",
+  :model "AtomDoc",
+  :path "desk/atoms/local-anchor-resolver.md",
+  :force true}
+ {:name "local-vs-global-store-precedence",
+  :model "AtomDoc",
+  :path "desk/atoms/local-vs-global-store-precedence.md",
+  :force true}
+ {:name "locator-strategy",
+  :model "AtomDoc",
+  :path "desk/atoms/locator-strategy.md",
+  :force true}
+ {:name "markdown-emitter",
+  :model "AtomDoc",
+  :path "desk/atoms/markdown-emitter.md",
+  :force true}
+ {:name "markdown-importer",
+  :model "AtomDoc",
+  :path "desk/atoms/markdown-importer.md",
+  :force true}
+ {:name "markdown-text-surface",
+  :model "AtomDoc",
+  :path "desk/atoms/markdown-text-surface.md",
+  :force true}
+ {:name "matrix-adapter",
+  :model "AtomDoc",
+  :path "desk/atoms/matrix-adapter.md",
+  :force true}
+ {:name "merkle-index",
+  :model "AtomDoc",
+  :path "desk/atoms/merkle-index.md",
+  :force true}
+ {:name "migration-unit",
+  :model "AtomDoc",
+  :path "desk/atoms/migration-unit.md",
+  :force true}
+ {:name "model-browser",
+  :model "AtomDoc",
+  :path "desk/atoms/model-browser.md",
+  :force true}
+ {:name "model-reference-format",
+  :model "AtomDoc",
+  :path "desk/atoms/model-reference-format.md",
+  :force true}
+ {:name "models-command-group",
+  :model "AtomDoc",
+  :path "desk/atoms/models-command-group.md",
+  :force true}
+ {:name "node",
+  :model "AtomDoc",
+  :path "desk/atoms/node.md",
+  :force true}
+ {:name "observability-surface",
+  :model "AtomDoc",
+  :path "desk/atoms/observability-surface.md",
+  :force true}
+ {:name "ownership-edge",
+  :model "AtomDoc",
+  :path "desk/atoms/ownership-edge.md",
+  :force true}
+ {:name "page-locator",
+  :model "AtomDoc",
+  :path "desk/atoms/page-locator.md",
+  :force true}
+ {:name "parser",
+  :model "AtomDoc",
+  :path "desk/atoms/parser.md",
+  :force true}
+ {:name "patterns",
+  :model "AtomDoc",
+  :path "desk/atoms/patterns.md",
+  :force true}
+ {:name "payload-input-forms",
+  :model "AtomDoc",
+  :path "desk/atoms/payload-input-forms.md",
+  :force true}
+ {:name "physical-search",
+  :model "AtomDoc",
+  :path "desk/atoms/physical-search.md",
+  :force true}
+ {:name "plural-first-cli-surface",
+  :model "AtomDoc",
+  :path "desk/atoms/plural-first-cli-surface.md",
+  :force true}
+ {:name "ports-and-adapters",
+  :model "AtomDoc",
+  :path "desk/atoms/ports-and-adapters.md",
+  :force true}
+ {:name "primitive-operation",
+  :model "AtomDoc",
+  :path "desk/atoms/primitive-operation.md",
+  :force true}
+ {:name "projection",
+  :model "AtomDoc",
+  :path "desk/atoms/projection.md",
+  :force true}
+ {:name "projection-edge",
+  :model "AtomDoc",
+  :path "desk/atoms/projection-edge.md",
+  :force true}
+ {:name "projection-plan",
+  :model "AtomDoc",
+  :path "desk/atoms/projection-plan.md",
+  :force true}
+ {:name "projection-spec",
+  :model "AtomDoc",
+  :path "desk/atoms/projection-spec.md",
+  :force true}
+ {:name "projection-surface",
+  :model "AtomDoc",
+  :path "desk/atoms/projection-surface.md",
+  :force true}
+ {:name "prosemirror-adapter",
+  :model "AtomDoc",
+  :path "desk/atoms/prosemirror-adapter.md",
+  :force true}
+ {:name "provenance-record",
+  :model "AtomDoc",
+  :path "desk/atoms/provenance-record.md",
+  :force true}
+ {:name "python-cli-orchestration-layer",
+  :model "AtomDoc",
+  :path "desk/atoms/python-cli-orchestration-layer.md",
+  :force true}
+ {:name "python-code-linting",
+  :model "AtomDoc",
+  :path "desk/atoms/python-code-linting.md",
+  :force true}
+ {:name "python-patterns",
+  :model "AtomDoc",
+  :path "desk/atoms/python-patterns.md",
+  :force true}
+ {:name "python-testing",
+  :model "AtomDoc",
+  :path "desk/atoms/python-testing.md",
+  :force true}
+ {:name "query-engine",
+  :model "AtomDoc",
+  :path "desk/atoms/query-engine.md",
+  :force true}
+ {:name "query-plan",
+  :model "AtomDoc",
+  :path "desk/atoms/query-plan.md",
+  :force true}
+ {:name "recover-link-resolution",
+  :model "AtomDoc",
+  :path "desk/atoms/recover-link-resolution.md",
+  :force true}
+ {:name "reference-behavior",
+  :model "AtomDoc",
+  :path "desk/atoms/reference-behavior.md",
+  :force true}
+ {:name "reference-edge",
+  :model "AtomDoc",
+  :path "desk/atoms/reference-edge.md",
+  :force true}
+ {:name "relation-ast",
+  :model "AtomDoc",
+  :path "desk/atoms/relation-ast.md",
+  :force true}
+ {:name "relation-ast-extensibility",
+  :model "AtomDoc",
+  :path "desk/atoms/relation-ast-extensibility.md",
+  :force true}
+ {:name "renderer",
+  :model "AtomDoc",
+  :path "desk/atoms/renderer.md",
+  :force true}
+ {:name "repository-registry",
+  :model "AtomDoc",
+  :path "desk/atoms/repository-registry.md",
+  :force true}
+ {:name "retention-policy",
+  :model "AtomDoc",
+  :path "desk/atoms/retention-policy.md",
+  :force true}
+ {:name "revision",
+  :model "AtomDoc",
+  :path "desk/atoms/revision.md",
+  :force true}
+ {:name "schema-binding",
+  :model "AtomDoc",
+  :path "desk/atoms/schema-binding.md",
+  :force true}
+ {:name "search-projection",
+  :model "AtomDoc",
+  :path "desk/atoms/search-projection.md",
+  :force true}
+ {:name "section-index",
+  :model "AtomDoc",
+  :path "desk/atoms/section-index.md",
+  :force true}
+ {:name "sections-command-group",
+  :model "AtomDoc",
+  :path "desk/atoms/sections-command-group.md",
+  :force true}
+ {:name "semantic-edge",
+  :model "AtomDoc",
+  :path "desk/atoms/semantic-edge.md",
+  :force true}
+ {:name "semantic-export-boundary",
+  :model "AtomDoc",
+  :path "desk/atoms/semantic-export-boundary.md",
+  :force true}
+ {:name "semantic-exporter",
+  :model "AtomDoc",
+  :path "desk/atoms/semantic-exporter.md",
+  :force true}
+ {:name "semantic-indexing",
+  :model "AtomDoc",
+  :path "desk/atoms/semantic-indexing.md",
+  :force true}
+ {:name "semantic-provider",
+  :model "AtomDoc",
+  :path "desk/atoms/semantic-provider.md",
+  :force true}
+ {:name "semantic-query-hint",
+  :model "AtomDoc",
+  :path "desk/atoms/semantic-query-hint.md",
+  :force true}
+ {:name "semantic-reference",
+  :model "AtomDoc",
+  :path "desk/atoms/semantic-reference.md",
+  :force true}
+ {:name "semantic-role",
+  :model "AtomDoc",
+  :path "desk/atoms/semantic-role.md",
+  :force true}
+ {:name "semantic-search",
+  :model "AtomDoc",
+  :path "desk/atoms/semantic-search.md",
+  :force true}
+ {:name "semantic-tag",
+  :model "AtomDoc",
+  :path "desk/atoms/semantic-tag.md",
+  :force true}
+ {:name "shallow-title-plus-body-default",
+  :model "AtomDoc",
+  :path "desk/atoms/shallow-title-plus-body-default.md",
+  :force true}
+ {:name "snapshots",
+  :model "AtomDoc",
+  :path "desk/atoms/snapshots.md",
+  :force true}
+ {:name "source-document-hash",
+  :model "AtomDoc",
+  :path "desk/atoms/source-document-hash.md",
+  :force true}
+ {:name "source-locator",
+  :model "AtomDoc",
+  :path "desk/atoms/source-locator.md",
+  :force true}
+ {:name "source-manager",
+  :model "AtomDoc",
+  :path "desk/atoms/source-manager.md",
+  :force true}
+ {:name "stable-selector",
+  :model "AtomDoc",
+  :path "desk/atoms/stable-selector.md",
+  :force true}
+ {:name "storage-backend",
+  :model "AtomDoc",
+  :path "desk/atoms/storage-backend.md",
+  :force true}
+ {:name "store-backed-mode",
+  :model "AtomDoc",
+  :path "desk/atoms/store-backed-mode.md",
+  :force true}
+ {:name "store-edge",
+  :model "AtomDoc",
+  :path "desk/atoms/store-edge.md",
+  :force true}
+ {:name "store-infrastructure",
+  :model "AtomDoc",
+  :path "desk/atoms/store-infrastructure.md",
+  :force true}
+ {:name "store-integrity-checks",
+  :model "AtomDoc",
+  :path "desk/atoms/store-integrity-checks.md",
+  :force true}
+ {:name "store-recovery",
+  :model "AtomDoc",
+  :path "desk/atoms/store-recovery.md",
+  :force true}
+ {:name "stores-command-group",
+  :model "AtomDoc",
+  :path "desk/atoms/stores-command-group.md",
+  :force true}
+ {:name "structured-text",
+  :model "AtomDoc",
+  :path "desk/atoms/structured-text.md",
+  :force true}
+ {:name "structurednldoc-contract",
+  :model "AtomDoc",
+  :path "desk/atoms/structurednldoc-contract.md",
+  :force true}
+ {:name "syntax-locator",
+  :model "AtomDoc",
+  :path "desk/atoms/syntax-locator.md",
+  :force true}
+ {:name "template-browser",
+  :model "AtomDoc",
+  :path "desk/atoms/template-browser.md",
+  :force true}
+ {:name "temporal-layer",
+  :model "AtomDoc",
+  :path "desk/atoms/temporal-layer.md",
+  :force true}
+ {:name "text-anchor",
+  :model "AtomDoc",
+  :path "desk/atoms/text-anchor.md",
+  :force true}
+ {:name "text-as-graph",
+  :model "AtomDoc",
+  :path "desk/atoms/text-as-graph.md",
+  :force true}
+ {:name "text-locator",
+  :model "AtomDoc",
+  :path "desk/atoms/text-locator.md",
+  :force true}
+ {:name "threat-model",
+  :model "AtomDoc",
+  :path "desk/atoms/threat-model.md",
+  :force true}
+ {:name "track-existing-document-workflow",
+  :model "AtomDoc",
+  :path "desk/atoms/track-existing-document-workflow.md",
+  :force true}
+ {:name "tracked-document-identity",
+  :model "AtomDoc",
+  :path "desk/atoms/tracked-document-identity.md",
+  :force true}
+ {:name "transaction",
+  :model "AtomDoc",
+  :path "desk/atoms/transaction.md",
+  :force true}
+ {:name "transaction-log",
+  :model "AtomDoc",
+  :path "desk/atoms/transaction-log.md",
+  :force true}
+ {:name "transaction-plan",
+  :model "AtomDoc",
+  :path "desk/atoms/transaction-plan.md",
+  :force true}
+ {:name "transclusion-reference",
+  :model "AtomDoc",
+  :path "desk/atoms/transclusion-reference.md",
+  :force true}
+ {:name "tree-sitter-adapter",
+  :model "AtomDoc",
+  :path "desk/atoms/tree-sitter-adapter.md",
+  :force true}
+ {:name "tree-spine",
+  :model "AtomDoc",
+  :path "desk/atoms/tree-spine.md",
+  :force true}
+ {:name "type-contract",
+  :model "AtomDoc",
+  :path "desk/atoms/type-contract.md",
+  :force true}
+ {:name "update-tracked-document-workflow",
+  :model "AtomDoc",
+  :path "desk/atoms/update-tracked-document-workflow.md",
+  :force true}
+ {:name "visual-graph-explorer",
+  :model "AtomDoc",
+  :path "desk/atoms/visual-graph-explorer.md",
+  :force true}
+ {:name "visual-ux-surface",
+  :model "AtomDoc",
+  :path "desk/atoms/visual-ux-surface.md",
+  :force true}
+ {:name "what-a-store-is",
+  :model "AtomDoc",
+  :path "desk/atoms/what-a-store-is.md",
+  :force true}
+ {:name
+  "checklist-task-contention-test-for-heads-commit-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-contention-test-for-heads-commit-closeout-ready.md"}
+ {:name
+  "checklist-task-contention-test-for-heads-commit-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-contention-test-for-heads-commit-execution-ready.md"}
+ {:name
+  "checklist-task-contention-test-for-heads-commit-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-contention-test-for-heads-commit-testing-ready.md"}
+ {:name
+  "checklist-task-external-oracle-for-canonical-bytes-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-external-oracle-for-canonical-bytes-closeout-ready.md"}
+ {:name
+  "checklist-task-external-oracle-for-canonical-bytes-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-external-oracle-for-canonical-bytes-execution-ready.md"}
+ {:name
+  "checklist-task-external-oracle-for-canonical-bytes-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-external-oracle-for-canonical-bytes-testing-ready.md"}
+ {:name "checklist-task-implement-adapters-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-adapters-closeout-ready.md"}
+ {:name "checklist-task-implement-adapters-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-adapters-execution-ready.md"}
+ {:name "checklist-task-implement-adapters-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-adapters-testing-ready.md"}
+ {:name "checklist-task-implement-addressability-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-addressability-closeout-ready.md"}
+ {:name "checklist-task-implement-addressability-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-addressability-execution-ready.md"}
+ {:name "checklist-task-implement-addressability-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-addressability-testing-ready.md"}
+ {:name "checklist-task-implement-anchors-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-anchors-closeout-ready.md"}
+ {:name "checklist-task-implement-anchors-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-anchors-execution-ready.md"}
+ {:name "checklist-task-implement-anchors-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-anchors-testing-ready.md"}
+ {:name "checklist-task-implement-ast-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-ast-closeout-ready.md"}
+ {:name "checklist-task-implement-ast-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-ast-execution-ready.md"}
+ {:name "checklist-task-implement-ast-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-ast-testing-ready.md"}
+ {:name "checklist-task-implement-authoring-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-authoring-closeout-ready.md"}
+ {:name "checklist-task-implement-authoring-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-authoring-execution-ready.md"}
+ {:name "checklist-task-implement-authoring-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-authoring-testing-ready.md"}
+ {:name "checklist-task-implement-boundary-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-boundary-closeout-ready.md"}
+ {:name "checklist-task-implement-boundary-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-boundary-execution-ready.md"}
+ {:name "checklist-task-implement-boundary-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-boundary-testing-ready.md"}
+ {:name "checklist-task-implement-cache-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-cache-closeout-ready.md"}
+ {:name "checklist-task-implement-cache-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-cache-execution-ready.md"}
+ {:name "checklist-task-implement-cache-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-cache-testing-ready.md"}
+ {:name "checklist-task-implement-clean-code-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-clean-code-closeout-ready.md"}
+ {:name "checklist-task-implement-clean-code-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-clean-code-execution-ready.md"}
+ {:name "checklist-task-implement-clean-code-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-clean-code-testing-ready.md"}
+ {:name "checklist-task-implement-cli-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-cli-closeout-ready.md"}
+ {:name "checklist-task-implement-cli-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-cli-execution-ready.md"}
+ {:name "checklist-task-implement-cli-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-cli-testing-ready.md"}
+ {:name "checklist-task-implement-composition-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-composition-closeout-ready.md"}
+ {:name "checklist-task-implement-composition-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-composition-execution-ready.md"}
+ {:name "checklist-task-implement-composition-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-composition-testing-ready.md"}
+ {:name "checklist-task-implement-document-families-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-document-families-closeout-ready.md"}
+ {:name "checklist-task-implement-document-families-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-document-families-execution-ready.md"}
+ {:name "checklist-task-implement-document-families-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-document-families-testing-ready.md"}
+ {:name "checklist-task-implement-documents-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-documents-closeout-ready.md"}
+ {:name "checklist-task-implement-documents-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-documents-execution-ready.md"}
+ {:name "checklist-task-implement-documents-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-documents-testing-ready.md"}
+ {:name "checklist-task-implement-emitters-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-emitters-closeout-ready.md"}
+ {:name "checklist-task-implement-emitters-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-emitters-execution-ready.md"}
+ {:name "checklist-task-implement-emitters-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-emitters-testing-ready.md"}
+ {:name "checklist-task-implement-fields-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-fields-closeout-ready.md"}
+ {:name "checklist-task-implement-fields-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-fields-execution-ready.md"}
+ {:name "checklist-task-implement-fields-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-fields-testing-ready.md"}
+ {:name "checklist-task-implement-general-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-general-closeout-ready.md"}
+ {:name "checklist-task-implement-general-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-general-execution-ready.md"}
+ {:name "checklist-task-implement-general-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-general-testing-ready.md"}
+ {:name "checklist-task-implement-graphs-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-graphs-closeout-ready.md"}
+ {:name "checklist-task-implement-graphs-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-graphs-execution-ready.md"}
+ {:name "checklist-task-implement-graphs-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-graphs-testing-ready.md"}
+ {:name "checklist-task-implement-hashing-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-hashing-closeout-ready.md"}
+ {:name "checklist-task-implement-hashing-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-hashing-execution-ready.md"}
+ {:name "checklist-task-implement-hashing-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-hashing-testing-ready.md"}
+ {:name "checklist-task-implement-history-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-history-closeout-ready.md"}
+ {:name "checklist-task-implement-history-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-history-execution-ready.md"}
+ {:name "checklist-task-implement-history-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-history-testing-ready.md"}
+ {:name "checklist-task-implement-hooks-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-hooks-closeout-ready.md"}
+ {:name "checklist-task-implement-hooks-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-hooks-execution-ready.md"}
+ {:name "checklist-task-implement-hooks-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-hooks-testing-ready.md"}
+ {:name "checklist-task-implement-identity-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-identity-closeout-ready.md"}
+ {:name "checklist-task-implement-identity-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-identity-execution-ready.md"}
+ {:name "checklist-task-implement-identity-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-identity-testing-ready.md"}
+ {:name "checklist-task-implement-importers-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-importers-closeout-ready.md"}
+ {:name "checklist-task-implement-importers-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-importers-execution-ready.md"}
+ {:name "checklist-task-implement-importers-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-importers-testing-ready.md"}
+ {:name "checklist-task-implement-indexes-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-indexes-closeout-ready.md"}
+ {:name "checklist-task-implement-indexes-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-indexes-execution-ready.md"}
+ {:name "checklist-task-implement-indexes-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-indexes-testing-ready.md"}
+ {:name "checklist-task-implement-links-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-links-closeout-ready.md"}
+ {:name "checklist-task-implement-links-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-links-execution-ready.md"}
+ {:name "checklist-task-implement-links-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-links-testing-ready.md"}
+ {:name "checklist-task-implement-markdown-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-markdown-closeout-ready.md"}
+ {:name "checklist-task-implement-markdown-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-markdown-execution-ready.md"}
+ {:name "checklist-task-implement-markdown-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-markdown-testing-ready.md"}
+ {:name "checklist-task-implement-materialization-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-materialization-closeout-ready.md"}
+ {:name "checklist-task-implement-materialization-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-materialization-execution-ready.md"}
+ {:name "checklist-task-implement-materialization-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-materialization-testing-ready.md"}
+ {:name "checklist-task-implement-models-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-models-closeout-ready.md"}
+ {:name "checklist-task-implement-models-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-models-execution-ready.md"}
+ {:name "checklist-task-implement-models-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-models-testing-ready.md"}
+ {:name "checklist-task-implement-navigation-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-navigation-closeout-ready.md"}
+ {:name "checklist-task-implement-navigation-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-navigation-execution-ready.md"}
+ {:name "checklist-task-implement-navigation-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-navigation-testing-ready.md"}
+ {:name "checklist-task-implement-nodes-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-nodes-closeout-ready.md"}
+ {:name "checklist-task-implement-nodes-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-nodes-execution-ready.md"}
+ {:name "checklist-task-implement-nodes-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-nodes-testing-ready.md"}
+ {:name "checklist-task-implement-onboarding-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-onboarding-closeout-ready.md"}
+ {:name "checklist-task-implement-onboarding-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-onboarding-execution-ready.md"}
+ {:name "checklist-task-implement-onboarding-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-onboarding-testing-ready.md"}
+ {:name "checklist-task-implement-patterns-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-patterns-closeout-ready.md"}
+ {:name "checklist-task-implement-patterns-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-patterns-execution-ready.md"}
+ {:name "checklist-task-implement-patterns-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-patterns-testing-ready.md"}
+ {:name "checklist-task-implement-payloads-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-payloads-closeout-ready.md"}
+ {:name "checklist-task-implement-payloads-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-payloads-execution-ready.md"}
+ {:name "checklist-task-implement-payloads-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-payloads-testing-ready.md"}
+ {:name "checklist-task-implement-projections-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-projections-closeout-ready.md"}
+ {:name "checklist-task-implement-projections-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-projections-execution-ready.md"}
+ {:name "checklist-task-implement-projections-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-projections-testing-ready.md"}
+ {:name "checklist-task-implement-provenance-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-provenance-closeout-ready.md"}
+ {:name "checklist-task-implement-provenance-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-provenance-execution-ready.md"}
+ {:name "checklist-task-implement-provenance-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-provenance-testing-ready.md"}
+ {:name
+  "checklist-task-implement-python-cli-and-pyo3-ffi-boundary-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-python-cli-and-pyo3-ffi-boundary-closeout-ready.md"}
+ {:name
+  "checklist-task-implement-python-cli-and-pyo3-ffi-boundary-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-python-cli-and-pyo3-ffi-boundary-execution-ready.md"}
+ {:name
+  "checklist-task-implement-python-cli-and-pyo3-ffi-boundary-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-python-cli-and-pyo3-ffi-boundary-testing-ready.md"}
+ {:name "checklist-task-implement-python-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-python-closeout-ready.md"}
+ {:name "checklist-task-implement-python-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-python-execution-ready.md"}
+ {:name "checklist-task-implement-python-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-python-testing-ready.md"}
+ {:name "checklist-task-implement-queries-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-queries-closeout-ready.md"}
+ {:name "checklist-task-implement-queries-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-queries-execution-ready.md"}
+ {:name "checklist-task-implement-queries-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-queries-testing-ready.md"}
+ {:name "checklist-task-implement-relations-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-relations-closeout-ready.md"}
+ {:name "checklist-task-implement-relations-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-relations-execution-ready.md"}
+ {:name "checklist-task-implement-relations-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-relations-testing-ready.md"}
+ {:name "checklist-task-implement-retrieval-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-retrieval-closeout-ready.md"}
+ {:name "checklist-task-implement-retrieval-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-retrieval-execution-ready.md"}
+ {:name "checklist-task-implement-retrieval-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-retrieval-testing-ready.md"}
+ {:name "checklist-task-implement-rust-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-rust-closeout-ready.md"}
+ {:name "checklist-task-implement-rust-core-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-rust-core-closeout-ready.md"}
+ {:name "checklist-task-implement-rust-core-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-rust-core-execution-ready.md"}
+ {:name
+  "checklist-task-implement-rust-core-graph-store-and-rowan-ast-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-rust-core-graph-store-and-rowan-ast-closeout-ready.md"}
+ {:name
+  "checklist-task-implement-rust-core-graph-store-and-rowan-ast-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-rust-core-graph-store-and-rowan-ast-execution-ready.md"}
+ {:name
+  "checklist-task-implement-rust-core-graph-store-and-rowan-ast-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-rust-core-graph-store-and-rowan-ast-testing-ready.md"}
+ {:name "checklist-task-implement-rust-core-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-rust-core-testing-ready.md"}
+ {:name "checklist-task-implement-rust-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-rust-execution-ready.md"}
+ {:name "checklist-task-implement-rust-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-rust-testing-ready.md"}
+ {:name "checklist-task-implement-schemas-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-schemas-closeout-ready.md"}
+ {:name "checklist-task-implement-schemas-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-schemas-execution-ready.md"}
+ {:name "checklist-task-implement-schemas-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-schemas-testing-ready.md"}
+ {:name "checklist-task-implement-search-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-search-closeout-ready.md"}
+ {:name "checklist-task-implement-search-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-search-execution-ready.md"}
+ {:name "checklist-task-implement-search-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-search-testing-ready.md"}
+ {:name "checklist-task-implement-semantic-export-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-semantic-export-closeout-ready.md"}
+ {:name "checklist-task-implement-semantic-export-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-semantic-export-execution-ready.md"}
+ {:name "checklist-task-implement-semantic-export-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-semantic-export-testing-ready.md"}
+ {:name "checklist-task-implement-semantic-indexing-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-semantic-indexing-closeout-ready.md"}
+ {:name "checklist-task-implement-semantic-indexing-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-semantic-indexing-execution-ready.md"}
+ {:name "checklist-task-implement-semantic-indexing-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-semantic-indexing-testing-ready.md"}
+ {:name "checklist-task-implement-store-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-store-closeout-ready.md"}
+ {:name "checklist-task-implement-store-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-store-execution-ready.md"}
+ {:name "checklist-task-implement-store-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-store-testing-ready.md"}
+ {:name "checklist-task-implement-structure-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-structure-closeout-ready.md"}
+ {:name "checklist-task-implement-structure-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-structure-execution-ready.md"}
+ {:name "checklist-task-implement-structure-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-structure-testing-ready.md"}
+ {:name "checklist-task-implement-structured-text-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-structured-text-closeout-ready.md"}
+ {:name "checklist-task-implement-structured-text-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-structured-text-execution-ready.md"}
+ {:name "checklist-task-implement-structured-text-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-structured-text-testing-ready.md"}
+ {:name "checklist-task-implement-testing-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-testing-closeout-ready.md"}
+ {:name "checklist-task-implement-testing-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-testing-execution-ready.md"}
+ {:name "checklist-task-implement-testing-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-testing-testing-ready.md"}
+ {:name "checklist-task-implement-text-graph-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-text-graph-closeout-ready.md"}
+ {:name "checklist-task-implement-text-graph-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-text-graph-execution-ready.md"}
+ {:name "checklist-task-implement-text-graph-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-text-graph-testing-ready.md"}
+ {:name "checklist-task-implement-types-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-types-closeout-ready.md"}
+ {:name "checklist-task-implement-types-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-types-execution-ready.md"}
+ {:name "checklist-task-implement-types-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-types-testing-ready.md"}
+ {:name "checklist-task-implement-ux-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-ux-closeout-ready.md"}
+ {:name "checklist-task-implement-ux-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-ux-execution-ready.md"}
+ {:name "checklist-task-implement-ux-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-ux-testing-ready.md"}
+ {:name "checklist-task-implement-workflows-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-workflows-closeout-ready.md"}
+ {:name "checklist-task-implement-workflows-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-workflows-execution-ready.md"}
+ {:name "checklist-task-implement-workflows-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-implement-workflows-testing-ready.md"}
+ {:name
+  "checklist-task-importers-emitters-and-semantic-indexing-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-importers-emitters-and-semantic-indexing-closeout-ready.md"}
+ {:name
+  "checklist-task-importers-emitters-and-semantic-indexing-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-importers-emitters-and-semantic-indexing-execution-ready.md"}
+ {:name
+  "checklist-task-importers-emitters-and-semantic-indexing-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-importers-emitters-and-semantic-indexing-testing-ready.md"}
+ {:name
+  "checklist-task-node-host-parity-for-the-v2-kernel-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-node-host-parity-for-the-v2-kernel-closeout-ready.md"}
+ {:name
+  "checklist-task-node-host-parity-for-the-v2-kernel-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-node-host-parity-for-the-v2-kernel-execution-ready.md"}
+ {:name
+  "checklist-task-node-host-parity-for-the-v2-kernel-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-node-host-parity-for-the-v2-kernel-testing-ready.md"}
+ {:name
+  "checklist-task-replicate-v1-cli-workflow-capabilities-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-replicate-v1-cli-workflow-capabilities-closeout-ready.md"}
+ {:name
+  "checklist-task-replicate-v1-cli-workflow-capabilities-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-replicate-v1-cli-workflow-capabilities-execution-ready.md"}
+ {:name
+  "checklist-task-replicate-v1-cli-workflow-capabilities-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-replicate-v1-cli-workflow-capabilities-testing-ready.md"}
+ {:name
+  "checklist-task-rewrite-the-pre-v2-spec2viz-specs-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-rewrite-the-pre-v2-spec2viz-specs-closeout-ready.md"}
+ {:name
+  "checklist-task-rewrite-the-pre-v2-spec2viz-specs-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-rewrite-the-pre-v2-spec2viz-specs-execution-ready.md"}
+ {:name
+  "checklist-task-rewrite-the-pre-v2-spec2viz-specs-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-rewrite-the-pre-v2-spec2viz-specs-testing-ready.md"}
+ {:name
+  "checklist-task-test-coverage-and-lint-tooling-for-babashka-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-test-coverage-and-lint-tooling-for-babashka-closeout-ready.md"}
+ {:name
+  "checklist-task-test-coverage-and-lint-tooling-for-babashka-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-test-coverage-and-lint-tooling-for-babashka-execution-ready.md"}
+ {:name
+  "checklist-task-test-coverage-and-lint-tooling-for-babashka-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-test-coverage-and-lint-tooling-for-babashka-testing-ready.md"}
+ {:name "checklist-task-track-atom-work-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-track-atom-work-closeout-ready.md"}
+ {:name "checklist-task-track-atom-work-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-track-atom-work-execution-ready.md"}
+ {:name "checklist-task-track-atom-work-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-track-atom-work-testing-ready.md"}
+ {:name
+  "checklist-task-ulid-monotonicity-and-clock-adapter-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-ulid-monotonicity-and-clock-adapter-closeout-ready.md"}
+ {:name
+  "checklist-task-ulid-monotonicity-and-clock-adapter-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-ulid-monotonicity-and-clock-adapter-execution-ready.md"}
+ {:name
+  "checklist-task-ulid-monotonicity-and-clock-adapter-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-ulid-monotonicity-and-clock-adapter-testing-ready.md"}
+ {:name
+  "checklist-task-unreachable-objects-report-and-gc-groundwork-closeout-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-unreachable-objects-report-and-gc-groundwork-closeout-ready.md"}
+ {:name
+  "checklist-task-unreachable-objects-report-and-gc-groundwork-execution-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-unreachable-objects-report-and-gc-groundwork-execution-ready.md"}
+ {:name
+  "checklist-task-unreachable-objects-report-and-gc-groundwork-testing-ready",
+  :model "ChecklistDoc",
+  :path
+  "desk/primitives/checklists/checklist-task-unreachable-objects-report-and-gc-groundwork-testing-ready.md"}
+ {:name
+  "condition-task-contention-test-for-heads-commit-has-closeout-evidence",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-contention-test-for-heads-commit-has-closeout-evidence.md"}
+ {:name
+  "condition-task-contention-test-for-heads-commit-has-implementation-path",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-contention-test-for-heads-commit-has-implementation-path.md"}
+ {:name
+  "condition-task-contention-test-for-heads-commit-has-validation",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-contention-test-for-heads-commit-has-validation.md"}
+ {:name
+  "condition-task-contention-test-for-heads-commit-pill-knowledge-graduated",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-contention-test-for-heads-commit-pill-knowledge-graduated.md"}
+ {:name
+  "condition-task-contention-test-for-heads-commit-ready-for-closeout",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-contention-test-for-heads-commit-ready-for-closeout.md"}
+ {:name
+  "condition-task-external-oracle-for-canonical-bytes-has-closeout-evidence",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-external-oracle-for-canonical-bytes-has-closeout-evidence.md"}
+ {:name
+  "condition-task-external-oracle-for-canonical-bytes-has-implementation-path",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-external-oracle-for-canonical-bytes-has-implementation-path.md"}
+ {:name
+  "condition-task-external-oracle-for-canonical-bytes-has-validation",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-external-oracle-for-canonical-bytes-has-validation.md"}
+ {:name
+  "condition-task-external-oracle-for-canonical-bytes-pill-knowledge-graduated",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-external-oracle-for-canonical-bytes-pill-knowledge-graduated.md"}
+ {:name
+  "condition-task-external-oracle-for-canonical-bytes-ready-for-closeout",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-external-oracle-for-canonical-bytes-ready-for-closeout.md"}
+ {:name
+  "condition-task-node-host-parity-for-the-v2-kernel-has-closeout-evidence",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-node-host-parity-for-the-v2-kernel-has-closeout-evidence.md"}
+ {:name
+  "condition-task-node-host-parity-for-the-v2-kernel-has-implementation-path",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-node-host-parity-for-the-v2-kernel-has-implementation-path.md"}
+ {:name
+  "condition-task-node-host-parity-for-the-v2-kernel-has-validation",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-node-host-parity-for-the-v2-kernel-has-validation.md"}
+ {:name
+  "condition-task-node-host-parity-for-the-v2-kernel-pill-knowledge-graduated",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-node-host-parity-for-the-v2-kernel-pill-knowledge-graduated.md"}
+ {:name
+  "condition-task-node-host-parity-for-the-v2-kernel-ready-for-closeout",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-node-host-parity-for-the-v2-kernel-ready-for-closeout.md"}
+ {:name
+  "condition-task-rewrite-the-pre-v2-spec2viz-specs-has-closeout-evidence",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-rewrite-the-pre-v2-spec2viz-specs-has-closeout-evidence.md"}
+ {:name
+  "condition-task-rewrite-the-pre-v2-spec2viz-specs-has-implementation-path",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-rewrite-the-pre-v2-spec2viz-specs-has-implementation-path.md"}
+ {:name
+  "condition-task-rewrite-the-pre-v2-spec2viz-specs-has-validation",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-rewrite-the-pre-v2-spec2viz-specs-has-validation.md"}
+ {:name
+  "condition-task-rewrite-the-pre-v2-spec2viz-specs-pill-knowledge-graduated",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-rewrite-the-pre-v2-spec2viz-specs-pill-knowledge-graduated.md"}
+ {:name
+  "condition-task-rewrite-the-pre-v2-spec2viz-specs-ready-for-closeout",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-rewrite-the-pre-v2-spec2viz-specs-ready-for-closeout.md"}
+ {:name
+  "condition-task-test-coverage-and-lint-tooling-for-babashka-has-closeout-evidence",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-test-coverage-and-lint-tooling-for-babashka-has-closeout-evidence.md"}
+ {:name
+  "condition-task-test-coverage-and-lint-tooling-for-babashka-has-implementation-path",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-test-coverage-and-lint-tooling-for-babashka-has-implementation-path.md"}
+ {:name
+  "condition-task-test-coverage-and-lint-tooling-for-babashka-has-validation",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-test-coverage-and-lint-tooling-for-babashka-has-validation.md"}
+ {:name
+  "condition-task-test-coverage-and-lint-tooling-for-babashka-pill-knowledge-graduated",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-test-coverage-and-lint-tooling-for-babashka-pill-knowledge-graduated.md"}
+ {:name
+  "condition-task-test-coverage-and-lint-tooling-for-babashka-ready-for-closeout",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-test-coverage-and-lint-tooling-for-babashka-ready-for-closeout.md"}
+ {:name
+  "condition-task-ulid-monotonicity-and-clock-adapter-has-closeout-evidence",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-ulid-monotonicity-and-clock-adapter-has-closeout-evidence.md"}
+ {:name
+  "condition-task-ulid-monotonicity-and-clock-adapter-has-implementation-path",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-ulid-monotonicity-and-clock-adapter-has-implementation-path.md"}
+ {:name
+  "condition-task-ulid-monotonicity-and-clock-adapter-has-validation",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-ulid-monotonicity-and-clock-adapter-has-validation.md"}
+ {:name
+  "condition-task-ulid-monotonicity-and-clock-adapter-pill-knowledge-graduated",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-ulid-monotonicity-and-clock-adapter-pill-knowledge-graduated.md"}
+ {:name
+  "condition-task-ulid-monotonicity-and-clock-adapter-ready-for-closeout",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-ulid-monotonicity-and-clock-adapter-ready-for-closeout.md"}
+ {:name
+  "condition-task-unreachable-objects-report-and-gc-groundwork-has-closeout-evidence",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-unreachable-objects-report-and-gc-groundwork-has-closeout-evidence.md"}
+ {:name
+  "condition-task-unreachable-objects-report-and-gc-groundwork-has-implementation-path",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-unreachable-objects-report-and-gc-groundwork-has-implementation-path.md"}
+ {:name
+  "condition-task-unreachable-objects-report-and-gc-groundwork-has-validation",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-unreachable-objects-report-and-gc-groundwork-has-validation.md"}
+ {:name
+  "condition-task-unreachable-objects-report-and-gc-groundwork-pill-knowledge-graduated",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-unreachable-objects-report-and-gc-groundwork-pill-knowledge-graduated.md"}
+ {:name
+  "condition-task-unreachable-objects-report-and-gc-groundwork-ready-for-closeout",
+  :model "ConditionDoc",
+  :path
+  "desk/primitives/conditions/condition-task-unreachable-objects-report-and-gc-groundwork-ready-for-closeout.md"}
+ {:name
+  "edge-task-contention-test-for-heads-commit-activate-to-testing",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-contention-test-for-heads-commit-activate-to-testing.md"}
+ {:name "edge-task-contention-test-for-heads-commit-close-to-complete",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-contention-test-for-heads-commit-close-to-complete.md"}
+ {:name "edge-task-contention-test-for-heads-commit-closeout-to-close",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-contention-test-for-heads-commit-closeout-to-close.md"}
+ {:name
+  "edge-task-contention-test-for-heads-commit-execution-to-activate",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-contention-test-for-heads-commit-execution-to-activate.md"}
+ {:name "edge-task-contention-test-for-heads-commit-ready-to-closeout",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-contention-test-for-heads-commit-ready-to-closeout.md"}
+ {:name "edge-task-contention-test-for-heads-commit-testing-to-ready",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-contention-test-for-heads-commit-testing-to-ready.md"}
+ {:name
+  "edge-task-external-oracle-for-canonical-bytes-activate-to-testing",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-external-oracle-for-canonical-bytes-activate-to-testing.md"}
+ {:name
+  "edge-task-external-oracle-for-canonical-bytes-close-to-complete",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-external-oracle-for-canonical-bytes-close-to-complete.md"}
+ {:name
+  "edge-task-external-oracle-for-canonical-bytes-closeout-to-close",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-external-oracle-for-canonical-bytes-closeout-to-close.md"}
+ {:name
+  "edge-task-external-oracle-for-canonical-bytes-execution-to-activate",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-external-oracle-for-canonical-bytes-execution-to-activate.md"}
+ {:name
+  "edge-task-external-oracle-for-canonical-bytes-ready-to-closeout",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-external-oracle-for-canonical-bytes-ready-to-closeout.md"}
+ {:name
+  "edge-task-external-oracle-for-canonical-bytes-testing-to-ready",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-external-oracle-for-canonical-bytes-testing-to-ready.md"}
+ {:name
+  "edge-task-node-host-parity-for-the-v2-kernel-activate-to-testing",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-node-host-parity-for-the-v2-kernel-activate-to-testing.md"}
+ {:name
+  "edge-task-node-host-parity-for-the-v2-kernel-close-to-complete",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-node-host-parity-for-the-v2-kernel-close-to-complete.md"}
+ {:name
+  "edge-task-node-host-parity-for-the-v2-kernel-closeout-to-close",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-node-host-parity-for-the-v2-kernel-closeout-to-close.md"}
+ {:name
+  "edge-task-node-host-parity-for-the-v2-kernel-execution-to-activate",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-node-host-parity-for-the-v2-kernel-execution-to-activate.md"}
+ {:name
+  "edge-task-node-host-parity-for-the-v2-kernel-ready-to-closeout",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-node-host-parity-for-the-v2-kernel-ready-to-closeout.md"}
+ {:name
+  "edge-task-node-host-parity-for-the-v2-kernel-testing-to-ready",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-node-host-parity-for-the-v2-kernel-testing-to-ready.md"}
+ {:name
+  "edge-task-rewrite-the-pre-v2-spec2viz-specs-activate-to-testing",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-rewrite-the-pre-v2-spec2viz-specs-activate-to-testing.md"}
+ {:name
+  "edge-task-rewrite-the-pre-v2-spec2viz-specs-close-to-complete",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-rewrite-the-pre-v2-spec2viz-specs-close-to-complete.md"}
+ {:name
+  "edge-task-rewrite-the-pre-v2-spec2viz-specs-closeout-to-close",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-rewrite-the-pre-v2-spec2viz-specs-closeout-to-close.md"}
+ {:name
+  "edge-task-rewrite-the-pre-v2-spec2viz-specs-execution-to-activate",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-rewrite-the-pre-v2-spec2viz-specs-execution-to-activate.md"}
+ {:name
+  "edge-task-rewrite-the-pre-v2-spec2viz-specs-ready-to-closeout",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-rewrite-the-pre-v2-spec2viz-specs-ready-to-closeout.md"}
+ {:name "edge-task-rewrite-the-pre-v2-spec2viz-specs-testing-to-ready",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-rewrite-the-pre-v2-spec2viz-specs-testing-to-ready.md"}
+ {:name
+  "edge-task-test-coverage-and-lint-tooling-for-babashka-activate-to-testing",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-test-coverage-and-lint-tooling-for-babashka-activate-to-testing.md"}
+ {:name
+  "edge-task-test-coverage-and-lint-tooling-for-babashka-close-to-complete",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-test-coverage-and-lint-tooling-for-babashka-close-to-complete.md"}
+ {:name
+  "edge-task-test-coverage-and-lint-tooling-for-babashka-closeout-to-close",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-test-coverage-and-lint-tooling-for-babashka-closeout-to-close.md"}
+ {:name
+  "edge-task-test-coverage-and-lint-tooling-for-babashka-execution-to-activate",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-test-coverage-and-lint-tooling-for-babashka-execution-to-activate.md"}
+ {:name
+  "edge-task-test-coverage-and-lint-tooling-for-babashka-ready-to-closeout",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-test-coverage-and-lint-tooling-for-babashka-ready-to-closeout.md"}
+ {:name
+  "edge-task-test-coverage-and-lint-tooling-for-babashka-testing-to-ready",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-test-coverage-and-lint-tooling-for-babashka-testing-to-ready.md"}
+ {:name
+  "edge-task-ulid-monotonicity-and-clock-adapter-activate-to-testing",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-ulid-monotonicity-and-clock-adapter-activate-to-testing.md"}
+ {:name
+  "edge-task-ulid-monotonicity-and-clock-adapter-close-to-complete",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-ulid-monotonicity-and-clock-adapter-close-to-complete.md"}
+ {:name
+  "edge-task-ulid-monotonicity-and-clock-adapter-closeout-to-close",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-ulid-monotonicity-and-clock-adapter-closeout-to-close.md"}
+ {:name
+  "edge-task-ulid-monotonicity-and-clock-adapter-execution-to-activate",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-ulid-monotonicity-and-clock-adapter-execution-to-activate.md"}
+ {:name
+  "edge-task-ulid-monotonicity-and-clock-adapter-ready-to-closeout",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-ulid-monotonicity-and-clock-adapter-ready-to-closeout.md"}
+ {:name
+  "edge-task-ulid-monotonicity-and-clock-adapter-testing-to-ready",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-ulid-monotonicity-and-clock-adapter-testing-to-ready.md"}
+ {:name
+  "edge-task-unreachable-objects-report-and-gc-groundwork-activate-to-testing",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-unreachable-objects-report-and-gc-groundwork-activate-to-testing.md"}
+ {:name
+  "edge-task-unreachable-objects-report-and-gc-groundwork-close-to-complete",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-unreachable-objects-report-and-gc-groundwork-close-to-complete.md"}
+ {:name
+  "edge-task-unreachable-objects-report-and-gc-groundwork-closeout-to-close",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-unreachable-objects-report-and-gc-groundwork-closeout-to-close.md"}
+ {:name
+  "edge-task-unreachable-objects-report-and-gc-groundwork-execution-to-activate",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-unreachable-objects-report-and-gc-groundwork-execution-to-activate.md"}
+ {:name
+  "edge-task-unreachable-objects-report-and-gc-groundwork-ready-to-closeout",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-unreachable-objects-report-and-gc-groundwork-ready-to-closeout.md"}
+ {:name
+  "edge-task-unreachable-objects-report-and-gc-groundwork-testing-to-ready",
+  :model "EdgeDoc",
+  :path
+  "desk/primitives/edges/edge-task-unreachable-objects-report-and-gc-groundwork-testing-to-ready.md"}
+ {:name
+  "20260829-154642-unclear-deskops-edit-atom-cannot-target-legacy-atoms",
+  :model "InboxNoteDoc",
+  :path
+  "desk/inbox/20260829-154642-unclear-deskops-edit-atom-cannot-target-legacy-atoms.md",
+  :force true}
+ {:name
+  "20260829-154745-unclear-deskops-atoms-add-namespace-overwrites-hierarchical-tag-namespaces-yaml",
+  :model "InboxNoteDoc",
+  :path
+  "desk/inbox/20260829-154745-unclear-deskops-atoms-add-namespace-overwrites-hierarchical-tag-namespaces-yaml.md",
+  :force true}
+ {:name
+  "20260829-161650-unclear-legacy-atoms-relinked-after-retirement",
+  :model "InboxNoteDoc",
+  :path
+  "desk/inbox/20260829-161650-unclear-legacy-atoms-relinked-after-retirement.md",
+  :force true}
+ {:name
+  "20260829-163807-suggestion-zero-context-gate-phrase-the-round-cap-as-3-rounds-after-the-last-high",
+  :model "InboxNoteDoc",
+  :path
+  "desk/inbox/20260829-163807-suggestion-zero-context-gate-phrase-the-round-cap-as-3-rounds-after-the-last-high.md",
+  :force true}
+ {:name
+  "20260831-003040-unclear-board-notes-retain-stale-active-lines-for-closed-milestones-5b-and-6",
+  :model "InboxNoteDoc",
+  :path
+  "desk/inbox/20260831-003040-unclear-board-notes-retain-stale-active-lines-for-closed-milestones-5b-and-6.md",
+  :force true}
+ {:name "20260901-100419-unclear-board-notes-missed-one-promoted-task",
+  :model "InboxNoteDoc",
+  :path
+  "desk/inbox/20260901-100419-unclear-board-notes-missed-one-promoted-task.md",
+  :force true}
+ {:name
+  "20260901-100429-unclear-promotion-defaults-task-validation-to-pytest",
+  :model "InboxNoteDoc",
+  :path
+  "desk/inbox/20260901-100429-unclear-promotion-defaults-task-validation-to-pytest.md",
+  :force true}
+ {:name "operator-task-contention-test-for-heads-commit-activate",
+  :model "OperatorDoc",
+  :path
+  "desk/primitives/operators/operator-task-contention-test-for-heads-commit-activate.md"}
+ {:name "operator-task-contention-test-for-heads-commit-close",
+  :model "OperatorDoc",
+  :path
+  "desk/primitives/operators/operator-task-contention-test-for-heads-commit-close.md"}
+ {:name
+  "operator-task-contention-test-for-heads-commit-ready-for-testing",
+  :model "OperatorDoc",
+  :path
+  "desk/primitives/operators/operator-task-contention-test-for-heads-commit-ready-for-testing.md"}
+ {:name "operator-task-external-oracle-for-canonical-bytes-activate",
+  :model "OperatorDoc",
+  :path
+  "desk/primitives/operators/operator-task-external-oracle-for-canonical-bytes-activate.md"}
+ {:name "operator-task-external-oracle-for-canonical-bytes-close",
+  :model "OperatorDoc",
+  :path
+  "desk/primitives/operators/operator-task-external-oracle-for-canonical-bytes-close.md"}
+ {:name
+  "operator-task-external-oracle-for-canonical-bytes-ready-for-testing",
+  :model "OperatorDoc",
+  :path
+  "desk/primitives/operators/operator-task-external-oracle-for-canonical-bytes-ready-for-testing.md"}
+ {:name "operator-task-node-host-parity-for-the-v2-kernel-activate",
+  :model "OperatorDoc",
+  :path
+  "desk/primitives/operators/operator-task-node-host-parity-for-the-v2-kernel-activate.md"}
+ {:name "operator-task-node-host-parity-for-the-v2-kernel-close",
+  :model "OperatorDoc",
+  :path
+  "desk/primitives/operators/operator-task-node-host-parity-for-the-v2-kernel-close.md"}
+ {:name
+  "operator-task-node-host-parity-for-the-v2-kernel-ready-for-testing",
+  :model "OperatorDoc",
+  :path
+  "desk/primitives/operators/operator-task-node-host-parity-for-the-v2-kernel-ready-for-testing.md"}
+ {:name "operator-task-rewrite-the-pre-v2-spec2viz-specs-activate",
+  :model "OperatorDoc",
+  :path
+  "desk/primitives/operators/operator-task-rewrite-the-pre-v2-spec2viz-specs-activate.md"}
+ {:name "operator-task-rewrite-the-pre-v2-spec2viz-specs-close",
+  :model "OperatorDoc",
+  :path
+  "desk/primitives/operators/operator-task-rewrite-the-pre-v2-spec2viz-specs-close.md"}
+ {:name
+  "operator-task-rewrite-the-pre-v2-spec2viz-specs-ready-for-testing",
+  :model "OperatorDoc",
+  :path
+  "desk/primitives/operators/operator-task-rewrite-the-pre-v2-spec2viz-specs-ready-for-testing.md"}
+ {:name
+  "operator-task-test-coverage-and-lint-tooling-for-babashka-activate",
+  :model "OperatorDoc",
+  :path
+  "desk/primitives/operators/operator-task-test-coverage-and-lint-tooling-for-babashka-activate.md"}
+ {:name
+  "operator-task-test-coverage-and-lint-tooling-for-babashka-close",
+  :model "OperatorDoc",
+  :path
+  "desk/primitives/operators/operator-task-test-coverage-and-lint-tooling-for-babashka-close.md"}
+ {:name
+  "operator-task-test-coverage-and-lint-tooling-for-babashka-ready-for-testing",
+  :model "OperatorDoc",
+  :path
+  "desk/primitives/operators/operator-task-test-coverage-and-lint-tooling-for-babashka-ready-for-testing.md"}
+ {:name "operator-task-ulid-monotonicity-and-clock-adapter-activate",
+  :model "OperatorDoc",
+  :path
+  "desk/primitives/operators/operator-task-ulid-monotonicity-and-clock-adapter-activate.md"}
+ {:name "operator-task-ulid-monotonicity-and-clock-adapter-close",
+  :model "OperatorDoc",
+  :path
+  "desk/primitives/operators/operator-task-ulid-monotonicity-and-clock-adapter-close.md"}
+ {:name
+  "operator-task-ulid-monotonicity-and-clock-adapter-ready-for-testing",
+  :model "OperatorDoc",
+  :path
+  "desk/primitives/operators/operator-task-ulid-monotonicity-and-clock-adapter-ready-for-testing.md"}
+ {:name
+  "operator-task-unreachable-objects-report-and-gc-groundwork-activate",
+  :model "OperatorDoc",
+  :path
+  "desk/primitives/operators/operator-task-unreachable-objects-report-and-gc-groundwork-activate.md"}
+ {:name
+  "operator-task-unreachable-objects-report-and-gc-groundwork-close",
+  :model "OperatorDoc",
+  :path
+  "desk/primitives/operators/operator-task-unreachable-objects-report-and-gc-groundwork-close.md"}
+ {:name
+  "operator-task-unreachable-objects-report-and-gc-groundwork-ready-for-testing",
+  :model "OperatorDoc",
+  :path
+  "desk/primitives/operators/operator-task-unreachable-objects-report-and-gc-groundwork-ready-for-testing.md"}
+ {:name "pill-guardrail-v2-implementation-gate",
+  :model "PillDoc",
+  :path "desk/contexts/pill-guardrail-v2-implementation-gate.md"}
+ {:name "pill-planning-contracts",
+  :model "PillDoc",
+  :path "desk/contexts/pill-planning-contracts.md",
+  :force true}
+ {:name "pill-python-guidelines",
+  :model "PillDoc",
+  :path "desk/contexts/pill-python-guidelines.md",
+  :force true}
+ {:name "pill-rust-guidelines",
+  :model "PillDoc",
+  :path "desk/contexts/pill-rust-guidelines.md",
+  :force true}
+ {:name "pill-specyaml-traceability",
+  :model "PillDoc",
+  :path "desk/contexts/pill-specyaml-traceability.md",
+  :force true}
+ {:name "repo-sldb-refactor-worktree",
+  :model "RepositoryDoc",
+  :path "desk/registry/repo-sldb-refactor-worktree.md"}
+ {:name "ritual-zero-context-audit-gate",
+  :model "RitualDoc",
+  :path "desk/rituals/ritual-zero-context-audit-gate.md"}
+ {:name "routine-task-contention-test-for-heads-commit",
+  :model "RoutineDoc",
+  :path
+  "desk/routines/routine-task-contention-test-for-heads-commit.md"}
+ {:name "routine-task-external-oracle-for-canonical-bytes",
+  :model "RoutineDoc",
+  :path
+  "desk/routines/routine-task-external-oracle-for-canonical-bytes.md"}
+ {:name "routine-task-node-host-parity-for-the-v2-kernel",
+  :model "RoutineDoc",
+  :path
+  "desk/routines/routine-task-node-host-parity-for-the-v2-kernel.md"}
+ {:name "routine-task-rewrite-the-pre-v2-spec2viz-specs",
+  :model "RoutineDoc",
+  :path
+  "desk/routines/routine-task-rewrite-the-pre-v2-spec2viz-specs.md"}
+ {:name "routine-task-test-coverage-and-lint-tooling-for-babashka",
+  :model "RoutineDoc",
+  :path
+  "desk/routines/routine-task-test-coverage-and-lint-tooling-for-babashka.md"}
+ {:name "routine-task-ulid-monotonicity-and-clock-adapter",
+  :model "RoutineDoc",
+  :path
+  "desk/routines/routine-task-ulid-monotonicity-and-clock-adapter.md"}
+ {:name "routine-task-unreachable-objects-report-and-gc-groundwork",
+  :model "RoutineDoc",
+  :path
+  "desk/routines/routine-task-unreachable-objects-report-and-gc-groundwork.md"}
+ {:name "task-contention-test-for-heads-commit",
+  :model "TaskDoc",
+  :path "desk/tasks/task-contention-test-for-heads-commit.md",
+  :force true}
+ {:name "task-external-oracle-for-canonical-bytes",
+  :model "TaskDoc",
+  :path "desk/tasks/task-external-oracle-for-canonical-bytes.md",
+  :force true}
+ {:name "task-freeze-phase-1-parity-contract",
+  :model "TaskDoc",
+  :path "desk/tasks/task-freeze-phase-1-parity-contract.md",
+  :force true}
+ {:name "task-freeze-python-clojure-ownership-and-ffi-contract",
+  :model "TaskDoc",
+  :path
+  "desk/tasks/task-freeze-python-clojure-ownership-and-ffi-contract.md",
+  :force true}
+ {:name "task-node-host-parity-for-the-v2-kernel",
+  :model "TaskDoc",
+  :path "desk/tasks/task-node-host-parity-for-the-v2-kernel.md",
+  :force true}
+ {:name "task-rewrite-the-pre-v2-spec2viz-specs",
+  :model "TaskDoc",
+  :path "desk/tasks/task-rewrite-the-pre-v2-spec2viz-specs.md",
+  :force true}
+ {:name "task-specify-anchoring-contract",
+  :model "TaskDoc",
+  :path "desk/tasks/task-specify-anchoring-contract.md",
+  :force true}
+ {:name "task-specify-cli-parity-contract",
+  :model "TaskDoc",
+  :path "desk/tasks/task-specify-cli-parity-contract.md",
+  :force true}
+ {:name "task-specify-clojure-canonical-core-contract",
+  :model "TaskDoc",
+  :path "desk/tasks/task-specify-clojure-canonical-core-contract.md",
+  :force true}
+ {:name "task-specify-diagram-traceability-contract",
+  :model "TaskDoc",
+  :path "desk/tasks/task-specify-diagram-traceability-contract.md",
+  :force true}
+ {:name "task-specify-graph-store-contract",
+  :model "TaskDoc",
+  :path "desk/tasks/task-specify-graph-store-contract.md",
+  :force true}
+ {:name "task-specify-markdown-roundtrip-contract",
+  :model "TaskDoc",
+  :path "desk/tasks/task-specify-markdown-roundtrip-contract.md",
+  :force true}
+ {:name "task-specify-query-and-index-parity-contract",
+  :model "TaskDoc",
+  :path "desk/tasks/task-specify-query-and-index-parity-contract.md",
+  :force true}
+ {:name "task-specify-specyaml-schema-contract",
+  :model "TaskDoc",
+  :path "desk/tasks/task-specify-specyaml-schema-contract.md",
+  :force true}
+ {:name "task-test-coverage-and-lint-tooling-for-babashka",
+  :model "TaskDoc",
+  :path
+  "desk/tasks/task-test-coverage-and-lint-tooling-for-babashka.md",
+  :force true}
+ {:name "task-ulid-monotonicity-and-clock-adapter",
+  :model "TaskDoc",
+  :path "desk/tasks/task-ulid-monotonicity-and-clock-adapter.md",
+  :force true}
+ {:name "task-unreachable-objects-report-and-gc-groundwork",
+  :model "TaskDoc",
+  :path
+  "desk/tasks/task-unreachable-objects-report-and-gc-groundwork.md",
+  :force true}]

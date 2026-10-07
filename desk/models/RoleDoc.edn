@@ -1,0 +1,78 @@
+{:base [],
+ :fields
+ [{:description
+   "Stable role prompt identifier, conventionally 'role-<slug>'.",
+   :name "id",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:description
+   "Installed pi-agent role name, such as 'deskops-supervisor'.",
+   :name "name",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:description "Short description of when to use this role prompt.",
+   :name "description",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}
+  {:default "pi",
+   :description "Agent runtime kind (e.g. pi, claude, opencode).",
+   :name "kind",
+   :py/annotation "<class 'str'>",
+   :required false,
+   :type :string}
+  {:default "",
+   :description "Primary model ID.",
+   :name "model",
+   :py/annotation "<class 'str'>",
+   :required false,
+   :type :string}
+  {:default [],
+   :description "Fallback models.",
+   :name "fallback_models",
+   :py/annotation "list[str]",
+   :required false,
+   :type [:list :string]}
+  {:default [],
+   :description "Enabled tools.",
+   :name "tools",
+   :py/annotation "list[str]",
+   :required false,
+   :type [:list :string]}
+  {:default "replace",
+   :description "System prompt mode.",
+   :name "system_prompt_mode",
+   :py/annotation "<class 'str'>",
+   :required false,
+   :type :string}
+  {:default true,
+   :description "Inherit project context.",
+   :name "inherit_project_context",
+   :py/annotation "<class 'bool'>",
+   :required false,
+   :type :bool}
+  {:default true,
+   :description "Inherit project skills.",
+   :name "inherit_skills",
+   :py/annotation "<class 'bool'>",
+   :required false,
+   :type :bool}
+  {:default "fresh",
+   :description "Default context type (e.g. fork).",
+   :name "default_context",
+   :py/annotation "<class 'str'>",
+   :required false,
+   :type :string}
+  {:description
+   "Full role prompt markdown body after the YAML frontmatter.",
+   :name "body",
+   :py/annotation "<class 'str'>",
+   :required true,
+   :type :string}],
+ :model/name "RoleDoc",
+ :model/version 1,
+ :semantics {"type" ["workflow" "role"], "workspace" ["desk" "roles"]},
+ :template
+ "---\nid: ⸢rev•id⸥\nname: ⸢rev•name⸥\ndescription: ⸢rev•description⸥\nkind: ⸢rev•kind⸥\nmodel: ⸢rev•model⸥\nfallback_models: ⸢rev•fallback_models⸥\ntools: ⸢rev•tools⸥\nsystem_prompt_mode: ⸢rev•system_prompt_mode⸥\ninherit_project_context: ⸢rev•inherit_project_context⸥\ninherit_skills: ⸢rev•inherit_skills⸥\ndefault_context: ⸢rev•default_context⸥\n---\n\n⸢rev•body⸥"}
