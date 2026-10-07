@@ -6,7 +6,7 @@
    `dispatch` (it is not registered in `kimun.cli.main` yet); stores are set
    up and read with the existing groups. Each test carrying a v1 promise
    names the v1 function in a comment."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [cheshire.core :as json]
             [babashka.process :as process]
             [clojure.string :as str]
@@ -37,7 +37,7 @@
   "A store in a temp dir with a private copy of the facts fixture `facts.json`."
   ([] (project "symbols.json"))
   ([fixture]
-   (let [p (str (fs/create-temp-dir {:prefix "kimun-adapters-"}))]
+   (let [p (str (ktu/temp-dir "kimun-adapters-"))]
      (is (true? (:ok (run p "stores" "init" "--name" "p"))))
      (fs/copy (file fixtures fixture) (file p "facts.json"))
      p)))
@@ -75,7 +75,7 @@
     (is (not (fs/exists? (file p "knowledge"))))
     (is (empty? (:data (run p "docs" "list"))))
     (testing "scan needs no store"
-      (let [bare (str (fs/create-temp-dir {:prefix "kimun-adapters-bare-"}))]
+      (let [bare (str (ktu/temp-dir "kimun-adapters-bare-"))]
         (is (true? (:ok (adapters bare "scan" fake "." "--facts" (file p "facts.json") {:system "demo"}))))))
     (testing "--system is required"
       (is (= "cli/usage" (error-type (adapters p "scan" fake "." "--facts" (file p "facts.json"))))))))
@@ -303,7 +303,7 @@
        "class Box:\n    \"\"\"A box of things.\"\"\"\n\n    def put(self, item):\n        \"\"\"Put an item in the box.\"\"\"\n        return item\n"))
 
 (defn- real-project []
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-adapters-real-"}))]
+  (let [p (str (ktu/temp-dir "kimun-adapters-real-"))]
     (is (true? (:ok (run p "stores" "init" "--name" "p"))))
     (fs/create-dirs (file p "src" "demo"))
     (spit (file p "src" "demo" "__init__.py") "\"\"\"Demo package.\"\"\"\n")
@@ -387,7 +387,7 @@
           (is (= 3 (:created (:counts (:data s)))))
           (is (true? (:ok (adapters p "python-check" {:system "demo"}))))))
       (testing "selfdoc-sync / selfdoc-check with an argparse factory"
-        (let [p (str (fs/create-temp-dir {:prefix "kimun-adapters-selfdoc-"}))]
+        (let [p (str (ktu/temp-dir "kimun-adapters-selfdoc-"))]
           (is (true? (:ok (run p "stores" "init" "--name" "p"))))
           (spit (file p "app.py")
                 (str "import argparse\n\n\ndef build():\n    parser = argparse.ArgumentParser(prog=\"widget\")\n"

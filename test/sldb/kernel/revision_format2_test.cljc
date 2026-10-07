@@ -1,7 +1,7 @@
 (ns sldb.kernel.revision-format2-test
   "Format 2 of the revision engine: accessors, the legacy engine as oracle,
    what a committer persists, and the format-1 path of sldb.kernel.store."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is testing]]
             [clojure.edn :as edn]
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
@@ -304,7 +304,7 @@
 
 (deftest a-format-1-store-opens-commits-and-reopens-through-the-legacy-path
   #?(:clj
-     (let [dir (str (bfs/create-temp-dir {:prefix "sldb-f1-"}))
+     (let [dir (str (ktu/temp-dir "sldb-f1-"))
            b (fs/backend dir)
            fx1 (edn/read-string (slurp "test/fixtures/tx-001.edn"))
            fx2 (edn/read-string (slurp "test/fixtures/tx-002-conflict.edn"))

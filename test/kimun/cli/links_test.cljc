@@ -3,7 +3,7 @@
    The command fns are called directly (`kimun.cli.commands.links/commands`);
    stores are set up through `kimun.cli.main/run`. Each test names in a comment
    the sldb v1 test function it ports."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.commands.links :as lc]
@@ -22,7 +22,7 @@
 (defn- project
   "A project directory with a store and the NoteDoc model."
   []
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-links-"}))]
+  (let [p (str (ktu/temp-dir "kimun-links-"))]
     (run p "stores" "init" "--name" "p")
     (spit (str (fs/path p "note.edn")) note)
     (is (true? (:ok (run p "models" "define" "-f" "note.edn"))))
@@ -101,7 +101,7 @@
 
 (deftest recover-links-only
   ;; v1: test_recover_links_only (no store: a plain file path; unresolved -> exit 1)
-  (let [d (str (fs/create-temp-dir {:prefix "kimun-links-"}))]
+  (let [d (str (ktu/temp-dir "kimun-links-"))]
     (write! d "test.md" "# Test\n[[target1]]\n[[target2]]")
     (let [e (cmd "recover" d ["test.md"] {:links-only true :format "text"})
           s (out/emit e "text")]
@@ -119,7 +119,7 @@
 
 (deftest recover-depth
   ;; v1: test_recover_depth
-  (let [d (str (fs/create-temp-dir {:prefix "kimun-links-"}))]
+  (let [d (str (ktu/temp-dir "kimun-links-"))]
     (write! d "doc1.md" "# Doc 1\n[[doc2.md]]")
     (write! d "doc2.md" "# Doc 2\n[[target3]]")
     (let [e1 (cmd "recover" d ["doc1.md"] {:format "text"})
@@ -138,7 +138,7 @@
 
 (deftest bad-arguments
   ;; no v1 test: v1 argparse rejected these; here they are typed errors
-  (let [d (str (fs/create-temp-dir {:prefix "kimun-links-"}))
+  (let [d (str (ktu/temp-dir "kimun-links-"))
         raises (fn [f] (try (f) nil (catch clojure.lang.ExceptionInfo e (ex-data e))))]
     (write! d "a.md" "x")
     (is (= :cli/usage (:type (raises #(cmd "recover" d ["a.md"] {:depth "zero"})))))

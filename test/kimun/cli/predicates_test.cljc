@@ -2,7 +2,7 @@
   "The `predicates` group over a real store: v1 `tests/test_predicates_cli.py`
    (4 functions) plus exits and typed errors. The group is registered in
    `kimun.cli.main` at merge, so it is called through its `dispatch`."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.commands.predicates :as cpred]
@@ -24,7 +24,7 @@
     (errors/wrap #(cpred/dispatch sub args (merge {:format "json" :actor "human/tester"} extra) {:env env :cwd cwd}))))
 
 (defn- store-dir []
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-predicates-"}))]
+  (let [p (str (ktu/temp-dir "kimun-predicates-"))]
     (is (true? (:ok (run p "stores" "init" "--name" "p"))))
     p))
 

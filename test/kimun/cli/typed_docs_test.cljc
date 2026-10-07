@@ -3,7 +3,7 @@
    sldb v1 (create, track, update, untrack, delete, show, list, status), its
    consequences for models (counts, superseded, backfill) and for the journal.
    Each test names in a comment the v1 functions whose promise it carries."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is testing]]
             [clojure.string :as str]
             [babashka.fs :as fs]
             [kimun.cli.main :as main]
@@ -30,7 +30,7 @@
 (defn- project
   "A project with a store and the TicketDoc model defined."
   []
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-typed-"}))]
+  (let [p (str (ktu/temp-dir "kimun-typed-"))]
     (run p "stores" "init" "--name" "p")
     (spit (str (fs/path p "ticket.edn")) ticket)
     (is (true? (:ok (run p "models" "define" "-f" "ticket.edn"))))
@@ -259,7 +259,7 @@
   ;; regression (smoke 2026-10-06): the backfill extracted the old text with the
   ;; NEW template, so a section added after `## Body` swallowed the body text
   ;; and the default never appeared.
-  (let [proj (str (fs/create-temp-dir {:prefix "kimun-backfill-"}))
+  (let [proj (str (ktu/temp-dir "kimun-backfill-"))
         run (fn [& argv] (:envelope (main/run argv {"USER" "tester"} proj)))]
     (run "stores" "init")
     (spit (str (fs/path proj "ticket.edn")) (slurp "test/fixtures/models/ticket.edn"))

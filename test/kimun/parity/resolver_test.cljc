@@ -2,14 +2,14 @@
   "Ports of sldb v1's store/test_resolver.py (`find_local_store`): which store a
    command finds from the directory it runs in. The home-directory catalog and
    the `core/` layout tests are n/a (parity-v1.md, deviations)."
-  (:require [clojure.test :refer [deftest is]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is]]
             [clojure.string :as str]
             [babashka.fs :as fs]
             [kimun.cli.main :as main]))
 
 (def env {"USER" "tester"})
 
-(defn- tmp [] (str (fs/create-temp-dir {:prefix "kimun-resolver-"})))
+(defn- tmp [] (str (ktu/temp-dir "kimun-resolver-")))
 (defn- run [cwd & argv] (:envelope (main/run argv env cwd)))
 (defn- store-of [e] (str (fs/real-path (get-in e [:store :path]))))
 (defn- expected [dir] (str (fs/real-path (fs/path dir ".kimun"))))

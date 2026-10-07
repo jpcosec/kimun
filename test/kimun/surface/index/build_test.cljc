@@ -3,7 +3,7 @@
    agrees with the surfaces it summarises, determinism, the EDN round trip
    and a document that no longer extracts. Each test names in a comment the
    v1 function whose promise it carries."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [clojure.edn :as edn]
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.main :as main]
@@ -43,7 +43,7 @@
   "Spec (type.knowledge.spec) with s1 and s2, Topology (layer.topology) with
    t1, and the declared relations layer.topology < type.knowledge, spec ≡ norm."
   []
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-index-"}))]
+  (let [p (str (ktu/temp-dir "kimun-index-"))]
     (run p "stores" "init" "--name" "p")
     (define! p "Spec" (model "Spec" [] {"type" ["knowledge" "spec"]}
                              [{:name "status" :type :string :required true :description "Status."}]
@@ -105,7 +105,7 @@
     (is (= (:tag-dag idx) (:tag-dag (edn/read-string (pr-str idx)))))))
 
 (deftest an-empty-store-has-an-empty-index
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-index-"}))]
+  (let [p (str (ktu/temp-dir "kimun-index-"))]
     (run p "stores" "init" "--name" "p")
     (let [s (opened p) idx (build/build s)]
       (is (= (:head s) (:head idx)))

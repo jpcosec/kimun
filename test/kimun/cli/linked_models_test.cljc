@@ -3,7 +3,7 @@
    link (docs/v2/06 §4; `kimun.cli.linked`): the port of the two federation
    tests of sldb v1 `tests/test_cli_v2.py`, plus the typed errors. Each test
    names in a comment the v1 function whose promise it carries."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [cheshire.core :as json]
             [clojure.edn :as edn]
             [clojure.string :as str]
@@ -25,7 +25,7 @@
 (defn- stores!
   "A temp directory with one initialised project per name: `{name dir}` plus `:base`."
   [& names]
-  (let [base (str (fs/create-temp-dir {:prefix "kimun-linked-"}))]
+  (let [base (str (ktu/temp-dir "kimun-linked-"))]
     (into {:base base}
           (for [n names :let [dir (str (fs/create-dirs (fs/path base n)))]]
             (do (is (true? (:ok (run dir "stores" "init" "--name" n)))) [n dir])))))

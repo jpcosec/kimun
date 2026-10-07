@@ -4,7 +4,7 @@
    payload / rendered Markdown alone are covered by the differential corpus
    (parity-oracle.edn); what the corpus does not compare — exit codes, output
    files, the CLI envelope, validation results, recipe errors — is ported here."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [cheshire.core :as json]
             [clojure.string :as str]
             [clojure.test :refer [deftest is]]
@@ -32,7 +32,7 @@
 (defn- workdir
   "A temp dir holding the model, the input document and the data file."
   []
-  (let [d (str (fs/create-temp-dir {:prefix "kimun-standalone-"}))]
+  (let [d (str (ktu/temp-dir "kimun-standalone-"))]
     (spit (str (fs/path d "model.edn")) (pr-str simple-doc))
     (spit (str (fs/path d "input.md")) input-md)
     (spit (str (fs/path d "data.yaml")) data-yaml)

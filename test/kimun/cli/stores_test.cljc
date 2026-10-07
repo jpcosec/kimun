@@ -2,7 +2,7 @@
   "The `stores` group end to end on temporary directories: init layout,
    duplicate init, check/verify/show, corruption, and store discovery
    precedence (docs/v2/06 §B)."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is testing]]
             [clojure.edn :as edn]
             [clojure.string :as str]
             [babashka.fs :as fs]
@@ -12,7 +12,7 @@
 
 (def env {"USER" "tester"})
 
-(defn- tmp [] (str (fs/create-temp-dir {:prefix "kimun-cli-"})))
+(defn- tmp [] (str (ktu/temp-dir "kimun-cli-")))
 
 (defn- run
   ([cwd & argv] (:envelope (main/run argv env cwd))))

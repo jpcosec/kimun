@@ -4,7 +4,7 @@
    scripts/parity-docs/record_docs.py), tracked into a kimun store through the
    CLI. Every payload must equal v1's; a case may differ only through an entry
    in EXPECTED-DIFFS.edn with a written reason."
-  (:require [clojure.test :refer [deftest is]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is]]
             [clojure.edn :as edn]
             [babashka.fs :as fs]
             [cheshire.core :as json]
@@ -14,7 +14,7 @@
 (defn- run [cwd & argv] (:envelope (main/run argv {"USER" "parity"} cwd)))
 
 (deftest real-documents-extract-as-in-v1
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-docs-parity-"}))
+  (let [p (str (ktu/temp-dir "kimun-docs-parity-"))
         expected-diffs (let [f (fs/path root "EXPECTED-DIFFS.edn")] (if (fs/exists? f) (edn/read-string (slurp (str f))) {}))
         cases (sort (map #(str (fs/file-name %)) (filter fs/directory? (fs/list-dir root))))
         _ (run p "stores" "init" "--name" "parity")

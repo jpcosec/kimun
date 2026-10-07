@@ -4,7 +4,7 @@
    through the CLI `render` / `extract` on draft models and through
    `models define` / `docs create|show` on a real store (the content hash of
    an existing document must not move)."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [cheshire.core :as json]
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
@@ -13,7 +13,7 @@
 (def env {"USER" "tester"})
 (defn- run [cwd & argv] (:envelope (main/run (vec argv) env cwd)))
 (defn- file [p n] (str (fs/path p n)))
-(defn- tmp [] (str (fs/create-temp-dir {:prefix "kimun-optfield-"})))
+(defn- tmp [] (str (ktu/temp-dir "kimun-optfield-")))
 
 (defn- fld [n t req] {:name n :type t :required req :description (str n ".")})
 (defn- model [n fields template]

@@ -4,7 +4,7 @@
    (docs/v2/tests/parity-gaps.edn) and that were fixed afterwards: each deftest
    is the v1 promise itself, moved here from `known_gaps_test.cljc` when its
    gap closed."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [babashka.process :as process]
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
@@ -15,7 +15,7 @@
 (defn- run [cwd & argv] (:envelope (main/run (vec argv) env cwd)))
 
 (defn- project []
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-closed-gap-"}))]
+  (let [p (str (ktu/temp-dir "kimun-closed-gap-"))]
     (run p "stores" "init" "--name" "p")
     (spit (str (fs/path p "note.edn"))
           (pr-str {:model/name "Note" :model/version 1 :base []
@@ -100,7 +100,7 @@
    project `p`, signals by creating `ready`, holds it `ms` milliseconds and
    exits. Returns the process once the lock is held."
   [p ms]
-  (let [ready (str (fs/path (fs/create-temp-dir {:prefix "kimun-lock-ready-"}) "ready"))
+  (let [ready (str (fs/path (ktu/temp-dir "kimun-lock-ready-") "ready"))
         bb (.orElse (.command (.info (java.lang.ProcessHandle/current))) "bb")
         code (str "(let [ch (java.nio.channels.FileChannel/open (java.nio.file.Paths/get " (pr-str (str (fs/path p ".kimun" "lock"))) " (into-array String []))"
                   " (into-array java.nio.file.StandardOpenOption [java.nio.file.StandardOpenOption/CREATE java.nio.file.StandardOpenOption/WRITE]))]"

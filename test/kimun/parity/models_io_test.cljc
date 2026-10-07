@@ -4,7 +4,7 @@
    round trips. kimun keeps no index files: state is kernel objects, and every
    `kimun.cli.main/run` re-opens the store from disk. So each round trip becomes
    'what one invocation commits, a fresh one reads back unchanged'."
-  (:require [clojure.test :refer [deftest is]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is]]
             [clojure.string :as str]
             [babashka.fs :as fs]
             [kimun.cli.main :as main]))
@@ -12,7 +12,7 @@
 (def env {"USER" "tester"})
 (def ticket (str (fs/absolutize "test/fixtures/models/ticket.edn")))
 
-(defn- tmp [] (str (fs/create-temp-dir {:prefix "kimun-modelsio-"})))
+(defn- tmp [] (str (ktu/temp-dir "kimun-modelsio-")))
 (defn- run [cwd & argv] (:envelope (main/run argv env cwd)))
 (defn- init! [] (let [p (tmp)] (run p "stores" "init" "--name" "p") p))
 

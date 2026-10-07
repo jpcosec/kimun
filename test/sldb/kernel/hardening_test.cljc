@@ -1,7 +1,7 @@
 (ns sldb.kernel.hardening-test
   "Tests added by the promise→test traceability pass (docs/v2/tests/promises.md):
    negative and boundary cases the tester lanes found untested or weak."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is testing]]
             [sldb.kernel.test-util :refer [defspec]]
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
@@ -273,7 +273,7 @@
 
 #?(:clj
    (deftest store-failure-modes
-     (let [dir (str (bfs/create-temp-dir {:prefix "sldb-hard-"}))
+     (let [dir (str (ktu/temp-dir "sldb-hard-"))
            b (fs/backend dir)
            s (:store (store/commit! b (store/init! b h caps) (plan nil doc-ops)))]
        (testing "store.edn carries the descriptor fields"
@@ -288,12 +288,12 @@
          (is (= :store/corrupt-log (:type (ex-of #(store/replay b h)))))
          (is (= 2 (:line (ex-of #(store/replay b h))))))
        (testing "hash algorithm mismatch on open"
-         (let [dir2 (str (bfs/create-temp-dir {:prefix "sldb-alg-"})) b2 (fs/backend dir2)]
+         (let [dir2 (str (ktu/temp-dir "sldb-alg-")) b2 (fs/backend dir2)]
            (store/init! b2 h caps)
            (spit (str dir2 "/store.edn") (pr-str {:format-version 1 :hash-alg :blake3 :capabilities caps}))
            (is (= :store/error (:type (ex-of #(store/open b2 h)))))
            ;; format 2 opens from the heads, not by replay: the same check on that path, with history
-           (let [dir3 (str (bfs/create-temp-dir {:prefix "sldb-alg-"})) b3 (fs/backend dir3)
+           (let [dir3 (str (ktu/temp-dir "sldb-alg-")) b3 (fs/backend dir3)
                  s3 (store/init! b3 h caps)]
              (store/commit! b3 s3 {:plan/version 1 :base nil :actor "jp" :engines {} :timestamp "2026-08-29T12:00:00.000Z"
                                    :ops [{:op :add-node :node {:class :sign :kind :text :content {:text "x"}}}]})

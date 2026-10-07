@@ -4,7 +4,7 @@
    that keeps every node, edge and tree, every transaction's actor, timestamp,
    engines and ops, and the parent chain; the result passes the full
    verification and the source is never written."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is testing]]
             [clojure.edn :as edn]
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
@@ -23,7 +23,7 @@
 (def tid "01ARZ3NDEKTSV4RRFFQ69G5FAV")
 (def tid2 "01ARZ3NDEKTSV4RRFFQ69G5FAW")
 
-(defn- tmp [] #?(:clj (str (bfs/create-temp-dir {:prefix "sldb-upgrade-"}))))
+(defn- tmp [] #?(:clj (str (ktu/temp-dir "sldb-upgrade-"))))
 (defn- ts [n] (str "2026-08-29T12:00:" (if (< n 10) "0" "") n ".000Z"))
 (defn- plan [base n actor ops] {:plan/version 1 :base base :actor actor :engines {"e" "1"} :timestamp (ts n) :ops ops})
 (defn- text [s as] {:op :add-node :node {:class :sign :kind :text :content {:text s}} :as as})

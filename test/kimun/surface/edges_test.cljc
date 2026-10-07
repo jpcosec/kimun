@@ -1,7 +1,7 @@
 (ns kimun.surface.edges-test
   "v1's edge-index tests at surface level: stores are set up through the CLI
    (`kimun.cli.main/run`), then the pure `kimun.surface.edges` is read."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [cheshire.core :as json]
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.main :as main]
@@ -39,7 +39,7 @@
   (spit (str (fs/path p "_data.json")) (json/generate-string payload))
   (apply ok! p "docs" "create" m n "--data" "_data.json" (when path ["--path" path])))
 
-(defn- store-dir [] (let [p (str (fs/create-temp-dir {:prefix "kimun-edges-"}))] (ok! p "stores" "init" "--name" "p") p))
+(defn- store-dir [] (let [p (str (ktu/temp-dir "kimun-edges-"))] (ok! p "stores" "init" "--name" "p") p))
 
 (def ^:private relation-doc
   {:fields [["title" :string] ["source_id" :string] ["target_id" :string] ["relation_type" :string] ["condition" :string] ["notes" :string]]

@@ -5,7 +5,7 @@
    references, predicate links, authored relations and their anchor state.
    The groups are registered in `kimun.cli.main` at merge, so they are called
    through their `dispatch`."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [cheshire.core :as json]
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
@@ -44,7 +44,7 @@
   (spit (str (fs/path p "_data.json")) (json/generate-string payload))
   (ok! p "docs" "create" m n "--data" "_data.json"))
 
-(defn- store-dir [] (let [p (str (fs/create-temp-dir {:prefix "kimun-cli-edges-"}))] (ok! p "stores" "init" "--name" "p") p))
+(defn- store-dir [] (let [p (str (ktu/temp-dir "kimun-cli-edges-"))] (ok! p "stores" "init" "--name" "p") p))
 
 (defn- relation [p n src tgt rtype]
   (create p "RelationDoc" n {"title" n "source_id" src "target_id" tgt "relation_type" rtype "condition" "" "notes" ""}))

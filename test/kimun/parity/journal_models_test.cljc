@@ -4,7 +4,7 @@
    v1 named operations (`add_model`, `reindex_model`, `promote_model_draft`); v2's
    journal is a view of the revision log, so an entry is a revision on the `models`
    tree, and `journal verify` is the validity check."
-  (:require [clojure.test :refer [deftest is]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is]]
             [babashka.fs :as fs]
             [kimun.cli.main :as main]))
 
@@ -17,7 +17,7 @@
 
 ;; v1: api/test_journal.py::test_add_model_leaves_an_entry
 (deftest defining-a-model-leaves-a-journal-entry
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-parity-jm-"}))
+  (let [p (str (ktu/temp-dir "kimun-parity-jm-"))
         _ (run p "stores" "init" "--name" "p")
         _ (is (empty? (entries p)) "a fresh store has no history")
         _ (run p "models" "define" "-f" ticket)
@@ -32,7 +32,7 @@
 ;; (v1 `reindex_model` and `promote_model_draft` are `models field-add|template` here, each one
 ;; revision; `rebuild-indexes` writes only the derived cache and so, by design, no entry)
 (deftest field-add-and-template-edits-each-leave-an-entry-while-reindexing-leaves-none
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-parity-jm-"}))
+  (let [p (str (ktu/temp-dir "kimun-parity-jm-"))
         _ (run p "stores" "init" "--name" "p")
         _ (run p "models" "define" "-f" ticket)
         n0 (count (entries p))

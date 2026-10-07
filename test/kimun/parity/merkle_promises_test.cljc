@@ -8,7 +8,7 @@
    the number of immutable objects it adds, the identity of an untouched
    document is its tree root, and the only cache is the derived index of the
    head (`rebuild-indexes`). The same promises are asserted on those."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [clojure.edn :as edn]
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
@@ -42,7 +42,7 @@
 (defn- project
   "A project with the Note model and `n` documents note-0 … note-(n-1)."
   [n]
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-merkle-"}))]
+  (let [p (str (ktu/temp-dir "kimun-merkle-"))]
     (run p "stores" "init" "--name" "p")
     (spit (str (fs/path p "note.edn")) note)
     (assert (:ok (run p "models" "define" "-f" "note.edn")))

@@ -4,7 +4,7 @@
    pure `report` is fed the files as a map. Each test names the v1 function
    (`tests/store/test_diagnostics.py`, `test_contract_in_model_node.py`) whose
    promise it carries."
-  (:require [clojure.test :refer [deftest is]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is]]
             [clojure.string :as str]
             [babashka.fs :as fs]
             [kimun.cli.main :as main]
@@ -25,7 +25,7 @@
 (defn- project
   "A project with TicketDoc and the tracked document `login` (login.md)."
   []
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-diag-"}))]
+  (let [p (str (ktu/temp-dir "kimun-diag-"))]
     (run p "stores" "init" "--name" "p")
     (spit (str (fs/path p "ticket.edn")) (pr-str ticket))
     (is (true? (:ok (run p "models" "define" "-f" "ticket.edn"))))

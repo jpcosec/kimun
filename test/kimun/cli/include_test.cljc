@@ -3,7 +3,7 @@
    build then clean check, staged store and undeclared documents rejected, the
    idempotent .gitignore block, the chained pre-commit hook and a rebuild that
    reproduces the store."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [babashka.process :as process]
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing use-fixtures]]
@@ -62,7 +62,7 @@
 
 (use-fixtures :each
   (fn [f]
-    (let [d (fs/create-temp-dir {:prefix "kimun-include-"})]
+    (let [d (ktu/temp-dir "kimun-include-")]
       (try (setup! d) (binding [*repo* d] (f)) (finally (fs/delete-tree d))))))
 
 (deftest build-then-check-is-clean

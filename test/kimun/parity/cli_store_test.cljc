@@ -2,7 +2,7 @@
   "Ports of sldb v1's store/test_cli_store.py: `stores init` and `models define`
    (v1 `models add`) on temporary stores. The global-catalog tests, `--force`
    and the extraction-cache purge are n/a (see parity-v1.md, deviations)."
-  (:require [clojure.test :refer [deftest is]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is]]
             [clojure.edn :as edn]
             [clojure.string :as str]
             [babashka.fs :as fs]
@@ -11,7 +11,7 @@
 (def env {"USER" "tester"})
 (def ticket (str (fs/absolutize "test/fixtures/models/ticket.edn")))
 
-(defn- tmp [] (str (fs/create-temp-dir {:prefix "kimun-clistore-"})))
+(defn- tmp [] (str (ktu/temp-dir "kimun-clistore-")))
 (defn- run [cwd & argv] (:envelope (main/run argv env cwd)))
 (defn- init! [] (let [p (tmp)] (run p "stores" "init" "--name" "p") p))
 (defn- with-model! [] (let [p (init!)] (run p "models" "define" "-f" ticket) p))

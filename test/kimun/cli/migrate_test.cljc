@@ -7,7 +7,7 @@
    scripts/parity/record_v1_store.py, descriptors exported once with
    `models/from-python`) is migrated and every payload must equal v1's; a
    document may differ only through an entry in EXPECTED-DIFFS.edn."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [cheshire.core :as json]
             [clojure.edn :as edn]
             [clojure.string :as str]
@@ -30,7 +30,7 @@
                 (throw (ex-info (str "ModuleNotFoundError: " ref) {}))))))
 
 (defn- project []
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-migrate-"}))]
+  (let [p (str (ktu/temp-dir "kimun-migrate-"))]
     (fs/copy-tree (fs/path fixture "project") p)
     p))
 
@@ -113,7 +113,7 @@
 (deftest real-store-sample-extracts-as-in-v1
   (if-not (fs/exists? (fs/path v1-project ".sldb" "core" "store_index.yaml"))
     (println "SKIPPED kimun.cli.migrate-test/real-store-sample-extracts-as-in-v1:" (str v1-project "/.sldb") "is not on this machine")
-    (let [p (str (fs/create-temp-dir {:prefix "kimun-migrate-real-"}))
+    (let [p (str (ktu/temp-dir "kimun-migrate-real-"))
           recs (for [f (sort (fs/glob (fs/path frozen "documents") "*/*.json"))] (json/parse-string (slurp (str f))))
           models (sort (distinct (map #(get % "model") recs)))
           core (fs/path p "sldb-v1" "core")]
@@ -150,6 +150,6 @@
 (deftest migrate-is-reachable-from-the-cli
   ;; regression: the group existed but was never registered in kimun.cli.main
   (let [e (:envelope (kimun.cli.main/run ["migrate" "--from-v1" "/nonexistent-kimun-v1"] {"USER" "tester"}
-                                         (str (babashka.fs/create-temp-dir {:prefix "kimun-mig-cli-"}))))]
+                                         (str (ktu/temp-dir "kimun-mig-cli-"))))]
     (is (not= "org.babashka/cli" (get-in e [:error :type])) (pr-str e))
     (is (= "migrate/not-v1-store" (get-in e [:error :type])) (pr-str e))))

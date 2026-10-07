@@ -3,7 +3,7 @@
    stores with real history, called through `dispatch` (the group is wired into
    `kimun.cli.main` at merge): `show` and its filters, `verify`, tampering of an
    object and of the log, and the usage failures."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is testing]]
             [clojure.edn :as edn]
             [clojure.string :as str]
             [babashka.fs :as fs]
@@ -24,7 +24,7 @@
   (j/dispatch sub (vec args) (merge {:format "json" :actor "human/tester"} opts) {:env env :cwd dir}))
 
 (defn- project []
-  (let [proj (str (fs/create-temp-dir {:prefix "kimun-cli-journal-"}))]
+  (let [proj (str (ktu/temp-dir "kimun-cli-journal-"))]
     (run proj "stores" "init" "--name" "p")
     (spit (str (fs/path proj "doc.md")) "# T\n\npara one\n")
     (run proj "docs" "ingest" "doc.md")
@@ -67,7 +67,7 @@
     (is (= [] (get-in e [:data :bad])))))
 
 (deftest verify-on-empty-store
-  (let [proj (str (fs/create-temp-dir {:prefix "kimun-cli-journal-"}))]
+  (let [proj (str (ktu/temp-dir "kimun-cli-journal-"))]
     (run proj "stores" "init" "--name" "p")
     (is (= [] (:data (jr proj "show" {}))))
     (is (true? (:ok (jr proj "verify" {}))))))
@@ -105,7 +105,7 @@
    {:proj :dir :log (path) :lines (log lines) :revs [r1 r2 r3] :heads (path)
     :heads-at [heads.edn text after each commit]}."
   []
-  (let [proj (str (fs/create-temp-dir {:prefix "kimun-cli-journal-"}))
+  (let [proj (str (ktu/temp-dir "kimun-cli-journal-"))
         dir (str (fs/path proj ".kimun"))
         log (str (fs/path dir "log.edn"))]
     (run proj "stores" "init" "--name" "p")
@@ -170,7 +170,7 @@
   (is (= 6 (:exit (j/dispatch nil [] {} {:env env :cwd "."})))))
 
 (deftest no-store-is-typed
-  (let [dir (str (fs/create-temp-dir {:prefix "kimun-cli-journal-"}))
+  (let [dir (str (ktu/temp-dir "kimun-cli-journal-"))
         ex (try (jr dir "show" {}) (catch Exception e e))]
     (is (= :cli/no-store (:type (ex-data ex))))))
 

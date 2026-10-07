@@ -3,7 +3,7 @@
    means than v1's shards: a write touches only the document it changes, a
    hand edit reaches the derived graph, and a wiped derived index costs
    nothing because the graph is a view of `(store, head)`."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.main :as main]))
 
@@ -18,7 +18,7 @@
            :template "# ⸢rev•title⸥\n\nCapacity: ⸢rev•capacity⸥\n"}))
 
 (defn- world []
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-parity-edges-"}))]
+  (let [p (str (ktu/temp-dir "kimun-parity-edges-"))]
     (run p "stores" "init" "--name" "p")
     (spit (file p "table.edn") table)
     (is (true? (:ok (run p "models" "define" "-f" "table.edn"))))

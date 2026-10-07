@@ -7,7 +7,7 @@
    v1's readers return), plus the type of every endpoint. A difference is
    either absent or listed, with its reason, in EXPECTED-DIFFS.edn; a listed
    entry that no longer differs fails."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [cheshire.core :as json]
             [clojure.edn :as edn]
             [clojure.set :as set]
@@ -41,7 +41,7 @@
    builders the CLI's `models define` and `docs track` call, one commit each.
    Returns the opened store."
   [descriptors documents]
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-edges-parity-"}))
+  (let [p (str (ktu/temp-dir "kimun-edges-parity-"))
         _ (ok! p "stores" "init" "--name" "parity")
         {:keys [backend] s :store} (cli-store/open! (cli-store/resolve-store {} env p))
         ulid #(ports/ulid (:ids host/host))

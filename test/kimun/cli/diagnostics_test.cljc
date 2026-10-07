@@ -2,7 +2,7 @@
   "`stores check`, `stores health`, `stores update` and `stores reconcile` end
    to end on temporary stores. Each test names in a comment the v1 function
    whose promise it carries."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is testing]]
             [clojure.string :as str]
             [babashka.fs :as fs]
             [cheshire.core :as json]
@@ -35,7 +35,7 @@
 (defn- project
   "A project with TicketDoc and the tracked document `login` (login.md)."
   []
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-diag-cli-"}))]
+  (let [p (str (ktu/temp-dir "kimun-diag-cli-"))]
     (run p "stores" "init" "--name" "p")
     (spit (file p "ticket.edn") ticket)
     (is (true? (:ok (run p "models" "define" "-f" "ticket.edn"))))
@@ -121,7 +121,7 @@
 (defn- damaged-copy
   "A fresh copy of project `p0` whose object `id` is damaged; the project path."
   [p0 id mode]
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-diag-dmg-"}))]
+  (let [p (str (ktu/temp-dir "kimun-diag-dmg-"))]
     (fs/copy-tree p0 p {:replace-existing true})
     (damage! (file p ".kimun") id mode)
     p))
@@ -255,7 +255,7 @@
 
 (deftest reconcile-reports-and-applies-only-when-requested
   ;; v1: test_reconcile_reports_and_applies_only_when_requested
-  (let [base (str (fs/create-temp-dir {:prefix "kimun-reconcile-"}))
+  (let [base (str (ktu/temp-dir "kimun-reconcile-"))
         catalog (file base "catalog") one (file base "projects" "one") gone (file base "gone")]
     (doseq [d [catalog one gone]] (fs/create-dirs d) (run d "stores" "init"))
     (run catalog "stores" "link" "gone" gone)
@@ -275,7 +275,7 @@
 (deftest check-reports-noise-already-tracked-without-blocking
   ;; v1: test_stores_check_reports_noise_already_tracked_without_blocking,
   ;;     test_stores_check_prints_every_noisy_heading_not_just_a_count
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-diag-noise-"}))]
+  (let [p (str (ktu/temp-dir "kimun-diag-noise-"))]
     (run p "stores" "init" "--name" "p")
     (spit (file p "note.edn")
           (pr-str {:model/name "NoteDoc" :model/version 1 :base []

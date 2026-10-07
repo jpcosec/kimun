@@ -5,7 +5,7 @@
    `kimun.cli.main` at merge, so it is called through its `dispatch`; the HTTP
    transport (status codes, JSON bodies, `/similar`) is deferred to the `serve`
    task D1."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.commands.corpus :as ccorpus]
@@ -28,7 +28,7 @@
 (defn- project
   "A project with a store, the NoteDoc model, and the `pan` and `deploy` notes of v1's `_corpus_store`."
   []
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-corpus-"}))]
+  (let [p (str (ktu/temp-dir "kimun-corpus-"))]
     (run p "stores" "init" "--name" "p")
     (spit (str (fs/path p "note.edn")) note)
     (is (true? (:ok (run p "models" "define" "-f" "note.edn"))))
@@ -106,7 +106,7 @@
 ;; v1: test_field_corpus end-to-end (entries, linked stores)
 (deftest linked-stores-join-the-corpus-with-prefixed-ids
   (let [p (project)
-        other (str (fs/create-temp-dir {:prefix "kimun-corpus-other-"}))]
+        other (str (ktu/temp-dir "kimun-corpus-other-"))]
     (run other "stores" "init" "--name" "other")
     (spit (str (fs/path other "note.edn")) note)
     (run other "models" "define" "-f" "note.edn")

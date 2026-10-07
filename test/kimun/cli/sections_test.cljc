@@ -3,7 +3,7 @@
    show`), `find` and `fields`, called through `kimun.cli.commands.sections/dispatch`
    (the group is not registered in `main` yet; the store is set up through
    `main/run`). Each test names in a comment the v1 functions whose promise it carries."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.commands.sections :as cs]
             [kimun.cli.errors :as errors]
@@ -25,7 +25,7 @@
   "A project with a store, the RoadmapDoc model and the document `roadmap`
    (v1 `_setup_store`)."
   []
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-sections-"}))]
+  (let [p (str (ktu/temp-dir "kimun-sections-"))]
     (run p "stores" "init" "--name" "p")
     (spit (str (fs/path p "roadmap.edn")) roadmap-model)
     (is (true? (:ok (run p "models" "define" "-f" "roadmap.edn"))))

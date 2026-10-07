@@ -4,7 +4,7 @@
    request in, a response map out). Ports of the server-level promises of sldb
    v1's test_serve_auth.py, test_serve_stores_check.py and test_serve.py; the
    feature routes v1 tests cover are listed as deferred in the porting report."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [babashka.http-client :as http]
             [cheshire.core :as json]
             [clojure.string :as str]
@@ -21,7 +21,7 @@
 (defn- project
   "A temp project with a store and one document `doc` (\"# T\\n\\npara one\")."
   []
-  (let [proj (str (fs/create-temp-dir {:prefix "kimun-serve-test-"}))]
+  (let [proj (str (ktu/temp-dir "kimun-serve-test-"))]
     (run proj "stores" "init" "--name" "p")
     (spit (str (fs/path proj "doc.md")) "# T\n\npara one\n")
     (run proj "docs" "ingest" "doc.md")
@@ -55,7 +55,7 @@
                       (is (true? (get-in r [:json :ok])))))))
 
 (deftest health-degraded-without-a-store
-  (let [empty-dir (str (fs/create-temp-dir))
+  (let [empty-dir (str (ktu/temp-dir))
         server (h/start! {:store (str empty-dir "/nope") :cwd empty-dir :env env})]
     (try (let [r (req :get (str "http://127.0.0.1:" (:port server) "/health"))]
            (is (= 200 (:status r)))

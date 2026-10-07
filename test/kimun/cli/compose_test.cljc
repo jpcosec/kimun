@@ -3,7 +3,7 @@
    path, whatever the working directory of the caller: the port of sldb v1
    `tests/api/test_composition_ref_root.py` over `kimun.cli.compose/context`.
    Each test names in a comment the v1 function whose promise it carries."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [cheshire.core :as json]
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
@@ -37,7 +37,7 @@
    beside it. `{:base :root :elsewhere}` — `:elsewhere` is a directory that is
    not the project root, from which any real caller may run."
   []
-  (let [base (str (fs/create-temp-dir {:prefix "kimun-compose-"}))
+  (let [base (str (ktu/temp-dir "kimun-compose-"))
         root (str (fs/create-dirs (fs/path base "project")))
         elsewhere (str (fs/create-dirs (fs/path base "elsewhere")))]
     (is (true? (:ok (run root "stores" "init" "--name" "p"))))
@@ -100,7 +100,7 @@
       (is (nil? (ref-text "absent.md")))
       (is (nil? (ref-text ""))))
     (testing "a ref that leaves the project root names no file"
-      (let [outside (fs/create-temp-file {:prefix "kimun-outside-" :suffix ".md"})]
+      (let [outside (ktu/temp-file "kimun-outside-" ".md")]
         (spit (str outside) "# Outside\n")
         (is (nil? (ref-text (str outside))) "absolute path")
         (is (nil? (ref-text (str (fs/relativize (fs/canonicalize root) (fs/canonicalize outside))))) "../ path")))

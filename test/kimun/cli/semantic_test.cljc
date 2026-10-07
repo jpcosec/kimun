@@ -3,7 +3,7 @@
    (parents, equivalences, guards, show, the CLI) and
    `tests/store/test_semantic_export.py`. The group is registered in
    `kimun.cli.main` at merge, so it is called through its `dispatch`."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [cheshire.core :as json]
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
@@ -28,7 +28,7 @@
 (defn- world
   "v1's fixture `world`: Spec (type.knowledge.spec) with s1, Topology (layer.topology) with t1."
   []
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-semantic-"}))]
+  (let [p (str (ktu/temp-dir "kimun-semantic-"))]
     (run p "stores" "init" "--name" "p")
     (doseq [[n s] [["Spec" {"type" ["knowledge" "spec"]}] ["Topology" {"layer" ["topology"]}]]]
       (spit (str (fs/path p (str n ".edn"))) (model n s))

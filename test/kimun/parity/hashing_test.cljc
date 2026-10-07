@@ -4,7 +4,7 @@
    promises hold on the store fingerprint read from the derived index — the
    inventory and the model identities are a function of content, not of the
    order or the store they were written in. Each test names its v1 function."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.main :as main]
@@ -24,7 +24,7 @@
 (defn- project
   "A store with the model `model` and one Book per name of `names`, created in that order."
   [model names]
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-hashing-"}))]
+  (let [p (str (ktu/temp-dir "kimun-hashing-"))]
     (run p "stores" "init" "--name" "p")
     (spit (str (fs/path p "book.edn")) (pr-str model))
     (is (true? (:ok (run p "models" "define" "-f" "book.edn"))))

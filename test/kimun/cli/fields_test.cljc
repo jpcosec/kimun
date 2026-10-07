@@ -5,7 +5,7 @@
    the journal. The group is called through `dispatch` (it is not registered
    in `kimun.cli.main` yet); stores are set up with the existing groups. Each
    test carrying a v1 promise names the v1 function in a comment."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [cheshire.core :as json]
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
@@ -30,7 +30,7 @@
 (defn- project
   "v1 `_setup_store`: a store with RoadmapDoc and the document `roadmap`."
   []
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-fields-"}))]
+  (let [p (str (ktu/temp-dir "kimun-fields-"))]
     (run p "stores" "init" "--name" "p")
     (spit (file p "roadmap.edn") (pr-str pure/roadmap))
     (spit (file p "roadmap.json") (json/generate-string pure/payload))
@@ -178,7 +178,7 @@
 (deftest a-mutation-renders-with-the-composition-context
   ;; A composed field (`⸢render•summary⸥`) is expanded from the refs of the payload, resolved
   ;; against the project root and never the working directory (kimun.cli.compose/context).
-  (let [base (str (fs/create-temp-dir {:prefix "kimun-fields-compose-"}))
+  (let [base (str (ktu/temp-dir "kimun-fields-compose-"))
         root (str (fs/create-dirs (fs/path base "project")))
         elsewhere (str (fs/create-dirs (fs/path base "elsewhere")))
         task {:model/name "Task" :model/version 1 :base []

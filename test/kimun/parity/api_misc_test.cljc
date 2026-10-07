@@ -2,7 +2,7 @@
   "Ports of sldb v1 api/ tests about creating stores, editing derived models,
    resolving a store location and saving payloads. kimun has one surface (the
    CLI over `kimun.surface.*`), so each v1 `api.*` call is driven as its command."
-  (:require [clojure.test :refer [deftest is]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is]]
             [clojure.string :as str]
             [babashka.fs :as fs]
             [kimun.cli.main :as main]))
@@ -10,7 +10,7 @@
 (def env {"USER" "tester"})
 (def ticket (str (fs/absolutize "test/fixtures/models/ticket.edn")))
 
-(defn- tmp [] (str (fs/create-temp-dir {:prefix "kimun-apimisc-"})))
+(defn- tmp [] (str (ktu/temp-dir "kimun-apimisc-")))
 (defn- run [cwd & argv] (:envelope (main/run argv env cwd)))
 (defn- real [x] (str (fs/real-path x)))
 

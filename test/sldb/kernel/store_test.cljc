@@ -1,5 +1,5 @@
 (ns sldb.kernel.store-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is testing]]
             [sldb.kernel.test-util :refer [defspec]]
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
@@ -17,7 +17,7 @@
 (def h host/host)
 
 (defn- read-fixture [f] #?(:clj (edn/read-string (slurp (io/file f)))))
-(defn- tmp-dir [] #?(:clj (str (bfs/create-temp-dir {:prefix "sldb-store-"}))))
+(defn- tmp-dir [] #?(:clj (str (ktu/temp-dir "sldb-store-"))))
 
 (defn- snapshot [s]
   {:head (:head s) :heads (:heads s)

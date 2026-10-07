@@ -3,7 +3,7 @@
    wrong (absent, stale, corrupt), that a read never writes, what `rebuild!`
    writes and reports, and the federated view. Each ported test names its v1
    function in a comment."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [clojure.edn :as edn]
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.main :as main]
@@ -26,7 +26,7 @@
 (defn- project
   "A store named `nm` with TicketDoc and the documents login and logout."
   [nm]
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-cache-"}))]
+  (let [p (str (ktu/temp-dir "kimun-cache-"))]
     (run p "stores" "init" "--name" nm)
     (spit (str (fs/path p "ticket.edn")) (pr-str (ticket [] "# ⸢rev•title⸥\n")))
     (is (true? (:ok (run p "models" "define" "-f" "ticket.edn"))))
@@ -119,7 +119,7 @@
       (is (= expected (cache/load! (opened p)))))))
 
 (deftest an-empty-store-has-no-cache-file
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-cache-"}))]
+  (let [p (str (ktu/temp-dir "kimun-cache-"))]
     (run p "stores" "init" "--name" "p")
     (let [o (opened p) head (:head (:store o)) report (cache/rebuild! o)]
       (is (= 0 (:documents report) (:models report)))

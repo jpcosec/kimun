@@ -5,7 +5,7 @@
    `;; GAP:` comment, so the suite stays green and the gap stays visible: the day
    a gap is fixed its deftest turns red and must be rewritten as the v1 promise
    and moved next to the ports of its v1 file."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.main :as main]
             [kimun.surface.models.descriptor :as descriptor]))
@@ -17,7 +17,7 @@
 (defn- file [p n] (str (fs/path p n)))
 
 (defn- table-store [doc]
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-gap-"}))]
+  (let [p (str (ktu/temp-dir "kimun-gap-"))]
     (run p "stores" "init" "--name" "p")
     (spit (file p "table.edn")
           (pr-str {:model/name "Table" :model/version 1 :base []
@@ -62,7 +62,7 @@
 ;; optrev slot to the template, and an existing document whose body is the last slot then
 ;; extracts with its body moved into the new field (`body ""`, `summary_en "World body"`).
 (deftest field-add-of-an-optional-field-rebinds-the-last-slot-of-existing-documents
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-gap-fa-"}))]
+  (let [p (str (ktu/temp-dir "kimun-gap-fa-"))]
     (run p "stores" "init" "--name" "p")
     (spit (file p "n.edn")
           (pr-str {:model/name "Note" :model/version 1 :base []

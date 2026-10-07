@@ -4,7 +4,7 @@
    `tests/api/test_api_graph_analysis.py` and the two `similar` functions of
    `tests/test_serve_corpus_similar.py`. The group is registered in
    `kimun.cli.main` at merge, so it is called through its `dispatch`."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [clojure.java.io :as io]
             [clojure.set :as set]
             [clojure.string :as str]
@@ -41,7 +41,7 @@
 (defn- store-with
   "A temp store with `models` (`[name semantics]`) and `docs` (`[model name]`)."
   [models docs]
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-graph-"}))]
+  (let [p (str (ktu/temp-dir "kimun-graph-"))]
     (run p "stores" "init" "--name" "p")
     (doseq [[n s] models]
       (spit (str (fs/path p (str n ".edn")))
@@ -94,7 +94,7 @@
 ;; v1: test_api_graph.py::test_executor_matches_kgdb_on_the_five_example_queries
 ;; (the kgdb oracle is not available here: the CLI over the export must answer what the engine does)
 (deftest the-five-example-queries-run-over-a-semantic-export
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-graph-"}))
+  (let [p (str (ktu/temp-dir "kimun-graph-"))
         export (slurp (io/resource "kimun/surface/graph/sldb_kgdb_semantic_export.v1.json"))
         g (gio/semantic-export->graph (gio/read-json export))]
     (spit (str (fs/path p "export.json")) export)

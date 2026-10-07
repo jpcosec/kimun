@@ -3,7 +3,7 @@
    `version`, `stores init` and `stores check`, with volatile fields
    normalized, must match the fixtures generated once from the implementation
    (docs/v2/03 §5)."
-  (:require [clojure.test :refer [deftest is]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is]]
             [clojure.walk :as walk]
             [babashka.fs :as fs]
             [cheshire.core :as json]
@@ -36,7 +36,7 @@
   (is (= (fixture "version") (rendered ["--version"] (System/getProperty "user.dir")))))
 
 (deftest golden-init-and-check
-  (let [proj (str (fs/create-temp-dir {:prefix "kimun-golden-"}))
+  (let [proj (str (ktu/temp-dir "kimun-golden-"))
         init (rendered ["stores" "init" "--name" "golden"] proj)
         check (rendered ["stores" "check"] proj)]
     (is (= (fixture "init") init))

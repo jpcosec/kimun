@@ -2,7 +2,7 @@
   "Address reads through the CLI: port of sldb v1 `test_address_surface.py`
    `test_singular_alias_routes_to_the_same_handler` (v1 `get` / `glob` aliases are
    retired by docs/v2/06 §8; `find` with an address answers the same questions)."
-  (:require [clojure.test :refer [deftest is]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is]]
             [babashka.fs :as fs]
             [kimun.cli.main :as main]))
 
@@ -12,7 +12,7 @@
 (defn- run [cwd & argv] (:envelope (main/run argv env cwd)))
 
 (defn- project []
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-parity-misc-"}))]
+  (let [p (str (ktu/temp-dir "kimun-parity-misc-"))]
     (run p "stores" "init" "--name" "p")
     (run p "models" "define" "-f" ticket)
     (doseq [[n t s] [["memo1" "Memo1" "open"] ["memo2" "Memo2" "closed"]]]

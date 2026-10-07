@@ -4,7 +4,7 @@
    api/test_api_model_drafts.py, store/test_contract_in_model_node.py,
    store/test_models_io.py, store/test_resolver.py and the CLI-level promises
    of test_standalone.py. Each deftest names the v1 test(s) it ports."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is testing]]
             [clojure.edn :as edn]
             [clojure.string :as str]
             [babashka.fs :as fs]
@@ -22,7 +22,7 @@
 (def doc "# Login roto\n\nStatus: open\n\n## Tags\n\n- auth\n- urgente\n\n## Body\n\nNo deja entrar.\n")
 (def v1-src "/home/jp/proyectos/hum-ecosystem/tools/sldb/src")
 
-(defn- tmp [] (str (fs/create-temp-dir {:prefix "kimun-models-"})))
+(defn- tmp [] (str (ktu/temp-dir "kimun-models-")))
 (defn- run [cwd & argv] (:envelope (main/run argv env cwd)))
 (defn- project [] (let [p (tmp)] (run p "stores" "init" "--name" "p") p))
 (defn- write! [dir name text] (let [p (str (fs/path dir name))] (spit p text) p))

@@ -4,7 +4,7 @@
    and `stores verify` the same after the upgrade (revision and transaction
    ids read through the map the upgrade writes), keeps a backup, and a second
    upgrade is a no-op."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is testing]]
             [clojure.edn :as edn]
             [clojure.string :as str]
             [clojure.walk :as walk]
@@ -24,7 +24,7 @@
    by the CLI: two untyped documents and their edits, a model, a typed
    document and a field change."
   []
-  (let [proj (str (fs/create-temp-dir {:prefix "kimun-cli-upgrade-"}))
+  (let [proj (str (ktu/temp-dir "kimun-cli-upgrade-"))
         dir (str (fs/path proj ".kimun"))
         b (cli-store/backend dir)]
     (fs/create-dirs dir)

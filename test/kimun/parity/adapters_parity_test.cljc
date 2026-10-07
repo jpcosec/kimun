@@ -12,7 +12,7 @@
    merged payload equals v1's; and against `v1_tracked` the only differences are the ones listed, one by one, in
    EXPECTED-DIFFS.edn — an entry that is no longer observed fails too. The last tests port the v1 selfdoc tests
    that could only be written against the planner / CLI."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [babashka.process :as process]
             [cheshire.core :as json]
             [clojure.edn :as edn]
@@ -174,7 +174,7 @@
 
 ;; v1: tests/selfdoc/test_python_scanner.py::test_python_check_returns_failure_when_report_is_not_ok
 (deftest python-check-fails-when-the-report-is-not-ok
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-adapters-parity-"}))
+  (let [p (str (ktu/temp-dir "kimun-adapters-parity-"))
         env {"USER" "tester"}]
     (try
       (is (true? (get-in (main/run ["stores" "init" "--name" "p"] env p) [:envelope :ok])))

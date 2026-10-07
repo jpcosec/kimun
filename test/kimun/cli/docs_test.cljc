@@ -2,7 +2,7 @@
   "The `docs` group end to end on temporary stores: ingest a Markdown file,
    list it, render it back canonically, update it from an outside edit, and
    the failures (missing file, missing document, duplicate name, usage)."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is testing]]
             [clojure.string :as str]
             [babashka.fs :as fs]
             [kimun.cli.main :as main]
@@ -13,7 +13,7 @@
 
 (def env {"USER" "tester"})
 
-(defn- tmp [] (str (fs/create-temp-dir {:prefix "kimun-docs-"})))
+(defn- tmp [] (str (ktu/temp-dir "kimun-docs-")))
 
 (defn- run [cwd & argv] (:envelope (main/run argv env cwd)))
 

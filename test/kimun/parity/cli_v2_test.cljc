@@ -4,7 +4,7 @@
    failure (and no global fallback), a template draft that touches nothing until it
    is applied, applying it, a refused apply leaving the store as it was, and pure
    JSON output."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is testing]]
             [clojure.edn :as edn]
             [clojure.string :as str]
             [babashka.fs :as fs]
@@ -16,7 +16,7 @@
 (def ticket (str (fs/absolutize "test/fixtures/models/ticket.edn")))
 
 (defn- run [cwd & argv] (:envelope (main/run argv env cwd)))
-(defn- tmp [] (str (fs/create-temp-dir {:prefix "kimun-parity-cliv2-"})))
+(defn- tmp [] (str (ktu/temp-dir "kimun-parity-cliv2-")))
 (defn- write! [dir name text] (let [p (str (fs/path dir name))] (spit p text) p))
 (defn- head [p] (get-in (run p "stores" "check") [:data :head]))
 (defn- template [p] (:data (run p "models" "template" "TicketDoc")))

@@ -5,7 +5,7 @@
    `tests/store/test_where_empty_and_errors.py` (store halves) and the
    store-level functions lane B left from `tests/test_address_surface.py` and
    `tests/store/test_queries_expanded.py`."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.commands.find :as cfind]
@@ -36,7 +36,7 @@
   (doseq [[m d & sets] docs] (apply ok! dir "docs" "create" m d (mapcat (fn [s] ["--set" s]) sets)))
   (str dir))
 
-(defn- tmp [] (str (fs/create-temp-dir {:prefix "kimun-find-"})))
+(defn- tmp [] (str (ktu/temp-dir "kimun-find-")))
 
 (def roadmap-model "v1 `_setup_store`'s RoadmapDoc: sections Tasks and Semantic Tags, tag type.documentation.Readme."
   (model "RoadmapDoc" [] {"type" {"documentation" "Readme"}} ["title" "tasks" "notes"]

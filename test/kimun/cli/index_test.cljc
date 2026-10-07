@@ -2,7 +2,7 @@
   "`kimun rebuild-indexes` end to end on temporary stores (v1 `stores
    semantic-map` and the refresh of `stores update`): the envelope, the file
    it writes, that it commits nothing, and its usage errors."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [clojure.edn :as edn]
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.commands.index :as cindex]
@@ -27,7 +27,7 @@
    :template template})
 
 (defn- project []
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-index-cli-"}))]
+  (let [p (str (ktu/temp-dir "kimun-index-cli-"))]
     (run p "stores" "init" "--name" "p")
     (spit (str (fs/path p "ticket.edn")) (pr-str (ticket [] "# ⸢rev•title⸥\n")))
     (is (true? (:ok (run p "models" "define" "-f" "ticket.edn"))))
@@ -82,6 +82,6 @@
       (is (= "cli/usage" (get-in e [:error :type])))
       (is (= 6 (out/exit-code e))))
     (is (not (fs/exists? (fs/path p ".kimun" "index"))) "a refused command writes nothing"))
-  (let [e (rebuild (str (fs/create-temp-dir {:prefix "kimun-nostore-"})))]
+  (let [e (rebuild (str (ktu/temp-dir "kimun-nostore-")))]
     (is (= "cli/no-store" (get-in e [:error :type])))
     (is (= 5 (out/exit-code e)))))

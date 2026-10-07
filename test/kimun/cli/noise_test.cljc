@@ -4,7 +4,7 @@
    headings or frontmatter keys its model does not declare, leave the store
    untouched, and `docs show --ast` prints the document's SLDB-MD AST. The pure
    rules are in `kimun.surface.models.noise-test`."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is testing]]
             [clojure.string :as str]
             [babashka.fs :as fs]
             [kimun.cli.main :as main]))
@@ -37,7 +37,7 @@
 (def noisy "# Alpha\n\n## Answer\n\nBody text\n\n## Entidades\n\n- one\n\n## Medicion 1\n\n- two\n")
 
 (defn- project []
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-noise-"}))]
+  (let [p (str (ktu/temp-dir "kimun-noise-"))]
     (run p "stores" "init" "--name" "p")
     (doseq [[f src] [["note.edn" note] ["sections.edn" note-with-sections] ["card.edn" card]]]
       (spit (file p f) src)

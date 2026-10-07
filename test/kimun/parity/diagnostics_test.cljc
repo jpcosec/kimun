@@ -3,7 +3,7 @@
    (a field added) must reach the content hash of documents whose text did not
    move, and a read must never serve the payload of the old contract. Driven
    with `models field-add`, `stores update` and `docs show`."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.main :as main]))
 
@@ -17,7 +17,7 @@
            :template "# ⸢rev•title⸥\n"}))
 
 (defn- project []
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-parity-diag-"}))]
+  (let [p (str (ktu/temp-dir "kimun-parity-diag-"))]
     (run p "stores" "init" "--name" "p")
     (spit (file p "ticket.edn") ticket)
     (is (true? (:ok (run p "models" "define" "-f" "ticket.edn"))))

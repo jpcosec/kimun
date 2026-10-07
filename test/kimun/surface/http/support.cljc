@@ -1,7 +1,7 @@
 (ns kimun.surface.http.support
   "Shared helpers of the HTTP route tests: a temp project with a store, a real
    server on port 0 and JSON requests against it."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [babashka.http-client :as http]
             [cheshire.core :as json]
             [clojure.string :as str]
@@ -22,7 +22,7 @@
 (defn project
   "A temp project directory with an initialised store; returns its path."
   []
-  (let [proj (str (fs/create-temp-dir {:prefix "kimun-serve-test-"}))]
+  (let [proj (str (ktu/temp-dir "kimun-serve-test-"))]
     (run proj "stores" "init" "--name" "p")
     proj))
 

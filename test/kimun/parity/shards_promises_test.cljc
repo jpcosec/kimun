@@ -8,7 +8,7 @@
    observable one: what the store answers (documents, sections, semantic tags,
    index fingerprint) equals what reading each Markdown file directly gives,
    after creating, updating and untracking, whatever the order of the writes."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [clojure.edn :as edn]
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
@@ -38,7 +38,7 @@
 (defn- project
   "A project with the Note model and the documents note-<i> for `is`, created in that order."
   [is]
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-shards-"}))]
+  (let [p (str (ktu/temp-dir "kimun-shards-"))]
     (run p "stores" "init" "--name" "p")
     (spit (str (fs/path p "note.edn")) note)
     (assert (:ok (run p "models" "define" "-f" "note.edn")))

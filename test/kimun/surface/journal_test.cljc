@@ -3,7 +3,7 @@
    built through the existing CLI groups: order, actor and timestamp, one entry
    per write, before/after text, filters, and verification of the revision DAG.
    Each v1 test of `tests/api/test_journal.py` is ported or named as deferred."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is testing]]
             [babashka.fs :as fs]
             [kimun.cli.main :as main]
             [kimun.cli.store :as cs]
@@ -17,7 +17,7 @@
 (defn- project
   "A temp project with an initialised store, `doc.md` holding `text`."
   [text]
-  (let [proj (str (fs/create-temp-dir {:prefix "kimun-journal-"}))]
+  (let [proj (str (ktu/temp-dir "kimun-journal-"))]
     (run proj "stores" "init" "--name" "p")
     (spit (str (fs/path proj "doc.md")) text)
     proj))

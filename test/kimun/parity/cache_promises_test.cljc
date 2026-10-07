@@ -6,7 +6,7 @@
    cached read does not extract again, losing the cache changes no answer, a
    change of contract or a hand edit is seen by the next command, and a write
    that changes nothing touches nothing. Each test names its v1 function."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.main :as main]
             [kimun.cli.store :as cli-store]
@@ -23,7 +23,7 @@
    :template (str "# ⸢rev•" (first fields) "⸥\n" (when (second fields) (str "\n⸢rev•" (second fields) "⸥\n")))})
 
 (defn- store-with [m]
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-cachep-"}))]
+  (let [p (str (ktu/temp-dir "kimun-cachep-"))]
     (run p "stores" "init" "--name" "world")
     (spit (str (fs/path p "model.edn")) (pr-str m))
     (is (true? (:ok (run p "models" "define" "-f" "model.edn"))))

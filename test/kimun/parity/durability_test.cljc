@@ -3,7 +3,7 @@
    survive in kimun: a write leaves no temporary file and creates the
    directories it needs, and nothing in the store depends on where the store
    directory is or what it is called. Each test names its v1 function."
-  (:require [babashka.fs :as fs]
+  (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.main :as main]))
@@ -18,7 +18,7 @@
            :template "# ⸢rev•title⸥\n\n## Body\n\n⸢rev•body⸥\n"}))
 
 (defn- project []
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-durability-"}))]
+  (let [p (str (ktu/temp-dir "kimun-durability-"))]
     (run p "stores" "init" "--name" "kb")
     (spit (str (fs/path p "note.edn")) note)
     (is (true? (:ok (run p "models" "define" "-f" "note.edn"))))
@@ -42,7 +42,7 @@
 
 ;; v1: store/test_update_fault_tolerance.py::test_atomic_write_creates_parent_dirs
 (deftest a-write-creates-the-directories-it-needs
-  (let [base (str (fs/create-temp-dir {:prefix "kimun-durability-"}))
+  (let [base (str (ktu/temp-dir "kimun-durability-"))
         store (str (fs/path base "a" "b" "c"))]
     (is (true? (:ok (run base "stores" "init" "--name" "deep" "--store" store))))
     (is (fs/regular-file? (fs/path store "store.edn")))
@@ -56,7 +56,7 @@
 
 ;; v1: store/test_store_name_relpaths.py::test_renamed_store_stays_fully_readable
 (deftest a-renamed-store-stays-fully-readable
-  (let [p (str (fs/create-temp-dir {:prefix "kimun-durability-"}))
+  (let [p (str (ktu/temp-dir "kimun-durability-"))
         store (str (fs/path p ".kimun_custom"))
         at (fn [& argv] (apply run p (concat argv ["--store" store])))]
     (run p "stores" "init" "--name" "kb")
@@ -73,7 +73,7 @@
       (is (true? (:ok (at "rebuild-indexes"))))
       (let [listed (:data (at "docs" "list"))
             found (:data (at "find" "Hola"))
-            q (str (fs/path (fs/create-temp-dir {:prefix "kimun-durability-"}) "elsewhere" "kb"))
+            q (str (fs/path (ktu/temp-dir "kimun-durability-") "elsewhere" "kb"))
             _ (fs/create-dirs (fs/parent q))
             _ (fs/move p q)
             at2 (fn [& argv] (apply run q (concat argv ["--store" (str (fs/path q ".kimun_custom"))])))]
