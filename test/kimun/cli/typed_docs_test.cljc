@@ -317,3 +317,42 @@
       (is (re-find #"## Body\n\nUsers cannot log in\." text))
       (is (re-find #"(?i)priority[\s\S]*5" text))
       (is (= "intact" (name (get-in (run "docs" "show" "login") [:data :state])))))))
+
+;; format 3 (docs/v2/14 §10): `:content :inline` keeps the document's text in
+;; the store; the default (by reference) reads it from the file.
+(deftest inline-content-is-stored-with-the-document
+  (let [p (project)
+        store-of (fn [] (:store (cli-store/open! (file p ".kimun"))))
+        source-edge? (fn [store doc]
+                       (boolean (some (fn [eid]
+                                        (let [e (get-in store [:objects eid])
+                                              t (get-in store [:objects (:to e)])]
+                                          (and (= :derived (:type e))
+                                               (= "markdown/source" (get-in t [:content :format])))))
+                                      (:edges doc))))]
+    (is (true? (:ok (run p "docs" "create" "TicketDoc" "inline-doc" "--set" "title=T" "--set" "status=open" "--inline"))))
+    (is (true? (:ok (run p "docs" "create" "TicketDoc" "ref-doc" "--set" "title=T" "--set" "status=open"))))
+    (let [store (store-of)
+          inline (tdocs/find-document store "inline-doc")
+          bref (tdocs/find-document store "ref-doc")]
+      (is (true? (:inline inline)) "the inline document carries its own source")
+      (is (false? (:inline bref)))
+      (is (source-edge? store inline) "inline writes the source sign and its derived edge")
+      (is (not (source-edge? store bref)) "by reference writes no source sign"))
+    (testing "with the file gone the inline document still answers its text; the by-reference one is :missing"
+      (fs/delete (file p "inline-doc.md"))
+      (fs/delete (file p "ref-doc.md"))
+      (is (= "# T\n\nStatus: open\n" (get-in (run p "docs" "show" "inline-doc") [:data :markdown])))
+      (is (= "T" (get-in (run p "docs" "show" "inline-doc") [:data :payload "title"])))
+      (is (= :missing (:status (first (filter #(= "ref-doc" (:name %)) (:data (run p "docs" "status"))))))))))
+
+;; a store created with `--content inline` makes every document inline by default.
+(deftest store-content-inline-defaults-documents-to-inline
+  (let [p (str (ktu/temp-dir "kimun-inline-store-"))
+        run (fn [& argv] (:envelope (main/run argv {"USER" "tester"} p)))]
+    (is (true? (:ok (run "stores" "init" "--content" "inline"))))
+    (is (= :inline (:content (:descriptor (cli-store/open! (file p ".kimun"))))))
+    (spit (str (fs/path p "ticket.edn")) ticket)
+    (is (true? (:ok (run "models" "define" "-f" "ticket.edn"))))
+    (is (true? (:ok (run "docs" "create" "TicketDoc" "login" "--set" "title=T" "--set" "status=open"))))
+    (is (true? (:inline (tdocs/find-document (:store (cli-store/open! (file p ".kimun"))) "login"))))))

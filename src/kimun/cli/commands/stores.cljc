@@ -31,7 +31,8 @@
   (let [dir (if (:store opts)
               (cli-store/normalize-store-path (:store opts))
               (str (fs/path (fs/absolutize cwd) cli-store/dirname)))
-        r (cli-store/init! dir {:name (:name opts) :actor (:actor opts)})]
+        r (cli-store/init! dir {:name (:name opts) :actor (:actor opts)
+                                :content (case (:content opts) "inline" :inline :by-reference)})]
     (out/ok "stores init" {:store (store-ref (:descriptor r) (:path r))
                            :revision nil
                            :data (select-keys r [:path :name :actor :capabilities])})))
@@ -366,6 +367,7 @@
 (def spec
   "Options of the `stores` group (babashka.cli spec, merged by `kimun.cli.main`)."
   {:name {:ref "NAME" :desc "Store name (stores init)"}
+   :content {:ref "MODE" :desc "Content mode of the store: by-reference (default) or inline (stores init)"}
    :apply {:desc "Write what the comparison found (stores reconcile)" :coerce :boolean}})
 
 (def commands

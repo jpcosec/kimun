@@ -160,7 +160,9 @@
     (validate-links! descriptor dir)
     {:backend b
      :descriptor descriptor
-     :store (assoc (store/open b host/host) :read-file (project-file-reader dir))
+     :store (assoc (store/open b host/host)
+                   :read-file (project-file-reader dir)
+                   :content (or (:content descriptor) :by-reference))
      :path (str dir)}))
 
 (defn default-name
@@ -173,10 +175,12 @@
 (defn init!
   "Creates a store at `dir` for `actor`: `kimun.kernel.store/init!` with
    capabilities `{actor :all \"kimun/derive\" :all \"kimun/materialize\" :all}`,
-   then the descriptor gains `:name` (default `default-name`) and `:links []`.
+   then the descriptor gains `:name` (default `default-name`), `:links []` and,
+   when `:content` is `:inline`, `:content :inline` (docs/v2/14 §10: a store
+   whose documents carry their own text).
    Creates `dir` when missing. Raises `:cli/store-exists` when `store.edn` is
    already there. Returns `{:path :name :actor :capabilities :descriptor}`."
-  [dir {:keys [name actor]}]
+  [dir {:keys [name actor content]}]
   (let [dir (str (fs/absolutize dir))]
     (when (store? dir)
       (err/raise :cli/store-exists (str "a kimun store already exists at " dir) {:path dir}))
@@ -185,7 +189,8 @@
           capabilities {actor :all "kimun/derive" :all "kimun/materialize" :all}
           _ (store/init! b host/host capabilities)
           nm (or name (default-name dir))
-          descriptor (assoc (store/read-descriptor b) :name nm :links [])]
+          descriptor (cond-> (assoc (store/read-descriptor b) :name nm :links [])
+                       (= :inline content) (assoc :content :inline))]
       (store/write-descriptor! b descriptor)
       {:path dir :name nm :actor actor :capabilities capabilities :descriptor descriptor})))
 

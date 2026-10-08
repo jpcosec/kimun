@@ -330,7 +330,7 @@
                      {:store store :plans [] :names [] :failed []}
                      models)
         mstore* (:store mres)
-        dres (reduce (fn [{:keys [plans names failed] :as acc} {:keys [path model name force]}]
+        dres (reduce (fn [{:keys [plans names failed] :as acc} {:keys [path model name force inline]}]
                        (let [text (try (slurp (str (fs/path root path))) (catch Exception _ nil))]
                          (cond
                            (nil? text)
@@ -357,7 +357,8 @@
                                (let [{:keys [plan]} (tdocs/track-plan h mstore* model name text
                                                                       {:doc (ports/ulid (:ids h)) :tree-id (ports/ulid (:ids h))
                                                                        :path (relative-to root (str (fs/path root path)))
-                                                                       :actor actor :timestamp ts :operation "include build"})]
+                                                                       :actor actor :timestamp ts :operation "include build"
+                                                                       :inline inline})]
                                  (-> acc (update :plans conj plan) (update :names conj name))))
                              (catch Exception e
                                (-> acc (update :failed conj {:path path :name name :model model
@@ -401,7 +402,9 @@
         (err/raise :include/exists
                    (str store-dir " already exists; pass --rebuild to move it aside and build it again")
                    {:path store-dir})))
-    (let [init (:envelope (run-cli root env ["stores" "init" "--store" store-dir]))
+    (let [init (:envelope (run-cli root env (cond-> ["stores" "init" "--store" store-dir]
+                                              (= :inline (get-in cfg [:store :content]))
+                                              (conj "--content" "inline"))))
           _ (when-not (:ok init)
               (err/raise :include/drift (str "stores init failed: " (get-in init [:error :type]))
                          {:phase "stores init" :error (get-in init [:error :type]) :message (get-in init [:error :message])}))

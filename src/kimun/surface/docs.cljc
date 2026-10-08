@@ -152,6 +152,7 @@
          :model (or (:name entry) (some-> any :content :blob edn/read-string :model/name))
          :model-version (:version entry) :model-id (:id entry)
          :contract-id (get-in (anchor-edge store es) [:evidence :contract])
+         :inline (boolean (some #(stored-source? (target store %)) es))
          :recorded-content-hash (get-in (anchor-edge store es) [:evidence :content-hash])
          :recorded-field-hashes (get-in (anchor-edge store es) [:evidence :field-hashes])
          :state (cond (nil? entry) :orphan (contains? extracted (:id entry)) :intact :else :superseded)
@@ -244,10 +245,15 @@
    of `old` (a document map) that no longer hold. The anchor edge records
    `:contract` = `model-id` (the descriptor the text is extracted under),
    `:content-hash` and `:field-hashes` of the payload written: the `:reference`
-   to the file when there is one, else the `:reference` to the model. No source
-   sign is written (format 3): the text is read from the file."
-  [host store root {:keys [model-id text path actor content-hash field-hashes]} old]
-  (let [ext (when path (external-node host path text)) xid (when ext (id-of host ext))
+   to the file when there is one, else the `:reference` to the model. When
+   `inline?` the source sign is written and tied by a `:derived root→source`
+   edge, so the document carries its own text (docs/v2/14 §10: `:content
+   :inline`); by reference (default) no source sign is written and the text is
+   read from the file."
+  [host store root {:keys [model-id text path actor content-hash field-hashes inline?]} old]
+  (let [src (when inline? {:class :sign :kind :opaque :content {:format source-format :blob text}})
+        sid (when src (id-of host src))
+        ext (when path (external-node host path text)) xid (when ext (id-of host ext))
         marks (cond-> {:contract model-id}
                 content-hash (assoc :content-hash content-hash)
                 (seq field-hashes) (assoc :field-hashes field-hashes))
@@ -257,11 +263,14 @@
                          :evidence (cond-> (merge {:ref-hash model-id :actor actor} marks) ext (dissoc :contract :content-hash :field-hashes))}
                         {:type :derived :from root :to model-id
                          :evidence {:ref-hash model-id :engine "kimun.surface.models" :version "1"}}]
-                 ext-ref (conj ext-ref))
+                 ext-ref (conj ext-ref)
+                 sid (conj {:type :derived :from root :to sid
+                            :evidence {:ref-hash sid :engine "kimun.surface.docs" :version "1"}}))
         wanted-ids (set (map #(:id (edge/make host %)) wanted))
         stale (for [eid (:edges old) :let [e (get-in store [:objects eid])]
                     :when (and (not (wanted-ids eid)) (source-or-file? (target store e)))] eid)]
     (-> []
+        (cond-> src (conj {:op :add-node :node src}))
         (cond-> ext (conj {:op :add-node :node ext}))
         (into (map (fn [eid] {:op :remove-edge :edge eid}) stale))
         (into (map (fn [e] {:op :add-edge :edge e}) wanted)))))
@@ -287,8 +296,10 @@
    `opts`: `:doc` and `:tree-id` (fresh ULIDs), `:path` (relative, or nil),
    `:actor`, `:timestamp`, `:operation` (journal label, default \"docs track\").
    Returns `{:plan :name :tree :payload}`. Raises `:docs/exists` when the name
-   is tracked, `:models/missing`, and the extraction errors of the model."
-  [host store model name text {:keys [doc tree-id path actor timestamp operation]}]
+   is tracked, `:models/missing`, and the extraction errors of the model. With
+   `:inline` the source text is stored in the store instead of read from the
+   file (default: the store descriptor's `:content`)."
+  [host store model name text {:keys [doc tree-id path actor timestamp operation inline]}]
   (when (find-document store name)
     (err/raise :docs/exists (str "a document named `" name "` already exists") {:document name}))
   (let [m (require-model store model)
@@ -302,7 +313,8 @@
                                               :fields (changed-fields {} payload)}))
                (update :ops into (binding-ops host store root {:model-id (:id m) :text text :path path :actor actor
                                                                :content-hash (content-hash host payload)
-                                                               :field-hashes (field-hashes host payload)} nil)))}))
+                                                               :field-hashes (field-hashes host payload)
+                                                               :inline? (or inline (= :inline (:content store)))} nil)))}))
 
 (defn create-plan
   "Plan that creates document `name` of `model` from `payload` (rendered with
@@ -316,9 +328,10 @@
   "Plan that replaces the source of tracked document `token` with `text`
    (re-extracted under the model's current contract, which makes it `:intact`
    again). `opts`: `:path` (default: the recorded one), `:actor`, `:timestamp`,
-   `:operation`. Returns `{:plan :name :tree :payload :before :unchanged?}`;
+   `:operation`, `:inline` (default: keep the document's mode). Returns `{:plan
+   :name :tree :payload :before :unchanged?}`;
    `:plan` is nil when neither the text, the path nor the contract moved."
-  [host store token text {:keys [path actor timestamp operation]}]
+  [host store token text {:keys [path actor timestamp operation inline]}]
   (let [doc (document store token)
         m (require-model store (:model doc))
         payload (extract/extract (:descriptor m) text)
@@ -341,7 +354,8 @@
                                                 :fields (changed-fields before payload)}))
                  (update :ops into (binding-ops host store (:root doc) {:model-id (:id m) :text text :path path :actor actor
                                                                         :content-hash (content-hash host payload)
-                                                                        :field-hashes (field-hashes host payload)} doc))))}))
+                                                                        :field-hashes (field-hashes host payload)
+                                                                        :inline? (or inline (:inline doc))} doc))))}))
 
 (defn untrack-plan
   "Plan that stops tracking document `token`: the edges this surface owns (to
