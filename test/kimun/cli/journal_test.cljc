@@ -89,7 +89,8 @@
         log (str (fs/path proj ".kimun" "log.edn"))
         lines (str/split-lines (slurp log))]
     (testing "a log line altered"
-      (spit log (str/join "\n" (cons (str/replace (first lines) "human/tester" "human/mallory") (rest lines))))
+      ;; format 3 lines carry {:id :revision}: the id names the resolved plan in the CAS
+      (spit log (str/join "\n" (cons (str/replace (first lines) ":id \"" ":id \"0") (rest lines))))
       (let [e (jr proj "verify" {})]
         (is (= "store/corrupt" (get-in e [:error :type])) (pr-str e))
         (is (= 5 (:exit e)))))
@@ -181,7 +182,7 @@
         dir (str (fs/path proj ".kimun"))
         a (cstore/open! dir)
         b (cstore/open! dir)
-        actor (:actor (:plan (peek (kstore/read-log (:backend a)))))
+        actor "human/tester"
         plan (fn [s i]
                {:plan/version 1 :engines {} :base (:head s) :actor actor :timestamp "2026-08-29T12:00:00.000Z"
                 :ops [{:op :add-node :node {:class :sign :kind :block :content {:format :markdown :type :document :attrs {:name (str "w" i)}}} :as :r}

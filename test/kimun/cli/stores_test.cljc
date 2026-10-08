@@ -8,6 +8,7 @@
             [babashka.fs :as fs]
             [kimun.cli.main :as main]
             [kimun.cli.store :as cli-store]
+            [kimun.kernel.revision :as revision]
             [kimun.kernel.store :as store]))
 
 (def env {"USER" "tester"})
@@ -90,13 +91,17 @@
     (is (= [] (get-in e [:data :links])))))
 
 (defn- commit-one!
-  "One real transaction (a text node) in the store at `dir`; returns the apply result."
+  "One real transaction (two signs and a reference between them) in the store
+   at `dir`; returns the apply result."
   [dir]
   (let [{:keys [backend store]} (cli-store/open! dir)]
     (store/commit! backend store
                    {:plan/version 1 :base (:head store) :actor "human/tester" :engines {}
                     :timestamp "2026-09-06T12:00:00.000Z"
-                    :ops [{:op :add-node :node {:class :sign :kind :text :content {:text "hola"}} :as :t}]})))
+                    :ops [{:op :add-node :node {:class :sign :kind :block :content {:format :markdown :type :paragraph :attrs {}}} :as :b}
+                          {:op :add-node :node {:class :sign :kind :text :content {:text "hola"}} :as :t}
+                          {:op :add-edge :edge {:type :reference :from :b :to :t
+                                                :evidence {:ref-hash :t :actor "human/tester"}}}]})))
 
 (deftest verify-ok-and-after-corruption
   (let [proj (tmp)
@@ -116,7 +121,12 @@
       (testing "overwriting one object file makes verify fail with exit 5"
         ;; open itself hashes the head Revision and the heads root (a damaged one fails the open with
         ;; store/corrupt-head: store_test/open-checks-heads-edn-and-the-head-revisions); verify is for the rest
-        (let [victim (first (sort (remove #{(:head (:store r)) (:heads-root (:store r))} (store/reachable (:store r)))))]
+        (let [s (:store r)
+              ;; the transaction plan is reachable through the head Revision's :tx; in format 3 the
+              ;; replay reads it from the CAS, so corrupting it is a replay failure, not a hash
+              ;; mismatch (covered by verify-detects-a-damaged-log): pick another reachable object
+              tx (:tx (revision/revision s (:head s)))
+              victim (first (sort (remove #{(:head s) (:heads-root s) tx} (store/reachable s))))]
           (spit (str (fs/path dir "objects" victim)) "tampered")
           (let [bad (run proj "stores" "verify")]
             (is (false? (:ok bad)))
@@ -164,7 +174,8 @@
 (deftest verify-detects-a-damaged-log
   (testing "a log line altered: the replay computes another transaction id"
     (let [{:keys [proj log lines]} (history)]
-      (spit log (str (str/join "\n" (cons (str/replace (first lines) "human/tester" "human/mallory") (rest lines))) "\n"))
+      ;; format 3 lines carry {:id :revision}: the id names the resolved plan in the CAS
+      (spit log (str (str/join "\n" (cons (str/replace (first lines) ":id \"" ":id \"0") (rest lines))) "\n"))
       (let [e (run proj "stores" "verify")]
         (is (false? (:ok e)) (pr-str e))
         (is (= ["store/corrupt" 5] [(get-in e [:error :type]) (:exit e)]))
