@@ -75,8 +75,8 @@ como stores separados): en v2 un índice G es *otro árbol* sobre el mismo pool.
    markup son deterministas. Sintaxis, morfología y extracción de hechos dependen de un
    motor y una versión. Una relación afirmada por un humano o un agente tiene autor.
 7. **La herramienta sabe sus límites.** No todo lenguaje estructurado es dato tratable.
-   Cada nodo declara su clase de direccionabilidad; las regiones opacas se conservan y
-   se anclan por evidencia, pero no se operan.
+   Cada nodo *deriva* su clase de direccionabilidad de su `kind` (`structural`, `opaque` o
+   `external`); las regiones opacas se conservan y se anclan por evidencia, pero no se operan.
 
 ## 5. Qué garantías tiene sentido pedir
 
@@ -127,8 +127,11 @@ nodos a través de ediciones.
 - "Documento" como raíz de autoridad: pasa a ser un tipo de árbol-índice.
 - Lisp como metalenguaje separado: Clojure ya es el Lisp; lo que se conserva es el
   boundary de *planes como datos* (ver `02`).
-- Rust como lenguaje del kernel: se consumen artefactos WASM hechos en Rust (tree-sitter,
-  BLAKE3), no se escribe Rust.
+- "Rust como lenguaje del kernel": el kernel es Clojure `.cljc`. Se admiten **pods y
+  plugins nativos** (Rust, C, Zig, Go…) o en cualquier lenguaje si son fácilmente
+  portables y empaquetables, con una frontera de proceso documentada y sin lógica de
+  dominio repartida entre lenguajes (decisión 19; `05-estado.md`, `11-adaptadores.md`).
+  tree-sitter (C) es el primer candidato.
 - "Identidad y reconciliación" como problema abierto: se descompone en identidad (hash,
   trivial) y sucesión (arista registrada en la transacción; heurística solo para cambios
   externos, marcada como tal).

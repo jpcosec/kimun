@@ -1,27 +1,33 @@
-# Paridad con sldb v1 — libro y DAG (abierto 2026-10-06)
+# Paridad con sldb v1 — libro y DAG (cerrado)
 
 > Objetivo: `kimun` equivalente a sldb v1, medido contra los tests de v1
-> (`hum-ecosystem/tools/sldb/tests`: 82 archivos, 590 funciones). Cada archivo de v1 queda
-> en uno de tres estados: **portado** (test kimun que ejerce la misma promesa), **oráculo**
-> (cubierto por el corpus diferencial grabado desde v1) o **n/a** (probaba un mecanismo
-> interno de v1 que el diseño de v2 reemplaza; se nombra el test del kernel que sostiene la
-> misma promesa). El mapeo de comandos es el de `docs/v2/06 §5`; las superficies retiradas,
-> las de `06 §8`.
+> (`hum-ecosystem/tools/sldb/tests`: 82 archivos, 590 funciones). Cada función de v1 queda
+> en un estado del marcador: **portada** (test kimun que ejerce la misma promesa),
+> **mapeada** (otro test kimun), **oráculo** (cubierta por el corpus diferencial grabado
+> desde v1), **n/a** (mecanismo interno que v2 reemplaza; se nombra el test del kernel que
+> sostiene la promesa), **brecha** o sin clasificar (**corpus**, **abierta**). El mapeo de
+> comandos está en `docs/v2/06-superficies-y-cli.md`; las superficies retiradas, en ese
+> mismo documento.
 
-## Marcador (se regenera con `python3 scripts/parity/coverage.py <v1> . `)
+## Marcador (se regenera con `python3 scripts/parity/coverage.py <v1> .`)
 
-Estado al 2026-10-06, sobre las 590 funciones de test de sldb v1:
+Estado al 2026-10-08, sobre las 590 funciones de test de sldb v1:
 
 | estado | funciones | qué significa |
 |---|---|---|
-| portada | 512 | un test de kimun la nombra y ejerce la misma promesa |
+| portada | 515 | un test de kimun la nombra y ejerce la misma promesa |
 | mapeada | 1 | cubierta por un test de kimun con otro nombre (`parity-map.edn`) |
 | oráculo | 14 | su tema es el motor y los corpus diferenciales la reproducen (`parity-oracle.edn`) |
 | n/a | 55 | probaba un mecanismo que v2 no tiene por diseño; cada una con su razón y lo que sostiene la promesa hoy (`parity-na.edn`) |
-| brecha | 6 | promesa de v1 que kimun **no** cumple todavía (`parity-gaps.edn`, fijadas en `test/kimun/parity/known_gaps_test.cljc`) |
-| abierta | 2 | `selfdoc`: guarda de before-image al escribir y chequeo del grafo kgdb |
+| brecha | 3 | promesa de v1 que kimun **no** cumple todavía (`parity-gaps.edn`, fijadas en `test/kimun/parity/known_gaps_test.cljc`) |
+| corpus | 1 | produjo casos del corpus sin declararse tema del motor: `selfdoc/test_preflight.py::test_before_image_guard_prevents_clobbering_concurrent_edits` |
+| abierta | 1 | `selfdoc/test_python_scanner.py::test_kgdb_graph_check_rejects_missing_or_stale_source_nodes` |
 
-Brechas abiertas: (1) un escritor que pierde la carrera deja su transacción en el log y el store ilegible (3 tests; se arregla en K1); (2) aristas y export de grafo no ven los stores enlazados (2 tests); (3) no se exige descripción por campo del modelo (1 test). Además, hallado al cerrar: un documento `superseded` se lee bajo el contrato nuevo, y `models field-add` de un campo opcional reasigna el último hueco de los documentos existentes.
+Brechas abiertas (`parity-gaps.edn`): (1) aristas y export de grafo no ven los stores
+enlazados (2 funciones); (2) no se exige descripción por campo del modelo (1 función).
+Pendientes no cubiertos por el marcador: un documento `superseded` se lee bajo el contrato
+nuevo, y `models field-add` de un campo opcional reasigna el último hueco de los documentos
+existentes (`test/kimun/parity/known_gaps_test.cljc`).
 
 ## Cómo se mide
 
@@ -30,7 +36,7 @@ Brechas abiertas: (1) un escritor que pierde la carrera deja su transacción en 
    payload, Markdown renderizado) en `test/fixtures/parity/engine/`. El motor de kimun
    tiene que reproducir cada caso. Son literalmente los mismos tests, en la frontera del motor.
 2. **Tests portados**: para store, CLI, grafo, consultas y serve, cada test de v1 se
-   reescribe contra la CLI/API de kimun con el vocabulario de `06 §5`.
+   reescribe contra la CLI/API de kimun con el vocabulario de `06-superficies-y-cli.md`.
 3. **Corpus real**: `migrate --from-v1` sobre el `.sldb` de sldb (1.551 documentos) y
    comparación payload a payload.
 
@@ -77,7 +83,7 @@ nombra, para cada uno, el test del kernel que sostiene la promesa equivalente.
 |---|---|---|
 | S2 primer corte | hecho 2026-10-06 | `e444d4d`, `test/kimun/cli/docs_test.cljc` |
 | A4 enlaces | hecho 2026-10-06 | `13184d9`; `kimun.surface.links.{parser,resolver,recovery,composer}`; 8/8 de `test_links.py` a nivel de enlace, 13 tests |
-| K1 escala del kernel | hecho 2026-10-06 | `ecafc4f`…`1f4a0134`; formato 2: abrir desde `heads.edn` y la Revision de cabeza sin replay, conjuntos por revisión como trie Merkle independiente de la historia (`sldb.kernel.mmap`), objetos perezosos, commit bajo lock exclusivo (`store/busy`, `--wait`), `stores upgrade` 1→2; store real: `docs show` 187,9 s → 0,38 s, `docs list` 180 s → 0,77 s, `fields set` → 0,44 s, migración completa 522 s → 71 s; abrir y commitear no crecen con la historia (`runs/bench/after-2026-10-06.txt`); diseño en `docs/v2/10-escala.md` |
+| K1 escala del kernel | hecho 2026-10-06 | `ecafc4f`…`1f4a0134`; formato 2: abrir desde `heads.edn` y la Revision de cabeza sin replay, conjuntos por revisión como trie Merkle independiente de la historia (`sldb.kernel.mmap`), objetos perezosos, commit bajo lock exclusivo (`store/busy`, `--wait`), `stores upgrade` 1→2; store real: `docs show` 187,9 s → 0,38 s, `docs list` 180 s → 0,77 s, `fields set` → 0,38 s, migración completa 522 s → 71 s; abrir y commitear no crecen con la historia (`runs/bench/after-2026-10-06.txt`); diseño en `docs/v2/10-escala.md` |
 | E3 cierre del marcador | hecho 2026-10-06 | `f1e0667`, `95b55d9`, `61e1bf8`; `scripts/parity/coverage.py --strict` con contexto de menciones, oráculo declarado, mapa, n/a y gaps; 109 promesas de v1 portadas en `test/kimun/parity/*`; datos en `parity-{na,map,oracle,gaps}.edn` |
 | E2 adaptadores (selfdoc) | hecho 2026-10-06 | `515b4a2`, `4ba6c89`, `673fb18`; protocolo en `docs/v2/11-adaptadores.md`; adaptadores fuera de proceso `python-symbols`, `argparse-cli`, `click-cli`, `treesitter-symbols` (Python y JavaScript); grupo `adapters scan\|sync\|check\|list`; contra v1 en vivo: 2.288/2.288 símbolos, 93/93 comandos, 25/25 superficies con todos los campos propios iguales; tree-sitter y `ast` coinciden en 2.876 hechos sobre el fuente de v1 |
 | D1b rutas HTTP | hecho 2026-10-06 | `87c73cf`, `072159c`; `kimun.surface.http.{routes,views}`: schema, graph, save por lotes con `expected`, docs create/track/untrack, document, segments, fields, sections, find, edges, graph, corpus, similar, models, lint, ast; de 61 funciones de v1: 55 portadas, 4 n/a, 2 ya cubiertas por el esqueleto |
@@ -92,47 +98,26 @@ nombra, para cada uno, el test del kernel que sostiene la promesa equivalente.
 | B2a documentos tipados | hecho 2026-10-06 | `195d21b`, `ec418b4`, `ec26eab` + arreglo del backfill; `kimun.surface.docs`; `docs create\|track\|update\|show\|status\|list\|untrack\|delete`, `models … --dry-run\|--backfill`, `stores check` con hallazgos de documentos, journal con `:operation`, `:address`, `:fields`; diferencial sobre 57 documentos reales de 23 modelos del `.sldb` de v1: 53 payloads iguales, 4 diferencias esperadas |
 | B1 modelos en el store | hecho 2026-10-06 | `49bf972`, `1184f03`; `kimun.surface.models.{store,edit}`, `kimun.cli.commands.{models,direct}`; `models define\|list\|show\|history\|check\|field-add\|field-remove\|template`, `extract\|render\|validate` directos; de 58 funciones de v1: 36 portadas, 8 n/a, 14 diferidas a B2; goldens de 23 modelos de deskops y 6 de hum-scrapper |
 | T1 oráculo + motor | hecho 2026-10-06 | `d0dff96`, `bf0aa64`, `bb214ef`; `kimun.surface.models.{marker,blocks,recipe,descriptor,extract,render,validate}` (666 líneas), `python/kimun/models.py`, `scripts/parity/record_engine.{py,sh}`; corpus grabado de la suite de v1 (1.221 tests): **2.408 casos, 2.373 pasan, 24 excluidos, 11 pendientes, 0 fallan**; render comparado byte a byte con v1 |
-| D1 esqueleto de `serve` | hecho 2026-10-06 | `93b9107`; `kimun.surface.http` (rutas como datos, bearer en tiempo constante, CORS, exit→status, `command-route`) y `kimun serve`; `test_serve_auth.py` 5/5; el resto de rutas en `parity-serve-checklist.md` |
+| D1 esqueleto de `serve` | hecho 2026-10-06 | `93b9107`; `kimun.surface.http` (rutas como datos, bearer en tiempo constante, CORS, exit→status, `command-route`) y `kimun serve`; `test_serve_auth.py` 5/5; el resto de rutas quedó portado en D1b; el checklist previo está en `docs/archive/v2/tests/parity-serve-checklist.md` |
 | C4 journal (base) | hecho 2026-10-06 | `1623e8b`; `kimun.surface.journal` (`entries`, `verify`) y `journal show\|verify`: vista sobre `log.edn` y el DAG de revisiones, sin segundo almacén; 5 de 8 funciones de v1, 3 esperan campos tipados |
 | federación (parte de C1) | hecho 2026-10-06 | `c880c51`; `stores link\|unlink\|links`, rutas relativas validadas al abrir, `linked-stores` con guarda de ciclos; 5 funciones de v1 portadas |
 | A3 grafo | hecho 2026-10-06 | `4beff47`; `kimun.surface.graph.{model,traversal,analysis,query,io}`; 36 de 38 funciones de v1 (16+4+6+3+3+4), 2 de CLI diferidas a C2; pagerank, betweenness, grados, caminos, ciclos, componentes y capas reimplementados y contrastados con networkx 3.6.1 |
 | A2 `--where` | hecho 2026-10-06 | `1f701ec`; `kimun.surface.index.where` (`parse`, `matches?`); 10/10 funciones de v1 que tocan `--where`, 15 tests |
 
-## Diferido por las tareas cerradas (lo recoge la tarea indicada)
+## Diferido (pendiente, lo recoge la tarea indicada)
 
 | de | qué falta | lo recoge |
 |---|---|---|
-| A4 | `docs recover\|compose` en CLI: aceptar nombre de documento rastreado en vez de ruta, `--format yaml`, `-o -`; `--include-transclusions` se acepta y se ignora, como en v1 | C5 |
-| A4 | **composiciones de modelo** (`test_composition.py` ×4, `api/test_composition_ref_root.py` ×3): un modelo declara `{nombre {source_field, model, template}}`; el slot `⸢render•nombre⸥` se expande cargando cada ref de `source_field`, extrayéndola con el modelo referido y rellenando `{campo}` en la plantilla de línea; refs inválidas o no resolubles se omiten en silencio; las refs relativas resuelven contra la raíz del proyecto (`ref_root`), nunca contra el cwd | B2 |
-| A2 | `find` sobre store real con direcciones `st.{Model}`, `st.{Base+}`; exit 3 y stdout vacío ante `query/bad-where`; dirección inválida ⇒ lista vacía | C1 |
-| T1 | segmentos y ownership por sección: `test_field_ownership` (14), `test_segment_structure` (6), `test_extraction_segments` (6), `test_document_segments` (3), `api/test_field_blocks` (2); trait `markdown`; tests unitarios del plegado YAML y de los carriers | T1b |
-| T1 | 11 casos pendientes del corpus (`PENDING.edn`): render con composiciones de modelo (`Board`, `ComposedBoardDoc`, `ComposedRitualDoc`, `BoardDoc`) | T1b |
-| C3 | secciones en el export semántico; `_extract_sections` de `store/test_semantic_rebuild.py` ×7 (texto sin encabezados, vacío, solo separadores y código, encabezado sin título ⇒ sin secciones; un encabezado ⇒ título, nivel, slug, path, `line_start`; anidados ⇒ paths `a`, `a/b`, `a/b/c`, `d`): cubrir con `kimun.surface.models.segments/sections` | B2b |
-| C1 | `test_field_update_moves_the_model_hash_and_keeps_integrity`; estado y cuerpo HTTP de `/corpus/rank` y `/similar`; `find --format text` sin render propio | D1b, E3 |
-| C2 | ids calificados entre stores enlazados (`test_linked_store_documents_come_back_qualified`, `…linked_stores_gap_G5`); `help edges` | E3 |
-| K1 | **disco**: 94 MB de datos pero 364 MB en disco, porque 80.435 de 82.787 objetos pesan menos de 4 KB y cada uno ocupa un bloque; meta 150 MB no cumplida. Arreglo: empaquetar objetos (packfiles al estilo git) | K2 |
-| K1 | `docs show` y `fields set` leen el descriptor de cada árbol para el índice por nombre (O(árboles)); constante requeriría un índice persistente en la Revision; no hay GC ni informe de objetos inalcanzables | K2 |
-| E1 | (cerrado por K1) **escala**: sobre el store migrado (1.586 revisiones, 36.718 objetos, 606 MB) abrir tarda ~200 s porque `open` reproduce el log y cada revisión reescribe los conjuntos completos de árboles y aristas | K1 |
-| B2b | `find` como comando sobre campos y secciones (`test_find_field_shows_owning_section`, `test_find_section_where_predicates`): usar `kimun.surface.fields/rows` y `kimun.surface.sections/find-sections`; `fields query --global`, `sections find --global` | C1 |
-| B2b | `ast show` (`test_ast_show_document_has_sections`, `test_ast_show_field_nodes_have_owning_section`): `ast` se retira en `06 §8`; la parte de secciones y ownership ya está cubierta | E3 (n/a) |
-| C3 | la CLI de `graph` debe usar `kimun.surface.semantic/export->snapshot` (acepta contrato v1 y v2); direcciones `se.`/`gse.` entre stores | C2, C1 |
-| T1b | cablear el contexto de composición (`:ref-text`, `:ref-model`, raíz del proyecto) en `docs create\|update\|show` y en el backfill; 3 funciones de `api/test_composition_ref_root.py` a nivel de store | B2b |
-| C5 | registro de predicates del store en vez de los 7 por defecto fijos en `kimun.cli.commands.links/default-predicates` | C2 |
-| B2a | ruido estructural (`api/test_structural_noise` ×8): rechazar al rastrear un documento con encabezados o claves de frontmatter que el template no declara, aceptar si un modelo hijo los declara `optrev`, y que `stores check` liste cada encabezado ruidoso ya rastreado; `stores check --format yaml`; informe de `check`/`health` que nombra el archivo fuente de un contrato movido (`test_contract_in_model_node` ×6); `docs show --format ast` | C6 |
-| B2a | de `test_cli_v2`: `fields_update_append_and_clean`, `fields_update_can_clear_list_field`, `field_query_includes_owning_section`, `sections_show\|find\|fields_command`, `sections_show_identical_with_and_without_persisted_index`, `find_field_shows_owning_section` | B2b |
-| B2a | `find_supports_physical_and_semantic`, `find_section_where_predicates`, `docs_create_accepts_linked_store_alias`, `docs_create_uses_model_from_linked_store_namespace` | C1 |
-| B2a | `recover_links_only`, `recover_depth` | C5 |
-| B2a | **bug del motor**: un timestamp de frontmatter a medianoche exacta (`created_at: 2026-06-14T00:00:00`) no vuelve como en v1 (`test/fixtures/parity/docs/EXPECTED-DIFFS.edn`) | T1b |
-| B2a | rutas HTTP de documentos tipados y modelos; `docs create`/`update` con contexto de composición en el render | D1b |
-| B1 | promover con documentos existentes: rechazo de campo requerido sin default (`lacks required field`), dry-run que lista los documentos a rellenar, backfill que los reescribe (`test_model_lifecycle` ×5); diagnóstico tras mover el contrato = estado `superseded` de la arista documento→modelo (`test_contract_in_model_node` ×8); `models list\|show` con conteo de documentos y estado de anclaje; journal con campo cambiado y rutas anidadas (×2) | B2 |
-| C4 | entradas de `add_model`, `reindex_model`, `promote_model_draft`; en un guardado, `address` `Model:doc`, `previous_value`/`new_value` por campo (`test_add_model_leaves_an_entry`, `test_reindex_and_promote_leave_entries`, parte de campos de `test_save_entry_carries_before_and_after`): se agregan como claves extra de la entrada | B2 |
-| federación | `--store NAME` resuelto por nombre de enlace desde un store anidado (`test_store_alias_is_resolved_from_an_ancestor_registry`); refresco de índices completo y con documento ausente (`test_update_store_indexes_*`) | C1 |
-| A3 | `graph *` en CLI sobre store en disco (`test_the_cli_prints_each_analysis`, `…no_path_and_exits_nonzero`); constructor del índice de aristas, conversión snapshot⇄índice | C2 |
-| A2 | tests de direcciones/glob/semántica sin `--where` en `store/test_queries_expanded.py` (7 funciones) | C1, C3 |
+| C2 | aristas y export de grafo no ven los stores enlazados (`test_linked_store_documents_come_back_qualified`, `…linked_stores_gap_G5`): ver `parity-gaps.edn` | K2 (pendiente) |
+| K1 | **disco**: 94 MB de datos pero 364 MB en disco, porque 80.435 de 82.787 objetos pesan menos de 4 KB y cada uno ocupa un bloque; meta 150 MB no cumplida. Arreglo: empaquetar objetos (packfiles al estilo git) | K2 (pendiente) |
+| K1 | `docs show` y `fields set` leen el descriptor de cada árbol para el índice por nombre (O(árboles)); constante requeriría un índice persistente en la Revision; no hay GC ni informe de objetos inalcanzables | K2 (pendiente) |
+
+Todo lo demás que estaba diferido quedó portado o declarado n/a; lo mide
+`scripts/parity/coverage.py` (marcador arriba).
 
 ## Desviaciones deliberadas respecto de v1 (acumuladas)
 
-- `--where` no reconocido es `query/bad-where` con posición, no `False` silencioso (`06 §5`). Regex inválida se rechaza al parsear. `>=`/`<=` entre tipos distintos da falso en vez de `TypeError`. Dialecto de regex: Java.
+- `--where` no reconocido es `query/bad-where` con posición, no `False` silencioso (`06-superficies-y-cli.md`). Regex inválida se rechaza al parsear. `>=`/`<=` entre tipos distintos da falso en vez de `TypeError`. Dialecto de regex: Java.
 - Adaptadores: `sync` deja de rastrear los documentos huérfanos que el adaptador posee (v1 solo los informaba); el drift de `check` es `adapters/missing` con `:reason "drift"` (exit 1, como v1); no se portaron la heurística de renombres, la proyección a kgdb ni la guarda de before-image. v1 ya no puede sincronizar sus propios símbolos: cinco pares getter/setter chocan en un mismo id; kimun lo informa como `adapters/collision`.
 - Rutas HTTP: `/models/promote` y los borradores `.py.temp` se retiran (`POST /models/define {edn}`); `/lint` sirve los hallazgos de `stores check`; `/ast` es el documento con payload y secciones; `/models/detail` de un modelo desconocido es 404 (v1: 200 con `ok false`); las listas `unavailable` de `/schema` y `/graph` existen pero ningún estado del store las llena, porque un modelo es un nodo y no un módulo que pueda fallar al importarse. Claves que cambian de nombre: `id`→`name`, resultados bajo `data`.
 - Índice y búsqueda: la búsqueda física también mira el texto del documento y el valor de los campos (v1: solo nombres y rutas); `--fuzzy` y el ranking por defecto usan Dice, no `difflib`; no se persisten vectores (`:score-fn` reemplaza al `Embedder`); una dirección que rompe la gramática es `query/bad-address` (exit 3), una bien formada que no nombra nada da vacío; `rebuild-indexes` con documentos que no extraen sale con 0 y `:complete false`.
@@ -147,7 +132,7 @@ nombra, para cada uno, el test del kernel que sostiene la promesa equivalente.
 - Motor: no usa el CST/AST de SLDB-MD; `kimun.surface.models.blocks` reimplementa la segmentación por bloques de markdown-it que usaba v1, porque la paridad byte a byte depende de sus tipos y rangos de línea. La receta es por bloque, no por `:path` como pide `07 §4`: **deuda de diseño** a saldar cuando el motor se monte sobre el árbol del kernel. Excluidos del corpus: 9 con `py•`/Jinja (`07 §8`) y 15 de `TaskDoc` de deskops, cuya clase omite un campo vacío con código Python propio. El descriptor admite `:exclude true` en un campo.
 - Serve: todo cuerpo es el envelope (v1 enviaba el payload desnudo y `{ok:false,error:"…"}`); los status coinciden con v1. Ruta conocida con método equivocado es 405. CORS permite la cabecera `Authorization`. La variable es `KIMUN_SERVE_TOKEN`.
 - Journal: no hay segundo almacén ni escritura en el commit; la cadena de hashes es el DAG de revisiones (`previous_hash` ⇒ `:parents`); no hay campo `operation`, sino el conteo de ops del plan; el filtro por actor es `--by`.
-- Federación: `stores link NAME PATH` con ruta relativa al store; no existe catálogo global en el home (`~/.sldb` con rutas absolutas era el vicio nombrado en `06 §5`), así que `test_store_init_registers_project_in_global_catalog` y `test_get_store_context_readonly_falls_back_to_global` no se portan. Un destino ausente es un warning, no un fallo.
+- Federación: `stores link NAME PATH` con ruta relativa al store; no existe catálogo global en el home (`~/.sldb` con rutas absolutas era el vicio nombrado en `06-superficies-y-cli.md`), así que `test_store_init_registers_project_in_global_catalog` y `test_get_store_context_readonly_falls_back_to_global` no se portan. Un destino ausente es un warning, no un fallo.
 - Grafo: el orden es determinista por id donde v1 heredaba el de networkx (camino, orden topológico, ciclos); `paths-between` no repite un camino por cada relación paralela; `gt`/`lt` entre tipos no comparables dan falso.
 - Enlaces: se informa `:ambiguous` cuando un mismo nivel de búsqueda da más de un candidato (v1 tomaba el primero). Los offsets son unidades de string de la plataforma.
 

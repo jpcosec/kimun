@@ -1,14 +1,15 @@
-# Promesas de la spec → tests que las prueban (primer slice)
+# Promesas de la spec → tests que las prueban
 
-Trazabilidad entre cada enunciado normativo de `docs/v2/02-sustrato-computacional.md`
-(hitos 0–3) y el test que **fallaría si la promesa se rompiera**. Fuente: dos lanes
-tester de contexto fresco (`runs/subagents/20260829-174447-…-testing/lane-{1,2}.md`)
-más los tests añadidos en `test/sldb/kernel/hardening_test.cljc`. Un test que compara
-la función consigo misma no cuenta. Estado tras el cierre: **0 promesas del primer
-slice sin test**; las de hitos 4+ figuran como *diferidas* con su drawer.
+Trazabilidad entre cada enunciado normativo de `docs/v2/02-sustrato-computacional.md` y
+`docs/v2/04-superficie-markdown.md` y el test que **fallaría si la promesa se rompiera**.
+Fuente: dos lanes tester de contexto fresco
+(`runs/subagents/20260829-174447-…-testing/lane-{1,2}.md`) más los tests añadidos en
+`test/sldb/kernel/hardening_test.cljc`. Un test que compara la función consigo misma no
+cuenta. Los hitos 0–6 están cerrados; las promesas de 7–9 (efectos incluidos) figuran como
+*diferidas*. El estado de los hitos lo lleva `05-estado.md`.
 
 Leyenda: `ok` probado · `oracle` probado además por una implementación independiente ·
-`deferred` fuera del primer slice (drawer task indicada).
+`deferred` fuera de lo implementado (drawer task indicada).
 
 ## §2 / §2.1 — nodos y contenido canónico
 
@@ -25,7 +26,7 @@ Leyenda: `ok` probado · `oracle` probado además por una implementación indepe
 | normalize idempotente y estable al hash | canon_test/normalize-is-idempotent-and-hash-stable |
 | provenance/timestamp/evidencia no entran al nodo | por construcción (`identity-form` solo tiene class/kind/content) + node_test/every-generated-node… |
 | pool: put idempotente; nodo manipulado rechazado (inv. 1); reconstruible (inv. 10) | pool_test/* |
-| M y G solo formas de datos en 0–3 | node_test (formas) — la ausencia de evaluación es de diseño; hito 7 |
+| M y G solo formas de datos | node_test (formas) — la ausencia de evaluación es de diseño; el evaluador es el hito 7 |
 
 ## §3 / §3.1 / §3.2 — árboles, objetos de árbol, aristas
 
@@ -61,7 +62,7 @@ Leyenda: `ok` probado · `oracle` probado además por una implementación indepe
 | *(2026-10-06, escala)* `commit!` escribe exactamente los objetos nuevos y nunca lista el backend | revision_format2_test/commit-writes-exactly-the-new-objects-and-never-lists-the-backend |
 | timestamp formato fijo y entra al id de revisión | plan_test/schema…, hardening/timestamp-enters-the-revision-id |
 | :engines solo de esta transacción | revision_test/fixture-tx-001 (`{}` sin herencia) |
-| seis ops; ops desconocidas rechazadas | plan_test/schema-and-pure-data-check-7 |
+| siete ops; ops desconocidas rechazadas | plan_test/schema-and-pure-data-check-7 |
 | check 1 base-cas (árboles tocados) | revision_test/the-seven-checks…, heads_test/commit-through-atom-and-conflict-set |
 | check 2 ids-exist (nodo, árbol, alias desconocido, alias duplicado, alias antes de declarar, remove-edge de ownership por id) | revision_test/the-seven-checks…, hardening/alias-misuse-is-rejected, ownership-edges-are-not-removed-by-id |
 | check 3 tree-integrity (raíz movida, segundo padre, ciclo) | revision_test/the-seven-checks…, hardening/move-to-own-descendant… |
@@ -98,7 +99,7 @@ Leyenda: `ok` probado · `oracle` probado además por una implementación indepe
 | §6.1 el no-op idempotente nunca vuelve a re-anclar | anchor_test/adding-a-supersedes-edge… (bloque `testing`) |
 | §6.1 `reference`/`binding` siguen al sucesor en cualquiera de los dos extremos | anchor_test/adding-a-supersedes-edge…, revision_test/the-seven-checks… (vía `:replace`) |
 | §6.2 anclaje = las cinco aristas entre capas; `ownership` y `supersedes` no lo son | anchor_test/anchors-are-the-five-cross-layer-types |
-| §6.2 `intact` cuando el referente resuelve; un símbolo sin árbol resuelve en el primer slice | anchor_test/a-placed-referent-is-intact |
+| §6.2 `intact` cuando el referente resuelve; un símbolo sin árbol resuelve hoy | anchor_test/a-placed-referent-is-intact |
 | §6.2 `orphan` cuando el referente deja de ocupar posición y no hay sucesión | anchor_test/detaching-the-referent-orphans-the-anchor |
 | §6.2 el estado de la arista es el peor de sus dos extremos; `superseded` gana a la presencia | anchor_test/detaching-the-referent…, adding-a-supersedes-edge… |
 | §6.2 un `:span` hereda el suelo de su hoja; un rango que se pasa del texto no resuelve | anchor_test/a-span-whose-leaf-is-replaced-is-orphan-and-its-leaf-is-superseded, a-span-whose-range-runs-past-its-leaf-is-orphan |
@@ -148,11 +149,11 @@ Leyenda: `ok` probado · `oracle` probado además por una implementación indepe
 | cualquier secuencia de planes recarga idéntica | store_test/any-valid-plan-sequence-reloads-identically (*(2026-10-06, escala)* `open`, `replay-open` y el valor en memoria coinciden; `verify` y `verify-full` pasan) |
 | *(2026-10-06, escala)* el valor perezoso y el ansioso muestran las mismas vistas; la caché de objetos no oculta un objeto alterado | store_test/the-lazy-and-the-eager-store-show-the-same-views, the-fs-backend-parses-each-object-at-most-once-per-instance, the-object-cache-never-hides-a-tampered-object |
 | *(2026-10-06, escala)* `stores upgrade`: formato 1 → 2 conserva cada nodo, arista y árbol, actor/timestamp/engines/ops de cada transacción y la cadena de padres; verifica antes de reemplazar; el original queda como respaldo; idempotente | upgrade_test/a-format-1-history-upgrades-to-format-2-and-keeps-everything, any-format-1-history-upgrades-to-the-same-trees-and-edges, upgrade-refuses-what-it-cannot-do-safely, cli/upgrade_test/a-format-1-store-answers-the-same-after-the-upgrade |
-| rebuild-indexes | **deferred** → hito 4+ (índices derivados) |
+| rebuild-indexes escribe el índice derivado de la cabeza; los documentos que no extraen se listan y salen con `:complete false` | cli/index_test/rebuild-indexes-writes-the-cache-of-the-head, cli/index_test/rebuild-indexes-names-the-documents-it-could-not-read |
 
 ## Invariantes §10
 
-1 pool_test/tampered…, store_test/close-and-reopen · 2 node_test/same-content-same-id · 3 revision_test/heads-advance-only… · 4 tree_test/generated-trees-are-valid · 5 tree_test/one-node-in-two-trees · 6 edge_test/evidence-requirements · 7 revision_test/replace-keeps-order… · 8, 9 **deferred** (hito 4) · 10 pool_test/pool-is-rebuildable, store_test/replay… · 11 **deferred** (efectos) · 12 plan_test/opaque-replace-only · 13 tree_test/ulid-ids-are-nominal · 14 tree_test/sibling-order… · 15 revision_test/the-seven-checks · 16 edge_test/timestamp…, hardening/timestamp-enters-the-revision-id · 17 store_test/every-object-file… · 18 anchor_test/queries-are-pure-derived-and-deterministic, reconcile_test/a-proposal-is-outside-the-pool-until-an-actor-accepts-it
+1 pool_test/tampered…, store_test/close-and-reopen · 2 node_test/same-content-same-id · 3 revision_test/heads-advance-only… · 4 tree_test/generated-trees-are-valid · 5 tree_test/one-node-at-several-positions-and-in-several-trees · 6 edge_test/evidence-requirements · 7 revision_test/replace-keeps-order… · 8, 9 cst_test/lossless-for-any-string, roundtrip_test/parse-render-identity (§04) · 10 pool_test/pool-is-rebuildable, store_test/replay… · 11 **deferred** (efectos) · 12 plan_test/opaque-replace-only · 13 tree_test/ulid-ids-are-nominal · 14 tree_test/sibling-order… · 15 revision_test/the-seven-checks · 16 edge_test/timestamp…, hardening/timestamp-enters-the-revision-id · 17 store_test/every-object-file… · 18 anchor_test/queries-are-pure-derived-and-deterministic, reconcile_test/a-proposal-is-outside-the-pool-until-an-actor-accepts-it
 
 ## §3.1 (revisado 2026-08-29) — árboles de posiciones
 
@@ -165,7 +166,7 @@ Leyenda: `ok` probado · `oracle` probado además por una implementación indepe
 | ops de propiedad por path en planes (`:parent`, `:at`, `:from/:to`, `detach`); conflictos por path padre | revision_test/the-seven-checks…, heads_test/commit-through-atom-and-conflict-set, hardening/conflict-kinds-removed-and-superseded-target |
 | reordenar hermanos cambia el hash sii cambia la secuencia (nodo, hash) | tree_test/reordering-siblings-changes-parent-hash |
 
-## §04 — superficie Markdown (hito 4)
+## §04 — superficie Markdown (perfil SLDB-MD)
 
 | promesa | test |
 |---|---|

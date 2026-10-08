@@ -2,14 +2,15 @@
 
 > Por qué y cómo cambió la forma en disco de las revisiones, qué cuesta ahora abrir,
 > leer y escribir un store, qué comprueba cada verificación y cómo se pasa un store de
-> formato 1 al 2. Autoridad: `02` (qué construye; sus enunciados cambiados llevan la
-> enmienda `(2026-10-06, escala)` que remite aquí) > este documento. Números en
+> formato 1 al 2. Este documento es el **único dueño del formato 2**; `02` fija el
+> contrato de la revisión y enlaza aquí para la forma en disco. Autoridad: `02` (qué
+> construye) > este documento. Números en
 > `runs/bench/baseline-2026-10-06.txt` (antes) y `runs/bench/after-2026-10-06.txt` (después).
 
 ## 1. Antes
 
 El store real de sldb v1 migrado a kimun (1.551 documentos, 1.586 transacciones) con el
-kernel del primer slice:
+kernel de formato 1, antes del trabajo de escala:
 
 | medida | valor |
 |---|---|

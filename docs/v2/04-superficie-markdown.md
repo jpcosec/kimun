@@ -1,15 +1,15 @@
-# SLDB v2 — Superficie Markdown (hito 4)
+# SLDB v2 — Superficie Markdown (perfil SLDB-MD)
 
 > Primera superficie del kernel: texto Markdown → CST → AST estructural neutro → árbol
 > de documento + hojas de texto en el pool, y de vuelta. Precisa `docs/v2/02 §7` con
-> reglas cerradas para que un ejecutor pueda implementarla sin improvisar. Vive en el
-> anillo 2 (`sldb.surface.markdown.*`), fuera del kernel.
+> reglas cerradas para implementarla. Vive en el anillo 2 (`sldb.surface.markdown.*`),
+> fuera del kernel.
 
 ## 1. Alcance: un perfil, no todo CommonMark
 
-El hito 4 implementa el **perfil SLDB-MD**: un subconjunto de CommonMark con gramática
-cerrada y **canónica** (una sola forma de escribir cada construcción). Lo que está fuera
-del perfil no se rechaza ni se pierde: se conserva como región **opaca** (§6). La
+El perfil SLDB-MD es un **subconjunto cerrado y canónico de CommonMark** (una sola forma
+de escribir cada construcción). Lo que está fuera del perfil no se rechaza ni se pierde:
+se conserva como región **opaca** (§7). La
 conformidad CommonMark completa es un drawer posterior; el perfil es suficiente para que
 `parse(render(A)) == A` sea una propiedad demostrable y para que el informe de
 direccionabilidad diga con exactitud qué parte de un documento es operable.
@@ -28,7 +28,7 @@ Todos los offsets de este documento son índices en ese vector.
 sus líneas de origen, sin interpretar inlines.
 
 ```clojure
-{:blocks [{:kind :heading|:paragraph|:code|:quote|:list|:thematic-break|:html|:table|:blank
+{:blocks [{:kind :heading|:paragraph|:code|:quote|:list|:thematic-break|:html|:table|:frontmatter|:blank
            :lines ["…" …]            ; líneas tal cual, sin el salto de línea
            :start 0}                 ; índice de la primera línea
           …]
@@ -36,11 +36,17 @@ sus líneas de origen, sin interpretar inlines.
  :trailing-newline? true}             ; si el texto termina en salto de línea
 ```
 
-`(cst/text cst) == texto original` **siempre** (invariante 8): concatenar los `:lines` de
-todos los bloques con `:newline` y añadir un `:newline` final si `:trailing-newline?`.
+`(cst/text cst) == texto original` **siempre** (invariante 8): cada línea conserva su `\r`
+si lo tenía, así que reconstruir es unir todas las `:lines` con `"\n"` y añadir un salto
+final si `:trailing-newline?`. El campo `:newline` es informativo.
 Un texto vacío da `{:blocks [] …}`. Un texto con saltos mezclados (`\r\n` y `\n`) se
 segmenta por `\n` y cada línea conserva su `\r` final como parte de la línea, así que la
 reconstrucción sigue siendo exacta.
+
+Un documento que empieza con `---` seguido de líneas no vacías y un cierre `---` se
+segmenta con `cst/parse-document` como un bloque `:frontmatter`, byte a byte; `cst/parse`
+(usado dentro de quotes y items) no reconoce frontmatter. El AST lo conserva como opaco
+`"markdown/frontmatter"` (§7; forma y motivo en `07-modelos-como-nodos.md` §5).
 
 ### 3.1 Reglas de segmentación
 
@@ -112,7 +118,7 @@ Block   = {:type :heading   :attrs {:level 1..6 :marks Marks} :text Text}
         | {:type :list      :attrs {:ordered false} o {:ordered true :start n} :children [Item …]}
         | {:type :item      :attrs {} :children [Block …]}
         | {:type :thematic-break :attrs {}}
-        | {:type :opaque    :format "markdown/html"|"markdown/table"|"markdown/unparsed" :blob "…"}
+        | {:type :opaque    :format "markdown/html"|"markdown/table"|"markdown/frontmatter"|"markdown/unparsed" :blob "…"}
 Text    = string NFC sin marcas
 Mark    = [:emphasis s e] | [:strong s e] | [:code s e] | [:link s e url]
 ```
@@ -155,7 +161,8 @@ genera y el que `parse` siempre produce:
 5. El primer bloque de un `:item` es un `:paragraph`, `:heading`, `:code` u `:opaque`
    (nunca otra lista, quote o break: el marcador necesita contenido en su línea).
 6. `:blob` de un opaco no contiene líneas en blanco ni empieza con espacios más allá de
-   3; su primera línea cumple la regla 7 u 8 de §3.1 (html/table) o, para
+   3; su primera línea cumple la regla 7 u 8 de §3.1 (html/table), es un frontmatter
+   válido que abre en `---` y es el **primer** bloque del documento, o, para
    `markdown/unparsed`, no cumple 1–8.
 7. `:code` `:text` no contiene una línea que sea solo su carácter de fence repetido ≥ el
    largo del fence elegido (el renderer garantiza esto eligiendo el largo).
@@ -231,6 +238,8 @@ determinista de una pasada con una pila de delimitadores:
 Se conservan como `:sign/:opaque`, hash sobre el blob, y no se descienden:
 
 - bloques `:html` → `"markdown/html"`; bloques `:table` → `"markdown/table"`;
+- un frontmatter inicial → `"markdown/frontmatter"` (bloque completo, `---` incluidos;
+  `07-modelos-como-nodos.md` §5);
 - párrafos y headings cuyo inline devuelve `:unparsed` → `"markdown/unparsed"`, blob =
   sus líneas fuente unidas con `\n` (sin el marcador de heading procesado: la línea tal
   cual);
@@ -307,8 +316,8 @@ cuentan (no son contenido).
 
 ## 10. Garantías y tests (docs/v2/03 §5)
 
-Filas a añadir en `docs/v2/tests/promises.md` (sección "§04 — superficie Markdown") con
-estos nombres de test:
+La traza promesa → test de esta superficie está en `docs/v2/tests/promises.md`, sección
+"§04 — superficie Markdown"; esta tabla solo la resume.
 
 | promesa | test |
 |---|---|
@@ -320,11 +329,12 @@ estos nombres de test:
 | inline §5: cada regla de `:unparsed` produce opaco; `snake_case` es literal; code span con backticks internos | `inline_test/profile-rules` |
 | orden canónico y validez de marcas §4 | `inline_test/marks-canonical-order` |
 | fixture dorado `profile.md` ⇄ `profile.ast.edn`, render byte a byte | `roundtrip_test/golden-profile` |
-| fixture `outside-profile.md`: informe congelado y opacos re-emitidos verbatim | `report_test/golden-outside-profile` |
+| fixture `outside-profile.md`: informe congelado y opacos re-emitidos verbatim | `plan_test/golden-outside-profile` |
+| frontmatter inicial opaco y byte a byte; tabla opaca | `frontmatter_test/frontmatter-is-one-opaque-block`, `frontmatter_test/tables-are-opaque-with-exact-bytes` |
 | mapeo §8: `markdown->plan` sobre store vacío, `store->ast` == `parse`, `store->markdown` == `render(parse)`; hoja compartida entre dos documentos | `plan_test/store-round-trip`, `plan_test/text-leaves-are-shared` |
 | `store->ast` rechaza árboles que no son documentos | `plan_test/not-a-document` |
 | `markdown->update-plan` reingesta sin `supersedes`; los bloques intactos siguen colocados y el editado queda `orphan` | `drift_test/external-edit-orphans-the-anchor` |
-| informe §9: coverage 1.0 sin opacos; paths y grafemas de cada región | `report_test/coverage` |
+| informe §9: coverage 1.0 sin opacos; paths y grafemas de cada región | `plan_test/coverage` |
 
 `gen-ast` (en `test/sldb/kernel/generators.cljc`) genera solo ASTs canónicos (§4.1):
 headings 1–6 con texto vacío o no, párrafos con marcas anidadas/disjuntas y texto que
@@ -332,7 +342,7 @@ contiene cada carácter escapable y palabras con `_` interno, code con backticks
 inicio de línea, listas anidadas hasta 3 niveles con `:start` variados, quotes con
 bloques dentro, breaks y opacos válidos; nunca dos listas del mismo tipo consecutivas.
 
-## 11. Fuera del hito 4
+## 11. Fuera del perfil
 
 Conformidad CommonMark completa, `_` como énfasis, tablas, footnotes, imágenes,
 referencias, setext headings, tree-sitter, paridad Node, capas UAX #29 más allá de los

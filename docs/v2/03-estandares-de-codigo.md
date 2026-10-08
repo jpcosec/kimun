@@ -9,10 +9,12 @@
 ```
 ring 0  sldb.kernel.*   ← puro: datos + funciones; requiere SOLO clojure.* y sldb.kernel.*
 ring 1  sldb.host.*     ← adaptadores: implementan los puertos del kernel; único lugar con
-                          reader conditionals (#?), imports de plataforma e I/O
-ring 2  sldb.surface.*  ← superficies (CLI, importers/emitters, adaptadores externos):
-                          requieren kernel y host; nunca al revés
-ring 3  tests           ← requieren cualquier cosa
+                          reader conditionals (#?), imports de plataforma e I/O; + babashka.*
+ring 2  sldb.surface.*  ← superficies del núcleo (importers/emitters, Markdown):
+                          requieren kernel y host; nunca al revés; + babashka.*
+ring 3  kimun.*         ← producto (CLI y superficies kimun): requiere los anillos 0–2;
+                          además cheshire, clj-yaml y org.httpkit
+ring 4  tests           ← requieren cualquier cosa
 ```
 
 - **El kernel no importa nada de fuera**: ni `sldb.host.*`, ni `babashka.*`, ni `java.*`
@@ -45,7 +47,8 @@ ring 3  tests           ← requieren cualquier cosa
   `defrecord` público lleva docstring. `defn-` puede omitirla si el nombre basta.
 - El docstring dice **qué** garantiza y cita la sección de `docs/v2/02` que implementa
   (`"(§3.1)"`), no cómo está escrito.
-- `bb lint` falla si un var público del kernel o de host no tiene docstring.
+- `bb lint` falla si un var público de cualquier anillo de `src/` no tiene docstring
+  (`scripts/check_rings.clj` recorre todos los namespaces, no solo kernel y host).
 
 ## 4. Nombres y forma
 
@@ -57,7 +60,9 @@ ring 3  tests           ← requieren cualquier cosa
 
 ## 5. Tests
 
-- Un `*_test.cljc` por namespace, mismo nombre.
+- Un archivo `*_test.cljc` por namespace, con el mismo nombre; un namespace puede tener
+  un segundo archivo de tests cuando el primero se acerca al límite razonable, y los
+  tests de paridad viven aparte (`test/kimun/parity/`).
 - Para cada promesa normativa de `docs/v2/02` (regla, fila de tabla, invariante) existe
   un test que **fallaría si la promesa se rompiera**; la tabla
   `docs/v2/tests/promises.md` lo registra. Un test que compara la función consigo misma
@@ -66,12 +71,13 @@ ring 3  tests           ← requieren cualquier cosa
   test.check con generadores compartidos (`test/sldb/kernel/generators.cljc`) y casos
   negativos (cada `reject`/`fail` del código tiene al menos un test que lo dispara).
 - Los fixtures se generan **una vez** con la implementación, se revisan a mano y se
-  congelan; regenerarlos exige una nota en el propio fichero con el motivo.
+  congelan; regenerarlos exige una nota en el propio fichero con el motivo (norma de
+  revisión, no comprobada por `bb lint`).
 - Cada corrida de cierre queda en `runs/subagents/<run>/validation.log`.
 
 ## 6. Aplicación
 
 - `bb lint` (anillos + docstrings) corre antes de `bb test`; ambos deben estar en
   verde para cerrar una task.
-- Las revisiones de código de tasks futuras citan este documento; una desviación se
-  registra como deuda en `desk/inbox` con `--kind suggestion`, nunca en un comentario.
+- Las revisiones de código citan este documento; una desviación se registra como nota
+  en `desk/inbox/`, nunca en un comentario.
