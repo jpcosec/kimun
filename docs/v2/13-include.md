@@ -61,7 +61,8 @@ ignore un fichero declarado. Nunca toca líneas fuera del bloque.
 `bin/kimun include check --staged`. Si ya hay un hook ajeno, lo copia a
 `pre-commit.kimun-prev` y lo encadena; `--uninstall` lo restaura.
 
-`build` es lo que antes hacía `bb desk`: `stores init`, los descriptores en
+`build` es la operación que invoca la task `bb desk` (alias fino vigente): `stores init`,
+los descriptores en
 orden base-primero y luego cada documento (`docs track`, con `--force` donde la
 declaración lo pida). Se niega a tocar un store existente salvo `--rebuild`,
 que lo mueve a `<store>.bak-<marca>`.
@@ -76,9 +77,8 @@ que lo mueve a `<store>.bak-<marca>`.
 Declara 543 documentos con **una regla por directorio**: en cada directorio
 todos los documentos comparten modelo, así que basta
 `desk/atoms/**/*.md`, `desk/tasks/**/*.md`, etc. Donde solo parte del
-directorio necesita `:force`, `:force` es el conjunto de rutas (los 185 átomos y
-los 4 pills forzados); donde todo lo necesita, la regla lleva `:force true`
-(inbox y tasks).
+directorio necesita `:force`, `:force` es el conjunto de rutas (185 átomos); donde todo lo
+necesita, la regla lleva `:force true` (inbox y tasks).
 
 Los ficheros que git sigue en esos directorios pero que **no** son documentos
 del mundo kimun se enumeran en `:exclude` (`desk/atoms/testing.md`,

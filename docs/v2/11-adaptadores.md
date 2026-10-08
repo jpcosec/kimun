@@ -286,16 +286,14 @@ igual al código cuyo archivo desapareció (el `missing` de v1); `sync` reescrib
 | `:adapters/missing` (`reason "unknown-adapter"`) | `ADAPTER` no es incluido ni archivo | 1 |
 | `:adapters/missing` (`reason "drift"`) | `check` halló deriva | 1 |
 | `:adapters/conflict` | en una ruta planificada hay un archivo no adoptable (no extrae bajo el modelo o su `id` no es el planificado); antes de escribir nada | 4 |
-| `:adapters/runtime` | el adaptador sale con 3 o no puede arrancar | 70 |
-| `:adapters/failed` | el adaptador sale con 1 u otro código; datos `{:adapter :exit :stderr}`, mensaje con la línea `error:` | 70 |
-| `:adapters/invalid-output` | stdout no es un objeto JSON, `validate` o el planificador reportan problemas | 70 |
+| `:adapters/runtime` | el adaptador sale con 3 o no puede arrancar | 5 |
+| `:adapters/failed` | el adaptador sale con 1 u otro código; datos `{:adapter :exit :stderr}`, mensaje con la línea `error:` | 5 |
+| `:adapters/invalid-output` | stdout no es un objeto JSON, `validate` o el planificador reportan problemas | 5 |
 | `:cli/usage` | falta ADAPTER/PATH/`--system`/`--factory` (alias `selfdoc-*`), `--architecture-spec` inválido | 6 |
 
 La deriva sale como `:adapters/missing` con `{:reason "drift"}`, exit 1 (el de `selfdoc check` de v1).
-Es el diseño asentado: `:adapters/drift` no se usa porque un tipo no registrado sale con 70, que
-es también el código de `runtime`, `failed` e `invalid-output`. (Registrar el grupo en
-`main.cljc` es trabajo del coordinador: `"adapters" adapters/dispatch` en `groups` y
-`adapters/spec` en `group-specs`.)
+El namespace `adapters` mapea a exit 5 (`errors.cljc`), que es también el de `runtime`, `failed`
+e `invalid-output`; por eso no se usa un tipo `:adapters/drift`.
 
 ### 7.4 Escritura
 
@@ -435,8 +433,8 @@ python|javascript` y `--system` (aceptada, no usada).
 - Errores: una fuente con errores de sintaxis da `warning: <ruta>: syntax errors, facts are
   best-effort` en stderr y hechos de mejor esfuerzo (no es fallo); `OSError` o `ROOT` que no es
   directorio, exit 1.
-- Acuerdo con `python-symbols`: verificado por la lane B sobre 2876 hechos del propio código de
-  v1 (claves neutrales, `signature` e imports crudos iguales); no lo recomprobé en esta lane.
+- Acuerdo con `python-symbols`: claves neutrales, `signature` e imports crudos iguales sobre
+  el propio código de v1.
 
 ## 10. Desviaciones respecto de v1
 

@@ -26,29 +26,50 @@ clase de arista nueva ni una regla nueva de validación: el kernel de `02` ya lo
 
 ```clojure
 {:model/name    "TaskDoc"
- :model/version 3
- :base          ["OperationalArtifactDoc"]          ; MRO exportado; [] si no hereda
- :semantics     ["task" "deskops"]                  ; tags de dominio (se.<tag>)
- :fields        [{:name "id"     :type :string :required true  :description "…"}
-                 {:name "status" :type [:enum "open" "doing" "done"] :required true :default "open"}
-                 {:name "tags"   :type [:list :string] :required false}
-                 {:name "owner"  :type [:ref "RoleDoc"] :required false}
-                 {:name "body"   :type :text :required false}]
- :template      "# ⸢rev•id⸥\n\n- status: ⸢rev•status⸥\n- tags: ⸢optrev•tags|list⸥\n\n⸢render•body⸥\n"
- :compositions  {"steps" {:model "StepDoc" :field "task" :order "position"}}
+ :model/version 1
+ :base          ["OperationalArtifactDoc" "PrimitiveDoc"]  ; MRO exportado; [] si no hereda
+ :semantics     {"type" ["workflow" "task"] "workspace" ["desk"]}
+ :fields        [{:name "id"          :type :string        :required true  :description "…"
+                  :py/annotation "<class 'str'>"}
+                 {:name "tags"        :type [:list :string] :required false :description "…"
+                  :py/annotation "list[str]" :default []}
+                 {:name "frontmatter" :type :yaml          :required false :description "…"
+                  :py/annotation "dict | None" :exclude true}]
+ :template      "# ⸢rev•title⸥\n\n⸢rev,dict•frontmatter⸥\n\n⸢render•step_details⸥\n"
+ :py/references  ["references" "depends_on"]
+ :py/containment {"steps" ["StepDoc"]}
+ :py/compositions {"step_details" {"source_field" "steps"
+                                   "model" "deskops.models:StepDoc"
+                                   "template" "1. {title}: {action} -> {outcome}"}}
  :state         {:field "status" :order ["open" "doing" "done"] :terminal ["done"]}}
 ```
 
+Las claves `:py/*` las escribe el exportador de v1 (`python -m kimun.models export module:Class`,
+§7); el kernel y las superficies las leen como metadatos de procedencia. Un descriptor escrito a
+mano puede omitirlas.
+
 | clave | tipo | obligatoria | nota |
 |---|---|---|---|
-| `:model/name` | string, `[A-Z][A-Za-z0-9]*` | sí | único dentro del árbol `models` de un store |
+| `:model/name` | string, `[A-Z_][A-Za-z0-9_]*` | sí | único dentro del árbol `models` de un store |
 | `:model/version` | entero ≥ 1 | sí | lo incrementa `models define` sobre un nombre existente |
-| `:base` | `[string …]` | sí (puede ser `[]`) | orden de resolución de campos: los del modelo, luego cada base en orden |
-| `:semantics` | `[string …]` | no | alimentan `:tags` del índice (`06 §6`) |
+| `:base` | `[string …]` | sí (puede ser `[]`) | linealización MRO exportada; orden de resolución de campos: los del modelo, luego cada base en orden |
+| `:semantics` | `{string → string \| [string …]}` | no | tags de dominio (`se.<tag>`); `model-tags` los aplana sobre `root-semantics` |
 | `:fields` | `[field …]` | sí | `field = {:name :type :required :description :default}`; `:default` debe ser del `:type` |
 | `:template` | string | sí | Markdown del perfil SLDB-MD con marcadores (§4) |
-| `:compositions` | `{nombre {:model :field :order}}` | no | docs de otro modelo cuyo `:field` apunta a este doc; **por índice**, no por embebido |
-| `:state` | `{:field :order :terminal}` | no | lo usa `next` (`09 §5`); `:field` debe ser un `[:enum …]` cuyos valores son exactamente `:order` |
+| `:state` | `{:field :order :terminal}` | no | opcional; `models check` exige que `:field` sea un `[:enum …]` cuyos valores son exactamente `:order` y que `:terminal` sea subconjunto de `:order` |
+| `:py/annotation` | string | no (exportador) | texto de la anotación Python del campo |
+| `:exclude` | `true` | no (exportador) | campo portador (el `exclude=True` de v1): sus claves se elevan a los campos declarados sin valor y el portador no aparece en el payload |
+| `:py/references` | `[string …]` | no (exportador) | campos cuyos valores son referencias a otros documentos |
+| `:py/containment` | `{string → [string …]}` | no (exportador) | campo → modelos contenidos |
+| `:py/compositions` | `{string → {string → string}}` | no (exportador) | composición; la clave de v1, también aceptada como `:compositions` |
+| `:py/family` | string | no (exportador) | familia de la clase de v1 |
+
+**Composición.** Una composición es `{nombre {"source_field" "model" "template" ["separator"]}}`:
+por cada valor de `source_field` se extrae el documento del `model` referenciado y se rellena
+`template` (marcadores `{campo}`, `{{`/`}}` escapan); el resultado sustituye un marcador
+`⸢render•nombre⸥`. El exportador de v1 la escribe bajo `:py/compositions`; render y aristas la leen
+de `:py/compositions` o de `:compositions`. Los documentos referenciados se resuelven por índice,
+no por embebido.
 
 Tipos de campo: `:string :int :bool :text :yaml [:list T] [:map T] [:enum v…] [:ref Model]`.
 `:text` es Markdown del perfil (se ingesta como bloques); `:yaml` es un opaco
@@ -91,7 +112,7 @@ Marcadores:
 | `⸢optrev•campo⸥` | opcional: ausente ⇒ la línea/bloque que lo contiene se omite al renderizar |
 | `⸢render•campo⸥` | solo salida: se inyecta pero no se extrae (o se extrae y se ignora en `validate`) |
 | traits `\|list`, `\|table`, `\|dict` | forma del valor: lista de items, tabla del perfil (opaco `markdown/table`), lista clave: valor |
-| `⸢py•…⸥` | **no migra** (§8): un define con `py•` se rechaza (`models/invalid`, exit 3) con el informe de qué marcadores hay que convertir a derivados (`09 §6`) |
+| `⸢py•…⸥` | **no migra** (§8): un define con `py•` se rechaza (`models/invalid`, exit 3) con la lista de marcadores |
 
 La **receta** (`kimun.surface.models.recipe`) es una vista derivada del template ya
 parseado: `[{:path [..] :kind :rev|:optrev|:render :field "status" :trait :list} …]` en
@@ -135,34 +156,39 @@ explícito con nombre de campo y path del hueco: el "vacío válido" de v1 no ex
 
 ## 7. Comandos
 
+La sintaxis y las opciones exactas de cada subcomando las posee `06`; aquí va el efecto.
+
 | comando | efecto |
 |---|---|
-| `models define -f X.edn [--actor]` | valida el descriptor; si el nombre no existe: `:add-node` + posición en `models` + ingesta de `model/<Name>/template`; si existe: `:model/version`+1 y `:replace` de la posición ⇒ `supersedes` ⇒ los docs se re-anclan (`02 §6.1`) |
-| `models define --from-python mod:Class` | invoca `python -m kimun.models export mod:Class` (`06 §9`) y sigue como `-f`; la MRO de la clase se exporta como `:base` |
+| `models define -f X.edn [--from-python MOD:CLASS] [--dry-run \| --backfill]` | valida el descriptor; si el nombre no existe: `:add-node` + posición en `models` + ingesta de `model/<Name>/template`; si existe: `:model/version`+1 y `:replace` de la posición ⇒ `supersedes` ⇒ los docs se re-anclan (`02 §6.1`). `--dry-run` lista los documentos de un modelo redefinido sin escribir; `--backfill` los reescribe bajo el contrato nuevo |
+| `models define --from-python mod:Class` | invoca `python -m kimun.models export mod:Class` (`06`) y sigue como `-f`; la MRO de la clase se exporta como `:base` |
 | `models show NAME [--format md\|json\|edn]` | `md` = proyección auditable: campos con tipo y default, template con marcadores resaltados, bases resueltas, versión e historial, docs que lo referencian y el estado de anclaje de cada `reference` (`intact`/`superseded`/`orphan`) |
 | `models list` | nombre, versión, nº de docs, nº de docs con anclaje no `intact` |
-| `models check [NAME]` | valida descriptores (tipos, bases existentes, `:state` coherente, template parseable) y todos los docs de cada modelo con `validate` |
+| `models check [NAME] [-f DRAFT.edn]` | valida descriptores (tipos, bases existentes, `:state` coherente, template parseable) y todos los docs de cada modelo con `validate` |
 | `models history NAME` | cadena de `supersedes` del descriptor: versiones, actor, revisión |
+| `models field-add NAME --field F --type T [--default D] [--required]` | añade un campo y su sección al template (`optrev` si tiene default o no es requerido; `rev` si no) y define una versión nueva |
+| `models field-remove NAME --field F` | quita el campo y sus marcadores del template y define una versión nueva |
+| `models template NAME [-f FILE]` | sin `-f` imprime el template; con `-f` lo sustituye y define una versión nueva |
 
 ## 8. Lo que no migra: `py•`
 
-Los marcadores `py•` de v1 ejecutaban Python en el render. En v2 un valor calculado es un
-**derivado** (`09 §6`): `derive define` con motor `sci` o `shell:`, cuyo valor
-`edn/value` puede ser input de un `⸢render•campo⸥`. El flujo por hash llega así al
-Markdown proyectado sin código dentro del modelo. `models define` rechaza `py•` con la
-lista de marcadores y la forma sugerida del `derive define` equivalente.
+Los marcadores `py•` de v1 ejecutaban Python en el render. `models define` los rechaza
+(`:models/invalid`, salida 3) con la lista de marcadores. El diseño de derivados que los
+sustituiría (un motor de s-expressions y un grupo `derive`) está especificado pero **no
+implementado**: ver `docs/archive/v2/09-evaluador-anclado.md`.
 
 ## 9. Migración de los modelos existentes
 
-- **deskops, 19 modelos** con herencia: `StructuredNLDoc` → `PrimitiveDoc` →
-  `OperationalArtifactDoc`; hojas `AtomDoc BoardDoc ChecklistDoc ConditionDoc EdgeDoc
-  FAQDoc HookDoc InboxNoteDoc MaterializationContractDoc OperatorDoc PillDoc RepositoryDoc
-  RitualDoc RoleDoc RoutineDoc StepDoc TaskDoc` más las dos intermedias. Cada una se exporta
-  como descriptor con `--from-python`; las clases intermedias también se definen (son
-  `:base` de otras); las composiciones (`steps` de una task) pasan a `:compositions` por
-  índice; `py•` se reporta y se convierte a derivados. Goldens de S1: los 19 descriptores
-  congelados en `test/fixtures/models/deskops/*.edn`.
-- **hum-scrapper, 7 modelos** (`AtomDoc BoardDoc PillDoc RitualDoc SLDBGuide StepDoc
-  TaskDoc`, todos directos de `StructuredNLDoc`): mismo camino, sin herencia intermedia.
-- Un modelo con el mismo nombre en dos stores federados no se espeja (`06 §4`): cada doc
+- **deskops, 23 modelos** con herencia: `StructuredNLDoc` → `PrimitiveDoc` →
+  `OperationalArtifactDoc`; hojas `AtomDoc BoardDoc ChecklistDoc ConditionDoc CrossroadDoc
+  EdgeDoc FAQDoc HookDoc InboxNoteDoc MaterializationContractDoc OperatorDoc PillDoc
+  ProtoAtomDoc RepositoryDoc RitualDoc RoleDoc RoutineDoc RunDoc RuntimeProfileDoc StepDoc
+  TaskDoc` más las dos intermedias. Cada una se exporta como descriptor con `--from-python`;
+  las clases intermedias también se definen (son `:base` de otras); las composiciones pasan a
+  `:py/compositions` por índice. Goldens: los 23 descriptores congelados en
+  `test/fixtures/models/deskops/*.edn`.
+- **hum-scrapper, 6 modelos** (`AtomDoc BoardDoc PillDoc RitualDoc StepDoc TaskDoc`, todos
+  directos de `StructuredNLDoc`): mismo camino, sin herencia intermedia. Congelados en
+  `test/fixtures/models/hum-scrapper/*.edn`.
+- Un modelo con el mismo nombre en dos stores federados no se espeja (`06`): cada doc
   referencia el descriptor del store que lo posee.
