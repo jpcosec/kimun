@@ -154,7 +154,8 @@ exec \"$DIR/lib/bb\" --jar \"$DIR/lib/kimun.jar\" -- \"$@\"
     (when pod (smoke-pod! (fs/path lib pod-name)))
     (when-not pod
       (binding [*out* *err*]
-        (println "release: no tree-sitter pod for" (name platform) "— bundled without it (bb pod / target/pods)")))
+        (println "release: no tree-sitter pod for" (clojure.core/name platform)
+                 "— bundled without it (bb pod / target/pods)")))
     (let [archive (if (windows? platform)
                     (let [z (fs/path out (str name ".zip"))]
                       (fs/delete-if-exists z)

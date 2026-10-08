@@ -34,8 +34,11 @@
 
 - **Parser Markdown**: `kimun.surface.models.blocks/parse` segmenta con el pod tree-sitter
   (decisión 29, fase 1 de R2 §5) y `parse-native` queda como oráculo diferencial (paridad de
-  kinds y spans 1099/1099 en corpus + desk, `blocks-parity-test`). Pendiente la fase 2 (vista
-  sobre el CST) y la fase 3 (rangos de bytes e ids de nodo del CST).
+  kinds y spans 1099/1099 en corpus + desk, `blocks-parity-test`). La fase 2 existe
+  (`kimun.surface.markdown.cst-ast`, bandera `KIMUN_PARSER=treesitter`): AST idéntico
+  1099/1099 en corpus + desk, pero ~3 % de divergencia en Markdown libre, así que el default
+  sigue siendo `native` (ver `04 §11.2`). Pendiente: cerrar esas clases y la fase 3 (rangos de
+  bytes e ids de nodo del CST).
 - **Composiciones del descriptor**: la clave es la de v1 (`:py/compositions`), aceptada junto
   a `:compositions`; `07 §2` propone `{:model :field :order}`.
 - **Concesiones de M/G**: `:symbol` y `:fact` resuelven por existir en el CAS, porque todavía
