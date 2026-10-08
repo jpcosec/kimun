@@ -65,8 +65,24 @@
      :exclude-tags (cond (nil? x) [] (string? x) [x] (and (sequential? x) (every? string? x)) (vec x)
                          :else (usage! sub "option --exclude-tag needs a value" {:option :exclude-tag}))}))
 
-(defn- load-index [opts ctx sub]
-  (let [o (open opts ctx)] (assoc o :index (edges/index (:store o) (index-opts opts sub)))))
+(defn- linked
+  "The reachable linked stores of `o` as `[{:name :store}]` for the federated
+   view (`kimun.surface.edges/index`): their opened kernel stores under the
+   link names `kimun.cli.store/linked-stores` gives them, with its cycle guard.
+   Empty with `--local`."
+  [o opts sub]
+  (if (flag opts :local sub)
+    []
+    (mapv (fn [l] {:name (:name l) :store (get-in l [:open :store])})
+          (cli-store/linked-stores (:path o) {:transitive? true}))))
+
+(defn- load-index
+  "Opens the store and derives its edge index; `linked?` (default true) adds
+   the reachable linked stores unless `--local`."
+  ([opts ctx sub] (load-index opts ctx sub true))
+  ([opts ctx sub linked?]
+   (let [o (open opts ctx)]
+     (assoc o :index (edges/index (:store o) (assoc (index-opts opts sub) :linked (if linked? (linked o opts sub) [])))))))
 
 (defn- known! [g id]
   (let [nid (edges/as-node-id id)]
@@ -89,9 +105,11 @@
   (let [p "sldb://document/"] (if (str/starts-with? id p) (subs id (count p)) id)))
 
 (defn show
-  "`edges show [ID | --from ID | --to ID] [--relation R] [--no-links]`: the
-   edges leaving ID (`--from`, or the bare ID as in v1), arriving at it
-   (`--to`), or all of them. Data: `{:from :to :relation :links :count :edges
+  "`edges show [ID | --from ID | --to ID] [--relation R] [--no-links] [--local]`:
+   the edges leaving ID (`--from`, or the bare ID as in v1), arriving at it
+   (`--to`), or all of them. Without `--local` the reachable linked stores join
+   the graph, their documents qualified by the link name. Data: `{:from :to
+   :relation :links :count :edges
    [{:source :target :relation :metadata [:anchor]}] :authored […]}` —
    `:authored` lists the authored relations in scope with their anchor state,
    including those an untracked endpoint took out of the graph. An unknown
@@ -120,7 +138,7 @@
    report: `:errors` (v1's sentences), `:violations` (`{:kind :message …}`)
    and `:anchors` (the authored relations that are not intact)."
   [_args opts ctx]
-  (let [{s :store i :index :as o} (load-index opts ctx "check")
+  (let [{s :store i :index :as o} (load-index opts ctx "check" false)
         r (edges/check i)
         report {:ok (boolean (and (:ok r) (empty? (:anchors r)))) :errors (:errors r)
                 :violations (mapv #(cond-> (update % :kind name) (map? (:edge %)) (update :edge edge-row)) (:violations r))
@@ -134,7 +152,8 @@
 (defn node
   "`edges node ID`: one node with its facets. Data: `{:id :type :semantics
    :facets :out :in}` (`:out`/`:in` count its edges); `edges/missing` when the
-   graph has no such node."
+   graph has no such node. Without `--local` a linked store's nodes are in the
+   graph under their qualified ids (`annex:Table:t99`)."
   [args opts ctx]
   (let [{s :store i :index :as o} (load-index opts ctx "node") g (:graph i)
         id (known! g (require-arg! args 0 "a node ID" "node"))]
@@ -143,9 +162,10 @@
              :data (assoc (edges/node g id) :out (count (edges/edges-from g id)) :in (count (edges/edges-to g id)))})))
 
 (defn nodes
-  "`edges nodes [--type T]`: the nodes of type T in full (`edges node` shape),
-   or without `--type` every node as `{:id :type}`. Data: `{:type :count
-   :types {type count} :nodes […]}`."
+  "`edges nodes [--type T] [--local]`: the nodes of type T in full (`edges node`
+   shape), or without `--type` every node as `{:id :type}`. Without `--local`
+   the reachable linked stores' documents join, qualified by the link name.
+   Data: `{:type :count :types {type count} :nodes […]}`."
   [_args opts ctx]
   (let [{s :store i :index :as o} (load-index opts ctx "nodes") g (:graph i)
         t (text-opt opts :type "nodes")
@@ -233,7 +253,7 @@
 (defn- derived
   "The envelope of a command that has nothing to write because the graph is derived."
   [command message opts ctx]
-  (let [{s :store i :index :as o} (load-index opts ctx (last (str/split command #" ")))]
+  (let [{s :store i :index :as o} (load-index opts ctx (last (str/split command #" ")) false)]
     (out/ok command
             {:store (store-ref o) :revision (:head s)
              :data (merge {:changed false :derived true :message message :problems (count (:problems i))
@@ -266,6 +286,7 @@
    :relation {:ref "R" :desc "Relation name (edges show, relate, unrelate)"}
    :type {:ref "T" :desc "Node type (edges nodes)"}
    :no-links {:desc "Leave out the predicate links found in document text" :coerce :boolean}
+   :local {:desc "Leave the linked stores out of the graph (edges show|node|nodes; graph *)" :coerce :boolean}
    :exclude-tag {:ref "TAG" :desc "Documents carrying TAG contribute only their tags (repeatable)" :coerce [:string]}
    :direction {:ref "D" :desc "directed | undirected (edges type-define)"}
    :cardinality {:ref "C" :desc "one_to_one | one_to_many | many_to_one | many_to_many (edges type-define)"}

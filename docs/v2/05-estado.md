@@ -26,7 +26,8 @@ puro sobre Babashka, más las superficies que lo usan. Cada capacidad tiene un d
 - **Índice, `find` y corpus** — índice derivado cacheado, direcciones, búsqueda física y
   semántica, `--where` y ranking de corpus. CLI: `06-superficies-y-cli.md`.
 - **Aristas, grafo y predicates** — el grafo como vista derivada: relaciones y tipos,
-  recorridos, análisis y export. CLI: `06-superficies-y-cli.md`.
+  recorridos, análisis y export; con los stores enlazados alcanzables dentro (calificados
+  por nombre de enlace; `--local` los deja fuera). CLI: `06-superficies-y-cli.md`.
 - **Semántica** — tags como términos `:symbol/:term`, jerarquía de padres y equivalencias.
   CLI: `06-superficies-y-cli.md`.
 - **Journal** — vista del log y del DAG de revisiones, sin segundo almacén. CLI:
@@ -48,7 +49,7 @@ puro sobre Babashka, más las superficies que lo usan. Cada capacidad tiene un d
 ## 2. Medidas
 
 **Paridad con sldb v1** (2026-10-08, `python3 scripts/parity/coverage.py <v1> .`), sobre las
-590 funciones de test de v1: 515 portadas, 1 mapeada, 14 oráculo, 55 n/a, 3 brechas, 1
+590 funciones de test de v1: 517 portadas, 1 mapeada, 14 oráculo, 55 n/a, 1 brecha, 1
 corpus y 1 abierta. Detalle y desviaciones: `tests/parity-v1.md`.
 
 **Store real** (1.551 documentos migrados de v1; antes → después, `10-escala.md §9`):

@@ -79,14 +79,26 @@
     (spit (str f) (str (io/write-json data) "\n"))
     (shown cwd file)))
 
+(defn- linked-of
+  "The reachable linked stores of opened store `o` as `[{:name :store}]` for
+   the federated graph (`kimun.surface.graph.store/from-store`): their opened
+   kernel stores under the link names `kimun.cli.store/linked-stores` gives
+   them, with its cycle guard. Empty with `--local`."
+  [o opts]
+  (if (:local opts)
+    []
+    (mapv (fn [l] {:name (:name l) :store (get-in l [:open :store])})
+          (cli-store/linked-stores (:path o) {:transitive? true}))))
+
 (defn- source
   "The graph a command reads: `{:graph g}` from `--snapshot FILE`, else
    `{:graph g :store {:name :path} :revision head}` from the opened store."
   [opts {:keys [env cwd]}]
   (if-let [file (:snapshot opts)]
     {:graph (gs/from-snapshot (read-json-file cwd file "snapshot"))}
-    (let [{:keys [descriptor path] s :store} (cli-store/open! (cli-store/resolve-store opts env cwd))]
-      {:graph (gs/from-store s {:links? (not (:no-links opts)) :exclude-tags (or (many (:exclude-tag opts)) [])})
+    (let [{:keys [descriptor path] s :store :as o} (cli-store/open! (cli-store/resolve-store opts env cwd))]
+      {:graph (gs/from-store s {:links? (not (:no-links opts)) :exclude-tags (or (many (:exclude-tag opts)) [])
+                                :linked (linked-of o opts)})
        :store {:name (:name descriptor) :path path} :revision (:head s)})))
 
 (defn- answer [command src data] (out/ok command (assoc (select-keys src [:store :revision]) :data data)))
@@ -263,6 +275,7 @@
    :kind {:ref "KIND" :desc "v1's name for --metric"}
    :snapshot {:ref "FILE" :desc "Read the graph from this snapshot file instead of the store"}
    :no-links {:desc "Leave the predicate links found in document text out of the graph" :coerce :boolean}
+   :local {:desc "Leave the linked stores out of the graph (edges show|node|nodes; graph *)" :coerce :boolean}
    :exclude-tag {:ref "TAG" :desc "Leave out documents carrying this tag (repeatable)" :coerce [:string]}})
 
 (def commands

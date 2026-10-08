@@ -40,7 +40,7 @@ Usage: coverage.py V1_ROOT KIMUN_ROOT [--list-open] [--json] [--strict]
 --strict exits 1 when anything is open / mentioned / corpus (outside the allowed
 prefixes), when there is any gap (unless --allow-gaps), or on any error above.
 """
-import argparse, ast, collections, json, pathlib, re, sys
+import argparse, ast, collections, gzip, json, pathlib, re, sys
 
 GAP_FILE = "known_gaps_test.cljc"
 STATUSES = ("ported", "mapped", "oracle", "n/a", "gap", "mentioned", "corpus", "open")
@@ -115,10 +115,16 @@ def scan_mentions(root):
 def oracle_names(root):
     names = set()
     for corpus in ("engine", "segments"):
-        d = root / "test" / "fixtures" / "parity" / corpus
+        base = root / "test" / "fixtures" / "parity"
+        d = base / corpus
         if d.exists():
             for p in d.glob("*/meta.edn"):
                 names |= set(re.findall(r"::(test_[A-Za-z0-9_]+)", p.read_text(errors="replace")))
+        packed = base / f"{corpus}.cases.jsonl.gz"
+        if packed.exists():
+            with gzip.open(packed, "rt", errors="replace") as fh:
+                for line in fh:
+                    names |= set(re.findall(r"::(test_[A-Za-z0-9_]+)", line))
     return names
 
 # ---------------------------------------------------------------- tiny EDN reader

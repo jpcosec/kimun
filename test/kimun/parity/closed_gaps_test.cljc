@@ -139,3 +139,64 @@
     (is (= 0 (:exit @holder)))
     (is (= (inc before) (log-lines p)))
     (readable? p)))
+
+;; ---------------------------------------------------------------- edges and graph across linked stores
+;; Closed by the linked-store federation of `kimun.surface.edges/index`
+;; (`docs/v2/06`): the caller opens the reachable linked stores and passes them
+;; under `:linked`, and their documents and sections join qualified by the link
+;; name (v1 `store/edge_index/federation.qualify`); `--local` leaves them out.
+
+(defn- table-file [p n] (str (fs/path p n)))
+
+(defn- table-store
+  "A store with model `Table` and one tracked document named `doc`."
+  [doc]
+  (let [p (str (ktu/temp-dir "kimun-closed-gap-"))]
+    (run p "stores" "init" "--name" "p")
+    (spit (table-file p "table.edn")
+          (pr-str {:model/name "Table" :model/version 1 :base []
+                   :fields [{:name "title" :type :string :required true :description "Title."}]
+                   :template "# ⸢rev•title⸥\n"}))
+    (is (true? (:ok (run p "models" "define" "-f" "table.edn"))))
+    (is (true? (:ok (run p "docs" "create" "Table" doc "--set" (str "title=" doc)))))
+    p))
+
+(defn- linked-tables
+  "Store `p` (document `t12`) with the store `q` (document `t99`) linked under
+   `annex`."
+  []
+  (let [p (table-store "t12") q (table-store "t99")]
+    (is (true? (:ok (run p "stores" "link" "annex" q))))
+    p))
+
+(defn- node-ids [e] (set (map :id (get-in e [:data :nodes]))))
+(defn- export-ids [e] (set (map #(get % "id") (get-in e [:data "nodes"]))))
+
+;; v1: api/test_api_edges.py::test_linked_store_documents_come_back_qualified
+(deftest linked-store-documents-come-back-qualified
+  (let [p (linked-tables)]
+    (testing "the edge index carries the linked store's document, qualified by the link name"
+      (is (contains? (node-ids (run p "edges" "nodes")) "sldb://document/annex:Table:t99")))
+    (testing "the qualified node names its store and the model has a has_document edge to it"
+      (is (= "annex" (get-in (run p "edges" "node" "annex:Table:t99") [:data :semantics "store"])))
+      (is (= ["sldb://document/Table:t12" "sldb://document/annex:Table:t99"]
+             (mapv :target (filter #(= "has_document" (:relation %))
+                                   (get-in (run p "edges" "show" "--from" "sldb://model/Table") [:data :edges]))))))
+    (testing "include_linked=False (--local) drops them"
+      (let [ids (node-ids (run p "edges" "nodes" "--local"))]
+        (is (contains? ids "sldb://document/Table:t12"))
+        (is (not-any? #(str/includes? % "annex") ids))))))
+
+;; v1: api/test_graph_source_parity.py::test_snapshot_save_keeps_the_legacy_route_for_linked_stores_gap_G5
+(deftest graph-export-composes-linked-stores
+  (let [p (linked-tables)]
+    (testing "graph export composes the linked store's documents, qualified by the link name"
+      (is (contains? (export-ids (run p "graph" "export")) "sldb://document/annex:Table:t99")))
+    (testing "and the same for graph list and graph snapshot save"
+      (is (some #{"sldb://document/annex:Table:t99"} (get-in (run p "graph" "list") [:data :nodes])))
+      (is (= "with-links.json" (get-in (run p "graph" "snapshot" "save" "with-links.json") [:data :path]))
+          "snapshot save reports the file it wrote"))
+    (testing "include_linked=False (--local) exports only the local store"
+      (let [ids (export-ids (run p "graph" "export" "--local"))]
+        (is (contains? ids "sldb://document/Table:t12"))
+        (is (not-any? #(str/includes? % "annex") ids))))))
