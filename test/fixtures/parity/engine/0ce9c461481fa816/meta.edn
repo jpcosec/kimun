@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/api/test_api_edges.py::test_undirected_types_read_both_ways_and_bad_classes_are_reported"]}

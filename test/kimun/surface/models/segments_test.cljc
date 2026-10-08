@@ -4,16 +4,19 @@
    tests/test_extraction_segments.py, tests/test_document_segments.py and the
    segments half of tests/api/test_composition_ref_root.py. The model
    descriptors are the ones v1's exporter recorded for those tests' classes
-   (test/fixtures/parity/segments/*/descriptor.edn), copied verbatim. v1's
-   store-wide invariants run here over every `render_with_spans` case of the
-   segments corpus, which replays that store document by document."
-  (:require [babashka.fs :as fs]
-            [clj-yaml.core :as yaml]
+   (the `descriptor` field of test/fixtures/parity/segments.cases.jsonl.gz),
+   copied verbatim. v1's store-wide invariants run here over every
+   `render_with_spans` case of the segments corpus, which replays that store
+   document by document."
+  (:require [clj-yaml.core :as yaml]
+            [cheshire.core :as json]
             [clojure.edn :as edn]
+            [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.test :refer [deftest is]]
             [kimun.surface.models.render :as render]
-            [kimun.surface.models.segments :as segments]))
+            [kimun.surface.models.segments :as segments])
+  (:import (java.util.zip GZIPInputStream)))
 
 ;; ── tests/test_field_ownership.py ────────────────────────────────────────
 
@@ -215,9 +218,14 @@
 ;; run here over every such case: descriptor, payload and ref world as
 ;; recorded, v1's recorded output never read.
 
-(def ^:private corpus "test/fixtures/parity/segments")
+(def ^:private corpus "test/fixtures/parity/segments.cases.jsonl.gz")
 
-(defn- slurp? [dir f] (let [p (fs/path dir f)] (when (fs/exists? p) (slurp (str p)))))
+(defn- corpus-cases
+  "Every case of the packed segments corpus, sorted by id; each is a map of the
+   fields the case directory used to hold, as the byte-exact text of each file."
+  []
+  (with-open [r (io/reader (GZIPInputStream. (io/input-stream corpus)))]
+    (mapv #(json/parse-string % true) (line-seq r))))
 
 (defn- cp-slice [^String s a b]
   (subs s (.offsetByCodePoints s 0 (int a)) (.offsetByCodePoints s 0 (int b))))
@@ -228,23 +236,23 @@
   (mapcat #(cons % (flatten-tree (:children %))) tree))
 
 (defn- case-verdict
-  "`{:id :identical? :tiles? :offsets?}` for one recorded case directory, nil
-   when it is not a `render_with_spans` case."
-  [dir]
-  (when (= :render_with_spans (:op (edn/read-string (slurp? dir "meta.edn"))))
-    (let [descriptor (edn/read-string (slurp? dir "descriptor.edn"))
-          payload (yaml/parse-string (slurp? dir "payload.json") :keywords false)
-          refs (some-> (slurp? dir "refs.json") (yaml/parse-string :keywords false))
-          models (some-> (slurp? dir "ref-models.edn") edn/read-string)
+  "`{:id :identical? :tiles? :offsets?}` for one recorded case record, nil when
+   it is not a `render_with_spans` case."
+  [rec]
+  (when (= :render_with_spans (:op (edn/read-string (:meta rec))))
+    (let [descriptor (edn/read-string (:descriptor rec))
+          payload (yaml/parse-string (:payload rec) :keywords false)
+          refs (some-> (:refs rec) (yaml/parse-string :keywords false))
+          models (some-> (:ref-models rec) edn/read-string)
           ctx (when (or refs models) {:ref-text #(get refs %) :ref-model #(get models %)})
           {:keys [text] tree :segments} (segments/segments descriptor payload ctx)]
-      {:id (str (fs/file-name dir))
+      {:id (:id rec)
        :identical? (= text (render/render descriptor payload ctx))
        :tiles? (= text (apply str (map :text tree)))
        :offsets? (every? #(= (:text %) (cp-slice text (:start %) (:end %))) (flatten-tree tree))})))
 
 (def ^:private verdicts
-  (delay (vec (keep case-verdict (sort (filter fs/directory? (fs/list-dir corpus)))))))
+  (delay (vec (keep case-verdict (corpus-cases)))))
 
 ;; v1: tests/test_document_segments.py::test_instrumented_render_matches_canonical_render_for_every_document
 (deftest instrumented-render-matches-canonical-render-for-every-document

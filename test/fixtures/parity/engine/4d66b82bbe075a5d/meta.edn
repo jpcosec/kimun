@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/test_cli_v2.py::test_models_validate_promotes_valid_template_draft_and_reindexes"]}

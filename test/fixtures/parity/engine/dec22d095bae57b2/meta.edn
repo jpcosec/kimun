@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/store/test_update_fault_tolerance.py::test_store_lock_fails_fast_when_busy" "tests/store/test_update_fault_tolerance.py::test_store_lock_wait_blocks_until_released" "tests/store/test_update_fault_tolerance.py::test_store_update_skips_missing_doc"]}

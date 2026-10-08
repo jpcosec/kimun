@@ -1,4 +1,0 @@
-{
- "title": "Curriculum Vitae",
- "body": "This CV keeps Pandoc fenced div blocks intact so an external review UI can keep parsing them structurally.\n\n::: {.job role=\"Staff Engineer\" org=\"Hum Labs\" dates=\"2021-2024\"}\n## Work\n\nBuilt the document pipeline.\n\n- Shipped structured review surfaces\n- Kept Markdown editable\n:::\n\n::: {.education degree=\"MSc\" org=\"UNLP\" dates=\"2018-2020\"}\n## Education\n\nStudied computational linguistics.\n:::"
-}

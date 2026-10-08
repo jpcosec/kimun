@@ -1,1 +1,0 @@
-{:op :render_with_spans :fn "sldb.core.segments.instrumented_render.render_with_spans" :tests ["tests/test_serve.py::test_extract_segments_reports_text_the_template_does_not_explain"]}

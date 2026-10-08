@@ -1,1 +1,0 @@
-{:op :render_with_spans :fn "sldb.core.segments.instrumented_render.render_with_spans" :tests ["tests/test_extraction_segments.py::test_coverage_is_a_fraction_of_the_meaningful_text"]}

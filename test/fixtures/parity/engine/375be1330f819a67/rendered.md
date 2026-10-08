@@ -1,3 +1,0 @@
-# mesa
-
-Ref: model:Table

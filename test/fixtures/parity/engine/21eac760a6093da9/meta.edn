@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/api/test_api_edges.py::test_a_hand_edit_reaches_the_index_through_stores_update"]}

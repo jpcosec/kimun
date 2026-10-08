@@ -1,1 +1,0 @@
-{:op :render :tests ["tests/test_cli_v2.py::test_docs_create_uses_model_from_linked_store_namespace"]}

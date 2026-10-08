@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/test_serve_auth.py::test_serve_without_token_stays_open"]}

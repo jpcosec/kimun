@@ -1,1 +1,0 @@
-{:op :render :tests ["tests/test_standalone.py::test_example_bundle_roundtrips" "tests/test_standalone.py::test_example_bundle_self_idempotency"] :retired "07 §8"}

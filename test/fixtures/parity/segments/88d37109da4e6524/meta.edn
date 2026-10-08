@@ -1,1 +1,0 @@
-{:op :render_with_spans :fn "sldb.core.segments.instrumented_render.render_with_spans" :tests ["tests/api/test_composition_ref_root.py::test_document_segments_compose_against_the_project_root"]}

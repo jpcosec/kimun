@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/api/test_declared_references.py::test_a_list_field_produces_one_edge_per_id"]}

@@ -1,1 +1,0 @@
-{:model/name "ItemDoc" :model/version 1 :base [] :fields [{:name "title" :type :string :required true :description "Title." :py/annotation "<class 'str'>"} {:name "source" :type :string :required true :description "Export id of the note." :py/annotation "<class 'str'>"}] :template "# ⸢rev•title⸥\n\nfrom: ⸢rev•source⸥" :py/references ["source"]}

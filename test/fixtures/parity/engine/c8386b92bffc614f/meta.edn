@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/test_serve_auth.py::test_serve_token_blocks_writes_and_leaves_the_store_untouched"]}

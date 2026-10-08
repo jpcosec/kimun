@@ -1,4 +1,0 @@
-# Same
-first
-# Same
-second

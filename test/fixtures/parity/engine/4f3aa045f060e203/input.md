@@ -1,3 +1,0 @@
-# alpha
-
-body of alpha

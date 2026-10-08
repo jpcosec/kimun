@@ -1,3 +1,0 @@
-# Constraints
-
-Always validate first.

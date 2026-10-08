@@ -1,3 +1,0 @@
-# Open
-
-Status: open

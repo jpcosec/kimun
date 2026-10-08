@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/store/test_contract_in_model_node.py::test_a_moved_contract_does_not_excuse_an_edited_file"]}

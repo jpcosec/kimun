@@ -1,1 +1,0 @@
-{:op :map_fields_to_sections :fn "sldb.api.records.map_fields._map_fields_to_sections" :tests ["tests/test_field_ownership.py::test_multiple_section_template_still_refuses_when_counts_differ"]}

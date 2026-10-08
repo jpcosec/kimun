@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/test_serve.py::test_extract_segments_distinguishes_unknown_model_from_bad_markdown"]}

@@ -1,1 +1,0 @@
-{:op :build_extraction_segments :fn "sldb.api.segments.build_extraction_segments.build_extraction_segments" :tests ["tests/test_extraction_segments.py::test_field_offsets_address_the_raw_text_not_the_canonical_one"]}

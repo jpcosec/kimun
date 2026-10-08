@@ -1,1 +1,0 @@
-{:op :render :tests ["tests/test_standalone.py::test_table_marker_infers_columns_and_preserves_empty_cells"]}

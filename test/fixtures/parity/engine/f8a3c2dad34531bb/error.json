@@ -1,1 +1,0 @@
-{"type": "ValidationError", "message": "1 validation error for TicketDoc\nstatus\n  Input should be 'open' or 'closed' [type=literal_error, input_value='pending', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/literal_error"}

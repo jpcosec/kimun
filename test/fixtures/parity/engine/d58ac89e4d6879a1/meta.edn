@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/test_section_body_extraction.py::test_trailing_empty_section_stays_empty"]}

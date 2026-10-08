@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/api/test_api_edges.py::test_editing_one_document_rewrites_only_its_shard"]}

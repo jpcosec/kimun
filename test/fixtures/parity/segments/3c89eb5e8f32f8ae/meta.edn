@@ -1,1 +1,0 @@
-{:op :map_fields_to_sections :fn "sldb.api.records.map_fields._map_fields_to_sections" :tests ["tests/test_cli_v2.py::test_field_query_includes_owning_section"]}

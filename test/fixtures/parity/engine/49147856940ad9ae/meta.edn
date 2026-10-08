@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/api/test_api_documents.py::test_save_document_payload_rewrites_markdown_and_indexes"]}

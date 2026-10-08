@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/test_serve.py::test_graph_declares_models_whose_documents_are_missing"]}

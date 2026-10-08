@@ -1,1 +1,0 @@
-sin heading, no extrae

@@ -1,1 +1,0 @@
-{:op :render :tests ["tests/api/test_api_edges.py::test_cli_edges_uses_the_api"]}

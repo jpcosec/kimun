@@ -1,3 +1,0 @@
-# gamma
-
-body of gamma

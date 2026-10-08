@@ -1,1 +1,0 @@
-{:model/name "MemoDoc" :model/version 1 :base ["BaseNote"] :fields [{:name "title" :type :string :required true :description "Title." :py/annotation "<class 'str'>"} {:name "status" :type :string :required true :description "Workflow status." :py/annotation "<class 'str'>"}] :template "# ⸢rev•title⸥\n\nStatus: ⸢rev•status⸥"}

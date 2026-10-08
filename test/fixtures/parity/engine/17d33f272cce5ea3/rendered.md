@@ -1,3 +1,0 @@
-# three
-
-body of three

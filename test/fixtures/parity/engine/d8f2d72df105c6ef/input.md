@@ -1,1 +1,0 @@
-# Editado a mano

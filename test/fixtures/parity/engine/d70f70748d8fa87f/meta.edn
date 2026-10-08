@@ -1,1 +1,0 @@
-{:op :render :tests ["tests/test_links.py::test_recover_predicate_links_cli"]}

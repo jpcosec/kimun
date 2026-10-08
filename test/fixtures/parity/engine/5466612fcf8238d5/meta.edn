@@ -1,1 +1,0 @@
-{:op :render :tests ["tests/store/test_optional_field_hash_neutral.py::test_render_absent_optrev_leaves_no_trace_on_plain_line"]}

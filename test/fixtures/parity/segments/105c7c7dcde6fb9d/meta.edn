@@ -1,1 +1,0 @@
-{:op :extract_sections :fn "sldb.api.records.extract.extract_sections" :tests ["tests/test_field_ownership.py::test_single_section_template_keeps_ownership_when_a_field_value_has_headings"]}

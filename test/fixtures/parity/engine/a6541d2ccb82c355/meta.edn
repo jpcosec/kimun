@@ -1,1 +1,0 @@
-{:op :render :tests ["tests/api/test_declared_references.py::test_a_bare_name_without_its_model_is_not_guessed_at"]}

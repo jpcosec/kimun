@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/test_runtime_cache.py::test_a_trusted_chain_skips_the_leaf_sweep"]}

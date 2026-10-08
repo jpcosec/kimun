@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/store/test_cache_identity.py::test_a_payload_is_what_this_class_extracted_and_hash_d_is_computed_from_it"]}

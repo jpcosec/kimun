@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/store/test_cli_store.py::test_doc_add_from_yaml_file"]}

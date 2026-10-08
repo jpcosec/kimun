@@ -1,5 +1,0 @@
-# Alpha
-
-## Overview
-
-Body text

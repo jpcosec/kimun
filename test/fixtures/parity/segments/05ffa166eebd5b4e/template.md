@@ -1,3 +1,0 @@
-# ⸢rev•title⸥
-
-⸢rev•body⸥

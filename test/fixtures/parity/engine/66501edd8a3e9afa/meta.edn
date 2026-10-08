@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/store/test_diagnostics.py::test_benign_text_mutation" "tests/store/test_diagnostics.py::test_reformatting_moves_content_and_holds_fields_still"]}

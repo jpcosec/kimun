@@ -1,5 +1,0 @@
-# Missing Status
-
-## Goal
-
-Incomplete.

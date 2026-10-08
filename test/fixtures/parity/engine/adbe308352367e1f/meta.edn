@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/selfdoc/test_preflight.py::test_filename_collision_is_rejected_before_writing"]}

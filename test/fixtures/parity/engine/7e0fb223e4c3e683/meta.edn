@@ -1,1 +1,0 @@
-{:op :render :tests ["tests/test_cli_v2.py::test_inbox_auto_tracks_when_model_registered"]}

@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/store/test_cache_identity.py::test_a_model_redefined_in_a_running_process_gets_its_new_tags" "tests/store/test_cache_identity.py::test_a_payload_is_what_this_class_extracted_and_hash_d_is_computed_from_it" "tests/store/test_cache_identity.py::test_two_stores_same_path_same_text_same_class_name_keep_their_own_tags"]}

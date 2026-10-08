@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/test_standalone.py::test_table_marker_renders_and_extracts_explicit_columns"]}

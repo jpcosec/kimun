@@ -1,36 +1,45 @@
 (ns kimun.surface.models.segments-parity-test
   "Differential parity of `kimun.surface.models.segments` with sldb v1: every
-   case recorded under test/fixtures/parity/segments (layout in the docstring
-   of scripts/parity/record_segments.py) is replayed, dispatching on `:op`.
-   A case is skipped only through an EXCLUSIONS.edn entry with a reason, and
-   an entry that went stale — its case left the corpus, or kimun now
-   reproduces it — fails the suite until it is removed."
+   case recorded into test/fixtures/parity/segments.cases.jsonl.gz (one gzipped
+   JSON line per case; layout in the docstring of scripts/parity/record_segments.py)
+   is replayed, dispatching on `:op`. A case is skipped only through an
+   EXCLUSIONS.edn entry with a reason, and an entry that went stale — its case
+   left the corpus, or kimun now reproduces it — fails the suite until it is
+   removed."
   (:require [babashka.fs :as fs]
             [cheshire.core :as json]
             [clj-yaml.core :as yaml]
             [clojure.edn :as edn]
+            [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.test :refer [deftest is]]
-            [kimun.surface.models.segments :as segments]))
+            [kimun.surface.models.segments :as segments])
+  (:import (java.util.zip GZIPInputStream)))
 
 (def root "test/fixtures/parity/segments")
+(def packed "test/fixtures/parity/segments.cases.jsonl.gz")
 
-(defn- slurp? [dir f] (let [p (fs/path dir f)] (when (fs/exists? p) (slurp (str p)))))
+(defn load-cases
+  "Every case of the packed corpus, sorted by id; each is a map of the fields
+   the case directory used to hold, as the byte-exact text of each file."
+  []
+  (with-open [r (io/reader (GZIPInputStream. (io/input-stream packed)))]
+    (mapv #(json/parse-string % true) (line-seq r))))
 
 (defn load-case
-  "One recorded case as a map."
-  [dir]
-  {:id (str (fs/file-name dir))
-   :meta (edn/read-string (slurp? dir "meta.edn"))
-   :descriptor (some-> (slurp? dir "descriptor.edn") edn/read-string)
-   :input (slurp? dir "input.md")
-   :template (slurp? dir "template.md")
-   :payload (some-> (slurp? dir "payload.json") (yaml/parse-string :keywords false))
-   :args (some-> (slurp? dir "args.json") json/parse-string)
-   :output (some-> (slurp? dir "output.json") json/parse-string)
-   :error (some-> (slurp? dir "error.json") json/parse-string)
-   :ctx (let [refs (some-> (slurp? dir "refs.json") json/parse-string)
-              models (some-> (slurp? dir "ref-models.edn") edn/read-string)]
+  "One packed case record as a map of decoded values."
+  [rec]
+  {:id (:id rec)
+   :meta (some-> (:meta rec) edn/read-string)
+   :descriptor (some-> (:descriptor rec) edn/read-string)
+   :input (:input rec)
+   :template (:template rec)
+   :payload (some-> (:payload rec) (yaml/parse-string :keywords false))
+   :args (some-> (:args rec) json/parse-string)
+   :output (some-> (:output rec) json/parse-string)
+   :error (some-> (:error rec) json/parse-string)
+   :ctx (let [refs (some-> (:refs rec) json/parse-string)
+              models (some-> (:ref-models rec) edn/read-string)]
           (when (or refs models) {:ref-text #(get refs %) :ref-model #(get models %)}))})
 
 (defn- norm [v] (json/parse-string (json/generate-string v)))
@@ -62,8 +71,8 @@
   "`{:pass n :fail {id reason} :excluded n :pending 0 :ops {op {:pass :fail :excluded}}}`."
   []
   (let [excl (edn/read-string (slurp (str root "/EXCLUSIONS.edn")))]
-    (reduce (fn [acc dir]
-              (let [c (load-case dir) op (keyword (name (:op (:meta c))))
+    (reduce (fn [acc rec]
+              (let [c (load-case rec) op (keyword (name (:op (:meta c))))
                     bump (fn [acc k] (-> acc (update k inc) (update-in [:ops op k] (fnil inc 0))))]
                 (if (contains? excl (:id c))
                   (bump acc :excluded)
@@ -71,19 +80,20 @@
                     (-> acc (assoc-in [:fail (:id c)] (str (name op) ": " r)) (update-in [:ops op :fail] (fnil inc 0)))
                     (bump acc :pass)))))
             {:pass 0 :fail {} :excluded 0 :pending 0 :ops (sorted-map)}
-            (sort (filter fs/directory? (fs/list-dir root))))))
+            (load-cases))))
 
 (defn stale-exclusions
   "`{:missing [id…] :reproduced [id…]}`: the EXCLUSIONS.edn entries naming no
    case of the corpus, and those whose case kimun reproduces after all."
   []
-  (reduce (fn [acc id]
-            (let [dir (fs/path root (str id))]
-              (cond (not (fs/directory? dir)) (update acc :missing conj (str id))
-                    (nil? (check (load-case dir))) (update acc :reproduced conj (str id))
-                    :else acc)))
-          {:missing [] :reproduced []}
-          (sort-by str (keys (edn/read-string (slurp (str root "/EXCLUSIONS.edn")))))))
+  (let [cases (into {} (map (juxt :id identity)) (load-cases))]
+    (reduce (fn [acc id]
+              (let [c (get cases (str id))]
+                (cond (nil? c) (update acc :missing conj (str id))
+                      (nil? (check (load-case c))) (update acc :reproduced conj (str id))
+                      :else acc)))
+            {:missing [] :reproduced []}
+            (sort-by str (keys (edn/read-string (slurp (str root "/EXCLUSIONS.edn"))))))))
 
 (deftest exclusions-are-not-stale
   (let [{:keys [missing reproduced]} (stale-exclusions)]

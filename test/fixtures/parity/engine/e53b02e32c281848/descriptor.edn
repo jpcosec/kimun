@@ -1,1 +1,0 @@
-{:model/name "OkDoc" :model/version 1 :base [] :fields [{:name "title" :type :string :required true :description "Title." :py/annotation "<class 'str'>"}] :template "# ⸢rev•title⸥"}

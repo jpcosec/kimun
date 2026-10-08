@@ -1,3 +1,0 @@
-# one
-
-body of one

@@ -1,1 +1,0 @@
-{:op :render :tests ["tests/store/test_cli_store.py::test_doc_update_rewrites_and_reindexes" "tests/test_serve.py::test_serve_endpoints_use_real_store"]}

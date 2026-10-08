@@ -1,1 +1,0 @@
-{:model/name "Reservation" :model/version 1 :base ["Party"] :fields [{:name "title" :type :string :required true :description "Title." :py/annotation "<class 'str'>"} {:name "party_size" :type :int :required true :description "People." :py/annotation "<class 'int'>"}] :template "# ⸢rev•title⸥\n\nSize: ⸢rev•party_size⸥"}

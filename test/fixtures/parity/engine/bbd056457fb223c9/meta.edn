@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/store/test_optional_field_hash_neutral.py::test_document_using_the_field_extracts_the_value"]}

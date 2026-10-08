@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/test_serve.py::test_stores_check_reports_mismatched_hash_c"]}

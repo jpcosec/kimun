@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/api/test_journal.py::test_chain_verifies_after_mixed_writes" "tests/api/test_journal.py::test_each_document_route_leaves_an_entry"]}

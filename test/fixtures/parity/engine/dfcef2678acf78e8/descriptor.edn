@@ -1,1 +1,0 @@
-{:model/name "BookWithSetup" :model/version 1 :base ["SimpleBook"] :fields [{:name "title" :type :string :required true :description "Book title." :py/annotation "<class 'str'>"} {:name "setup" :type :string :required false :description "Setup section body." :py/annotation "<class 'str'>" :default ""}] :template "# ⸢rev•title⸥\n\n## Setup\n\n⸢optrev•setup⸥"}

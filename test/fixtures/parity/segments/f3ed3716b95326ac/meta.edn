@@ -1,1 +1,0 @@
-{:op :extract_sections :fn "sldb.api.records.extract.extract_sections" :tests ["tests/store/test_section_rebuild.py::test_persisted_section_rebuild_matches_ir_paths_for_repeated_headings"]}

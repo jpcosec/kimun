@@ -1,1 +1,0 @@
-{:op :render :tests ["tests/test_document_segments.py::test_instrumented_render_matches_canonical_render_for_every_document"]}

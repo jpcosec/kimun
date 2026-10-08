@@ -1,1 +1,0 @@
-{:op :render :tests ["tests/api/test_declared_references.py::test_a_declared_reference_becomes_an_edge_that_names_its_field"]}

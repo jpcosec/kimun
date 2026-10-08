@@ -1,1 +1,0 @@
-{:model/name "RelBook" :model/version 1 :base ["RelBase"] :fields [{:name "title" :type :string :required true :description "Title." :py/annotation "<class 'str'>"} {:name "author" :type :string :required false :description "Author." :py/annotation "<class 'str'>" :default ""}] :template "# ⸢rev•title⸥"}

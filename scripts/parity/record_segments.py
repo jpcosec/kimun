@@ -1,7 +1,9 @@
 """pytest plugin: record every segment / field-ownership call the sldb v1 suite makes.
 
 Loaded with `-p record_segments` (see record_segments.sh). Nothing is written into the v1 repo.
-One directory per distinct case under $KIMUN_PARITY_OUT (test/fixtures/parity/segments/<hash>/).
+One gzipped JSON line per distinct case in `$KIMUN_PARITY_OUT.cases.jsonl.gz`
+(test/fixtures/parity/segments.cases.jsonl.gz), one field per file a case directory used
+to hold, each the byte-exact text of that file; `"id"` is the old directory name (the hash).
 
 Entry points (`:op` in meta.edn, `:fn` is the fully-qualified v1 function):
 
@@ -21,18 +23,19 @@ Entry points (`:op` in meta.edn, `:fn` is the fully-qualified v1 function):
   :extract_sections            sldb.api.records.extract.extract_sections
                                (markdown) -> [SectionRecord]   (produces the `sections` argument above)
 
-Files of a case directory (JSON is UTF-8, cheshire-readable; EDN is clojure.edn-readable):
+Fields of a case record (JSON is UTF-8, cheshire-readable; EDN is clojure.edn-readable;
+field `x` is the text the old file `x.edn`/`x.md`/`x.json` held, `template` is `template.md`):
 
-  meta.edn        {:op :<entry point> :fn "<v1 function>" :tests ["<pytest node id>" …]}
+  meta            {:op :<entry point> :fn "<v1 function>" :tests ["<pytest node id>" …]}
                   plus :retired "07 §8" when the template uses a construct retired in kimun
                   (`⸢py•` marker or `{{ }}` Jinja). Never part of the hash.
-  descriptor.edn  the model descriptor (kimun.models.descriptor). Absent for the two section ops,
+  descriptor      the model descriptor (kimun.models.descriptor). Absent for the two section ops,
                   which take text, not a model class.
-  payload.json    input payload, in v1's insertion order (render_with_spans).
-  input.md        input markdown, byte-exact, no newline added (build_extraction_segments,
+  payload         input payload, in v1's insertion order (render_with_spans).
+  input           input markdown, byte-exact, no newline added (build_extraction_segments,
                   extract_sections).
-  template.md     input template, byte-exact (map_fields_to_sections).
-  args.json       every other argument, always present:
+  template        input template, byte-exact (map_fields_to_sections).
+  args            every other argument, always present:
                     render_with_spans / build_extraction_segments  {"ref_root": bool}  (whether a
                         ref_root was passed; the path itself is a tmp dir and is not recorded -
                         what it resolved to is in refs.json. Always false for a model without
@@ -40,10 +43,10 @@ Files of a case directory (JSON is UTF-8, cheshire-readable; EDN is clojure.edn-
                     map_fields_to_sections   {"sections": [{title slug level path line_start line_end …}],
                                               "known_fields": [sorted names] | null}
                     extract_sections         {}
-  refs.json       {ref: markdown} and
-  ref-models.edn  {model-ref: descriptor}: only when the model has `__compositions__`; what v1's
+  refs            {ref: markdown} and
+  ref-models      {model-ref: descriptor}: only when the model has `__compositions__`; what v1's
                   `compose_field` read (same convention as the engine corpus).
-  output.json     the full return value. Pydantic models are `model_dump(mode="json")` (v1's own field
+  output          the full return value. Pydantic models are `model_dump(mode="json")` (v1's own field
                   names, nulls kept, declaration order), tuples become lists:
                     render_with_spans          {"text": str,
                                                 "spans": [{"meta": {"path" "marker" "traits" "_order" …},
@@ -58,7 +61,7 @@ Files of a case directory (JSON is UTF-8, cheshire-readable; EDN is clojure.edn-
                                                 fields unmatched coverage}
                     map_fields_to_sections     {field: section path}
                     extract_sections           [{title slug level path line_start line_end}]
-  error.json      {"type": "<exception class>", "message": "<str(exc)>"} instead of output.json when
+  error           {"type": "<exception class>", "message": "<str(exc)>"} instead of `output` when
                   the call raised.
 
 Not recorded as cases, because they only add a store lookup on top of a recorded function:
@@ -89,7 +92,7 @@ import sys
 from pathlib import Path
 
 from kimun.models import Kw, descriptor, edn
-from record_engine import _RETIRED, _composition_context  # importing registers no hooks
+from record_engine import _RETIRED, _composition_context, pack  # importing registers no hooks
 
 OUT = Path(os.environ["KIMUN_PARITY_OUT"])
 _CASES: dict[str, dict] = {}
@@ -292,30 +295,31 @@ def pytest_runtest_setup(item):
 
 
 def pytest_sessionfinish(session, exitstatus):
-    OUT.mkdir(parents=True, exist_ok=True)
-    for key, c in sorted(_CASES.items()):
-        d = OUT / key
-        d.mkdir(exist_ok=True)
+    def fields(key, c):
+        f = {"id": key}
         if c["descriptor"] is not None:
-            (d / "descriptor.edn").write_text(c["descriptor"] + "\n", encoding="utf-8")
+            f["descriptor"] = c["descriptor"] + "\n"
         if c["input"] is not None:
-            (d / "input.md").write_text(c["input"], encoding="utf-8")
+            f["input"] = c["input"]
         if c["template_md"] is not None:
-            (d / "template.md").write_text(c["template_md"], encoding="utf-8")
+            f["template"] = c["template_md"]
         if c["payload"] is not None:
-            (d / "payload.json").write_text(_dump(c["payload"]) + "\n", encoding="utf-8")
-        (d / "args.json").write_text(_dump(c["args"]) + "\n", encoding="utf-8")
+            f["payload"] = _dump(c["payload"]) + "\n"
+        f["args"] = _dump(c["args"]) + "\n"
         if c["ctx"]:
-            (d / "refs.json").write_text(json.dumps(c["ctx"]["refs"], ensure_ascii=False, indent=1, sort_keys=True) + "\n", encoding="utf-8")
-            (d / "ref-models.edn").write_text(edn(c["ctx"]["models"]) + "\n", encoding="utf-8")
+            f["refs"] = json.dumps(c["ctx"]["refs"], ensure_ascii=False, indent=1, sort_keys=True) + "\n"
+            f["ref-models"] = edn(c["ctx"]["models"]) + "\n"
         if c["error"] is not None:
-            (d / "error.json").write_text(_dump(c["error"]) + "\n", encoding="utf-8")
+            f["error"] = _dump(c["error"]) + "\n"
         else:
-            (d / "output.json").write_text(_dump(c["output"]) + "\n", encoding="utf-8")
+            f["output"] = _dump(c["output"]) + "\n"
         meta = {Kw("op"): Kw(c["op"]), Kw("fn"): c["fn"], Kw("tests"): sorted(c["tests"])}
         if c["retired"]:
             meta[Kw("retired")] = "07 §8"
         if c.get("collision"):
             meta[Kw("collision")] = c["collision"]
-        (d / "meta.edn").write_text(edn(meta) + "\n", encoding="utf-8")
-    print(f"\nrecord_segments: {len(_CASES)} cases this run; {STATS}")
+        f["meta"] = edn(meta) + "\n"
+        return f
+
+    path = pack(OUT, [fields(k, c) for k, c in sorted(_CASES.items())])
+    print(f"\nrecord_segments: {len(_CASES)} cases this run written to {path}; {STATS}")

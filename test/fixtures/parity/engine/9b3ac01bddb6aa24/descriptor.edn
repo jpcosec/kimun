@@ -1,1 +1,0 @@
-{:model/name "Note" :model/version 1 :base [] :fields [{:name "title" :type :string :required true :description "Title." :py/annotation "<class 'str'>"} {:name "body" :type :string :required false :description "Body." :py/annotation "<class 'str'>" :default ""}] :template "# ⸢rev•title⸥\n\n⸢rev•body⸥"}

@@ -1,1 +1,0 @@
-{:op :build_extraction_segments :fn "sldb.api.segments.build_extraction_segments.build_extraction_segments" :tests ["tests/test_extraction_segments.py::test_coverage_is_a_fraction_of_the_meaningful_text"]}

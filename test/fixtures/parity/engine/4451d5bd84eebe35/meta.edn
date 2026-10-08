@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/test_composition.py::test_composition_skips_invalid_referenced_documents"]}

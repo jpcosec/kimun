@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/api/test_declared_references.py::test_a_relation_document_does_not_assert_its_own_ends_twice"]}

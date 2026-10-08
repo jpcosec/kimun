@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/test_section_body_extraction.py::test_all_sections_filled_extract_in_order"]}

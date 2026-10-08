@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Records the engine parity corpus from the sldb v1 test suite (docs/v2/tests/parity-v1.md).
 #   scripts/parity/record_engine.sh [V1_REPO]
-# Writes test/fixtures/parity/engine/<hash>/…; nothing is written into the v1 repo.
+# Writes test/fixtures/parity/engine.cases.jsonl.gz (one gzipped JSON line per case; the
+# old per-case directories are packed by scripts/parity/pack_corpus.clj); nothing is
+# written into the v1 repo.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 V1="${1:-$HOME/proyectos/hum-ecosystem/tools/sldb}"
@@ -18,4 +20,4 @@ BASETEMP="${KIMUN_PARITY_BASETEMP:-/tmp/pytest-of-jp/pytest-8}"
 mkdir -p "$(dirname "$BASETEMP")"
 cd "$V1"
 python3 -m pytest -p record_engine -p no:cacheprovider -q --no-header --basetemp="$BASETEMP" tests "${@:2}" || true
-echo "cases: $(find "$KIMUN_PARITY_OUT" -mindepth 1 -maxdepth 1 -type d | wc -l)"
+echo "cases: $(gzip -dc "$KIMUN_PARITY_OUT.cases.jsonl.gz" | wc -l)"

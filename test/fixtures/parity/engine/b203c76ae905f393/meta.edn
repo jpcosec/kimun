@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/test_standalone.py::test_render_validity_covers_optrev_when_present"]}

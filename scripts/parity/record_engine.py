@@ -1,14 +1,19 @@
 """pytest plugin: record every extract/render call the sldb v1 suite makes.
 
 Loaded with `-p record_engine` (see record_engine.sh). Wraps `Validator.extract` and
-`Validator.render` of v1 and writes one directory per distinct case under
-$KIMUN_PARITY_OUT: descriptor.edn, input.md, payload.json, rendered.md, error.json, meta.edn.
-A render of a model with `__compositions__` also gets what the composition read: refs.json
-(`{ref: markdown}` for every ref that resolved) and ref-models.edn (`{model-ref: descriptor}`).
+`Validator.render` of v1 and writes one gzipped JSON line per distinct case to
+`$KIMUN_PARITY_OUT.cases.jsonl.gz` (e.g. test/fixtures/parity/engine.cases.jsonl.gz).
+A record is `{"id": "<hash>", …}`, one field per file the case directory used to hold
+(descriptor.edn, input.md, payload.json, rendered.md, error.json, meta.edn), each the
+byte-exact text of that file; a file the case did not have is absent. The same format is
+what scripts/parity/pack_corpus.clj writes when packing an older directory corpus. A render
+of a model with `__compositions__` also carries what the composition read: `refs`
+(`{ref: markdown}` for every ref that resolved) and `ref-models` (`{model-ref: descriptor}`).
 Neither enters the case hash, so recording them leaves every case id unchanged.
 """
 from __future__ import annotations
 
+import gzip
 import hashlib
 import json
 import os
@@ -21,6 +26,16 @@ OUT = Path(os.environ["KIMUN_PARITY_OUT"])
 _CASES: dict[str, dict] = {}
 _CURRENT = {"id": "<setup>"}
 _RETIRED = re.compile(r"⸢py•|\{\{")
+
+
+def pack(out, fields_by_id):
+    """Write a packed corpus: one gzipped JSON line per case, `id` first, other
+    keys in the order each caller gives. Returns the path written."""
+    path = Path(str(out) + ".cases.jsonl.gz")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    data = "".join(json.dumps(f, ensure_ascii=False) + "\n" for f in fields_by_id).encode("utf-8")
+    path.write_bytes(gzip.compress(data, mtime=0))  # mtime pinned so re-recording is byte-stable
+    return path
 
 
 def _norm(payload):
@@ -111,24 +126,25 @@ def pytest_runtest_setup(item):
 
 
 def pytest_sessionfinish(session, exitstatus):
-    OUT.mkdir(parents=True, exist_ok=True)
-    for key, c in sorted(_CASES.items()):
-        d = OUT / key
-        d.mkdir(exist_ok=True)
-        (d / "descriptor.edn").write_text(c["descriptor"] + "\n", encoding="utf-8")
+    def fields(key, c):
+        f = {"id": key, "descriptor": c["descriptor"] + "\n"}
         if c["input"] is not None:
-            (d / "input.md").write_text(c["input"], encoding="utf-8")
+            f["input"] = c["input"]
         if c["payload"] is not None:
             # insertion order is kept on purpose: v1 dumps mappings in payload order
-            (d / "payload.json").write_text(json.dumps(c["payload"], ensure_ascii=False, indent=1, default=str) + "\n", encoding="utf-8")
+            f["payload"] = json.dumps(c["payload"], ensure_ascii=False, indent=1, default=str) + "\n"
         if c["rendered"] is not None:
-            (d / "rendered.md").write_text(c["rendered"], encoding="utf-8")
+            f["rendered"] = c["rendered"]
         if c["error"] is not None:
-            (d / "error.json").write_text(json.dumps(c["error"], ensure_ascii=False) + "\n", encoding="utf-8")
+            f["error"] = json.dumps(c["error"], ensure_ascii=False) + "\n"
         if c.get("ctx"):
-            (d / "refs.json").write_text(json.dumps(c["ctx"]["refs"], ensure_ascii=False, indent=1, sort_keys=True) + "\n", encoding="utf-8")
-            (d / "ref-models.edn").write_text(edn(c["ctx"]["models"]) + "\n", encoding="utf-8")
+            f["refs"] = json.dumps(c["ctx"]["refs"], ensure_ascii=False, indent=1, sort_keys=True) + "\n"
+            f["ref-models"] = edn(c["ctx"]["models"]) + "\n"
         meta = {Kw("op"): Kw(c["op"]), Kw("tests"): sorted(c["tests"])}
         if _RETIRED.search(c["template"]):
             meta[Kw("retired")] = "07 §8"
-        (d / "meta.edn").write_text(edn(meta) + "\n", encoding="utf-8")
+        f["meta"] = edn(meta) + "\n"
+        return f
+
+    path = pack(OUT, [fields(k, c) for k, c in sorted(_CASES.items())])
+    print(f"\nrecord_engine: {len(_CASES)} cases written to {path}")

@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/test_cli_v2.py::test_fields_update_append_and_clean"]}

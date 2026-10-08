@@ -1,1 +1,0 @@
-{:model/name "Task" :model/version 1 :base [] :fields [{:name "title" :type :string :required true :description "Title." :py/annotation "<class 'str'>"} {:name "status" :type :string :required true :description "Status." :py/annotation "<class 'str'>"}] :template "# ⸢rev•title⸥\n\nStatus: ⸢rev•status⸥"}

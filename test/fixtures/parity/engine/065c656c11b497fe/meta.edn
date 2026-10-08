@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/test_linked_structural.py::test_a_linked_store_is_reached_by_prefix_and_answers_with_it"]}

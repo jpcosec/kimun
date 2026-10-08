@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/test_standalone.py::test_advanced_marker_families_render_and_extract"] :retired "07 §8"}

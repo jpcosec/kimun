@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/store/test_documents_shards.py::test_shard_aggregate_equals_direct_extraction_after_writes"]}

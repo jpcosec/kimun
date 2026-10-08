@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/test_standalone.py::test_frontmatter_fields_render_and_extract"]}

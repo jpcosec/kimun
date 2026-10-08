@@ -1,8 +1,0 @@
-{
- "kind": "suggestion",
- "sender_project": "deskops",
- "created_at": "2026-06-14T00:00:02",
- "status": "open",
- "title": "Add store health-check API",
- "body": "## Scope\n\n- `sldb stores check --path <dir>` — validate that `.sldb/` has all required index files, documents index is loadable, models index is loadable, store index is readable\n- Exit 0 if healthy, non-zero with specific diagnostics if not\n- Optionally expose a Python function: `check_store(path: Path) -> StoreHealth` with structured result\n- Clear messages for: missing index, corrupt index, missing document dir, permission error\n\n## Motivation\n\nDeskops health/recovery commands need to detect broken stores without guessing. SLDB is the only authority on what a valid store looks like.\n\n## Existing pills\n\n- `desk/pills/pill-001-sldb-vs-deskops-boundary.md`\n\n## Done When\n\n- `sldb stores check` on a healthy store exits 0 with a summary line\n- Missing/corrupt index produces clear diagnostic per broken item\n- Python API returns structured health data (not just exit codes)"
-}

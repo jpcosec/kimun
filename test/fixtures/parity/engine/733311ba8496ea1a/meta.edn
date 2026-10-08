@@ -1,1 +1,0 @@
-{:op :extract :tests ["tests/selfdoc/test_preflight.py::test_before_image_guard_prevents_clobbering_concurrent_edits"]}
