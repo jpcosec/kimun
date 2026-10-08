@@ -80,14 +80,21 @@
       (is (= (:content-hash (show b)) (get-in (build/fingerprint (cache/load! (opened b))) [:documents "Spec:d" :hash-c]))))))
 
 ;; v1: store/test_cache_identity.py::test_a_model_redefined_in_a_running_process_gets_its_new_tags
+;; A1 (2026-10-08): the document keeps the tags of the contract it was written
+;; with; `stores update` moves it and then the new tags answer.
 (deftest a-model-redefined-in-a-running-process-gets-its-new-tags
   (let [p (spec-world {"type" ["before"]} "title")]
     (is (true? (:ok (run p "rebuild-indexes"))))
     (is (= ["d"] (tagged p "type.before")))
     (spit (str (fs/path p "model.edn")) (pr-str (assoc (model "Spec" {"type" ["after"]} ["title"]) :model/version 2)))
     (is (true? (:ok (run p "models" "define" "-f" "model.edn"))))
-    (is (= ["d"] (tagged p "type.after")))
-    (is (= [] (tagged p "type.before")))))
+    (testing "the document keeps the tags of the contract it was written with"
+      (is (= ["d"] (tagged p "type.before")))
+      (is (= [] (tagged p "type.after"))))
+    (testing "`stores update` moves it to the new contract and its new tags"
+      (is (true? (:ok (run p "stores" "update"))))
+      (is (= ["d"] (tagged p "type.after")))
+      (is (= [] (tagged p "type.before"))))))
 
 ;; v1: store/test_runtime_cache_outside_store.py::test_read_leaves_store_tree_identical
 (deftest a-read-leaves-the-store-tree-identical
@@ -134,6 +141,9 @@
       (is (= before (snapshot (fs/path p ".kimun")))))))
 
 ;; v1: test_runtime_cache.py::test_a_contract_change_invalidates_document_cache_entries_without_editing_the_markdown
+;; A1 (2026-10-08): the change does not reach the document's payload by itself —
+;; the document keeps the contract it was written with; `stores update` re-reads
+;; the untouched markdown under the new one.
 (deftest a-contract-change-is-seen-without-editing-the-markdown
   (let [p (notes)]
     (is (true? (:ok (run p "rebuild-indexes"))))
@@ -143,12 +153,18 @@
                       (update :fields conj {:name "status" :type :string :default "open" :description "status"}))))
     (is (true? (:ok (run p "models" "define" "-f" "model.edn"))))
     (is (= "# one\n\nbody of one\n" (slurp (str (fs/path p "one.md")))) "untouched")
+    (testing "the document keeps the payload of the contract it was written with"
+      (is (not (contains? (payload p "one") "status")))
+      (is (= :superseded (:state (:data (run p "docs" "show" "one"))))))
+    (testing "`stores update` reads the markdown under the new contract without editing it"
+      (is (true? (:ok (run p "stores" "update"))))
+      (is (= "# one\n\nbody of one\n" (slurp (str (fs/path p "one.md")))) "untouched")
+      (is (= {"title" "one" "body" "body of one" "status" "open"} (payload p "one")))
+      (is (= [["one" "open"] ["two" "open"]]
+             (mapv (juxt :doc :value) (get-in (run p "fields" "query" "status") [:data :results])))))
     (let [r (cache/lookup! (opened p))]
       (is (= :built (:source r)) "the cache of the old head is not served")
       (is (= (build/build (:store (opened p))) (:index r))))
-    (is (= {"title" "one" "body" "body of one" "status" "open"} (payload p "one")))
-    (is (= [["one" "open"] ["two" "open"]]
-           (mapv (juxt :doc :value) (get-in (run p "fields" "query" "status") [:data :results]))))
     (testing "with the contract unmoved, a rebuilt cache is a hit again"
       (is (true? (:ok (run p "rebuild-indexes"))))
       (is (= :cache (:source (cache/lookup! (opened p)))))

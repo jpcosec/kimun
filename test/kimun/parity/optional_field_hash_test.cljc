@@ -82,6 +82,25 @@
 (deftest a-document-using-the-field-extracts-the-value
   (is (= {"title" "Hello" "body" "World body" "summary_en" "Bonjour"} (extract note+ using-field))))
 
+;; v1: store/test_optional_field_hash_neutral.py::test_model_extension_is_neutral_for_document_that_does_not_use_field
+;; (the `models field-add` form; the `models define` form is `model-extension-is-neutral-...`)
+;; A1 (2026-10-08): this was a known gap — the appended `## F` section swallowed
+;; the body of existing documents. The document is now read under the contract it
+;; was written with, and `stores update` re-renders the same payload under the new one.
+(deftest field-add-of-an-optional-field-leaves-existing-documents-unchanged
+  (let [p (tmp)]
+    (run p "stores" "init" "--name" "p")
+    (spit (file p "n.edn") (pr-str note))
+    (is (true? (:ok (run p "models" "define" "-f" "n.edn"))))
+    (is (true? (:ok (run p "docs" "create" "Note" "hello" "--set" "title=Hello" "--set" "body=World body"))))
+    (is (true? (:ok (run p "models" "field-add" "Note" "--field" "summary_en" "--type" "string"))))
+    (testing "the document keeps the payload of the contract it was written with"
+      (is (= base-payload (get-in (run p "docs" "show" "hello") [:data :payload]))))
+    (testing "`stores update` re-renders it under the new contract with the body intact"
+      (is (true? (:ok (run p "stores" "update"))))
+      (is (= base-payload (get-in (run p "docs" "show" "hello") [:data :payload])))
+      (is (= :intact (get-in (run p "docs" "show" "hello") [:data :state]))))))
+
 ;; v1: store/test_optional_field_hash_neutral.py::test_rendered_markdown_omits_absent_optional_line
 (deftest rendered-markdown-omits-the-absent-optional-line
   (is (not (str/includes? (render note+ (assoc base-payload "summary_en" nil)) "summary_en"))))

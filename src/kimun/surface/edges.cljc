@@ -353,7 +353,11 @@
           (and (some #{anchor-tag} tags) (get payload "symbol") (get payload "ref")) :anchor)))
 
 (defn- doc-part [g store {:keys [descriptors tags owners registry links? excluded]} doc]
-  (let [eid (str (:model doc) ":" (:name doc)) did (doc-id eid) d (descriptors (:model doc)) dtags (vec (sort (set (tags eid))))
+  ;; the descriptor the document was last written with: its payload is read
+  ;; under that contract (docs/payload-of), so the schema edges must be
+  ;; derived from the same one, never from the model's current contract
+  (let [eid (str (:model doc) ":" (:name doc)) did (doc-id eid)
+        d (or (docs/contract-descriptor store doc) (descriptors (:model doc))) dtags (vec (sort (set (tags eid))))
         needs? (or (:py/references d) (:py/containment d) (:py/compositions d) (:compositions d)
                    (some #{"RelationTypeDoc" "RelationDoc"} (cons (:model doc) (:base d))) (some #{anchor-tag} dtags))
         payload (when needs? (:payload (docs/payload-of store doc)))]

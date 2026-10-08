@@ -34,6 +34,15 @@
     (is (true? (:ok (run p "docs" "create" "TicketDoc" "logout" "--set" "title=Slow logout"))))
     p))
 
+(defn- move-contract!
+  "Redefines TicketDoc with a required `owner` its documents do not carry."
+  [p]
+  (let [{:keys [backend] s :store} (opened p)
+        r (mstore/define-plan host/host s (ticket [{:name "owner" :type :string :required true :description "Owner."}]
+                                                  "# ⸢rev•title⸥\n\nOwner: ⸢rev•owner⸥\n")
+                              {:actor "human/tester" :timestamp "2026-01-01T00:00:00.000Z"})]
+    (store/commit! backend s (:plan r))))
+
 (defn- snapshot
   "Every file under the store directory of `p` with its bytes."
   [p]
@@ -142,6 +151,9 @@
     (is (not (fs/absolute? (:cache report))) "v1 reported the absolute store_path; kimun reports relative to the store")))
 
 ;; v1: test_update_store_indexes_skips_a_missing_document (API half; the CLI half is in kimun.cli.index-test)
+;; A1 (2026-10-08): the moved contract no longer skips the documents — they are
+;; read under the contract they were written with. Only a document with no
+;; recorded contract (tracked before A1) falls back to the model and skips.
 (deftest rebuild-skips-a-document-that-no-longer-extracts
   (let [p (project "p")]
     (testing "v1 skipped a document whose file was gone; in kimun the source lives in the store, so nothing is skipped"
@@ -149,14 +161,17 @@
       (let [report (cache/rebuild! (opened p))]
         (is (= [] (:skipped report)))
         (is (true? (:complete report)))))
-    (testing "what is skipped is a document its model's contract no longer reads"
-      (let [{:keys [backend] s :store} (opened p)
-            r (mstore/define-plan host/host s (ticket [{:name "owner" :type :string :required true :description "Owner."}]
-                                                      "# ⸢rev•title⸥\n\nOwner: ⸢rev•owner⸥\n")
-                                  {:actor "human/tester" :timestamp "2026-01-01T00:00:00.000Z"})]
-        (store/commit! backend s (:plan r)))
+    (testing "a document whose model's contract moved is read under its recorded contract"
+      (move-contract! p)
       (let [report (cache/rebuild! (opened p))]
-        (is (= ["login" "logout"] (:skipped report)))
+        (is (= [] (:skipped report)))
+        (is (true? (:complete report)))
+        (is (= 2 (:documents report)))
+        (is (= {:source :cache} (dissoc (cache/lookup! (opened p)) :index)) "and the cache it wrote is valid")))
+    (testing "a document with no recorded contract falls back and is skipped when the model no longer reads it"
+      (ktu/forget-contract! (str (fs/path p ".kimun")) "login")
+      (let [report (cache/rebuild! (opened p))]
+        (is (= ["login"] (:skipped report)))
         (is (false? (:complete report)))
         (is (= 2 (:documents report)) "still indexed, without payload")
         (is (= {:source :cache} (dissoc (cache/lookup! (opened p)) :index)) "and the cache it wrote is valid")))))

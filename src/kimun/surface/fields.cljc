@@ -277,7 +277,8 @@
   ([store field-ref {:keys [model] ast :where}]
    (vec (for [doc (tdocs/documents store)
               :when (or (nil? model) (= model (:model doc)))
-              :let [d (:descriptor (mstore/find-model store (:model doc)))
+              :let [d (or (tdocs/contract-descriptor store doc)
+                          (:descriptor (mstore/find-model store (:model doc))))
                     payload (:payload (tdocs/payload-of store doc))]
               :when (and d payload
                          (or (nil? ast)

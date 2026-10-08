@@ -106,6 +106,15 @@ Layout de un store formato 2 (`kimun.kernel.store`; detalle en `10`):
 | `docs recover DOC` | `--depth N`, `--links-only`, `--include-transclusions` (aceptada e ignorada) | `{:root :path :links [...] :unresolved [...]}`; enlaces sin resolver ⇒ `links/missing` (1) |
 | `docs compose DOC` | `-o FILE\|-` | Markdown con transclusiones expandidas; sin resolver ⇒ `links/missing` (1) |
 
+**Contrato de lectura (A1, 2026-10-08).** Un documento tipado recuerda el descriptor con el
+que se escribió (el `:contract` de la evidencia de su arista de fuente); `docs show|list`,
+`fields`, `sections`, `find`, `edges` y `stores check|health` lo leen bajo ESE descriptor
+hasta que se actualiza, así que redefinir un modelo no cambia su payload en silencio.
+`docs update NAME` (sin FILE ni `--data`/`--set`) y `stores update` mueven el documento al
+contrato actual re-renderizando su payload registrado (y reescriben su fichero);
+`models define|field-add … --backfill` hace lo mismo en masa. Un documento sin `:contract`
+(anterior a A1 o migrado de v1) cae al contrato actual del modelo.
+
 ### include
 
 Declaración en `kimun.include.edn`; detalle en `13`.

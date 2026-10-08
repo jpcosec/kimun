@@ -103,3 +103,4 @@ canónicos; `bb lint`: 96 ficheros.
 | 37 | hechos de la forma más simple + caché de derivados por inputs | `14 §12` |
 | 38 | embeddings sin idioma fijo ni plantilla; modelo multilingüe; `dog/perro/hund` misma vecindad es un test | `14 §16 P15` |
 | 39 | lenguaje de selección por spike en etapa A; índice por revisión derivado también en `:git :track` | `14 §12` |
+| 40 | **un documento se lee bajo el contrato con el que se escribió** (A1, 2026-10-08): la evidencia de la arista `derived` root→fuente registra `:contract` = id del descriptor, y la sucesión del modelo no la toca; `docs show|list`, `fields`, `sections`, `find`, `edges` y `stores check|health` leen ese descriptor (el nodo viejo sigue en el CAS) hasta que `docs update` o `stores update`/`--backfill` re-renderizan el payload registrado bajo el contrato actual. Un documento sin `:contract` (previo a A1 o migrado de v1) cae al contrato actual | `06`, `07 §1` |

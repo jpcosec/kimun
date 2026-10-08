@@ -283,21 +283,30 @@
 (defn update-typed
   "`docs update NAME [FILE] [--data F | --set k=v]`: re-reads the document's
    file (or FILE), or re-renders it from a payload merged over the current
-   one, and commits the new source. Data: the document map plus `:unchanged?`."
+   one, and commits the new source. A `:superseded` document whose file/stored
+   source has not moved is migrated: its old payload (read under the contract
+   it was written with) is re-rendered under the model's current contract, so
+   a section the new contract adds cannot swallow the old text. Data: the
+   document map plus `:unchanged?`."
   [doc args opts {:keys [cwd] :as ctx}]
   (let [{:keys [backend descriptor store] store-path :path} (open opts ctx)
         root (project-root store-path)
         payload? (or (:data opts) (seq (:set opts)))
-        m (when payload? (:descriptor (mstore/model store (:model doc))))
-        text (cond payload? (str (mrender/render m (merge (:payload (tdocs/document store (:name doc))) (read-payload opts cwd))
+        current (:descriptor (mstore/model store (:model doc)))
+        full (tdocs/document store (:name doc))
+        no-input? (and (not payload?) (not (get args 1)))
+        stored (when (and no-input? (:path doc)) (second (read-file! (str (fs/path root (:path doc))) cwd)))
+        migrate? (and no-input? (= :superseded (:state doc)) (= (or stored (:source full)) (:source full)))
+        text (cond payload? (str (mrender/render current (merge (:payload full) (read-payload opts cwd))
                                                     (compose/context store store-path)) "\n")
                    (get args 1) (second (read-file! (get args 1) cwd))
-                   (:path doc) (second (read-file! (str (fs/path root (:path doc))) cwd))
+                   migrate? (tdocs/move-text store full nil (compose/context store store-path))
+                   stored stored
                    :else (err/raise :cli/usage "`docs update` needs a FILE, --data or --set for a document without a file" {}))
-        _ (refuse-noise! (:model doc) (or (:descriptor (mstore/model store (:model doc))) {}) (:name doc) text)
+        _ (refuse-noise! (:model doc) (or current {}) (:name doc) text)
         {:keys [plan unchanged?]} (tdocs/update-plan host/host store (:name doc) text {:actor (:actor opts) :timestamp (timestamp)})
         r (if plan (store/commit! backend store plan) {:store store :revision-id (:head store)})
-        warnings (if (and payload? (:path doc)) (write-file! root (:path doc) text) [])]
+        warnings (if (and (or payload? migrate?) (:path doc)) (write-file! root (:path doc) text) [])]
     (update (done "docs update" descriptor store-path r (:store r) (:name doc) {:warnings warnings})
             :data assoc :unchanged? (boolean unchanged?))))
 

@@ -7,9 +7,13 @@
      `:attrs {:doc <ulid>}` — one root node per document, its identity;
    - the source text verbatim, the sign `{:kind :opaque :content {:format
      \"markdown/source\" :blob text}}`, tied by a `:derived` edge root→source
-     (engine `kimun.surface.docs.source`). The typed payload is always
-     `extract(descriptor, source)`: the canonical renderer escapes and re-flows
-     text, so the tree is structure, never the input of extraction;
+     (engine `kimun.surface.docs.source`) whose evidence records `:contract`,
+     the id of the descriptor the document was extracted under. The typed
+     payload is always `extract(descriptor, source)`: the canonical renderer
+     escapes and re-flows text, so the tree is structure, never the input of
+     extraction. The edge points at the source, never at the model, so model
+     succession leaves it in place and the recorded contract keeps answering
+     until the document is updated;
    - the model, by a `:reference` edge root→descriptor (`:ref-hash` = the
      descriptor node id, origin = the actor). The kernel re-anchors it to the
      successor when the model is redefined (02 §6.1), so it says *which model*;
@@ -26,6 +30,7 @@
             [kimun.surface.models.extract :as extract]
             [kimun.surface.models.render :as render]
             [kimun.surface.models.store :as mstore]
+            [kimun.kernel.edge :as edge]
             [kimun.kernel.err :as err]
             [kimun.kernel.node :as node]
             [kimun.kernel.ports :as ports]
@@ -98,7 +103,10 @@
 
 (defn- describe
   "The document map of the `:document` tree `[tid t]`, or nil when its root is
-   not a typed-document root or it has been untracked."
+   not a typed-document root or it has been untracked. `:contract-id` is the
+   descriptor the document was extracted under, read from the `:contract` of
+   its source edge: it survives model succession and is what `payload-of`
+   reads."
   [store current by-from [tid t]]
   (let [root (tree/root t) rn (get-in store [:objects root]) es (get by-from root)]
     (when (and (get-in rn [:content :attrs :doc]) (seq es))
@@ -106,12 +114,14 @@
             model-ids (set (map :to (by model-node?)))
             entry (first (filter #(contains? model-ids (:id %)) current))
             extracted (set (map :to (filter #(= :derived (:type %)) (by model-node?))))
-            src (some #(when (= source-format (get-in (target store %) [:content :format])) (target store %)) es)
+            src-edge (some #(when (= source-format (get-in (target store %) [:content :format])) %) es)
+            src (target store src-edge)
             ext (some #(when (= :external (:kind (target store %))) (target store %)) es)
             any (some #(target store %) (by model-node?))]
         {:name (get-in t [:descriptor :name]) :tree tid :root root :doc (get-in rn [:content :attrs :doc])
          :model (or (:name entry) (some-> any :content :blob edn/read-string :model/name))
          :model-version (:version entry) :model-id (:id entry)
+         :contract-id (get-in src-edge [:evidence :contract])
          :state (cond (nil? entry) :orphan (contains? extracted (:id entry)) :intact :else :superseded)
          :path (get-in ext [:content :locator :path]) :fingerprint (get-in ext [:content :fingerprint])
          :source (get-in src [:content :blob]) :edges (mapv :id es)}))))
@@ -150,11 +160,22 @@
       (let [current (mstore/models store) by-from (edges-from store (map (comp tree/root second) cands))]
         (->> cands (keep #(describe store current by-from %)) (sort-by (juxt :name :tree)) first)))))
 
-(defn payload-of
-  "`{:payload p}` of document `doc` under its model's current contract, or
-   `{:error message}` when its source no longer extracts under it."
+(defn contract-descriptor
+  "The descriptor node the document was last written with — the `:contract`
+   recorded in the evidence of its source edge — or nil when it predates the
+   record or the node is no longer in the CAS. Superseded descriptors stay in
+   the CAS, so the old contract keeps answering until the document is updated."
   [store doc]
-  (let [d (some->> (:model doc) (mstore/find-model store) :descriptor)]
+  (when-let [id (:contract-id doc)] (mstore/descriptor-by-id store id)))
+
+(defn payload-of
+  "`{:payload p}` of document `doc` extracted under the contract it was last
+   written with (`contract-descriptor`, the model's current contract only when
+   none was recorded), or `{:error message}` when its source no longer extracts
+   under it."
+  [store doc]
+  (let [d (or (contract-descriptor store doc)
+              (some->> (:model doc) (mstore/find-model store) :descriptor))]
     (if-not d
       {:error (str "model `" (:model doc) "` is not defined")}
       (try {:payload (extract/extract d (:source doc))}
@@ -188,17 +209,21 @@
 
 (defn- binding-ops
   "Ops tying `root` to the model, the source and (when `path`) the file,
-   removing the edges of `old` (a document map) that no longer hold."
+   removing the edges of `old` (a document map) that no longer hold. The source
+   edge records `:contract` = `model-id`, the descriptor the text is extracted
+   under; a contract move rewrites that edge, so its `:to` (the same source
+   node) no longer identifies it and `stale` keeps the two from standing
+   together."
   [host store root {:keys [model-id text path actor]} old]
   (let [src (source-node text) sid (id-of host src)
         ext (when path (external-node host path text)) xid (when ext (id-of host ext))
         wanted (cond-> [{:type :reference :from root :to model-id :evidence {:ref-hash model-id :actor actor}}
                         {:type :derived :from root :to model-id :evidence {:ref-hash model-id :engine "kimun.surface.models" :version "1"}}
-                        {:type :derived :from root :to sid :evidence {:ref-hash sid :engine "kimun.surface.docs.source" :version "1"}}]
+                        {:type :derived :from root :to sid :evidence {:ref-hash sid :engine "kimun.surface.docs.source" :version "1" :contract model-id}}]
                  ext (conj {:type :reference :from root :to xid :evidence {:ref-hash xid :actor actor}}))
-        keep-to (set (map :to wanted))
+        wanted-ids (set (map #(:id (edge/make host %)) wanted))
         stale (for [eid (:edges old) :let [e (get-in store [:objects eid])]
-                    :when (and (not (keep-to (:to e))) (source-or-file? (target store e)))] eid)]
+                    :when (and (not (wanted-ids eid)) (source-or-file? (target store e)))] eid)]
     (-> [{:op :add-node :node src}]
         (cond-> ext (conj {:op :add-node :node ext}))
         (into (map (fn [eid] {:op :remove-edge :edge eid}) stale))
@@ -207,6 +232,18 @@
 (defn- require-model [store model]
   (or (mstore/find-model store model)
       (err/raise :models/missing (str "no model `" model "` in the store: define it with `models define`") {:model model})))
+
+(defn move-text
+  "The Markdown that moves `doc` to its model's current contract: `payload`
+   (default: the document's recorded payload, read under the contract it was
+   written with) rendered with the model's current descriptor. `context` is the
+   composition context (`kimun.cli.compose/context`). This is how `docs update`
+   and `stores update` migrate a `:superseded` document without re-reading its
+   old text under the new template, which would misalign every section after the
+   change."
+  [store doc payload context]
+  (let [m (require-model store (:model doc))]
+    (str (render/render (:descriptor m) (or payload (:payload doc)) context) "\n")))
 
 (defn track-plan
   "Plan that tracks source `text` as document `name` of model `model`.
@@ -248,10 +285,9 @@
         payload (extract/extract (:descriptor m) text)
         path (or path (:path doc))
         same? (and (= text (:source doc)) (= path (:path doc)) (= :intact (:state doc)))
-        ;; a superseded document's old text knows nothing of the fields the new contract
-        ;; added: what its text does not carry was not there before, whatever the default
-        raw (when (not= :intact (:state doc)) (extract/extract-raw (:template (:descriptor m)) (:source doc)))
-        before (cond->> (or (:payload doc) {}) raw (into {} (filter (fn [[k _]] (some? (get raw k))))))
+        ;; the payload read is the one under the contract the document was
+        ;; written with: the fields the new contract adds are not in it
+        before (or (:payload doc) {})
         a (assoc-in (ast/parse host text) [:attrs :doc] (:doc doc))
         base (when-not same? (md/ast->update-plan host store (:tree doc) a {:actor actor :timestamp timestamp :base (:head store)}))]
     {:name (:name doc) :tree (:tree doc) :payload payload :before (:payload doc) :unchanged? same?

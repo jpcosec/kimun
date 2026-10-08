@@ -112,9 +112,33 @@
       (is (= {} (:docs idx) (:models idx) (:by-name idx) (:by-model idx) (:tags idx) (:equivalences idx)))
       (is (= idx (edn/read-string (pr-str idx)))))))
 
-(deftest a-document-that-no-longer-extracts-does-not-break-the-build
+(deftest a-moved-contract-keeps-the-document-under-its-recorded-contract
   (let [p (world)]
-    ;; the contract moves under t1: a required field its text does not carry
+    ;; the contract moves under t1: a required field its text does not carry.
+    ;; A1 (2026-10-08): t1 is still read under the contract it was written with.
+    (move-contract! p "Topology" (model "Topology" [] {"layer" ["topology"]}
+                                        [{:name "owner" :type :string :required true :description "Owner."}]
+                                        "# ⸢rev•title⸥\n\nOwner: ⸢rev•owner⸥\n"))
+    (let [s (opened p) idx (build/build s) d (get-in idx [:docs (get-in idx [:by-name "t1"])])]
+      (is (not (contains? d :error)) "the text still extracts under its recorded contract")
+      (is (= {"title" "T1"} (:payload d)))
+      (is (contains? d :hash-c))
+      (is (= :superseded (:state d)))
+      (is (= "Topology" (:model d)))
+      (is (= (tdocs/text-hash (:host s) (:source d)) (:hash-d d)))
+      (is (= (get-in idx [:models "Topology" :tags]) (:tags d)) "the model's tags still hold")
+      (is (some #{"layer.topology"} (:tags d)))
+      (is (= [] (build/skipped idx)) "nothing is skipped")
+      (is (some? (get-in idx [:docs (get-in idx [:by-name "s1"]) :payload])) "the others are indexed")
+      (is (= idx (edn/read-string (pr-str idx))))
+      (is (true? (where/matches? (where/parse "title ~ \"^T1$\"") d)) "the recorded payload answers"))))
+
+(deftest a-document-without-a-recorded-contract-falls-back-to-the-model
+  ;; A1 (2026-10-08): a document tracked before the recorded contract existed
+  ;; has none; it falls back to the model's current contract, and when that no
+  ;; longer extracts its text the build names it instead of breaking.
+  (let [p (world)]
+    (ktu/forget-contract! (str (fs/path p ".kimun")) "t1")
     (move-contract! p "Topology" (model "Topology" [] {"layer" ["topology"]}
                                         [{:name "owner" :type :string :required true :description "Owner."}]
                                         "# ⸢rev•title⸥\n\nOwner: ⸢rev•owner⸥\n"))
@@ -126,9 +150,7 @@
       (is (= "Topology" (:model d)))
       (is (= (tdocs/text-hash (:host s) (:source d)) (:hash-d d)))
       (is (= (get-in idx [:models "Topology" :tags]) (:tags d)) "the model's tags still hold")
-      (is (some #{"layer.topology"} (:tags d)))
       (is (= ["t1"] (build/skipped idx)))
-      (is (some? (get-in idx [:docs (get-in idx [:by-name "s1"]) :payload])) "the others are indexed")
       (is (= idx (edn/read-string (pr-str idx))))
       (is (false? (where/matches? (where/parse "title ~ \"^T1$\"") d)) "no payload, no match — and no exception"))))
 

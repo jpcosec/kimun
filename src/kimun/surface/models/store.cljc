@@ -72,6 +72,13 @@
   [store name]
   (first (filter #(= name (:name %)) (models store))))
 
+(defn descriptor-by-id
+  "The descriptor carried by the `edn/model` node `id`, or nil when the object
+   is absent or is not such a node. Superseded descriptors stay in the CAS, so
+   a document can read the contract it was extracted under."
+  [store id]
+  (when (string? id) (read-node store id)))
+
 (defn- same-contract? [a b] (= (dissoc a :model/version) (dissoc b :model/version)))
 
 (defn define-plan

@@ -94,7 +94,7 @@
    A document whose source no longer extracts is `:fields/unreadable` (exit 3)."
   [store doc]
   (let [full (tdocs/document store (:name doc))
-        d (:descriptor (mstore/model store (:model full)))]
+        d (or (tdocs/contract-descriptor store full) (:descriptor (mstore/model store (:model full))))]
     (when-not (map? (:payload full))
       (err/raise :fields/unreadable (str "`" (:name full) "` does not extract under " (:model full) ": " (:error full) "; fix it with `docs update`")
                  {:document (:name full) :model (:model full)}))
@@ -175,8 +175,9 @@
       (if (:unchanged? m)
         (out/ok command {:store (store-ref descriptor store-path) :revision (:head store)
                          :data (assoc (result (:source full)) :unchanged? true)})
-        (let [{:keys [text]} (fields/render-checked d (:payload m) (compose/context opened) (:field m))
-              _ (refuse-noise! d full text)
+        (let [current (or (:descriptor (mstore/model store (:model full))) d)
+              {:keys [text]} (fields/render-checked current (:payload m) (compose/context opened) (:field m))
+              _ (refuse-noise! current full text)
               {:keys [plan]} (tdocs/update-plan host/host store (:name full) text
                                                 {:actor (:actor opts) :timestamp (docs/timestamp) :operation command})
               r (if plan (store/commit! backend store plan) {:revision-id (:head store)})

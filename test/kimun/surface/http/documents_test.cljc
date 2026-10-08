@@ -9,6 +9,7 @@
             [cheshire.core :as json]
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
+            [kimun.test-util :as ktu]
             [kimun.surface.http.support :refer [req run with-server]]))
 
 (def ^:private book-edn
@@ -105,16 +106,32 @@
         (is (= "Missing parameter: id" (get-in body [:error :message])))))))
 
 ;; v1: test_document_unbuildable_ir_returns_422
+;; A1 (2026-10-08): a moved contract keeps the document readable under the
+;; contract it was written with, so the IR still builds; the 422 is for a
+;; document with no recorded contract whose current model no longer reads it.
 (deftest document-unbuildable-ir-returns-422
-  (with-server book-store
+  (with-server (fn [proj]
+                 (define! proj book-edn)
+                 (create! proj "book" "My Book")
+                 (ktu/forget-contract! (str (fs/path proj ".kimun")) "book"))
     (fn [base proj]
       (is (= 200 (first (get-json base "/document?id=book"))))
-      ;; the model moves on: the stored text no longer extracts -> IR not buildable
+      ;; the model moves on: the stored text no longer extracts under its contract
       (define! proj moved-edn)
       (let [[status body] (get-json base "/document?id=book")]
         (is (= 422 status))
         (is (false? (:ok body)))
         (is (str/includes? (get-in body [:error :message]) "title"))))))
+
+;; A1 (2026-10-08): the moved contract does not unbuild the IR
+(deftest a-moved-contract-does-not-unbuild-the-ir
+  (with-server book-store
+    (fn [base proj]
+      (is (= 200 (first (get-json base "/document?id=book"))))
+      (define! proj moved-edn)
+      (let [[status body] (get-json base "/document?id=book")]
+        (is (= 200 status))
+        (is (= {:title "My Book"} (get-in body [:data :payload])))))))
 
 ;; v1: test_docs_create_tracks_and_returns_version
 (deftest docs-create-tracks-and-returns-version

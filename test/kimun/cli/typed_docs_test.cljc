@@ -7,7 +7,10 @@
             [clojure.string :as str]
             [babashka.fs :as fs]
             [kimun.cli.main :as main]
+            [kimun.cli.store :as cli-store]
+            [kimun.surface.diagnostics :as diag]
             [kimun.surface.docs :as tdocs]
+            [kimun.surface.models.store :as mstore]
             [kimun.host.default :as host]))
 
 (def env {"USER" "tester"})
@@ -254,6 +257,44 @@
     (is (= [{:name "free"} {:name "t" :model "TicketDoc"}] (mapv #(select-keys % [:name :model]) (:data (run p "docs" "list")))))
     (is (= "# Free\n\ntext\n" (:data (run p "docs" "render" "free"))))
     (is (string? (:data (run p "docs" "render" "t"))) "a typed document renders its tree too")))
+
+(deftest a-moved-contract-keeps-the-payload-until-the-document-is-updated
+  ;; A1 (2026-10-08): a redefinition changes the template, but an old document
+  ;; keeps being read under the contract it was written with — a section added
+  ;; after `## Body` cannot swallow the body. `docs update` (unchanged text) and
+  ;; `models … --backfill` move it to the current contract.
+  (let [proj (str (ktu/temp-dir "kimun-a1-contract-"))
+        run (fn [& argv] (:envelope (main/run argv {"USER" "tester"} proj)))]
+    (run "stores" "init")
+    (spit (str (fs/path proj "ticket.edn")) (slurp "test/fixtures/models/ticket.edn"))
+    (is (true? (:ok (run "models" "define" "-f" "ticket.edn"))))
+    (is (true? (:ok (run "docs" "create" "TicketDoc" "login" "--set" "title=Broken login" "--set" "body=Users cannot log in."))))
+    (let [before (:data (run "docs" "show" "login"))
+          store (:store (cli-store/open! (str (fs/path proj ".kimun"))))
+          model-id (:id (mstore/find-model store "TicketDoc"))]
+      (is (= model-id (:contract-id (tdocs/find-document store "login"))) "the source edge records the descriptor written under")
+      (is (true? (:ok (run "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--default" "5"))))
+      (let [after (:data (run "docs" "show" "login"))
+            store' (:store (cli-store/open! (str (fs/path proj ".kimun"))))
+            new-id (:id (mstore/find-model store' "TicketDoc"))
+            doc (tdocs/find-document store' "login")
+            findings (:findings (diag/report store' {"login.md" (slurp (str (fs/path proj "login.md")))}))]
+        (is (= (:payload before) (:payload after)) "the payload is identical until the document is updated")
+        (is (= :superseded (:state after)))
+        (is (= model-id (:contract-id doc)) "the recorded contract survives the succession, untouched")
+        (is (not= model-id new-id))
+        (is (= :contract-moved (:category (first findings))) "diagnostics still report the superseded contract")
+        (is (= "kimun docs update login" (:action (first findings))) "and the command that repairs it")
+        (is (= :degraded (:status (:data (run "stores" "health"))))))
+      (testing "`docs update NAME` re-renders the unchanged document under the new contract"
+        (is (true? (:ok (run "docs" "update" "login"))))
+        (let [d (:data (run "docs" "show" "login"))
+              store' (:store (cli-store/open! (str (fs/path proj ".kimun"))))]
+          (is (= "Users cannot log in." (get-in d [:payload "body"])) "the body survived the new section")
+          (is (= 5 (get-in d [:payload "priority"])))
+          (is (= :intact (:state d)))
+          (is (= (:id (mstore/find-model store' "TicketDoc")) (:contract-id (tdocs/find-document store' "login")))
+              "now the recorded contract is the current one"))))))
 
 (deftest backfill-reads-under-the-old-contract-and-renders-under-the-new
   ;; regression (smoke 2026-10-06): the backfill extracted the old text with the
