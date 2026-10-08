@@ -176,7 +176,9 @@
    model is defined, by name."
   [store]
   (let [bases (into {} (map (juxt :name :descriptor)) (mstore/models store))]
-    (vec (for [d (docs/documents store) :let [desc (get bases (:model d))] :when desc]
+    ;; the recorded contract, not the model's current one: the payload read by
+    ;; `payload-of` is the one the document was last written with
+    (vec (for [d (docs/documents store) :let [desc (or (docs/contract-descriptor store d) (get bases (:model d)))] :when desc]
            {:name (:name d) :model (:model d) :path (:path d)
             :tags (tags-of desc bases (merge d (docs/payload-of store d)))}))))
 

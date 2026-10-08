@@ -52,8 +52,8 @@
     (try {:payload (extract/extract descriptor source)}
          (catch #?(:clj Exception :cljs :default) e {:error (or (ex-message e) (str e))}))))
 
-(defn- doc-entry [host bases models d]
-  (let [descriptor (get bases (:model d))
+(defn- doc-entry [store host bases models d]
+  (let [descriptor (or (tdocs/contract-descriptor store d) (get bases (:model d)))
         {:keys [payload error]} (extraction descriptor (:model d) (:source d))
         base {:tree (:tree d) :doc (:doc d) :name (:name d) :model (:model d)
               :model-version (:model-version d)
@@ -117,7 +117,7 @@
         entries (mstore/models store)
         bases (into {} (map (juxt :name :descriptor)) entries)
         models (into (sorted-map) (map (fn [m] [(:name m) (model-entry bases m)])) entries)
-        docs (mapv #(doc-entry host bases models %) (tdocs/documents store))
+        docs (mapv #(doc-entry store host bases models %) (tdocs/documents store))
         dag (sem/dag-of (mapcat :tags docs) (sem/declared store))]
     {:version version
      :head (:head store)

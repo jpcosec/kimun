@@ -97,7 +97,8 @@
       :else (if-let [n (noise-of (:source doc))] (noisy base n) [:ok base]))))
 
 (defn- diagnose [store read-file doc]
-  (let [descriptor (some->> (:model doc) (mstore/find-model store) :descriptor)
+  (let [descriptor (or (tdocs/contract-descriptor store doc)
+                       (some->> (:model doc) (mstore/find-model store) :descriptor))
         text (when (:path doc) (read-file (:path doc)))
         [category extras] (classify store doc descriptor text)
         f (merge {:category category :model (:model doc) :document (:name doc) :path (:path doc) :state (:state doc)

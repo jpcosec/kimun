@@ -226,7 +226,10 @@ evidencias.
 
 `:ref-hash` es el id del nodo referido (`:to`) en el momento de crear la arista: es el hash
 que se compara para detectar mutación. `:context` es el id del nodo `:fact/:context`
-(§2). Un binding distinto por cada `W_i`. Cada arista se persiste **individualmente**
+(§2). Un binding distinto por cada `W_i`. Los campos obligatorios son un mínimo: una arista puede
+llevar claves de evidencia adicionales (contenido canónico), como el `:contract` = id del
+descriptor bajo el que se extrajo su fuente que la superficie `docs` añade a su `:derived`
+(A1, 2026-10-08), y que la sucesión del modelo deja en pie. Cada arista se persiste **individualmente**
 como objeto `objects/<edge-id>`; las aristas activas de una revisión (§5) se listan aparte,
 de modo que `get-object edge-id` devuelve la arista tras un replay.
 

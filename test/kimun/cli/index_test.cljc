@@ -59,21 +59,41 @@
       (is (= (:data e) (:data (rebuild p)))))
     (is (true? (:ok (run p "stores" "check"))))))
 
-;; v1: test_update_store_indexes_skips_a_missing_document (CLI half)
-(deftest rebuild-indexes-names-the-documents-it-could-not-read
-  (let [p (project)
-        {:keys [backend] s :store} (opened p)
+(defn- move-contract!
+  "Redefines TicketDoc with a required `owner` its documents do not carry."
+  [p]
+  (let [{:keys [backend] s :store} (opened p)
         r (mstore/define-plan host/host s (ticket [{:name "owner" :type :string :required true :description "Owner."}]
                                                   "# ⸢rev•title⸥\n\nOwner: ⸢rev•owner⸥\n")
                               {:actor "human/tester" :timestamp "2026-01-01T00:00:00.000Z"})
-        _ (store/commit! backend s (:plan r))
-        e (rebuild p)]
-    (is (true? (:ok e)) "the cache it wrote is exact; v1 exited 1 here")
-    (is (= ["login"] (get-in e [:data :skipped])))
-    (is (false? (get-in e [:data :complete])))
-    (is (= [{:type "index/skipped-document" :document "login" :model "TicketDoc"}]
-           (mapv #(dissoc % :message) (:warnings e))) "never silent")
-    (is (string? (:message (first (:warnings e)))))))
+        _ (is (some? (:plan r)))]
+    (store/commit! backend s (:plan r))))
+
+;; v1: test_update_store_indexes_skips_a_missing_document (CLI half)
+;; A1 (2026-10-08): the moved contract no longer skips the document — it is read
+;; under the contract it was written with. The index can only fail to read a
+;; document with no recorded contract (tracked before A1), whose current model
+;; contract does not extract its text.
+(deftest rebuild-indexes-names-the-documents-it-could-not-read
+  (testing "a document with no recorded contract falls back to the model's current one"
+    (let [p (project)
+          _ (ktu/forget-contract! (str (fs/path p ".kimun")) "login")
+          _ (move-contract! p)
+          e (rebuild p)]
+      (is (true? (:ok e)) "the cache it wrote is exact; v1 exited 1 here")
+      (is (= ["login"] (get-in e [:data :skipped])))
+      (is (false? (get-in e [:data :complete])))
+      (is (= [{:type "index/skipped-document" :document "login" :model "TicketDoc"}]
+             (mapv #(dissoc % :message) (:warnings e))) "never silent")
+      (is (string? (:message (first (:warnings e)))))))
+  (testing "a document whose model moved keeps being read under its recorded contract"
+    (let [p (project)
+          _ (move-contract! p)
+          e (rebuild p)]
+      (is (true? (:ok e)))
+      (is (= [] (get-in e [:data :skipped])))
+      (is (true? (get-in e [:data :complete])))
+      (is (= [] (:warnings e))))))
 
 (deftest rebuild-indexes-usage-and-missing-store
   (let [p (project)]

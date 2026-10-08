@@ -20,6 +20,7 @@ clase de arista nueva ni una regla nueva de validación: el kernel de `02` ya lo
 | se versiona y los docs siguen a la versión nueva | `:replace` ⇒ `supersedes` ⇒ las `reference` doc→modelo se re-anclan al sucesor (`02 §6.1`) |
 | se proyecta y audita | `models show --format md` es una vista derivada, sin autoridad (`02 §10` inv. 10) |
 | un doc declara su modelo | arista `reference` root→modelo con `:ref-hash` = id del descriptor (`02 §3.2`) |
+| un doc recuerda el contrato con que se escribió | arista `derived` root→fuente con `:contract` = id del descriptor; la sucesión del modelo no la toca, así que el payload se lee bajo ese contrato hasta `docs update`/`--backfill` (A1, 2026-10-08) |
 | detección de deriva | estados de anclaje `intact/superseded/orphan` sobre esa `reference` (`02 §6.2`) |
 
 ## 2. El descriptor

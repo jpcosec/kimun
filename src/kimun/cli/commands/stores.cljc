@@ -7,6 +7,7 @@
   (:require [babashka.fs :as fs]
             [clojure.string :as str]
             [kimun.cli.commands.docs :as docs]
+            [kimun.cli.compose :as compose]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
             [kimun.surface.diagnostics :as diag]
@@ -109,30 +110,43 @@
 
 (defn update-store
   "`stores update`: applies every repair that needs no decision — re-reads the
-   documents whose file was only reformatted and re-extracts those whose
-   model's contract moved (v1 `stores update` recomputed hashes; here a hash
-   is never stored apart from its content, so updating means committing the
-   new source). Findings that need a human are left alone and listed. Data:
+   documents whose file was only reformatted and moves those whose model's
+   contract moved to the current contract by re-rendering their recorded
+   payload under it (v1 `stores update` recomputed hashes; here a hash is never
+   stored apart from its content, so updating means committing the new source).
+   Findings that need a human are left alone and listed. Data:
    `{:updated [name] :skipped [{:document :category :action}] :status}`."
   [_args opts {:keys [env cwd]}]
   (let [{:keys [backend descriptor path] :as opened} (cli-store/open! (cli-store/resolve-store opts env cwd))
         read-file (file-reader path)
+        root (str (fs/parent (fs/absolutize path)))
         findings (:findings (diagnose opened))
-        final (reduce (fn [s f]
-                        (let [doc (tdocs/find-document s (:document f))
-                              text (or (some-> (:path doc) read-file) (:source doc))
-                              {:keys [plan]} (tdocs/update-plan host/host s (:document f) text
-                                                                {:actor (:actor opts) :timestamp (docs/timestamp) :operation "stores update"})]
-                          (if plan (:store (store/commit! backend s plan)) s)))
-                      (:store opened)
-                      (filter (comp diag/safe :category) findings))
+        safe (filter (comp diag/safe :category) findings)
+        {:keys [final warnings]}
+        (reduce (fn [{:keys [final] :as acc} f]
+                  (let [doc (tdocs/document final (:document f))
+                        moved? (= :contract-moved (:category f))
+                        text (if moved?
+                               (tdocs/move-text final doc nil (compose/context final path))
+                               (or (some-> (:path doc) read-file) (:source doc)))
+                        {:keys [plan]} (tdocs/update-plan host/host final (:document f) text
+                                                          {:actor (:actor opts) :timestamp (docs/timestamp) :operation "stores update"})
+                        st (if plan (:store (store/commit! backend final plan)) final)
+                        w (if (and plan moved? (:path doc))
+                            (try (spit (str (fs/path root (:path doc))) text) nil
+                                 (catch Exception e [{:type "docs/file-not-written"
+                                                      :message (str "could not write " (:path doc) ": " (ex-message e))}]))
+                            [])]
+                    (-> acc (assoc :final st) (update :warnings into w))))
+                {:final (:store opened) :warnings []}
+                safe)
         after (diag/report final read-file)]
     (out/ok "stores update" {:store (store-ref descriptor path)
                              :revision (:head final)
-                             :data {:updated (mapv :document (filter (comp diag/safe :category) findings))
+                             :data {:updated (mapv :document safe)
                                     :skipped (mapv #(select-keys % [:document :category :action]) (remove (comp diag/safe :category) findings))
                                     :status (:status (diag/health after))}
-                             :warnings (mapv finding-warning (:findings after))})))
+                             :warnings (into (vec warnings) (mapv finding-warning (:findings after)))})))
 
 (defn- canonical [p] (str (fs/canonicalize p)))
 

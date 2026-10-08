@@ -25,9 +25,9 @@ Estado al 2026-10-08, sobre las 590 funciones de test de sldb v1:
 
 Brechas abiertas (`parity-gaps.edn`): (1) aristas y export de grafo no ven los stores
 enlazados (2 funciones); (2) no se exige descripción por campo del modelo (1 función).
-Pendientes no cubiertos por el marcador: un documento `superseded` se lee bajo el contrato
-nuevo, y `models field-add` de un campo opcional reasigna el último hueco de los documentos
-existentes (`test/kimun/parity/known_gaps_test.cljc`).
+Un documento `superseded` se lee bajo el contrato con el que se escribió (A1, 2026-10-08):
+ya no es una brecha, y `models field-add` de un campo opcional tampoco reasigna el último
+hueco de los documentos existentes.
 
 ## Cómo se mide
 

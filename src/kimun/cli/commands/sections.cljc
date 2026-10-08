@@ -104,7 +104,8 @@
     (when-not model (err/raise :models/missing (str "no model named `" (:model d) "`") {:model (:model d)}))
     (when-not (:payload doc)
       (err/raise :sections/unreadable (str "the source of `" (:name d) "` no longer extracts: " (:error doc)) {:document (:name d)}))
-    (let [rows (sections/fields-of (:descriptor model) (:source d) (:payload doc) (:path sec))]
+    (let [descriptor (or (tdocs/contract-descriptor store doc) (:descriptor model))
+          rows (sections/fields-of descriptor (:source d) (:payload doc) (:path sec))]
       (non-empty! "fields in that section" rows {:document (:name d) :section (:path sec)})
       (out/ok "sections fields" {:store (store-ref o) :revision (:head store)
                                  :data {:document (:name d) :section (:path sec) :fields rows}}))))

@@ -97,7 +97,7 @@
         known (set (map :name (:fields current)))
         added (remove #(or (known (:name %)) (contains? % :default) (not (:required %))) (:fields descriptor))]
     (vec (for [doc (tdocs/of-model store (:model/name descriptor))]
-           (let [payload (try (let [p (extract/extract (or current descriptor) (:source doc))]
+           (let [payload (try (let [p (extract/extract (or (tdocs/contract-descriptor store doc) current descriptor) (:source doc))]
                                 (when-let [f (first (filter #(contains? #{nil ""} (get p (:name %))) added))]
                                   (throw (ex-info (str "no value for `" (:name f) "`") {:field (:name f)})))
                                 (descriptor/finalize descriptor p))
