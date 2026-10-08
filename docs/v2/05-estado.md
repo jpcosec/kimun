@@ -56,8 +56,9 @@ corpus y 1 abierta. Detalle y desviaciones: `tests/parity-v1.md`.
 `stores verify` 228,4 s → 32,0 s; `.kimun/` 606 MB → 97,7 MB; migración desde v1 522 s → 71 s.
 Abrir y commitear no crecen con la historia.
 
-**Suite** — 861 tests / 9.360 aserciones, 0 fallos, 0 errores (última corrida registrada de
-`bb test`, 2026-10-07). `bb oracle`: 9/9 ids canónicos.
+**Suite** — 875 tests / 9.438 aserciones, 107 namespaces (última corrida de `bb test`,
+2026-10-08), 0 fallos. `bb oracle`: 9/9 ids
+canónicos; `bb lint`: 96 ficheros.
 
 ## 3. Decisiones de diseño (todas confirmadas por el usuario)
 

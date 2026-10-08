@@ -8,7 +8,7 @@ host the shipped out-of-process adapters.
 
 `python -m kimun.models export mod:Class` prints a kimun model descriptor (EDN) for a
 sldb v1 `StructuredNLDoc` class. It is the only place where the product imports a Python
-module (`docs/v2/06-superficies-y-cli.md §9`) and it feeds
+module (`docs/v2/06-superficies-y-cli.md §6`) and it feeds
 `bin/kimun models define --from-python` (`docs/v2/07-modelos-como-nodos.md §7`).
 
 ## Adapters
@@ -26,7 +26,7 @@ The protocol is fixed in `docs/v2/11-adaptadores.md`.
 ## Client library
 
 There is no Python client library yet. The `from kimun import Client` snippet in
-`docs/v2/06-superficies-y-cli.md §9` is the planned surface. Until it exists, call the CLI
+`docs/v2/06-superficies-y-cli.md §6` is the planned surface. Until it exists, call the CLI
 with `subprocess` and parse the JSON envelope.
 
 ## Tests

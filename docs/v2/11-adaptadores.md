@@ -229,12 +229,8 @@ docstring actualiza todos los documentos de símbolos de ese archivo (como en v1
 
 ## 7. El grupo `kimun adapters`
 
-```
-kimun adapters list
-kimun adapters scan  ADAPTER PATH --system S [--factory M:A] [--language L] [--output DIR] [--architecture-spec FILE] [-- opciones del adaptador]
-kimun adapters sync  ADAPTER PATH --system S [...]
-kimun adapters check ADAPTER PATH --system S [...]
-```
+La sintaxis y las opciones exactas de cada subcomando las posee `06 §3`; un ejemplo:
+`kimun adapters scan python-symbols src --system sldb`.
 
 - `scan`: muestra los documentos planificados; no escribe ni necesita store.
 - `sync`: corre el adaptador, valida, planifica, compara con los documentos propios
@@ -344,7 +340,7 @@ def main(argv):
 sys.exit(main(sys.argv[1:]))
 ```
 
-El ejemplo lee `ROOT/demo.txt` (su único archivo fuente); si falta, el proceso termina con
+El ejemplo lee `<ROOT>/demo.txt` (su único archivo fuente); si falta, el proceso termina con
 exit 1 y kimun lo reporta como `:adapters/failed` con el stderr del adaptador. Se ejecuta por ruta:
 
 ```

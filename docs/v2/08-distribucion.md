@@ -121,7 +121,8 @@ se revisan en el diff del commit; un asset cuyo digest no coincide aborta el bui
   `SHA256SUMS` con `bb release --out dist` y los sube como artefacto; job `publish` crea la
   GitHub Release con `bundles` y `SHA256SUMS`, y está protegido con `environment: release`,
   cuya única regla es un *required reviewer* humano.
-- Por qué el gate: `core/kimun/protocols/house_rules.md:63` (ID-5) exige aprobación
+- Por qué el gate: la regla ID-5 de `hum-ecosystem`
+  (`core/knowledge/protocols/house_rules.md:63`) exige aprobación
   humana para lo que sale de la topología —*published artifacts* incluidos—; el build es
   reversible, la publicación no.
 - El repo nuevo también es un artefacto publicado: A1 lo crea un humano.

@@ -12,7 +12,7 @@ Current status is in `docs/v2/05-estado.md`; pending items are in
 - The anchored evaluator (S4) and derived writes (S5).
 - Embeddings, M/G semantics as engines, and UI (Node parity stays in the drawer).
 - v1 parity as a 1:1 port. Parity with sldb v1 is closed and measured in
-  `docs/v2/tests/parity-v1.md`; decision 18 keeps v1 in v1 and lets kimun stores be
+  `docs/v2/tests/parity-v1.md`; decision 18 keeps v1 in v1 and lets the stores be
   regenerated (`docs/v2/05-estado.md §3`).
 
 ## How does an agent work and close a task?

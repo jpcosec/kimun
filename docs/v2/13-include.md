@@ -74,7 +74,7 @@ que lo mueve a `<store>.bak-<marca>`.
 :models ["desk/models/*.edn"]          ; 17 modelos
 ```
 
-Declara 543 documentos con **una regla por directorio**: en cada directorio
+Declara 539 documentos con **una regla por directorio**: en cada directorio
 todos los documentos comparten modelo, así que basta
 `desk/atoms/**/*.md`, `desk/tasks/**/*.md`, etc. Donde solo parte del
 directorio necesita `:force`, `:force` es el conjunto de rutas (185 átomos); donde todo lo
@@ -82,10 +82,8 @@ necesita, la regla lleva `:force true` (inbox y tasks).
 
 Los ficheros que git sigue en esos directorios pero que **no** son documentos
 del mundo kimun se enumeran en `:exclude` (`desk/atoms/testing.md`,
-`desk/tasks/Board.md`, las notas viejas de `desk/inbox`, los rituales de ciclo,
-`desk/contexts/pills.md`): excluidos, no producen hallazgo aunque sigan en git.
-Los directorios sin ninguna regla (`desk/drawer`) no son área gestionada y no
-necesitan exclusión.
+`desk/tasks/Board.md` y dos notas viejas de `desk/inbox`): excluidos, no
+producen hallazgo aunque sigan en git.
 
 El store es `.kimun/`, ignorado (`.gitignore`, bloque gestionado) y construido
 al vuelo:
