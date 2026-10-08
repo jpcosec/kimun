@@ -92,6 +92,30 @@
                       nil)))
         (:ops plan)))
 
+(defn compose-plans
+  "The plan that applies `plans` in order as ONE transaction: ops concatenated
+   with each plan's aliases renamed so they stay distinct, and `opts`
+   (`:base :actor :timestamp :engines`) defaulting to the first plan's. The
+   plans must be independent of one another (each computed against the store the
+   previous ones describe): composition is how `include build` writes a whole
+   build in one revision (docs/v2/14 §10). Returns nil when `plans` is empty."
+  [plans opts]
+  (let [plans (vec (remove nil? plans))]
+    (when (seq plans)
+      (let [renamed (map-indexed
+                     (fn [i p]
+                       (let [m (into {} (keep (fn [op] (when-let [a (:as op)]
+                                                        [a (keyword (str "p" i "-" (name a)))]))
+                                             (:ops p)))]
+                         (substitute-aliases m p)))
+                     plans)]
+        {:plan/version 1
+         :base (if (contains? opts :base) (:base opts) (:base (first plans)))
+         :actor (or (:actor opts) (:actor (first plans)))
+         :timestamp (or (:timestamp opts) (:timestamp (first plans)))
+         :engines (or (:engines opts) (reduce merge {} (map :engines plans)))
+         :ops (vec (mapcat :ops renamed))}))))
+
 ;; ---------------------------------------------------------------- capability (check 5)
 
 (defn- op-tree [op]

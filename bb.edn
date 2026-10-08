@@ -27,6 +27,9 @@
         :task (shell "bb" "scripts/check_rings.clj")}
   oracle {:doc "Independent Python re-implementation of canonical-bytes checks the frozen node ids (docs/v2/tests/promises.md)."
           :task (shell "python3" "scripts/canon_oracle.py")}
+  store-size {:doc "Object bytes by class, log and total of a store (docs/v2/14 §10; scripts/store_size.clj)."
+              :task (let [p (apply shell {:continue true} "bb" "scripts/store_size.clj" *command-line-args*)]
+                      (System/exit (:exit p)))}
   test {:doc "Run the kernel test suite on Babashka (clojure.test + test.check) after lint. Times every namespace, prints the slowest, and exits 1 on any failure."
         :depends [lint]
         :task (let [root (str (fs/create-temp-dir {:prefix (str "kimun-test-" (System/currentTimeMillis) "-" (System/nanoTime) "-")}))

@@ -287,7 +287,9 @@
                               "nothing else entered the CAS")
                           (:store r)))
                       (store/init! b h caps) plans)]
-    (is (= 2 (:format-version (store/read-descriptor b))))
+    ;; the default store is format 3 (docs/v2/14 §10); this suite pins the commit
+    ;; mechanics shared by formats 2 and 3
+    (is (= store/format-version (:format-version (store/read-descriptor b))))
     (is (= 0 (:listings @state)) "apply-plan and commit! never call object-ids")
     (is (= (set (keys (:objects final))) (set (keys (:objects @state)))))
     (is (= (select-keys final [:head :heads :revisions :trees :edges]) (select-keys (store/open b h) [:head :heads :revisions :trees :edges])))

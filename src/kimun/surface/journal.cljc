@@ -48,14 +48,22 @@
        (sort-by :tree)
        vec))
 
+(defn- plan-of
+  "The resolved plan of transaction `tx`: `:plan` when the log line carries it
+   (format 2), else the CAS object `:id` (format 3; the log line is
+   `{:id :revision}` and the plan lives in the store's objects)."
+  [store tx]
+  (or (:plan tx) (get-in store [:objects (:id tx)])))
+
 (defn- entry
-  "The journal entry of transaction `tx` (`{:id :plan :revision}`)."
+  "The journal entry of transaction `tx` (`{:id :plan? :revision}`)."
   [store tx]
   (let [rev-id (:revision tx)
         rev (revision/revision store rev-id)
         parent (first (:parents rev))
         ch (changes store rev-id parent)
-        touched (into (set (map :tree ch)) (filter string?) (plan/touched-trees (:plan tx)))]
+        p (plan-of store tx)
+        touched (into (set (map :tree ch)) (filter string?) (plan/touched-trees p))]
     (merge
      (when-let [m (some-> (get (:engines rev) "kimun/meta") edn/read-string)]
        (select-keys m [:operation :address :fields]))
@@ -64,7 +72,7 @@
      :actor (:actor rev)
      :timestamp (:timestamp rev)
      :transaction (:id tx)
-     :ops (frequencies (map :op (get-in tx [:plan :ops])))
+     :ops (frequencies (map :op (:ops p)))
      :trees (vec (sort-by :tree (map #(assoc (tree-info store %) :tree %) touched)))
      :changes ch})))
 

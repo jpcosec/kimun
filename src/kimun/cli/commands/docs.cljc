@@ -247,7 +247,8 @@
         store (bind-model! backend store m opts)
         {:keys [plan]} (tdocs/track-plan host/host store model name text
                                          {:doc (ports/ulid (:ids host/host)) :tree-id (ports/ulid (:ids host/host))
-                                          :path path :actor (:actor opts) :timestamp (timestamp) :operation "docs create"})
+                                          :path path :actor (:actor opts) :timestamp (timestamp) :operation "docs create"
+                                          :inline (:inline opts)})
         r (store/commit! backend store plan)]
     (done "docs create" descriptor store-path r (:store r) name {:warnings (write-file! root path text)})))
 
@@ -276,7 +277,8 @@
         store (bind-model! backend store m opts)
         {:keys [plan]} (tdocs/track-plan host/host store model name text
                                          {:doc (ports/ulid (:ids host/host)) :tree-id (ports/ulid (:ids host/host))
-                                          :path (relative-path (project-root store-path) p) :actor (:actor opts) :timestamp (timestamp)})
+                                          :path (relative-path (project-root store-path) p) :actor (:actor opts) :timestamp (timestamp)
+                                          :inline (:inline opts)})
         r (store/commit! backend store plan)]
     (done "docs track" descriptor store-path r (:store r) name {})))
 
@@ -374,6 +376,7 @@
    :data {:ref "FILE" :desc "Payload file, JSON or YAML (docs create, docs update)"}
    :set {:ref "FIELD=VALUE" :desc "One payload field (repeatable)" :coerce [:string]}
    :path {:ref "PATH" :desc "File of the new document (docs create)"}
+   :inline {:desc "Store the source text in the store instead of reading it from the file (docs create, docs track)" :coerce :boolean}
    :model {:ref "NAME" :desc "Only documents of this model (docs list)"}
    :force {:desc "Track a file that does not round-trip under its model (docs track)" :coerce :boolean}
    :ast {:desc "Print the document's SLDB-MD AST instead of its payload (docs show)" :coerce :boolean}

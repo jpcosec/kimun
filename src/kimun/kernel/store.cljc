@@ -121,9 +121,11 @@
         :else {:head (:head store) :heads-root (:heads-root store)}))
 
 (defn transaction?
-  "True for a well-formed log entry {:id :plan :revision}."
+  "True for a well-formed log entry: `{:id :plan :revision}` in format 2,
+   `{:id :revision}` in format 3 (the resolved plan lives in the CAS under
+   `:id`, so it is not duplicated in the log)."
   [entry]
-  (boolean (and (map? entry) (:id entry) (:plan entry) (:revision entry))))
+  (boolean (and (map? entry) (:id entry) (:revision entry))))
 
 (defn log-tail
   "Pure rule relating the recorded `heads` ({:head :heads} or nil) to `tail`,
@@ -174,15 +176,15 @@
 ;; ---------------------------------------------------------------- init / open
 
 (def format-version
-  "The format new stores are created with."
-  2)
+  "The format new stores are created with (docs/v2/14 §10)."
+  3)
 
 (defn- empty-store
-  "The empty store value of format `fv` (1 = legacy, 2 = current)."
+  "The empty store value of format `fv` (1 = legacy, 2/3 = current)."
   [host capabilities fv]
   (case fv
     1 (assoc (legacy/empty-store host capabilities) :format-version 1)
-    2 (revision/empty-store host capabilities)
+    (2 3) (assoc (revision/empty-store host capabilities) :format-version fv)
     (fail "unsupported store format" {:format-version fv})))
 
 (defn init!
@@ -197,16 +199,26 @@
      (write-descriptor! b {:format-version fv :hash-alg (ports/algorithm (ports/hasher host)) :capabilities capabilities})
      store)))
 
+(defn- plan-of
+  "The resolved plan of a log entry of `b`: `:plan` when the line carries it
+   (format 2), else the CAS object `:id` (format 3; its text is what is
+   hashed, and the caller checks `H(text) == id` through `apply-plan`)."
+  [b entry]
+  (or (:plan entry)
+      (some-> (read-object b (:id entry)) edn/read-string)))
+
 (defn- replay-log
   "Replays the entries `log` over the empty store of backend `b`."
   [b host log]
   (let [{:keys [capabilities hash-alg] fv :format-version} (or (read-descriptor b) (fail "no store.edn" {}))
         alg (ports/algorithm (ports/hasher host))]
     (when (not= hash-alg alg) (fail "hash algorithm mismatch" {:store hash-alg :hasher alg}))
-    (reduce (fn [store {:keys [id plan revision] :as entry}]
+    (reduce (fn [store {:keys [id revision] :as entry}]
               (when-not (transaction? entry)
                 (fail (str "corrupt log line " (:torn-line entry)) {:type :store/corrupt-log :line (:torn-line entry) :cause "unterminated line"}))
-              (let [r (revision/apply-plan store plan)]
+              (let [plan (or (plan-of b entry)
+                             (fail "missing resolved plan for a log line" {:type :store/corrupt-log :id id :cause "plan not found in the CAS"}))
+                    r (revision/apply-plan store plan)]
                 (when (not= id (:id (:transaction r))) (fail "replayed transaction id differs from log" {:logged id :got (:id (:transaction r))}))
                 (when (not= revision (:revision-id r)) (fail "replayed revision id differs from log" {:logged revision :got (:revision-id r) :tx id}))
                 (:store r)))
@@ -285,9 +297,9 @@
                 (bad shape))))))
 
 (defn- open-from-heads
-  [b host capabilities]
+  [b host capabilities fv]
   (let [lm (ports/lazy-maps host)
-        hd (checked-heads b 2)
+        hd (checked-heads b fv)
         {:keys [head heads-root]} hd
         checked (cond-> {}
                   head (assoc head (checked-head-object b host head revision-object? :not-a-revision))
@@ -311,7 +323,7 @@
                                                (recur (into (pop todo) (:parents (get objects id))) (conj seen id)))
                                              seen)))
                                   {})]
-    (revision/lazy-store {:host host :capabilities capabilities :format-version 2
+    (revision/lazy-store {:host host :capabilities capabilities :format-version fv
                           :objects objects :revisions revisions :head head :heads heads :heads-root heads-root})))
 
 (defn open
@@ -342,12 +354,19 @@
   [b host]
   (let [{:keys [capabilities hash-alg] fv :format-version} (or (read-descriptor b) (fail "no store.edn" {}))
         alg (ports/algorithm (ports/hasher host))]
-    (if (and (= 2 fv) (ports/lazy-maps? host))
+    (if (and (>= (or fv 1) 2) (ports/lazy-maps? host))
       (do (when (not= hash-alg alg) (fail "hash algorithm mismatch" {:store hash-alg :hasher alg}))
-          (open-from-heads b host capabilities))
+          (open-from-heads b host capabilities fv))
       (replay-open b host))))
 
 ;; ---------------------------------------------------------------- commit
+
+(defn- tx-line
+  "The log line written for transaction `tx` of `store`: the whole Transaction
+   in formats 1–2, `{:id :revision}` in format 3 — the resolved plan is in the
+   CAS (invariant 17) and the line no longer duplicates it."
+  [store tx]
+  (if (>= (or (:format-version store) 2) 3) (dissoc tx :plan) tx))
 
 (defn commit!
   "Applies `plan` to the in-memory `store` (loaded from backend `b`), then
@@ -367,7 +386,7 @@
                       (:new-objects r))
         expected (heads-record store)]
     (doseq [[id obj] new-objects] (write-object! b id (serialize host obj)))
-    (when-not (commit-tx! b expected (:transaction r) (heads-record s'))
+    (when-not (commit-tx! b expected (tx-line store (:transaction r)) (heads-record s'))
       (fail "heads moved since the store was loaded; reload and retry" {:type :store/stale :expected expected}))
     r))
 

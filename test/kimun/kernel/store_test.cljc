@@ -447,7 +447,8 @@
            (is (failed? r))
            (is (nil? (:open r)) "open does not read the log: only the full verification sees it")))
        (testing "an altered log line"
-         (let [r (full (fn [_ log _] (spit log (str/replace-first (slurp log) ":actor \"jp\"" ":actor \"xx\""))))]
+         ;; format 3 lines carry {:id :revision} only: the id names the resolved plan in the CAS
+         (let [r (full (fn [_ log _] (spit log (str/replace-first (slurp log) ":id \"" ":id \"0"))))]
            (is (failed? r))
            (is (nil? (:open r)))))
        (testing "a log line removed from the middle"

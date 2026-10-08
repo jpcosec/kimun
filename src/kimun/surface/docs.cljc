@@ -5,25 +5,28 @@
    - a `:document` tree named after the document, built by
      `kimun.surface.markdown` from the source text, whose root block carries
      `:attrs {:doc <ulid>}` — one root node per document, its identity;
-   - the source text verbatim, the sign `{:kind :opaque :content {:format
-     \"markdown/source\" :blob text}}`, tied by a `:derived` edge root→source
-     (engine `kimun.surface.docs.source`) whose evidence records `:contract`,
-     the id of the descriptor the document was extracted under. The typed
+   - the source text is NOT stored (format 3, docs/v2/14 §10): the file is the
+     authority and the text is read from it by the external anchor. The typed
      payload is always `extract(descriptor, source)`: the canonical renderer
      escapes and re-flows text, so the tree is structure, never the input of
-     extraction. The edge points at the source, never at the model, so model
+     extraction. The `:contract` (the id of the descriptor the document was
+     extracted under) lives in the evidence of the anchor edge, so model
      succession leaves it in place and the recorded contract keeps answering
      until the document is updated;
    - the model, by a `:reference` edge root→descriptor (`:ref-hash` = the
-     descriptor node id, origin = the actor). The kernel re-anchors it to the
-     successor when the model is redefined (02 §6.1), so it says *which model*;
+     descriptor node id, origin = the actor, and `:contract` when the document
+     has no file). The kernel re-anchors it to the successor when the model is
+     redefined (02 §6.1), so it says *which model*;
    - a `:derived` edge root→descriptor (engine `kimun.surface.models`) saying
      *which contract the document was extracted under*. The kernel invalidates
      it when the descriptor is superseded: a document without it is
      `:superseded` until it is updated or backfilled;
    - the file on disk, when there is one: an `:external` sign `{:locator {:kind
      :file :path <relative to the project root>} :sample :fingerprint
-     \"<alg>:<hex>\"}` (02 §6.4) tied by a `:reference` edge root→external.
+     \"<alg>:<hex>\"}` (02 §6.4) tied by a `:reference` edge root→external
+     whose evidence records `:contract`.
+   Reading an old store that still holds the verbatim source sign
+   (`{markdown/source blob}`) is supported: its text wins over the file.
    Untracking removes those edges; the tree stays in history and is hidden."
   (:require [clojure.edn :as edn]
             [clojure.string :as str]
@@ -67,7 +70,6 @@
 ;; ---------------------------------------------------------------- nodes and edges
 
 (defn- root-node [host doc-id] (node/make host :sign :block {:format :markdown :type :document :attrs {:doc doc-id}}))
-(defn- source-node [text] {:class :sign :kind :opaque :content {:format source-format :blob text}})
 (defn- external-node [host path text]
   {:class :sign :kind :external
    :content {:locator {:kind :file :path path} :sample (subs text 0 (min 80 (count text))) :fingerprint (fingerprint host text)}})
@@ -89,11 +91,39 @@
 
 (defn- target [store e] (get-in store [:objects (:to e)]))
 (defn- model-node? [n] (= mstore/blob-format (get-in n [:content :format])))
+(defn- stored-source?
+  "True for the verbatim source sign of a format-2 store (no longer written)."
+  [n] (= source-format (get-in n [:content :format])))
 (defn- source-or-file?
   "True for the two signs a document owns besides its model binding: its
-   stored source text and its file on disk."
+   file on disk (or its legacy stored source text)."
   [n]
-  (or (= source-format (get-in n [:content :format])) (= :external (:kind n))))
+  (or (stored-source? n) (= :external (:kind n))))
+
+(defn- anchor-edge
+  "The edge that carries the document's `:contract`: the `:reference` to the
+   file when there is one, else the `:reference` to the model."
+  [store es]
+  (or (some #(when (= :external (:kind (target store %))) %) es)
+      (some #(when (and (= :reference (:type %)) (model-node? (target store %))) %) es)))
+
+(defn- source-of
+  "The document's source text — the text it was tracked with: the verbatim
+   sign of a format-2 store when it is still there, else the file the anchor
+   points to while its fingerprint still matches what was recorded (the file
+   IS the tracked text then), else the canonical rendering of the document
+   tree (the tracked structure, when the file was edited outside the store).
+   The file is never trusted past its fingerprint: an unrecorded edit must
+   not change what the store answers until `docs update` reconciles it
+   (docs/v2/14 §2). `:read-file` is a `(fn [relative-path] text-or-nil)`."
+  [host store tid es path recorded-fp]
+  (or (some #(when (stored-source? (target store %)) (get-in (target store %) [:content :blob])) es)
+      (let [ft (when (and path (:read-file store)) ((:read-file store) path))]
+        (if (and ft (some? recorded-fp) (= recorded-fp (fingerprint host ft)))
+          ft
+          (or (try (md/store->markdown host store tid)
+                   (catch #?(:clj Exception :cljs :default) _ nil))
+              ft)))))
 (defn- owned-edge?
   "True for an edge this surface wrote from a document root: to its model, its
    source or its file. Any other edge leaving the root — an authored relation,
@@ -114,17 +144,20 @@
             model-ids (set (map :to (by model-node?)))
             entry (first (filter #(contains? model-ids (:id %)) current))
             extracted (set (map :to (filter #(= :derived (:type %)) (by model-node?))))
-            src-edge (some #(when (= source-format (get-in (target store %) [:content :format])) %) es)
-            src (target store src-edge)
-            ext (some #(when (= :external (:kind (target store %))) (target store %)) es)
-            any (some #(target store %) (by model-node?))]
+            ext-edge (some #(when (= :external (:kind (target store %))) %) es)
+            ext (target store ext-edge)
+            any (some #(target store %) (by model-node?))
+            path (get-in ext [:content :locator :path])]
         {:name (get-in t [:descriptor :name]) :tree tid :root root :doc (get-in rn [:content :attrs :doc])
          :model (or (:name entry) (some-> any :content :blob edn/read-string :model/name))
          :model-version (:version entry) :model-id (:id entry)
-         :contract-id (get-in src-edge [:evidence :contract])
+         :contract-id (get-in (anchor-edge store es) [:evidence :contract])
+         :inline (boolean (some #(stored-source? (target store %)) es))
+         :recorded-content-hash (get-in (anchor-edge store es) [:evidence :content-hash])
+         :recorded-field-hashes (get-in (anchor-edge store es) [:evidence :field-hashes])
          :state (cond (nil? entry) :orphan (contains? extracted (:id entry)) :intact :else :superseded)
-         :path (get-in ext [:content :locator :path]) :fingerprint (get-in ext [:content :fingerprint])
-         :source (get-in src [:content :blob]) :edges (mapv :id es)}))))
+         :path path :fingerprint (get-in ext [:content :fingerprint])
+         :source (source-of (:host store) store tid es path (get-in ext [:content :fingerprint])) :edges (mapv :id es)}))))
 
 (defn documents
   "Every tracked typed document of `store`, by name: `{:name :tree :root :doc
@@ -189,7 +222,7 @@
   (let [doc (or (find-document store token)
                 (err/raise :docs/missing (str "no document named or identified by `" token "`") {:document token}))
         host (:host store) {:keys [payload] :as r} (payload-of store doc)]
-    (cond-> (merge doc r {:source-hash (text-hash host (:source doc))})
+    (cond-> (merge doc r {:source-hash (text-hash host (or (:source doc) ""))})
       payload (assoc :content-hash (content-hash host payload) :field-hashes (field-hashes host payload)))))
 
 (defn of-model "Tracked documents bound to model `name`." [store name] (filterv #(= name (:model %)) (documents store)))
@@ -208,23 +241,36 @@
 (defn- meta-engines [m] {"kimun.surface.docs" "1" meta-key (pr-str m)})
 
 (defn- binding-ops
-  "Ops tying `root` to the model, the source and (when `path`) the file,
-   removing the edges of `old` (a document map) that no longer hold. The source
-   edge records `:contract` = `model-id`, the descriptor the text is extracted
-   under; a contract move rewrites that edge, so its `:to` (the same source
-   node) no longer identifies it and `stale` keeps the two from standing
-   together."
-  [host store root {:keys [model-id text path actor]} old]
-  (let [src (source-node text) sid (id-of host src)
+  "Ops tying `root` to the model and (when `path`) the file, removing the edges
+   of `old` (a document map) that no longer hold. The anchor edge records
+   `:contract` = `model-id` (the descriptor the text is extracted under),
+   `:content-hash` and `:field-hashes` of the payload written: the `:reference`
+   to the file when there is one, else the `:reference` to the model. When
+   `inline?` the source sign is written and tied by a `:derived root→source`
+   edge, so the document carries its own text (docs/v2/14 §10: `:content
+   :inline`); by reference (default) no source sign is written and the text is
+   read from the file."
+  [host store root {:keys [model-id text path actor content-hash field-hashes inline?]} old]
+  (let [src (when inline? {:class :sign :kind :opaque :content {:format source-format :blob text}})
+        sid (when src (id-of host src))
         ext (when path (external-node host path text)) xid (when ext (id-of host ext))
-        wanted (cond-> [{:type :reference :from root :to model-id :evidence {:ref-hash model-id :actor actor}}
-                        {:type :derived :from root :to model-id :evidence {:ref-hash model-id :engine "kimun.surface.models" :version "1"}}
-                        {:type :derived :from root :to sid :evidence {:ref-hash sid :engine "kimun.surface.docs.source" :version "1" :contract model-id}}]
-                 ext (conj {:type :reference :from root :to xid :evidence {:ref-hash xid :actor actor}}))
+        marks (cond-> {:contract model-id}
+                content-hash (assoc :content-hash content-hash)
+                (seq field-hashes) (assoc :field-hashes field-hashes))
+        ext-ref (when ext {:type :reference :from root :to xid
+                           :evidence (merge {:ref-hash xid :actor actor} marks)})
+        wanted (cond-> [{:type :reference :from root :to model-id
+                         :evidence (cond-> (merge {:ref-hash model-id :actor actor} marks) ext (dissoc :contract :content-hash :field-hashes))}
+                        {:type :derived :from root :to model-id
+                         :evidence {:ref-hash model-id :engine "kimun.surface.models" :version "1"}}]
+                 ext-ref (conj ext-ref)
+                 sid (conj {:type :derived :from root :to sid
+                            :evidence {:ref-hash sid :engine "kimun.surface.docs" :version "1"}}))
         wanted-ids (set (map #(:id (edge/make host %)) wanted))
         stale (for [eid (:edges old) :let [e (get-in store [:objects eid])]
                     :when (and (not (wanted-ids eid)) (source-or-file? (target store e)))] eid)]
-    (-> [{:op :add-node :node src}]
+    (-> []
+        (cond-> src (conj {:op :add-node :node src}))
         (cond-> ext (conj {:op :add-node :node ext}))
         (into (map (fn [eid] {:op :remove-edge :edge eid}) stale))
         (into (map (fn [e] {:op :add-edge :edge e}) wanted)))))
@@ -250,8 +296,10 @@
    `opts`: `:doc` and `:tree-id` (fresh ULIDs), `:path` (relative, or nil),
    `:actor`, `:timestamp`, `:operation` (journal label, default \"docs track\").
    Returns `{:plan :name :tree :payload}`. Raises `:docs/exists` when the name
-   is tracked, `:models/missing`, and the extraction errors of the model."
-  [host store model name text {:keys [doc tree-id path actor timestamp operation]}]
+   is tracked, `:models/missing`, and the extraction errors of the model. With
+   `:inline` the source text is stored in the store instead of read from the
+   file (default: the store descriptor's `:content`)."
+  [host store model name text {:keys [doc tree-id path actor timestamp operation inline]}]
   (when (find-document store name)
     (err/raise :docs/exists (str "a document named `" name "` already exists") {:document name}))
   (let [m (require-model store model)
@@ -263,7 +311,10 @@
      :plan (-> base
                (assoc :engines (meta-engines {:operation (or operation "docs track") :address (str model ":" name)
                                               :fields (changed-fields {} payload)}))
-               (update :ops into (binding-ops host store root {:model-id (:id m) :text text :path path :actor actor} nil)))}))
+               (update :ops into (binding-ops host store root {:model-id (:id m) :text text :path path :actor actor
+                                                               :content-hash (content-hash host payload)
+                                                               :field-hashes (field-hashes host payload)
+                                                               :inline? (or inline (= :inline (:content store)))} nil)))}))
 
 (defn create-plan
   "Plan that creates document `name` of `model` from `payload` (rendered with
@@ -277,14 +328,20 @@
   "Plan that replaces the source of tracked document `token` with `text`
    (re-extracted under the model's current contract, which makes it `:intact`
    again). `opts`: `:path` (default: the recorded one), `:actor`, `:timestamp`,
-   `:operation`. Returns `{:plan :name :tree :payload :before :unchanged?}`;
+   `:operation`, `:inline` (default: keep the document's mode). Returns `{:plan
+   :name :tree :payload :before :unchanged?}`;
    `:plan` is nil when neither the text, the path nor the contract moved."
-  [host store token text {:keys [path actor timestamp operation]}]
+  [host store token text {:keys [path actor timestamp operation inline]}]
   (let [doc (document store token)
         m (require-model store (:model doc))
         payload (extract/extract (:descriptor m) text)
         path (or path (:path doc))
-        same? (and (= text (:source doc)) (= path (:path doc)) (= :intact (:state doc)))
+        ;; with by-reference content the tracked text is the file: "unchanged" is the fingerprint
+        ;; matching what the doc was written with, not the text read back from the file
+        same? (and (= path (:path doc)) (= :intact (:state doc))
+                   (if (:path doc)
+                     (and (some? (:fingerprint doc)) (= (:fingerprint doc) (fingerprint host text)))
+                     (= text (:source doc))))
         ;; the payload read is the one under the contract the document was
         ;; written with: the fields the new contract adds are not in it
         before (or (:payload doc) {})
@@ -295,7 +352,10 @@
              (-> base
                  (assoc :engines (meta-engines {:operation (or operation "docs update") :address (str (:model doc) ":" (:name doc))
                                                 :fields (changed-fields before payload)}))
-                 (update :ops into (binding-ops host store (:root doc) {:model-id (:id m) :text text :path path :actor actor} doc))))}))
+                 (update :ops into (binding-ops host store (:root doc) {:model-id (:id m) :text text :path path :actor actor
+                                                                        :content-hash (content-hash host payload)
+                                                                        :field-hashes (field-hashes host payload)
+                                                                        :inline? (or inline (:inline doc))} doc))))}))
 
 (defn untrack-plan
   "Plan that stops tracking document `token`: the edges this surface owns (to

@@ -129,9 +129,22 @@
     (when-let [dup (->> links (map :name) frequencies (some (fn [[n c]] (when (> c 1) n))))]
       (bad (str "duplicate link name " dup) {:name dup}))))
 
+(defn- project-file-reader
+  "Reads a document path relative to the project root of store `dir` (the
+   parent of the `.kimun` directory): `(fn [relative-path] text-or-nil)`, the
+   reader the typed-document surface uses for by-reference content (docs/v2/14
+   §10). Never raises: a missing or unreadable file reads as nil."
+  [dir]
+  (let [root (str (fs/parent (fs/absolutize dir)))]
+    (fn [rel]
+      (when rel
+        (let [f (fs/path root rel)]
+          (when (fs/regular-file? f) (slurp (str f))))))))
+
 (defn open!
   "Opens the store at `dir`: `{:backend b :descriptor d :store s :path dir}`,
-   with `s` opened by `kimun.kernel.store/open`. Raises `:cli/no-store`
+   with `s` opened by `kimun.kernel.store/open` and carrying `:read-file`
+   (`project-file-reader`). Raises `:cli/no-store`
    (message names the path) when `dir` is nil or holds no `store.edn`, and
    `:store/invalid-links` when the descriptor's `:links` are malformed or
    absolute."
@@ -147,7 +160,9 @@
     (validate-links! descriptor dir)
     {:backend b
      :descriptor descriptor
-     :store (store/open b host/host)
+     :store (assoc (store/open b host/host)
+                   :read-file (project-file-reader dir)
+                   :content (or (:content descriptor) :by-reference))
      :path (str dir)}))
 
 (defn default-name
@@ -160,10 +175,12 @@
 (defn init!
   "Creates a store at `dir` for `actor`: `kimun.kernel.store/init!` with
    capabilities `{actor :all \"kimun/derive\" :all \"kimun/materialize\" :all}`,
-   then the descriptor gains `:name` (default `default-name`) and `:links []`.
+   then the descriptor gains `:name` (default `default-name`), `:links []` and,
+   when `:content` is `:inline`, `:content :inline` (docs/v2/14 §10: a store
+   whose documents carry their own text).
    Creates `dir` when missing. Raises `:cli/store-exists` when `store.edn` is
    already there. Returns `{:path :name :actor :capabilities :descriptor}`."
-  [dir {:keys [name actor]}]
+  [dir {:keys [name actor content]}]
   (let [dir (str (fs/absolutize dir))]
     (when (store? dir)
       (err/raise :cli/store-exists (str "a kimun store already exists at " dir) {:path dir}))
@@ -172,7 +189,8 @@
           capabilities {actor :all "kimun/derive" :all "kimun/materialize" :all}
           _ (store/init! b host/host capabilities)
           nm (or name (default-name dir))
-          descriptor (assoc (store/read-descriptor b) :name nm :links [])]
+          descriptor (cond-> (assoc (store/read-descriptor b) :name nm :links [])
+                       (= :inline content) (assoc :content :inline))]
       (store/write-descriptor! b descriptor)
       {:path dir :name nm :actor actor :capabilities capabilities :descriptor descriptor})))
 

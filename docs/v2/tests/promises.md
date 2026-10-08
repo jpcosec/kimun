@@ -213,3 +213,15 @@ Bugs de kernel encontrados por el hito 4: el modelo "un padre por nodo por árbo
 - *(2026-10-06, escala)* `:incidence` "nunca de confianza": la recalcula el replay de `verify-full`, pero ningún test altera una `:incidence` dejando el resto válido (alterarla cambia el id de la Revision, que el hash ya detecta).
 - *(2026-10-06, escala)* objetos sin referencia (de un escritor perdedor, nodos de raíces de cabezas reemplazadas): ningún comando los informa; GC en el hito 8.
 - Monotonicidad de ULID: `task-ulid-monotonicity-and-clock-adapter`.
+
+## Formato 3 (docs/v2/14 §10, docs/v2/10 §10)
+
+| promesa | test |
+|---|---|
+| el `:contract` vive en la arista anchor y ningún lector de `:contract` cambia | typed_docs_test/create-writes-markdown-and-tracks-it, the-recorded-contract-survives-the-model-succession; surface/index/build_test; optional_field_hash_test |
+| el texto rastreado se lee del archivo (fingerprint), del signo si `:inline`, o del árbol | typed_docs_test/inline-content-is-stored-with-the-document, store-content-inline-defaults-documents-to-inline; cli/docs_test |
+| editar el archivo por fuera sigue siendo `:edited` (hashes en la evidencia, no el texto) | cli/typed_docs_test/a-file-edited-outside-is-reported-then-reconciled; cli/diagnostics_test/check-reports-divergence-and-a-missing-file-together |
+| el plan no se guarda dos veces: línea `{:id :revision}`, plan leído del CAS | kernel/store_test/the-full-verification-detects-a-damaged-log-and-heads-that-disagree-with-it; kernel/revision_format2_test/commit-writes-exactly-the-new-objects-and-never-lists-the-backend |
+| un store formato 2 se convierte a 3 en el sitio y verifica | cli/upgrade_test/a-format-1-store-answers-the-same-after-the-upgrade |
+| `include build` escribe el desk en UNA revisión que reaplica igual | cli/include_test/build-then-check-is-clean, build-reproduces-the-store |
+| el flag `:content`/`--inline` no cambia ids de nodo ni la paridad | `bb oracle` 9/9; docs-parity-test |

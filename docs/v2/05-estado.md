@@ -9,10 +9,11 @@
 Un motor de versionado content-addressed sobre lenguaje estructurado, en Clojure `.cljc`
 puro sobre Babashka, más las superficies que lo usan. Cada capacidad tiene un dueño:
 
-- **Kernel (formato 2)** — pool de nodos S/M/G, árboles de posiciones con Merkle, aristas
+- **Kernel (formato 2 y 3)** — pool de nodos S/M/G, árboles de posiciones con Merkle, aristas
   tipadas con evidencia, revisiones inmutables con sucesión, estados de anclaje derivados y
   reconciliación de ediciones externas. `open` lee las cabezas sin replay y `stores upgrade`
-  pasa un store 1→2. Contrato: `02-sustrato-computacional.md`; forma en disco: `10-escala.md`.
+  pasa un store 1→2 (reconstruido) o 2→3 (en el sitio). Contrato: `02-sustrato-computacional.md`;
+  forma en disco: `10-escala.md`.
 - **Superficie Markdown** — perfil cerrado SLDB-MD: texto → CST → AST neutro → árbol de
   documento en el pool, render canónico y reingesta de ficheros editados por fuera. Dueño:
   `04-superficie-markdown.md`.
@@ -57,9 +58,16 @@ corpus y 1 abierta. Detalle y desviaciones: `tests/parity-v1.md`.
 `stores verify` 228,4 s → 32,0 s; `.kimun/` 606 MB → 97,7 MB; migración desde v1 522 s → 71 s.
 Abrir y commitear no crecen con la historia.
 
-**Suite** — 877 tests / 9.458 aserciones, 107 namespaces (última corrida de `bb test`,
-2026-10-08), 0 fallos. `bb oracle`: 9/9 ids
-canónicos; `bb lint`: 96 ficheros.
+**Suite** — 886 tests / 9.561 aserciones, 109 namespaces (última corrida de `bb test`,
+2026-10-08, con el pod tree-sitter construido), 0 fallos. `bb oracle`: 9/9 ids
+canónicos; `bb lint`: 98 ficheros.
+
+**Formato 3 de este repo** (desk de 433 KB, 539 documentos; antes = formato 2 del commit
+`b4e02790`): aparente 28,35 MB → **8,75 MB** (`log.edn` 5,89 MB → 151 B; índice mmap
+12,34 MB → 0,71 MB); en disco 119 MB → 55 MB; 556 revisiones → **1**; `include build`
+38 s → 13 s. Detalle en `runs/bench/format3-store-size.txt` y `10-escala.md §10`.
+La promesa del 14 (menos que los 433 KB del desk) **no se cumple todavía**: el árbol del
+documento y el plan resuelto del build siguen en el CAS (`12 §1`).
 
 ## 3. Decisiones de diseño (todas confirmadas por el usuario)
 
