@@ -242,6 +242,12 @@
   (let [p (neutrality-store)]
     (is (true? (:ok (run p "models" "field-add" "Note" "--field" "priority" "--type" "int"
                          "--description" "Priority." "--default" "5" "--required"))))
+    ;; A1 (decision 40 in docs/v2/05): a document is read under the contract it was
+    ;; written with until `docs update` moves it, so the default is not chased in yet.
+    (is (= {"title" "Hello" "body" "World body"}
+           (get-in (run p "docs" "show" "hello") [:data :payload]))
+        "before `docs update` the document keeps its registered payload")
+    (is (true? (:ok (run p "docs" "update" "hello"))))
     (is (= {"title" "Hello" "body" "World body" "priority" 5}
            (get-in (run p "docs" "show" "hello") [:data :payload]))
         "the default lands in the new field; the old fields are untouched")))
