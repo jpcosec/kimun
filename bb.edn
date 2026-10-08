@@ -3,13 +3,17 @@
  :tasks
  {:requires ([clojure.test :as t]
              [babashka.fs :as fs]
-             [clojure.string :as str])
+             [clojure.string :as str]
+             [kimun.host.treesitter :as ts])
   cli {:doc "Run the kimun CLI in-process: bb cli stores check --format text"
        :task (let [p (apply shell {:continue true} "bb" "-m" "kimun.cli.main" *command-line-args*)]
                (System/exit (:exit p)))}
   desk {:doc "Build this repo's desk store (.kimun) from kimun.include.edn (thin alias of `kimun include build`); --rebuild moves an existing store aside."
         :task (let [p (apply shell {:continue true} "bb" "-m" "kimun.cli.main" "include" "build" *command-line-args*)]
                 (System/exit (:exit p)))}
+  pod {:doc "Build the tree-sitter pod (pods/treesitter, `cargo build --release`); the pod is loaded once per process by kimun.host.treesitter."
+       :task (let [p (shell {:dir "pods/treesitter" :continue true} "cargo" "build" "--release")]
+               (System/exit (:exit p)))}
   jar {:doc "Build target/kimun.jar with the built-in `bb uberjar` (src + resources, main kimun.cli.main); stamps resources/git-sha. Named `jar` on purpose: a task named `uberjar` would shadow the built-in it calls and recurse."
        :task (let [sha (-> (shell {:out :string :continue true} "git" "rev-parse" "--short" "HEAD") :out str/trim)]
                    (spit "resources/git-sha" (str (if (str/blank? sha) "dev" sha) "\n"))
@@ -38,7 +42,11 @@
                                (str/replace "_" "-")
                                (str/replace fs/file-separator ".")
                                symbol))
-                    nses (sort (map ->ns (fs/glob "test" "**/*_test.cljc")))]
+                    nses (sort (map ->ns (fs/glob "test" "**/*_test.cljc")))
+                    _ (println (if (ts/available?)
+                                 "tree-sitter pod: available"
+                                 (str "tree-sitter pod: NOT available — run `bb pod`; pod tests are skipped ("
+                                      (or (ts/pod-file) "not found") ")")))]
                 (if (empty? nses)
                   (println "no test namespaces under test/ yet")
                   (try

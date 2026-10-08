@@ -348,3 +348,38 @@ Conformidad CommonMark completa, `_` como énfasis, tablas, footnotes, imágenes
 referencias, setext headings, tree-sitter, paridad Node, capas UAX #29 más allá de los
 grafemas, edición fina vía planes parciales (hoy un documento se crea entero; editar =
 recrear el árbol o `:replace` de nodos por parte del llamante).
+
+### 11.1 Parser de bloques: pod tree-sitter (decisión 29, R2 §5)
+
+La segmentación de bloques de la capa M la hace el pod `pod-kimun-treesitter`
+(`kimun.host.treesitter`); `kimun.surface.models.blocks/parse-native` queda como oráculo
+diferencial hasta la paridad byte a byte (`docs/v2/14 §13`, etapa S.2). El pod no cambia
+este perfil: sigue siendo un perfil **cerrado** y las reglas del perfil se aplican *después*
+del parse (la vista sobre el CST, fase 2).
+
+Dos gaps de `blocks.cljc` frente a CommonMark que el pod sí trae quedan decididos así:
+
+- **setext (`===`, y `-` como subrayado): no entra al perfil.** Sigue fuera (§11), como
+  párrafo; la vista de fase 2 mapea `setext_heading` a las reglas del perfil para que el AST
+  no cambie. La segmentación de bloques del modelos sí lo ve como heading (deuda conocida del
+  oráculo, R2 §6), y así lo fija el test dirigido.
+- **bloques HTML: `:opaque "markdown/html"`.** Ya era el comportamiento (§7); el pod solo
+  los nombra (`html_block`). Se confirma que entran al perfil como región opaca, nunca como
+  contenido descendido.
+
+### 11.2 Vista sobre el CST (`KIMUN_PARSER`, fase 2)
+
+`kimun.surface.markdown.cst-ast` segmenta con el CST de bloques del pod (`parse-block`) y
+comparte con el parser in-process las reglas del perfil (`kimun.surface.markdown.ast`), así que
+`_` nunca es énfasis, lo fuera de perfil cae a `:opaque` byte a byte y la continuación perezosa
+se aplica *después* del parse. El render canónico sigue siendo función del AST neutro.
+
+Estado de la bandera `KIMUN_PARSER`:
+
+- **Default `native`** (el parser in-process, `ast/parse-native`; es el oráculo).
+- `KIMUN_PARSER=treesitter` usa la vista del pod. Sobre el corpus de paridad + el desk da AST
+  idéntico en **1099/1099** (`cst-ast-parity-test`), pero sobre Markdown libre divergen
+  ~3 % de los documentos generados por los tests de propiedad (mismo tipo de bloque con
+  contenido distinto, sobre todo listas anidadas y fences), así que la bandera sigue
+  opt-in; el reporte de S2 lista las clases. La vista cae al parser in-process ante un
+  ERROR del pod o cualquier error interno, de modo que la bandera es segura.

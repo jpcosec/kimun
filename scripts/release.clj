@@ -52,11 +52,41 @@ while [ -h \"$SELF\" ]; do
   case \"$SELF\" in /*) ;; *) SELF=\"$LINKDIR/$SELF\" ;; esac
 done
 DIR=\"$(cd \"$(dirname \"$SELF\")/..\" && pwd)\"
+KIMUN_POD=\"$DIR/lib/pod-kimun-treesitter\"; export KIMUN_POD
 exec \"$DIR/lib/bb\" --jar \"$DIR/lib/kimun.jar\" -- \"$@\"
 ")
 
 (def cmd-launcher
-  "@echo off\r\nrem kimun launcher (Windows): bundled bb.exe + uberjar, relative to this file.\r\nset \"DIR=%~dp0..\"\r\n\"%DIR%\\lib\\bb.exe\" --jar \"%DIR%\\lib\\kimun.jar\" -- %*\r\n")
+  "@echo off\r\nrem kimun launcher (Windows): bundled bb.exe + uberjar, relative to this file.\r\nset \"DIR=%~dp0..\"\r\nset \"KIMUN_POD=%DIR%\\lib\\pod-kimun-treesitter.exe\"\r\n\"%DIR%\\lib\\bb.exe\" --jar \"%DIR%\\lib\\kimun.jar\" -- %*\r\n")
+
+(defn- pod-bin
+  "Bundle name of the tree-sitter pod for `platform` (release.edn :pods)."
+  [cfg platform]
+  (get-in cfg [:pods platform :bin]
+          (if (windows? platform) "pod-kimun-treesitter.exe" "pod-kimun-treesitter")))
+
+(defn- pod-source
+  "Local path of the pod binary to bundle for `platform`, or nil: the CI staging
+   directory `target/pods/<platform>/` first (R2 §4), then the development build
+   of this machine (only meaningful for the host platform)."
+  [cfg platform]
+  (let [bin (pod-bin cfg platform)]
+    (or (let [f (fs/path root "target" "pods" (clojure.core/name platform) bin)]
+          (when (fs/exists? f) f))
+        (let [f (fs/path root "pods" "treesitter" "target" "release" bin)]
+          (when (fs/exists? f) f)))))
+
+(defn- smoke-pod!
+  "Runs the bundled pod through `kimun.host.treesitter` (KIMUN_POD pointed at it)
+   and checks that it answers `version`; exits 3 when it does not."
+  [pod]
+  (let [r (shell {:dir root :continue true :out :string :err :string :env {"KIMUN_POD" (str pod)}}
+                 "bb" "-e"
+                 "(require '[kimun.host.treesitter :as ts]) (prn (ts/version))")
+        out (str/trim (:out r))]
+    (when-not (and (zero? (:exit r)) (str/includes? out "pod-kimun-treesitter"))
+      (fail 3 "pod smoke test failed for" (str pod) "—" (or (not-empty (str/trim (:err r))) (not-empty out) (str "exit " (:exit r)))))
+    out))
 
 (defn- download! [url dest]
   (fs/create-dirs (fs/parent dest))
@@ -97,7 +127,9 @@ exec \"$DIR/lib/bb\" --jar \"$DIR/lib/kimun.jar\" -- \"$@\"
   (let [name (str "kimun-" version "-" (clojure.core/name platform))
         dir (fs/path out name)
         bin (fs/path dir "bin") lib (fs/path dir "lib")
-        bb-name (if (windows? platform) "bb.exe" "bb")]
+        bb-name (if (windows? platform) "bb.exe" "bb")
+        pod-name (pod-bin cfg platform)
+        pod (pod-source cfg platform)]
     (fs/delete-tree dir)
     (fs/create-dirs bin) (fs/create-dirs lib)
     (let [bb-src (if local-bb
@@ -106,12 +138,24 @@ exec \"$DIR/lib/bb\" --jar \"$DIR/lib/kimun.jar\" -- \"$@\"
                      (extract-bb! archive (fs/path out ".cache" (str "bb-" (clojure.core/name platform))) platform)))]
       (fs/copy bb-src (fs/path lib bb-name) {:replace-existing true}))
     (fs/copy jar (fs/path lib "kimun.jar") {:replace-existing true})
+    (when pod
+      (fs/copy pod (fs/path lib pod-name) {:replace-existing true})
+      (let [expected (get-in cfg [:pods platform :sha256])
+            digest (sha256-file (fs/path lib pod-name))]
+        (when (and expected (not= expected digest))
+          (fail 3 "sha256 mismatch for pod" (str pod-name) "expected" expected "got" digest))))
     (spit (str (fs/path bin "kimun")) posix-launcher)
     (spit (str (fs/path bin "kimun.cmd")) cmd-launcher)
     (spit (str (fs/path dir "VERSION")) (str version "\n"))
     (fs/copy (fs/path root "LICENSE") (fs/path dir "LICENSE") {:replace-existing true})
-    (doseq [f [(fs/path bin "kimun") (fs/path lib bb-name)]]
+    (doseq [f (cond-> [(fs/path bin "kimun") (fs/path lib bb-name)]
+                pod (conj (fs/path lib pod-name)))]
       (try (fs/set-posix-file-permissions f "rwxr-xr-x") (catch Exception _ nil)))
+    (when pod (smoke-pod! (fs/path lib pod-name)))
+    (when-not pod
+      (binding [*out* *err*]
+        (println "release: no tree-sitter pod for" (clojure.core/name platform)
+                 "— bundled without it (bb pod / target/pods)")))
     (let [archive (if (windows? platform)
                     (let [z (fs/path out (str name ".zip"))]
                       (fs/delete-if-exists z)
@@ -124,7 +168,13 @@ exec \"$DIR/lib/bb\" --jar \"$DIR/lib/kimun.jar\" -- \"$@\"
 
 (defn- pin! [cfg platforms out]
   (let [digests (into {} (for [p platforms] [p (:sha256 (pinned-bb! cfg p out true))]))
-        cfg' (update cfg :sha256 merge digests)]
+        pod-digests (into {} (for [p platforms
+                                   :let [src (pod-source cfg p)]
+                                   :when src]
+                               [p (sha256-file src)]))
+        cfg' (-> cfg
+                 (update :sha256 merge digests)
+                 (update :pods (fn [pods] (reduce-kv (fn [m p d] (assoc-in m [p :sha256] d)) pods pod-digests))))]
     (spit (str (fs/path root "release.edn"))
           (str ";; Release matrix for `bb release` (docs/v2/08 §5). `:version` must equal\n"
                ";; resources/VERSION. `:sha256` digests of the babashka assets are pinned with\n"

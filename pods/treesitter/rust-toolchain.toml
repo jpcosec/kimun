@@ -1,0 +1,5 @@
+# Toolchain for the tree-sitter pod. The pod was developed and measured
+# against rustc 1.95.0 (see README.md); `stable` keeps local builds working
+# without a network fetch, and CI can pin exactly via RUSTUP_TOOLCHAIN.
+[toolchain]
+channel = "stable"
