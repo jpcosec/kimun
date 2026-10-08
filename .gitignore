@@ -52,3 +52,8 @@ resources/git-sha
 !desk/routines/**/*.md
 !desk/tasks/**/*.md
 # <<< kimun include <<<
+
+# tidy(root): editor/config and workflow log are never part of the repo
+.deskops.log
+.obsidian/
+target/
