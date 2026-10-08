@@ -319,7 +319,7 @@
     (is (true? (:canonical (segments/document-segments board (str on-disk "\u00a0\n\u0085") ctx))))))
 
 (def ^:private coverage-doc
-  {:model/name "CoverageDoc" :model/version 1 :fields [{:name "title" :type :string :required true}]
+  {:model/name "CoverageDoc" :model/version 1 :fields [{:name "title" :type :string :required true :description "title."}]
    :template "# ⸢rev•title⸥\n\nabcdefghijklmnopqrstuvwxyz."})
 
 ;; kimun: coverage is rounded as Python's `round(x, 4)`. One covered character

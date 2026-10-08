@@ -1,9 +1,3 @@
 ;; v1 promises kimun does not hold today; pinned in test/kimun/parity/known_gaps_test.cljc.
 ;; Checked by scripts/parity/coverage.py (see its docstring).
-{
- "test_standalone.py::test_structured_nl_doc_requires_field_descriptions"
- {:promise "A model whose field lacks a non-empty description is rejected at definition time (v1: TypeError \"fields must define a non-empty description: title\")."
-  :kimun "descriptor/validate! (and so `models define`) accepts a field with no :description or an empty one; 07 §2 lists :description among field keys but never requires it."
-  :fix "In kimun.surface.models.descriptor/validate! add `(when-not (non-blank-string? (:description f)) (bad ...))` per field (or only on the `models define` path if existing fixtures without descriptions must keep working)."}
-
-}
+{}

@@ -182,11 +182,11 @@
         root (str (fs/create-dirs (fs/path base "project")))
         elsewhere (str (fs/create-dirs (fs/path base "elsewhere")))
         task {:model/name "Task" :model/version 1 :base []
-              :fields [{:name "title" :type :string :required true} {:name "status" :type :string :required true}]
+              :fields [{:name "title" :type :string :required true :description "title."} {:name "status" :type :string :required true :description "status."}]
               :template "# ⸢rev•title⸥\n\nStatus: ⸢rev•status⸥"}
         board {:model/name "Board" :model/version 1 :base []
                :py/compositions {"summary" {"source_field" "tasks" "model" "sldb_compose_root_models:Task" "template" "- {title} [{status}]"}}
-               :fields [{:name "title" :type :string :required true} {:name "tasks" :type [:list :string] :required false :default []}]
+               :fields [{:name "title" :type :string :required true :description "title."} {:name "tasks" :type [:list :string] :required false :default [] :description "tasks."}]
                :template "# ⸢rev•title⸥\n\n## Tasks\n\n- ⸢rev,list•tasks⸥\n\n## Summary\n\n⸢render•summary⸥"}]
     (run root "stores" "init" "--name" "p")
     (doseq [[f d] [["task.edn" task] ["board.edn" board]]]

@@ -33,7 +33,7 @@
     p))
 
 (defn- move-contract! [p]
-  (is (true? (:ok (run p "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--default" "5")))))
+  (is (true? (:ok (run p "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--description" "Field int." "--default" "5")))))
 
 (defn- report
   "The report of project `p` when its files are `files` (`{path text}`)."

@@ -7,24 +7,8 @@
    and moved next to the ports of its v1 file."
   (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [clojure.test :refer [deftest is testing]]
-            [kimun.cli.main :as main]
-            [kimun.surface.models.descriptor :as descriptor]))
+            [kimun.cli.main :as main]))
 
 (def env {"USER" "tester"})
 (defn- run [cwd & argv] (:envelope (main/run (vec argv) env cwd)))
 
-
-;; ---------------------------------------------------------------- CLI: docs update of an untracked document
-(def ticket (str (fs/absolutize "test/fixtures/models/ticket.edn")))
-
-
-;; ---------------------------------------------------------------- engine: field descriptions
-;; v1: test_standalone.py::test_structured_nl_doc_requires_field_descriptions
-;; GAP: v1 promised a model whose field has no (or an empty) description is rejected ("fields must define a non-empty description: title"); kimun accepts it
-(deftest descriptor-accepts-a-field-without-description
-  (let [base {:model/name "MissingDescriptionDoc" :model/version 1 :base []
-              :template "# ⸢rev•title⸥"}
-        no-description (assoc base :fields [{:name "title" :type :string :required true}])
-        empty-description (assoc base :fields [{:name "title" :type :string :required true :description ""}])]
-    (is (= no-description (descriptor/validate! no-description)))
-    (is (= empty-description (descriptor/validate! empty-description)))))

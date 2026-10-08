@@ -132,10 +132,26 @@
          (some? (re-matches (re-pattern (:regex r)) (str/trim (blocks/text-of b))))
          (some? (match-at b r)))))
 
+(defn- section-boundary
+  "Index of the first block at or after `search` that a recipe later than `i`
+   claims, or the block count. A recipe that captures a section body only
+   counts when the anchor that introduces its section is present: an absent
+   optional heading must be absent, not re-bind the block that belongs to the
+   previous section (docs/v2/07 §4, optrev)."
+  [bs rs i search]
+  (or (some (fn [j]
+              (let [fr (nth rs j)
+                    prev (nth rs (dec j))]
+                (when-not (and (= :section-body (:capture fr))
+                               (:anchor prev)
+                               (not (some #(match-at (nth bs %) prev) (range search (count bs)))))
+                  (first (filter #(match-at (nth bs %) fr) (range search (count bs)))))))
+            (range (inc i) (count rs)))
+      (count bs)))
+
 (defn- section-body [bs rs i lines {:keys [search] :as st}]
   (let [r (nth rs i)
-        boundary (or (some (fn [fr] (first (filter #(match-at (nth bs %) fr) (range search (count bs))))) (subvec rs (inc i)))
-                     (count bs))
+        boundary (section-boundary bs rs i search)
         value (if (< search boundary)
                 (str/trim (str/join "\n" (subvec lines (first (:map (nth bs search))) (min (count lines) (second (:map (nth bs (dec boundary))))))))
                 "")]

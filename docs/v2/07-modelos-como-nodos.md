@@ -55,7 +55,7 @@ mano puede omitirlas.
 | `:model/version` | entero ≥ 1 | sí | lo incrementa `models define` sobre un nombre existente |
 | `:base` | `[string …]` | sí (puede ser `[]`) | linealización MRO exportada; orden de resolución de campos: los del modelo, luego cada base en orden |
 | `:semantics` | `{string → string \| [string …]}` | no | tags de dominio (`se.<tag>`); `model-tags` los aplana sobre `root-semantics` |
-| `:fields` | `[field …]` | sí | `field = {:name :type :required :description :default}`; `:default` debe ser del `:type` |
+| `:fields` | `[field …]` | sí | `field = {:name :type :required :description :default}`; `:description` es obligatoria y no vacía; `:default` debe ser del `:type` |
 | `:template` | string | sí | Markdown del perfil SLDB-MD con marcadores (§4) |
 | `:state` | `{:field :order :terminal}` | no | opcional; `models check` exige que `:field` sea un `[:enum …]` cuyos valores son exactamente `:order` y que `:terminal` sea subconjunto de `:order` |
 | `:py/annotation` | string | no (exportador) | texto de la anotación Python del campo |
@@ -144,7 +144,9 @@ extract(md, descriptor) → {:fields {…} :frontmatter {…} :missing [..] :unk
   2. alinear el AST del doc con la receta del template (LCS por bloques; los marcadores
      son huecos que capturan el bloque/inline que ocupa su posición)
   3. por cada hueco: coerción al :type del campo; traits list/table/dict → EDN
-  4. rev ausente ⇒ :missing; bloque que no cae en ningún hueco ⇒ :unknown (nunca se descarta)
+  4. rev ausente ⇒ :missing; un `optrev` cuya ancla/heading no aparece en el documento
+     está ausente (no captura el bloque de la sección anterior); bloque que no cae en
+     ningún hueco ⇒ :unknown (nunca se descarta)
 render(fields, descriptor)  → Markdown canónico (04 §6): inyecta cada marcador, omite
                               optrev ausentes, serializa el frontmatter con clj-yaml
 validate(md, descriptor)    → {:ok bool :errors [{:field :type :message}]}:
@@ -167,7 +169,7 @@ La sintaxis y las opciones exactas de cada subcomando las posee `06`; aquí va e
 | `models list` | nombre, versión, nº de docs, nº de docs con anclaje no `intact` |
 | `models check [NAME] [-f DRAFT.edn]` | valida descriptores (tipos, bases existentes, `:state` coherente, template parseable) y todos los docs de cada modelo con `validate` |
 | `models history NAME` | cadena de `supersedes` del descriptor: versiones, actor, revisión |
-| `models field-add NAME --field F --type T [--default D] [--required]` | añade un campo y su sección al template (`optrev` si tiene default o no es requerido; `rev` si no) y define una versión nueva |
+| `models field-add NAME --field F --type T --description TEXT [--default D] [--required]` | añade un campo (con su `:description`, obligatoria) y su sección al template (`optrev` si tiene default o no es requerido; `rev` si no) y define una versión nueva |
 | `models field-remove NAME --field F` | quita el campo y sus marcadores del template y define una versión nueva |
 | `models template NAME [-f FILE]` | sin `-f` imprime el template; con `-f` lo sustituye y define una versión nueva |
 

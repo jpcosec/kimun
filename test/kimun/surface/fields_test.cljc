@@ -18,9 +18,9 @@
 
 (def typed
   {:model/name "Typed"
-   :fields [{:name "n" :type :int} {:name "done" :type :bool} {:name "name" :type :string}
-            {:name "kind" :type [:enum "a" "b"]} {:name "nums" :type [:list :int]}
-            {:name "meta" :type [:map :string]} {:name "free" :type :yaml}]})
+   :fields [{:name "n" :type :int :description "n."} {:name "done" :type :bool :description "done."} {:name "name" :type :string :description "name."}
+            {:name "kind" :type [:enum "a" "b"] :description "kind."} {:name "nums" :type [:list :int] :description "nums."}
+            {:name "meta" :type [:map :string] :description "meta."} {:name "free" :type :yaml :description "free."}]})
 
 (defn- kind [f] (try (f) :no-error (catch clojure.lang.ExceptionInfo e (:type (ex-data e)))))
 

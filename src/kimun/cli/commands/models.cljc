@@ -33,6 +33,7 @@
    :field {:ref "NAME" :desc "Field name (models field-add)"}
    :type {:ref "TYPE" :desc "Field type: string|int|bool|text|yaml or EDN such as [:list :string]"}
    :default {:ref "VALUE" :desc "Field default (models field-add)"}
+   :description {:ref "TEXT" :desc "Field description (models field-add, required)"}
    :required {:desc "The field is required (models field-add)" :coerce :boolean}
    :dry-run {:desc "Report the documents a redefinition would rewrite, without writing" :coerce :boolean}
    :backfill {:desc "Rewrite the model's documents under the new contract" :coerce :boolean}})
@@ -254,17 +255,18 @@
         :else (edn/read-string v)))
 
 (defn field-add
-  "`models field-add NAME --field F --type T [--default D] [--required]`:
-   appends a field and its template section (`optrev` with a default or when
-   not required, else `rev`) and defines the new version. Raises
-   `:models/field-exists` (exit 3) for a duplicate."
+  "`models field-add NAME --field F --type T --description TEXT [--default D]
+   [--required]`: appends a field and its template section (`optrev` with a
+   default or when not required, else `rev`) and defines the new version.
+   Raises `:models/field-exists` (exit 3) for a duplicate and `:cli/usage`
+   (exit 6) without a non-empty `--description`."
   [args opts ctx]
   (let [name (need-name args "field-add")
-        _ (when-not (and (:field opts) (:type opts))
-            (err/raise :cli/usage "`models field-add` needs --field NAME and --type TYPE" {:group "models" :subcommand "field-add"}))
+        _ (when-not (and (:field opts) (:type opts) (not (str/blank? (str (:description opts)))))
+            (err/raise :cli/usage "`models field-add` needs --field NAME, --type TYPE and --description TEXT" {:group "models" :subcommand "field-add"}))
         d (:descriptor (mstore/model (:store (open-store opts ctx)) name))
         type (parse-type (:type opts))
-        field (cond-> {:name (:field opts) :type type :required (boolean (:required opts)) :description ""}
+        field (cond-> {:name (:field opts) :type type :required (boolean (:required opts)) :description (:description opts)}
                 (contains? opts :default) (assoc :default (parse-default type (:default opts))))]
     (commit-define! (edit/add-field d field) opts ctx "models field-add")))
 

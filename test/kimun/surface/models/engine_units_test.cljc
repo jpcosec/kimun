@@ -17,8 +17,8 @@
 
 (def ^:private notes-doc
   {:model/name "NotesDoc" :model/version 1
-   :fields [{:name "title" :type :string :required true}
-            {:name "notes" :type :string :required false :default ""}]
+   :fields [{:name "title" :type :string :required true :description "title."}
+            {:name "notes" :type :string :required false :default "" :description "notes."}]
    :template "# ⸢rev•title⸥\n\n## Notes\n\n⸢rev,markdown•notes⸥"})
 
 (def ^:private plain-notes-doc
@@ -60,7 +60,7 @@
 
 (def ^:private dict-doc
   {:model/name "DictDoc" :model/version 1
-   :fields [{:name "data" :type :yaml :required true}]
+   :fields [{:name "data" :type :yaml :required true :description "data."}]
    :template "⸢rev,dict•data⸥"})
 
 (def ^:private words
@@ -134,11 +134,11 @@
 
 (def ^:private carrier-doc
   {:model/name "CarrierDoc" :model/version 1
-   :fields [{:name "title" :type :string :required true}
-            {:name "status" :type :string :required false :default "draft"}
-            {:name "tags" :type [:list :string] :required false :default []}
-            {:name "owner" :type :string :required false}
-            {:name "meta" :type :yaml :required false :exclude true}]
+   :fields [{:name "title" :type :string :required true :description "title."}
+            {:name "status" :type :string :required false :default "draft" :description "status."}
+            {:name "tags" :type [:list :string] :required false :default [] :description "tags."}
+            {:name "owner" :type :string :required false :description "owner."}
+            {:name "meta" :type :yaml :required false :exclude true :description "meta."}]
    :template "---\n⸢rev,dict•meta⸥\n---\n\n# ⸢rev•title⸥"})
 
 (deftest carrier-extract-lifts-front-matter-into-declared-fields
@@ -184,9 +184,9 @@
 ;; must not be collapsed to a date.
 (def ^:private dates-doc
   {:model/name "DatesDoc" :model/version 1
-   :fields [{:name "midnight" :type :string :required true}
-            {:name "later" :type :string :required true}
-            {:name "day" :type :string :required true}]
+   :fields [{:name "midnight" :type :string :required true :description "midnight."}
+            {:name "later" :type :string :required true :description "later."}
+            {:name "day" :type :string :required true :description "day."}]
    :template "---\nmidnight: ⸢rev•midnight⸥\nlater: ⸢rev•later⸥\nday: ⸢rev•day⸥\n---\n"})
 
 (deftest yaml-dates-roundtrip-as-v1

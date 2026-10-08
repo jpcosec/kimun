@@ -7,7 +7,7 @@
             [clojure.test :refer [deftest is]]
             [kimun.surface.models.render :as render]))
 
-(defn- field [n] {:name n :type :string :required true})
+(defn- field [n] {:name n :type :string :required true :description (str n ".")})
 
 (def ^:private task-doc
   {:model/name "ComposedTaskDoc" :model/version 1 :fields (mapv field ["title" "status" "goal"])
@@ -19,14 +19,14 @@
 
 (def ^:private board-doc
   {:model/name "ComposedBoardDoc" :model/version 1
-   :fields [(field "title") {:name "tasks" :type [:list :string] :required false :default []}]
+   :fields [(field "title") {:name "tasks" :type [:list :string] :required false :default [] :description "Tasks."}]
    :compositions {"task_summaries" {"source_field" "tasks" "model" "composition_models:ComposedTaskDoc"
                                     "template" "- {title} [{status}] - {goal}"}}
    :template "# ⸢rev•title⸥\n\n## Tasks\n\n- ⸢rev,list•tasks⸥\n\n## Task Details\n\n⸢render•task_summaries⸥"})
 
 (def ^:private ritual-doc
   {:model/name "ComposedRitualDoc" :model/version 1
-   :fields [(field "title") {:name "steps" :type [:list :string] :required false :default []}]
+   :fields [(field "title") {:name "steps" :type [:list :string] :required false :default [] :description "Steps."}]
    :compositions {"step_details" {"source_field" "steps" "model" "composition_models:ComposedStepDoc"
                                   "template" "1. {title}: {action} -> {outcome}"}}
    :template "# ⸢rev•title⸥\n\n## Steps\n\n1. ⸢rev,list•steps⸥\n\n## Step Details\n\n⸢render•step_details⸥"})
@@ -38,7 +38,7 @@
 
 (def ^:private api-board
   {:model/name "Board" :model/version 1
-   :fields [(field "title") {:name "tasks" :type [:list :string] :required false :default []}]
+   :fields [(field "title") {:name "tasks" :type [:list :string] :required false :default [] :description "Tasks."}]
    :compositions {"summary" {"source_field" "tasks" "model" "m:Task" "template" "- {title} [{status}]"}}
    :template "# ⸢rev•title⸥\n\n## Tasks\n\n- ⸢rev,list•tasks⸥\n\n## Summary\n\n⸢render•summary⸥"})
 

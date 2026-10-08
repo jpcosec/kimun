@@ -134,7 +134,7 @@ Validación del descriptor (tipos, bases, `:state`, template, `py•` rechazado)
 | subcomando | opciones | notas |
 |---|---|---|
 | `models define` | `-f X.edn` \| `--from-python MOD:CLASS` `[--pythonpath P]`, `--dry-run`, `--backfill` | nombre nuevo ⇒ `:add-node`; existente ⇒ versión+1 y `supersedes` |
-| `models field-add` | `NAME --field F --type T [--default D] [--required]` | nueva versión del descriptor |
+| `models field-add` | `NAME --field F --type T --description TEXT [--default D] [--required]` | nueva versión del descriptor |
 | `models field-remove` | `NAME --field F` | nueva versión del descriptor |
 | `models template` | `NAME [-f FILE]` | sin `-f` muestra el template; con `-f` lo reemplaza (nueva versión) |
 | `models list` | — | `[{:name :version :id :fields :documents :not-intact}]` |

@@ -8,9 +8,7 @@
 
 ### Correctitud (de más a menos grave)
 
-1. **No se exige descripción por campo** en el validador del descriptor (1 función; brecha
-   en `tests/parity-v1.md` y `tests/parity-gaps.edn`).
-2. **selfdoc**: falta la guarda de before-image al escribir (estado `corpus`) y el chequeo
+1. **selfdoc**: falta la guarda de before-image al escribir (estado `corpus`) y el chequeo
    del grafo kgdb (estado `abierta`).
 
 ### Kernel

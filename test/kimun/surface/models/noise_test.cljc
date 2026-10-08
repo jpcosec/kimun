@@ -9,13 +9,13 @@
 
 (def note
   {:model/name "NoteDoc" :template "# ⸢rev•title⸥\n\n## Answer\n\n⸢rev•body⸥"
-   :fields [{:name "title" :type :string :required true} {:name "body" :type :string :required true}]})
+   :fields [{:name "title" :type :string :required true :description "title."} {:name "body" :type :string :required true :description "body."}]})
 
 (def note-with-sections
   {:model/name "NoteWithSections"
    :template "# ⸢rev•title⸥\n\n## Answer\n\n⸢rev•body⸥\n\n## Entidades\n\n⸢optrev•entidades⸥\n\n## Medicion 1\n\n⸢optrev•medicion_1⸥"
-   :fields [{:name "title" :type :string :required true} {:name "body" :type :string :required true}
-            {:name "entidades" :type :string :default ""} {:name "medicion_1" :type :string :default ""}]})
+   :fields [{:name "title" :type :string :required true :description "title."} {:name "body" :type :string :required true :description "body."}
+            {:name "entidades" :type :string :default "" :description "entidades."} {:name "medicion_1" :type :string :default "" :description "medicion_1."}]})
 
 (def clean "# Alpha\n\n## Answer\n\nJust prose, no headings inside the body.\n")
 (def noisy "# Alpha\n\n## Answer\n\nBody text\n\n## Entidades\n\n- one\n\n## Medicion 1\n\n- two\n")
@@ -52,7 +52,7 @@
 (deftest undeclared-frontmatter-key-is-named
   ;; v1: test_undeclared_frontmatter_key_is_refused (the detection half)
   (let [card {:model/name "CardDoc" :template "---\nid: ⸢rev•id⸥\ntitle: ⸢rev•title⸥\n---\n\n# ⸢rev•title⸥"
-              :fields [{:name "id" :type :string :required true} {:name "title" :type :string :required true}]}
+              :fields [{:name "id" :type :string :required true :description "id."} {:name "title" :type :string :required true :description "title."}]}
         clean "---\nid: c1\ntitle: Card\n---\n\n# Card"
         owner (str/replace-first clean "---\nid:" "---\nowner: jp\nid:")]
     (is (= [] (:frontmatter (noise/structural-noise card clean))))

@@ -177,22 +177,22 @@
   ;;     test_store_is_valid_again_after_update, test_models_fields_add_and_promote_bumps_model_version, test_model_update_reindexes_docs
   (let [p (project)]
     (run p "docs" "create" "TicketDoc" "login" "--set" "title=T" "--set" "status=open")
-    (let [rej (run p "models" "field-add" "TicketDoc" "--field" "owner" "--type" "string" "--required")]
+    (let [rej (run p "models" "field-add" "TicketDoc" "--field" "owner" "--type" "string" "--description" "Field string." "--required")]
       (is (false? (:ok rej)))
       (is (= 3 (:exit rej)))
       (is (str/includes? (get-in rej [:error :message]) "lacks required field"))
       (is (= 1 (:version (first (:data (run p "models" "list"))))) "nothing was defined"))
-    (let [dry (run p "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--default" "5" "--dry-run")]
+    (let [dry (run p "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--description" "Field int." "--default" "5" "--dry-run")]
       (is (= ["login"] (get-in dry [:data :backfill])))
       (is (= 1 (:version (first (:data (run p "models" "list")))))))
     (let [before (slurp (file p "login.md"))
-          e (run p "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--default" "5")]
+          e (run p "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--description" "Field int." "--default" "5")]
       (is (= 2 (get-in e [:data :version])))
       (is (= before (slurp (file p "login.md"))) "without --backfill the document is untouched")
       (is (= :superseded (:state (first (:data (run p "docs" "list"))))))
       (is (= {:documents 1 :not-intact 1} (select-keys (first (:data (run p "models" "list"))) [:documents :not-intact])))
       (is (= "docs/superseded" (:type (first (:warnings (run p "stores" "check")))))))
-    (let [e (run p "models" "field-add" "TicketDoc" "--field" "area" "--type" "string" "--default" "core" "--backfill")]
+    (let [e (run p "models" "field-add" "TicketDoc" "--field" "area" "--type" "string" "--description" "Field string." "--default" "core" "--backfill")]
       (is (= ["login"] (get-in e [:data :backfilled])))
       (let [entry (first (:data (run p "journal" "show" "--limit" "1")))]
         (is (= "models backfill" (:operation entry)))
@@ -306,7 +306,7 @@
     (spit (str (fs/path proj "ticket.edn")) (slurp "test/fixtures/models/ticket.edn"))
     (is (true? (:ok (run "models" "define" "-f" "ticket.edn"))))
     (is (true? (:ok (run "docs" "create" "TicketDoc" "login" "--set" "title=Broken login" "--set" "body=Users cannot log in."))))
-    (let [e (run "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--default" "5" "--backfill")
+    (let [e (run "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--description" "Field int." "--default" "5" "--backfill")
           payload (get-in (run "docs" "show" "login") [:data :payload])
           text (slurp (str (fs/path proj "login.md")))]
       (is (true? (:ok e)) (pr-str e))

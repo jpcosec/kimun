@@ -21,10 +21,10 @@
   "A descriptor exercising frontmatter keys, a heading, an inline field, a
    section body, a list and an optional section."
   {:model/name "NoteDoc" :model/version 1 :base []
-   :fields [{:name "id" :type :string :required true} {:name "tags" :type [:list :string] :required false :default []}
-            {:name "title" :type :string :required true} {:name "status" :type :string :required true}
-            {:name "body" :type :text :required true} {:name "items" :type [:list :string] :required false :default []}
-            {:name "notes" :type :text :required false}]
+   :fields [{:name "id" :type :string :required true :description "id."} {:name "tags" :type [:list :string] :required false :default [] :description "tags."}
+            {:name "title" :type :string :required true :description "title."} {:name "status" :type :string :required true :description "status."}
+            {:name "body" :type :text :required true :description "body."} {:name "items" :type [:list :string] :required false :default [] :description "items."}
+            {:name "notes" :type :text :required false :description "notes."}]
    :template "---\nid: ⸢rev•id⸥\ntags: ⸢rev•tags⸥\n---\n\n# ⸢rev•title⸥\n\nStatus: ⸢rev•status⸥\n\n## Body\n\n⸢rev•body⸥\n\n## Items\n\n- ⸢rev,list•items⸥\n\n## Notes\n\n⸢optrev•notes⸥"})
 
 (deftest both-marker-spellings-parse-alike
