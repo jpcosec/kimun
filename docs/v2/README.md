@@ -9,16 +9,18 @@ pendientes. La historia está en `docs/archive/`.
 De mayor a menor. Ante contradicción gana el número menor.
 
 1. `01-orden-filosofico.md`
-2. `02-sustrato-computacional.md`
-3. `03-estandares-de-codigo.md`
-4. `04-superficie-markdown.md`
-5. `06-superficies-y-cli.md`, `07-modelos-como-nodos.md`, `08-distribucion.md`,
+2. `14-juego-del-lenguaje.md` (borrador estable 2026-10-08; revisa `01 §4.1`, `07`, `11 §1` y
+   `12 §3`: mientras esas revisiones no se integren en sus documentos, gana)
+3. `02-sustrato-computacional.md`
+4. `03-estandares-de-codigo.md`
+5. `04-superficie-markdown.md`
+6. `06-superficies-y-cli.md`, `07-modelos-como-nodos.md`, `08-distribucion.md`,
    `10-escala.md`, `11-adaptadores.md`, `13-include.md` (cada uno dueño de su tema)
-6. `05-estado.md` (estado y decisiones vigentes)
-7. `tests/promises.md` y `tests/parity-v1.md` (evidencia)
-8. `desk/atoms/` (`epoch:v2` prevalece sobre los atoms anteriores)
-9. `12-ecosistema-y-pendientes.md`
-10. `docs/archive/` — material histórico, no autoritativo; nunca corrige a `docs/v2/`
+7. `05-estado.md` (estado y decisiones vigentes)
+8. `tests/promises.md` y `tests/parity-v1.md` (evidencia)
+9. `desk/atoms/` (`epoch:v2` prevalece sobre los atoms anteriores)
+10. `12-ecosistema-y-pendientes.md`
+11. `docs/archive/` — material histórico, no autoritativo; nunca corrige a `docs/v2/`
 
 ## Documentos
 
@@ -28,7 +30,7 @@ De mayor a menor. Ante contradicción gana el número menor.
 | `02-sustrato-computacional.md` | estructuras, invariantes, runtime, roadmap y el contrato de revisión |
 | `03-estandares-de-codigo.md` | anillos de dependencia (`bb lint`), compartimentación, docstrings y tests |
 | `04-superficie-markdown.md` | perfil SLDB-MD: CST, AST neutro, render canónico, mapeo al pool, opacos |
-| `05-estado.md` | estado actual fechado y la tabla de decisiones 1–19 |
+| `05-estado.md` | estado actual fechado y la tabla de decisiones 1–39 |
 | `06-superficies-y-cli.md` | inventario real de la CLI, envelope, códigos de salida y rutas de `serve` |
 | `07-modelos-como-nodos.md` | modelos como descriptores EDN en el árbol `models`; frontmatter y segmentos |
 | `08-distribucion.md` | topología de repos, toolchain, `bb jar`/`bb release`, layout e instalación |
@@ -36,6 +38,7 @@ De mayor a menor. Ante contradicción gana el número menor.
 | `11-adaptadores.md` | protocolo 1 de adaptadores (código → documentos) y el grupo `adapters` |
 | `12-ecosistema-y-pendientes.md` | pendientes de kimun, consumidores de v1 y la capa G (`wittgenstein`) |
 | `13-include.md` | `kimun.include.edn`: qué versiona un repo en git y el grupo `include` |
+| `14-juego-del-lenguaje.md` | principios rectores P1–P12, autoridad por clase (S/M/G), contextos, verdad y sentido, conflicto lógico, formato 3 del store, modelos como subgrafos, etapas S/A/C y decisiones 21–32 |
 | `tests/promises.md` | promesa normativa de `02`/`04` → test que la prueba |
 | `tests/parity-v1.md` | marcador de paridad con sldb v1, DAG y desviaciones deliberadas |
 | `09-evaluador-anclado.md` | archivado en `docs/archive/v2/09-evaluador-anclado.md` (no implementado) |

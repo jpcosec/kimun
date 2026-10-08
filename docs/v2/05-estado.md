@@ -84,3 +84,22 @@ canónicos; `bb lint`: 96 ficheros.
 | 18 | **v1 sigue en v1** (2026-10-06): los consumidores de sldb v1 (deskops, pron, legos, UIs…) se quedan en v1 por ahora; kimun avanza sin migrarlos. Como kimun no está desplegado, sus stores y su historial se pueden regenerar cuando haga falta ("retrackear"): la paridad byte a byte con v1 es referencia, no obligación | `12-ecosistema-y-pendientes.md` |
 | 19 | **política de lenguajes** (2026-10-06): la lógica de alto nivel se escribe mayormente en Clojure (kernel `.cljc`, superficies, CLI). Se admiten servicios nativos (Rust, C, Zig, Go…) si son fácilmente portables y empaquetables por plataforma, y plugins en cualquier lenguaje (Python, Java, JS/TS…) para no reimplementar lo que ya existe. Condición: pocos y con frontera clara — un protocolo documentado (adaptadores fuera de proceso, `11-adaptadores.md`; pods de Babashka), nunca lógica de dominio repartida entre lenguajes. Primer candidato: tree-sitter (C) como pod para el parseo de Markdown y código | `11-adaptadores.md` |
 | 20 | **los namespaces del código pasan de `sldb.*` a `kimun.*`** (2026-10-08), solo en este repo: `sldb.kernel.*` → `kimun.kernel.*`, `sldb.host.*` → `kimun.host.*`, `sldb.surface.markdown.*` → `kimun.surface.markdown.*`. Los **identificadores de datos** se mantienen intactos porque entran en los hashes: nombres de engine (`sldb.surface.markdown`), ids de nodo `sldb://…`, tag lang `sldb/tag`, contextos `sldb/semantic/…`, contrato de export `sldb_kgdb_semantic_export` y keywords de error/formato. El lint de anillos resuelve el prefijo más específico, así que `kimun.kernel./host./surface.markdown.` conservan las mismas reglas | `03 §1` |
+| 21 | **autoridad por clase** (2026-10-08): bytes → archivo (+git); estructura → pool como caché verificable; hechos → pool, decisiones humanas además como documentos. Revisa `01 §4.1` | `14 §2` |
+| 22 | todo hecho vive en un `W_i`; contexto por defecto = el documento `source`; ruteo entre contextos solo por proyecciones promovidas | `14 §3` |
+| 23 | `R`, `A`, `B` son posiciones en taxonomías con herencia; las propiedades algebraicas de `R` se declaran por contexto; el vocabulario `L_i` es un documento `source` | `14 §4` |
+| 24 | afirmación = `:status` en evidencia de arista `projection`; `V`/`S` índice derivado por `(hecho, W_i)`; nada pasa a `TRUE` sin decisión registrada | `14 §5` |
+| 25 | conflicto lógico = propuesta fuera del pool; se resuelve por transacción; nunca en silencio | `14 §6` |
+| 26 | cada `W_i` se evalúa como matrices booleanas por relación; índices derivados; nunca `p×p` global; motor = implementación | `14 §8` |
+| 27 | **formato 3 del store**: sin copia verbatim; contenido por referencia con `inline` por caso; árbol estructural como caché; log como caché bajo `:git :ignore`; decisiones humanas como documentos | `14 §10` |
+| 28 | modelo = símbolo-tipo + selector + proyecciones; el template de v1 es un caso especial; la paridad v1 es su regresión | `14 §9` |
+| 29 | tree-sitter como pod es el parser de la capa M, por fases; SLDB-MD sigue como perfil cerrado; `blocks.cljc` como oráculo hasta paridad byte a byte | `14 §11`, spike R2 |
+| 30 | Datalog para la consulta de G; Datalevin (pod) candidato con respaldo in-process; índice G derivado | `14 §8`, spike R1 |
+| 31 | salida de prompt = `proposed` por defecto; políticas de promoción por store/contexto (harness) | `14 §7` |
+| 32 | unidad de anclaje = hoja + grafemas NFC | `14 §7` |
+| 33 | unidad de escritura = revisión por acción + log de hechos en flujo consolidado | `14 §12` |
+| 34 | transversales de primera clase = pack mínimo de autodescripción (clase de datos, procedencia, contexto, kimun mismo); texto y código | `14 §12`, `§16 P13` |
+| 35 | cualquiera propone; el humano tiene la autoridad máxima; UI por definir | `14 §12` |
+| 36 | el diccionario de signos cortos es otro grafo, por contexto | `14 §16 P14` |
+| 37 | hechos de la forma más simple + caché de derivados por inputs | `14 §12` |
+| 38 | embeddings sin idioma fijo ni plantilla; modelo multilingüe; `dog/perro/hund` misma vecindad es un test | `14 §16 P15` |
+| 39 | lenguaje de selección por spike en etapa A; índice por revisión derivado también en `:git :track` | `14 §12` |
