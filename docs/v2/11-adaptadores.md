@@ -18,7 +18,9 @@ Los adaptadores son **procesos separados por diseño**:
 
 - Babashka no puede cargar tree-sitter ni importar el código que se documenta (el adaptador
   `argparse-cli` importa una fábrica de parser Python). Un proceso aparte lo resuelve sin
-  ampliar el runtime de kimun.
+  ampliar el runtime de kimun. (El caso de tree-sitter lo cubren ahora los **pods**, decisión
+  19/29: `kimun.host.treesitter` carga `pod-kimun-treesitter` en proceso, ver `08 §4`; este
+  protocolo 1 sigue siendo para adaptadores que emiten hechos.)
 - Terceros agregan adaptadores sin tocar kimun: basta un ejecutable que cumpla este contrato
   (§8).
 - El contrato es solo JSON por stdout más códigos de salida; no hay API de plugins.

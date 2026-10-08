@@ -1,6 +1,10 @@
 ;; Release matrix for `bb release` (docs/v2/08 §5). `:version` must equal
 ;; resources/VERSION. `:sha256` digests of the babashka assets are pinned with
-;; `bb release --pin`; a nil digest aborts a non-local build.
+;; `bb release --pin`; a nil digest aborts a non-local build. `:pods` names the
+;; tree-sitter pod asset per platform (R2 §4): `scripts/release.clj` bundles the
+;; binary from `target/pods/<platform>/` (CI staging) or the development build,
+;; installs it as `lib/<:bin>` and smokes `version`; `:sha256` is verified when
+;; pinned (nil = unpinned local build).
 {:version "2.0.0-alpha.1",
  :bb "1.13.219",
  :platforms
@@ -19,4 +23,25 @@
   :macos-aarch64
   "57a45df1cee534081375f35d39a3cb5f334956e6d429e364adbf46e296d52cfb",
   :windows-amd64
-  "3f29a2338c30c2750e11f8ebebbadcc58dd71612286cf4b44defb8c11ce44006"}}
+  "3f29a2338c30c2750e11f8ebebbadcc58dd71612286cf4b44defb8c11ce44006"},
+ :pods
+ {:linux-amd64
+  {:asset "pod-kimun-treesitter-linux-amd64",
+   :bin "pod-kimun-treesitter",
+   :sha256 nil},
+  :linux-aarch64
+  {:asset "pod-kimun-treesitter-linux-aarch64",
+   :bin "pod-kimun-treesitter",
+   :sha256 nil},
+  :macos-amd64
+  {:asset "pod-kimun-treesitter-macos-amd64",
+   :bin "pod-kimun-treesitter",
+   :sha256 nil},
+  :macos-aarch64
+  {:asset "pod-kimun-treesitter-macos-aarch64",
+   :bin "pod-kimun-treesitter",
+   :sha256 nil},
+  :windows-amd64
+  {:asset "pod-kimun-treesitter-windows-amd64.exe",
+   :bin "pod-kimun-treesitter.exe",
+   :sha256 nil}}}

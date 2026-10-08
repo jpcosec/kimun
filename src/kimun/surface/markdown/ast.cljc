@@ -2,6 +2,7 @@
   "CST → neutral structural AST of the SLDB-MD profile (docs/v2/04 §3.2, §4,
    §7). Total: anything outside the profile becomes an :opaque block."
   (:require [clojure.string :as str]
+            [kimun.host.treesitter :as ts]
             [kimun.surface.markdown.cst :as cst]
             [kimun.surface.markdown.inline :as inline]))
 
@@ -28,7 +29,7 @@
 (defn- code-block [b]
   (let [{:keys [info]} (cst/fence-open (first (:lines b)))
         body (rest (:lines b))
-        closed? (and (seq body)
+        closed? (and (:n b) (seq body)
                      (re-matches (re-pattern (str "^ {0,3}" (if (= (:char b) \`) "`" "~") "{" (:n b) ",} *$"))
                                  (cst/strip-cr (last body))))
         content (if closed? (butlast body) body)]
@@ -51,7 +52,9 @@
         ;; split into items at lines carrying a marker of the same type at indent < w
         items (reduce (fn [items line]
                         (let [m (cst/list-marker line)]
-                          (if (and m (< (:indent m) w))
+                          ;; the first line always opens an item: an indented block's
+                          ;; own width leaves indent >= w (a crash before this guard)
+                          (if (and m (or (empty? items) (< (:indent m) w)))
                             (conj items {:marker m :lines [line]})
                             (update items (dec (count items)) update :lines conj line))))
                       [] lines)
@@ -86,7 +89,30 @@
 (defn- blocks [host cst]
   (vec (keep #(block host %) (:blocks cst))))
 
-(defn parse
-  "Markdown text → neutral AST `{:type :document :attrs {} :children [...]}`."
+(defn from-blocks
+  "Neutral AST children of a CST block list `{:blocks [...]}`, applying the
+   SLDB-MD profile rules (docs/v2/04 §3.2, §4). The pod view
+   (`kimun.surface.markdown.cst-ast`) shares these rules over blocks segmented
+   from the tree-sitter CST."
+  [host cst]
+  (blocks host cst))
+
+(defn parse-native
+  "The in-process parser of SLDB-MD: `cst/parse-document` + profile rules. It is
+   the oracle of the pod view (R2 §5 fase 2) and the fallback when the pod is
+   absent."
   [host s]
   {:type :document :attrs {} :children (blocks host (cst/parse-document s))})
+
+(defn parse
+  "Markdown text → neutral AST `{:type :document :attrs {} :children [...]}`.
+   Defaults to the in-process parser (`parse-native`). `KIMUN_PARSER=treesitter`
+   selects the pod view (`kimun.surface.markdown.cst-ast`): it matches the
+   in-process parser on the parity corpus and the desk (1099/1099) but still
+   diverges on some generated/free-form Markdown (R2 §5 fase 2; see
+   `cst-ast-parity-test`), so it stays behind the flag."
+  [host s]
+  #?(:clj (if (and (= "treesitter" (System/getenv "KIMUN_PARSER")) (ts/available?))
+            ((requiring-resolve 'kimun.surface.markdown.cst-ast/parse) host s)
+            (parse-native host s))
+     :cljs (parse-native host s)))
