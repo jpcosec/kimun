@@ -1,0 +1,22 @@
+[package]
+name = "pod-kimun-treesitter"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[[bin]]
+name = "pod-kimun-treesitter"
+path = "src/main.rs"
+
+[dependencies]
+tree-sitter = "0.26"
+tree-sitter-md = { version = "0.5.3", features = ["parser"] }
+tree-sitter-python = "0.25"
+serde_json = "1"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"

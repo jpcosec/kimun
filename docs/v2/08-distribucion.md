@@ -55,6 +55,7 @@ consumidor); la migración se prueba sobre una copia en un directorio temporal, 
 | `bb cli <args>` | ejecuta `kimun.cli.main/-main` desde `src/` (desarrollo; `bin/kimun` es su envoltorio) |
 | `bb jar` | llama al `bb uberjar` **nativo** (`--classpath src:resources`, main `kimun.cli.main`) y estampa `resources/git-sha`; la task no puede llamarse `uberjar`: sombrearía el builtin y recursaría |
 | `bb desk` | alias fino de `kimun include build`: construye `.kimun/` desde `kimun.include.edn` |
+| `bb pod` | `cargo build --release` del pod tree-sitter en `pods/treesitter/` (capa M, decisión 29); el pod se descubre en runtime (`KIMUN_POD`, `lib/`, dev) |
 | `bb release [--platforms p…] [--out d] [--jar j] [--local-bb] [--pin]` | `scripts/release.clj`: reconstruye el jar (`bb jar`) salvo con `--jar`; descarga el `bb` pinado por plataforma y comprueba su sha256 (o usa el local con `--local-bb`, para tests), monta `dist/`, comprime y firma con `SHA256SUMS`; `--pin` reescribe los sha256 de `release.edn` |
 
 ## 4. Layout de release y launcher
@@ -65,6 +66,7 @@ dist/kimun-2.0.0-alpha.1-linux-amd64/
   bin/kimun.cmd      ; launcher Windows
   lib/bb                 ; babashka pinado (bb.exe en windows)
   lib/kimun.jar      ; uberjar
+  lib/pod-kimun-treesitter   ; pod tree-sitter de la capa M (.exe en windows)
   VERSION                ; 2.0.0-alpha.1
   LICENSE
 dist/kimun-2.0.0-alpha.1-linux-amd64.tar.gz     (.zip en windows)
@@ -80,8 +82,15 @@ while [ -h "$SELF" ]; do
   case "$SELF" in /*) ;; *) SELF="$LINKDIR/$SELF" ;; esac
 done
 DIR="$(cd "$(dirname "$SELF")/.." && pwd)"
+KIMUN_POD="$DIR/lib/pod-kimun-treesitter"; export KIMUN_POD
 exec "$DIR/lib/bb" --jar "$DIR/lib/kimun.jar" -- "$@"
 ```
+
+- El pod se resuelve por `KIMUN_POD` (el launcher lo apunta a `lib/`); si el bundle no trae
+  pod, el path no existe y `kimun.host.treesitter` cae al build de desarrollo o al parser in
+  process (`parse-native`). `bb release` copia el binario de `target/pods/<plataforma>/`
+  (staging de CI) o del build de desarrollo, le da permisos de ejecución y hace smoke de
+  `version` a través del pod empaquetado.
 
 - Instalación típica: `ln -s <bundle>/bin/kimun ~/.local/bin/kimun`; el launcher resuelve el enlace (test `release_test`, caso symlink).
 - El `--` es obligatorio: sin él `bb` se queda con `--version`, `--help` y `version` y responde por sí mismo.
