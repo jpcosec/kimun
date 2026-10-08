@@ -6,7 +6,7 @@
   (:require [clojure.string :as str]
             [kimun.surface.models.blocks :as blocks]
             [kimun.surface.models.marker :as marker]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 (defn- list-recipes [b]
   (for [item (:children b)

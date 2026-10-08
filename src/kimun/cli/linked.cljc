@@ -21,7 +21,7 @@
             [kimun.cli.store :as cli-store]
             [kimun.surface.docs :as tdocs]
             [kimun.surface.models.store :as mstore]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 (defn- canonical [dir] (str (fs/canonicalize dir)))
 

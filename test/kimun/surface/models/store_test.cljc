@@ -9,8 +9,8 @@
             [kimun.surface.models.descriptor :as descriptor]
             [kimun.surface.models.edit :as edit]
             [kimun.surface.models.store :as mstore]
-            [sldb.host.default :as host]
-            [sldb.kernel.revision :as revision]))
+            [kimun.host.default :as host]
+            [kimun.kernel.revision :as revision]))
 
 (def base {:model/name "NoteDoc" :base [] :template "# ⸢rev•title⸥\n"
            :fields [{:name "title" :type :string :required true}]})

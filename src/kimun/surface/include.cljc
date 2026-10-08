@@ -7,7 +7,7 @@
    in kimun.cli.commands.include."
   (:require [clojure.edn :as edn]
             [clojure.string :as str]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 (def finding-kinds
   "The kinds `diff` reports, always present (empty when clean)."

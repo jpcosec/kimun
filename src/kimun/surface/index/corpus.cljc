@@ -20,8 +20,8 @@
    v1's HTTP projection)."
   (:require [clojure.string :as str]
             [kimun.surface.docs :as tdocs]
-            [sldb.host.default :as host]
-            [sldb.kernel.reconcile :as reconcile])
+            [kimun.host.default :as host]
+            [kimun.kernel.reconcile :as reconcile])
   #?(:clj (:import (java.text Normalizer Normalizer$Form))))
 
 ;; ---------------------------------------------------------------- projection
@@ -153,7 +153,7 @@
 
 (defn lexical-score
   "The deterministic default score of `query` against `text`, in [0, 1]: the best
-   Dice coefficient (`sldb.kernel.reconcile/dice`, trigram multiset) between the
+   Dice coefficient (`kimun.kernel.reconcile/dice`, trigram multiset) between the
    normalised query and the normalised text or any of its words, 0.0 when either
    is blank. The structure is v1's `DifflibMatcher.similarity`; the metric is the
    kernel's, not `difflib.ratio()`."

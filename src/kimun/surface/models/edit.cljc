@@ -4,7 +4,7 @@
    remove a field, replace the template — and the check that a template only
    names declared fields."
   (:require [clojure.string :as str]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 (defn- title-of [field]
   (str/join " " (map str/capitalize (str/split field #"_+"))))

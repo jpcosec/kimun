@@ -18,9 +18,9 @@
             [kimun.surface.docs :as tdocs]
             [kimun.surface.edges :as edges]
             [kimun.surface.models.store :as mstore]
-            [sldb.host.default :as host]
-            [sldb.kernel.ports :as ports]
-            [sldb.kernel.store :as store]))
+            [kimun.host.default :as host]
+            [kimun.kernel.ports :as ports]
+            [kimun.kernel.store :as store]))
 
 (def ^:private fixtures "test/fixtures/parity/edges/")
 (def ^:private env {"USER" "tester"})

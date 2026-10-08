@@ -7,7 +7,7 @@
             [kimun.surface.index.address :as address]
             [kimun.surface.index.where :as where]
             [kimun.surface.semantic :as sem]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 (defn- index-of
   "A contract-shaped index from `models` (`{name {:base [lineage] :fields {…}}}`),

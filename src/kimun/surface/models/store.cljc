@@ -6,9 +6,9 @@
    reads an opened store value and builds plans, never commits."
   (:require [clojure.edn :as edn]
             [clojure.walk :as walk]
-            [sldb.kernel.err :as err]
-            [sldb.kernel.node :as node]
-            [sldb.kernel.revision :as revision]
+            [kimun.kernel.err :as err]
+            [kimun.kernel.node :as node]
+            [kimun.kernel.revision :as revision]
             [kimun.surface.models.descriptor :as descriptor]))
 
 (def tree-name

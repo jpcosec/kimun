@@ -7,9 +7,9 @@
             [kimun.cli.main :as main]
             [kimun.cli.store :as cli-store]
             [kimun.surface.edges :as edges]
-            [sldb.host.default :as host]
-            [sldb.kernel.ports :as ports]
-            [sldb.kernel.store :as store]))
+            [kimun.host.default :as host]
+            [kimun.kernel.ports :as ports]
+            [kimun.kernel.store :as store]))
 
 (def ^:private env {"USER" "tester"})
 (defn- run [cwd & argv] (:envelope (main/run (vec argv) env cwd)))
@@ -299,8 +299,8 @@
     (is (some #(= :endpoint-type (:kind %)) (:violations (edges/check (idx p)))) "a Table may not be the source of served_at")))
 
 ;; store/test_edge_anchor_targets.py, kernel side: what the anchor state of an authored relation does under succession.
-;; `:superseded` needs an active `supersedes` edge leaving an endpoint (sldb.kernel.anchor), which only a `:replace` of
-;; that node records; `docs update` never replaces a document's root (sldb.surface.markdown.plan raises
+;; `:superseded` needs an active `supersedes` edge leaving an endpoint (kimun.kernel.anchor), which only a `:replace` of
+;; that node records; `docs update` never replaces a document's root (kimun.surface.markdown.plan raises
 ;; `:markdown/root-changed` rather than invent a succession), so no surface operation makes an authored relation superseded.
 (deftest an-authored-relation-under-updates-removal-and-re-adding
   (let [p (world) rel {:from "Booking:b1" :to "Table:t14" :relation "assigned_to"}

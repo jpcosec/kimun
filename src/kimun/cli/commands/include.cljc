@@ -15,7 +15,7 @@
             [kimun.cli.store :as cli-store]
             [kimun.surface.docs :as tdocs]
             [kimun.surface.include :as inc]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 (def spec
   "Options of the `include` group (babashka.cli spec, merged by `kimun.cli.main`)."

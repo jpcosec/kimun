@@ -12,7 +12,7 @@
             [kimun.surface.models.store :as mstore]
             [kimun.surface.sections :as sections]
             [kimun.surface.semantic :as sem]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 (defn- open [opts {:keys [env cwd]}] (cli-store/open! (cli-store/resolve-store opts env cwd)))
 (defn- store-ref [{:keys [descriptor path]}] {:name (:name descriptor) :path path})

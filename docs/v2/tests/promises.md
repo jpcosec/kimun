@@ -4,7 +4,7 @@ Trazabilidad entre cada enunciado normativo de `docs/v2/02-sustrato-computaciona
 `docs/v2/04-superficie-markdown.md` y el test que **fallaría si la promesa se rompiera**.
 Fuente: dos lanes tester de contexto fresco
 (`runs/subagents/20260829-174447-…-testing/lane-{1,2}.md`) más los tests añadidos en
-`test/sldb/kernel/hardening_test.cljc`. Un test que compara la función consigo misma no
+`test/kimun/kernel/hardening_test.cljc`. Un test que compara la función consigo misma no
 cuenta. Los hitos 0–6 están cerrados; las promesas de 7–9 (efectos incluidos) figuran como
 *diferidas*. El estado de los hitos lo lleva `05-estado.md`.
 
@@ -49,7 +49,7 @@ Leyenda: `ok` probado · `oracle` probado además por una implementación indepe
 | promesa | test |
 |---|---|
 | :span es un nodo ordinario que crea el plan; content-addressed | hardening/span-nodes-are-materialized-by-the-plan |
-| capas UAX #29 y direcciones virtuales | standoff_test (hito 6; cache de capas suministrada por el host, `sldb.host.default/layer-cache`) |
+| capas UAX #29 y direcciones virtuales | standoff_test (hito 6; cache de capas suministrada por el host, `kimun.host.default/layer-cache`) |
 
 ## §5 / §5.1 — revisiones y plan
 

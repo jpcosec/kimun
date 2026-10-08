@@ -57,3 +57,5 @@ resources/git-sha
 .deskops.log
 .obsidian/
 target/
+# kimun include build --rebuild moves the previous store aside; never committed
+.kimun.bak-*/

@@ -1,5 +1,5 @@
 ;; Hand-described transaction (docs/v2/02 §8.1): plan + the exact eight-field Revision and id it must yield.
-;; Computed once with sldb.kernel.revision + SHA-256 on 2026-08-29, reviewed, frozen.
+;; Computed once with kimun.kernel.revision + SHA-256 on 2026-08-29, reviewed, frozen.
 {:store {:capabilities {"jp" :all}},
  :plan
  {:plan/version 1,

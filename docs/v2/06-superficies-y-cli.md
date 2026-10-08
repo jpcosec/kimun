@@ -53,7 +53,7 @@ Códigos de salida (`kimun.cli.errors`): 0 ok, 1 `missing`/`empty`, 2 `ambiguous
 
 Descubrimiento (`kimun.cli.store/resolve-store`): `--store` > `$KIMUN_STORE` > walk-up buscando `.kimun/store.edn` desde el cwd. Un valor de `--store` que no es ruta existente y parece nombre de enlace se busca como enlace del store actual o de un ancestro; si tampoco, `cli/no-store` (exit 5). Sin store, todo comando que lo exige falla con `cli/no-store` (exit 5).
 
-Layout de un store formato 2 (`sldb.kernel.store`; detalle en `10`):
+Layout de un store formato 2 (`kimun.kernel.store`; detalle en `10`):
 
 ```
 .kimun/

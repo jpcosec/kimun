@@ -11,9 +11,9 @@
          '[kimun.cli.store :as cli-store]
          '[kimun.surface.docs :as tdocs]
          '[kimun.surface.models.store :as mstore]
-         '[sldb.host.default :as host]
-         '[sldb.kernel.ports :as ports]
-         '[sldb.kernel.store :as store])
+         '[kimun.host.default :as host]
+         '[kimun.kernel.ports :as ports]
+         '[kimun.kernel.store :as store])
 
 (def model
   {:model/name "BenchNote" :model/version 1 :base []

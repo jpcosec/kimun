@@ -10,7 +10,7 @@
             [kimun.cli.commands.journal :as j]
             [kimun.cli.errors :as errors]
             [kimun.cli.store :as cstore]
-            [sldb.kernel.store :as kstore]
+            [kimun.kernel.store :as kstore]
             [kimun.cli.main :as main]
             [kimun.cli.out :as out]))
 

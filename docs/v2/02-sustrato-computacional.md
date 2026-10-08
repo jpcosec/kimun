@@ -78,7 +78,7 @@ id(nodo) = H( canonical-bytes( {:class c  :kind k  :content content} ) )
   representación decimal, p. ej. `"3.14"`; una fecha como ISO-8601; un uuid como sus 36
   caracteres) y `canonical-bytes` **rechaza** cualquier valor de otro tipo. Los
   **literales** de `:proposition` y `:triple` son solo los valores EDN atómicos: string
-  NFC, entero, booleano, `nil`, keyword. `sldb.kernel.canon` es la implementación de
+  NFC, entero, booleano, `nil`, keyword. `kimun.kernel.canon` es la implementación de
   referencia; la igualdad de ids sobre los fixtures dorados entre hosts es la prueba de
   conformidad.
 - `class` y `kind` **entran** al hash: el mismo texto como `:text` y como `:opaque` son
@@ -294,7 +294,7 @@ El contrato es una **revisión de ocho campos**. Los cinco comunes son `parents`
 motores de esta transacción, no se heredan; `timestamp` entra al hash.
 
 En formato 2 `trees`, `edges` e `incidence` son raíces de mapas Merkle independientes de
-la historia (`sldb.kernel.mmap`); `incidence` es derivada de `edges` y determinista. El
+la historia (`kimun.kernel.mmap`); `incidence` es derivada de `edges` y determinista. El
 formato 1 conserva `:roots`, el *tree-set* y el *edge-set* como objetos y abre por replay;
 `kimun stores upgrade` lo pasa a formato 2. La forma en disco (`store.edn`, `objects/`,
 `log.edn`, `heads.edn`, `lock`) y el coste de cada operación los posee `10-escala.md`
@@ -563,7 +563,7 @@ la regla, sin excepción.
 
 ### 6.3 Consultas de anclaje (hito 5a)
 
-`sldb.kernel.anchor`, todas puras sobre `(store, rev-id)` y sin autoridad (invariante 10):
+`kimun.kernel.anchor`, todas puras sobre `(store, rev-id)` y sin autoridad (invariante 10):
 
 ```
 (anchor/anchor-types)         ; #{:reference :binding :projection :semantic :derived}
@@ -656,7 +656,7 @@ Un nodo `:sign/:external` es `{:locator {:kind k …} :sample "…" :fingerprint
 
 ### 6.5 Reconciliación de `drifted` (hito 5b)
 
-`sldb.kernel.reconcile`, sobre los extremos `orphan` de la revisión:
+`kimun.kernel.reconcile`, sobre los extremos `orphan` de la revisión:
 
 ```
 (reconcile/orphans store rev-id)
@@ -794,8 +794,8 @@ definitivo del CLI** (decisión 14) y la paridad Node/UI queda en el drawer.
 | backend | **solo archivos** (formato 2, `10-escala.md` §5): `<store>/objects/<id>` (CAS; cada objeto se escribe como texto UTF-8 con sus canonical-bytes EDN, de modo que `H(fichero) == nombre`), `<store>/log.edn` (append-only, una línea por transacción), `<store>/heads.edn` (`{:head :heads-root}`), `<store>/store.edn` (descriptor: `:hash-alg`, `:capabilities`, `:format-version`) y `<store>/lock`. `open` lee descriptor y cabezas y comprueba por hash y forma la revisión cabeza y la raíz de cabezas (sin replay); `stores check` (`verify`) hashea todo lo alcanzable, y `stores verify` (`verify-full`) replaya el log. El índice derivado existe y lo reconstruye `rebuild-indexes` (`kimun.surface.index`) |
 | NFC | `java.text.Normalizer/normalize` con `Form/NFC` en Babashka/JVM; `String.prototype.normalize("NFC")` en cljs; detrás del mismo protocolo de host que el `Hasher` |
 | tests | `clojure.test` + `clojure.test.check` (incluido en Babashka). "Tests generativos" = propiedades test.check sobre generadores que cubren **todas las filas class/kind de §2.1**, árboles y planes; propiedad mínima: para todo plan válido, aplicar es determinista y `verify` sobre el store recargado reproduce los mismos hashes |
-| fixtures dorados | `test/fixtures/nodes.edn`: vector de `{:class :kind :content :expected-id}`, una entrada por fila de §2.1. `test/fixtures/trees.edn`: `{:nodes [...] :tree {:kind :document :root <alias> :children {<alias> [<alias> ...]}} :expected {:objects {<alias> <tree-hash>} :root <merkle-root>}}`. `test/fixtures/tx-<n>.edn`: `{:store {:capabilities {...}} :plan {...} :expected {:revision {:roots :trees :edges :parents :tx :actor :engines :timestamp} :revision-id ...}}` con `:timestamp` fijado en el plan para que el id sea reproducible; el test compara **los ocho campos y el id**. Generadores compartidos en `test/sldb/kernel/generators.cljc` (`gen-node`, `gen-tree`, `gen-valid-plan`, `gen-plan-sequence`), creados en el hito 0 y ampliados en cada hito. Los ids esperados se calculan una vez con la implementación, se revisan a mano y se congelan |
-| hosts | el kernel se valida en Babashka (`bb test`). ClojureScript/Node es una task propia posterior ("host parity"). Todo es `.cljc`; los reader conditionals solo en `sldb.host.*` |
+| fixtures dorados | `test/fixtures/nodes.edn`: vector de `{:class :kind :content :expected-id}`, una entrada por fila de §2.1. `test/fixtures/trees.edn`: `{:nodes [...] :tree {:kind :document :root <alias> :children {<alias> [<alias> ...]}} :expected {:objects {<alias> <tree-hash>} :root <merkle-root>}}`. `test/fixtures/tx-<n>.edn`: `{:store {:capabilities {...}} :plan {...} :expected {:revision {:roots :trees :edges :parents :tx :actor :engines :timestamp} :revision-id ...}}` con `:timestamp` fijado en el plan para que el id sea reproducible; el test compara **los ocho campos y el id**. Generadores compartidos en `test/kimun/kernel/generators.cljc` (`gen-node`, `gen-tree`, `gen-valid-plan`, `gen-plan-sequence`), creados en el hito 0 y ampliados en cada hito. Los ids esperados se calculan una vez con la implementación, se revisan a mano y se congelan |
+| hosts | el kernel se valida en Babashka (`bb test`). ClojureScript/Node es una task propia posterior ("host parity"). Todo es `.cljc`; los reader conditionals solo en `kimun.host.*` |
 | M/G | solo formas de datos (§2.1); sin evaluación lógica; los árboles `:context` y el evaluador son el hito 7 |
 | evidencia de ejecución | salida de `bb test` en `runs/subagents/<run>/validation.log` + commit |
 | toolchain | Babashka ≥ 1.3 en el host del ejecutor (`bb --version`); `bb.edn` con task `test` |
@@ -849,7 +849,7 @@ entran hasta el hito 7.
 17. Todo objeto persistido (nodo, objeto de árbol, arista, edge-set, revisión) cumple
     H(bytes del objeto) == su nombre en el CAS.
     (2026-10-06, escala) también los nodos de los mapas Merkle (hoja y rama de
-    sldb.kernel.mmap) que en formato 2 sustituyen a edge-set y tree-set (10-escala.md §5).
+    kimun.kernel.mmap) que en formato 2 sustituyen a edge-set y tree-set (10-escala.md §5).
 18. El estado de un anclaje es derivado: se recomputa desde revisión + pool, no se
     persiste, y una propuesta de reconciliación no es nodo ni arista hasta que un
     actor la acepta como `supersedes`.

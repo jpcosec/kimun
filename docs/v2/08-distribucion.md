@@ -13,7 +13,7 @@
 | **`knowledge`** | congelado 2026-09-07: solo el CLI de julio sobre archivos (`knowledge_legacy.py`) y la rama `iso-lab/knowledge` | `jpcosec/knowledge` (`master`), local `hum-ecosystem/tools/knowledge` | ninguno |
 
 Reglas: `knowledge` no es un nombre de producto en ningún sitio (el kernel se llama
-`sldb.*`, la superficie `kimun.*`); el paquete Python instalable de v1 es `pron`. Un cliente
+`kimun.kernel.*` —antes `sldb.*`—, la superficie `kimun.*`); el paquete Python instalable de v1 es `pron`. Un cliente
 Python `kimun` está previsto, no implementado: `python/kimun/` hoy solo contiene
 `__init__.py`, `models.py` (el exportador de descriptores) y `adapters/`.
 

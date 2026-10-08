@@ -2,7 +2,7 @@
   "Model descriptors (docs/v2/07 §2): validation of the EDN shape and the
    typing of an extracted payload — defaults, required fields, coercion."
   (:require [clojure.string :as str]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 (def scalar-types
   "The scalar field types of 07 §2."

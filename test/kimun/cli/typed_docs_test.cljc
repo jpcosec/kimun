@@ -8,7 +8,7 @@
             [babashka.fs :as fs]
             [kimun.cli.main :as main]
             [kimun.surface.docs :as tdocs]
-            [sldb.host.default :as host]))
+            [kimun.host.default :as host]))
 
 (def env {"USER" "tester"})
 (defn- run

@@ -6,7 +6,7 @@
             [kimun.surface.graph.io :as gio]
             [kimun.surface.graph.model :as m]
             [kimun.surface.graph.query :as q]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 (def model "sldb://model/TaskDoc")
 (def doc "sldb://document/TaskDoc:001")

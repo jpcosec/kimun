@@ -11,10 +11,10 @@
             [kimun.cli.store :as cli-store]
             [kimun.surface.diagnostics :as diag]
             [kimun.surface.docs :as tdocs]
-            [sldb.host.default :as host]
-            [sldb.kernel.err :as err]
-            [sldb.kernel.store :as store]
-            [sldb.kernel.upgrade :as upgrade]))
+            [kimun.host.default :as host]
+            [kimun.kernel.err :as err]
+            [kimun.kernel.store :as store]
+            [kimun.kernel.upgrade :as upgrade]))
 
 (defn- store-ref [descriptor path] {:name (:name descriptor) :path path})
 
@@ -163,7 +163,7 @@
                                 :data {:root root :discovered found :missing missing :stale stale :applied (boolean (:apply opts))}})))
 
 (defn verify
-  "`stores verify`: the full verification (`sldb.kernel.store/verify-full`):
+  "`stores verify`: the full verification (`kimun.kernel.store/verify-full`):
    replays the whole log (every transaction and revision id, final heads
    against heads.edn) and recomputes the hash of every reachable object; a log
    that does not replay is `:bad [{:reason :replay-failed}]`. (`stores check`
@@ -196,7 +196,7 @@
 
 (defn upgrade-store
   "`stores upgrade`: rewrites a format-1 store as a format-2 one
-   (`sldb.kernel.upgrade/upgrade!`: every transaction re-committed in log order
+   (`kimun.kernel.upgrade/upgrade!`: every transaction re-committed in log order
    through the format-2 engine, then checked and fully verified). The new store
    is built in the sibling directory `<store>.upgrade-<stamp>`; the original is
    untouched until the new one verifies, then it is renamed to

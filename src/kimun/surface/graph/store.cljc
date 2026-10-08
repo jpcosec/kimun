@@ -11,7 +11,7 @@
             [kimun.surface.graph.io :as io]
             [kimun.surface.graph.model :as m]
             [kimun.surface.semantic :as sem]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 (defn canonical
   "Graph `g` with every node carrying `:type`, `:semantics` and `:facets`

@@ -7,9 +7,9 @@
             [babashka.fs :as fs]
             [kimun.cli.main :as main]
             [kimun.cli.out :as out]
-            [sldb.host.default :as host]
-            [sldb.surface.markdown.ast :as ast]
-            [sldb.surface.markdown.render :as render]))
+            [kimun.host.default :as host]
+            [kimun.surface.markdown.ast :as ast]
+            [kimun.surface.markdown.render :as render]))
 
 (def env {"USER" "tester"})
 

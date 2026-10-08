@@ -14,7 +14,7 @@
             [kimun.cli.store :as cli-store]
             [kimun.surface.index.cache :as cache]
             [kimun.surface.index.corpus :as corpus]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 (def spec
   "Options added by the `corpus` group (babashka.cli spec); v1's `RankRequest` names."

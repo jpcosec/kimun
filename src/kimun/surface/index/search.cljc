@@ -15,9 +15,9 @@
             [kimun.surface.index.where :as where]
             [kimun.surface.models.segments :as segments]
             [kimun.surface.semantic :as sem]
-            [sldb.host.default :as host]
-            [sldb.kernel.err :as err]
-            [sldb.kernel.reconcile :as reconcile]))
+            [kimun.host.default :as host]
+            [kimun.kernel.err :as err]
+            [kimun.kernel.reconcile :as reconcile]))
 
 (def kinds "The record kinds `find` knows, as `--type` names them." #{:store :model :doc :section :field :tag})
 (def layers "The values of `--in`." #{:physical :semantic :all})

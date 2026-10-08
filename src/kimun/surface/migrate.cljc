@@ -7,7 +7,7 @@
    (docs/v2/tests/parity-v1.md, \"Desviaciones deliberadas\")."
   (:require [clj-yaml.core :as yaml]
             [clojure.string :as str]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 (def index-path "The v1 store index, relative to the `.sldb` directory." "core/store_index.yaml")
 (def documents-dir "Directory of v1 document entries, relative to the `.sldb` directory." "core/documents")

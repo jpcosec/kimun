@@ -6,9 +6,9 @@
    (every id hashes its content, every parent exists, the log agrees with the
    store's revisions and head). Pure: no I/O."
   (:require [clojure.edn :as edn]
-            [sldb.kernel.canon :as canon]
-            [sldb.kernel.plan :as plan]
-            [sldb.kernel.revision :as revision]))
+            [kimun.kernel.canon :as canon]
+            [kimun.kernel.plan :as plan]
+            [kimun.kernel.revision :as revision]))
 
 (defn- tree-info
   "{:name :kind} of tree `tid` in `store`, or an empty map when unknown."

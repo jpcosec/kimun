@@ -46,7 +46,7 @@ bajaba a ~25 s: 7x, no la solución. Se retiró (commit `c53a477`).
 
 ## 3. Diseño
 
-1. **Mapas Merkle independientes de la historia** (`sldb.kernel.mmap`). Un hash trie
+1. **Mapas Merkle independientes de la historia** (`kimun.kernel.mmap`). Un hash trie
    persistente cuyos nodos son objetos EDN del CAS como cualquier otro. Hoja
    `{:mmap :leaf :entries [[k v] …]}` (ordenadas por camino, hasta `leaf-capacity` = 16);
    rama `{:mmap :branch :count n :children {slice id}}` (fan-out 16: un carácter hex del
@@ -74,7 +74,7 @@ bajaba a ~25 s: 7x, no la solución. Se retiró (commit `c53a477`).
    pocos nodos del mmap en vez de reescribir un mapa de todos los árboles.
 5. **Valor de store perezoso**. El valor sigue teniendo las claves que lee la superficie
    (`:objects :trees :edges :revisions :heads :head …`), pero un host con el puerto
-   opcional `LazyMaps` (`sldb.host.lazy`, un `proxy` de `APersistentMap` en Babashka) las
+   opcional `LazyMaps` (`kimun.host.lazy`, un `proxy` de `APersistentMap` en Babashka) las
    calcula al usarlas y nunca cuando nadie pregunta; sin el puerto el kernel cae a mapas
    ansiosos (los hosts de prueba puros siguen funcionando). El adaptador de archivos
    guarda cada objeto ya parseado (puerto opcional `ObjectCache`, sin límite, por
@@ -121,7 +121,7 @@ Los ids de nodos, aristas, objetos de árbol y descriptores no cambian con el fo
 (`bb oracle`). Cambian los ids de revisión (sus campos) y de transacción (el plan
 resuelto incluye `:base`, un id de revisión). Un store de formato 1 (`:format-version 1`,
 o sin la clave) sigue abriendo y escribiendo con el motor conservado en
-`sldb.kernel.legacy.revision` (abre por replay; `heads.edn` = `{:head :heads}`).
+`kimun.kernel.legacy.revision` (abre por replay; `heads.edn` = `{:head :heads}`).
 
 Objetos sin referencia que pueden quedar en `objects/` (todos de escritura única e
 inofensivos): los de un escritor que perdió la carrera (§7) y los nodos del mmap de
@@ -186,7 +186,7 @@ No hay `fsync`: está cubierta la muerte del proceso, no un corte de energía.
 
 ## 8. Ruta de upgrade
 
-`kimun stores upgrade` (sobre `sldb.kernel.upgrade/upgrade!`, que lee un backend y escribe
+`kimun stores upgrade` (sobre `kimun.kernel.upgrade/upgrade!`, que lee un backend y escribe
 otro vacío):
 
 1. Construye el store nuevo en el directorio hermano `<store>.upgrade-<stamp>`, con el
@@ -208,7 +208,7 @@ otro vacío):
 
 Una cola no confirmada del log original no se lleva (nunca fue un commit) y se informa en
 `:dropped-tail`. Sobre un store de formato 2 el comando no hace nada (`:upgraded false`).
-Pruebas: `test/sldb/kernel/upgrade_test.cljc` (historia con todas las ops, propiedad
+Pruebas: `test/kimun/kernel/upgrade_test.cljc` (historia con todas las ops, propiedad
 sobre historias aleatorias, rechazos) y `test/kimun/cli/upgrade_test.cljc` (`docs list`,
 `docs show`, `fields get`, `journal show` y `stores verify` responden igual antes y
 después, leyendo los ids por el mapa).

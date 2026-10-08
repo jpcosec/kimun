@@ -13,7 +13,7 @@
             [kimun.surface.models.recipe :as recipe]
             [kimun.surface.models.render :as render]
             [kimun.surface.models.validate :as validate]
-            [sldb.kernel.test-util :refer [defspec]]))
+            [kimun.kernel.test-util :refer [defspec]]))
 
 (defn- err-type [f] (try (f) nil (catch clojure.lang.ExceptionInfo e (:type (ex-data e)))))
 

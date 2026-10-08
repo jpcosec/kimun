@@ -16,7 +16,7 @@
             [kimun.cli.store :as cli-store]
             [kimun.surface.index.build :as build]
             [kimun.surface.index.cache :as cache]
-            [sldb.kernel.mmap :as mmap]))
+            [kimun.kernel.mmap :as mmap]))
 
 (def env {"USER" "tester"})
 

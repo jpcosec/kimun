@@ -8,7 +8,7 @@
    outgoing|incoming|both}`). `parse-query` validates and normalises it to
    keyword keys; `execute` returns node views sorted by id."
   (:require [clojure.string :as str]
-            [sldb.kernel.err :as err]
+            [kimun.kernel.err :as err]
             [kimun.surface.graph.model :as m]))
 
 (def operators

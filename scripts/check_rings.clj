@@ -10,19 +10,25 @@
 
 (def rings
   "namespace prefix → set of prefixes it may require (besides itself)."
-  {"sldb.kernel."  #{"clojure." "sldb.kernel."}
-   "sldb.host."    #{"clojure." "sldb.kernel." "sldb.host." "babashka."}
-   "sldb.surface." #{"clojure." "sldb.kernel." "sldb.host." "sldb.surface." "babashka."}
-   "kimun."    #{"clojure." "sldb.kernel." "sldb.host." "sldb.surface." "kimun."
-                     "babashka." "cheshire." "clj-yaml." "org.httpkit."}})
+  {"kimun.kernel."          #{"clojure." "kimun.kernel."}
+   "kimun.host."            #{"clojure." "kimun.kernel." "kimun.host." "babashka."}
+   "kimun.surface.markdown." #{"clojure." "kimun.kernel." "kimun.host." "kimun.surface.markdown." "babashka."}
+   "kimun."                  #{"clojure." "kimun.kernel." "kimun.host." "kimun.surface.markdown." "kimun."
+                               "babashka." "cheshire." "clj-yaml." "org.httpkit."}})
 
 (def mutable-constructors
   "Heads of a `def` value form that create mutable state; forbidden in ring 0
    (docs/v2/03 §1: \"Ningún def global mutable\")."
   '#{atom ref agent volatile!})
 
-(defn- ring-of [ns-name]
-  (some (fn [[prefix _]] (when (str/starts-with? ns-name prefix) prefix)) rings))
+(defn- ring-of
+  "The most specific ring prefix for `ns-name`, so `kimun.surface.markdown.*`
+   keeps its own stricter ring instead of falling to the `kimun.` catch-all."
+  [ns-name]
+  (->> (keys rings)
+       (filter #(str/starts-with? ns-name %))
+       (sort-by count >)
+       first))
 
 (defn- read-forms [file]
   (let [rdr (rt/indexing-push-back-reader (slurp (str file)))]
@@ -78,9 +84,9 @@
                        (for [req (requires-of ns-form)
                              :when (not (some #(str/starts-with? req %) (conj (rings ring) ns-name)))]
                          req))
-        cond-in-kernel (when (and ring (= ring "sldb.kernel.") (not= ns-name "sldb.kernel.err"))
+        cond-in-kernel (when (and ring (= ring "kimun.kernel.") (not= ns-name "kimun.kernel.err"))
                          (when (str/includes? (slurp (str file)) "#?") ["reader conditional in kernel"]))
-        mutable-in-kernel (when (= ring "sldb.kernel.") (global-mutable-defs forms))]
+        mutable-in-kernel (when (= ring "kimun.kernel.") (global-mutable-defs forms))]
     (concat
      (when-not ring [(str ns-name ": namespace outside every ring")])
      (map #(str ns-name ": forbidden require " %) bad-requires)

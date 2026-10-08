@@ -11,8 +11,8 @@
             [babashka.fs :as fs]
             [kimun.cli.main :as main]
             [kimun.cli.store :as cli-store]
-            [sldb.host.default :as host]
-            [sldb.kernel.store :as store]))
+            [kimun.host.default :as host]
+            [kimun.kernel.store :as store]))
 
 (def env {"USER" "tester"})
 

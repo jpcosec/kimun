@@ -127,7 +127,7 @@ orden de documento. No se persiste: se recalcula del árbol `model/<Name>/templa
   nodo más por documento; `render` ignora `:attrs :doc`. Es lo que permite la arista
   `reference root→modelo` con `:ref-hash` = id del descriptor y `:actor` del plan.
 - **Frontmatter**: el bloque `---…---` inicial está fuera del perfil (`04 §1`). Se añade a
-  `sldb.surface.markdown.cst` como **extensión opaca**: un solo bloque
+  `kimun.surface.markdown.cst` como **extensión opaca**: un solo bloque
   `:sign/:opaque {:format "markdown/frontmatter" :blob "<bytes exactos>"}` re-emitido byte
   a byte (`04 §7`). Invariantes 8 y 9 intactos: el CST sigue concatenando al texto original
   y `parse(render(A)) == A` porque el opaco se copia tal cual. La superficie de modelos lo

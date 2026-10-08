@@ -8,7 +8,7 @@
    and degree. Results are sorted so the output is deterministic."
   (:require [clojure.set :as set]
             [clojure.string :as str]
-            [sldb.kernel.err :as err]
+            [kimun.kernel.err :as err]
             [kimun.surface.graph.model :as m]))
 
 ;; ---------------------------------------------------------------- paths

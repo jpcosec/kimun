@@ -19,7 +19,7 @@
             [kimun.surface.graph.query :as q]
             [kimun.surface.graph.store :as gs]
             [kimun.surface.graph.traversal :as t]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 ;; ---------------------------------------------------------------- options
 

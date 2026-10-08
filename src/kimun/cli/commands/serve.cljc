@@ -6,7 +6,7 @@
   (:require [clojure.string :as str]
             [kimun.cli.out :as out]
             [kimun.surface.http :as http]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 (def spec
   "Options of the `serve` group (babashka.cli spec, merged by `kimun.cli.main`)."

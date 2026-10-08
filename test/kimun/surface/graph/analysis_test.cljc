@@ -7,7 +7,7 @@
             [kimun.surface.graph.analysis :as a]
             [kimun.surface.graph.io :as gio]
             [kimun.surface.graph.model :as m]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 (defn- index-of
   "v1 helper `index_of`: a graph holding exactly these [from rel to] edges."

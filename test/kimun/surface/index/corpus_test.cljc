@@ -7,7 +7,7 @@
             [clojure.test :refer [deftest is testing]]
             [kimun.surface.docs :as tdocs]
             [kimun.surface.index.corpus :as corpus]
-            [sldb.host.default :as host]))
+            [kimun.host.default :as host]))
 
 (def uno
   "Payload of the first note."

@@ -4,7 +4,7 @@
    `write-json`. Also converts an sldb semantic export (contract
    `sldb_kgdb_semantic_export` v1) to a native snapshot and to a graph."
   (:require [cheshire.core :as json]
-            [sldb.kernel.err :as err]
+            [kimun.kernel.err :as err]
             [kimun.surface.graph.model :as m]))
 
 (defn to-node-link

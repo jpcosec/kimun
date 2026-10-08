@@ -87,7 +87,7 @@
     {:sections ss :owners (into (sorted-map) (segments/field-owners descriptor ss))}))
 
 (defn build
-  "The index of the opened kernel `store` (what `sldb.kernel.store/open`
+  "The index of the opened kernel `store` (what `kimun.kernel.store/open`
    returns, i.e. the `:store` of `kimun.cli.store/open!`). Pure, deterministic,
    EDN round-trippable. Shape (all maps keyed by strings unless said):
 

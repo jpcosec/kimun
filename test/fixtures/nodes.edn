@@ -1,5 +1,5 @@
 ;; Golden ids for docs/v2/02 §2.1 — one entry per class/kind row.
-;; Computed once with sldb.kernel.canon + SHA-256 on 2026-08-29, reviewed, frozen.
+;; Computed once with kimun.kernel.canon + SHA-256 on 2026-08-29, reviewed, frozen.
 [{:class :sign,
   :kind :text,
   :content {:text "El cielo es azul."},

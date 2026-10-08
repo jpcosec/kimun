@@ -14,7 +14,7 @@
             [kimun.cli.store :as cli-store]
             [kimun.surface.models.edit :as edit]
             [kimun.surface.models.store :as mstore]
-            [sldb.host.default :as host]))
+            [kimun.host.default :as host]))
 
 (def env {"USER" "tester"})
 (def ticket (str (fs/absolutize "test/fixtures/models/ticket.edn")))

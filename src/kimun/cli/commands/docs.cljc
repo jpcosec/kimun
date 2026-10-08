@@ -1,8 +1,8 @@
 (ns kimun.cli.commands.docs
   "The `kimun docs` group (docs/v2/06 §B, first slice of S2): `ingest`,
    `update`, `render` and `list`. A document is a `:document` tree of the
-   store built by `sldb.surface.markdown`; every write is a `TransactionPlan`
-   through `sldb.kernel.store/commit!` — no side door. Every command is
+   store built by `kimun.surface.markdown`; every write is a `TransactionPlan`
+   through `kimun.kernel.store/commit!` — no side door. Every command is
    `(fn [args opts ctx] envelope)` where `args` are the positional tokens
    after the subcommand and `ctx` is `{:env env :cwd cwd}`."
   (:require [babashka.fs :as fs]
@@ -19,13 +19,13 @@
             [kimun.surface.models.noise :as noise]
             [kimun.surface.models.render :as mrender]
             [kimun.surface.models.store :as mstore]
-            [sldb.host.default :as host]
-            [sldb.kernel.err :as err]
-            [sldb.kernel.ports :as ports]
-            [sldb.kernel.revision :as revision]
-            [sldb.kernel.store :as store]
-            [sldb.kernel.tree :as tree]
-            [sldb.surface.markdown.plan :as md]))
+            [kimun.host.default :as host]
+            [kimun.kernel.err :as err]
+            [kimun.kernel.ports :as ports]
+            [kimun.kernel.revision :as revision]
+            [kimun.kernel.store :as store]
+            [kimun.kernel.tree :as tree]
+            [kimun.surface.markdown.plan :as md]))
 
 (defn- store-ref [descriptor path] {:name (:name descriptor) :path path})
 
@@ -323,7 +323,7 @@
   "`docs show NAME [--format md] [--ast]`: the document map with payload, hashes and
    `:markdown` (its source; `--format md` prints it). With `--ast` (or `--format ast`,
    once the global `--format` accepts it) the data is instead the document's SLDB-MD
-   AST (`sldb.surface.markdown.plan/store->ast`, docs/v2/04 §8) as `{:name :tree :ast}`;
+   AST (`kimun.surface.markdown.plan/store->ast`, docs/v2/04 §8) as `{:name :tree :ast}`;
    an untyped document is resolved too."
   [args opts ctx]
   (let [{:keys [descriptor store] store-path :path} (open opts ctx)

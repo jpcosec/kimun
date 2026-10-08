@@ -10,7 +10,7 @@
 (require '[babashka.cli :as cli] '[babashka.fs :as fs] '[babashka.process :as p] '[cheshire.core :as json]
          '[clojure.pprint :as pp] '[clojure.string :as str]
          '[kimun.cli.commands.migrate :as migrate] '[kimun.cli.store :as cli-store] '[kimun.surface.docs :as tdocs]
-         '[sldb.host.default :as host] '[sldb.kernel.store :as store])
+         '[kimun.host.default :as host] '[kimun.kernel.store :as store])
 
 (def opts (cli/parse-opts *command-line-args* {:coerce {:no-perf :boolean}}))
 (def v1 (str (fs/absolutize (or (:v1 opts) "/home/jp/proyectos/hum-ecosystem/tools/sldb"))))

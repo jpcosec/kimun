@@ -15,7 +15,7 @@
             [kimun.surface.docs :as tdocs]
             [kimun.surface.edges :as edges]
             [kimun.surface.links :as links]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 (def spec
   "Options added by `docs recover` and `docs compose` (babashka.cli spec).

@@ -9,7 +9,7 @@
   (:require [clojure.string :as str]
             [kimun.surface.index.where :as where]
             [kimun.surface.models.segments :as segments]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 (defn- slugify
   "v1 `_slugify`: lower-case, runs of non-alphanumerics become one `-`."

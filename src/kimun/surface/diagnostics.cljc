@@ -26,7 +26,7 @@
    kernel's verification: `kimun stores verify` names the objects."
   (:require [clojure.string :as str]
             [clojure.walk :as walk]
-            [sldb.kernel.err :as err]
+            [kimun.kernel.err :as err]
             [kimun.surface.docs :as tdocs]
             [kimun.surface.models.extract :as extract]
             [kimun.surface.models.noise :as noise]
@@ -131,7 +131,7 @@
 
 (defn report
   "The diagnosis of `store`. `read-file` is `(fn [relative-path] text-or-nil)`;
-   `opts` may carry `:verify`, the result of `sldb.kernel.store/verify`
+   `opts` may carry `:verify`, the result of `kimun.kernel.store/verify`
    (`{:ok? :checked :bad}`), which adds the store-level finding `:corrupt`.
    Returns `{:valid :summary :checked :counts {category n} :models [finding]
    :documents [finding] :findings [finding]}`: `:documents` has one finding per

@@ -8,7 +8,7 @@
             [babashka.fs :as fs]
             [kimun.cli.main :as main]
             [kimun.cli.store :as cli-store]
-            [sldb.kernel.store :as store]))
+            [kimun.kernel.store :as store]))
 
 (def env {"USER" "tester"})
 

@@ -16,7 +16,7 @@
             [kimun.surface.models.edit :as edit]
             [kimun.surface.models.render :as render]
             [kimun.surface.models.validate :as validate]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 (def spec
   "Options of the direct commands (babashka.cli spec, merged by `kimun.cli.main`)."

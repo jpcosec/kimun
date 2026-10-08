@@ -9,9 +9,9 @@
             [kimun.surface.adapters :as a]
             [kimun.surface.docs :as kdocs]
             [kimun.surface.models.store :as mstore]
-            [sldb.host.default :as host]
-            [sldb.kernel.ports :as ports]
-            [sldb.kernel.revision :as revision]))
+            [kimun.host.default :as host]
+            [kimun.kernel.ports :as ports]
+            [kimun.kernel.revision :as revision]))
 
 (defn- sha256 [s] (ports/digest-str (ports/hasher host/host) s))
 

@@ -52,8 +52,8 @@ bb desk                           # build this repo's desk store (.kimun) from k
 
 ## Layout
 
-- `src/sldb/{kernel,host,surface}/` — rings 0/1/2 of the kernel (`bb lint` enforces the rings)
-- `src/kimun/cli/` — the CLI (ring 2, `kimun.*` may require `sldb.*`, never the reverse)
+- `src/kimun/{kernel,host,surface/markdown}/` — rings 0/1/2 of the kernel (`bb lint` enforces the rings)
+- `src/kimun/cli/` — the CLI (ring 3, `kimun.*` may require the kernel rings, never the reverse)
 - `test/`, `test/fixtures/cli/` — suite and golden envelopes
 - `scripts/` — `check_rings.clj` (lint), `canon_oracle.py` (oracle), `release.clj` (bundles)
 - `release.edn` — pinned Babashka version, platform matrix and asset digests

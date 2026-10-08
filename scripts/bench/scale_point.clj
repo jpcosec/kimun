@@ -7,7 +7,7 @@
 ;; Writes k documents into the store and their files into <dir> (bench-extra-<i>.md).
 (require '[babashka.fs :as fs] '[clojure.string :as str]
          '[kimun.cli.store :as cli-store] '[kimun.surface.docs :as tdocs]
-         '[sldb.host.default :as host] '[sldb.kernel.ports :as ports] '[sldb.kernel.store :as store])
+         '[kimun.host.default :as host] '[kimun.kernel.ports :as ports] '[kimun.kernel.store :as store])
 
 (defn- median [xs] (nth (sort xs) (quot (count xs) 2)))
 (defn- files [d] (into {} (map (fn [f] [(str (fs/file-name f)) (fs/size f)])) (fs/list-dir d)))

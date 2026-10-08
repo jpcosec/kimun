@@ -2,7 +2,7 @@
 
 > Primera superficie del kernel: texto Markdown → CST → AST estructural neutro → árbol
 > de documento + hojas de texto en el pool, y de vuelta. Precisa `docs/v2/02 §7` con
-> reglas cerradas para implementarla. Vive en el anillo 2 (`sldb.surface.markdown.*`),
+> reglas cerradas para implementarla. Vive en el anillo 2 (`kimun.surface.markdown.*`),
 > fuera del kernel.
 
 ## 1. Alcance: un perfil, no todo CommonMark
@@ -16,7 +16,7 @@ direccionabilidad diga con exactitud qué parte de un documento es operable.
 
 ## 2. Puerto de grafemas
 
-`sldb.kernel.ports/TextSegmenter`: `(graphemes [this s])` → **vector de strings**, un
+`kimun.kernel.ports/TextSegmenter`: `(graphemes [this s])` → **vector de strings**, un
 elemento por clúster de grafemas (UAX #29) de `s`, en orden; `(apply str v) == s`. La
 longitud en grafemas es `(count v)`. Implementación: `java.text.BreakIterator`
 (`getCharacterInstance`) en Babashka/JVM; `Intl.Segmenter` en Node (task de paridad).
@@ -265,7 +265,7 @@ desde el texto plano); las hojas `:text` son compartibles entre documentos (mism
 ⇒ mismo nodo). `docs/v2/02 §4` queda precisado así: la capa "markup inline" del stand-off
 es **almacenada** en el bloque; las capas UAX #29 sí son derivadas.
 
-Funciones (todas puras, en `sldb.surface.markdown.plan`):
+Funciones (todas puras, en `kimun.surface.markdown.plan`):
 
 - `(ast->plan host ast {:tree-id ulid|nil :name str :actor str :timestamp str :base rev|nil})`
   → `TransactionPlan` con un `:add-node` por nodo **distinto** (un mismo texto o un mismo
@@ -336,7 +336,7 @@ La traza promesa → test de esta superficie está en `docs/v2/tests/promises.md
 | `markdown->update-plan` reingesta sin `supersedes`; los bloques intactos siguen colocados y el editado queda `orphan` | `drift_test/external-edit-orphans-the-anchor` |
 | informe §9: coverage 1.0 sin opacos; paths y grafemas de cada región | `plan_test/coverage` |
 
-`gen-ast` (en `test/sldb/kernel/generators.cljc`) genera solo ASTs canónicos (§4.1):
+`gen-ast` (en `test/kimun/kernel/generators.cljc`) genera solo ASTs canónicos (§4.1):
 headings 1–6 con texto vacío o no, párrafos con marcas anidadas/disjuntas y texto que
 contiene cada carácter escapable y palabras con `_` interno, code con backticks al
 inicio de línea, listas anidadas hasta 3 niveles con `:start` variados, quotes con

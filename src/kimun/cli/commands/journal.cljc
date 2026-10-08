@@ -7,8 +7,8 @@
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
             [kimun.surface.journal :as journal]
-            [sldb.kernel.err :as err]
-            [sldb.kernel.store :as store]))
+            [kimun.kernel.err :as err]
+            [kimun.kernel.store :as store]))
 
 (defn- store-ref [descriptor path] {:name (:name descriptor) :path path})
 

@@ -3,7 +3,7 @@
    §B): global options, positional tokens, and rejection of unknown options as
    usage errors."
   (:require [babashka.cli :as cli]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 (def formats
   "Accepted values of `--format`."

@@ -2,13 +2,13 @@
   "Locating, opening and creating the `.kimun/` store of the CLI (docs/v2/06
    §B): discovery walks up from the working directory, `--store` and
    `KIMUN_STORE` override it, and every open goes through
-   `sldb.kernel.store/open` with the standard host."
+   `kimun.kernel.store/open` with the standard host."
   (:require [babashka.fs :as fs]
-            [sldb.host.default :as host]
-            [sldb.host.fs-store :as fs-store]
-            [sldb.kernel.err :as err]
+            [kimun.host.default :as host]
+            [kimun.host.fs-store :as fs-store]
+            [kimun.kernel.err :as err]
             [clojure.string :as str]
-            [sldb.kernel.store :as store]))
+            [kimun.kernel.store :as store]))
 
 (def dirname
   "Name of the store directory inside a project."
@@ -131,7 +131,7 @@
 
 (defn open!
   "Opens the store at `dir`: `{:backend b :descriptor d :store s :path dir}`,
-   with `s` opened by `sldb.kernel.store/open`. Raises `:cli/no-store`
+   with `s` opened by `kimun.kernel.store/open`. Raises `:cli/no-store`
    (message names the path) when `dir` is nil or holds no `store.edn`, and
    `:store/invalid-links` when the descriptor's `:links` are malformed or
    absolute."
@@ -158,7 +158,7 @@
     (str (fs/file-name (if (= dirname (str (fs/file-name p))) (fs/parent p) p)))))
 
 (defn init!
-  "Creates a store at `dir` for `actor`: `sldb.kernel.store/init!` with
+  "Creates a store at `dir` for `actor`: `kimun.kernel.store/init!` with
    capabilities `{actor :all \"kimun/derive\" :all \"kimun/materialize\" :all}`,
    then the descriptor gains `:name` (default `default-name`) and `:links []`.
    Creates `dir` when missing. Raises `:cli/store-exists` when `store.edn` is

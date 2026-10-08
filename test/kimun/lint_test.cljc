@@ -10,7 +10,7 @@
 (def script (str (fs/path repo "scripts" "check_rings.clj")))
 
 (def bad-ns
-  "(ns sldb.kernel.bad
+  "(ns kimun.kernel.bad
   \"A kernel namespace with a global atom, which docs/v2/03 §1 forbids.\")
 
 (def bad-cache \"Memo that should be an argument.\" (atom {}))
@@ -25,13 +25,13 @@
 
 (deftest a-global-atom-in-the-kernel-fails-lint
   (let [root (str (ktu/temp-dir "kimun-lint-"))
-        file (fs/path root "src" "sldb" "kernel" "bad.cljc")]
+        file (fs/path root "src" "kimun" "kernel" "bad.cljc")]
     (fs/create-dirs (fs/parent file))
     (spit (str file) bad-ns)
     (let [{:keys [exit out]} (lint root)]
       (is (= 1 exit))
       (is (str/includes? out "global mutable"))
-      (is (str/includes? out "sldb.kernel.bad"))
+      (is (str/includes? out "kimun.kernel.bad"))
       (is (str/includes? out "bad-cache")))))
 
 (deftest the-real-src-tree-is-clean

@@ -15,8 +15,8 @@
             [kimun.surface.docs :as docs]
             [kimun.surface.graph.io :as gio]
             [kimun.surface.models.store :as mstore]
-            [sldb.kernel.err :as err]
-            [sldb.kernel.node :as node]))
+            [kimun.kernel.err :as err]
+            [kimun.kernel.node :as node]))
 
 (def root-semantics
   "Semantics every model inherits (v1 `StructuredNLDoc.__semantics__`)."

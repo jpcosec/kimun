@@ -20,10 +20,10 @@
             [kimun.surface.models.render :as render]
             [kimun.surface.models.edit :as edit]
             [kimun.surface.models.store :as mstore]
-            [sldb.host.default :as host]
-            [sldb.kernel.err :as err]
-            [sldb.kernel.ports :as ports]
-            [sldb.kernel.store :as store]))
+            [kimun.host.default :as host]
+            [kimun.kernel.err :as err]
+            [kimun.kernel.ports :as ports]
+            [kimun.kernel.store :as store]))
 
 (def spec
   "Options of the `models` group (babashka.cli spec, merged by `kimun.cli.main`)."

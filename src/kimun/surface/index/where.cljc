@@ -13,7 +13,7 @@
    `[:cmp op f v]` (op one of `:=` `:!=` `:>=` `:<=`) `[:and q+]` `[:or q+]`
    `[:not q]`; fields and strings are strings, v a string or a number."
   (:require [clojure.string :as str]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 ;; ---------------------------------------------------------------- errors
 

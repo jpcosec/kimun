@@ -9,7 +9,7 @@
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.main :as main]
-            [sldb.kernel.store :as store]))
+            [kimun.kernel.store :as store]))
 
 (def env {"USER" "tester"})
 (defn- run [cwd & argv] (:envelope (main/run (vec argv) env cwd)))

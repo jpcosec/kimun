@@ -3,7 +3,7 @@
 
    Representation in the kernel, all written in ONE TransactionPlan:
    - a `:document` tree named after the document, built by
-     `sldb.surface.markdown` from the source text, whose root block carries
+     `kimun.surface.markdown` from the source text, whose root block carries
      `:attrs {:doc <ulid>}` — one root node per document, its identity;
    - the source text verbatim, the sign `{:kind :opaque :content {:format
      \"markdown/source\" :blob text}}`, tied by a `:derived` edge root→source
@@ -26,13 +26,13 @@
             [kimun.surface.models.extract :as extract]
             [kimun.surface.models.render :as render]
             [kimun.surface.models.store :as mstore]
-            [sldb.kernel.err :as err]
-            [sldb.kernel.node :as node]
-            [sldb.kernel.ports :as ports]
-            [sldb.kernel.revision :as revision]
-            [sldb.kernel.tree :as tree]
-            [sldb.surface.markdown.ast :as ast]
-            [sldb.surface.markdown.plan :as md]))
+            [kimun.kernel.err :as err]
+            [kimun.kernel.node :as node]
+            [kimun.kernel.ports :as ports]
+            [kimun.kernel.revision :as revision]
+            [kimun.kernel.tree :as tree]
+            [kimun.surface.markdown.ast :as ast]
+            [kimun.surface.markdown.plan :as md]))
 
 (def source-format "Format of the opaque sign holding a document's source text." "markdown/source")
 (def meta-key "Key of a plan's `:engines` under which a command records its journal metadata (an EDN string)." "kimun/meta")

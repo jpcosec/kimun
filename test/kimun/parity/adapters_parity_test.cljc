@@ -23,7 +23,7 @@
             [kimun.cli.errors :as errors]
             [kimun.cli.main :as main]
             [kimun.surface.adapters :as ad]
-            [sldb.host.hash :as hash]))
+            [kimun.host.hash :as hash]))
 
 (def ^:private py (or (System/getenv "KIMUN_ADAPTER_PYTHON") "python3"))
 

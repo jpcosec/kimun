@@ -3,7 +3,7 @@
    semantic-export`): `show`, `tags`, `parent-add`, `parent-remove`,
    `equivalent-add` and `export`. Reads derive everything from the opened
    store; every write is a `TransactionPlan` of `kimun.surface.semantic`
-   through `sldb.kernel.store/commit!` — there is no side file. Every command
+   through `kimun.kernel.store/commit!` — there is no side file. Every command
    is `(fn [args opts ctx] envelope)`."
   (:require [babashka.fs :as fs]
             [cheshire.core :as json]
@@ -13,9 +13,9 @@
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
             [kimun.surface.semantic :as sem]
-            [sldb.host.default :as host]
-            [sldb.kernel.err :as err]
-            [sldb.kernel.store :as store]))
+            [kimun.host.default :as host]
+            [kimun.kernel.err :as err]
+            [kimun.kernel.store :as store]))
 
 (defn- open [opts {:keys [env cwd]}] (cli-store/open! (cli-store/resolve-store opts env cwd)))
 (defn- store-ref [{:keys [descriptor path]}] {:name (:name descriptor) :path path})

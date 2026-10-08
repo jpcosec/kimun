@@ -13,8 +13,8 @@
             [kimun.surface.index.where :as where]
             [kimun.surface.models.store :as mstore]
             [kimun.surface.semantic :as sem]
-            [sldb.host.default :as host]
-            [sldb.kernel.store :as store]))
+            [kimun.host.default :as host]
+            [kimun.kernel.store :as store]))
 
 (def env {"USER" "tester"})
 (defn- run [cwd & argv] (:envelope (main/run argv env cwd)))

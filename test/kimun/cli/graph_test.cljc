@@ -18,9 +18,9 @@
             [kimun.surface.graph.io :as gio]
             [kimun.surface.graph.query :as q]
             [kimun.surface.graph.store :as gs]
-            [sldb.host.default :as host]
-            [sldb.kernel.ports :as ports]
-            [sldb.kernel.store :as store]))
+            [kimun.host.default :as host]
+            [kimun.kernel.ports :as ports]
+            [kimun.kernel.store :as store]))
 
 (def env {"USER" "tester"})
 (defn- run [cwd & argv] (:envelope (main/run argv env cwd)))

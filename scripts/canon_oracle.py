@@ -5,7 +5,7 @@ Re-implements, in Python and without looking at the Clojure code, the canonical
 printing of the EDN subset admitted in node content (strings, integers,
 booleans, nil, keywords, vectors, maps, sets) plus NFC normalization and
 SHA-256, and checks the frozen ids of test/fixtures/nodes.edn. Exit 1 on any
-mismatch, so the conformance of sldb.kernel.canon is not circular.
+mismatch, so the conformance of kimun.kernel.canon is not circular.
 """
 import hashlib
 import sys

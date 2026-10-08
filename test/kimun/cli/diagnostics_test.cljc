@@ -9,10 +9,10 @@
             [kimun.cli.main :as main]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
-            [sldb.host.fs-store :as fs-store]
-            [sldb.kernel.mmap :as mmap]
-            [sldb.kernel.revision :as rev]
-            [sldb.kernel.store :as store]))
+            [kimun.host.fs-store :as fs-store]
+            [kimun.kernel.mmap :as mmap]
+            [kimun.kernel.revision :as rev]
+            [kimun.kernel.store :as store]))
 
 (def env {"USER" "tester"})
 (defn- run

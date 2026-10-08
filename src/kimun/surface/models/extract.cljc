@@ -9,7 +9,7 @@
             [kimun.surface.models.descriptor :as descriptor]
             [kimun.surface.models.marker :as marker]
             [kimun.surface.models.recipe :as recipe]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 ;; SnakeYAML resolves a date (`2026-06-14`) and a datetime to the same
 ;; java.util.Date, so a midnight datetime cannot be told from a date after

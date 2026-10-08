@@ -14,7 +14,7 @@
             [kimun.surface.models.render :as render]
             [kimun.surface.models.segments :as segments]
             [kimun.surface.models.store :as mstore]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 (def operations
   "The mutations `mutate` knows; the journal names one as `fields <name>`."

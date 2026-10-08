@@ -13,7 +13,7 @@
    evidence context (`kimun/relation/<name>`) carries the relation name, so
    its anchor state (`intact`/`superseded`/`orphan`) is derived by the kernel.
    Plan builders return `{:changed bool :plan p}`; apply `p` with
-   `sldb.kernel.store/commit!` as the semantic commands do."
+   `kimun.kernel.store/commit!` as the semantic commands do."
   (:require [clojure.edn :as edn]
             [clojure.string :as str]
             [kimun.surface.docs :as docs]
@@ -21,10 +21,10 @@
             [kimun.surface.models.segments :as segments]
             [kimun.surface.models.store :as mstore]
             [kimun.surface.semantic :as sem]
-            [sldb.kernel.anchor :as anchor]
-            [sldb.kernel.err :as err]
-            [sldb.kernel.revision :as revision]
-            [sldb.kernel.node :as node]))
+            [kimun.kernel.anchor :as anchor]
+            [kimun.kernel.err :as err]
+            [kimun.kernel.revision :as revision]
+            [kimun.kernel.node :as node]))
 
 ;; ---------------------------------------------------------------- ids
 

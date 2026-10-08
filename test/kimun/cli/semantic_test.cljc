@@ -13,7 +13,7 @@
             [kimun.cli.store :as cli-store]
             [kimun.surface.docs :as docs]
             [kimun.surface.semantic :as sem]
-            [sldb.host.default :as host]))
+            [kimun.host.default :as host]))
 
 (def env {"USER" "tester"})
 (defn- run [cwd & argv] (:envelope (main/run argv env cwd)))

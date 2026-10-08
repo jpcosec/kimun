@@ -34,7 +34,7 @@
    `:query/bad-address` with `:address` and `:position`."
   (:require [clojure.string :as str]
             [kimun.surface.semantic :as sem]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 ;; ---- recognising and parsing ----
 

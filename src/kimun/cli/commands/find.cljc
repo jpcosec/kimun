@@ -18,7 +18,7 @@
             [kimun.surface.index.cache :as cache]
             [kimun.surface.index.search :as search]
             [kimun.surface.index.where :as where]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 (def spec
   "Options added by `find` (babashka.cli spec); v1's names."

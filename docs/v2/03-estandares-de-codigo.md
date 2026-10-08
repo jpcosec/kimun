@@ -7,24 +7,29 @@
 ## 1. Anillos de dependencia
 
 ```
-ring 0  sldb.kernel.*   ← puro: datos + funciones; requiere SOLO clojure.* y sldb.kernel.*
-ring 1  sldb.host.*     ← adaptadores: implementan los puertos del kernel; único lugar con
+ring 0  kimun.kernel.*   ← puro: datos + funciones; requiere SOLO clojure.* y kimun.kernel.*
+ring 1  kimun.host.*     ← adaptadores: implementan los puertos del kernel; único lugar con
                           reader conditionals (#?), imports de plataforma e I/O; + babashka.*
-ring 2  sldb.surface.*  ← superficies del núcleo (importers/emitters, Markdown):
-                          requieren kernel y host; nunca al revés; + babashka.*
-ring 3  kimun.*         ← producto (CLI y superficies kimun): requiere los anillos 0–2;
-                          además cheshire, clj-yaml y org.httpkit
+ring 2  kimun.surface.markdown.* ← superficie Markdown del núcleo (perfil SLDB-MD):
+                          requiere kernel y host; nunca al revés; + babashka.*
+ring 3  kimun.*         ← producto (CLI y demás superficies kimun: models, graph, index…):
+                          requiere los anillos 0–2; además cheshire, clj-yaml y org.httpkit
 ring 4  tests           ← requieren cualquier cosa
 ```
 
-- **El kernel no importa nada de fuera**: ni `sldb.host.*`, ni `babashka.*`, ni `java.*`
+- El lint resuelve cada namespace por el prefijo **más específico**
+  (`kimun.surface.markdown.*` antes que el catch-all `kimun.*`), de modo que los anillos
+  del kernel y del host conservan exactamente la misma estrictez que tenían antes del
+  rename `sldb.*` → `kimun.*`.
+
+- **El kernel no importa nada de fuera**: ni `kimun.host.*`, ni `babashka.*`, ni `java.*`
   ni `js/*`. Lo que necesita de la plataforma (hash, normalización de texto, ids,
-  reloj, ficheros) lo define como **puerto** (un `defprotocol`) en `sldb.kernel.ports` y
+  reloj, ficheros) lo define como **puerto** (un `defprotocol`) en `kimun.kernel.ports` y
   lo recibe como argumento (`host`). Ningún `def` global mutable, ningún dynamic var
   para inyectar el host.
 - **Un puerto por capacidad** (`Hasher`, `TextNormalizer`, `IdMinter`, `Backend`);
-  `sldb.host.default` compone la implementación estándar del host Babashka/JVM.
-- `sldb.kernel.store` define el puerto `Backend`; `sldb.host.fs-store` lo implementa.
+  `kimun.host.default` compone la implementación estándar del host Babashka/JVM.
+- `kimun.kernel.store` define el puerto `Backend`; `kimun.host.fs-store` lo implementa.
 - Dirección de las flechas: `ring n` → `ring < n` siempre; nunca lateral hacia otro
   adaptador ni hacia fuera. El script `scripts/check_rings.clj` falla ante cualquier
   `require` que rompa esto.
@@ -35,7 +40,7 @@ ring 4  tests           ← requieren cualquier cosa
   docstring del `ns`). Si hace falta un "y", son dos namespaces.
 - Tamaño orientativo: ≤ 300 líneas por namespace del kernel; ≤ 40 líneas por función.
 - El kernel expone funciones sobre **valores**: reciben el store/árbol/nodo y devuelven
-  uno nuevo. Las únicas funciones con efectos viven en `sldb.host.*` y terminan en `!`.
+  uno nuevo. Las únicas funciones con efectos viven en `kimun.host.*` y terminan en `!`.
 - Los errores son `ex-info` con `:type` namespaced (`:canon/invalid-value`,
   `:node/invalid`, `:edge/invalid`, `:tree/invalid`, `:plan/rejected`, `:plan/conflict`,
   `:store/error`, `:store/stale`) y datos suficientes para reproducir el fallo. Nunca
@@ -55,7 +60,7 @@ ring 4  tests           ← requieren cualquier cosa
 - Kebab-case; predicados terminan en `?`; efectos en `!`; conversiones `a->b`.
 - Datos antes que macros; `defrecord` solo para implementar protocolos.
 - Nada de `declare` cruzado entre namespaces; los ciclos se resuelven con puertos.
-- Reader conditionals solo en `sldb.host.*`; `#?(:clj …)` sin rama `:cljs` es una deuda
+- Reader conditionals solo en `kimun.host.*`; `#?(:clj …)` sin rama `:cljs` es una deuda
   registrada en el drawer de paridad Node, no un permiso.
 
 ## 5. Tests
@@ -68,7 +73,7 @@ ring 4  tests           ← requieren cualquier cosa
   `docs/v2/tests/promises.md` lo registra. Un test que compara la función consigo misma
   no cuenta.
 - Tres capas por hito: fixture dorado congelado (`test/fixtures/*.edn`), propiedades
-  test.check con generadores compartidos (`test/sldb/kernel/generators.cljc`) y casos
+  test.check con generadores compartidos (`test/kimun/kernel/generators.cljc`) y casos
   negativos (cada `reject`/`fail` del código tiene al menos un test que lo dispara).
 - Los fixtures se generan **una vez** con la implementación, se revisan a mano y se
   congelan; regenerarlos exige una nota en el propio fichero con el motivo (norma de

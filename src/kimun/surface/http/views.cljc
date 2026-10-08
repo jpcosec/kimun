@@ -12,7 +12,7 @@
             [kimun.surface.models.segments :as segments]
             [kimun.surface.models.store :as mstore]
             [kimun.surface.semantic :as semantic]
-            [sldb.host.default :as host]))
+            [kimun.host.default :as host]))
 
 (defn fail
   "A failure envelope `{:ok false :error {:type :message :data} :exit n}`."

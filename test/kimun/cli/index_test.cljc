@@ -12,8 +12,8 @@
             [kimun.cli.store :as cli-store]
             [kimun.surface.index.build :as build]
             [kimun.surface.models.store :as mstore]
-            [sldb.host.default :as host]
-            [sldb.kernel.store :as store]))
+            [kimun.host.default :as host]
+            [kimun.kernel.store :as store]))
 
 (def env {"USER" "tester"})
 (defn- run [cwd & argv] (:envelope (main/run argv env cwd)))

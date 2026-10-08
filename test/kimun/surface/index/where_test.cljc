@@ -5,7 +5,7 @@
    the typed `:query/bad-where` error with its position."
   (:require [clojure.test :refer [deftest is testing]]
             [kimun.surface.index.where :as where]
-            [sldb.kernel.err :as err]))
+            [kimun.kernel.err :as err]))
 
 (defn- doc
   ([payload] (doc "d" "MemoDoc" [] payload))

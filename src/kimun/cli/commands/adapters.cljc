@@ -25,8 +25,8 @@
             [kimun.surface.docs :as tdocs]
             [kimun.surface.models.extract :as mextract]
             [kimun.surface.models.store :as mstore]
-            [sldb.host.default :as host]
-            [sldb.kernel.err :as err]))
+            [kimun.host.default :as host]
+            [kimun.kernel.err :as err]))
 
 (def usage
   "Usage lines of the group, for the CLI help."

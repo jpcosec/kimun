@@ -4,7 +4,7 @@
    `rebuild`. The graph is the derived view `kimun.surface.edges` computes from
    the opened store at its head — nothing is indexed on disk, so `init` and
    `rebuild` only report. Authored relations and relation types are written as
-   `TransactionPlan`s through `sldb.kernel.store/commit!`. Predicate links
+   `TransactionPlan`s through `kimun.kernel.store/commit!`. Predicate links
    found in document text count as edges unless `--no-links` is given. Every
    command is `(fn [args opts ctx] envelope)`."
   (:require [clojure.string :as str]
@@ -12,11 +12,11 @@
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
             [kimun.surface.edges :as edges]
-            [sldb.host.default :as host]
-            [sldb.kernel.err :as err]
-            [sldb.kernel.ports :as ports]
-            [sldb.kernel.revision :as revision]
-            [sldb.kernel.store :as store]))
+            [kimun.host.default :as host]
+            [kimun.kernel.err :as err]
+            [kimun.kernel.ports :as ports]
+            [kimun.kernel.revision :as revision]
+            [kimun.kernel.store :as store]))
 
 (defn- open [opts {:keys [env cwd]}] (cli-store/open! (cli-store/resolve-store opts env cwd)))
 (defn- store-ref [{:keys [descriptor path]}] {:name (:name descriptor) :path path})

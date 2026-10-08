@@ -22,9 +22,9 @@
             [kimun.surface.index.where :as where]
             [kimun.surface.models.noise :as noise]
             [kimun.surface.models.store :as mstore]
-            [sldb.host.default :as host]
-            [sldb.kernel.err :as err]
-            [sldb.kernel.store :as store]))
+            [kimun.host.default :as host]
+            [kimun.kernel.err :as err]
+            [kimun.kernel.store :as store]))
 
 (def usage
   "Usage lines of the group, for the CLI help."

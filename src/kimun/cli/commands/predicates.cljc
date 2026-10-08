@@ -4,17 +4,17 @@
    links use (`[name:: [[target]]]`). v1 kept them in the store index YAML;
    here they are nodes of the `relations` tree, read by
    `kimun.surface.edges/predicates` (v1's defaults while none was written) and
-   written as `TransactionPlan`s through `sldb.kernel.store/commit!`. Every
+   written as `TransactionPlan`s through `kimun.kernel.store/commit!`. Every
    command is `(fn [args opts ctx] envelope)`."
   (:require [clojure.string :as str]
             [kimun.cli.commands.docs :as cdocs]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
             [kimun.surface.edges :as edges]
-            [sldb.host.default :as host]
-            [sldb.kernel.err :as err]
-            [sldb.kernel.ports :as ports]
-            [sldb.kernel.store :as store]))
+            [kimun.host.default :as host]
+            [kimun.kernel.err :as err]
+            [kimun.kernel.ports :as ports]
+            [kimun.kernel.store :as store]))
 
 (defn- open [opts {:keys [env cwd]}] (cli-store/open! (cli-store/resolve-store opts env cwd)))
 (defn- store-ref [{:keys [descriptor path]}] {:name (:name descriptor) :path path})

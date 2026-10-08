@@ -17,10 +17,10 @@
             [kimun.surface.models.extract :as mextract]
             [kimun.surface.models.render :as mrender]
             [kimun.surface.models.store :as mstore]
-            [sldb.host.default :as host]
-            [sldb.kernel.err :as err]
-            [sldb.kernel.ports :as ports]
-            [sldb.kernel.store :as store]))
+            [kimun.host.default :as host]
+            [kimun.kernel.err :as err]
+            [kimun.kernel.ports :as ports]
+            [kimun.kernel.store :as store]))
 
 (def usage "Usage line of the command." "kimun migrate --from-v1 [PATH] [--pythonpath P] [--dry-run] [--only MODEL] [--limit N] [--force]")
 

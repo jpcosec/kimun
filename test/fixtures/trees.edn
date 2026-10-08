@@ -1,5 +1,5 @@
 ;; Golden tree objects for docs/v2/02 §3.1 — aliases are indexes into :nodes.
-;; Computed once with sldb.kernel.tree + SHA-256 on 2026-08-29, reviewed, frozen.
+;; Computed once with kimun.kernel.tree + SHA-256 on 2026-08-29, reviewed, frozen.
 {:tree-id "01ARZ3NDEKTSV4RRFFQ69G5FAV",
  :nodes
  [{:class :sign,

@@ -1,4 +1,4 @@
-;; Golden AST of profile.md (docs/v2/04 §4) — generated once with sldb.surface.markdown.ast on 2026-08-29, reviewed, frozen.
+;; Golden AST of profile.md (docs/v2/04 §4) — generated once with kimun.surface.markdown.ast on 2026-08-29, reviewed, frozen.
 {:type :document,
  :attrs {},
  :children
