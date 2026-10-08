@@ -1,0 +1,40 @@
+format 3 — store size, before/after (docs/v2/14 §10)
+
+== BEFORE (format 2, main b4e02790, commit-per-document; 556 revisions) ==
+class                           count        bytes        avg
+mmap/branch                      6832      7591985       1111
+plan                              556      5676855      10210
+mmap/leaf                        7122      4746678        666
+tree-object                      5494      1670339        304
+revision                          556       808657       1454
+sign/sign/opaque                 1404       798693        569
+edge/derived                     1078       360052        334
+edge/reference                   1078       289982        269
+sign/sign/external                539       171995        319
+sign/sign/text                   1278       168272        132
+descriptor                        540        94859        176
+sign/sign/block                   691        80062        116
+TOTAL objects                   27168     22458429
+log.edn                                    5891029
+TOTAL apparent                            28349458  (27685.0 KB)
+on disk                                   119 MB (inode blocks)
+
+== AFTER (format 3, S1) ==
+store .kimun
+class                           count        bytes        avg
+plan                                1      4712584    4712584
+tree-object                      5478      1650467        301
+edge/reference                   1078       701496        651
+mmap/leaf                        1447       598927        414
+sign/sign/opaque                  865       303151        350
+sign/sign/external                539       171995        319
+sign/sign/text                   1278       168272        132
+edge/derived                      539       157927        293
+mmap/branch                       106       113635       1072
+descriptor                        540        94859        176
+sign/sign/block                   691        80062        116
+revision                            1          488        488
+TOTAL objects                   12563      8753863
+log.edn                                        151
+TOTAL apparent                             8754014  (8548.8 KB)
+on disk                                   57540608  (56192.0 KB)

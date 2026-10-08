@@ -87,10 +87,20 @@
     (is (true? (:ok (:verify after))) (pr-str (:verify after)))
     (is (= (dissoc (renamed m (:verify before)) :data) (dissoc (:verify after) :data)))
     (is (= (get-in before [:verify :data :bad]) (get-in after [:verify :data :bad])))
-    (testing "the upgraded store keeps working, and a second upgrade is a no-op"
+    (testing "a second upgrade moves format 2 to format 3 in place, and a third is a no-op"
       (spit (str (fs/path proj "a.md")) "# A\n\npara three\n")
       (is (true? (:ok (run proj "docs" "update" "a.md" "--name" "a"))))
-      (let [e2 (run proj "stores" "upgrade")]
+      (let [log-before (mapv #(contains? % :plan) (store/read-log (cli-store/backend dir)))
+            e2 (run proj "stores" "upgrade")]
         (is (true? (:ok e2)) (pr-str e2))
-        (is (= {:upgraded false :format-version 2 :path dir} (:data e2))))
-      (is (true? (:ok (run proj "stores" "verify")))))))
+        (is (true? (get-in e2 [:data :upgraded])))
+        (is (= 2 (get-in e2 [:data :from-format])))
+        (is (= 3 (get-in e2 [:data :format-version])))
+        (is (every? true? log-before) "the format-2 log carried the plans")
+        (is (= 3 (:format-version (store/read-descriptor (cli-store/backend dir)))))
+        (is (not-any? #(contains? % :plan) (store/read-log (cli-store/backend dir)))
+            "format-3 lines carry {:id :revision} only"))
+      (is (true? (:ok (run proj "stores" "verify"))))
+      (let [e3 (run proj "stores" "upgrade")]
+        (is (true? (:ok e3)) (pr-str e3))
+        (is (= {:upgraded false :format-version 3 :path dir} (:data e3)))))))

@@ -209,20 +209,28 @@
 (defn- stamp [] (str/replace (docs/timestamp) #"[^0-9]" ""))
 
 (defn upgrade-store
-  "`stores upgrade`: rewrites a format-1 store as a format-2 one
-   (`kimun.kernel.upgrade/upgrade!`: every transaction re-committed in log order
-   through the format-2 engine, then checked and fully verified). The new store
-   is built in the sibling directory `<store>.upgrade-<stamp>`; the original is
-   untouched until the new one verifies, then it is renamed to
-   `<store>.format-1-<stamp>` (a backup the user may delete) and the new one
-   takes its place. Files of the store directory other than the layout are
-   carried over (not `index/`, derived and keyed by the old revision ids).
-   `upgrade-format-1.edn` in the new store maps every old revision and
-   transaction id to its new id. A format-2 store is left as is
+  "`stores upgrade`: moves the store to the current format. A format-1 store is
+   rewritten as format 2 (`kimun.kernel.upgrade/upgrade!`: every transaction
+   re-committed in log order through the format-2 engine, then checked and
+   fully verified). The new store is built in the sibling directory
+   `<store>.upgrade-<stamp>`; the original is untouched until the new one
+   verifies, then it is renamed to `<store>.format-1-<stamp>` (a backup the user
+   may delete) and the new one takes its place. Files of the store directory
+   other than the layout are carried over (not `index/`, derived and keyed by
+   the old revision ids). `upgrade-format-1.edn` in the new store maps every old
+   revision and transaction id to its new id. A format-2 store is converted to
+   format 3 in place: its log lines `{:id :plan :revision}` become
+   `{:id :revision}` (the resolved plan is already in the CAS, invariant 17)
+   and `store.edn` records `:format-version 3`; nothing else moves and the
+   whole store is verified after the rewrite, restoring the previous files if
+   it fails. For a `:git :ignore` store the stronger path is
+   `include build --rebuild`, which reconstructs the store from the files and
+   drops the verbatim source copies. A format-3 store is left as is
    (`:upgraded false`). When a writer commits to the original meanwhile the
    upgrade is abandoned with `store/stale` (exit 4). Data: `{:upgraded
    :format-version :path}` plus, when upgraded, `{:transactions :head-before
-   :backup :map :dropped-tail :checked :seconds}`."
+   :backup :map :dropped-tail :checked :seconds}` (format 1) or
+   `{:transactions :dropped-plans :checked :seconds}` (format 2→3)."
   [_args opts {:keys [env cwd]}]
   (let [dir0 (cli-store/resolve-store opts env cwd)
         _ (when (or (nil? dir0) (not (cli-store/store? dir0))) (cli-store/open! dir0))
@@ -231,10 +239,35 @@
         descriptor (store/read-descriptor b)
         heads-file (str (fs/path dir "heads.edn"))
         heads-text #(when (fs/exists? heads-file) (slurp heads-file))]
-    (if (= 2 (:format-version descriptor 1))
-      (out/ok "stores upgrade" {:store (store-ref descriptor dir)
-                                :revision (:head (store/read-heads b))
-                                :data {:upgraded false :format-version 2 :path dir}})
+    (cond
+      (= 2 (:format-version descriptor 1))
+      (let [log-file (str (fs/path dir "log.edn"))
+            desc-file (str (fs/path dir "store.edn"))
+            log (vec (store/read-log b))
+            bad (some #(when-not (store/transaction? %) %) log)
+            _ (when bad (err/raise :store/corrupt-log "cannot upgrade: unreadable log line" {:line (or (:torn-line bad) bad)}))
+            dropped (count (filter :plan log))
+            log-text (if (seq log) (str (str/join "\n" (map #(pr-str (dissoc % :plan)) log)) "\n") "")
+            desc-text (pr-str (assoc descriptor :format-version 3))
+            old-log (when (fs/exists? log-file) (slurp log-file))
+            old-desc (slurp desc-file)
+            t0 (System/nanoTime)]
+        (spit log-file log-text)
+        (spit desc-file desc-text)
+        (let [v (try (store/verify-full b host/host)
+                     (catch Exception e {:ok? false :bad [{:reason :replay-failed :message (ex-message e)}]}))]
+          (if (:ok? v)
+            (out/ok "stores upgrade" {:store (store-ref (store/read-descriptor b) dir)
+                                       :revision (:head (store/read-heads b))
+                                       :data {:upgraded true :from-format 2 :format-version 3 :path dir
+                                              :transactions (count log) :dropped-plans dropped
+                                              :checked (:checked v)
+                                              :seconds (/ (Math/round (/ (- (System/nanoTime) t0) 1e7)) 100.0)}})
+            (do (when old-log (spit log-file old-log))
+                (spit desc-file old-desc)
+                (err/raise :store/error "the format-3 store does not verify; the log and descriptor were restored" {:bad (:bad v)})))))
+
+      (= 1 (:format-version descriptor 1))
       (let [t (stamp)
             tmp (str dir ".upgrade-" t)
             backup (str dir ".format-1-" t)
@@ -264,7 +297,12 @@
                                          :map (str (fs/path dir "upgrade-format-1.edn"))
                                          :dropped-tail (some-> (:dropped-tail r) (select-keys [:id :revision :torn-line]))
                                          :checked (get-in r [:verify :checked])
-                                         :seconds (/ (Math/round (/ (- (System/nanoTime) t0) 1e7)) 100.0)}})))))
+                                         :seconds (/ (Math/round (/ (- (System/nanoTime) t0) 1e7)) 100.0)}}))
+
+      :else
+      (out/ok "stores upgrade" {:store (store-ref descriptor dir)
+                                :revision (:head (store/read-heads b))
+                                :data {:upgraded false :format-version 3 :path dir}}))))
 
 (defn show
   "`stores show`: descriptor and heads without replaying the log:
