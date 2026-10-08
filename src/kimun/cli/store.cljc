@@ -129,9 +129,22 @@
     (when-let [dup (->> links (map :name) frequencies (some (fn [[n c]] (when (> c 1) n))))]
       (bad (str "duplicate link name " dup) {:name dup}))))
 
+(defn- project-file-reader
+  "Reads a document path relative to the project root of store `dir` (the
+   parent of the `.kimun` directory): `(fn [relative-path] text-or-nil)`, the
+   reader the typed-document surface uses for by-reference content (docs/v2/14
+   §10). Never raises: a missing or unreadable file reads as nil."
+  [dir]
+  (let [root (str (fs/parent (fs/absolutize dir)))]
+    (fn [rel]
+      (when rel
+        (let [f (fs/path root rel)]
+          (when (fs/regular-file? f) (slurp (str f))))))))
+
 (defn open!
   "Opens the store at `dir`: `{:backend b :descriptor d :store s :path dir}`,
-   with `s` opened by `kimun.kernel.store/open`. Raises `:cli/no-store`
+   with `s` opened by `kimun.kernel.store/open` and carrying `:read-file`
+   (`project-file-reader`). Raises `:cli/no-store`
    (message names the path) when `dir` is nil or holds no `store.edn`, and
    `:store/invalid-links` when the descriptor's `:links` are malformed or
    absolute."
@@ -147,7 +160,7 @@
     (validate-links! descriptor dir)
     {:backend b
      :descriptor descriptor
-     :store (store/open b host/host)
+     :store (assoc (store/open b host/host) :read-file (project-file-reader dir))
      :path (str dir)}))
 
 (defn default-name

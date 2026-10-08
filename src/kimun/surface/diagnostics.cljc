@@ -77,8 +77,17 @@
   [store doc descriptor text]
   (let [host (:host store)
         content-ok (or (nil? (:path doc)) (and (some? text) (= (:fingerprint doc) (tdocs/fingerprint host text))))
-        recorded (when descriptor (try-extract descriptor (:source doc)))
+        recorded (when (and descriptor (:source doc)) (try-extract descriptor (:source doc)))
         on-disk (when (and descriptor text (not content-ok)) (try-extract descriptor text))
+        ;; the recorded payload's hashes live in the anchor edge (format 3): the text is not stored,
+        ;; so an edit is told apart from a reformatting by comparing hashes, not payloads
+        on-disk-hash (when-let [p (:payload on-disk)] (tdocs/content-hash host p))
+        recorded-hash (or (:recorded-content-hash doc)
+                          (when-let [p (:payload recorded)] (tdocs/content-hash host p)))
+        changed (if (seq (:recorded-field-hashes doc))
+                  (let [rh (:recorded-field-hashes doc) now (tdocs/field-hashes host (:payload on-disk))]
+                    (vec (sort (keep (fn [k] (when (not= (get rh k) (get now k)) k)) (distinct (concat (keys rh) (keys now)))))))
+                  (vec (sort (keys (tdocs/changed-fields (or (:payload recorded) {}) (:payload on-disk))))))
         noise-of (fn [t] (let [n (noise/structural-noise descriptor t {:related (keep :descriptor (map #(mstore/find-model store (:name %)) (mstore/models store)))})]
                            (when (noise/noisy? n) n)))
         noisy (fn [base n] [:noise (assoc base :noise n :undeclared (mapv :raw (:headings n)))])
@@ -89,9 +98,9 @@
       (and (not content-ok) (:error on-disk)) [:unextractable (assoc base :error (:error on-disk))]
       (and (not content-ok) (noise-of text)) (noisy base (noise-of text))
       (and (not content-ok) (= :superseded (:state doc))) [:edited (assoc base :fields [])]
-      (not content-ok) (if (= (:payload on-disk) (:payload recorded))
+      (not content-ok) (if (and (some? recorded-hash) (= recorded-hash on-disk-hash))
                          [:reformatted (assoc base :fields-ok true)]
-                         [:edited (assoc base :fields (vec (sort (keys (tdocs/changed-fields (or (:payload recorded) {}) (:payload on-disk))))))])
+                         [:edited (assoc base :fields changed)])
       (:error recorded) [:unextractable (assoc base :error (:error recorded))]
       (= :superseded (:state doc)) [:contract-moved base]
       :else (if-let [n (noise-of (:source doc))] (noisy base n) [:ok base]))))

@@ -32,20 +32,15 @@
   ([prefix suffix] (str (fs/create-temp-file {:dir (root) :prefix prefix :suffix suffix}))))
 
 (defn forget-contract!
-  "Rewrites the source edge of document `name` in the store directory `dir` so
+  "Rewrites the anchor edge of document `name` in the store directory `dir` so
    it carries no `:contract` in its evidence: the shape a document tracked
    before the recorded contract existed has. Reads then fall back to the
    model's current descriptor. Returns the commit result."
   [dir name]
   (let [{:keys [backend store]} (cli-store/open! dir)
         doc (tdocs/find-document store name)
-        eid (first (for [eid (:edges doc)
-                         :let [e (get-in store [:objects eid])
-                               t (get-in store [:objects (:to e)])]
-                         :when (and (= :derived (:type e))
-                                    (= "markdown/source" (get-in t [:content :format])))]
-                     eid))
-        _ (when-not eid (throw (ex-info (str "no source edge for " name) {:document name})))
+        eid (first (filter #(get-in store [:objects % :evidence :contract]) (:edges doc)))
+        _ (when-not eid (throw (ex-info (str "no anchor edge for " name) {:document name})))
         e (get-in store [:objects eid])]
     (kstore/commit! backend store
                     {:plan/version 1 :base (:head store) :actor "human/tester" :engines {}
