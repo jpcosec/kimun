@@ -1,0 +1,34 @@
+{
+  "ok" : true,
+  "command" : "include status",
+  "store" : null,
+  "revision" : null,
+  "data" : {
+    "models" : 17,
+    "documents" : 539,
+    "by-model" : {
+      "AtomDoc" : 218,
+      "ChecklistDoc" : 189,
+      "ConditionDoc" : 35,
+      "EdgeDoc" : 42,
+      "InboxNoteDoc" : 7,
+      "OperatorDoc" : 21,
+      "PillDoc" : 1,
+      "RepositoryDoc" : 1,
+      "RitualDoc" : 1,
+      "RoutineDoc" : 7,
+      "TaskDoc" : 17
+    },
+    "forced" : 209,
+    "tracked" : 539,
+    "findings" : {
+      "declared-missing" : 0,
+      "declared-not-in-store" : 0,
+      "declared-not-tracked" : 0,
+      "store-tracked" : 0,
+      "store-undeclared" : 0,
+      "tracked-undeclared" : 0
+    }
+  },
+  "warnings" : [ ]
+}
