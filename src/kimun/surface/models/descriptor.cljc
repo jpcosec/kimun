@@ -47,9 +47,10 @@
 (defn validate!
   "Returns `descriptor` when it has the shape of 07 §2; raises `:models/invalid`
    naming the first problem otherwise: name, version, template, fields (unique
-   string names, a valid type, a default of that type), `:base` as a vector of
-   names, `:state` coherent with its enum field. `py•` markers are rejected
-   (07 §8). With `{:known-models #{…}}` every `:base` must be one of them."
+   string names, a valid type, a default of that type, a non-empty
+   `:description`), `:base` as a vector of names, `:state` coherent with its
+   enum field. `py•` markers are rejected (07 §8). With `{:known-models #{…}}`
+   every `:base` must be one of them."
   ([descriptor] (validate! descriptor {}))
   ([descriptor {:keys [known-models]}]
    (let [bad (fn [why] (err/raise :models/invalid (str "descriptor: " why) {:model (:model/name descriptor) :problem why}))
@@ -64,6 +65,9 @@
        (when (and (contains? f :type) (not (type-valid? (:type f)))) (bad (str "field `" (:name f) "` has an unknown type " (pr-str (:type f)))))
        (when (and (contains? f :type) (contains? f :default) (not (default-of-type? (:type f) (:default f))))
          (bad (str "the default of field `" (:name f) "` is not of its type " (pr-str (:type f))))))
+     (let [undescribed (->> fields (remove #(and (string? (:description %)) (not (str/blank? (:description %))))) (mapv :name))]
+       (when (seq undescribed)
+         (bad (str "fields must define a non-empty description: " (str/join ", " undescribed)))))
      (when (and (contains? descriptor :base) (not (and (sequential? (:base descriptor)) (every? string? (:base descriptor))))) (bad "`:base` must be a vector of model names"))
      (when known-models
        (when-let [missing (first (remove (set known-models) (:base descriptor)))] (bad (str "base model `" missing "` is not defined"))))

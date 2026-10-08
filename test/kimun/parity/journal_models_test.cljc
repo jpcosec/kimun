@@ -36,7 +36,7 @@
         _ (run p "stores" "init" "--name" "p")
         _ (run p "models" "define" "-f" ticket)
         n0 (count (entries p))
-        _ (run p "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--default" "5")
+        _ (run p "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--description" "Field int." "--default" "5")
         n1 (count (entries p))
         _ (spit (str (fs/path p "t.md")) "# ⸢rev•title⸥\n\nStatus: ⸢rev•status⸥\n\n## Body\n\n⸢rev•body⸥\n")
         _ (run p "models" "template" "TicketDoc" "-f" "t.md")

@@ -13,13 +13,9 @@
    Arreglo propuesto: registrar el contrato usado con un tipo de arista que la sucesión no
    elimine (p. ej. `:projection`) y extraer bajo ese descriptor.
    Evidencia: `test/kimun/parity/known_gaps_test.cljc`.
-2. **`models field-add` de un campo opcional** reasigna el último hueco de los documentos
-   existentes (`test/kimun/parity/known_gaps_test.cljc`).
-3. **Aristas y export de grafo no ven los stores enlazados** (2 funciones; brecha en
+2. **Aristas y export de grafo no ven los stores enlazados** (2 funciones; brecha en
    `tests/parity-v1.md` y `tests/parity-gaps.edn`).
-4. **No se exige descripción por campo** en el validador del descriptor (1 función; brecha
-   en `tests/parity-v1.md` y `tests/parity-gaps.edn`).
-5. **selfdoc**: falta la guarda de before-image al escribir (estado `corpus`) y el chequeo
+3. **selfdoc**: falta la guarda de before-image al escribir (estado `corpus`) y el chequeo
    del grafo kgdb (estado `abierta`).
 
 ### Kernel

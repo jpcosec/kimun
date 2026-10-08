@@ -238,7 +238,7 @@
   ;; v1: test_store_is_valid_again_after_update
   (let [p (project)]
     (run p "docs" "create" "TicketDoc" "other" "--set" "title=O" "--set" "status=open")
-    (is (true? (:ok (run p "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--default" "5"))))
+    (is (true? (:ok (run p "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--description" "Field int." "--default" "5"))))
     (is (= :degraded (get-in (run p "stores" "health") [:data :status])))
     (testing "an edited file is left for a human, the rest is repaired"
       (spit (file p "other.md") "# O\n\nStatus: closed\n")

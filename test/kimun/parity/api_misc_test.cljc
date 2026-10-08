@@ -69,7 +69,7 @@
 ;; field-add extends only that model (new version), the base keeps its id and version.
 (deftest field-add-on-a-derived-model-leaves-the-base-alone
   (let [p (family!) base-id (:id (model p "Party"))
-        e (run p "models" "field-add" "Reservation" "--field" "zone" "--type" "string" "--default" "indoor")
+        e (run p "models" "field-add" "Reservation" "--field" "zone" "--type" "string" "--description" "Field string." "--default" "indoor")
         tpl (get-in (model p "Reservation") [:descriptor :template])]
     (is (true? (:ok e)) (pr-str e))
     (is (= 2 (get-in e [:data :version])))

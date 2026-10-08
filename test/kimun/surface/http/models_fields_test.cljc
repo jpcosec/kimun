@@ -132,7 +132,7 @@
       (let [[st lint] (get-json base "/lint")]
         (is (= 200 st))
         (is (= 0 (get-in lint [:data :count])) "a fresh store checks clean"))
-      (run proj "models" "field-add" "SimpleBook" "--field" "price" "--type" "int")
+      (run proj "models" "field-add" "SimpleBook" "--field" "price" "--type" "int" "--description" "Field int.")
       (let [[st lint] (get-json base "/lint")
             problems (get-in lint [:data :problems])]
         (is (= 200 st))

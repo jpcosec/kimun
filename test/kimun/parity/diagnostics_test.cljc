@@ -26,7 +26,7 @@
 
 (defn- show [p] (:data (run p "docs" "show" "login")))
 (defn- add-field! [p]
-  (is (true? (:ok (run p "models" "field-add" "TicketDoc" "--field" "status" "--type" "string" "--default" "open")))))
+  (is (true? (:ok (run p "models" "field-add" "TicketDoc" "--field" "status" "--type" "string" "--description" "Field string." "--default" "open")))))
 
 ;; v1: store/test_contract_in_model_node.py::test_update_re_extracts_documents_whose_text_did_not_move
 (deftest update-re-extracts-documents-whose-text-did-not-move

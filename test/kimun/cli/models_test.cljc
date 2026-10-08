@@ -76,7 +76,7 @@
   ;; v1: test_draft_edits_leave_journal_entries, test_promote_entry_carries_schema_before_and_after,
   ;;     test_reindex_entry_carries_schema, test_locate_model_source_points_at_the_defining_file (v2: node id + revision)
   (let [p (project) _ (run p "models" "define" "-f" ticket)
-        _ (run p "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--default" "5")
+        _ (run p "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--description" "Priority." "--default" "5")
         h (:data (run p "models" "history" "TicketDoc"))
         j (:data (run p "journal" "show"))]
     (is (= [2 1] (mapv :version h)))
@@ -91,9 +91,9 @@
   ;; v1: test_add_model_field_adds_the_template_marker, test_add_model_field_required_uses_rev_marker,
   ;;     test_add_model_field_empty_string_default_is_a_real_default
   (let [p (project) _ (run p "models" "define" "-f" ticket)
-        _ (run p "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--default" "5")
-        _ (run p "models" "field-add" "TicketDoc" "--field" "note" "--type" "string" "--required")
-        e (run p "models" "field-add" "TicketDoc" "--field" "extra" "--type" "string" "--default" "")
+        _ (run p "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--description" "Priority." "--default" "5")
+        _ (run p "models" "field-add" "TicketDoc" "--field" "note" "--type" "string" "--description" "Note." "--required")
+        e (run p "models" "field-add" "TicketDoc" "--field" "extra" "--type" "string" "--description" "Extra." "--default" "")
         d (get-in (run p "models" "show" "TicketDoc") [:data :descriptor])
         field (fn [n] (first (filter #(= n (:name %)) (:fields d))))]
     (is (= 4 (get-in e [:data :version])))
@@ -102,9 +102,9 @@
     (is (= 5 (:default (field "priority"))))
     (is (= "" (:default (field "extra"))) "an empty string default is a real default")
     (is (not (contains? (field "note") :default)))
-    (let [dup (run p "models" "field-add" "TicketDoc" "--field" "note" "--type" "string")]
+    (let [dup (run p "models" "field-add" "TicketDoc" "--field" "note" "--type" "string" "--description" "Note.")]
       (is (= [3 "models/field-exists"] [(:exit dup) (get-in dup [:error :type])])))
-    (is (= 3 (:exit (run p "models" "field-add" "TicketDoc" "--field" "x" "--type" "float"))))))
+    (is (= 3 (:exit (run p "models" "field-add" "TicketDoc" "--field" "x" "--type" "float" "--description" "X."))))))
 
 (deftest section-markers-match-the-field-type
   ;; v1: test_section_markers_match_the_field_annotation
@@ -118,7 +118,7 @@
   ;;     test_validate_model_draft_rejects_template_referencing_unknown_fields
 ;;     test_cli_v2::test_models_fields_remove_requires_existing_field_and_bumps_version
   (let [p (project) _ (run p "models" "define" "-f" ticket)
-        _ (run p "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--default" "5")
+        _ (run p "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--description" "Priority." "--default" "5")
         _ (run p "models" "field-remove" "TicketDoc" "--field" "priority")
         d (get-in (run p "models" "show" "TicketDoc") [:data :descriptor])]
     (is (not (str/includes? (pr-str d) "priority")))
@@ -136,7 +136,7 @@
 (deftest a-draft-file-leaves-the-defined-model
   ;; v1: test_add_model_field_writes_a_draft_and_leaves_the_active_model, test_validate_model_draft_reports_documents_without_promoting
   (let [p (project) _ (run p "models" "define" "-f" ticket)
-        good (write! p "good.edn" (pr-str (edit/add-field ticket-d {:name "priority" :type :int :required false :default 5})))
+        good (write! p "good.edn" (pr-str (edit/add-field ticket-d {:name "priority" :type :int :required false :description "Priority." :default 5})))
         bad (write! p "bad.edn" (pr-str (-> ticket-d (assoc :base ["GhostDoc"]) (assoc-in [:fields 0 :type] :float))))
         before (get-in (run p "stores" "check") [:data :head])]
     (is (= {:ok true :models [{:name "TicketDoc" :ok true :errors []}]} (:data (run p "models" "check" "-f" good))))

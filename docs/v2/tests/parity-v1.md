@@ -19,15 +19,14 @@ Estado al 2026-10-08, sobre las 590 funciones de test de sldb v1:
 | mapeada | 1 | cubierta por un test de kimun con otro nombre (`parity-map.edn`) |
 | oráculo | 14 | su tema es el motor y los corpus diferenciales la reproducen (`parity-oracle.edn`) |
 | n/a | 55 | probaba un mecanismo que v2 no tiene por diseño; cada una con su razón y lo que sostiene la promesa hoy (`parity-na.edn`) |
-| brecha | 3 | promesa de v1 que kimun **no** cumple todavía (`parity-gaps.edn`, fijadas en `test/kimun/parity/known_gaps_test.cljc`) |
+| brecha | 2 | promesa de v1 que kimun **no** cumple todavía (`parity-gaps.edn`, fijadas en `test/kimun/parity/known_gaps_test.cljc`) |
 | corpus | 1 | produjo casos del corpus sin declararse tema del motor: `selfdoc/test_preflight.py::test_before_image_guard_prevents_clobbering_concurrent_edits` |
 | abierta | 1 | `selfdoc/test_python_scanner.py::test_kgdb_graph_check_rejects_missing_or_stale_source_nodes` |
 
 Brechas abiertas (`parity-gaps.edn`): (1) aristas y export de grafo no ven los stores
-enlazados (2 funciones); (2) no se exige descripción por campo del modelo (1 función).
+enlazados (2 funciones).
 Pendientes no cubiertos por el marcador: un documento `superseded` se lee bajo el contrato
-nuevo, y `models field-add` de un campo opcional reasigna el último hueco de los documentos
-existentes (`test/kimun/parity/known_gaps_test.cljc`).
+nuevo (`test/kimun/parity/known_gaps_test.cljc`).
 
 ## Cómo se mide
 

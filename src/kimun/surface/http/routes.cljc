@@ -241,6 +241,7 @@
    {:method :get :path "/models/detail" :handler (command-route ["models" "show"] :positional [:model] :required [:model])}
    {:method :post :path "/models/fields-add" :write? true
     :handler (models-edit ["models" "field-add"] {:field_name {:flag "--field" :required true} :field_type {:flag "--type" :required true}
+                                                  :description {:flag "--description" :required true}
                                                   :default {:flag "--default"} :required {:flag "--required" :bool? true}})}
    {:method :post :path "/models/fields-remove" :write? true
     :handler (models-edit ["models" "field-remove"] {:field_name {:flag "--field" :required true}})}

@@ -11,9 +11,4 @@
   :kimun "`graph export` has no federation: it exports only the local store (ledger C3: addresses se./gse. between stores deferred)"
   :fix "same change as the linked-store edges gap: have kimun.surface.graph.store/export read the federated edges view, with an include-linked flag"}
 
- "test_standalone.py::test_structured_nl_doc_requires_field_descriptions"
- {:promise "A model whose field lacks a non-empty description is rejected at definition time (v1: TypeError \"fields must define a non-empty description: title\")."
-  :kimun "descriptor/validate! (and so `models define`) accepts a field with no :description or an empty one; 07 §2 lists :description among field keys but never requires it."
-  :fix "In kimun.surface.models.descriptor/validate! add `(when-not (non-blank-string? (:description f)) (bad ...))` per field (or only on the `models define` path if existing fixtures without descriptions must keep working)."}
-
 }

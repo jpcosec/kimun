@@ -13,7 +13,7 @@
             [kimun.kernel.revision :as revision]))
 
 (def base {:model/name "NoteDoc" :base [] :template "# ⸢rev•title⸥\n"
-           :fields [{:name "title" :type :string :required true}]})
+           :fields [{:name "title" :type :string :required true :description "title."}]})
 
 (defn- problem [d & [opts]]
   (try (descriptor/validate! d (or opts {})) nil
@@ -23,21 +23,29 @@
   (is (nil? (problem base)))
   (is (re-find #"capitalised" (problem (assoc base :model/name "note"))))
   (is (re-find #"`:template`" (problem (dissoc base :template))))
-  (is (re-find #"declared more than once" (problem (update base :fields conj {:name "title" :type :int}))))
+  (is (re-find #"declared more than once" (problem (update base :fields conj {:name "title" :type :int :description "title."}))))
   (is (re-find #"unknown type" (problem (assoc-in base [:fields 0 :type] :float))))
   (is (re-find #"unknown type" (problem (assoc-in base [:fields 0 :type] [:list :nope]))))
   (is (re-find #"not of its type" (problem (assoc-in base [:fields 0 :default] 3))))
-  (is (re-find #"not of its type" (problem (update base :fields conj {:name "s" :type [:enum "a" "b"] :default "c"}))))
-  (is (nil? (problem (update base :fields conj {:name "s" :type [:list [:map :string]] :default []}))))
+  (is (re-find #"not of its type" (problem (update base :fields conj {:name "s" :type [:enum "a" "b"] :default "c" :description "s."}))))
+  (is (nil? (problem (update base :fields conj {:name "s" :type [:list [:map :string]] :default [] :description "s."}))))
   (is (re-find #"`:base`" (problem (assoc base :base "X"))))
   (is (re-find #"`:model/version`" (problem (assoc base :model/version 0))))
   (is (re-find #"py•" (problem (assoc base :template "⸢py•x⸥"))))
+  (testing "every field must define a non-empty description"
+    (is (re-find #"fields must define a non-empty description: title"
+                 (problem (assoc-in base [:fields 0] {:name "title" :type :string :required true}))))
+    (is (re-find #"fields must define a non-empty description: title"
+                 (problem (assoc-in base [:fields 0 :description] "   "))))
+    (is (re-find #"title, body"
+                 (problem (assoc base :fields [{:name "title" :type :string :required true}
+                                               {:name "body" :type :string :required true}])))))
   (testing "bases are checked only against a known set"
     (is (nil? (problem (assoc base :base ["Other"]))))
     (is (re-find #"`Other` is not defined" (problem (assoc base :base ["Other"]) {:known-models #{"NoteDoc"}})))
     (is (nil? (problem (assoc base :base ["Other"]) {:known-models #{"NoteDoc" "Other"}}))))
   (testing ":state must agree with its enum field"
-    (let [d (update base :fields conj {:name "st" :type [:enum "a" "b"] :required true})]
+    (let [d (update base :fields conj {:name "st" :type [:enum "a" "b"] :required true :description "st."})]
       (is (nil? (problem (assoc d :state {:field "st" :order ["a" "b"] :terminal ["b"]}))))
       (is (re-find #"names no field" (problem (assoc d :state {:field "zz" :order []}))))
       (is (re-find #"must be an `\[:enum" (problem (assoc d :state {:field "title" :order []}))))

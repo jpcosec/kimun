@@ -48,7 +48,7 @@ puro sobre Babashka, más las superficies que lo usan. Cada capacidad tiene un d
 ## 2. Medidas
 
 **Paridad con sldb v1** (2026-10-08, `python3 scripts/parity/coverage.py <v1> .`), sobre las
-590 funciones de test de v1: 515 portadas, 1 mapeada, 14 oráculo, 55 n/a, 3 brechas, 1
+590 funciones de test de v1: 516 portadas, 1 mapeada, 14 oráculo, 55 n/a, 2 brechas, 1
 corpus y 1 abierta. Detalle y desviaciones: `tests/parity-v1.md`.
 
 **Store real** (1.551 documentos migrados de v1; antes → después, `10-escala.md §9`):
@@ -56,7 +56,7 @@ corpus y 1 abierta. Detalle y desviaciones: `tests/parity-v1.md`.
 `stores verify` 228,4 s → 32,0 s; `.kimun/` 606 MB → 97,7 MB; migración desde v1 522 s → 71 s.
 Abrir y commitear no crecen con la historia.
 
-**Suite** — 875 tests / 9.438 aserciones, 107 namespaces (última corrida de `bb test`,
+**Suite** — 877 tests / 9.458 aserciones, 107 namespaces (última corrida de `bb test`,
 2026-10-08), 0 fallos. `bb oracle`: 9/9 ids
 canónicos; `bb lint`: 96 ficheros.
 
