@@ -1,52 +1,65 @@
-# Ecosistema y pendientes — inventario (2026-10-06)
+# Ecosistema y pendientes — inventario (2026-10-08)
 
-> Foto tomada al cerrar la paridad con sldb v1. Responde tres preguntas: qué queda por hacer
-> en kimun, quién usa sldb y kimun hoy, y qué es `wittgenstein` respecto de kimun. El detalle
-> test a test de la paridad está en `tests/parity-v1.md` y en `scripts/parity/coverage.py`.
+> Pendientes abiertos en kimun, quién usa hoy sldb v1 y qué es `wittgenstein` (la capa G).
+> El estado y las decisiones vigentes están en `05-estado.md`; el detalle test a test de la
+> paridad, en `tests/parity-v1.md` y `scripts/parity/coverage.py`.
 
-## 1. Pendientes
+## 1. Pendientes en kimun
 
 ### Correctitud (de más a menos grave)
-1. **Contrato al leer un documento `superseded`**: se extrae con el contrato NUEVO del modelo; sin
-   backfill, el payload cambia en silencio. Idea de arreglo: registrar el contrato usado con un tipo
-   de arista que la sucesión no elimine (p. ej. `:projection`) y extraer bajo ese descriptor.
-2. **`models field-add` de un campo opcional** reasigna el último hueco de los documentos existentes
-   (fijado en `test/kimun/parity/known_gaps_test.cljc`).
-3. **Aristas y export de grafo no ven stores enlazados** (2 brechas, `parity-gaps.edn`).
-4. **No se exige descripción por campo** en `descriptor/validate!` (1 brecha; exige `--description`
-   en `models field-add` y actualizar fixtures).
-5. **selfdoc**: guarda de before-image al escribir; chequeo del grafo kgdb (2 tests de v1 abiertos).
+
+1. **Contrato al leer un documento `superseded`**: se extrae con el contrato NUEVO del
+   modelo; sin backfill, el payload cambia en silencio. No está cubierto por el marcador.
+   Arreglo propuesto: registrar el contrato usado con un tipo de arista que la sucesión no
+   elimine (p. ej. `:projection`) y extraer bajo ese descriptor.
+   Evidencia: `test/kimun/parity/known_gaps_test.cljc`.
+2. **`models field-add` de un campo opcional** reasigna el último hueco de los documentos
+   existentes (`test/kimun/parity/known_gaps_test.cljc`).
+3. **Aristas y export de grafo no ven los stores enlazados** (2 funciones; brecha en
+   `tests/parity-v1.md` y `tests/parity-gaps.edn`).
+4. **No se exige descripción por campo** en el validador del descriptor (1 función; brecha
+   en `tests/parity-v1.md` y `tests/parity-gaps.edn`).
+5. **selfdoc**: falta la guarda de before-image al escribir (estado `corpus`) y el chequeo
+   del grafo kgdb (estado `abierta`).
 
 ### Kernel
-- Disco: 94 MB de datos ocupan 364 MB (80.435 de 82.787 objetos < 4 KB, un bloque cada uno) → packfiles.
-- El índice por nombre lee el descriptor de cada árbol (O(árboles)) → índice persistente en la Revision.
-- Sin GC ni informe de objetos inalcanzables.
+
+- **Packfiles**: el disco desperdicia un bloque de 4 KB por objeto pequeño. Números en
+  `tests/parity-v1.md` §Diferido y `10-escala.md §9`.
+- **Índice de nombres O(árboles)**: `docs show` y `fields set` leen un descriptor por árbol;
+  un índice persistente en la Revision lo haría constante (`10-escala.md §4`).
+- **Sin GC** ni informe de objetos inalcanzables.
 
 ### Funciones
-- Embeddings: `kimun.surface.index.corpus/rank` acepta `:score-fn`, pero no hay modelo conectado ni
-  vectores persistidos (drawer: `feature-semantic-indexing-and-embeddings`).
-- Capa G: nada produce `:fact/:triple`; el evaluador de S-expressions (S4) no existe. Ver §3.
-- Lenguaje de consulta general (Datalog/Datascript) — el índice derivado es EAV-compatible.
-- Cliente Python (HTTP/CLI) — `python/kimun` solo exporta modelos y aloja adaptadores.
-- Rutas HTTP que graph_ui usa y kimun no tiene: `/kgdb/snapshot`, `/models/promote`.
 
-### Deuda de diseño
-- `kimun.surface.models.blocks` imita la segmentación de markdown-it (por paridad byte a byte con v1)
-  en vez de trabajar sobre el árbol SLDB-MD del kernel.
-- Clave de composiciones del descriptor: la de v1 (`:py/compositions`), no la de `07 §2`.
-- La tabla "Diferido" de `tests/parity-v1.md` conserva filas ya resueltas.
+- **Embeddings**: `kimun.surface.index.corpus/rank` acepta `:score-fn`, pero no hay modelo
+  conectado ni vectores persistidos.
+- **Capa G**: nada produce `:fact/:triple`; el evaluador de S-expressions (S4) y los
+  derivados (S5) no existen (`06 §6`, `docs/archive/v2/09-evaluador-anclado.md`).
+- **Lenguaje de consulta general** (Datalog/Datascript): el índice derivado es EAV-compatible.
+- **Cliente Python**: no existe; `python/kimun` solo exporta modelos y aloja adaptadores
+  (`python/README.md`).
+- **Rutas HTTP para graph_ui**: `/kgdb/snapshot` y `/models/promote` no existen en `serve`.
 
-### Orden (sin código)
-- Commits sin subir: kimun 108, sldb 14.
-- 21 worktrees en `/home/jp/proyectos/kimun-worktrees`; ~1,4 GB de benchmarks en `/tmp/kimun-bench`, `/tmp/kimun-parity`.
-- El store del desk se construye al vuelo con `bb desk` (alias de `kimun include build`) desde `kimun.include.edn`, que declara qué de este repo se versiona (modelos y documentos); los stores nunca se commitean (regla del dueño, 2026-10-07).
-- sldb v1: 233 commits después del tag `v1-frozen`; el congelamiento no se respeta.
-- `~/.sldb`: 49 stores enlazados, 37 ya no existen.
+### Deuda de diseño y experimentos
+
+- **Parser Markdown**: `kimun.surface.models.blocks` imita la segmentación de markdown-it por
+  paridad byte a byte con v1, en vez de trabajar sobre el árbol SLDB-MD del kernel.
+- **Composiciones del descriptor**: la clave es la de v1 (`:py/compositions`), aceptada junto
+  a `:compositions`; `07 §2` propone `{:model :field :order}`.
+- **Concesiones de M/G**: `:symbol` y `:fact` resuelven por existir en el CAS, porque todavía
+  no viven en árboles `:context` (`02 §6.2`).
+- **Fuera del perfil Markdown**: `_` como énfasis, tablas, footnotes e imágenes (`04 §11`).
+- **Board legado**: `desk/tasks/Board.md` no es editable por CLI.
+- **Tree-sitter como pod**: el adaptador `treesitter-symbols` ya existe (`11 §9`); lo
+  pendiente es tree-sitter como parser único de Markdown y de código (decisión 19 en
+  `05-estado.md §3`), midiendo antes las diferencias de corte contra el corpus.
 
 ## 2. Consumidores y superficies
 
 **kimun no tiene consumidores en código.** Aparece solo en documentos (pron, legos, graph_ui,
-iso-lab, knowledge). No hay ningún `.kimun/` en `/home/jp/proyectos`.
+iso-lab, knowledge). El único store `.kimun/` que existe hoy en `/home/jp/proyectos` es el
+desk de este repo, que se construye al vuelo (`13-include.md`).
 
 | consumidor | cómo usa sldb v1 | store propio | último commit |
 |---|---|---|---|
@@ -62,8 +75,8 @@ iso-lab, knowledge). No hay ningún `.kimun/` en `/home/jp/proyectos`.
 | AntonIA (`AWS_Infra`, `kbs`, `AgentsKBs`) | librería; kbsurfaces sirve sus stores | varios | 2026-10-05 |
 | kgdb | capa hueca de re-exportación de sldb | 461 docs | 2026-09-20 |
 
-Casi todos entran por dentro (`sldb.cli.*`, `sldb.store.io`, `sldb.runtime.validation`), no por `sldb.api`.
-Casi todos los stores de 17 modelos son desks de deskops, incluido el de kimun.
+Casi todos entran por dentro (`sldb.cli.*`, `sldb.store.io`, `sldb.runtime.validation`), no
+por `sldb.api`. Casi todos los stores de 17 modelos son desks de deskops, incluido el de kimun.
 
 | UI | tecnología | canal |
 |---|---|---|
@@ -74,16 +87,17 @@ Casi todos los stores de 17 modelos son desks de deskops, incluido el de kimun.
 | sldb-ui | Astro 7 + React 19 + Bun | CLI `python -m sldb … --format json` |
 | kbsurfaces | lanzador de las tres por store (puertos 8800/8810/8820) | CLI + HTTP + lee `.sldb/` |
 
-`kimun serve` usa el mismo puerto (8787) y casi las mismas rutas: las UIs por HTTP son lo más barato
-de mover; deskops es lo que más stores mueve.
+`kimun serve` usa el mismo puerto (8787) y casi las mismas rutas: las UIs por HTTP son lo más
+barato de mover; deskops es lo que más stores mueve.
 
 ## 3. wittgenstein: la capa G
 
 `/home/jp/proyectos/wittgenstein` (Python): texto → contextos y signos locales con offsets →
 declaraciones `(R a b) @ctx` → un WiGame por (contexto, relación) con matriz de verdad V_i y de
-sentido S_i (Sinn/Sinnlos/Unsinnig) → reglas `(if …)` y deducción (I*) → convergencia entre contextos
-(identidad propuesta por implicación entre configuraciones, nunca por string) → curaduría. Cada hecho
-lleva evidencia `{prov:[{document_id, span, extractor, confidence}], tier, curation, derived_from, history}`.
+sentido S_i (Sinn/Sinnlos/Unsinnig) → reglas `(if …)` y deducción (I*) → convergencia entre
+contextos (identidad propuesta por implicación entre configuraciones, nunca por string) →
+curaduría. Cada hecho lleva evidencia
+`{prov:[{document_id, span, extractor, confidence}], tier, curation, derived_from, history}`.
 Runtime de S-expressions. Diseño que manda: `matrix-shrdlu-spec/specs/convergence.md`.
 
 | wittgenstein | kimun |
@@ -96,27 +110,23 @@ Runtime de S-expressions. Diseño que manda: `matrix-shrdlu-spec/specs/convergen
 | V_i, S_i, I, proyecciones | índices derivados, no nodos |
 
 Desajustes: evidencia dentro del hecho (kimun la quiere en aristas); ids aleatorios (salvo
-`tools/kb/store.py` y el legado `hashed_tractatus`, que ya hashean contenido); offsets en code points
-sobre el documento entero vs grafemas por hoja; `:proposition` sin formas anidadas; verdad y sentido
-sin lugar en el triple; símbolos atados al idioma (`she@Q7186`) y relaciones en inglés.
+`tools/kb/store.py` y el legado `hashed_tractatus`, que ya hashean contenido); offsets en code
+points sobre el documento entero vs grafemas por hoja; `:proposition` sin formas anidadas;
+verdad y sentido sin lugar en el triple; símbolos atados al idioma (`she@Q7186`) y relaciones
+en inglés.
 
-Estado del repo: raíz sin commits, falta `MIGRATION.md`, no existe el layout del README, las dos
-líneas del motor (`f13c67d`, `f016c75`) no están reconciliadas (sí comparten historia vía
+Estado del repo: raíz sin commits, falta `MIGRATION.md`, no existe el layout del README, las
+dos líneas del motor (`f13c67d`, `f016c75`) no están reconciliadas (sí comparten historia vía
 `origin/main`, contra lo que dice el README); persistencia mínima (un YAML por WiGame).
 
-## 4. Decisiones del 2026-10-06 (ver `05-estado.md`, 18 y 19)
+Pendiente de kimun: el adaptador que lee S/M de kimun y escribe hechos G con evidencia en
+aristas, y el diseño de esa frontera (decisión 19, `05-estado.md §3`).
 
-- v1 sigue en v1: no se migran consumidores por ahora; kimun se puede regenerar ("retrackear").
-- Lógica de alto nivel en Clojure; servicios nativos portables y plugins en cualquier lenguaje, con
-  frontera clara. tree-sitter (C) como pod pasa a ser candidato a parser único de Markdown: reemplazaría
-  `kimun.surface.models.blocks` (imitación de markdown-it) y el parser propio de `sldb.surface.markdown`;
-  las diferencias de corte contra v1 se revisan y pasan a ser la nueva referencia.
+## 4. Ecosistema sldb v1
 
-## 5. Orden acordado (2026-10-06)
-
-1. Limpieza — **hecha 2026-10-06**: kimun y sldb subidos a GitHub; 21 worktrees fusionados y sus ramas borrados; 14 GB de temporales en `/tmp` borrados y `bb test` ahora barre los que crea. El store del desk se construye al vuelo con `bb desk` (alias de `kimun include build`) desde `kimun.include.edn` (regla del dueño, 2026-10-07: los stores nunca se commitean).
-2. Bug del contrato de documentos `superseded` (§1, ítem 1).
-3. ~~Primer consumidor real de kimun~~ — postergado por la decisión 18 (v1 sigue en v1).
-3b. Prototipo del pod de tree-sitter y medición de diferencias de corte contra el corpus.
-4. En paralelo: consolidar wittgenstein y diseñar la frontera kimun↔wittgenstein (adaptador que lee
-   S/M de kimun y escribe hechos G con evidencia en aristas).
+- **v1 sigue en v1** (decisión 18): los consumidores de la tabla de §2 no se migran por ahora
+  y kimun no está desplegado, así que sus stores e historial se pueden regenerar. Detalle de
+  la decisión: `05-estado.md §3`.
+- **Pendiente en el repo de sldb v1** (su propia inbox): el store `.sldb` no se versiona; hay
+  que sacar shards e índice de git (`f9047b5`).
+- `~/.sldb` ya no es un inventario de decenas de stores enlazados.
