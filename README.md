@@ -1,39 +1,54 @@
 # kimun
 
-**Content-addressed knowledge store with a CLI** — the successor of `sldb` (v1, Python), `kgdb`
-and, for reading, of the anchored evaluator in `pron` (Python), merged into one product.
-The name is Mapudungun (*kimün*, knowledge). The kernel is pure
-Clojure (`.cljc`) running on Babashka: a pool of content-addressed immutable nodes (S/M/G),
-trees of positions as indexes, typed edges with evidence, succession by `supersedes`, derived
-anchor states, reconciliation of external edits. Markdown documents are projections of it.
+**A content-addressed knowledge store with a CLI.** kimun is the successor of `sldb` (v1,
+Python) and `kgdb`, merged into one product. The name is Mapudungun (*kimün*, knowledge).
 
-Status: **2.0.0-alpha.1** — milestone S0 (repo, `stores` CLI group, packaging). See
-`docs/v2/05-estado.md` for what exists and what comes next.
+The kernel is pure Clojure (`.cljc`) running on Babashka: a pool of content-addressed
+immutable nodes (S/M/G), trees of positions as indexes, typed edges with evidence,
+succession by `supersedes`, derived anchor states, and reconciliation of external edits.
+Markdown documents are projections of it.
 
-## Use
+## Install
+
+A release bundle needs nothing on the target machine: `bin/kimun` runs the bundled `bb`
+on `lib/kimun.jar`.
 
 ```bash
-bb lint && bb test && bb oracle     # rings/docstrings, suite, canonical-bytes oracle
-bb desk   # build this repo's desk store (.kimun) from kimun.include.edn (alias of `kimun include build`)
-bin/kimun --version             # dev launcher (needs bb ≥ 1.13 on PATH)
-bin/kimun include check         # this repo versions what kimun.include.edn declares (docs/v2/13)
-bin/kimun include status        # models, documents by model, forced, tracked, findings
-bin/kimun stores init --name my-kb
-bin/kimun stores check --format text
-bb jar                              # target/kimun.jar (built-in bb uberjar)
 bb release --local-bb --platforms linux-amd64   # dist/kimun-<ver>-<plat>.tar.gz
 ```
 
-A release bundle needs nothing on the target machine: `bin/kimun` runs the bundled `bb`
-on `lib/kimun.jar`. Every command prints one envelope (`--format json|edn|text`) and exits
-with a documented code (`docs/v2/06`).
+From a checkout, `bin/kimun` is a development launcher (needs `bb` ≥ 1.13 on PATH).
 
-## Read first
+## Five-minute tour
 
-0. `docs/v2/05-estado.md` — state, decisions, "pista S" milestones
-1. `docs/v2/01-orden-filosofico.md` · `02-sustrato-computacional.md` — what the persisted object is; data structures, invariants, runtime
-2. `docs/v2/06-superficies-y-cli.md` · `07-modelos-como-nodos.md` · `08-distribucion.md` · `09-evaluador-anclado.md` — the product
-3. `desk/atoms/` — durable concept truth (`epoch:v2` prevails); `desk/tasks/Board.md` — active work
+```bash
+bin/kimun stores init --name my-kb          # create .kimun/ in the working directory
+bin/kimun docs ingest notes.md --name notes # parse Markdown and commit it as a document
+bin/kimun docs list --format text           # name, tree id, and for typed ones model/state/path
+bin/kimun docs render notes                 # canonical Markdown of a document
+bin/kimun find "some term"                  # physical, semantic and address search
+bin/kimun journal show --limit 5            # the write history, newest first
+bin/kimun stores health                     # verdict: ok | degraded | needs-human
+```
+
+Every command prints one envelope (`--format json|edn|text`) and exits with a documented
+code. `bin/kimun --help` lists every group.
+
+## Build and test
+
+```bash
+bb lint && bb test && bb oracle   # rings/docstrings, suite, canonical-bytes oracle
+bb jar                            # target/kimun.jar (built-in `bb uberjar`)
+bb desk                           # build this repo's desk store (.kimun) from kimun.include.edn
+```
+
+## Read next
+
+- `docs/v2/README.md` — authority table and reading order for the direction docs; **start here**
+- `docs/v2/05-estado.md` — current status and decisions
+- `docs/v2/06-superficies-y-cli.md` — the CLI inventory and the envelope/exit-code contract
+- `docs/faq.md` — scope and how to read "desk" here
+- `python/README.md` — the Python side (model exporter and adapters)
 
 ## Layout
 
@@ -42,8 +57,10 @@ with a documented code (`docs/v2/06`).
 - `test/`, `test/fixtures/cli/` — suite and golden envelopes
 - `scripts/` — `check_rings.clj` (lint), `canon_oracle.py` (oracle), `release.clj` (bundles)
 - `release.edn` — pinned Babashka version, platform matrix and asset digests
-- `docs/v2/` — direction (highest authority); `docs/architecture/` — previous-stage contracts, superseded where marked
-- `desk/`, `raw/source/`, `runs/` — deskops state, frozen source material, execution evidence
+- `kimun.include.edn` — what this repo versions in git; the store itself is built, not committed
+- `docs/v2/` — direction (highest authority); `docs/archive/` — historical material
+- `desk/` — tracked desk sources (atoms, tasks, models, rituals); `.kimun/` — the built store
+- `raw/source/` — frozen source material; `runs/` — execution evidence
 
 ## Lineage
 
@@ -52,7 +69,7 @@ the word "knowledge" around here; they are distinct (`docs/v2/08 §0`):
 
 | name | what | repo |
 |---|---|---|
-| `kimun` | this product: SLDB v2 kernel + models + anchored evaluator, binary `kimun` | `jpcosec/kimun` |
+| `kimun` | this product: SLDB v2 kernel + models + CLI, binary `kimun` | `jpcosec/kimun` |
 | `pron` | the provenance knowledge base and the Python evaluator over `.sldb` v1 + kgdb, in one package (pip `pron`); alive, imported by `kinesis` | `jpcosec/pron` |
 | `knowledge` | frozen: the July 2026 file-based CLI only | `jpcosec/knowledge` |
 

@@ -1,37 +1,40 @@
 # AGENTS
 
-## Workspace mode
+How an agent works in this repository.
 
-- This worktree holds v2 direction and, once tasks are promoted, first-slice implementation.
-- `deskops` governs workflow through `desk/` artifacts and CLI state.
-- `sldb` is the data/document layer.
-- Implementation progress may only be claimed with test evidence under `runs/subagents/` and a commit.
+## Reading order
 
-## Mandatory recovery order
-
-1. `AGENTS.md`
+1. `AGENTS.md` (this file)
 2. `README.md`
-3. `docs/v2/05-estado.md` (status, decisions, next step)
-4. `docs/v2/01-orden-filosofico.md`
-5. `docs/v2/02-sustrato-computacional.md`
-6. `docs/faq.md`
-7. `desk/tasks/Board.md`
-8. task-bound pills in `desk/contexts/`
-9. `desk/rituals/phase.md`
-10. `desk/rituals/execution.md`
-11. `desk/rituals/testing.md`
-12. `desk/rituals/closeout.md`
-13. referenced `desk/atoms/`
+3. `docs/v2/README.md` — the authority table and reading order for the direction docs
+4. `docs/v2/05-estado.md` — current status and decisions
+5. `docs/faq.md` — scope and what closes a task
+6. `desk/tasks/Board.md` — active work (legacy format, not editable through the CLI)
 
-## Implementation-task rule (epoch v2)
+Then the documents the task references.
 
-- An implementation task enters execution only after the zero-context audit gate (`desk/rituals/ritual-zero-context-audit-gate.md`) is clean; evidence lives under `runs/subagents/`.
-- Its `files:`, validation (`bb test`) and Done When must let a blind executor start without questions.
-- Closeout requires passing validation output in the run directory and a commit.
+## Layers and the desk
 
-## Planning-task rule (legacy, planning-era tasks only)
+- `kimun` is the data/document layer: a content-addressed store plus the Markdown, models
+  and query surfaces. `sldb` v1 and `kgdb` are frozen and superseded by it.
+- The desk is a kimun store at `.kimun/`, never committed. Build it with
+  `bin/kimun include build` (alias `bb desk`) from `kimun.include.edn` and
+  `desk/models/*.edn`.
+- Manage the desk with kimun commands (`docs`, `fields`, `find`, `journal`), not with the
+  deskops CLI.
+- Work is executed by herdr pi workers.
 
-- Each planning task must produce exactly one named contract artifact.
-- The contract artifact must cite governing atoms and target architecture docs.
-- Validation is attestation against task scope and explicit non-goals.
-- Closeout requires task metadata, board notes, and artifact paths to agree.
+## Validation
+
+- `bb lint` — dependency rings and docstrings.
+- `bb test` — the suite (runs `lint` first).
+- `bb oracle` — independent Python check of canonical bytes.
+- Implementation progress may only be claimed with test evidence under `runs/subagents/`
+  and a commit.
+
+## Commits
+
+- One task, one commit; the message says what changed and why.
+- Add the trailer used across this repository:
+  `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
+- Closeout requires the passing validation output in the run directory.

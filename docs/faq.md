@@ -1,29 +1,28 @@
 # Workspace FAQ
 
-## What is this worktree for?
+## What is this repository for?
 
-Direction (docs/v2), knowledge base (desk/atoms) and implementation of `kimun`: the SLDB v2 kernel plus the product surface (CLI, models, indexes, evaluator, packaging) built on it along the "pista S" milestones (docs/v2/05 §Pista S).
+Direction (`docs/v2/`), the knowledge base (`desk/atoms/`) and the implementation of
+`kimun`: the SLDB v2 kernel plus the product surface (CLI, models, indexes, packaging).
+Current status is in `docs/v2/05-estado.md`; pending items are in
+`docs/v2/12-ecosistema-y-pendientes.md`.
 
-## What is intentionally out of scope here?
+## What is intentionally out of scope?
 
-- implementation before the zero-context audit gate is clean
-- v1 parity as a 1:1 port. The parity **floor** (store core, direct extract/render/validate, find/--where/addresses/--global, links/transclusion/predicates, serve, graph export/query) is in scope through the pista S milestones (docs/v2/06); faq/explore/inbox/ast/lint/legacy are dropped
-- M/G engines, embeddings and UI (kernel milestones 7–9 run in parallel; Node parity stays in the drawer)
+- The anchored evaluator (S4) and derived writes (S5).
+- Embeddings, M/G semantics as engines, and UI (Node parity stays in the drawer).
+- v1 parity as a 1:1 port. Parity with sldb v1 is closed and measured in
+  `docs/v2/tests/parity-v1.md`; decision 18 keeps v1 in v1 and lets kimun stores be
+  regenerated (`docs/v2/05-estado.md §3`).
 
-## What closes an implementation task here?
+## How does an agent work and close a task?
 
-- the zero-context audit gate for its bundle is clean (last round has no high/medium findings)
-- `bb test` passes and its output is saved under `runs/subagents/<run>/validation.log`
-- the task's `files:` exist and a commit closes it
+See `AGENTS.md`. Implementation progress requires test evidence under `runs/subagents/` and
+a commit.
 
-## What closed a planning task here? (legacy)
+## How should "desk" and deskops be interpreted here?
 
-- one contract doc exists
-- the doc cites governing atoms/diagrams
-- the task `files:` list includes the output doc
-- (planning-era tasks were planning-only; all such tasks are closed)
-
-## How should deskops be interpreted here?
-
-- `kimun` (this repo, formerly `sldb` v2) = data/document layer; `sldb` v1 and `kgdb` are frozen and superseded by it
-- `deskops` = workflow harness
+- `kimun` is the data/document layer; `sldb` v1 and `kgdb` are frozen and superseded by it.
+- The desk is a kimun store at `.kimun/`, built by `bin/kimun include build` (alias
+  `bb desk`) from `kimun.include.edn` and `desk/models/*.edn`, and managed with kimun
+  commands. The deskops CLI is not used in this repository.
