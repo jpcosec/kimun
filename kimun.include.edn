@@ -196,18 +196,9 @@
           "desk/atoms/update-tracked-document-workflow.md"
           "desk/atoms/visual-graph-explorer.md"
           "desk/atoms/visual-ux-surface.md"
-          "desk/atoms/what-a-store-is.md"
-          "desk/contexts/pill-planning-contracts.md"
-          "desk/contexts/pill-python-guidelines.md"
-          "desk/contexts/pill-rust-guidelines.md"
-          "desk/contexts/pill-specyaml-traceability.md"}
+          "desk/atoms/what-a-store-is.md"}
  :exclude ["desk/atoms/testing.md"
-            "desk/contexts/pills.md"
             "desk/inbox/20260729-015720-unclear-deskops-next-task-arg-parsing.md"
             "desk/inbox/20260729-015729-unclear-deskops-atom-tracking-fails.md"
-            "desk/rituals/closeout.md"
-            "desk/rituals/execution.md"
-            "desk/rituals/phase.md"
-            "desk/rituals/testing.md"
             "desk/tasks/Board.md"]
 }

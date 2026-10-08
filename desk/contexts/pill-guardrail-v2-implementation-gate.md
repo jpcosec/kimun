@@ -13,7 +13,7 @@ tags:
 
 _Define the context or guardrail this pill carries._
 
-For epoch v2 implementation tasks, the applicable execution ritual is desk/rituals/ritual-zero-context-audit-gate.md; the legacy execution/testing/closeout rituals are planning-era text and do not apply.
+For epoch v2 implementation tasks, the applicable execution ritual is desk/rituals/ritual-zero-context-audit-gate.md; the legacy execution/testing/closeout rituals are archived under docs/archive/desk/rituals/ and do not apply.
 
 ## Why
 
@@ -31,16 +31,16 @@ Whenever a task tagged for the v2 first slice sits on its -execution-ready node,
 
 _Name the files, surfaces, or scope this pill applies to._
 
-desk/tasks/task-implement-v2-*.md, docs/v2/, desk/atoms/atom-*.md with epoch:v2, runs/subagents/*-zero-context-audit/
+desk/tasks/*.md, docs/v2/, desk/atoms/atom-*.md with epoch:v2, runs/subagents/*-zero-context-audit/
 
 ## How
 
 _Describe the correct way to apply this guidance._
 
-Run the zero-context audit gate with cheap fresh-context lanes; fix atoms, docs and tasks through deskops; commit the runs/ evidence; then deskops advance task.
+Run the zero-context audit gate with fresh-context herdr pi workers; fix atoms, docs and tasks in the repo and rebuild the desk with `bin/kimun include build`; commit the runs/ evidence.
 
 ## How Not
 
 _Describe the shortcut or failure mode to avoid._
 
-Do not start src/ or test/ files before the last audit round is clean; do not give lanes chat context; do not hand-edit legacy rituals or Board.md (log gaps in desk/inbox instead).
+Do not start src/ or test/ files before the last audit round is clean; do not give lanes chat context; do not hand-edit the desk store (it is built from kimun.include.edn and desk/models/*.edn by `bin/kimun include build`) or Board.md (log gaps in desk/inbox instead).

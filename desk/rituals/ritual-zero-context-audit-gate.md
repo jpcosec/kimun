@@ -5,10 +5,10 @@ id: ritual-zero-context-audit-gate
 steps:
 - 'Freeze the bundle: list every file a lane may read in runs/subagents/<ts>-<task>-zero-context-audit/brief.md
   and snapshot task.txt, next.txt, graph.txt, git-status.txt'
-- 'Launch fresh-context read-only lanes on a cheap model with no chat context: A internal
-  coherence of docs/v2 and epoch:v2 atoms; B executability of the task against the
-  100% subagent-ready checklist A-M; C contradiction sweep of legacy atoms, contracts
-  and features against docs/v2'
+- 'Launch fresh-context read-only lanes as herdr pi workers on a cheap model, with
+  no chat context: A internal coherence of docs/v2 and epoch:v2 atoms; B executability
+  of the task against the 100% subagent-ready checklist A-M; C contradiction sweep
+  of legacy atoms, contracts and features against docs/v2'
 - Persist each lane report as lane-<X>.md with Note [high|medium|low] file:lines findings
 - 'Triage in triage.md: every high/medium finding maps to a correction in an atom,
   a docs/v2 section, a task split, or a legacy retirement; design problems are returned
@@ -34,7 +34,7 @@ Prove that a task bundle (task, atoms, docs, pill) is executable without improvi
 
 _State when this ritual should start._
 
-A task sits on its -execution-ready node and 'deskops next' lists the fresh-context subagent review as pending.
+A task reaches its execution-ready state; inspect the desk store (`.kimun`) with `bin/kimun` (`docs list`, `fields get`, `edges show`, `journal show`) and start the fresh-context review as herdr pi workers, not from chat memory.
 
 ## Preconditions
 
@@ -66,7 +66,7 @@ _List common mistakes this ritual prevents._
 
 _Describe what completion looks like._
 
-triage.md of the last round declares the gate satisfied and the task is advanced with deskops advance task.
+triage.md of the last round declares the gate satisfied; the run evidence is committed and the task state is updated. The desk is built with `bin/kimun include build` (alias `bb desk`) from `kimun.include.edn` and `desk/models/*.edn`.
 
 ## Step Details
 
