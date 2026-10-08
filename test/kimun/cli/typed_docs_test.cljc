@@ -273,7 +273,7 @@
           store (:store (cli-store/open! (str (fs/path proj ".kimun"))))
           model-id (:id (mstore/find-model store "TicketDoc"))]
       (is (= model-id (:contract-id (tdocs/find-document store "login"))) "the source edge records the descriptor written under")
-      (is (true? (:ok (run "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--default" "5"))))
+      (is (true? (:ok (run "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--default" "5" "--description" "Priority."))))
       (let [after (:data (run "docs" "show" "login"))
             store' (:store (cli-store/open! (str (fs/path proj ".kimun"))))
             new-id (:id (mstore/find-model store' "TicketDoc"))
