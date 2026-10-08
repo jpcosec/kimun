@@ -93,7 +93,7 @@
     (spit (file p "n.edn") (pr-str note))
     (is (true? (:ok (run p "models" "define" "-f" "n.edn"))))
     (is (true? (:ok (run p "docs" "create" "Note" "hello" "--set" "title=Hello" "--set" "body=World body"))))
-    (is (true? (:ok (run p "models" "field-add" "Note" "--field" "summary_en" "--type" "string"))))
+    (is (true? (:ok (run p "models" "field-add" "Note" "--field" "summary_en" "--type" "string" "--description" "Optional summary."))))
     (testing "the document keeps the payload of the contract it was written with"
       (is (= base-payload (get-in (run p "docs" "show" "hello") [:data :payload]))))
     (testing "`stores update` re-renders it under the new contract with the body intact"
