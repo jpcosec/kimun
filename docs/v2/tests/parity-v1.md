@@ -15,16 +15,18 @@ Estado al 2026-10-08, sobre las 590 funciones de test de sldb v1:
 
 | estado | funciones | qué significa |
 |---|---|---|
-| portada | 515 | un test de kimun la nombra y ejerce la misma promesa |
+| portada | 517 | un test de kimun la nombra y ejerce la misma promesa |
 | mapeada | 1 | cubierta por un test de kimun con otro nombre (`parity-map.edn`) |
 | oráculo | 14 | su tema es el motor y los corpus diferenciales la reproducen (`parity-oracle.edn`) |
 | n/a | 55 | probaba un mecanismo que v2 no tiene por diseño; cada una con su razón y lo que sostiene la promesa hoy (`parity-na.edn`) |
-| brecha | 3 | promesa de v1 que kimun **no** cumple todavía (`parity-gaps.edn`, fijadas en `test/kimun/parity/known_gaps_test.cljc`) |
+| brecha | 1 | promesa de v1 que kimun **no** cumple todavía (`parity-gaps.edn`, fijadas en `test/kimun/parity/known_gaps_test.cljc`) |
 | corpus | 1 | produjo casos del corpus sin declararse tema del motor: `selfdoc/test_preflight.py::test_before_image_guard_prevents_clobbering_concurrent_edits` |
 | abierta | 1 | `selfdoc/test_python_scanner.py::test_kgdb_graph_check_rejects_missing_or_stale_source_nodes` |
 
-Brechas abiertas (`parity-gaps.edn`): (1) aristas y export de grafo no ven los stores
-enlazados (2 funciones); (2) no se exige descripción por campo del modelo (1 función).
+Brecha abierta (`parity-gaps.edn`): no se exige descripción por campo del modelo (1
+función). Cerrada en A3: las aristas y el export de grafo ven los stores enlazados
+(`linked-store-documents-come-back-qualified`, `graph-export-composes-linked-stores`
+en `test/kimun/parity/closed_gaps_test.cljc`).
 Pendientes no cubiertos por el marcador: un documento `superseded` se lee bajo el contrato
 nuevo, y `models field-add` de un campo opcional reasigna el último hueco de los documentos
 existentes (`test/kimun/parity/known_gaps_test.cljc`).
@@ -52,7 +54,7 @@ existentes (`test/kimun/parity/known_gaps_test.cljc`).
 | B1 | modelos en el store y CLI: `models define\|list\|show\|check\|history`, `extract\|render\|validate` directos | T1 | 60 min | serie | api/test_api_models, api/test_model_lifecycle, api/test_api_model_drafts, store/test_models_io, store/test_contract_in_model_node, store/test_resolver |
 | B2 | documentos con modelo: `docs create\|track\|update\|untrack\|delete\|show\|list`, `fields`, `sections` | B1 | 90 min | serie | api/test_api_creation, api/test_api_documents, api/test_api_stores, store/test_cli_store, test_cli_v2, store/test_section_rebuild, api/test_structural_noise, test_cli_reconciliation, store/test_update_fault_tolerance, store/test_hashing |
 | C1 | índice derivado, `find`, direcciones, `--global`, `stores link` | B2, A2 | 60 min | serie (base de C2–C5) | test_address_surface, test_field_corpus, test_linked_structural, api/test_api_store_fingerprint |
-| C2 | aristas, relaciones, predicates, `graph *`, export/snapshot | C1, A3 | 60 min | tanda C | api/test_api_edges, api/test_api_graph, api/test_graph_source_parity, api/test_declared_references, api/test_composition_edges, test_relation_models, test_predicates_cli, store/test_edge_anchor_targets, store/test_semantic_export |
+| C2 | aristas, relaciones, predicates, `graph *`, export/snapshot; federación de stores enlazados (A3) | C1, A3 | 60 min | tanda C | api/test_api_edges, api/test_api_graph, api/test_graph_source_parity, api/test_declared_references, api/test_composition_edges, test_relation_models, test_predicates_cli, store/test_edge_anchor_targets, store/test_semantic_export |
 | C3 | semántica: tags, DAG, equivalencias | C1 | 45 min | tanda C | api/test_api_semantic, store/test_semantic_dag_walk, store/test_semantic_rebuild |
 | C4 | journal como vista del log: `journal show\|verify` | B2 | 30 min | tanda C | api/test_journal |
 | C5 | `docs recover\|compose` en CLI | B2, A4 | 30 min | tanda C | test_links (parte CLI) |
@@ -89,6 +91,7 @@ nombra, para cada uno, el test del kernel que sostiene la promesa equivalente.
 | D1b rutas HTTP | hecho 2026-10-06 | `87c73cf`, `072159c`; `kimun.surface.http.{routes,views}`: schema, graph, save por lotes con `expected`, docs create/track/untrack, document, segments, fields, sections, find, edges, graph, corpus, similar, models, lint, ast; de 61 funciones de v1: 55 portadas, 4 n/a, 2 ya cubiertas por el esqueleto |
 | E1 migración | hecho 2026-10-06 | `dc770e6`, `548b9bf`, `2cfed85`; `kimun migrate --from-v1`; **store real de v1: 35/35 modelos, 1.551/1.551 documentos migrados (47 con `--force` por no hacer round-trip), 1.544 payloads y content-hash iguales a v1, 7 distintos (`TaskDoc.from_drawer`), 1.551 source-hash iguales, 1.551 rutas relativas**; informe en `runs/parity/migrate-2026-10-06.md` |
 | C2 aristas, grafo, predicates | hecho 2026-10-06 | `6bdc107`…`0552d4e`; `kimun.surface.edges` (grafo del store como vista derivada, ids `sldb://…` de v1), `kimun.surface.graph.store`, grupos `edges`, `graph`, `predicates`; predicates y tipos de relación como nodos en el árbol `relations`, relación de autor = arista `:semantic` con contexto; diferencial: 40 documentos reales, 2.486 aristas de v1, 1.991 iguales, 541 diferencias todas explicadas; 52 funciones portadas, 4 n/a, 3 diferidas |
+| A3 federación de aristas y grafo | hecho 2026-10-08 | `kimun.surface.edges` deriva también las stores enlazadas alcanzables (`:linked`, abiertas por el llamador con `kimun.cli.store/linked-stores` y su guarda de ciclos) y las califica por nombre de enlace (v1 `federation.qualify`): `sldb://document/annex:Table:t99`, `semantics.store`, aristas de documento; `--local` las deja fuera; usado por `edges show\|node\|nodes` y `graph *`/`export`/`snapshot save`; cierra las 2 brechas |
 | C1 índice, direcciones, `find` | hecho 2026-10-06 | `ebbc7d8`…`ea07e95`; `kimun.surface.index.{build,cache,address,search,corpus}`, comandos `find`, `corpus rank\|refresh`, `rebuild-indexes`, `--store NAME`; 38 funciones portadas, 3 n/a, 3 diferidas |
 | B2b campos y secciones | hecho 2026-10-06 | `c76a2d0`, `67762e0`, `ff7aead`, `12fb3be`; `kimun.surface.{fields,sections}`, grupos `fields` y `sections`, `kimun.cli.compose` (contexto de composición contra la raíz del proyecto), `kimun.cli.linked` (modelo de un store enlazado: `ALIAS:Model`), arreglo del timestamp a medianoche; de `test_cli_v2` 9 portadas, 2 parciales, 1 n/a; secciones 8; composición a nivel de store 3; paridad de documentos reales 54/57 |
 | C6 diagnósticos | hecho 2026-10-06 | `ecb60a5`, `aca762b`; `kimun.surface.diagnostics` (categorías `ok reformatted edited missing contract-moved unextractable noise orphan corrupt`, cada una con su acción), `kimun.surface.models.noise`, `stores check\|health\|update\|reconcile`; un store inválido es el fallo `store/invalid` (exit 5); 32 funciones de v1 portadas, 4 n/a |
@@ -108,7 +111,7 @@ nombra, para cada uno, el test del kernel que sostiene la promesa equivalente.
 
 | de | qué falta | lo recoge |
 |---|---|---|
-| C2 | aristas y export de grafo no ven los stores enlazados (`test_linked_store_documents_come_back_qualified`, `…linked_stores_gap_G5`): ver `parity-gaps.edn` | K2 (pendiente) |
+| ~~C2~~ | cerrado en A3: aristas y export de grafo ven los stores enlazados (`test_linked_store_documents_come_back_qualified`, `…linked_stores_gap_G5`); `--local` los deja fuera | — |
 | K1 | **disco**: 94 MB de datos pero 364 MB en disco, porque 80.435 de 82.787 objetos pesan menos de 4 KB y cada uno ocupa un bloque; meta 150 MB no cumplida. Arreglo: empaquetar objetos (packfiles al estilo git) | K2 (pendiente) |
 | K1 | `docs show` y `fields set` leen el descriptor de cada árbol para el índice por nombre (O(árboles)); constante requeriría un índice persistente en la Revision; no hay GC ni informe de objetos inalcanzables | K2 (pendiente) |
 

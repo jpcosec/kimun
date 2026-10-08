@@ -168,14 +168,14 @@ Sin opciones ni subcomandos. Escribe el índice derivado de la cabecera bajo `.k
 
 ### edges
 
-El grafo es la vista derivada del store en su cabecera; `init` y `rebuild` solo informan.
+El grafo es la vista derivada del store en su cabecera; `init` y `rebuild` solo informan. Sin `--local`, `show`, `node` y `nodes` incluyen los stores enlazados alcanzables, sus documentos y secciones calificados por el nombre de enlace (`sldb://document/annex:Table:t99`, `semantics.store`); `--local` los deja fuera.
 
 | subcomando | opciones | `:data` |
 |---|---|---|
-| `edges show` | `[ID \| --from ID \| --to ID] [--relation R] [--no-links] [--exclude-tag TAG]` | `{:from :to :relation :links :count :edges …}` |
-| `edges check` | mismas | validación del grafo |
-| `edges node ID` | — | `{:id :type :semantics :facets :edges}` |
-| `edges nodes` | `--type T` | `{:type :count :nodes [{:id :type}]}` |
+| `edges show` | `[ID \| --from ID \| --to ID] [--relation R] [--no-links] [--exclude-tag TAG] [--local]` | `{:from :to :relation :links :count :edges …}` |
+| `edges check` | `[--no-links] [--exclude-tag TAG]` | validación del grafo local (no federa) |
+| `edges node ID` | `[--local]` | `{:id :type :semantics :facets :edges}` |
+| `edges nodes` | `--type T [--local]` | `{:type :count :nodes [{:id :type}]}` |
 | `edges types` | — | `{:count :types …}` |
 | `edges relate` | `FROM TO --relation R` | `{:changed :relation :from :to :anchor}` |
 | `edges unrelate` | `FROM TO --relation R` | igual |
@@ -194,7 +194,7 @@ El grafo es la vista derivada del store en su cabecera; `init` y `rebuild` solo 
 
 ### graph
 
-Lecturas puras sobre el grafo (`--snapshot FILE` lee un snapshot en vez del store). Nada se escribe salvo el fichero de `snapshot save`, `export -o` e `ingest-sldb -o`; las rutas de salida no son absolutas.
+Lecturas puras sobre el grafo (`--snapshot FILE` lee un snapshot en vez del store). Salvo `--snapshot`, `--local` limita la lectura al store actual; sin él, los stores enlazados alcanzables entran calificados por nombre de enlace (v1). Nada se escribe salvo el fichero de `snapshot save`, `export -o` e `ingest-sldb -o`; las rutas de salida no son absolutas.
 
 | subcomando | opciones | `:data` |
 |---|---|---|
@@ -209,8 +209,9 @@ Lecturas puras sobre el grafo (`--snapshot FILE` lee un snapshot en vez del stor
 | `graph central` | `--metric pagerank\|betweenness\|degree\|in_degree\|out_degree` (pagerank), `--limit N` (20), `--kind` (nombre v1 de `--metric`), `--type T` | `{:metric :nodes [{:id :score}]}` |
 | `graph isolated` | `--type T`, `--relation R` | `{:count :nodes [id]}` |
 | `graph similar ID` | `--limit N` (10), `--type T`, `--relation R` (por defecto `tagged_as`) | `{:node :nodes [{:id :shared}]}` |
-| `graph snapshot save\|load FILE` | — | `{:path :nodes :edges :types :relations}` |
-| `graph export` | `-o FILE` | node-link (`{"directed" "multigraph" "graph" "nodes" "links"}`) o resumen |
+| `graph snapshot save FILE` | `[--local]` | `{:path :nodes :edges :types :relations}` |
+| `graph snapshot load FILE` | — | igual (no abre store) |
+| `graph export` | `-o FILE [--local]` | node-link (`{"directed" "multigraph" "graph" "nodes" "links"}`) o resumen |
 | `graph ingest-sldb FILE` | `-o OUT` | convierte un export semántico (contrato `sldb_kgdb_semantic_export` v2) |
 
 ### adaptadores

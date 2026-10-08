@@ -26,7 +26,9 @@
   "The canonical graph derived from an opened `store`. Each node carries the
    facets `kimun.surface.edges/node` gives it, so they travel in a snapshot.
    `opts`: `:links?` (predicate links found in document text become edges;
-   default true — the CLI view) and `:exclude-tags`."
+   default true — the CLI view), `:exclude-tags` and `:linked` (the reachable
+   linked stores, `[{:name string :store opened-store}]`, whose documents join
+   qualified by the link name; v1's federation)."
   ([store] (from-store store {}))
   ([store opts]
    (let [g (edges/graph store (merge {:links? true} opts))]

@@ -387,6 +387,71 @@
                                      (edge did (as-node-id (:target l)) (:predicate l) "link" "predicate" (:predicate l) "axis" (:w5h1-type l))))))
               (add-nodes (tag-nodes dtags))))))))
 
+;; ---------------------------------------------------------------- federation
+
+(defn- qualify-node-id
+  "v1's `federation.qualify_id` for the id of a linked store's node:
+   documents and sections get the store's name unless they already name a
+   store (`annex:Table:t99`), and the store node becomes `sldb://store/<name>`;
+   models, fields, tags, relation types and anchors are one vocabulary across
+   stores and stay as they are."
+  [store-name id]
+  (cond
+    (= id (store-id)) (str (store-id) "/" store-name)
+    :else (if-let [p (some #(when (str/starts-with? id %) %) ["sldb://document/" "sldb://section/"])]
+            (let [rest* (subs id (count p))]
+              (if (= 1 (count (re-seq #":" (first (str/split rest* #"#" 2)))))
+                (str p store-name ":" rest*)
+                id))
+            id)))
+
+(defn- qualify-part
+  "A linked store's contribution (`store-parts`) with every id qualified by
+   `store-name` (v1 `store/edge_index/federation.qualify`); a node whose id
+   changed also carries its store under the `store` key of `:semantics`."
+  [store-name {:keys [nodes edges types]}]
+  {:nodes (into {} (map (fn [[id a]] (let [nid (qualify-node-id store-name id)]
+                                      [nid (if (= nid id) a (update a :semantics #(assoc (or % {}) "store" store-name)))])))
+                 nodes)
+   :edges (mapv (fn [e] (-> e
+                            (update :from #(qualify-node-id store-name %))
+                            (update :to #(qualify-node-id store-name %)))) edges)
+   :types types})
+
+(defn- store-parts
+  "The graph contribution `{:nodes :edges :types}` of one opened `store`: its
+   store node, its semantic tag DAG, its relation types, its models and its
+   tracked documents. Pure; fed by `index` for the local store and, qualified
+   through `qualify-part`, for every linked one."
+  [store {:keys [exclude-tags links?]}]
+  (let [ms (mstore/models store) by-name (into {} (map (juxt :name :descriptor)) ms)
+        ds (filterv #(by-name (:model %)) (docs/documents store))
+        dag (sem/dag store) stored (stored-relation-types store)
+        tags (into {} (map (fn [e] [(str (:model e) ":" (:name e)) (:tags e)])) (sem/document-tags store))
+        ctx {:descriptors by-name :tags tags :registry (predicate-registry store) :links? links? :excluded (set exclude-tags)
+             :owners (reduce (fn [m d] (if (and (:path d) (not (contains? m (norm-path (:path d))))) (assoc m (norm-path (:path d)) (doc-id (str (:model d) ":" (:name d)))) m)) {} ds)}
+        rtypes (merge builtin-relation-types stored)
+        g (-> {:nodes {} :edges [] :types rtypes}
+              (add-nodes [[(store-id) {:type "sldb_store" :semantics {}}]])
+              (add-nodes (tag-nodes (distinct (concat (keys (:nodes dag)) (mapcat val (:nodes dag)) (keys (:equivalences dag)) (mapcat val (:equivalences dag))))))
+              (add-edges (for [[t ps] (:nodes dag) p (sort ps)] (edge (tag-id t) (tag-id p) "semantic_parent" "structural")))
+              (add-edges (for [[t es] (:equivalences dag) e (sort es)] (edge (tag-id t) (tag-id e) "semantic_equivalent" "structural")))
+              (add-nodes (map (fn [[n t]] [(relation-type-id n) {:type "relation_type" :semantics t}]) rtypes))
+              (add-edges (for [[n t] stored [k rel] [["source_types" "applies_to_source"] ["target_types" "applies_to_target"]] m (get t k)]
+                           (edge (relation-type-id n) (model-id m) rel "schema"))))]
+    (let [g (reduce #(model-part %1 %2 by-name) g (sort-by :name ms))]
+      (reduce #(doc-part %1 store ctx %2) g (sort-by (juxt :model :name) ds)))))
+
+(defn- merge-parts
+  "Merge contribution `p` into graph `g`: the same node id is one node (the
+   first contributor's, the local store's when it has it), edges accumulate and
+   relation types are shared, the first definition winning."
+  [g p]
+  (-> g
+      (update :nodes (fn [ns] (reduce (fn [ns [id a]] (if (contains? ns id) ns (assoc ns id a))) ns (:nodes p))))
+      (update :edges into (:edges p))
+      (update :types #(merge (:types p) %))))
+
 (defn- resolve-edges
   "v1's compose step: relation documents inherit from their type and report a
    missing end; dangling `schema`/`alias`/`link` edges are dropped."
@@ -428,27 +493,15 @@
    Edge metadata is string-keyed with v1's keys (`\"origin\"` is
    `structural`/`schema`/`alias`/`relation_doc`/`authored`/`link`).
    `opts`: `:exclude-tags` (documents carrying one contribute only their tag
-   nodes) and `:links?` (also derive edges from predicate links in document
-   text — off by default because v1's index has none)."
+   nodes), `:links?` (also derive edges from predicate links in document text —
+   off by default because v1's index has none) and `:linked` (a vector of
+   `{:name string :store opened-store}` — the reachable linked stores, opened
+   by the caller; their documents and sections join the index qualified by the
+   link name, v1's federation)."
   ([store] (index store {}))
-  ([store {:keys [exclude-tags links?]}]
-   (let [ms (mstore/models store) by-name (into {} (map (juxt :name :descriptor)) ms)
-         ds (filterv #(by-name (:model %)) (docs/documents store))
-         dag (sem/dag store) stored (stored-relation-types store)
-         tags (into {} (map (fn [e] [(str (:model e) ":" (:name e)) (:tags e)])) (sem/document-tags store))
-         ctx {:descriptors by-name :tags tags :registry (predicate-registry store) :links? links? :excluded (set exclude-tags)
-              :owners (reduce (fn [m d] (if (and (:path d) (not (contains? m (norm-path (:path d))))) (assoc m (norm-path (:path d)) (doc-id (str (:model d) ":" (:name d)))) m)) {} ds)}
-         rtypes (merge builtin-relation-types stored)
-         g (-> {:nodes {} :edges [] :types rtypes}
-               (add-nodes [[(store-id) {:type "sldb_store" :semantics {}}]])
-               (add-nodes (tag-nodes (distinct (concat (keys (:nodes dag)) (mapcat val (:nodes dag)) (keys (:equivalences dag)) (mapcat val (:equivalences dag))))))
-               (add-edges (for [[t ps] (:nodes dag) p (sort ps)] (edge (tag-id t) (tag-id p) "semantic_parent" "structural")))
-               (add-edges (for [[t es] (:equivalences dag) e (sort es)] (edge (tag-id t) (tag-id e) "semantic_equivalent" "structural")))
-               (add-nodes (map (fn [[n t]] [(relation-type-id n) {:type "relation_type" :semantics t}]) rtypes))
-               (add-edges (for [[n t] stored [k rel] [["source_types" "applies_to_source"] ["target_types" "applies_to_target"]] m (get t k)]
-                            (edge (relation-type-id n) (model-id m) rel "schema"))))
-         g (reduce #(model-part %1 %2 by-name) g (sort-by :name ms))
-         g (reduce #(doc-part %1 store ctx %2) g (sort-by (juxt :model :name) ds))
+  ([store {:keys [exclude-tags links? linked]}]
+   (let [local (store-parts store {:exclude-tags exclude-tags :links? links?})
+         g (reduce merge-parts local (map (fn [{:keys [name store]}] (qualify-part name (store-parts store {:exclude-tags exclude-tags :links? links?}))) linked))
          g (authored-part (resolve-edges g) store)]
      {:graph {:nodes (into (sorted-map) (:nodes g)) :edges (:edges g)}
       :problems (:problems g) :relation-types (:types g) :authored (:authored g) :revision (:head store)})))
