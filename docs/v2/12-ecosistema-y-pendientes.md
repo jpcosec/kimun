@@ -32,17 +32,20 @@
 
 ### Deuda de diseño y experimentos
 
-- **Parser Markdown**: `kimun.surface.models.blocks` imita la segmentación de markdown-it por
-  paridad byte a byte con v1, en vez de trabajar sobre el árbol SLDB-MD del kernel.
+- **Parser Markdown**: `kimun.surface.models.blocks/parse` segmenta con el pod tree-sitter
+  (decisión 29, fase 1 de R2 §5) y `parse-native` queda como oráculo diferencial (paridad de
+  kinds y spans 1099/1099 en corpus + desk, `blocks-parity-test`). Pendiente la fase 2 (vista
+  sobre el CST) y la fase 3 (rangos de bytes e ids de nodo del CST).
 - **Composiciones del descriptor**: la clave es la de v1 (`:py/compositions`), aceptada junto
   a `:compositions`; `07 §2` propone `{:model :field :order}`.
 - **Concesiones de M/G**: `:symbol` y `:fact` resuelven por existir en el CAS, porque todavía
   no viven en árboles `:context` (`02 §6.2`).
 - **Fuera del perfil Markdown**: `_` como énfasis, tablas, footnotes e imágenes (`04 §11`).
 - **Board legado**: `desk/tasks/Board.md` no es editable por CLI.
-- **Tree-sitter como pod**: el adaptador `treesitter-symbols` ya existe (`11 §9`); lo
-  pendiente es tree-sitter como parser único de Markdown y de código (decisión 19 en
-  `05-estado.md §3`), midiendo antes las diferencias de corte contra el corpus.
+- **Tree-sitter como pod**: el pod existe y es el parser de la capa M
+  (`kimun.host.treesitter`, `pods/treesitter`, decisión 29). Falta el parseo de **código**
+  como superficie de modelos (hoy el adaptador `treesitter-symbols` de `11 §9` cubre
+  símbolos) y la fase 3 (ids de nodo del CST como anclas).
 
 ## 2. Consumidores y superficies
 

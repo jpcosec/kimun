@@ -348,3 +348,21 @@ Conformidad CommonMark completa, `_` como énfasis, tablas, footnotes, imágenes
 referencias, setext headings, tree-sitter, paridad Node, capas UAX #29 más allá de los
 grafemas, edición fina vía planes parciales (hoy un documento se crea entero; editar =
 recrear el árbol o `:replace` de nodos por parte del llamante).
+
+### 11.1 Parser de bloques: pod tree-sitter (decisión 29, R2 §5)
+
+La segmentación de bloques de la capa M la hace el pod `pod-kimun-treesitter`
+(`kimun.host.treesitter`); `kimun.surface.models.blocks/parse-native` queda como oráculo
+diferencial hasta la paridad byte a byte (`docs/v2/14 §13`, etapa S.2). El pod no cambia
+este perfil: sigue siendo un perfil **cerrado** y las reglas del perfil se aplican *después*
+del parse (la vista sobre el CST, fase 2).
+
+Dos gaps de `blocks.cljc` frente a CommonMark que el pod sí trae quedan decididos así:
+
+- **setext (`===`, y `-` como subrayado): no entra al perfil.** Sigue fuera (§11), como
+  párrafo; la vista de fase 2 mapea `setext_heading` a `:paragraph` para que el AST no
+  cambie. La segmentación de bloques del modelos sí lo ve como heading (deuda conocida del
+  oráculo, R2 §6), y así lo fija el test dirigido.
+- **bloques HTML: `:opaque "markdown/html"`.** Ya era el comportamiento (§7); el pod solo
+  los nombra (`html_block`). Se confirma que entran al perfil como región opaca, nunca como
+  contenido descendido.
