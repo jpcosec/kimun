@@ -76,10 +76,10 @@ Layout de un store formato 2 (`kimun.kernel.store`; detalle en `10`):
 
 | subcomando | opciones | `:data` y notas |
 |---|---|---|
-| `stores init` | `--name NAME` | `{:path :name :actor :capabilities}`; falla `cli/store-exists` (5) si ya hay store |
+| `stores init` | `--name NAME`, `--content by-reference\|inline` | `{:path :name :actor :capabilities}`; `--content inline` escribe `:content :inline` en `store.edn` (docs/v2/10 §10); falla `cli/store-exists` (5) si ya hay store |
 | `stores check` | — | `{:name :path :hash-alg :revisions :trees :objects :head :links}` + `:documents` si hay findings; abre por replay; store inválido ⇒ `store/invalid` (5) |
 | `stores verify` | — | `{:checked :bad}`; verify-full (replay + hash); corrupción ⇒ `store/corrupt` (5) |
-| `stores upgrade` | — | `{:upgraded :format-version :path :transactions :backup :map …}`; carrera de escritura ⇒ `store/stale` (4) |
+| `stores upgrade` | — | `{:upgraded :format-version :path …}`; 1→2 reconstruye en un directorio hermano (`:transactions :backup :map`), 2→3 convierte en el sitio (líneas `{:id :revision}`, `:dropped-plans`); carrera de escritura ⇒ `store/stale` (4) |
 | `stores show` | — | `{:name :path :hash-alg :links :head :capabilities}`; sin replay |
 | `stores health` | — | `{:status :summary :findings :actions :next}`; `ok | degraded | needs-human` |
 | `stores update` | — | `{:updated [name] :skipped [{:document :category :action}] :status}` |
@@ -97,8 +97,8 @@ Layout de un store formato 2 (`kimun.kernel.store`; detalle en `10`):
 | `docs update NAME [FILE]` | `--data F`, `--set k=v` | reingesta/edición parcial de un documento tipado; `:unchanged?` |
 | `docs render NAME\|TREE` | — | Markdown canónico como string de `:data` (`--format text` lo imprime crudo) |
 | `docs list` | `--model M` | untyped `{:name :tree :root}`; typed añade `:model :model-version :state :path` |
-| `docs create MODEL NAME` | `--data F` \| `--set k=v…`, `--path P` | mapa del documento (con payload, hashes, path) |
-| `docs track MODEL FILE` | `--name N`, `--force` | mapa del documento; `--force` para un fichero que no ida-vuelta |
+| `docs create MODEL NAME` | `--data F` \| `--set k=v…`, `--path P`, `--inline` | mapa del documento (con payload, hashes, path); `--inline` guarda el texto en el store |
+| `docs track MODEL FILE` | `--name N`, `--force`, `--inline` | mapa del documento; `--force` para un fichero que no ida-vuelta; `--inline` guarda el texto en el store |
 | `docs show NAME` | `--format md`, `--ast` (equivale a `--format ast`) | mapa con `:markdown`; `--ast` ⇒ `{:name :tree :ast}` |
 | `docs status` | — | `[{:name :path :status}]` con `status` `ok | modified | missing` |
 | `docs untrack NAME` | — | desrastrea |

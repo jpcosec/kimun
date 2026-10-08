@@ -23,7 +23,7 @@ repo**. Un repo puede ignorar su store (se construye al vuelo) o versionarlo
 | clave | significado |
 | --- | --- |
 | `:include/version` | versión del formato; hoy `1`. |
-| `:store` | `{:path "…" :git :ignore}`: dónde vive el store y si git lo versiona. `:ignore` = se construye en la corrida y nunca se commitea; `:track` = el repo persiste su store. |
+| `:store` | `{:path "…" :git :ignore}`: dónde vive el store y si git lo versiona. `:ignore` = se construye en la corrida y nunca se commitea; `:track` = el repo persiste su store. Admite `:content :inline` (docs/v2/10 §10): el store guarda el texto de cada documento en vez de leerlo del archivo. |
 | `:models` | globs de descriptores EDN (`desk/models/*.edn`) que se definen, en orden base-primero. |
 | `:documents` | reglas `{:glob … :model …}`, **gana la primera coincidencia**. |
 | `:force` | conjunto de rutas, o `:force true` en una regla: documentos que no ida-vuelta (no se puede re-renderizar lo extraído y obtener el mismo texto). |

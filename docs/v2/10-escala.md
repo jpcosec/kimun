@@ -1,11 +1,13 @@
-# kimun (SLDB v2) — Escala: formato 2 del store (2026-10-06)
+# kimun (SLDB v2) — Escala y formatos del store (2026-10-08)
 
-> Por qué y cómo cambió la forma en disco de las revisiones, qué cuesta ahora abrir,
+> Por qué y cómo cambió la forma en disco de las revisiones (formato 2), qué cuesta abrir,
 > leer y escribir un store, qué comprueba cada verificación y cómo se pasa un store de
-> formato 1 al 2. Este documento es el **único dueño del formato 2**; `02` fija el
+> formato 1 al 2; y qué cambia el **formato 3** (§10, docs/v2/14 §10). Este documento es el
+> **único dueño del formato en disco**; `02` fija el
 > contrato de la revisión y enlaza aquí para la forma en disco. Autoridad: `02` (qué
 > construye) > este documento. Números en
-> `runs/bench/baseline-2026-10-06.txt` (antes) y `runs/bench/after-2026-10-06.txt` (después).
+> `runs/bench/baseline-2026-10-06.txt` (antes) y `runs/bench/after-2026-10-06.txt` (después)
+> para el formato 2, y en `runs/bench/format3-store-size.txt` (antes/después) para el 3.
 
 ## 1. Antes
 
@@ -243,3 +245,58 @@ pequeña subida de bytes por commit es la profundidad log₁₆ de los mapas). L
 siendo O(store) por naturaleza: `find`, `stores check` (rehashea todo lo alcanzable) y
 `stores verify` (replaya el log). Lo que sigue siendo O(árboles) sin serlo por
 naturaleza: el índice de nombres de `docs show`/`fields set` (§4).
+
+## 10. Formato 3 (docs/v2/14 §10)
+
+El formato 3 **no cambia la estructura de la revisión** (los ocho campos de §5, los mmaps
+`:trees`/`:edges`/`:incidence`, los ids de nodo, arista, árbol y descriptor, y por tanto
+los de transacción y revisión). Cambia qué se escribe y de qué vive un documento.
+
+```
+<dir>/store.edn      {:format-version 3 … :content :inline}   ; :content ausente = by-reference
+<dir>/objects/<id>   igual que el formato 2
+<dir>/log.edn        una Transaction {:id tx-id :revision rev-id} por línea
+<dir>/heads.edn      igual que el formato 2
+```
+
+Qué cambia:
+
+1. **Sin copia verbatim del texto.** El signo `markdown/source` y su arista
+   `derived root→source` desaparecen del plan por defecto. El `:contract` (id del
+   descriptor con que el documento se extrajo, `05` decisión 40) vive en la evidencia de la
+   arista `reference root→external` y, para documentos sin archivo, en la `reference
+   root→model`. La evidencia del anchor registra además `:content-hash` y `:field-hashes`
+   del payload escrito, que es como `diagnostics` distingue un reformateo de una edición sin
+   guardar el texto (con el archivo editado, el árbol da el texto rastreado).
+2. **El texto se lee del archivo.** `docs` reconstruye `:source` así: el signo verbatim si
+   lo hay (`:inline` o store formato 2), si no el archivo **mientras su fingerprint coincide
+   con el registrado** (el archivo ES el texto rastreado), si no el render canónico del
+   árbol (lo rastreado cuando el archivo se editó por fuera). El kernel no hace I/O: el
+   host inyecta `:read-file` en el valor del store.
+3. **`inline` por caso** (`:content :inline` en `store.edn`, `stores init --content inline`,
+   `:store {:content :inline}` en `kimun.include.edn`, o `docs create|track --inline`):
+   entonces sí se escribe el signo verbatim y su arista, y el documento no depende del
+   archivo. Por defecto `:by-reference`.
+4. **El plan no se guarda dos veces.** La línea del log es `{:id tx-id :revision rev-id}`;
+   el plan resuelto sigue en el CAS bajo `tx-id` (invariante 17) y `replay-open`/`verify-full`
+   lo leen de ahí. Las líneas de formato 2 (con `:plan`) se siguen leyendo.
+5. **Una revisión por `include build`** (§11): todos los modelos y documentos declarados
+   componen UN `TransactionPlan` (`kimun.kernel.plan/compose-plans`) y un solo `commit!`.
+   `stores update` sigue haciendo una transacción por documento reparado.
+
+Ruta de upgrade: `stores upgrade` sobre un store formato 2 lo convierte **en el sitio**
+(reescribe las líneas del log sin `:plan` y el descriptor a `:format-version 3`, y verifica;
+restaura si falla). Para un store `:git :ignore` el camino fuerte es `include build --rebuild`,
+que reconstruye el store desde los archivos y descarta las copias verbatim.
+
+Medido en este repo (desk de 433 KB, 539 documentos; antes = formato 2 del commit
+`b4e02790`, después = formato 3): aparente **28,35 MB → 8,75 MB** (`log.edn` 5,89 MB →
+151 B; índice mmap 12,34 MB → 0,71 MB; plan 5,68 MB → uno de 4,71 MB); en disco 119 MB →
+55 MB; `include build` 38 s → 13 s, con **1 revisión** en vez de 556. Detalle por clase en
+`runs/bench/format3-store-size.txt`; `bb store-size [DIR]` reproduce la tabla.
+
+Lo que el formato 3 todavía **no** hace (ver `12` §1): el árbol de un documento con anchor
+sigue persistiéndose entero (nodos `block`/`text`/`opaque` y tree objects), y el plan
+resuelto de un build sigue en el CAS, así que el store no baja de los 443 KB del desk que
+indexa. Convertir el árbol en caché verificable y no persistir el plan de un store
+`:git :ignore` es el resto del §10 del 14 (decisión 27).
