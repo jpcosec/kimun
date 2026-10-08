@@ -11,10 +11,20 @@
             [babashka.process :as process]
             [clojure.edn :as edn]
             [clojure.string :as str]
+            [kimun.cli.compose :as compose]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
+            [kimun.host.default :as host]
+            [kimun.kernel.plan :as plan]
+            [kimun.kernel.ports :as ports]
+            [kimun.kernel.revision :as revision]
+            [kimun.kernel.store :as store]
             [kimun.surface.docs :as tdocs]
             [kimun.surface.include :as inc]
+            [kimun.surface.models.extract :as mextract]
+            [kimun.surface.models.noise :as noise]
+            [kimun.surface.models.render :as mrender]
+            [kimun.surface.models.store :as mstore]
             [kimun.kernel.err :as err]))
 
 (def spec
@@ -272,12 +282,111 @@
   [root env argv]
   ((requiring-resolve 'kimun.cli.main/run) argv env root))
 
+(defn- descriptor-at
+  "The descriptor EDN at `path` (relative to `root`); `:include/invalid` when
+   it cannot be read."
+  [root path]
+  (let [f (fs/path root path)]
+    (try (edn/read-string (slurp (str f)))
+         (catch Exception e
+           (err/raise :include/invalid (str "cannot read model descriptor " path ": " (ex-message e)) {:path path})))))
+
+(defn- relative-to [root p] (str (fs/relativize (fs/absolutize root) (fs/absolutize p))))
+
+(defn- now-ts
+  "The current UTC instant in the plan's shape, `yyyy-MM-ddTHH:mm:ss.SSSZ`."
+  []
+  #?(:clj (.format (java.time.format.DateTimeFormatter/ofPattern "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+                   (java.time.ZonedDateTime/now java.time.ZoneOffset/UTC))
+     :cljs (.toISOString (js/Date.))))
+
+(defn- build-plan!
+  "The whole declaration as ONE revision (docs/v2/14 §10): every model
+   descriptor applied in memory first (so the documents can bind to them), then
+   every declared document, all ops composed into one TransactionPlan committed
+   once. A document that fails its checks is collected in `:failed`; nothing is
+   committed when there is any failure. Returns
+   `{:revision-id id|nil :models n :models-failed n :documents n
+     :documents-failed n :failed [..]}`."
+  [root store-dir {:keys [models documents]} opts]
+  (let [{:keys [backend store]} (cli-store/open! store-dir)
+        h (:host store)
+        actor (:actor opts)
+        ts (now-ts)
+        ctx (compose/context store store-dir)
+        mres (reduce (fn [{:keys [store plans names failed] :as acc} path]
+                       (try
+                         (let [desc (descriptor-at root path)
+                               r (mstore/define-plan h store desc {:actor actor :timestamp ts
+                                                                   :tree-id (ports/ulid (:ids h))})]
+                           (if (:unchanged r)
+                             (-> acc (update :names conj (:name r)))
+                             (-> acc (assoc :store (:store (revision/apply-plan store (:plan r))))
+                                      (update :plans conj (:plan r))
+                                      (update :names conj (:name r)))))
+                         (catch Exception e
+                           (update acc :failed conj {:path path :error (or (:type (ex-data e)) "include/invalid")
+                                                     :message (ex-message e)}))))
+                     {:store store :plans [] :names [] :failed []}
+                     models)
+        mstore* (:store mres)
+        dres (reduce (fn [{:keys [plans names failed] :as acc} {:keys [path model name force]}]
+                       (let [text (try (slurp (str (fs/path root path))) (catch Exception _ nil))]
+                         (cond
+                           (nil? text)
+                           (-> acc (update :failed conj {:path path :name name :model model :error "docs/no-file"
+                                                         :message (str "no such file: " path)}))
+                           (contains? names name)
+                           (update acc :failed conj {:path path :name name :model model :error "docs/exists"
+                                                     :message (str "a document named `" name "` is declared twice")})
+                           :else
+                           (try
+                             (let [m (or (mstore/find-model mstore* model)
+                                         (err/raise :models/missing (str "no model `" model "` in the store") {:model model}))]
+                               (when-not force
+                                 (let [n (noise/structural-noise (:descriptor m) text)]
+                                   (when (noise/noisy? n)
+                                     (err/raise :docs/structural-noise
+                                                (str "structural noise in `" name "`: " model " does not declare " (noise/describe n))
+                                                {:document name :model model})))
+                                 (let [again (mrender/render (:descriptor m) (mextract/extract (:descriptor m) text) ctx)]
+                                   (when (not= (str/trim again) (str/trim text))
+                                     (err/raise :docs/not-idempotent
+                                                (str "`" path "` does not round-trip under " model)
+                                                {:document name :model model}))))
+                               (let [{:keys [plan]} (tdocs/track-plan h mstore* model name text
+                                                                      {:doc (ports/ulid (:ids h)) :tree-id (ports/ulid (:ids h))
+                                                                       :path (relative-to root (str (fs/path root path)))
+                                                                       :actor actor :timestamp ts :operation "include build"})]
+                                 (-> acc (update :plans conj plan) (update :names conj name))))
+                             (catch Exception e
+                               (-> acc (update :failed conj {:path path :name name :model model
+                                                             :error (or (:type (ex-data e)) "docs/failed")
+                                                             :message (ex-message e)})
+                                       (update :names conj name)))))))
+                     {:plans [] :names [] :failed []}
+                     documents)
+        all (concat (:plans mres) (:plans dres))
+        merged (when (seq all)
+                 (plan/compose-plans all {:base (:head store) :actor actor :timestamp ts
+                                          :engines {"kimun.surface.docs" "1"
+                                                    tdocs/meta-key (pr-str {:operation "include build"
+                                                                            :address (str (count (:names dres)) " documents")
+                                                                            :fields {}})}}))
+        r (when merged (store/commit! backend store merged))]
+    {:revision-id (:revision-id r)
+     :models (- (count models) (count (:failed mres)))
+     :models-failed (count (:failed mres))
+     :documents (- (count documents) (count (:failed dres)))
+     :documents-failed (count (:failed dres))
+     :failed (vec (concat (:failed mres) (:failed dres)))}))
+
 (defn build
-  "`include build [--rebuild]`: builds the store from the plan in one process —
-   `stores init`, every model descriptor in base-first order, then every
-   declared document (`docs track`, with `--force` where declared). Refuses to
-   touch an existing store unless `--rebuild`, which moves it to
-   `<store>.bak-<timestamp>`. A failure is `:include/drift` (exit 3)."
+  "`include build [--rebuild]`: builds the store from the declaration in ONE
+   revision (docs/v2/14 §10): `stores init`, then every model descriptor and
+   every declared document composed into one TransactionPlan and committed
+   once. Refuses to touch an existing store unless `--rebuild`, which moves it
+   to `<store>.bak-<timestamp>`. A failure is `:include/drift` (exit 3)."
   [args opts {:keys [env cwd] :as ctx}]
   (no-args! args "build")
   (let [{:keys [root cfg plan]} (config-plan ctx)
@@ -296,31 +405,14 @@
           _ (when-not (:ok init)
               (err/raise :include/drift (str "stores init failed: " (get-in init [:error :type]))
                          {:phase "stores init" :error (get-in init [:error :type]) :message (get-in init [:error :message])}))
-          models (reduce (fn [acc path]
-                           (let [e (:envelope (run-cli root env ["models" "define" "-f" path "--store" store-dir]))]
-                             (if (:ok e)
-                               (update acc :ok conj path)
-                               (update acc :failed conj {:path path :error (get-in e [:error :type])
-                                                         :message (get-in e [:error :message])}))))
-                         {:ok [] :failed []} (:models plan))
-          docs (reduce (fn [acc {:keys [path model name force]}]
-                         (let [argv (cond-> ["docs" "track" model path "--name" name]
-                                      force (conj "--force"))
-                               e (:envelope (run-cli root env (conj argv "--store" store-dir)))]
-                           (if (:ok e)
-                             (update acc :ok conj path)
-                             (update acc :failed conj {:path path :name name :model model
-                                                       :error (get-in e [:error :type])
-                                                       :message (get-in e [:error :message])}))))
-                       {:ok [] :failed []} (:documents plan))
-          failed (concat (:failed models) (:failed docs))
+          r (build-plan! root store-dir plan opts)
           data {:store store-dir
-                :models (count (:ok models)) :models-failed (count (:failed models))
-                :documents (count (:ok docs)) :documents-failed (count (:failed docs))
-                :failed (vec failed)}]
-      (if (seq failed)
-        (out/failure :include/drift (str (count failed) " declaration(s) failed to build") data 3)
-        (out/ok "include build" {:store {:path store-dir} :data data})))))
+                :models (:models r) :models-failed (:models-failed r)
+                :documents (:documents r) :documents-failed (:documents-failed r)
+                :failed (:failed r)}]
+      (if (seq (:failed r))
+        (out/failure :include/drift (str (count (:failed r)) " declaration(s) failed to build") data 3)
+        (out/ok "include build" {:store {:path store-dir} :revision (:revision-id r) :data data})))))
 
 (defn status
   "`include status`: counts of the declaration and a summary of the findings —
