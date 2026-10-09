@@ -397,3 +397,17 @@ Principio del dueño; gobierna los modelos (revisa §9) y el registro del store 
 6. **Registro por documento en el store:** su anchor (ruta + fingerprint), la clase de la que es
    instancia y el hash raíz de lo indexado. El árbol concreto, los bloques y los valores de los
    campos son **caché** recomputable con `archivo + clase` y verificable contra el hash raíz.
+7. **Dos modelos distintos: anclaje y generación.** El template de v1 hacía las dos cosas a la vez
+   (extraer y renderizar); en kimun se separan.
+   - **Modelo de anclaje (lectura):** selector sobre la estructura de un source; ancla lo que es
+     conocimiento. Lo que no selecciona no entra al store.
+   - **Modelo de generación (escritura)** (antes "composición"): cómo se produce un texto desde el
+     grafo. Un documento puede tener un modelo de anclaje y varios de generación (carta formal,
+     resumen, JSON…), y no tienen por qué coincidir. La herencia aplica a cada uno por separado.
+   - El round-trip estricto de v1 (extraer y renderizar idéntico) deja de ser obligación: era
+     consecuencia de usar un solo template para las dos direcciones.
+8. **El azúcar se observa en el nodo, no se declara.** Dos documentos idénticos tienen los mismos
+   nodos (content-addressing). Un nodo es azúcar:
+   - **en anclaje**, porque no hay nada anclado a él;
+   - **en generación**, porque es una fórmula sobre el AST desde el que se genera, o un string fijo.
+   No hace falta marcar documentos ni subclases para "ignorar" un párrafo.
