@@ -4,6 +4,12 @@
 técnico; `06`–`08`, `10`, `11` y `13` describen el producto; `05` es el estado; `12`, los
 pendientes. La historia está en `docs/archive/`.
 
+## Empieza aquí
+
+`00-nucleo.md` — el núcleo de kimun en una página (proposiciones numeradas al modo del *Tractatus*):
+lo que, si cambia, hace que kimun deje de ser kimun. Resume y ordena lo que el dueño fijó; no agrega
+decisiones ni corrige a los documentos de abajo, y nombra como abiertas D0 y D-G.
+
 ## Autoridad
 
 De mayor a menor. Ante contradicción gana el número menor.
@@ -26,6 +32,7 @@ De mayor a menor. Ante contradicción gana el número menor.
 
 | doc | qué posee |
 |---|---|
+| `00-nucleo.md` | el núcleo de kimun en una página (Claude y Astra, 2026-10-09; borradores en `drafts/nucleo-*.md`) |
 | `01-orden-filosofico.md` | qué es el objeto persistido, las capas S/M/G, las garantías y lo retirado del diseño anterior |
 | `02-sustrato-computacional.md` | estructuras, invariantes, runtime, roadmap y el contrato de revisión |
 | `03-estandares-de-codigo.md` | anillos de dependencia (`bb lint`), compartimentación, docstrings y tests |

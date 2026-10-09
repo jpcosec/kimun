@@ -17,7 +17,8 @@ Then the documents the task references.
 
 The last design session (2026-10-08/09) changed the direction. Before touching code:
 
-1. `docs/v2/drafts/sesion-2026-10-08-09.md` — what was decided and why, in order.
+1. `docs/v2/00-nucleo.md` — the core of kimun in one page: what kimun is and must not stop being.
+   Then `docs/v2/drafts/sesion-2026-10-08-09.md` — what was decided and why, in order.
 2. `docs/v2/drafts/preguntas-abiertas.md` — decisions only the owner can make (today: D0, node
    identity; sources in `docs/v2/drafts/fuentes-identidad.md`). Do not implement anything that
    depends on an open decision.
