@@ -256,9 +256,13 @@
    whole store is verified after the rewrite, restoring the previous files if
    it fails. For a `:git :ignore` store the stronger path is
    `include build --rebuild`, which reconstructs the store from the files and
-   drops the verbatim source copies. A format-3 store is left as is
-   (`:upgraded false`). When a writer commits to the original meanwhile the
-   upgrade is abandoned with `store/stale` (exit 4). Data: `{:upgraded
+   drops the verbatim source copies. A format-3 store is not rewritten in
+   place: format 4 registers a by-reference document as cache (docs/v2/14
+   §18.6), which needs the files, so the upgrade reports
+   `:needs-rebuild true` and names `kimun include build --rebuild`. A format-4
+   store is left as is (`:upgraded false`). When a writer commits to the
+   original meanwhile the upgrade is abandoned with `store/stale` (exit 4).
+   Data: `{:upgraded
    :format-version :path}` plus, when upgraded, `{:transactions :head-before
    :backup :map :dropped-tail :checked :seconds}` (format 1) or
    `{:transactions :dropped-plans :checked :seconds}` (format 2→3)."
@@ -333,7 +337,15 @@
       :else
       (out/ok "stores upgrade" {:store (store-ref descriptor dir)
                                 :revision (:head (store/read-heads b))
-                                :data {:upgraded false :format-version 3 :path dir}}))))
+                                :data (if (= 3 (:format-version descriptor 1))
+                                        ;; format 3 → 4 registers a by-reference document as cache (no tree
+                                        ;; object, no block/text node in the CAS): it requires the files, so
+                                        ;; it is a rebuild, not an in-place rewrite (docs/v2/14 §18.6)
+                                        {:upgraded false :format-version 3 :path dir
+                                         :needs-rebuild true
+                                         :action "kimun include build --rebuild"
+                                         :message "format 3 → 4 registers documents with a file as cache; run `kimun include build --rebuild` to rebuild from the files"}
+                                        {:upgraded false :format-version 4 :path dir})}))))
 
 (defn show
   "`stores show`: descriptor and heads without replaying the log:

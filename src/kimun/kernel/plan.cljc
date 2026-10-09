@@ -5,6 +5,8 @@
    {:plan/version 1 :base <rev|nil> :actor <str> :engines {} :timestamp <ISO ms UTC>
     :ops [{:op :new-tree    :tree {:kind :document :name \"…\"} :id <ulid|absent> :root <id|alias> :as :t1}
           {:op :add-node    :node {:class :kind :content} :as :n1}
+          {:op :register-tree :tree {:kind :document :name \"…\" :class <id> :content-hash <hex> :cached? true}
+                             :id <ulid> :root <id|alias> :merkle-root <hex> :as :t1}
           {:op :add-edge    :edge {:type :ownership :tree t :parent [path] :to <id|alias> :order n}}
           {:op :add-edge    :edge {:type :binding :from … :to … :evidence {…}} :as :e1}
           {:op :remove-edge :edge <edge-id|alias>}
@@ -21,8 +23,11 @@
             [kimun.kernel.canon :as canon]))
 
 (def ops
-  "The seven primitive operations (docs/v2/02 §5)."
-  #{:new-tree :add-node :add-edge :remove-edge :replace :move :detach})
+  "The primitive operations (docs/v2/02 §5). `:register-tree` is the format-4
+   registration of a tree whose structure is cache, not store (docs/v2/14
+   §18.6): it records the descriptor and the merkle root the surface computed,
+   without persisting positions, tree objects or block/text nodes."
+  #{:new-tree :register-tree :add-node :add-edge :remove-edge :replace :move :detach})
 
 (def ^:private timestamp-re #"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$")
 
@@ -86,6 +91,7 @@
   (into #{} (keep (fn [{:keys [op] :as o}]
                     (case op
                       :new-tree (or (:id o) (:as o))
+                      :register-tree (or (:id o) (:as o))
                       (:replace :move :detach) (:tree o)
                       :add-edge (when (= :ownership (get-in o [:edge :type])) (get-in o [:edge :tree]))
                       :remove-edge nil
@@ -120,7 +126,7 @@
 
 (defn- op-tree [op]
   (case (:op op)
-    :new-tree (:id op)
+    (:new-tree :register-tree) (:id op)
     (:replace :move :detach) (:tree op)
     (:add-edge :remove-edge) (when (= :ownership (get-in op [:edge :type])) (get-in op [:edge :tree]))
     nil))

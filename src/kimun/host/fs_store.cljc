@@ -27,6 +27,7 @@
    nothing."
   (:require [clojure.edn :as edn]
             [clojure.string :as str]
+            [kimun.host.store-cache :as cache]
             [kimun.kernel.store :as store]
             #?@(:clj [[clojure.java.io :as io]]))
   #?(:clj (:import [java.nio.file Files Paths StandardCopyOption StandardOpenOption]
@@ -117,7 +118,11 @@
     #?(:clj (do (Files/createDirectories (path dir "objects") (make-array java.nio.file.attribute.FileAttribute 0))
                 (write-atomic! (path dir "store.edn") (pr-str d)))))
   (read-object [_ id]
-    #?(:clj (read-text (path dir "objects" id))))
+    ;; the cache of derived objects (tree objects, block/text/opaque nodes of a
+    ;; by-reference document) is read as a fallback: derived, deletable and
+    ;; recomputable from the file (docs/v2/14 §18.6, §19)
+    #?(:clj (or (read-text (path dir "objects" id))
+                (cache/read-object dir id))))
   (write-object! [_ id content]
     #?(:clj (let [p (path dir "objects" id)]
               (when-not (exists? p) (write-atomic! p content)))))

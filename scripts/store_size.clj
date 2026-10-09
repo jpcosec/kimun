@@ -16,15 +16,17 @@
             [clojure.string :as str]))
 
 (defn- klass
-  "The class of a stored object, by shape."
+  "The class of a stored object, by shape. A tree descriptor carries :tree/:root
+   (format 4 adds :class/:content-hash to it): it is checked before the node
+   shapes so it is not counted as a sign node."
   [o]
   (cond
     (and (map? o) (:mmap o)) (str "mmap/" (name (:mmap o)))
+    (and (map? o) (:tree o) (:root o)) "descriptor"
     (and (map? o) (:class o) (:kind o)) (str "sign/" (name (:class o)) "/" (name (:kind o)))
     (and (map? o) (:type o) (:from o)) (str "edge/" (name (:type o)))
     (and (map? o) (:tx o) (:trees o)) "revision"
     (and (map? o) (:node o) (contains? o :children)) "tree-object"
-    (and (map? o) (:tree o) (:root o)) "descriptor"
     (and (map? o) (contains? o :ops) (contains? o :plan/version)) "plan"
     :else "other/unknown"))
 
@@ -44,6 +46,16 @@
 (defn- log-bytes [dir]
   (let [f (fs/path dir "log.edn")] (if (fs/regular-file? f) (fs/size f) 0)))
 
+(defn- cache-summary
+  "The derived cache of `dir` (`<store>/cache/`, docs/v2/14 §18.6): count and
+   total bytes, measured apart from the store."
+  [dir]
+  (let [d (fs/path dir "cache")]
+    (if (fs/directory? d)
+      (let [fs* (filter fs/regular-file? (fs/glob d "**"))]
+        {:count (count fs*) :bytes (reduce + 0 (map #(fs/size %) fs*))})
+      {:count 0 :bytes 0})))
+
 (defn measure
   "`{:classes {class {:count n :bytes b}} :objects :log :apparent :disk}` of the
    store at `dir` (throws when it is not a store)."
@@ -59,17 +71,19 @@
         {:classes classes :objects {:count (reduce + 0 (map :count (vals classes))) :bytes objects}
          :log {:bytes log}
          :apparent (+ objects log)
+         :cache (cache-summary dir)
          :disk (disk-bytes dir)}))))
 
 (defn- human [b] (if (nil? b) "—" (format "%.1f KB" (/ (double b) 1024))))
 
-(defn- print-table [{:keys [classes objects log apparent disk]}]
+(defn- print-table [{:keys [classes objects log apparent disk cache]}]
   (println (format "%-28s %8s %12s %10s" "class" "count" "bytes" "avg"))
   (doseq [[k {:keys [count bytes]}] (sort-by (comp - :bytes val) classes)]
     (println (format "%-28s %8d %12d %10.0f" k count bytes (double (/ bytes (max 1 count))))))
   (println (format "%-28s %8d %12d" "TOTAL objects" (:count objects) (:bytes objects)))
   (println (format "%-28s %8s %12d" "log.edn" "" (:bytes log)))
   (println (format "%-28s %8s %12d  (%s)" "TOTAL apparent" "" apparent (human apparent)))
+  (println (format "%-28s %8d %12d  (%s)" "cache (derived)" (:count cache) (:bytes cache) (human (:bytes cache))))
   (println (format "%-28s %8s %12s  (%s)" "on disk" "" (str disk) (human disk))))
 
 (let [args *command-line-args*

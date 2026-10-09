@@ -1,0 +1,18 @@
+store .kimun
+class                           count        bytes        avg
+plan                                1       907465     907465
+mmap/leaf                        1403       598093        426
+edge/reference                   1078       331485        308
+descriptor                        540       185950        344
+sign/sign/external                539       171995        319
+edge/derived                      539       157927        293
+mmap/branch                       105       110333       1051
+sign/sign/block                   540        62067        115
+sign/sign/opaque                   17        39952       2350
+tree-object                        18         3877        215
+revision                            1          488        488
+TOTAL objects                    4781      2569632
+log.edn                                        151
+TOTAL apparent                             2569783  (2509.6 KB)
+cache (derived)                  8815      2315429  (2261.2 KB)
+on disk                                   58077184  (56716.0 KB)

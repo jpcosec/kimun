@@ -147,7 +147,10 @@
   (let [p0 (many-commits)
         s (:store (cli-store/open! (file p0 ".kimun")))
         objs (:objects s)
-        ids (sort (store/reachable s))
+        ;; format 4: the tree objects and nodes of a by-reference document live in
+        ;; the cache, not in objects/ (docs/v2/14 §18.6); a victim must exist in
+        ;; the CAS to be damageable and to be checked by `verify`
+        ids (vec (filter #(fs/exists? (file p0 ".kimun" "objects" %)) (sort (store/reachable s))))
         rev (get objs (:head s))
         heads (set (cons (:head s) (vals (:heads s))))
         ;; the nested edge set of a hub: the model node, an endpoint of one edge per document

@@ -30,14 +30,17 @@
    Untracking removes those edges; the tree stays in history and is hidden."
   (:require [clojure.edn :as edn]
             [clojure.string :as str]
+            [kimun.host.store-cache :as store-cache]
             [kimun.surface.models.extract :as extract]
             [kimun.surface.models.render :as render]
             [kimun.surface.models.store :as mstore]
+            [kimun.kernel.canon :as canon]
             [kimun.kernel.edge :as edge]
             [kimun.kernel.err :as err]
             [kimun.kernel.node :as node]
             [kimun.kernel.ports :as ports]
             [kimun.kernel.revision :as revision]
+            [kimun.kernel.store :as kstore]
             [kimun.kernel.tree :as tree]
             [kimun.surface.markdown.ast :as ast]
             [kimun.surface.markdown.plan :as md]))
@@ -138,7 +141,8 @@
    its source edge: it survives model succession and is what `payload-of`
    reads."
   [store current by-from [tid t]]
-  (let [root (tree/root t) rn (get-in store [:objects root]) es (get by-from root)]
+  (let [root (tree/root t) rn (get-in store [:objects root]) es (get by-from root)
+        d (:descriptor t)]
     (when (and (get-in rn [:content :attrs :doc]) (seq es))
       (let [by (fn [pred] (filter #(pred (target store %)) es))
             model-ids (set (map :to (by model-node?)))
@@ -153,8 +157,11 @@
          :model-version (:version entry) :model-id (:id entry)
          :contract-id (get-in (anchor-edge store es) [:evidence :contract])
          :inline (boolean (some #(stored-source? (target store %)) es))
-         :recorded-content-hash (get-in (anchor-edge store es) [:evidence :content-hash])
+         :recorded-content-hash (or (get-in (anchor-edge store es) [:evidence :content-hash])
+                                   (get-in d [:content-hash]))
          :recorded-field-hashes (get-in (anchor-edge store es) [:evidence :field-hashes])
+         :class (or (get-in d [:class]) (get-in (anchor-edge store es) [:evidence :contract]))
+         :cached? (true? (get-in d [:cached?]))
          :state (cond (nil? entry) :orphan (contains? extracted (:id entry)) :intact :else :superseded)
          :path path :fingerprint (get-in ext [:content :fingerprint])
          :source (source-of (:host store) store tid es path (get-in ext [:content :fingerprint])) :edges (mapv :id es)}))))
@@ -185,10 +192,9 @@
   ;; (a document's :name is its tree's descriptor name and its :tree the tree id): every write
   ;; (create, fields set, edit) resolves its document here, so it must cost what the matching
   ;; trees cost: the name index of the kernel, then the edges of those roots only
-  (let [trees (:trees store)
-        cands (->> (cons token (revision/trees-named store token)) distinct
-                   (keep (fn [tid] (when-let [t (get trees tid)] [tid t])))
-                   (filter (fn [[_ t]] (= :document (get-in t [:descriptor :kind])))))]
+  (let [cands (->> (cons token (revision/trees-named store token)) distinct
+                   (keep (fn [tid] (when-let [d (revision/tree-descriptor store tid)]
+                                     (when (= :document (:kind d)) [tid {:descriptor d}])))))]
     (when (seq cands)
       (let [current (mstore/models store) by-from (edges-from store (map (comp tree/root second) cands))]
         (->> cands (keep #(describe store current by-from %)) (sort-by (juxt :name :tree)) first)))))
@@ -227,6 +233,75 @@
 
 (defn of-model "Tracked documents bound to model `name`." [store name] (filterv #(= name (:model %)) (documents store)))
 
+;; ---------------------------------------------------------------- resolver
+
+(declare cache-write!)
+
+(defn cached-tree?
+  "True when tree `tid` was registered as cache (its tree objects and nodes are
+   derived, docs/v2/14 §18.6)."
+  [store tid]
+  (true? (:cached? (revision/tree-descriptor store tid))))
+
+(defn doc-tree
+  "The committed tree of document `doc` through the ONE resolver (docs/v2/14
+   §19): from the store when the tree is persisted (a document without file or
+   `:inline`), from the cache otherwise, and rebuilt from the file (and written
+   back to the cache) when the cache is absent. Returns `{:tree :stale?}`;
+   `:stale?` is true when the file no longer matches the registered fingerprint,
+   so the recomputed root may differ from the registered one (the document is
+   out of date: `docs update NAME`). Nil when the tree cannot be obtained (no
+   cache hit and no readable file)."
+  [store doc]
+  (let [host (:host store) tid (:tree doc)]
+    (if-not (cached-tree? store tid)
+      (when (revision/tree-descriptor store tid)
+        (let [t (revision/load-tree store tid (:head store))]
+          {:tree t :objects (when t (tree/objects t)) :stale? false}))
+      (let [[_ merkle] (revision/tree-entry store tid)
+            d (revision/tree-descriptor store tid)
+            t (err/rescue-any (fn [_] nil) (revision/load-tree store tid (:head store)))
+            ok? (and t (some? (tree/node-at t [])))
+            rebuild (fn [text]
+                      (let [a (assoc-in (ast/parse host text) [:attrs :doc] (:doc doc))
+                            reg (assoc (md/ast->tree host a {:tree-id tid :name (:name doc) :class (:class d)
+                                                             :content-hash (:content-hash d) :cached? true})
+                                       :tree-id tid)]
+                        (cache-write! store reg {:fingerprint (fingerprint host text) :class (:class d)})
+                        {:tree (:tree reg) :objects (:objects reg) :nodes (:nodes reg)
+                         :stale? (not= merkle (:merkle-root reg))}))]
+        (if ok?
+          {:tree t :objects (tree/objects t) :stale? false}
+          (when-let [text (and (:path doc) (:read-file store) ((:read-file store) (:path doc)))]
+            (rebuild text)))))))
+
+(defn- with-tree
+  "`store` with the resolved tree `r` (see `doc-tree`) in its views, so the
+   Markdown/AST readers do not re-read a store whose object view may have
+   memoised a miss before the cache was repopulated."
+  [store {:keys [tree objects nodes]}]
+  (-> store
+      (assoc-in [:trees (:tree tree)] tree)
+      (update :objects merge objects nodes)))
+
+(defn document-markdown
+  "Canonical Markdown of `doc` (a document map) or of the document named or
+   identified by `token`, through `doc-tree`; nil when it cannot be resolved."
+  [store doc-or-token]
+  (let [doc (if (map? doc-or-token) doc-or-token (find-document store doc-or-token))
+        r (and doc (doc-tree store doc))]
+    (when-let [t (:tree r)]
+      (md/store->markdown (:host store) (with-tree store r) (:tree t)))))
+
+(defn document-ast
+  "SLDB-MD AST of `doc` (a document map) or of the document named or identified
+   by `token`, through `doc-tree`; nil when it cannot be resolved."
+  [store doc-or-token]
+  (let [doc (if (map? doc-or-token) doc-or-token (find-document store doc-or-token))
+        r (and doc (doc-tree store doc))]
+    (when-let [t (:tree r)]
+      (md/store->ast (with-tree store r) (:tree t)))))
+
 ;; ---------------------------------------------------------------- plans
 
 (defn changed-fields
@@ -240,6 +315,82 @@
 
 (defn- meta-engines [m] {"kimun.surface.docs" "1" meta-key (pr-str m)})
 
+;; ---------------------------------------------------------------- registered tree (cache)
+
+(defn- generic-class
+  "Class id of a document without a model: the indexing profile of its file
+   type (docs/v2/14 §18.1)."
+  [path]
+  (let [ext (some-> path (str/split #"\.") last str/lower-case)]
+    (str "generic/" (or ext "file"))))
+
+(defn- serialize-object
+  "Canonical text of `obj` as it is written to the object cache: the same
+   hashed form the kernel serialises to `objects/` (nodes lose :id/:address)."
+  [host obj] (canon/canon-str host (kstore/hashed-form obj)))
+
+(defn- cache-write!
+  "Persists the derived objects of `reg` (its tree objects and its block/text/
+   opaque nodes) and the per-document cache entry in `<store>/cache/` when the
+   store has a directory (docs/v2/14 §18.6, §19). Returns `reg`. A store
+   without `:store-dir` (in-memory, tests) writes nothing: the resolver
+   recomputes from the file."
+  [store reg {:keys [fingerprint class]}]
+  (when-let [dir (:store-dir store)]
+    (let [host (:host store)]
+      (doseq [[id obj] (merge (:objects reg) (:nodes reg))]
+        (store-cache/write-object! dir id (serialize-object host obj)))
+      (when (and fingerprint class)
+        (store-cache/write-entry! dir (store-cache/cache-key fingerprint class store-cache/parser-version)
+                                  {:fingerprint fingerprint :class class :parser store-cache/parser-version
+                                   :tree (:tree-id reg) :root-hash (:merkle-root reg)}))))
+  reg)
+
+(defn- registry
+  "The registry of a by-reference document (docs/v2/14 §18.6): builds its tree
+   in memory, writes the derived objects to the cache and returns `{:reg :ops}`
+   where `:reg` carries the merkle root and `:ops` are the plan ops that
+   register it — the root node, the external anchor, the model edges and the
+   `:register-tree` op. No ownership edge and no block/text node enters the
+   plan: that structure is recomputable from `archivo + clase`."
+  [host store {:keys [doc tree-id name text path class content-hash actor]}]
+  (let [a (assoc-in (ast/parse host text) [:attrs :doc] doc)
+        reg (assoc (md/ast->tree host a {:tree-id tree-id :name name :class class :content-hash content-hash})
+                   :tree-id tree-id)
+        root (:root reg)
+        ext (when path (external-node host path text))
+        xid (when ext (id-of host ext))
+        ext-ref (when ext {:type :reference :from root :to xid
+                           :evidence {:ref-hash xid :actor actor :contract class}})
+        wanted (cond-> [{:type :reference :from root :to class :evidence {:ref-hash class :actor actor}}
+                        {:type :derived :from root :to class
+                         :evidence {:ref-hash class :engine "kimun.surface.models" :version "1"}}]
+                 ext-ref (conj ext-ref))]
+    {:reg reg
+     :wanted wanted
+     :ops (-> [{:op :add-node :node (root-node host doc) :as :root}]
+              (cond-> ext (conj {:op :add-node :node ext :as :ext}))
+              (conj {:op :register-tree :tree (dissoc (:descriptor reg) :tree)
+                     :id tree-id :root :root :merkle-root (:merkle-root reg) :as :t})
+              (into (map (fn [e] {:op :add-edge :edge e}) wanted)))}))
+
+(defn- registry-stale
+  "Ids of the owned edges of `old` that the wanted set of a registry plan does
+   not keep: the edges to the file, source and model this surface wrote."
+  [host store wanted root old]
+  (let [wanted-ids (set (map #(:id (edge/make host %)) wanted))]
+    (for [eid (:edges old) :let [e (get-in store [:objects eid])]
+          :when (and (not (wanted-ids eid)) (source-or-file? (target store e)))] eid)))
+
+(defn- registry-ops
+  "Ops of a by-reference document: its registry plus the removal of the stale
+   owned edges of `old` (an existing document map, or nil)."
+  [host store opts old]
+  (let [{:keys [reg wanted ops]} (registry host store opts)]
+    {:reg reg
+     :ops (into ops (map (fn [eid] {:op :remove-edge :edge eid})
+                         (registry-stale host store wanted (:root reg) old)))}))
+
 (defn- binding-ops
   "Ops tying `root` to the model and (when `path`) the file, removing the edges
    of `old` (a document map) that no longer hold. The anchor edge records
@@ -250,13 +401,15 @@
    edge, so the document carries its own text (docs/v2/14 §10: `:content
    :inline`); by reference (default) no source sign is written and the text is
    read from the file."
-  [host store root {:keys [model-id text path actor content-hash field-hashes inline?]} old]
+  [host store root {:keys [model-id text path actor content-hash inline?]} old]
   (let [src (when inline? {:class :sign :kind :opaque :content {:format source-format :blob text}})
         sid (when src (id-of host src))
         ext (when path (external-node host path text)) xid (when ext (id-of host ext))
+        ;; format 4: the extracted payload's content hash lives in the registry
+        ;; descriptor of a cached document, not in the edge evidence; the field
+        ;; hashes are gone (readers recompute them from the payload when needed)
         marks (cond-> {:contract model-id}
-                content-hash (assoc :content-hash content-hash)
-                (seq field-hashes) (assoc :field-hashes field-hashes))
+                content-hash (assoc :content-hash content-hash))
         ext-ref (when ext {:type :reference :from root :to xid
                            :evidence (merge {:ref-hash xid :actor actor} marks)})
         wanted (cond-> [{:type :reference :from root :to model-id
@@ -298,23 +451,31 @@
    Returns `{:plan :name :tree :payload}`. Raises `:docs/exists` when the name
    is tracked, `:models/missing`, and the extraction errors of the model. With
    `:inline` the source text is stored in the store instead of read from the
-   file (default: the store descriptor's `:content`)."
+   file (default: the store descriptor's `:content`). A document with a path
+   (and not `:inline`) is registered as CACHE (docs/v2/14 §18.6): no ownership
+   edge, no block/text node and no tree object enters the plan."
   [host store model name text {:keys [doc tree-id path actor timestamp operation inline]}]
   (when (find-document store name)
     (err/raise :docs/exists (str "a document named `" name "` already exists") {:document name}))
   (let [m (require-model store model)
         payload (extract/extract (:descriptor m) text)
-        root (:id (root-node host doc))
-        a (assoc-in (ast/parse host text) [:attrs :doc] doc)
-        base (md/ast->plan host a {:tree-id tree-id :name name :actor actor :timestamp timestamp :base (:head store)})]
+        ch (content-hash host payload)
+        inline? (or inline (= :inline (:content store)))
+        cached? (and path (not inline?) (not (revision/legacy? store)))
+        engines (meta-engines {:operation (or operation "docs track") :address (str model ":" name)
+                               :fields (changed-fields {} payload)})
+        ops (if cached?
+              (let [{:keys [reg ops]} (registry-ops host store {:doc doc :tree-id tree-id :name name :text text
+                                                                 :path path :class (:id m) :content-hash ch :actor actor} nil)]
+                (cache-write! store reg {:fingerprint (fingerprint host text) :class (:id m)})
+                ops)
+              (let [a (assoc-in (ast/parse host text) [:attrs :doc] doc)
+                    root (:id (root-node host doc))
+                    base (md/ast->plan host a {:tree-id tree-id :name name :actor actor :timestamp timestamp :base (:head store)})]
+                (into (:ops base) (binding-ops host store root {:model-id (:id m) :text text :path path :actor actor
+                                                                :content-hash ch :inline? inline?} nil))))]
     {:name name :tree tree-id :payload payload
-     :plan (-> base
-               (assoc :engines (meta-engines {:operation (or operation "docs track") :address (str model ":" name)
-                                              :fields (changed-fields {} payload)}))
-               (update :ops into (binding-ops host store root {:model-id (:id m) :text text :path path :actor actor
-                                                               :content-hash (content-hash host payload)
-                                                               :field-hashes (field-hashes host payload)
-                                                               :inline? (or inline (= :inline (:content store)))} nil)))}))
+     :plan {:plan/version 1 :base (:head store) :actor actor :timestamp timestamp :engines engines :ops (vec ops)}}))
 
 (defn create-plan
   "Plan that creates document `name` of `model` from `payload` (rendered with
@@ -336,6 +497,9 @@
         m (require-model store (:model doc))
         payload (extract/extract (:descriptor m) text)
         path (or path (:path doc))
+        ch (content-hash host payload)
+        inline? (or inline (:inline doc))
+        cached? (and path (not inline?) (not (revision/legacy? store)))
         ;; with by-reference content the tracked text is the file: "unchanged" is the fingerprint
         ;; matching what the doc was written with, not the text read back from the file
         same? (and (= path (:path doc)) (= :intact (:state doc))
@@ -345,17 +509,24 @@
         ;; the payload read is the one under the contract the document was
         ;; written with: the fields the new contract adds are not in it
         before (or (:payload doc) {})
-        a (assoc-in (ast/parse host text) [:attrs :doc] (:doc doc))
-        base (when-not same? (md/ast->update-plan host store (:tree doc) a {:actor actor :timestamp timestamp :base (:head store)}))]
-    {:name (:name doc) :tree (:tree doc) :payload payload :before (:payload doc) :unchanged? same?
-     :plan (when base
-             (-> base
-                 (assoc :engines (meta-engines {:operation (or operation "docs update") :address (str (:model doc) ":" (:name doc))
-                                                :fields (changed-fields before payload)}))
-                 (update :ops into (binding-ops host store (:root doc) {:model-id (:id m) :text text :path path :actor actor
-                                                                        :content-hash (content-hash host payload)
-                                                                        :field-hashes (field-hashes host payload)
-                                                                        :inline? (or inline (:inline doc))} doc))))}))
+        engines (meta-engines {:operation (or operation "docs update") :address (str (:model doc) ":" (:name doc))
+                               :fields (changed-fields before payload)})]
+    (if cached?
+      (let [{:keys [reg ops]} (registry-ops host store {:doc (:doc doc) :tree-id (:tree doc) :name (:name doc)
+                                                         :text text :path path :class (:id m) :content-hash ch :actor actor}
+                                             doc)]
+        (when-not same? (cache-write! store reg {:fingerprint (fingerprint host text) :class (:id m)}))
+        {:name (:name doc) :tree (:tree doc) :payload payload :before (:payload doc) :unchanged? same?
+         :plan (when-not same?
+                 {:plan/version 1 :base (:head store) :actor actor :timestamp timestamp :engines engines :ops (vec ops)})})
+      (let [a (assoc-in (ast/parse host text) [:attrs :doc] (:doc doc))
+            base (when-not same? (md/ast->update-plan host store (:tree doc) a {:actor actor :timestamp timestamp :base (:head store)}))]
+        {:name (:name doc) :tree (:tree doc) :payload payload :before (:payload doc) :unchanged? same?
+         :plan (when base
+                 (-> base
+                     (assoc :engines engines)
+                     (update :ops into (binding-ops host store (:root doc) {:model-id (:id m) :text text :path path :actor actor
+                                                                            :content-hash ch :inline? inline?} doc))))}))))
 
 (defn untrack-plan
   "Plan that stops tracking document `token`: the edges this surface owns (to

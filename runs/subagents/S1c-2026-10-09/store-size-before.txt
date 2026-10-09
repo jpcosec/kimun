@@ -1,0 +1,19 @@
+store .kimun.bak-20261009-024834
+class                           count        bytes        avg
+plan                                1      4031322    4031322
+tree-object                      5478      1650467        301
+edge/reference                   1078       701496        651
+mmap/leaf                        1381       597121        432
+sign/sign/opaque                  865       303151        350
+sign/sign/external                539       171995        319
+sign/sign/text                   1278       168272        132
+edge/derived                      539       157927        293
+mmap/branch                       103       108695       1055
+descriptor                        540        94859        176
+sign/sign/block                   691        80062        116
+revision                            1          488        488
+TOTAL objects                   12494      8065855
+log.edn                                        151
+TOTAL apparent                             8066006  (7877.0 KB)
+cache (derived)                     0            0  (0.0 KB)
+on disk                                   56520704  (55196.0 KB)

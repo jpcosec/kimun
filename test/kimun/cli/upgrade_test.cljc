@@ -103,4 +103,8 @@
       (is (true? (:ok (run proj "stores" "verify"))))
       (let [e3 (run proj "stores" "upgrade")]
         (is (true? (:ok e3)) (pr-str e3))
-        (is (= {:upgraded false :format-version 3 :path dir} (:data e3)))))))
+        (is (= {:upgraded false :format-version 3 :path dir :needs-rebuild true
+                :action "kimun include build --rebuild"
+                :message "format 3 → 4 registers documents with a file as cache; run `kimun include build --rebuild` to rebuild from the files"}
+               (:data e3))
+            "format 3 → 4 is a rebuild from the files, not an in-place rewrite")))))

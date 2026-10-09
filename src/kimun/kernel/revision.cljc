@@ -188,6 +188,19 @@
     (map (fn [[tid [desc-id _]]] [tid (get-object store desc-id)])
          (sort-by first (mmap/entries (loader store) (:trees (roots store (:head store))))))))
 
+(defn cached-tree-roots
+  "Set of the merkle roots of every tree of the head whose descriptor is marked
+   `:cached?` (docs/v2/14 §18.6): its tree objects and block/text nodes live in
+   the store cache, not in the CAS, so verification must treat them as derived.
+   Reads one descriptor per tree; used by `kimun.kernel.store/reachable`."
+  [store]
+  (if (legacy? store)
+    #{}
+    (into #{}
+          (keep (fn [[_ [desc-id merkle]]]
+                  (when (true? (:cached? (get-object store desc-id))) merkle)))
+          (mmap/entries (loader store) (:trees (roots store (:head store)))))))
+
 (defn load-tree
   "Committed tree {:tree :descriptor :root} of `tid` at `rev-id`, rebuilt from
    the CAS (loads the tree objects of that one tree); nil when absent. Equal to
@@ -198,7 +211,8 @@
      :root (tree/from-objects root #(get-object store %))}))
 
 (defn committed-tree
-  "Committed tree of `tid` at the head (a lookup in the :trees view) or at
+  "Committed tree of `tid` at the head (a lookup in the :trees view, which for
+   a tree whose structure is cache loads it on demand: docs/v2/14 §18.6) or at
    `rev-id` (see `load-tree`); nil when absent."
   ([store tid] (get (:trees store) tid))
   ([store tid rev-id]
@@ -224,7 +238,15 @@
     (let [head (:head base)
           core (select-keys base [:host :format-version :objects :revisions :head :heads-root])
           ids (delay (tree-ids core head))   ; enumerated at most once per view lineage, not once per scan
-          trees (or (:trees base) (ports/lazy-map lm #(load-tree core % head) #(deref ids) {}))
+          provided (:trees base)
+          cached (:cached-trees base)
+          ;; a provided view holds the trees the transaction materialised; a tree
+          ;; whose structure is cache (docs/v2/14 §18.6) is not materialised, so a
+          ;; lookup that misses falls back to `load-tree` (which reads its tree
+          ;; objects from the CAS or the cache) instead of answering nil
+          trees (if (and provided (seq cached))
+                  (ports/lazy-map lm #(or (get provided %) (load-tree core % head)) #(deref ids) {})
+                  (or provided (ports/lazy-map lm #(load-tree core % head) #(deref ids) {})))
           known (:edges base)
           edges (if known (doto (delay known) deref) (delay (set (active-edges core head))))
           named (:tree-names base)
@@ -269,27 +291,34 @@
    (untouched trees are equal in both heads and no plan removes a tree; what
    the previous view already loaded stays loaded), and when the previous
    :edges set was materialised the new one is that set plus the net delta of
-   the transaction (when it was not, it stays unmaterialised)."
+   the transaction (when it was not, it stays unmaterialised). A tree whose
+   structure is cache (docs/v2/14 §18.6) is NOT put in the view: its descriptor
+   and merkle root are registered in the :trees mmap, and `load-tree` rebuilds
+   its positions from the CAS/cache on lookup."
   [store trees' added removed]
-  (if (ports/lazy-maps? (:host store))
-    (let [view (::edges-view (meta store))
-          edges (when (and view (realized? view)) (reduce conj (reduce disj @view removed) added))
-          nview (::names-view (meta store))
-          ;; a touched tree leaves the name it had in the previous head (its old value is in
-          ;; the previous :trees view, already loaded by the transaction) and joins its new one
-          names (when (and nview (realized? nview))
-                  (reduce (fn [m [tid t]]
-                            (let [old (get-in (:trees store) [tid :descriptor :name])
-                                  m (if (some? (get (:trees store) tid))
-                                      (let [s (disj (get m old) tid)] (if (empty? s) (dissoc m old) (assoc m old s)))
-                                      m)]
-                              (update m (get-in t [:descriptor :name]) (fnil conj (sorted-set)) tid)))
-                          @nview trees'))]
-      ;; dissoc + seq + merge on a lazy map force nothing
-      (lazy-store (cond-> (assoc (into {} (dissoc store :trees :edges)) :trees (merge (:trees store) trees'))
-                    edges (assoc :edges edges)
-                    names (assoc :tree-names names))))
-    (refresh-views store trees' added removed)))
+  (let [cached (into #{} (keep (fn [[tid t]] (when (get-in t [:descriptor :cached?]) tid))) trees')
+        prev (reduce dissoc (:trees store) cached)
+        view-trees (into {} (remove (fn [[tid _]] (cached tid))) trees')]
+    (if (ports/lazy-maps? (:host store))
+      (let [view (::edges-view (meta store))
+            edges (when (and view (realized? view)) (reduce conj (reduce disj @view removed) added))
+            nview (::names-view (meta store))
+            ;; a touched tree leaves the name it had in the previous head (its old value is in
+            ;; the previous :trees view, already loaded by the transaction) and joins its new one
+            names (when (and nview (realized? nview))
+                    (reduce (fn [m [tid t]]
+                              (let [old (get-in (:trees store) [tid :descriptor :name])
+                                    m (if (some? (get (:trees store) tid))
+                                        (let [s (disj (get m old) tid)] (if (empty? s) (dissoc m old) (assoc m old s)))
+                                        m)]
+                                (update m (get-in t [:descriptor :name]) (fnil conj (sorted-set)) tid)))
+                            @nview trees'))]
+        ;; dissoc + seq + merge on a lazy map force nothing
+        (lazy-store (cond-> (assoc (into {} (dissoc store :trees :edges :cached-trees)) :trees (merge prev view-trees))
+                      (seq cached) (assoc :cached-trees cached)
+                      edges (assoc :edges edges)
+                      names (assoc :tree-names names))))
+      (refresh-views (assoc (dissoc store :cached-trees) :trees prev) view-trees added removed))))
 
 ;; ---------------------------------------------------------------- working state
 
@@ -395,6 +424,30 @@
     (when (ws-tree ws id) (plan/reject :ids-exist op (str "tree already exists " id)))
     (-> ws (assoc-in [:trees id] t) (update :touched conj id) (bind-alias op id))))
 
+(defn- register-tree-op
+  "Registers a tree whose structure is CACHE, not store (docs/v2/14 §18.6): it
+   records the surface-computed descriptor (which carries the class and the
+   content hash of the extracted payload) and the merkle root of the indexed
+   structure, with no positions. No tree object and no block/text node is ever
+   written for it: the resolver rebuilds the tree from the file and verifies
+   `merkle-root`. A `:register-tree` may re-register an already cached tree (a
+   document whose file changed); it refuses to overwrite a persisted tree."
+  [ws op]
+  (let [root (require-node ws op (r ws (:root op)))
+        tree-id (:id op)
+        _ (when-not (tree/ulid? tree-id) (plan/reject :tree-integrity op (str "cached tree id must be a ULID " tree-id)))
+        _ (when-not (string? (:merkle-root op)) (plan/reject :tree-integrity op "a registered tree needs :merkle-root"))
+        desc (:tree op)
+        _ (when-not (contains? tree/kinds (:kind desc)) (plan/reject :tree-integrity op (str "unknown tree kind " (:kind desc))))
+        _ (when-not (= (:root desc) root) (plan/reject :tree-integrity op ":tree/root and :root must be the same node id"))
+        old (ws-tree ws tree-id)
+        _ (when (and old (not (get-in old [:descriptor :cached?])))
+            (plan/reject :ids-exist op (str "tree " tree-id " already exists and is not cache")))
+        descriptor (assoc desc :tree tree-id)
+        t {:tree tree-id :descriptor descriptor
+           :root {:node root :children [] :hash (:merkle-root op)}}]
+    (-> ws (assoc-in [:trees tree-id] t) (update :touched conj tree-id) (bind-alias op tree-id))))
+
 (defn- require-tree [ws op tid]
   (when-not (ws-tree ws tid) (plan/reject :ids-exist op (str "unknown tree " tid)))
   tid)
@@ -483,6 +536,7 @@
 (defn- apply-op [ws op]
   (case (:op op)
     :new-tree    (new-tree-op ws op)
+    :register-tree (register-tree-op ws op)
     :add-node    (add-node-op ws op)
     :add-edge    (add-edge-op ws op)
     :remove-edge (remove-edge-op ws op)

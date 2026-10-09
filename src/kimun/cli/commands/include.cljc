@@ -176,15 +176,18 @@
 
 (defn- managed-block
   "The managed lines of `.gitignore` for `cfg`: the store path when the store
-   is not versioned, and a `!` re-include per declared glob so no declared file
-   is ignored by a broader rule."
+   is not versioned, the store's derived cache (never versioned, docs/v2/14
+   §19) and a `!` re-include per declared glob so no declared file is ignored
+   by a broader rule."
   [cfg]
-  (concat
-   [managed-start]
-   (when (= :ignore (get-in cfg [:store :git]))
-     [(str (get-in cfg [:store :path]) "/")])
-   (map #(str "!" %) (inc/managed-globs cfg))
-   [managed-end]))
+  (let [store-path (get-in cfg [:store :path])]
+    (concat
+     [managed-start]
+     (when (= :ignore (get-in cfg [:store :git]))
+       [(str store-path "/")])
+     [(str store-path "/cache/")]
+     (map #(str "!" %) (inc/managed-globs cfg))
+     [managed-end])))
 
 (defn- merge-block
   "`content` with the managed block replaced between the markers (or appended

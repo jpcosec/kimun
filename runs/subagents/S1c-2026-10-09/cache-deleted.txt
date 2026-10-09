@@ -1,0 +1,28 @@
+== cache deleted ==
+heads.edn
+lock
+log.edn
+objects
+store.edn
+== include check ==
+findings: {:declared-missing 0, :declared-not-in-store 0, :declared-not-tracked 0, :store-tracked 0, :store-undeclared 0, :tracked-undeclared 0}
+ok: true
+staged?: false
+exit=0
+== docs list (count) ==
+540
+== docs render (recomputes from file) ==
+{
+  "ok" : true,
+  "command" : "docs render",
+  "store" : {
+== docs show --ast ==
+{
+  "ok" : true,
+  "command" : "docs show",
+  "store" : {
+== stores verify ==
+  "ok" : true,
+    "checked" : 4781,
+== cache repopulated files ==
+74

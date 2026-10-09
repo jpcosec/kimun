@@ -300,17 +300,21 @@ Funciones (todas puras, en `kimun.surface.markdown.plan`):
   que sobreviven a la edición son content-addressed, así que se vuelven a colocar y siguen
   `intact`; los que desaparecen quedan `orphan` y los recoge `reconcile/proposals`.
 
-### 8.1 Hojas y árbol por referencia (formato 3, docs/v2/14 §10, docs/v2/10 §10)
+### 8.1 Hojas y árbol por referencia (formato 4, docs/v2/14 §18–§19, docs/v2/10 §11)
 
 El mapeo no cambia (el árbol sigue siendo el mismo, con las mismas posiciones y los mismos
-ids), pero en un store formato 3 **qué se persiste** sí: por defecto (`:content
-:by-reference`) el árbol de un documento con anchor externo se considera caché
-reconstruible y el texto del documento se lee del archivo; con `:content :inline`
-(`docs create|track --inline`, `:store {:content :inline}`) se escribe el signo verbatim del
-texto, como en el formato 2. En ambos casos `store->ast`/`store->markdown` funcionan:
-`docs` resuelve `:source` desde el signo si lo hay, si no desde el archivo (mientras su
-fingerprint coincide) y si no desde el árbol. `ast->update-plan` sigue necesitando el árbol
-en el CAS para diffear posiciones.
+ids), pero en un store formato 4 **qué se persiste** sí: por defecto (`:content
+:by-reference`) el documento con anchor externo se registra con su anchor, su clase y su hash
+raíz; su árbol, bloques y valores de campo NO se escriben en el CAS, viven en
+`<store>/cache/` y se recalculan del archivo (el resolver `kimun.surface.docs/doc-tree`
+verifica `merkle-root`). El texto se lee del archivo. Con `:content :inline`
+(`docs create|track --inline`, `:store {:content :inline}`) sí se escribe el signo verbatim
+del texto y el árbol, como en el formato 2. En todos los casos
+`store->ast`/`store->markdown` funcionan: `docs` resuelve `:source` desde el signo si lo hay,
+si no desde el archivo (mientras su fingerprint coincide) y si no desde el árbol (del CAS o
+del caché). `ast->update-plan` (que diffea posiciones contra el árbol del CAS) es el camino
+de los documentos `:inline`; un documento con archivo se actualiza por el registro
+(`:register-tree`), sin árbol en el plan.
 
 ## 9. Informe de direccionabilidad
 

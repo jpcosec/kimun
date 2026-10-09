@@ -39,6 +39,7 @@ resources/git-sha
 .herdr-coordination.md
 # >>> kimun include (managed) >>>
 .kimun/
+.kimun/cache/
 !desk/models/*.edn
 !desk/atoms/**/*.md
 !desk/contexts/**/*.md
