@@ -1,5 +1,5 @@
-id: sldb.v2.replace_reanchoring
-title: SLDB v2 — :replace and Re-anchoring under Succession
+id: kimun.v2.replace_reanchoring
+title: kimun v2 — :replace and Re-anchoring under Succession
 type: activity
 version: "1.0"
 # Source of truth: docs/v2/02 §5.1 ":replace", §6, §6.1; atoms: atom-replace-semantics-inside-a-transaction, atom-re-anchoring-rules-under-succession

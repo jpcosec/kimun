@@ -1,34 +1,39 @@
 flowchart TD
     __start([Start])
     open["open backend host"]
-    read_descriptor["read store.edn {:format-version :hash-alg :capabilities}; hash-alg must match the host Hasher"]
-    replay["replay log.edn: for each Transaction line apply-plan(plan) on the rebuilt store"]
-    check_ids{"replayed tx id and revision id equal the logged ones?"}
-    fail_replay[":store/error — log and objects disagree"]
-    heads_present{"heads.edn present?"}
-    compare_heads{"heads.edn == replayed {:head :heads}?"}
-    fail_heads[":store/error — heads.edn does not match the log"]
-    ready["store value ready (in memory); objects/ never trusted for state"]
-    verify["verify: reachable = closure from heads over revision → tree-set/edge-set/roots/tx → tree objects → nodes, edges"]
-    hash_files{"for each reachable id: H(objects/#lt;id#gt; content) == id?"}
+    read_descriptor["read store.edn {:format-version 2|3|4 :hash-alg :capabilities …}; hash-alg must match the host Hasher"]
+    read_heads["read heads.edn {:head rev-id :heads-root id} (absent before the first commit = empty store)"]
+    check_head{"check the head Revision (H == id, 8 fields) and :heads-root (mmap node); open NEVER reads or replays log.edn"}
+    fail_open[":store/corrupt-heads | :store/corrupt-head (exit 5)"]
+    ready{"lazy store value (store.edn + heads only); which command?"}
+    ok_open["answer from the head Revision; other objects read on demand and never rehashed"]
+    verify["verify: reachable = closure from heads over revision → mmap :trees/:edges/:incidence → descriptors, tree objects, nodes, edges"]
+    cache_note["format 4: a tree marked :cached? is NOT required in objects/; its integrity is the resolver's (registered root vs recomputed)"]
+    hash_files{"for each reachable id: H(objects/#lt;id#gt;) == id?"}
     ok["{:ok? true :checked n}"]
-    bad["{:ok? false :bad [{:id :reason :hash-mismatch|:missing}]}"]
+    bad["{:ok? false :bad [{:id :reason :hash-mismatch|:missing}]} (exit 5)"]
+    replay["replay log.edn: for each Transaction apply-plan(plan) and check tx/revision ids, :incidence and per-tree heads"]
+    replay_check{"final heads == heads.edn? and the log tail is :clean (a dead-writer tail is reported, not an error)"}
+    fail_replay[":store/corrupt {:bad [{:reason :replay-failed}]} (exit 5)"]
     __end([End])
     __start --> open
     open --> read_descriptor
-    read_descriptor --> replay
-    replay --> check_ids
-    check_ids -->|"yes"| heads_present
-    check_ids -->|"no"| fail_replay
-    fail_replay --> __end
-    heads_present -->|"yes"| compare_heads
-    heads_present -->|"no"| ready
-    compare_heads -->|"yes"| ready
-    compare_heads -->|"no"| fail_heads
-    fail_heads --> __end
-    ready --> verify
-    verify --> hash_files
+    read_descriptor --> read_heads
+    read_heads --> check_head
+    check_head -->|"ok"| ready
+    check_head -->|"missing / hash mismatch / wrong shape"| fail_open
+    fail_open --> __end
+    ready -->|"any command (docs show…, commit)"| ok_open
+    ready -->|"stores check"| verify
+    ready -->|"stores verify / journal verify / replay-open"| replay
+    ok_open --> __end
+    verify --> cache_note
+    cache_note --> hash_files
     hash_files -->|"all"| ok
     hash_files -->|"some differ or missing"| bad
     ok --> __end
     bad --> __end
+    replay --> replay_check
+    replay_check -->|"consistent"| verify
+    replay_check -->|"inconsistent / damaged line"| fail_replay
+    fail_replay --> __end

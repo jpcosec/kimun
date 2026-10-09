@@ -1,21 +1,21 @@
-id: sldb.v2.cas_objects
-title: SLDB v2 — Content-Addressed Object Model
+id: kimun.v2.cas_objects
+title: kimun v2 — Content-Addressed Object Model (formats 2/3/4)
 type: component
 version: "1.0"
-# Every object satisfies H(canonical-bytes hashed-form) == id (invariant 17).
-# Source of truth: docs/v2/02 §2.1, §3.1, §3.2, §5.
+# Every CAS object satisfies H(canonical-bytes hashed-form) == id (invariant 17).
+# Formats 3 and 4 change what is written, not the 8-field Revision shape (docs/v2/10 §5–§6, §10–§11).
+# Source of truth: docs/v2/02 §2.1, §3.1, §3.2, §5; docs/v2/10 §5, §10, §11.
 
 data:
   nodes:
     Store:
-      label: "Store (CAS: objects/<id>)"
+      label: "Store (objects/<id> CAS + cache/ derived, formats 2/3/4)"
       kind: database
       atoms:
         - atom-first-slice-runtime-choices
       contains:
         - Revision
-        - TreeSet
-        - EdgeSet
+        - Mmap
         - Descriptor
         - TreeObject
         - Node
@@ -23,23 +23,20 @@ data:
         - ResolvedPlan
 
     Revision:
-      label: "Revision {roots trees edges parents tx actor engines timestamp} · id = H(8 fields)"
+      label: "Revision {:trees :edges :incidence :parents :tx :actor :engines :timestamp} · id = H(8 fields)"
       kind: core
       atoms:
         - atom-revision-id-edge-set-and-diff
-    TreeSet:
-      label: "tree-set [[tree-id descriptor-id] …] sorted"
-      kind: core
-    EdgeSet:
-      label: "edge-set [edge-id …] sorted"
+    Mmap:
+      label: "mmap node {:mmap :leaf|:branch …} — history-independent Merkle map (:trees :edges :incidence roots)"
       kind: core
     Descriptor:
-      label: "descriptor {:tree ULID :kind :name :root}"
+      label: "descriptor {:tree ULID :kind :name :root} (+ :class :content-hash, format 4)"
       kind: core
       atoms:
         - atom-tree-identity-tree-objects-and-heads
     TreeObject:
-      label: "tree object {:node :children [[child tree-hash] …]} (sibling order in hash)"
+      label: "tree object {:node :children [[child tree-hash] …]} (sibling order in hash); format 4: in cache/ for a document with file"
       kind: core
       atoms:
         - atom-tree-as-index
@@ -50,60 +47,66 @@ data:
         - atom-smg-node-pool
         - atom-canonical-content-and-node-hashing
     Edge:
-      label: "Edge {:type :from :to [:tree :order] :evidence} · no timestamp"
+      label: "Edge {:type :from :to [:tree :order] :evidence} · no timestamp; format 4 removes :field-hashes"
       kind: core
       atoms:
         - atom-evidence-required-per-edge-type
     ResolvedPlan:
-      label: "resolved plan (tx id = H(plan)) — Transaction map lives in log.edn"
+      label: "resolved plan (tx id = H(plan)) — the log line names it (format 3/4)"
       kind: core
       atoms:
         - atom-transactionplan-edn-schema-and-validation
 
     Heads:
-      label: "heads.edn {:head rev :heads {tree-id rev}} (nominal refs, CAS)"
+      label: "heads.edn {:head rev-id :heads-root mmap-root-id} (nominal refs, CAS)"
       kind: boundary
     Log:
-      label: "log.edn — one Transaction {:id :plan :revision} per line"
+      label: "log.edn — one Transaction per line: {:id :plan :revision} (format 2) | {:id :revision} (formats 3/4)"
+      kind: boundary
+    Cache:
+      label: "cache/objects/<id> + cache/docs/<key>.edn (format 4, derived, gitignored): tree objects and block/text/opaque nodes"
       kind: boundary
 
   edges:
     - from: Heads
       to: Revision
-      relation: points to
+      relation: points to :head
+    - from: Heads
+      to: Mmap
+      relation: :heads-root (tree-id → rev-id)
     - from: Revision
       to: Revision
       relation: parents
     - from: Revision
-      to: TreeSet
-      relation: trees
-    - from: Revision
-      to: EdgeSet
-      relation: edges
-    - from: Revision
-      to: TreeObject
-      relation: roots (merkle-root per tree)
+      to: Mmap
+      relation: ":trees / :edges / :incidence roots"
     - from: Revision
       to: ResolvedPlan
       relation: tx
-    - from: TreeSet
+    - from: Mmap
       to: Descriptor
-      relation: lists
+      relation: "tree-id → [descriptor-id merkle-root]"
     - from: Descriptor
-      to: Node
-      relation: root
+      to: TreeObject
+      relation: root (merkle-root)
     - from: TreeObject
       to: TreeObject
       relation: children (ordered)
     - from: TreeObject
       to: Node
       relation: node
-    - from: EdgeSet
+    - from: Mmap
       to: Edge
-      relation: lists
+      relation: ":edges (edge-id → true)"
+    - from: Mmap
+      to: Node
+      relation: ":incidence (node-id → edges)"
     - from: Edge
       to: Node
       relation: from / to / evidence.context
     - from: Log
       to: ResolvedPlan
-      relation: replays into
+      relation: replays into / names
+    - from: Cache
+      to: TreeObject
+      relation: holds derivable copies (format 4)

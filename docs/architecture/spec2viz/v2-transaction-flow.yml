@@ -1,8 +1,9 @@
-id: sldb.v2.transaction_flow
-title: SLDB v2 — Transaction Flow (plan → revision → persistence)
+id: kimun.v2.transaction_flow
+title: kimun v2 — Transaction Flow (plan → revision → persistence)
 type: sequence
 version: "1.0"
-# Source of truth: docs/v2/02 §5, §5.1, §5.2, §8.1; code: sldb.kernel.revision/apply-plan, sldb.kernel.store/commit!
+# Source of truth: docs/v2/02 §5, §5.1, §5.2, §8.1; docs/v2/10 §11 (format 4, :register-tree);
+# code: kimun.kernel.revision/apply-plan, kimun.kernel.store/commit!
 
 data:
   participants:
@@ -36,10 +37,10 @@ data:
       kind: sync
     - from: Revision
       to: Revision
-      message: "execute ops on working state: new-tree · add-node · add-edge · remove-edge · replace · move (ids-exist, evidence-ref-hash raised inline)"
+      message: "execute ops on working state: new-tree · add-node · add-edge · remove-edge · replace · move · register-tree (format 4) (ids-exist, evidence-ref-hash raised inline)"
     - from: Revision
       to: Tree
-      message: "add-child / move / replace-node → dirty set"
+      message: "add-child / move / replace-node → dirty set; register-tree: descriptor + merkle-root, no positions (format 4)"
       kind: sync
     - from: Revision
       to: Plan
@@ -48,20 +49,25 @@ data:
     - from: Revision
       to: Revision
       message: "check-base (check 1): base == head, or delta base→head vs plan → rebase | ConflictSet"
+      kind: sync
     - from: Revision
       to: Tree
       message: "valid? (check 3) · commit → tree objects (dirty only) · merkle-root"
       kind: sync
     - from: Revision
       to: Revision
-      message: "edge-set · tree-set · Revision (8 fields) · revision-id · Transaction"
+      message: "mmap roots (:trees :edges :incidence) · Revision (8 fields) · revision-id · Transaction"
     - from: Revision
       to: Store
       message: "{:store' :transaction :revision-id :aliases :edges-added :superseded}"
       kind: return
     - from: Store
       to: Backend
-      message: "write-object! for every new id (H(file) == id)"
+      message: "write-object! for every new id in objects/ (H(file) == id)"
+      kind: sync
+    - from: Store
+      to: Backend
+      message: "format 4: derived cache/objects/<id> + cache/docs/<key>.edn (tree objects, block/text/opaque)"
       kind: sync
     - from: Store
       to: Backend
@@ -69,7 +75,7 @@ data:
       kind: sync
     - from: Store
       to: Backend
-      message: "cas-heads! expected → new (atomic rename) · :store/stale on mismatch"
+      message: "commit-tx! under lock: compare heads (expected) → append log → atomic heads.edn; :store/stale on mismatch"
       kind: sync
     - from: Store
       to: Author

@@ -8,8 +8,11 @@
 > contrato de la revisión y enlaza aquí para la forma en disco. Autoridad: `02` (qué
 > construye) > este documento. Números en
 > `runs/bench/baseline-2026-10-06.txt` (antes) y `runs/bench/after-2026-10-06.txt` (después)
-> para el formato 2, en `runs/bench/format3-store-size.txt` (antes/después) para el 3, y en
-`runs/subagents/S1c-2026-10-09/store-size-*.txt` para el 4.
+> para el formato 2, en `runs/bench/format3-store-size.txt` (S1) y `runs/research/2026-10-08/S1b-report.md`
+> para el 3, y en `runs/subagents/S1c-2026-10-09/store-size-*.txt` para el 4.
+>
+> **Unidades:** 1 MB = 1.024.000 B en las tablas de tamaño del store (la convención de
+> `bb store-size`, que imprime KB de 1024); las cifras de `du -sb` se citan en bytes.
 
 ## 1. Antes
 
@@ -21,7 +24,7 @@ kernel de formato 1, antes del trabajo de escala:
 | `docs show` de un documento | 187,9 s |
 | `docs list` | 180,3 s |
 | `stores check` / `stores verify` | 173,2 s / 228,4 s |
-| `.kimun/` en disco | 606 MB, 36.718 objetos |
+| `.kimun/` (aparente, `du -sb`) | 606 MB, 36.718 objetos |
 | migración desde v1 (pasada estricta + `--force`) | 318 s + 204 s |
 | sintético, ms por commit | 33 (100 docs) → 56 (200) → 95 (400), lineal |
 
@@ -227,8 +230,13 @@ Store real (copia de 1.551 documentos, mejorada con `stores upgrade` en 77,6 s):
 | `docs list` | 180,3 s | 0,77 s | ≤ 3 s |
 | `fields set` | (open solo: 205,7 s) | 0,38 s | ≤ 3 s |
 | `stores check` / `stores verify` | 173,2 s / 228,4 s | 18,7 s / 32,0 s | — |
-| `.kimun/` | 606 MB, 36.718 objetos | 97,7 MB, 82.755 objetos | ≤ 150 MB |
+| `.kimun/` (aparente, `du -sb`) | 606 MB, 36.718 objetos | 97,7 MB, 82.755 objetos | ≤ 150 MB (aparente) |
+| `.kimun/` (disco real, bloques) | — | 364 MB | 150 MB: **no cumplida** |
 | migración desde v1 (estricta + `--force`) | 522 s | 71 s | ≤ 5 min |
+
+El store formato 2 ocupa 364 MB **en disco real** (no aparentes) porque 80.435 de sus 82.787
+objetos pesan menos de 4 KB y cada uno ocupa un bloque: la meta de 150 MB no se cumple en disco.
+El arreglo es empaquetar los objetos pequeños (packfiles al estilo git, `12 §1`).
 
 `docs show` lee 1.923 de 82.755 objetos (2,3 %): 1.552 descriptores (el índice de
 nombres), 276 nodos mmap, 53 objetos de árbol, 38 nodos y 4 aristas.
@@ -302,11 +310,12 @@ restaura si falla). Para un store `:git :ignore` el camino fuerte es `include bu
 que reconstruye el store desde los archivos y descarta las copias verbatim.
 
 Medido en este repo (desk de 433 KB, 539 documentos; antes = formato 2 del commit
-`b4e02790`, después = formato 3): aparente **28,35 MB → 8,07 MB** (`log.edn` 5,89 MB →
-151 B; índice mmap 12,34 MB → 0,71 MB; plan 5,68 MB → uno de 4,03 MB, que ya no embebe el
-contenido de ningún nodo); en disco 119 MB → 55,4 MB; `include build` 38 s → 13 s, con **1
-revisión** en vez de 556. Detalle por clase en `runs/bench/format3-store-size.txt`; `bb
-store-size [DIR]` reproduce la tabla.
+`b4e02790`, después = formato 3 de S1b): aparente **28.349.458 B → 8.066.006 B** (~7,88 MB)
+(`log.edn` 5.891.029 B → 151 B; índice mmap 12.338.663 B → 708.116 B; plan 5.676.855 B →
+4.031.322 B, que ya no embebe el contenido de ningún nodo); en disco 119 MB → 55,2 MB;
+`include build` 38 s → 13 s, con **1 revisión** en vez de 556. La corrida S1 (el primer
+"después") midió plan 4.712.584 B y aparente 8.754.014 B en `runs/bench/format3-store-size.txt`;
+las cifras de arriba son de S1b, base del formato 4. `bb store-size [DIR]` reproduce la tabla.
 
 Lo que el formato 3 todavía **no** hace (ver `12` §1): el árbol de un documento con anchor
 sigue persistiéndose entero (nodos `block`/`text`/`opaque` y tree objects), y el plan
@@ -388,15 +397,19 @@ formato 4; `include build --rebuild` en ambos):
 | plan resuelto (1 objeto) | 4.031.322 B | 907.465 B |
 | tree-object | 1.650.467 B (5.478) | 3.877 B (18) |
 | sign/sign/block | 80.062 B (691) | 62.067 B (540) |
-| sign/sign/text | 168.272 B (1.278) | — |
+| sign/sign/text | 168.272 B (1.278) | — (0) |
 | sign/sign/opaque (17) | 303.151 B (865) | 39.952 B (17) |
 | descriptor | 94.859 B (540) | 185.950 B (540) |
-| edges (reference+derived) | 859.423 B (1.617) | 489.412 B (1.617) |
-| mmap (leaf+branch) | 708.116 B | 710.847 B |
-| **objetos** | **8.069.079 B (12.494)** | **2.572.053 B (4.808)** |
-| **aparente** | **8.069.230 B (7,88 MB)** | **2.572.204 B (2,51 MB)** |
+| edge/reference | 701.496 B (1.078) | 331.485 B (1.078) |
+| edge/derived | 157.927 B (539) | 157.927 B (539) |
+| sign/sign/external | 171.995 B (539) | 171.995 B (539) |
+| mmap (leaf+branch) | 708.116 B (1.486) | 708.426 B (1.508) |
+| revision | 488 B (1) | 488 B (1) |
+| **objetos** | **8.065.855 B (12.494)** | **2.569.632 B (4.781)** |
+| **aparente** | **8.066.006 B (7,88 MB)** | **2.569.783 B (2,51 MB)** |
 | **caché (derivado)** | — | 2.315.429 B (8.815 ficheros) |
 
 El registro (anchor externo 172 KB + descriptor 186 KB + nodo raíz 62 KB + aristas 489 KB) y
 el plan (907 KB) fijan el tamaño; el árbol ya no está en el store (tree-object 1,65 MB → 3,9 KB;
-texto 168 KB → 0). `bb store-size [DIR]` reproduce la tabla y mide el caché aparte.
+texto 168 KB → 0). `bb store-size [DIR]` reproduce la tabla y mide el caché aparte; detalle por
+clase en `runs/research/2026-10-08/S1c-report.md §2` (medición `store-size-after.txt`).

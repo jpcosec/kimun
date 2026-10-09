@@ -1,6 +1,6 @@
 # Ecosistema y pendientes — inventario (2026-10-09)
 
-> Pendientes abiertos en kimun, quién usa hoy sldb v1 y qué es `wittgenstein` (la capa G).
+> Pendientes abiertos en kimun, quién usa hoy sldb v1 y qué es `wittgenstein` (motor de la capa G).
 > El estado y las decisiones vigentes están en `05-estado.md`; el detalle test a test de la
 > paridad, en `tests/parity-v1.md` y `scripts/parity/coverage.py`.
 
@@ -99,7 +99,10 @@ por `sldb.api`. Casi todos los stores de 17 modelos son desks de deskops, inclui
 `kimun serve` usa el mismo puerto (8787) y casi las mismas rutas: las UIs por HTTP son lo más
 barato de mover; deskops es lo que más stores mueve.
 
-## 3. wittgenstein: la capa G
+## 3. wittgenstein: motor de G (no almacén)
+
+La capa G (hechos, contextos, verdad y sentido) es un **paquete aparte de kimun sobre la base**
+(decisión 43, `14 §19`); wittgenstein es su **productor y evaluador**, no su almacén (`14 §11`).
 
 `/home/jp/proyectos/wittgenstein` (Python): texto → contextos y signos locales con offsets →
 declaraciones `(R a b) @ctx` → un WiGame por (contexto, relación) con matriz de verdad V_i y de
