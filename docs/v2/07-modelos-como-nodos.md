@@ -26,7 +26,7 @@ clase de arista nueva ni una regla nueva de validación: el kernel de `02` ya lo
 | se versiona y los docs siguen a la versión nueva | `:replace` ⇒ `supersedes` ⇒ las `reference` doc→modelo se re-anclan al sucesor (`02 §6.1`) |
 | se proyecta y audita | `models show --format md` es una vista derivada, sin autoridad (`02 §10` inv. 10) |
 | un doc declara su modelo | arista `reference` root→modelo con `:ref-hash` = id del descriptor (`02 §3.2`) |
-| un doc recuerda el contrato con que se escribió | arista `derived` root→fuente con `:contract` = id del descriptor; la sucesión del modelo no la toca, así que el payload se lee bajo ese contrato hasta `docs update`/`--backfill` (A1, 2026-10-08) |
+| un doc recuerda el contrato con que se escribió | evidencia `:contract` = id del descriptor en la arista `reference` root→fuente (externa o, sin archivo, al modelo); la sucesión del modelo no la toca, así que el payload se lee bajo ese contrato hasta `docs update`/`--backfill` (A1, 2026-10-08) |
 | detección de deriva | estados de anclaje `intact/superseded/orphan` sobre esa `reference` (`02 §6.2`) |
 
 ## 2. El descriptor
@@ -106,8 +106,13 @@ Tipos de campo: `:string :int :bool :text :yaml [:list T] [:map T] [:enum v…] 
 
 ## 4. El template como documento, la receta como vista
 
-El `:template` se ingesta **además** como un documento del perfil SLDB-MD llamado
-`model/<Name>/template` (árbol `:document`, `04 §8`). Cada marcador `⸢…⸥` es texto de una
+> **Diseño no implementado (2026-10-09):** hoy `models define` **no** ingesta el template como
+documento `model/<Name>/template` — duplicaría revisiones y aparecería en `docs list`
+(`tests/parity-v1.md` §Modelos). El template vive en el descriptor y la receta se recalcula de
+él. Lo de abajo es el diseño previsto.
+
+En el diseño previsto, el `:template` se ingesta **además** como un documento del perfil SLDB-MD
+llamado `model/<Name>/template` (árbol `:document`, `04 §8`). Cada marcador `⸢…⸥` es texto de una
 hoja `:text`, y por tanto una **posición direccionable** con path: se puede anclar, citar y
 seguir bajo sucesión como cualquier signo.
 
@@ -188,11 +193,13 @@ implementado**: ver `docs/archive/v2/09-evaluador-anclado.md`.
 
 ## 9. Migración de los modelos existentes
 
-- **deskops, 23 modelos** con herencia: `StructuredNLDoc` → `PrimitiveDoc` →
+- **deskops, 23 descriptores** (21 hojas + 2 intermedias; `StructuredNLDoc` es la raíz de la
+  jerarquía y **no** se exporta) con herencia: `StructuredNLDoc` → `PrimitiveDoc` →
   `OperationalArtifactDoc`; hojas `AtomDoc BoardDoc ChecklistDoc ConditionDoc CrossroadDoc
   EdgeDoc FAQDoc HookDoc InboxNoteDoc MaterializationContractDoc OperatorDoc PillDoc
   ProtoAtomDoc RepositoryDoc RitualDoc RoleDoc RoutineDoc RunDoc RuntimeProfileDoc StepDoc
-  TaskDoc` más las dos intermedias. Cada una se exporta como descriptor con `--from-python`;
+  TaskDoc` más las dos intermedias (`PrimitiveDoc`, `OperationalArtifactDoc`). Cada una se
+  exporta como descriptor con `--from-python`;
   las clases intermedias también se definen (son `:base` de otras); las composiciones pasan a
   `:py/compositions` por índice. Goldens: los 23 descriptores congelados en
   `test/fixtures/models/deskops/*.edn`.

@@ -9,7 +9,7 @@ pendientes. La historia está en `docs/archive/`.
 De mayor a menor. Ante contradicción gana el número menor.
 
 1. `01-orden-filosofico.md`
-2. `14-juego-del-lenguaje.md` (borrador estable 2026-10-08; revisa `01 §4.1`, `07`, `11 §1` y
+2. `14-juego-del-lenguaje.md` (borrador estable 2026-10-08; revisa `01 §4` (principio 1), `07`, `11 §1` y
    `12 §3`: mientras esas revisiones no se integren en sus documentos, gana)
 3. `02-sustrato-computacional.md`
 4. `03-estandares-de-codigo.md`
@@ -34,7 +34,7 @@ De mayor a menor. Ante contradicción gana el número menor.
 | `06-superficies-y-cli.md` | inventario real de la CLI, envelope, códigos de salida y rutas de `serve` |
 | `07-modelos-como-nodos.md` | modelos como descriptores EDN en el árbol `models`; frontmatter y segmentos |
 | `08-distribucion.md` | topología de repos, toolchain, `bb jar`/`bb release`, layout e instalación |
-| `10-escala.md` | formato 2 del store, coste de abrir/leer/escribir, `stores upgrade` |
+| `10-escala.md` | formatos 2 a 4 del store, coste de abrir/leer/escribir, `stores upgrade` |
 | `11-adaptadores.md` | protocolo 1 de adaptadores (código → documentos) y el grupo `adapters` |
 | `12-ecosistema-y-pendientes.md` | pendientes de kimun, consumidores de v1 y la capa G (`wittgenstein`) |
 | `13-include.md` | `kimun.include.edn`: qué versiona un repo en git y el grupo `include` |

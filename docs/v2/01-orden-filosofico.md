@@ -10,8 +10,9 @@
 > sentido semántico**; que el id sea el hash del contenido está en revisión (`14 §21`, pendiente):
 > el hash detecta mutaciones, no identifica.
 
-Fuentes: `raw/source/ecosystem/SMG_DEFINITIONS.md`, `raw/source/ecosystem/matrix-tractatus-intro.md`,
-`raw/source/ecosystem/sldb-v1-smg-ir.md`, y la conversación de diseño del 2026-08-29.
+Fuentes: `docs/archive/raw/source/ecosystem/SMG_DEFINITIONS.md`,
+`docs/archive/raw/source/ecosystem/matrix-tractatus-intro.md`,
+`docs/archive/raw/source/ecosystem/sldb-v1-smg-ir.md`, y la conversación de diseño del 2026-08-29.
 
 ---
 
@@ -19,7 +20,7 @@ Fuentes: `raw/source/ecosystem/SMG_DEFINITIONS.md`, `raw/source/ecosystem/matrix
 
 SLDB v1 era una capa de persistencia sobre Markdown: el archivo era a la vez superficie de
 trabajo y almacenamiento, y por eso necesitaba round-trip textual exacto. El refactor
-intermedio (`raw/source/core/`) movió la autoridad a un grafo canónico, pero siguió
+intermedio (`docs/archive/raw/source/core/`) movió la autoridad a un grafo canónico, pero siguió
 pensando el objeto persistido como *documento*.
 
 v2 cambia el objeto. La unidad no es el documento sino **el lenguaje estructurado a
@@ -138,9 +139,9 @@ nodos a través de ediciones.
   portables y empaquetables, con una frontera de proceso documentada y sin lógica de
   dominio repartida entre lenguajes (decisión 19; `05-estado.md`, `11-adaptadores.md`).
   tree-sitter (C) es el primer candidato.
-- "Identidad y reconciliación" como problema abierto: se descompone en identidad (hash,
-  trivial) y sucesión (arista registrada en la transacción; heurística solo para cambios
-  externos, marcada como tal).
+- "Identidad y reconciliación" como problema abierto: se descompone en identidad
+  (semántica; el hash solo verifica — PENDIENTE, `14 §21`) y sucesión (arista registrada
+  en la transacción; heurística solo para cambios externos, marcada como tal).
 
 ## 8. Bucle autopoiético
 

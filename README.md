@@ -1,12 +1,16 @@
 # kimun
 
-**A content-addressed knowledge store with a CLI.** kimun is the successor of `sldb` (v1,
-Python) and `kgdb`, merged into one product. The name is Mapudungun (*kimün*, knowledge).
+**A knowledge store with a CLI and a content-addressed kernel.** kimun is the successor of
+`sldb` (v1, Python) and `kgdb`, merged into one product. The name is Mapudungun (*kimün*,
+knowledge).
 
-The kernel is pure Clojure (`.cljc`) running on Babashka: a pool of content-addressed
-immutable nodes (S/M/G), trees of positions as indexes, typed edges with evidence,
-succession by `supersedes`, derived anchor states, and reconciliation of external edits.
-Markdown documents are projections of it.
+(PENDING: the hash detects mutations and addresses the kernel; it is not identity —
+`docs/v2/14-juego-del-lenguaje.md` §21.)
+
+The kernel is pure Clojure (`.cljc`) running on Babashka: a pool of immutable nodes (S/M/G)
+addressed by the hash of their canonical content, trees of positions as indexes, typed edges
+with evidence, succession by `supersedes`, derived anchor states, and reconciliation of
+external edits. Markdown documents are projections of it.
 
 ## Install
 
@@ -60,7 +64,7 @@ bb desk                           # build this repo's desk store (.kimun) from k
 - `kimun.include.edn` — what this repo versions in git; the store itself is built, not committed
 - `docs/v2/` — direction (highest authority); `docs/archive/` — historical material
 - `desk/` — tracked desk sources (atoms, tasks, models, rituals); `.kimun/` — the built store
-- `raw/source/` — frozen source material; `runs/` — execution evidence
+- `docs/archive/raw/source/` — frozen source material; `runs/` — execution evidence
 
 ## Lineage
 

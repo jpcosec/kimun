@@ -16,6 +16,7 @@ lo superó.
 | `desk/rituals/` | Rituales planning-era (phase, execution, testing, closeout). | `AGENTS.md` y `desk/rituals/ritual-zero-context-audit-gate.md`. |
 | `desk/contexts/` | Pills planning-era (planning-contracts, python, rust, specyaml, índice). | `AGENTS.md` y `desk/contexts/pill-guardrail-v2-implementation-gate.md`. |
 | `desk/drawer/` | Backlog de features, tracks y tasks pre-v2. | `docs/v2/05-estado.md` §6. |
+| `scripts/` | Utilidades pre-v2 (el servidor de anotaciones de las vistas UML y los scripts de bootstrap/validación de vistas) que leían `desk/contexts/`. | Sin lector activo; el JSON anotado quedó en `desk/contexts/vistas-uml.annotations.json` del archivo (`docs/archive/desk/README.md`). |
 
 ## Lo que NO se archiva
 
@@ -24,5 +25,3 @@ lo superó.
 - `desk/rituals/ritual-zero-context-audit-gate.md` y
   `desk/contexts/pill-guardrail-v2-implementation-gate.md`: siguen en el desk activo, ya
   reescritos para el flujo kimun + workers herdr.
-- `desk/contexts/vistas-uml.annotations.json`: lo referencia `scripts/annotate_server.py`,
-  que no se ha archivado.
