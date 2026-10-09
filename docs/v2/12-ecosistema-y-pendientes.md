@@ -30,14 +30,21 @@ paridad v1 sin brechas (`scripts/parity/coverage.py … --strict --allow-open-pr
 | M2 | regenerar los modelos del desk (borrados el 2026-10-09 para dejar una versión estable) | M1 | `desk/`, `kimun.include.edn` |
 | S1 | parser M fase 2: cerrar el ~3 % de divergencia del CST en Markdown libre | — | `04 §11.2` |
 | S2 | parser M fase 3: anclas por rangos de bytes / nodos del CST | K1 | `runs/research/2026-10-08/R2-report.md §5` |
-| G1 | capa G: leer fuentes (paper, wittgenstein, Tractatus) y reescribir el spec sobre sentido × verdad (anclado/derivado) | D0, M1 | `docs/v2/drafts/capa-g-dudas.md`, `runs/research/2026-10-08/spec15/` (borrador previo, solo referencia) |
+| G1 | capa G: leer fuentes (paper, wittgenstein, Tractatus) y reescribir el spec sobre sentido × verdad | D0, D-G, M1, T01 | `docs/v2/drafts/capa-g-dudas.md`, `runs/research/2026-10-08/spec15/` (borrador previo, solo referencia) |
 | G2 | consulta Datalog (Datalevin pod + respaldo in-process) | G1 | `runs/research/2026-10-08/R1-report.md` |
 | G3 | embeddings sobre anchors (modelo multilingüe) | G1, K2a | decisión 38 |
 | C1 | selfdoc: guarda de before-image al escribir y chequeo del grafo kgdb | — | `tests/parity-v1.md` (estados `corpus` y `abierta`) |
 | C2 | cliente Python y rutas HTTP de graph_ui (`/kgdb/snapshot`, `/models/promote`) | K2a, P1 | `python/README.md`, `06` |
+| T01 | manifest de inclusión C01–C28 (Wittgenstein W1+W2) con `required/deferred/excluded`, fixture y evidencia | — (documentación) | `docs/reviews/wittgenstein-superset/proposals/01-superset-contract.md`, `reviews/01-coverage.md` |
+| K6 | contrato de parse/selector registrado como digest (gramática, perfil, normalización, selector, clase); distinguir `source-changed` / `contract-changed` / `parser-unavailable` / `rebuild-mismatch` | — | `docs/reviews/wittgenstein-superset/reviews/02-findings.md` F08, `proposals/03-store-and-authority.md` |
+| K7 | licencia de inferencia/ruteo separada del alcance de búsqueda (stores enlazados y tags globales no autorizan cruces de contexto) | G1 | F22 |
+| K8 | nombres cualificados por ruta; el nombre corto es alias (hoy `a/README.md` y `b/README.md` chocan) | — (alinear con K2a) | F23 |
+| DOC1 | reescribir `14` por tema (integrar adendas §16–§21; separar contrato objetivo, implementado e histórico) | — | F18 |
 
-En paralelo hoy, sin esperar al dueño: K2a, K3, P1 (coordinando `kimun.surface.docs`), M1 (spec),
-S1, C1. Esperan a D0: K1, K2b, S2, G1 y lo que cuelga de ellos.
+Insumo de G1: la revisión `docs/reviews/wittgenstein-superset/` (propuestas P4 grafo contextual y P5 T02–T13) y la respuesta `respuesta-claude.md`.
+
+En paralelo hoy, sin esperar al dueño: T01, K2a, K3, K6, K8, P1 (coordinando `kimun.surface.docs`),
+M1 (spec), S1, C1 (más F25: before-image de la escritura del source), DOC1. Esperan a D0: K1, K2b, S2, G1 y lo que cuelga de ellos.
 
 ### Deuda de diseño y experimentos
 

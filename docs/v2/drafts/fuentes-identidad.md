@@ -124,7 +124,17 @@ en un espacio lógico dentro de un contexto.
 ## 5. La decisión que queda por tomar
 
 **¿Se adopta para el kernel de kimun "identidad = lugar (estructural para S, semántico para M/G); hash =
-verificación de mutación"?** Si sí, revisa:
+verificación de mutación"?** Dos formas de hacerlo:
+
+- **(a) IDs taxonómicos puros:** nada usa el hash como identidad; el CAS deja de identificar.
+- **(b) CAS para contenido + capa de identidades:** los objetos de contenido siguen deduplicados por
+  digest, y se añaden ocurrencias S (source + locator), símbolos M contextuales y hechos G en contexto
+  con IDs propios que registran el hash esperado. Propuesta P2 de la revisión de codex:
+  `/home/jp/proyectos/kimun/docs/reviews/wittgenstein-superset/proposals/02-identity-and-anchors.md`,
+  con los casos reproducidos F02 y F07 en
+  `/home/jp/proyectos/kimun/docs/reviews/wittgenstein-superset/reviews/02-findings.md`.
+
+En cualquiera de las dos, se revisa:
 
 - `01 §4` principio 3 (`/home/jp/proyectos/kimun/docs/v2/01-orden-filosofico.md`): se mantiene en sentido
   semántico, se retira "id = hash".

@@ -438,8 +438,10 @@ Principio del dueño; gobierna los modelos (revisa §9) y el registro del store 
    - **generado:** la verdad son los **datos de la instancia** (valores de campos, relaciones) más su
      modelo de generación; el archivo es una proyección regenerable. El store guarda esos datos; el
      árbol del archivo es salida de la generación, no se registra.
-   - El desk de este repo es **generado** (deskops escribe sus documentos): su store no baja de tamaño
-     por anclaje selectivo, sino por dejar de registrar el árbol y las instrucciones de armado.
+   - El desk de este repo se describió como **generado** (deskops escribe sus documentos). Nota
+     2026-10-09: no hay evidencia de datos de instancia fuera del `.md` (revisión de codex, F10), y el
+     dueño borró los modelos del desk; al regenerarse (M2, `12 §1`) se trata como **source** salvo que
+     exista una instancia durable independiente.
 
 ## 19. Caché, store estable y grafo (2026-10-09)
 

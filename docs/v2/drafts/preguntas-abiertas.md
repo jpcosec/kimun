@@ -5,7 +5,8 @@
 
 | # | pregunta | material para decidir | bloquea |
 |---|---|---|---|
-| D0 | ¿Se adopta para todo el kernel "identidad = lugar (estructural para S, semántico para M/G); hash = verificación de mutación"? Revisa `01 §4` principio 3 y las decisiones 1, 3 y 4. | `docs/v2/drafts/fuentes-identidad.md` (fuentes con direcciones), `docs/v2/drafts/ids-desde-matrix.md`, `docs/v2/14-juego-del-lenguaje.md §21` | K1, K2b, S2, G1 (`12 §1`) |
+| D0 | ¿Se adopta para todo el kernel "identidad = lugar (estructural para S, semántico para M/G); hash = verificación de mutación"? Revisa `01 §4` principio 3 y las decisiones 1, 3 y 4. Opciones: (a) IDs taxonómicos puros, ningún CAS como identidad; (b) conservar el CAS para objetos de contenido y añadir ocurrencias S, símbolos M contextuales y hechos G en contexto con IDs propios (propuesta P2 de codex). | `docs/v2/drafts/fuentes-identidad.md` (fuentes con direcciones), `docs/v2/drafts/ids-desde-matrix.md`, `docs/v2/14-juego-del-lenguaje.md §21` | K1, K2b, S2, G1 (`12 §1`) |
+| D-G | Eje de verdad en G: (a) literal del dueño — verdad = anclado/derivado, sentido = sinnvoll/sinnlos/unsinnig; (b) P4 de codex — anclado/derivado es el eje de *soporte*, y además existe un valor operacional TRUE/FALSE/UNKNOWN para falso explícito y desconocimiento | `docs/v2/drafts/capa-g-dudas.md`, `docs/reviews/wittgenstein-superset/proposals/04-contextual-graph.md`, `docs/reviews/wittgenstein-superset/respuesta-claude.md` (Matiz 1) | G1 |
 
 Respondidas el 2026-10-09 (registradas en `14 §21`): ID estructural roto = borrado (se declara) o
 mutación (lo detecta el hash); un símbolo nuevo nace en el contexto del documento y subirlo o
