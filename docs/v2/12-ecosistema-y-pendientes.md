@@ -13,15 +13,15 @@
 
 ### Kernel
 
-- **Formato 3, resto de `14 §10`** (decisión 27; ver `10-escala.md §10`): el árbol estructural
-  de un documento con anchor externo se sigue persistiendo entero (nodos `block`/`text`/`opaque`
-  y tree objects) en vez de ser caché verificable (root hash + posiciones referenciadas), y el
-  plan resuelto de un `include build` sigue en el CAS, así que el store de este repo (8,07 MB
-  aparentes) no baja de los 433 KB del desk que indexa. Hacerlo exige un resolver de árbol que
-  no guarda texto y, para un store `:git :ignore`, no persistir el plan (o el árbol) del build.
-  Ya hecho: el plan resuelto referencia los nodos por id (el contenido vive una sola vez).
-- **Packfiles**: el disco desperdicia un bloque de 4 KB por objeto pequeño. Números en
-  `tests/parity-v1.md` §Diferido y `10-escala.md §9`.
+- **Formato 4, resto de `14 §10`/§18–§19** (decisión 27; ver `10-escala.md §11`): hecho el
+  registro por documento y el árbol como caché. Un documento con archivo se registra con
+  anchor + clase + hash raíz + hash de contenido; su árbol, bloques y nodos viven en
+  `<store>/cache/` (gitignored, borrable) y se recalculan del archivo. El store de este repo
+  baja de **8,07 MB a 2,51 MB** aparentes (objetos 12.494 → 4.808; tree-object 1,65 MB → 3,9 KB).
+  Lo que **no** baja: el plan resuelto del build sigue en el CAS (907 KB; invariante 17), que es
+  el grueso restante junto al registro y el mmap; `bb store-size` da el detalle.
+- **Packfiles**: el disco desperdicia un bloque de 4 KB por objeto pequeño (ahora también por
+  cada objeto del caché). Números en `tests/parity-v1.md` §Diferido y `10-escala.md §9`.
 - **Índice de nombres O(árboles)**: `docs show` y `fields set` leen un descriptor por árbol;
   un índice persistente en la Revision lo haría constante (`10-escala.md §4`).
 - **Sin GC** ni informe de objetos inalcanzables.

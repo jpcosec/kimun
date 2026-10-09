@@ -59,16 +59,16 @@ corpus y 1 abierta. Detalle y desviaciones: `tests/parity-v1.md`.
 Abrir y commitear no crecen con la historia.
 
 **Suite** — 888 tests / 9.577 aserciones, 109 namespaces (última corrida de `bb test`,
-2026-10-08, con el pod tree-sitter construido), 0 fallos. `bb oracle`: 9/9 ids
-canónicos; `bb lint`: 98 ficheros.
+2026-10-09, con el pod tree-sitter construido), 0 fallos. `bb oracle`: 9/9 ids
+canónicos; `bb lint`: 99 ficheros.
 
-**Formato 3 de este repo** (desk de 433 KB, 539 documentos; antes = formato 2 del commit
-`b4e02790`): aparente 28,35 MB → **8,07 MB** (`log.edn` 5,89 MB → 151 B; índice mmap
-12,34 MB → 0,71 MB; plan 5,68 MB → uno de 4,03 MB, sin contenido de nodo); en disco 119 MB →
-55,4 MB; 556 revisiones → **1**; `include build` 38 s → 13 s. Detalle en
-`runs/bench/format3-store-size.txt` y `10-escala.md §10`.
-La promesa del 14 (menos que los 433 KB del desk) **no se cumple todavía**: el árbol del
-documento y el plan resuelto del build siguen en el CAS (`12 §1`).
+**Formato 4 de este repo** (desk de 433 KB, 539 documentos; antes = formato 3 de S1b, después
+= formato 4): aparente **8,07 MB → 2,51 MB** (objetos 12.494 → 4.808; tree-object 1,65 MB →
+3,9 KB; plan 4,03 MB → 907 KB; el registro: anchor externo 172 KB + descriptor 186 KB +
+nodo raíz 62 KB + aristas 489 KB). El árbol del documento ya no está en el CAS: vive en
+`<store>/cache/` (derivado, gitignored, borrable; 2,26 MB, medido aparte por `bb store-size`).
+Detalle en `10-escala.md §11`. Lo que el formato 4 todavía **no** hace: el plan resuelto del
+build sigue en el CAS, así que el store no baja de los 433 KB del desk que indexa (`12 §1`).
 
 ## 3. Decisiones de diseño (todas confirmadas por el usuario)
 
@@ -100,7 +100,7 @@ documento y el plan resuelto del build siguen en el CAS (`12 §1`).
 | 24 | **(EN REVISIÓN, ver `drafts/capa-g-dudas.md`)** afirmación = `:status` en evidencia de arista `projection`; `V`/`S` índice derivado por `(hecho, W_i)`; nada pasa a `TRUE` sin decisión registrada | `14 §5` |
 | 25 | conflicto lógico = propuesta fuera del pool; se resuelve por transacción; nunca en silencio | `14 §6` |
 | 26 | cada `W_i` se evalúa como matrices booleanas por relación; índices derivados; nunca `p×p` global; motor = implementación | `14 §8` |
-| 27 | **formato 3 del store**: sin copia verbatim; contenido por referencia con `inline` por caso; árbol estructural como caché; log como caché bajo `:git :ignore`; decisiones humanas como documentos | `14 §10` |
+| 27 | **formato 4 del store**: registro por documento (anchor + clase + hash raíz + hash de contenido); el árbol/bloques/nodos de un documento con archivo son caché verificable (root hash + posiciones referenciadas, `<store>/cache/`); contenido por referencia con `inline` por caso; log como caché bajo `:git :ignore`; decisiones humanas como documentos | `14 §10`, `14 §18–§19` |
 | 28 | modelo = símbolo-tipo + selector + proyecciones; el template de v1 es un caso especial; la paridad v1 es su regresión | `14 §9` |
 | 29 | tree-sitter como pod es el parser de la capa M, por fases; SLDB-MD sigue como perfil cerrado; `blocks.cljc` como oráculo hasta paridad byte a byte | `14 §11`, spike R2 |
 | 30 | Datalog para la consulta de G; Datalevin (pod) candidato con respaldo in-process; índice G derivado | `14 §8`, spike R1 |

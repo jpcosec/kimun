@@ -53,19 +53,21 @@ Códigos de salida (`kimun.cli.errors`): 0 ok, 1 `missing`/`empty`, 2 `ambiguous
 
 Descubrimiento (`kimun.cli.store/resolve-store`): `--store` > `$KIMUN_STORE` > walk-up buscando `.kimun/store.edn` desde el cwd. Un valor de `--store` que no es ruta existente y parece nombre de enlace se busca como enlace del store actual o de un ancestro; si tampoco, `cli/no-store` (exit 5). Sin store, todo comando que lo exige falla con `cli/no-store` (exit 5).
 
-Layout de un store formato 2 (`kimun.kernel.store`; detalle en `10`):
+Layout de un store formato 4 (`kimun.kernel.store`; detalle en `10`):
 
 ```
 .kimun/
-  store.edn      ; {:format-version 2 :hash-alg :sha-256 :capabilities {…} :name :links}
-  objects/<id>   ; CAS: EDN canónico del objeto; H(fichero) == id
+  store.edn      ; {:format-version 4 :hash-alg :sha-256 :capabilities {…} :name :links}
+  objects/<id>   ; CAS: EDN canónico del objeto; H(fichero) == id (registro y estructura referenciada)
+  cache/objects/<id>  ; derivado (tree objects, nodos block/text/opaque de docs con archivo), gitignored
+  cache/docs/<key>.edn ; índice por documento: {fingerprint, class, root-hash, tree}
   log.edn        ; una Transaction por línea, append-only
   heads.edn      ; {:head rev-id :heads-root <id-mmap>}  (commit point)
   lock           ; fichero vacío; lock exclusivo de commit
   index/<head>.edn   ; índice derivado por cabecera (`rebuild-indexes`), gitignored
 ```
 
-- `stores upgrade` reescribe un store formato 1 como formato 2 (backup `<store>.format-1-<marca>`, mapa `upgrade-format-1.edn`); un store formato 2 no se toca.
+- `stores upgrade` reescribe un store formato 1 como formato 2 (backup `<store>.format-1-<marca>`, mapa `upgrade-format-1.edn`); un store formato 2 pasa a 3 en el sitio; un store formato 3 reporta `:needs-rebuild` y nombra `include build --rebuild` (formato 4).
 - Los enlaces (`:links`) son `{:name :path}` con `:path` **relativo al store**; un enlace absoluto o duplicado es `store/invalid-links` (exit 5). `stores link NAME PATH` enlaza un `.kimun` o su proyecto; `stores links` informa `ok | missing | not-a-store`.
 - Capacidades por defecto al crear: `{actor :all "kimun/derive" :all "kimun/materialize" :all}`.
 - `index/` es derivado: leer nunca escribe; `rebuild-indexes` lo reconstruye bajo orden.
@@ -79,7 +81,7 @@ Layout de un store formato 2 (`kimun.kernel.store`; detalle en `10`):
 | `stores init` | `--name NAME`, `--content by-reference\|inline` | `{:path :name :actor :capabilities}`; `--content inline` escribe `:content :inline` en `store.edn` (docs/v2/10 §10); falla `cli/store-exists` (5) si ya hay store |
 | `stores check` | — | `{:name :path :hash-alg :revisions :trees :objects :head :links}` + `:documents` si hay findings; abre por replay; store inválido ⇒ `store/invalid` (5) |
 | `stores verify` | — | `{:checked :bad}`; verify-full (replay + hash); corrupción ⇒ `store/corrupt` (5) |
-| `stores upgrade` | — | `{:upgraded :format-version :path …}`; 1→2 reconstruye en un directorio hermano (`:transactions :backup :map`), 2→3 convierte en el sitio (líneas `{:id :revision}`, `:dropped-plans`); carrera de escritura ⇒ `store/stale` (4) |
+| `stores upgrade` | — | `{:upgraded :format-version :path …}`; 1→2 reconstruye en un directorio hermano (`:transactions :backup :map`), 2→3 convierte en el sitio (líneas `{:id :revision}`, `:dropped-plans`), 3→4 reporta `:needs-rebuild true :action "kimun include build --rebuild"` (el registro como caché exige los archivos); carrera de escritura ⇒ `store/stale` (4) |
 | `stores show` | — | `{:name :path :hash-alg :links :head :capabilities}`; sin replay |
 | `stores health` | — | `{:status :summary :findings :actions :next}`; `ok | degraded | needs-human` |
 | `stores update` | — | `{:updated [name] :skipped [{:document :category :action}] :status}`; todos los reparados van en UNA revisión, cuyo journal lleva `:documents` ({:address :fields}) |

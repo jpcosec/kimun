@@ -53,7 +53,8 @@ rechaza ficheros del store cuando `:store :git` es `:ignore`, y documentos que
 git sigue bajo un glob gestionado y que la declaración no declara ni excluye.
 
 `gitignore` escribe entre `# >>> kimun include (managed) >>>` y
-`# <<< kimun include <<<` la ruta del store (cuando `:ignore`) y un
+`# <<< kimun include <<<` la ruta del store (cuando `:ignore`), la ruta de su
+caché derivado (`<store>/cache/`, nunca versionado: `10 §11`) y un
 `!`-re-include por cada glob declarado, de modo que ninguna regla más amplia
 ignore un fichero declarado. Nunca toca líneas fuera del bloque.
 

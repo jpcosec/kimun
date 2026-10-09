@@ -1,13 +1,15 @@
-# kimun (SLDB v2) — Escala y formatos del store (2026-10-08)
+# kimun (SLDB v2) — Escala y formatos del store (2026-10-09)
 
 > Por qué y cómo cambió la forma en disco de las revisiones (formato 2), qué cuesta abrir,
 > leer y escribir un store, qué comprueba cada verificación y cómo se pasa un store de
-> formato 1 al 2; y qué cambia el **formato 3** (§10, docs/v2/14 §10). Este documento es el
+> formato 1 al 2; qué cambia el **formato 3** (§10, docs/v2/14 §10) y qué cambia el
+**formato 4** (§11, docs/v2/14 §18–§19: registro por documento y árbol como caché). Este documento es el
 > **único dueño del formato en disco**; `02` fija el
 > contrato de la revisión y enlaza aquí para la forma en disco. Autoridad: `02` (qué
 > construye) > este documento. Números en
 > `runs/bench/baseline-2026-10-06.txt` (antes) y `runs/bench/after-2026-10-06.txt` (después)
-> para el formato 2, y en `runs/bench/format3-store-size.txt` (antes/después) para el 3.
+> para el formato 2, en `runs/bench/format3-store-size.txt` (antes/después) para el 3, y en
+`runs/subagents/S1c-2026-10-09/store-size-*.txt` para el 4.
 
 ## 1. Antes
 
@@ -311,3 +313,90 @@ sigue persistiéndose entero (nodos `block`/`text`/`opaque` y tree objects), y e
 resuelto de un build sigue en el CAS, así que el store no baja de los 433 KB del desk que
 indexa. Convertir el árbol en caché verificable y no persistir el plan de un store
 `:git :ignore` es el resto del §10 del 14 (decisión 27).
+
+## 11. Formato 4 (docs/v2/14 §18–§19)
+
+El formato 4 implementa el registro por documento de `14 §18.6` y la separación caché /
+store estable de `14 §19`. No cambia la estructura de la revisión (los ocho campos de §5, los
+mmaps `:trees`/`:edges`/`:incidence`, ids de nodo, arista, árbol y descriptor): cambia **qué
+se persiste de un documento con archivo**. Los `tx-id`/`revision-id` del mismo plan de entrada
+cambian otra vez (el plan resuelto tiene otra forma).
+
+```
+<dir>/store.edn          {:format-version 4 :hash-alg :sha-256 :capabilities {…} :name :links}
+<dir>/objects/<id>       igual que el formato 2/3 (registro y estructura referenciada)
+<dir>/cache/objects/<id> objetos derivados por hash (tree objects, nodos block/text/opaque)
+<dir>/cache/docs/<key>.edn  índice por documento: {fingerprint, class, parser, root-hash, tree}
+<dir>/log.edn            una Transaction {:id tx-id :revision rev-id} por línea
+<dir>/heads.edn          igual que el formato 2
+```
+
+**Registro por documento.** Un documento trackeado con archivo se registra con:
+
+- su **anchor externo** (`sign/external`: ruta + `:fingerprint`), como en el formato 3;
+- su **clase**: el id del descriptor del modelo del que es instancia, o `generic/<ext>` para
+  un documento sin modelo (`14 §18.1`); vive en `:class` del descriptor del árbol;
+- el **hash raíz** de su estructura indexada (el `merkle-root` del árbol), que ya registra el
+  mmap `:trees` de la revisión (`tree-id → [descriptor-id merkle-root]`);
+- el **hash de contenido** del payload extraído, `:content-hash` del descriptor del árbol.
+
+La evidencia de las aristas deja de llevar `:field-hashes` (se recomputan del payload cuando
+un lector los necesita) y, para estos documentos, tampoco `:content-hash`: viven en el
+registro. El `:contract` (decisión 40) sigue en la evidencia de la arista `reference
+root→external`, así que un documento sigue leyéndose bajo la clase con que se escribió aunque
+el descriptor del modelo se suceda (`14 §18.3`).
+
+**Nada de árbol para un documento con archivo.** El plan de `docs track`/`docs update`/
+`include build` ya no emite `:ownership`, ni `:add-node` de bloques/texto, ni tree objects:
+emite un `:register-tree` (op nuevo del kernel: descriptor + `merkle-root`, sin posiciones),
+el nodo raíz del documento y el anchor externo, más las aristas de modelo/anchor. Los tree
+objects y los nodos del documento se escriben en `cache/objects/`, no en `objects/`. Los
+documentos sin archivo (`docs create` sin ruta) y los `:inline` (S1) **conservan su árbol
+como hoy**: son la excepción en que el store ES la fuente del texto.
+
+**Caché por hash.** `cache/objects/<id>` es content-addressed (el mismo id que tendría en el
+CAS); `cache/docs/<key>.edn` es un índice con `key = sha256(fingerprint, clase, versión del
+parser)`. El backend de ficheros lee `objects/` y cae al caché si falta, así que un lector no
+cambia. Un `kimun.surface.docs/doc-tree` (el resolver de superficie) devuelve el árbol de un
+documento: del store si está persistido, del caché si es derivado, y **recalculado del
+archivo** (y reescrito al caché) si el caché no está. Verifica `merkle-root == hash raíz
+registrado`; si no coincide, el documento está desactualizado (fingerprint != registrado). El
+caché es gitignored (`include gitignore` lo añade) y borrable: todo se recalcula.
+
+**Detección y reconciliación.** `fingerprint(archivo) != registrado` ⇒ `:edited`/`:reformatted`
+según el contenido (`stores check|health`); archivo ausente ⇒ `:missing`; clase sucedida ⇒
+`:contract-moved` (el documento sigue siendo instancia de su clase original y se lee bajo
+ella). La acción de reparación sigue siendo `docs update NAME` / `stores update`, que
+re-registran fingerprint, clase y hash raíz. Ningún cambio silencioso.
+
+**Verificación.** `reachable`/`verify` no exige en el CAS los tree objects de un árbol
+marcado `:cached?`: son derivados y su integridad la comprueba el resolver (raíz registrada
+vs recomputada). El resto de objetos (nodos raíz, anchors, aristas, descriptores, mmaps,
+revisiones) se verifica como siempre.
+
+**Ruta de upgrade.** `include build --rebuild` produce el store formato 4 (reconstruye desde
+los archivos; es el camino fuerte para un store `:git :ignore`). `stores upgrade` sobre un
+store formato 2 lo pasa a 3 en el sitio; sobre un store formato 3 reporta `:needs-rebuild` y
+nombra `include build --rebuild`, porque registrar como caché exige los archivos y no es una
+reescritura en el sitio.
+
+**Medido en este repo** (desk de 433 KB, 539 documentos; antes = formato 3 de S1b, después =
+formato 4; `include build --rebuild` en ambos):
+
+| medida | formato 3 | formato 4 |
+|---|---:|---:|
+| plan resuelto (1 objeto) | 4.031.322 B | 907.465 B |
+| tree-object | 1.650.467 B (5.478) | 3.877 B (18) |
+| sign/sign/block | 80.062 B (691) | 62.067 B (540) |
+| sign/sign/text | 168.272 B (1.278) | — |
+| sign/sign/opaque (17) | 303.151 B (865) | 39.952 B (17) |
+| descriptor | 94.859 B (540) | 185.950 B (540) |
+| edges (reference+derived) | 859.423 B (1.617) | 489.412 B (1.617) |
+| mmap (leaf+branch) | 708.116 B | 710.847 B |
+| **objetos** | **8.069.079 B (12.494)** | **2.572.053 B (4.808)** |
+| **aparente** | **8.069.230 B (7,88 MB)** | **2.572.204 B (2,51 MB)** |
+| **caché (derivado)** | — | 2.315.429 B (8.815 ficheros) |
+
+El registro (anchor externo 172 KB + descriptor 186 KB + nodo raíz 62 KB + aristas 489 KB) y
+el plan (907 KB) fijan el tamaño; el árbol ya no está en el store (tree-object 1,65 MB → 3,9 KB;
+texto 168 KB → 0). `bb store-size [DIR]` reproduce la tabla y mide el caché aparte.
