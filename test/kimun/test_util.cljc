@@ -2,22 +2,30 @@
   "Helpers shared by the test suites. Every test temporary lives inside the
    run's own root so a run deletes only its own temporaries: `bb test` creates
    one root per run, points `kimun.test.tmp` at it and removes it at the end.
-   Without that property (a direct `bb -e (t/run-tests …)`) `root` falls back to
-   the system temp dir, and `KIMUN_TEST_TMP` overrides it too, so two runs in
-   different worktrees never touch each other's directories."
+   Without that property (a direct `bb -e (t/run-tests …)`) `root` creates one
+   root for the process under the system temp dir and deletes it when the
+   process exits, so ad-hoc runs leave nothing behind; `KIMUN_TEST_TMP`
+   overrides it (and is then the caller's to delete)."
   (:require [babashka.fs :as fs]
             [kimun.cli.store :as cli-store]
             [kimun.kernel.store :as kstore]
             [kimun.surface.docs :as tdocs]))
 
+(def ^:private process-root
+  "A temp root owned by this process, created on first use and deleted when the
+   process exits (the fallback when no run root is given)."
+  (delay (let [r (str (fs/create-temp-dir {:prefix "kimun-adhoc-"}))]
+           (.addShutdownHook (Runtime/getRuntime) (Thread. #(fs/delete-tree r)))
+           r)))
+
 (defn root
-  "The temp root of this test run: the `kimun.test.tmp` system property, else
-   `$KIMUN_TEST_TMP`, else the system temp dir. Created when absent; the caller
-   (or `bb test`) owns its deletion."
+  "The temp root of this test run: the `kimun.test.tmp` system property (set by
+   `bb test`, which deletes it), else `$KIMUN_TEST_TMP` (the caller deletes it),
+   else a root owned and deleted by this process."
   []
   (let [r (or (System/getProperty "kimun.test.tmp")
               (System/getenv "KIMUN_TEST_TMP")
-              (System/getProperty "java.io.tmpdir"))]
+              @process-root)]
     (fs/create-dirs r)
     (str r)))
 
