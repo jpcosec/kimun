@@ -462,3 +462,24 @@ documento** (489 KB: `reference`→modelo, `derived`→modelo, `reference`→arc
 árbol Merkle por ruta (como git), con una entrada por documento `{fingerprint, clase, hash de la
 proyección}` y los campos trackeados como hojas; revisiones apuntando a la raíz; sin plan en el CAS,
 sin trie por ids, sin las tres aristas.
+
+## 21. El hash detecta mutaciones; no es identidad (2026-10-09) — PENDIENTE DE CONFIRMAR ALCANCE
+
+Corrección del dueño. Kimun no es una base de datos content-addressed:
+
+| cosa | qué es | para qué |
+|---|---|---|
+| ID del nodo | su identidad (nombre, ruta, símbolo) | referenciar, enlazar, encontrar |
+| content | lo que el nodo dice | el conocimiento |
+| hash | huella del content | **detectar mutaciones** y reconciliar |
+| embedding | ubicación semántica | vecindad, co-ocurrencia |
+
+Consecuencias señaladas por el dueño: el **plan del build** puede ir al caché o eliminarse (no aporta);
+los **índices y enlaces por hash** (mmap ordenado por ids-hash; aristas con `:from`/`:to`/`:ref-hash`)
+usan el hash para funciones que son de **código** (resolver qué documento usa qué modelo).
+
+**Alcance (a confirmar):** esto revisa el principio 3 de `01 §4` ("la identidad de un nodo es su
+contenido") y las decisiones 1, 3 y 4 de `05`, que son la base del kernel actual. Tensión abierta con
+§18.8 ("dos documentos idénticos tienen los mismos nodos"): ¿dos párrafos idénticos son dos nodos con
+el mismo hash (ID = ocurrencia), o un solo nodo con dos ocurrencias (y entonces de dónde sale el ID)?
+No se toca código hasta resolverlo.
