@@ -1,0 +1,47 @@
+;; `15-capa-g.md §4`: decisión humana materializada como documento `source` (decisión 27/Q6).
+;; La composición grafo→documento la produce determinísticamente desde la transacción;
+;; `include build` la reaplica y reproduce los mismos hechos. El formato del caso lo fija
+;; `14 §12` decisión 27 (eliminada la pregunta Q3).
+;; El documento `:action :assert` lleva el **`:fact/entry` canónico completo** (términos,
+;; proposición, hecho, `binding`, `projection`, spans y la referencia a la hoja), no solo ids:
+;; sin `facts.log.edn` (`:git :ignore`), un `include build` reconstruye el hecho desde aquí
+;; (`15 §4`, `10 §11`). `:target` nombra el hecho y la arista `projection` afirmados (§4).
+;; La forma del `:fact/entry` es la de `10 §11`; `:leaves` da la
+;; referencia a la hoja (path + rango + fingerprint), que un id de nodo no permite invertir.
+{:decision/version 1
+ :action :assert
+ :target {:fact :fact/f3 :edge :edge/p3}
+ :context :ctx/doc
+ :actor "human/jp"
+ :timestamp "2026-10-09T12:00:00.000Z"
+ :note "el actor asienta el hecho (agua es liquidez); el documento lleva el contenido completo"
+ :fact/entry
+ {:op :assert
+  :actor "human/jp"
+  :nodes [{:as :r :node {:class :symbol :kind :term :content {:name "es" :lang "es"}}}
+          {:as :a :node {:class :symbol :kind :term :content {:name "agua" :lang "es"}}}
+          {:as :b :node {:class :symbol :kind :term :content {:name "liquidez" :lang "es"}}}
+          {:as :p :node {:class :symbol :kind :proposition
+                         :content {:form [:r :a :b]}}}
+          {:as :f :node {:class :fact :kind :triple
+                         :content {:subject :a :predicate :r :object :b :context :ctx/doc}}}
+          {:as :s :node {:class :sign :kind :span :content {:leaf :l :range [3 19]}}}
+          {:as :l :node {:class :sign :kind :text
+                         :content {:text "el agua es liquidez"}}}]
+  :leaves [{:as :l :path "test/fixtures/g/source.md" :range [3 19]
+            :fingerprint "sha-256:0000000000000000000000000000000000000000000000000000000000000000"}]
+  :edges [{:type :binding :from :s :to :p
+           :evidence {:ref-hash :p :context :ctx/doc
+                      :actor "human/jp"
+                      :prov [{:path "test/fixtures/g/source.md"
+                              :source-hash "sha-256:0000000000000000000000000000000000000000000000000000000000000000"
+                              :span {:leaf :l :range [3 19]}
+                              :extractor "human" :confidence "1.0"}]}}
+          {:type :projection :from :p :to :f
+           :evidence {:ref-hash :f :context :ctx/doc
+                      :status :observed :curation :accepted :tier :observed
+                      :actor "human/jp"
+                      :prov [{:path "test/fixtures/g/source.md"
+                              :source-hash "sha-256:0000000000000000000000000000000000000000000000000000000000000000"
+                              :span {:leaf :l :range [3 19]}
+                              :extractor "human" :confidence "1.0"}]}}]}}

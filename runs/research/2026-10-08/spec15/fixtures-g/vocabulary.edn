@@ -1,0 +1,36 @@
+;; `15-capa-g.md §1`: vocabulario admisible `L_i` del contexto de ejemplo.
+;; Documento `source` EDN; entra a canonical-bytes tal cual (`02 §2.1`): sin flotantes.
+;; `:relations` NO lleva `:properties`: el álgebra de `R` vive solo en los hechos
+;; `(property R p) @ W_i` (`facts.edn`, alias `:fact/f2`/`:fact/f2b`/`:fact/f4`).
+;; `:axis [t1 t2]` cita la raíz de una taxonomía declarada en `:taxonomies`.
+{:vocabulary/version 1
+ :context {:name "doc:test/fixtures/g/source.md"
+           :granularity :document
+           :of {:path "test/fixtures/g/source.md"}}
+ :languages ["es"]
+ :taxonomies [{:name "terms" :root "thing"}
+              {:name "relations" :root "relation"}
+              {:name "literals" :root "literal"}
+              ;; taxonomías base de todo `L_i` (§1): `facts` da el término-hecho,
+              ;; `sense` los valores de sentido; el eje de `sense` las cita
+              {:name "facts" :root "fact"}
+              {:name "sense" :root "sense"}]
+ :relations [{:name "comparte"
+              :axis ["thing" "thing"]
+              :tiers #{:observed :confirmed :inferred :statistical}}
+             {:name "es"
+              :axis ["thing" "thing"]
+              :tiers #{:observed :confirmed :statistical}}
+             {:name "property"
+              :axis ["relation" "thing"]
+              :tiers #{:observed :confirmed :inferred :statistical}}
+             ;; relación base de todo `L_i` (`15 §1`, `§3`): un humano marca el sentido de un
+             ;; hecho; el sujeto es un término de `facts` y el objeto uno de `sense`
+             {:name "sense"
+              :axis ["fact" "sense"]
+              :tiers #{:observed :confirmed}}]
+ :promotions [{:rule "equivalent"
+               :when {:phi "0.95" :directions :both
+                      :min-configs 2 :min-contexts 2}
+               :to :confirmed
+               :actor "policy/equivalence"}]}

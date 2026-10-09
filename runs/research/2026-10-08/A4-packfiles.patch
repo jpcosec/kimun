@@ -1,0 +1,1166 @@
+diff --git a/src/kimun/cli/commands/stores.cljc b/src/kimun/cli/commands/stores.cljc
+index 402a4210..589cf406 100644
+--- a/src/kimun/cli/commands/stores.cljc
++++ b/src/kimun/cli/commands/stores.cljc
+@@ -9,6 +9,7 @@
+             [kimun.cli.commands.docs :as docs]
+             [kimun.cli.out :as out]
+             [kimun.cli.store :as cli-store]
++            [kimun.host.fs-store :as fs-store]
+             [kimun.surface.diagnostics :as diag]
+             [kimun.surface.docs :as tdocs]
+             [kimun.host.default :as host]
+@@ -186,44 +187,89 @@
+                    {:checked checked :bad bad :path path}
+                    5))))
+ 
++(defn pack
++  "`kimun stores pack`: moves every loose object of the store into a new
++   packfile `packs/<stamp>.pack` plus its index, then deletes the loose files
++   (docs/v2/10 §9). The store lock is taken for the whole pack: no commit runs
++   meanwhile, and objects written after the listing stay loose and keep winning
++   over the index on read. Packing is explicit (never part of a commit: a commit
++   stays O(plan), a pack reads every loose object). Ids, bytes and the
++   H(content)==id invariant are untouched. Data: `{:packed :pack :bytes
++   :objects}` (`:packed 0` when nothing was loose)."
++  [_args opts {:keys [env cwd]}]
++  (let [dir (cli-store/resolve-store opts env cwd)
++        _ (when (or (nil? dir) (not (cli-store/store? dir))) (cli-store/open! dir))
++        b (cli-store/backend dir)
++        objects (count (store/object-ids b))
++        r (fs-store/pack! b)]
++    (out/ok "stores pack" {:store (store-ref (store/read-descriptor b) (str dir))
++                            :revision (:head (store/read-heads b))
++                            :data (assoc r :objects objects)})))
++
++(defn gc
++  "`kimun stores gc [--apply]`: reports the objects reachable from no revision
++   of the log (`kimun.kernel.store/garbage`: the losers of the CAS race and the
++   mmap nodes of superseded heads roots); `--apply` removes them (`prune!`:
++   loose files deleted, packs rewritten without them). Never deletes anything
++   reachable from a logged revision. Nothing is written without `--apply`.
++   Data: `{:mode :objects :garbage :sample}` plus, when applied, `{:removed
++   {:loose :packs :packed}}`."
++  [_args opts {:keys [env cwd]}]
++  (let [{:keys [backend descriptor store path]} (cli-store/open! (cli-store/resolve-store opts env cwd))
++        ids (store/garbage backend store)
++        applied (boolean (:apply opts))
++        removed (when applied (fs-store/prune! backend ids))]
++    (out/ok "stores gc" {:store (store-ref descriptor path)
++                          :revision (:head store)
++                          :data (cond-> {:mode (if applied "apply" "dry-run")
++                                         :objects (count (store/object-ids backend))
++                                         :garbage (count ids)
++                                         :sample (vec (take 10 ids))}
++                                  removed (assoc :removed removed))})))
++
+ (def ^:private layout
+-  "Entries of a store directory that the upgrade rebuilds, or drops: the
+-   derived index is keyed by revision ids that the upgrade replaces
+-   (`rebuild-indexes` writes it again)."
+-  #{"objects" "log.edn" "heads.edn" "store.edn" "lock" "index"})
++  "Entries of a store directory that the upgrade rebuilds, or derived data it
++   leaves behind: the object store (loose or packed), the log, the heads, the
++   descriptor and the derived index, which is keyed by revision ids the upgrade
++   replaces (`rebuild-indexes` writes it again). Everything else is carried
++   over."
++  #{"objects" "packs" "log.edn" "heads.edn" "store.edn" "lock" "index"})
+ 
+ (defn- stamp [] (str/replace (docs/timestamp) #"[^0-9]" ""))
+ 
+ (defn upgrade-store
+-  "`stores upgrade`: rewrites a format-1 store as a format-2 one
++  "`stores upgrade`: rewrites an older store as a current-format one
+    (`kimun.kernel.upgrade/upgrade!`: every transaction re-committed in log order
+-   through the format-2 engine, then checked and fully verified). The new store
+-   is built in the sibling directory `<store>.upgrade-<stamp>`; the original is
+-   untouched until the new one verifies, then it is renamed to
+-   `<store>.format-1-<stamp>` (a backup the user may delete) and the new one
+-   takes its place. Files of the store directory other than the layout are
+-   carried over (not `index/`, derived and keyed by the old revision ids).
+-   `upgrade-format-1.edn` in the new store maps every old revision and
+-   transaction id to its new id. A format-2 store is left as is
+-   (`:upgraded false`). When a writer commits to the original meanwhile the
+-   upgrade is abandoned with `store/stale` (exit 4). Data: `{:upgraded
+-   :format-version :path}` plus, when upgraded, `{:transactions :head-before
+-   :backup :map :dropped-tail :checked :seconds}`."
++   through the current engine, then checked and fully verified). A format-1
++   source is upgraded straight to the current format. The new store is built in
++   the sibling directory `<store>.upgrade-<stamp>`; the original is untouched
++   until the new one verifies, then it is renamed to `<store>.format-<src>-<stamp>`
++   (a backup the user may delete) and the new one takes its place. Files of the
++   store directory other than the layout are carried over (not `index/`, derived
++   and keyed by the old revision ids). `upgrade-format-<src>.edn` in the new
++   store maps every old revision and transaction id to its new id. A store
++   already at the current format is left as is (`:upgraded false`). When a
++   writer commits to the original meanwhile the upgrade is abandoned with
++   `store/stale` (exit 4). Data: `{:upgraded :format-version :path}` plus, when
++   upgraded, `{:transactions :head-before :backup :map :dropped-tail :checked
++   :seconds}`."
+   [_args opts {:keys [env cwd]}]
+   (let [dir0 (cli-store/resolve-store opts env cwd)
+         _ (when (or (nil? dir0) (not (cli-store/store? dir0))) (cli-store/open! dir0))
+         dir (str (fs/absolutize dir0))
+         b (cli-store/backend dir)
+         descriptor (store/read-descriptor b)
++        src-format (:format-version descriptor 1)
++        target store/format-version
+         heads-file (str (fs/path dir "heads.edn"))
+         heads-text #(when (fs/exists? heads-file) (slurp heads-file))]
+-    (if (= 2 (:format-version descriptor 1))
++    (if (= src-format target)
+       (out/ok "stores upgrade" {:store (store-ref descriptor dir)
+                                 :revision (:head (store/read-heads b))
+-                                :data {:upgraded false :format-version 2 :path dir}})
++                                :data {:upgraded false :format-version target :path dir}})
+       (let [t (stamp)
+             tmp (str dir ".upgrade-" t)
+-            backup (str dir ".format-1-" t)
++            backup (str dir ".format-" src-format "-" t)
+             before (heads-text)
+             head-before (:head (store/read-heads b))
+             t0 (System/nanoTime)
+@@ -236,14 +282,14 @@
+                 :let [n (str (fs/file-name f))]
+                 :when (not (or (layout n) (str/includes? n ".tmp-")))]
+           (if (fs/directory? f) (fs/copy-tree f (fs/path tmp n)) (fs/copy f (fs/path tmp n))))
+-        (spit (str (fs/path tmp "upgrade-format-1.edn"))
+-              (pr-str {:from-format 1 :to-format 2 :head-before head-before :head (:head r)
++        (spit (str (fs/path tmp (str "upgrade-format-" src-format ".edn")))
++              (pr-str {:from-format src-format :to-format target :head-before head-before :head (:head r)
+                        :revisions (into (sorted-map) (:revisions r)) :transaction-ids (into (sorted-map) (:transaction-ids r))}))
+         (fs/move dir backup {:atomic-move true})
+         (fs/move tmp dir {:atomic-move true})
+         (out/ok "stores upgrade" {:store (store-ref descriptor dir)
+                                   :revision (:head r)
+-                                  :data {:upgraded true :format-version 2 :path dir
++                                  :data {:upgraded true :format-version target :path dir
+                                          :transactions (:transactions r)
+                                          :head-before head-before
+                                          :backup backup
+@@ -314,12 +360,13 @@
+ (def spec
+   "Options of the `stores` group (babashka.cli spec, merged by `kimun.cli.main`)."
+   {:name {:ref "NAME" :desc "Store name (stores init)"}
+-   :apply {:desc "Write what the comparison found (stores reconcile)" :coerce :boolean}})
++   :apply {:desc "Write what the comparison found (stores reconcile) or remove the garbage (stores gc)" :coerce :boolean}})
+ 
+ (def commands
+   "Subcommand name → command fn."
+   {"init" init "check" check "verify" verify "upgrade" upgrade-store "show" show
+    "link" link "unlink" unlink "links" links
++   "pack" pack "gc" gc
+    "health" health "update" update-store "reconcile" reconcile})
+ 
+ (defn dispatch
+diff --git a/src/kimun/cli/main.cljc b/src/kimun/cli/main.cljc
+index a74dd326..edcdc44a 100644
+--- a/src/kimun/cli/main.cljc
++++ b/src/kimun/cli/main.cljc
+@@ -74,8 +74,10 @@
+              "groups:"
+              "  stores init [--name NAME]   create .kimun/ in the working directory (or --store PATH)"
+              "  stores check                open the store (replay) and report revisions, trees, objects"
+-             "  stores verify               recompute the hash of every reachable object"
+-             "  stores upgrade              rewrite a format-1 store as format 2 (keeps a backup)"
++             "  stores verify               recompute the hash of every reachable object (including packed ones)"
++             "  stores pack                 move every loose object into a packfile + index (docs/v2/10 §9)"
++             "  stores gc [--apply]         report or remove the objects no logged revision reaches"
++             "  stores upgrade              rewrite a format-1/2 store as the current format (keeps a backup)"
+              "  stores show                 descriptor and heads without replay"
+              "  stores health               verdict: ok | degraded (run: …) | needs-human (inspect: …)"
+              "  stores update               apply the repairs that need no decision (reformatted files, moved contracts)"
+diff --git a/src/kimun/host/fs_store.cljc b/src/kimun/host/fs_store.cljc
+index b62d46c5..429fdd86 100644
+--- a/src/kimun/host/fs_store.cljc
++++ b/src/kimun/host/fs_store.cljc
+@@ -24,12 +24,26 @@
+    check` / `stores verify` walk every reachable object, which is the whole
+    store, so a bound could only add re-reads; the lazy :objects map of the
+    opened store memoises the same values anyway, so evicting here would free
+-   nothing."
++   nothing.
++
++   Packfiles (docs/v2/10 §9): a store of 80k small objects wastes most of a 4 KB
++   filesystem block per object (~364 MB of disk for 94 MB of object text).
++   `packs/<name>.pack` (the contents concatenated in id order) plus
++   `packs/<name>.idx` (id 32 binary bytes + offset 8 big-endian + length 4,
++   one entry per record, in pack order), both written by `pack!` and rewritten by `prune!`.
++   `read-object` prefers the loose file (objects written after the last pack)
++   and falls back to the index of each pack in name order; `object-ids` is the
++   loose listing plus every index key. Packing is explicit (`kimun stores
++   pack`), never part of `commit-tx!`: a commit must stay O(plan) and hold the
++   lock only for its append+heads swap, while a pack reads every loose object
++   and rewrites the directories; the write-once and H(content)==id invariants
++   are untouched (a packed object is the same bytes under the same id)."
+   (:require [clojure.edn :as edn]
+             [clojure.string :as str]
++            [kimun.kernel.err :as err]
+             [kimun.kernel.store :as store]
+             #?@(:clj [[clojure.java.io :as io]]))
+-  #?(:clj (:import [java.nio.file Files Paths StandardCopyOption StandardOpenOption]
++  #?(:clj (:import [java.nio.file Files Paths StandardCopyOption StandardOpenOption LinkOption]
+                    [java.nio.channels FileChannel]
+                    [java.nio ByteBuffer]
+                    [java.nio.charset StandardCharsets])))
+@@ -104,9 +118,188 @@
+                      (vec (take-last 2 segs))))))))))
+      (defn- truncate! [p size]
+        (with-open [ch (FileChannel/open p (into-array StandardOpenOption [StandardOpenOption/WRITE]))]
+-         (.truncate ch (long size))))))
++         (.truncate ch (long size))))
++
++     ;; -------------------------------------------------------------- packs
++
++     (def ^:private hex-digits "0123456789abcdef")
++
++     (defn- hex->bytes
++       "The 32 bytes of a 64-character lower-case hex id, into `arr` at `off`."
++       [^String hex ^bytes arr off]
++       (dotimes [i 32]
++         (aset-byte arr (+ off i)
++                    (unchecked-byte (+ (* 16 (Character/digit (.charAt hex (* 2 i)) 16))
++                                       (Character/digit (.charAt hex (inc (* 2 i))) 16)))))
++       arr)
++
++     (defn- bytes->hex
++       "The 64-character lower-case hex id of bytes [off, off+32) of `arr`."
++       [^bytes arr off len]
++       (let [sb (StringBuilder. (* 2 len))]
++         (dotimes [i len]
++           (let [b (bit-and 0xff (aget arr (+ off i)))]
++             (.append sb (.charAt hex-digits (bit-shift-right b 4)))
++             (.append sb (.charAt hex-digits (bit-and b 0xf)))))
++         (str sb)))
++
++     (def pack-index-entry
++       "Bytes of one `.idx` entry: id (32 binary) + offset (8) + length (4)."
++       44)
++
++     (defn- pack-path [dir name] (path dir "packs" name))
++
++     (defn- names-in
++       "Sorted names (without `suffix`) of the regular files of directory `d`."
++       [d suffix]
++       (if (exists? d)
++         (with-open [s (Files/list d)]
++           (->> (iterator-seq (.iterator s))
++                (map #(str (.getFileName %)))
++                (filter #(str/ends-with? % suffix))
++                (map #(subs % 0 (- (count %) (count suffix))))
++                sort vec))
++         []))
++
++     (defn- pack-names [dir] (names-in (path dir "packs") ".pack"))
++
++     (defn- loose-ids [dir]
++       "Ids of the loose object files under objects/ (empty when the directory does not exist)."
++       (names-in (path dir "objects") ""))
++
++     (defn- write-idx! [p entries]
++       "Writes the `.idx` of a pack: `entries` [[id offset length] …] in pack order."
++       (let [buf (ByteBuffer/allocate (* pack-index-entry (count entries)))
++             arr (.array buf)]
++         (doseq [[id off len] entries]
++           (hex->bytes id arr (.position buf))
++           (.position buf (+ (.position buf) 32))
++           (.putLong buf (long off))
++           (.putInt buf (int len)))
++         (Files/write p (.array buf)
++                      (into-array StandardOpenOption [StandardOpenOption/CREATE StandardOpenOption/TRUNCATE_EXISTING StandardOpenOption/WRITE]))))
+ 
+-(defrecord FsBackend [dir cache heads-memo wait?]
++     (defn- read-idx! [p]
++       "The index of a pack: {id [offset length]}. Reads 76 bytes per entry."
++       (let [arr (Files/readAllBytes p) buf (ByteBuffer/wrap arr) n (quot (alength arr) pack-index-entry)]
++         (loop [i 0 acc (transient {})]
++           (if (= i n)
++             (persistent! acc)
++             (let [base (* i pack-index-entry)
++                   id (bytes->hex arr base 32)
++                   off (.getLong buf (+ base 32))
++                   len (.getInt buf (+ base 40))]
++               (recur (inc i) (assoc! acc id [off len])))))))
++
++     (defn- pack-paths [dir name] [(pack-path dir (str name ".pack")) (pack-path dir (str name ".idx"))])
++
++     (defn- write-pack!
++       "Writes pack `name` and its index next to `dir`, both by temp file + atomic
++        move: a crash leaves the old pack, never a torn one. `records` is a lazy
++        seq of [id text] in the order they must be written (the callers pass them
++        sorted by id); each text is consumed and dropped one at a time, so the
++        whole pack is never in memory. Returns {:pack :packed :bytes}."
++       [dir name records]
++       (Files/createDirectories (path dir "packs") (make-array java.nio.file.attribute.FileAttribute 0))
++       (let [[pp ip] (pack-paths dir name)]
++         (with-open [ch (FileChannel/open (path dir "packs" (str name ".pack.tmp"))
++                                          (into-array StandardOpenOption [StandardOpenOption/CREATE StandardOpenOption/TRUNCATE_EXISTING StandardOpenOption/WRITE]))]
++           (loop [i 0 off 0 entries [] rs (seq records)]
++             (if (empty? rs)
++               (do (write-idx! (path dir "packs" (str name ".idx.tmp")) entries)
++                   (Files/move (path dir "packs" (str name ".pack.tmp")) pp (into-array java.nio.file.CopyOption [StandardCopyOption/ATOMIC_MOVE StandardCopyOption/REPLACE_EXISTING]))
++                   (Files/move (path dir "packs" (str name ".idx.tmp")) ip (into-array java.nio.file.CopyOption [StandardCopyOption/ATOMIC_MOVE StandardCopyOption/REPLACE_EXISTING]))
++                   {:pack name :packed i :bytes off})
++               (let [[id text] (first rs)
++                     bytes (.getBytes ^String (str text) StandardCharsets/UTF_8)]
++                 (let [cb (ByteBuffer/wrap bytes)]
++                   (loop [] (when (.hasRemaining cb) (.write ch cb))))
++                 (recur (inc i) (+ off (alength bytes))
++                        (conj entries [id off (alength bytes)]) (rest rs))))))))
++
++     (defn- read-packed [ch off len]
++       "Content bytes [off, off+len) of an open pack channel, as UTF-8 text."
++       (let [buf (ByteBuffer/allocate (int len))]
++         (loop [pos (long off)]
++           (when (.hasRemaining buf)
++             (let [n (.read ch buf pos)] (when (pos? n) (recur (+ pos n))))))
++         (String. (.array buf) StandardCharsets/UTF_8)))
++
++     (defn- pack-index
++       "{id [offset length]} of pack `nm`, cached in the backend instance: the
++        `.idx` is read once per backend."
++       [b nm]
++       (or (get @(:packs b) nm)
++           (let [idx (read-idx! (pack-path (:dir b) (str nm ".idx")))]
++             (swap! (:packs b) assoc nm idx) idx)))
++
++     (defn- pack-channel
++       "Read channel of pack `nm`, kept open for the life of the backend instance
++        (packs are append-only; `prune!` closes and drops the cached channel)."
++       [b nm]
++       (or (get @(:channels b) nm)
++           (let [ch (FileChannel/open (pack-path (:dir b) (str nm ".pack"))
++                                      (into-array StandardOpenOption [StandardOpenOption/READ]))]
++             (swap! (:channels b) assoc nm ch) ch)))
++
++     (defn- forget-pack! [b nm]
++       "Drops the cached index and channel of pack `nm`."
++       (when-let [ch (get @(:channels b) nm)] (err/rescue-any (fn [_] nil) (.close ch)))
++       (swap! (:channels b) dissoc nm)
++       (swap! (:packs b) dissoc nm))
++
++     (defn pack!
++       "Moves every loose object of backend `b` into a new pack `packs/<stamp>.pack`
++        plus its `.idx`, then deletes the loose files, under the store lock (no
++        commit runs meanwhile; objects written after the listing stay loose and
++        are `read-object`'s first choice). Returns {:packed n :pack name :bytes
++        n} or {:packed 0} when there is nothing loose. Content is written under
++        each object's own id; a crash leaves the old layout or a temp file, never
++        a half pack."
++       [b]
++       (with-store-lock (:dir b) true
++         (fn []
++           (let [ids (loose-ids (:dir b))]
++             (if (empty? ids)
++               {:packed 0}
++               (let [nm (str (System/currentTimeMillis) "-" (System/nanoTime))
++                     r (write-pack! (:dir b) nm
++                                    (map (fn [id] [id (read-text (path (:dir b) "objects" id))]) ids))]
++                 (doseq [id ids] (err/rescue-any (fn [_] nil) (Files/delete (path (:dir b) "objects" id))))
++                 r))))))
++
++     (defn prune!
++       "Removes every object of backend `b` whose id is in `garbage`: deletes the
++        loose files and rewrites each pack that holds one without them (by
++        writing the kept records into a fresh pack, then deleting the old pack
++        and its index). Under the store lock. Returns {:loose n :packs k
++        :packed n}. A pack with nothing to drop is left untouched; the caller
++        (kimun stores gc) decides the set, and must never include an id
++        reachable from a logged revision."
++       [b garbage]
++       (with-store-lock (:dir b) true
++         (fn []
++           (let [g (set garbage)
++                 loose (filter g (loose-ids (:dir b)))
++                 _ (doseq [id loose] (err/rescue-any (fn [_] nil) (Files/delete (path (:dir b) "objects" id))))
++                 packs (pack-names (:dir b))]
++             (loop [names packs removed 0 rewritten 0]
++               (if-let [nm (first names)]
++                 (let [idx (pack-index b nm)
++                       keep (remove (fn [[id _]] (contains? g id)) idx)]
++                   (if (= (count keep) (count idx))
++                     (recur (rest names) removed rewritten)
++                     (let [ch (pack-channel b nm)
++                           nm' (str nm "-gc")]
++                       (write-pack! (:dir b) nm'
++                                    (map (fn [[id [off len]]] [id (read-packed ch off len)]) keep))
++                       (forget-pack! b nm)
++                       (doseq [p (pack-paths (:dir b) nm)] (err/rescue-any (fn [_] nil) (Files/delete p)))
++                       (recur (rest names) (+ removed (- (count idx) (count keep))) (inc rewritten)))))
++                 {:loose (count loose) :packs rewritten :packed removed})))))))
++ )
++
++(defrecord FsBackend [dir cache heads-memo wait? packs channels]
+   store/ObjectCache
+   (cached-object [_ id] (get @cache id))
+   (cache-object! [_ id obj] (swap! cache assoc id obj) obj)
+@@ -116,16 +309,26 @@
+   (write-descriptor! [_ d]
+     #?(:clj (do (Files/createDirectories (path dir "objects") (make-array java.nio.file.attribute.FileAttribute 0))
+                 (write-atomic! (path dir "store.edn") (pr-str d)))))
+-  (read-object [_ id]
+-    #?(:clj (read-text (path dir "objects" id))))
++  (read-object [b id]
++    #?(:clj (let [p (path dir "objects" id)]
++              (if (exists? p)
++                (read-text p)
++                ;; packed: first pack (name order) whose index has the id
++                (loop [names (pack-names dir)]
++                  (if-let [nm (first names)]
++                    (if-let [[off len] (get (pack-index b nm) id)]
++                      (read-packed (pack-channel b nm) off len)
++                      (recur (rest names)))
++                    nil))))))
+   (write-object! [_ id content]
+     #?(:clj (let [p (path dir "objects" id)]
+               (when-not (exists? p) (write-atomic! p content)))))
+-  (object-ids [_]
++  (object-ids [b]
+     #?(:clj (let [d (path dir "objects")]
+-              (if (exists? d)
+-                (with-open [s (Files/list d)] (mapv #(str (.getFileName %)) (iterator-seq (.iterator s))))
+-                []))))
++              (into (if (exists? d)
++                      (with-open [s (Files/list d)] (mapv #(str (.getFileName %)) (iterator-seq (.iterator s))))
++                      [])
++                    (mapcat #(keys (pack-index b %)) (pack-names dir))))))
+   (read-log [_]
+     #?(:clj (let [text (or (read-text (path dir "log.edn")) "")
+                   lines (vec (remove str/blank? (str/split-lines text)))
+@@ -180,7 +383,7 @@
+    waits for it; by default it fails at once with :store/busy (v1's
+    `--wait` / fail-fast contract)."
+   ([dir] (backend dir {}))
+-  ([dir {:keys [wait?]}] (->FsBackend dir (atom {}) (atom nil) (boolean wait?))))
++  ([dir {:keys [wait?]}] (->FsBackend dir (atom {}) (atom nil) (boolean wait?) (atom {}) (atom {}))))
+ 
+ (defn cached-ids
+   "Ids of the objects this backend instance has parsed so far (diagnostics and tests)."
+diff --git a/src/kimun/kernel/revision.cljc b/src/kimun/kernel/revision.cljc
+index 62c75ec9..85f7ec35 100644
+--- a/src/kimun/kernel/revision.cljc
++++ b/src/kimun/kernel/revision.cljc
+@@ -1,10 +1,11 @@
+ (ns kimun.kernel.revision
+   "Applying a TransactionPlan to a store value and producing an immutable
+-   revision (docs/v2/02 §5, §5.1, §5.2), format 2: every cost is proportional
+-   to the plan, never to the number of trees, edges or revisions.
++   revision (docs/v2/02 §5, §5.1, §5.2), format 3 (format 2 without :names is
++   still served): every cost is proportional to the plan, never to the number
++   of trees, edges or revisions.
+ 
+    Store (a value):
+-   {:host host :capabilities {...} :format-version 2
++   {:host host :capabilities {...} :format-version 3
+     :objects {id object}             ; the CAS: nodes, edges, tree objects, descriptors, mmap nodes, revisions, resolved plans
+     :trees {tree-id committed-tree}  ; VIEW of the head: current tree values (kimun.kernel.tree)
+     :edges #{edge-id}                ; VIEW of the head: active non-ownership edge set
+@@ -20,9 +21,12 @@
+              :edges     <mmap root: active edge id -> true>
+              :incidence <mmap root: node-id -> the active edge ids with it as :from or :to,
+                          a sorted vector up to `hub-threshold` ids and {:set <root of the mmap edge-id -> true>} above>
++             :names     <mmap root: descriptor :name -> sorted vector of tree-ids> (format 3 only)
+              :parents [rev-id] :tx tx-id :actor :engines :timestamp}
+-   (kimun.kernel.mmap). :incidence is derived from :edges, deterministic, and never
+-   trusted by verification (a full replay recomputes it).
++   (kimun.kernel.mmap). :incidence is derived from :edges and :names from the tree
++   descriptors; both are deterministic and never trusted by verification (a full
++   replay recomputes them). A format-2 revision has no :names (a store upgraded
++   from it gains one without touching any node, edge or tree id).
+    revision-id = H(canonical-bytes Revision); Transaction {:id H(resolved plan) :plan :revision}.
+ 
+    A store value with :format-version 1 is served by kimun.kernel.legacy.revision:
+@@ -43,7 +47,7 @@
+ (defn empty-store
+   "A format-2 store with no objects, trees, edges or revisions."
+   [host capabilities]
+-  {:host host :capabilities capabilities :format-version 2
++  {:host host :capabilities capabilities :format-version 3
+    :objects {} :trees {} :edges #{} :head nil :heads {} :heads-root nil :revisions {}})
+ 
+ (defn legacy?
+@@ -80,10 +84,11 @@
+     (let [e (:new (mmap/empty (:host store)))] #(or (get-object store %) (get e %)))))
+ 
+ (defn- roots
+-  "{:trees :edges :incidence} mmap roots of `rev-id` (the empty maps when nil/unknown)."
++  "{:trees :edges :incidence :names} mmap roots of `rev-id` (the empty maps when nil/unknown).
++   A format-2 Revision has no :names, so that key is then nil."
+   [store rev-id]
+   (or (revision store rev-id)
+-      (let [e (:root (mmap/empty (:host store)))] {:trees e :edges e :incidence e})))
++      (let [e (:root (mmap/empty (:host store)))] {:trees e :edges e :incidence e :names e})))
+ 
+ (defn active-edges
+   "Lazy seq of the active edge ids, ascending, at the head or at `rev-id`."
+@@ -210,8 +215,10 @@
+    the result, so that `apply-plan` can tell whether somebody forced it and
+    derive the next one from it in O(plan) (`head-views`). Without the port (or
+    for format 1) `base` is returned as is: the caller keeps the eager views
+-   (`refresh-views`). The index of `trees-named` is a third such memo (base key
+-   :tree-names, {name sorted-set-of-tree-ids}, also kept only in the metadata)."
++   (`refresh-views`). The name index of `trees-named` is a third such memo
++   (base key :tree-names, {name sorted-set-of-tree-ids}, also kept only in the
++   metadata) for format-2 stores; a format-3 store reads it from the :names
++   mmap of its head Revision and builds no memo."
+   [base]
+   (if-let [lm (when-not (legacy? base) (ports/lazy-maps (:host base)))]
+     (let [head (:head base)
+@@ -221,10 +228,14 @@
+           known (:edges base)
+           edges (if known (doto (delay known) deref) (delay (set (active-edges core head))))
+           named (:tree-names base)
+-          names (if named
+-                  (doto (delay named) deref)
+-                  (delay (reduce (fn [m tid] (update m (:name (tree-descriptor core tid head)) (fnil conj (sorted-set)) tid))
+-                                 {} @ids)))]
++          ;; a format-3 store reads the index from the :names mmap of its head
++          ;; Revision; an older one scans one descriptor per tree, once per lineage
++          memo? (< (long (or (:format-version base) 2)) 3)
++          names (when memo?
++                  (if named
++                    (doto (delay named) deref)
++                    (delay (reduce (fn [m tid] (update m (:name (tree-descriptor core tid head)) (fnil conj (sorted-set)) tid))
++                                   {} @ids))))]
+       (with-meta
+         (ports/lazy-map lm
+                         (fn [k] (when (= :edges k) @edges))
+@@ -235,13 +246,16 @@
+ 
+ (defn trees-named
+   "Ascending ids of the trees of the head whose descriptor :name is `name`.
+-   On a lazy store (`lazy-store`) the index name -> tree ids is built on the
+-   first call, once per view lineage (one descriptor per tree), and carried to
+-   the next head in O(plan) by `apply-plan`; otherwise the :trees view is scanned."
++   A format-3 store looks the name up in the :names mmap of its head Revision
++   (O(log n) nodes, no descriptor read); a format-2 store scans the :trees view
++   (a lazy store builds the name -> tree ids index once per view lineage, one
++   descriptor per tree, and carries it to the next head in O(plan))."
+   [store name]
+-  (if-let [names (::names-view (meta store))]
+-    (vec (get @names name))
+-    (vec (sort (keep (fn [[tid t]] (when (= name (get-in t [:descriptor :name])) tid)) (:trees store))))))
++  (if-let [root (:names (revision store (:head store)))]
++    (vec (or (mmap/lookup (:host store) (loader store) root name nil) []))
++    (if-let [names (::names-view (meta store))]
++      (vec (get @names name))
++      (vec (sort (keep (fn [[tid t]] (when (= name (get-in t [:descriptor :name])) tid)) (:trees store)))))))
+ 
+ (defn refresh-views
+   "The EAGER views of the head, for hosts without the LazyMaps port, in O(plan):
+@@ -696,16 +710,38 @@
+                                (merge (zipmap (:e- ws) (repeat mmap/removal)) (zipmap (:e+ ws) (repeat true))))
+           idelta (incidence-delta ws load (:incidence base))
+           im (update (mmap/update-many host load (:incidence base) (:delta idelta)) :new #(merge (:new idelta) %))
++          ;; format 3 persists the name -> tree-ids index in the Revision (:names), a fourth
++          ;; mmap updated only for the trees the plan touched: O(plan) per commit, and
++          ;; `trees-named` then reads O(log n) nodes instead of one descriptor per tree.
++          names (when (<= 3 (:format-version store))
++                  (let [base-names (:names base)
++                        deltas (reduce (fn [m tid]
++                                         (let [old (some-> (committed-tree store tid) :descriptor :name)
++                                               new (get-in trees' [tid :descriptor :name])]
++                                           (cond-> m
++                                             (some? old) (update-in [old :remove] (fnil conj #{}) tid)
++                                             (some? new) (update-in [new :add] (fnil conj #{}) tid))))
++                                       {} touched)
++                        changes (reduce-kv
++                                 (fn [acc nm {:keys [add remove]}]
++                                   (let [cur (vec (or (mmap/lookup host load base-names nm nil) []))
++                                         nxt (vec (sort (into (reduce disj (set cur) (or remove #{})) (or add #{}))))]
++                                     (cond (empty? nxt) (assoc acc nm mmap/removal)
++                                           (= nxt cur) acc
++                                           :else (assoc acc nm nxt))))
++                                 {} deltas)]
++                    (mmap/update-many host load base-names changes)))
+           resolved-plan (dissoc plan' :rebased-from)
+           tx-id (canon/digest host resolved-plan)
+-          rev {:trees (:root tm)
+-               :edges (:root em)
+-               :incidence (:root im)
+-               :parents (if (:head store) [(:head store)] [])
+-               :tx tx-id
+-               :actor (:actor plan)
+-               :engines (or (:engines plan) {})
+-               :timestamp (:timestamp plan)}
++          rev (cond-> {:trees (:root tm)
++                       :edges (:root em)
++                       :incidence (:root im)
++                       :parents (if (:head store) [(:head store)] [])
++                       :tx tx-id
++                       :actor (:actor plan)
++                       :engines (or (:engines plan) {})
++                       :timestamp (:timestamp plan)}
++                names (assoc :names (:root names)))
+           rev-id (canon/digest host rev)
+           ;; the per-tree heads live outside the Revision (each touched tree's value is rev-id)
+           hm (mmap/update-many host load (or (:heads-root store) (:root empty-map))
+@@ -715,8 +751,9 @@
+           ;; the transaction is stored as its resolved plan; the Transaction map lives in the log
+           new-objects (-> (:new ws)
+                           (into (mapcat (fn [[_ [_ objs]]] objs)) committed)
+-                          (cond-> (some #{(:root empty-map)} [(:root tm) (:root em) (:root im) (:root hm)]) (merge (:new empty-map)))
++                          (cond-> (some #{(:root empty-map)} [(:root tm) (:root em) (:root im) (:root hm) (:root names)]) (merge (:new empty-map)))
+                           (merge (:new tm) (:new em) (:new im) (:new hm))
++                          (cond-> names (merge (:new names)))
+                           (assoc rev-id rev tx-id resolved-plan))
+           store' (-> store
+                      (update :objects merge new-objects)
+diff --git a/src/kimun/kernel/store.cljc b/src/kimun/kernel/store.cljc
+index 1b719a3a..4e99e24a 100644
+--- a/src/kimun/kernel/store.cljc
++++ b/src/kimun/kernel/store.cljc
+@@ -174,15 +174,17 @@
+ ;; ---------------------------------------------------------------- init / open
+ 
+ (def format-version
+-  "The format new stores are created with."
+-  2)
++  "The format new stores are created with (3: the format-2 revision engine plus the
++   :names mmap of its Revisions, docs/v2/10-escala.md)."
++  3)
+ 
+ (defn- empty-store
+-  "The empty store value of format `fv` (1 = legacy, 2 = current)."
++  "The empty store value of format `fv` (1 = legacy, 2 = format 2, 3 = current)."
+   [host capabilities fv]
+   (case fv
+     1 (assoc (legacy/empty-store host capabilities) :format-version 1)
+-    2 (revision/empty-store host capabilities)
++    2 (assoc (revision/empty-store host capabilities) :format-version 2)
++    3 (revision/empty-store host capabilities)
+     (fail "unsupported store format" {:format-version fv})))
+ 
+ (defn init!
+@@ -285,9 +287,9 @@
+                 (bad shape))))))
+ 
+ (defn- open-from-heads
+-  [b host capabilities]
++  [b host capabilities fv]
+   (let [lm (ports/lazy-maps host)
+-        hd (checked-heads b 2)
++        hd (checked-heads b fv)
+         {:keys [head heads-root]} hd
+         checked (cond-> {}
+                   head (assoc head (checked-head-object b host head revision-object? :not-a-revision))
+@@ -311,7 +313,7 @@
+                                                (recur (into (pop todo) (:parents (get objects id))) (conj seen id)))
+                                              seen)))
+                                   {})]
+-    (revision/lazy-store {:host host :capabilities capabilities :format-version 2
++    (revision/lazy-store {:host host :capabilities capabilities :format-version fv
+                           :objects objects :revisions revisions :head head :heads heads :heads-root heads-root})))
+ 
+ (defn open
+@@ -342,9 +344,9 @@
+   [b host]
+   (let [{:keys [capabilities hash-alg] fv :format-version} (or (read-descriptor b) (fail "no store.edn" {}))
+         alg (ports/algorithm (ports/hasher host))]
+-    (if (and (= 2 fv) (ports/lazy-maps? host))
++    (if (and (<= 2 (long fv)) (ports/lazy-maps? host))
+       (do (when (not= hash-alg alg) (fail "hash algorithm mismatch" {:store hash-alg :hasher alg}))
+-          (open-from-heads b host capabilities))
++          (open-from-heads b host capabilities fv))
+       (replay-open b host))))
+ 
+ ;; ---------------------------------------------------------------- commit
+@@ -384,15 +386,20 @@
+   "What object `o`, reached as `kind`, refers to: a seq of [id kind]. Kinds:
+    :obj (the id must be a stored object), :heads (a node of the per-tree heads
+    mmap of heads.edn: its leaf values are Revisions, its keys tree ULIDs), :trees (a node of a Revision's :trees
+-   mmap: its leaf keys are tree ULIDs, not objects) and :soft (format-1 shapes
++   mmap: its leaf keys are tree ULIDs, not objects), :names (a node of a
++   Revision's :names mmap: its keys are names and its values tree ULIDs,
++   neither an object) and :soft (format-1 shapes
+    and edge endpoints: followed only when stored, as before format 2)."
+   [o kind]
+   (let [as (fn [k ids] (for [id ids :when (string? id)] [id k]))]
+     (cond
+-      (mmap/branch? o) (as (if (#{:trees :heads} kind) kind :obj) (mmap/child-ids o))
++      (mmap/branch? o) (as (if (#{:trees :heads :names} kind) kind :obj) (mmap/child-ids o))
+       (and (mmap/leaf? o) (= :heads kind)) (as :obj (map second (:entries o)))
++      (and (mmap/leaf? o) (= :names kind)) []
+       (mmap/leaf? o) (as :obj (mapcat (fn [[k v]] (concat (when-not (= :trees kind) [k]) (cond (vector? v) v (and (map? v) (:set v)) [(:set v)]))) (:entries o)))
+-      (and (map? o) (:incidence o) (:tx o)) (concat (as :trees [(:trees o)]) (as :obj (concat [(:edges o) (:incidence o) (:tx o)] (:parents o))))
++      (and (map? o) (:incidence o) (:tx o)) (concat (as :trees [(:trees o)])
++                                                     (when (:names o) (as :names [(:names o)]))
++                                                     (as :obj (concat [(:edges o) (:incidence o) (:tx o)] (:parents o))))
+       (and (map? o) (:roots o) (:tx o))            (as :soft (concat (vals (:roots o)) [(:trees o) (:edges o) (:tx o)] (:parents o)))
+       (and (map? o) (:node o) (contains? o :children)) (as :obj (cons (:node o) (mapcat identity (:children o))))
+       (and (vector? o) (every? vector? o))         (as :soft (map second o))
+@@ -404,32 +411,51 @@
+ (defn reachable
+   "Ids of every object reachable from the heads of `store` (docs/v2/02 §3.1):
+    the transitive closure over id references, acyclic because ids are hashes.
+-   Format-2 Revisions are walked through their three mmaps (branch children,
+-   leaf keys, id vectors and the nested edge-id set of a hub
+-   :incidence entry `{:set root}`), and the per-tree heads through the nodes of
+-   the :heads-root mmap; format-1 Revisions through :roots and the sets.
++   Format-2/3 Revisions are walked through their mmaps (branch children, leaf
++   keys, id vectors and the nested edge-id set of a hub `:incidence` entry
++   `{:set root}`), and the per-tree heads through the nodes of the :heads-root
++   mmap; format-1 Revisions through :roots and the sets.
+    Never raises on damaged content: an id that a format-2 structure names but
+    that is absent or unreadable IS in the result (so `verify` reports it) and
+    the walk goes on with what it can still read; what was reachable only
+-   through an unreadable object is not in the result."
+-  [store]
+-  (let [objs (:objects store)]
+-    ;; format 2: the per-tree heads through the nodes of the heads mmap (a damaged one is
+-    ;; reported like any other, never raised while enumerating a view); format 1: the :heads map
+-    (loop [todo (if-let [r (:heads-root store)]
+-                  (into [[r :heads]] (when (:head store) [[(:head store) :obj]]))
+-                  (mapv #(vector % :obj) (remove nil? (cons (:head store) (vals (:heads store))))))
+-           seen #{}]
+-      (if (empty? todo)
+-        seen
+-        (let [[id kind] (peek todo) more (pop todo)]
+-          (if (seen id)
+-            (recur more seen)
+-            (let [o (object-or-nil objs id)]
+-              (cond
+-                (and (nil? o) (= :soft kind)) (recur more seen)
+-                (nil? o) (recur more (conj seen id))
+-                :else (recur (into more (err/rescue-any (fn [_] []) (vec (references o kind)))) (conj seen id))))))))))
++   through an unreadable object is not in the result.
++   The two-arg arity walks from explicit `seeds` (a seq of [id kind], the same
++   kinds as `references`), which is what `kimun stores gc` uses to reach every
++   object a logged revision needs, not only the head's."
++  ([store] (reachable store nil))
++  ([store seeds]
++   (let [objs (:objects store)
++         heads-seeds (if-let [r (:heads-root store)]
++                       (into [[r :heads]] (when (:head store) [[(:head store) :obj]]))
++                       (mapv #(vector % :obj) (remove nil? (cons (:head store) (vals (:heads store))))))]
++     (loop [todo (vec (or seeds heads-seeds)) seen #{}]
++       (if (empty? todo)
++         seen
++         (let [[id kind] (peek todo) more (pop todo)]
++           (if (seen id)
++             (recur more seen)
++             (let [o (object-or-nil objs id)]
++               (cond
++                 (and (nil? o) (= :soft kind)) (recur more seen)
++                 (nil? o) (recur more (conj seen id))
++                 :else (recur (into more (err/rescue-any (fn [_] []) (vec (references o kind)))) (conj seen id)))))))))))
++
++(defn garbage
++  "Ids present in backend `b` that no logged revision reaches (docs/v2/10 §10):
++   the objects a losing CAS writer left behind, and the mmap nodes of a
++   superseded heads.edn root. Roots of the walk: every committed log revision
++   (its Transaction, Revision, plans and mmaps), the current head Revision and
++   the nodes of the current :heads-root (only reachable from heads.edn, never
++   from a Revision). A trailing :uncommitted line is NOT a root: its objects are
++   exactly what a dead writer leaves. Reads the whole log. Returns a sorted
++   vector of ids; `kimun stores gc --apply` hands it to a backend `prune!`."
++  [b store]
++  (let [log (committed-log b)
++        seeds (into (if-let [r (:heads-root store)] [[r :heads]] [])
++                    (concat (map (fn [e] [(:revision e) :obj]) log)
++                            (when (:head store) [[(:head store) :obj]])))
++        live (reachable store (vec (distinct seeds)))]
++    (vec (sort (remove live (object-ids b))))))
+ 
+ (defn verify
+   "The cheap-ish check: recomputes H(file) for every object reachable from the
+diff --git a/src/kimun/kernel/upgrade.cljc b/src/kimun/kernel/upgrade.cljc
+index 4cf69c43..d5c1d6a6 100644
+--- a/src/kimun/kernel/upgrade.cljc
++++ b/src/kimun/kernel/upgrade.cljc
+@@ -1,27 +1,33 @@
+ (ns kimun.kernel.upgrade
+-  "Upgrade of a format-1 store to format 2 (docs/v2/10-escala.md, the upgrade
++  "Upgrade of a store to the current format (docs/v2/10-escala.md, the upgrade
+    path). Host-independent: it reads one Backend and writes another, which
+    must be empty; choosing directories and swapping them is the caller's
+    (kimun `stores upgrade`).
+ 
++   Sources: format 1 (the legacy engine) and format 2 (the same engine as the
++   current format 3 without the :names index). Both are re-committed into the
++   destination through the CURRENT engine (`kimun.kernel.store/commit!` with a
++   format-3 store value), so the destination is always `store/format-version`.
++   Format 1 is upgraded in one step straight to the current format.
++
+    What it does: every committed transaction of the source log, in log order,
+-   is committed again into the destination through the format-2 engine
+-   (`kimun.kernel.store/commit!`), with its resolved plan unchanged except for
+-   :base, rewritten to the format-2 id of the same revision. Node, edge and
+-   tree-object ids do not depend on the revision format, so every node, edge
+-   and tree (descriptor and merkle root) comes out the same; actor, timestamp,
+-   engines and plan ops of every transaction are the plan's own, and the
+-   parent chain follows log order as it did. Revision ids and transaction ids
+-   change (a Revision's fields differ by format and a transaction id hashes
+-   its plan, :base included): the result maps old -> new for both.
++   is committed again into the destination, with its resolved plan unchanged
++   except for :base, rewritten to the new id of the same revision. Node, edge
++   and tree-object ids do not depend on the revision format, so every node,
++   edge and tree (descriptor and merkle root) comes out the same; actor,
++   timestamp, engines and plan ops of every transaction are the plan's own, and
++   the parent chain follows log order as it did. Revision ids and transaction
++   ids change (a Revision's fields differ by format — :names joined in format
++   3, and a transaction id hashes its plan, :base included): the result maps
++   old -> new for both.
+ 
+    What it checks before returning (any failure raises :store/error and the
+    destination must be discarded): each transaction re-commits without a
+    rebase and with the same resolved plan; the final heads are the source
+    heads mapped (store head and every per-tree head); the head trees
+    (tree-id -> [descriptor-id merkle-root]) and the active edge set equal the
+-   ones the source head Revision records; and `kimun.kernel.store/verify-full`
+-   (full replay of the new log plus the hash of every reachable object) is ok.
++   ones the source head records; and `kimun.kernel.store/verify-full` (full
++   replay of the new log plus the hash of every reachable object) is ok.
+    An :uncommitted tail of the source log (a writer that died mid-commit) is
+    not carried over: it never was a commit; it is returned as :dropped-tail."
+   (:require [kimun.kernel.err :as err]
+@@ -42,25 +48,29 @@
+       {:trees (into {} (map (fn [[tid root]] [tid [(get descs tid) root]])) (:roots rev))
+        :edges (set (store/load-object b (:edges rev)))})))
+ 
+-(defn- format-2-head-state
+-  "The same shape as `format-1-head-state`, from a format-2 store value."
++(defn- store-head-state
++  "The same shape as `format-1-head-state`, from an mmap-head store value
++   (format 2 or 3)."
+   [s]
+   {:trees (into {} (map (fn [tid] [tid (revision/tree-entry s tid)])) (revision/tree-ids s))
+    :edges (set (revision/active-edges s))})
+ 
+ (defn upgrade!
+-  "Re-commits the history of the format-1 store in backend `src` into the
+-   empty backend `dst` as a format-2 store (see the ns docstring), with the
+-   descriptor of `src` (every key kept) at :format-version 2. Returns
+-   {:transactions n :head new-head :revisions {old-rev new-rev}
+-    :transaction-ids {old-tx new-tx} :dropped-tail entry|nil :verify map}.
+-   `src` is only read. Raises :store/error when `src` is not a format-1 store,
+-   `dst` is not empty, the source log does not end at its heads, or any check
+-   fails."
++  "Re-commits the history of the store in backend `src` into the empty backend
++   `dst` at the current format (`store/format-version`, see the ns docstring),
++   with the descriptor of `src` (every key kept) at that :format-version.
++   Returns {:from-format :transactions :head new-head :revisions {old-rev
++   new-rev} :transaction-ids {old-tx new-tx} :dropped-tail entry|nil :verify
++   map}. `src` is only read. Raises :store/error when `src` is already at the
++   current format, `dst` is not empty, the source log does not end at its
++   heads, or any check fails."
+   [src dst host]
+   (let [desc (or (store/read-descriptor src) (fail "the source is not a store" {}))
+-        alg (ports/algorithm (ports/hasher host))]
+-    (when (not= 1 (:format-version desc 1)) (fail "the source is not a format-1 store" {:format-version (:format-version desc)}))
++        alg (ports/algorithm (ports/hasher host))
++        src-fv (:format-version desc 1)
++        target store/format-version]
++    (when (= src-fv target) (fail "the source is already at the current format" {:format-version src-fv}))
++    (when (> src-fv target) (fail "the source format is newer than this binary" {:format-version src-fv :target target}))
+     (when (not= alg (:hash-alg desc)) (fail "hash algorithm mismatch" {:store (:hash-alg desc) :hasher alg}))
+     (when (store/read-descriptor dst) (fail "the destination is not empty" {}))
+     (let [heads (or (store/read-heads src) store/no-heads)
+@@ -68,7 +78,7 @@
+           state (store/log-tail heads (subvec log (max 0 (- (count log) 2))))
+           _ (when (= :inconsistent state) (fail "the source log does not end at its heads; run a full verification" {:head (:head heads)}))
+           committed (if (= :uncommitted state) (pop log) log)
+-          _ (store/write-descriptor! dst (assoc desc :format-version 2))
++          _ (store/write-descriptor! dst (assoc desc :format-version target))
+           s0 (revision/empty-store host (:capabilities desc))
+           result (reduce
+                   (fn [{:keys [store revs txs]} {:keys [id plan revision] :as entry}]
+@@ -84,13 +94,19 @@
+                   {:store s0 :revs {} :txs {}}
+                   committed)
+           {s :store revs :revs txs :txs} result
+-          mapped {:head (get revs (:head heads)) :heads (into {} (map (fn [[t r]] [t (get revs r)])) (:heads heads))}]
++          src-store (when (>= src-fv 2) (store/open src host))
++          src-heads (if src-store (:heads src-store) (:heads heads))
++          mapped {:head (get revs (:head heads)) :heads (into {} (map (fn [[t r]] [t (get revs r)])) src-heads)}
++          src-state (if (= 1 src-fv)
++                      (format-1-head-state src (:head heads))
++                      (store-head-state src-store))]
+       (when (not= mapped {:head (:head s) :heads (:heads s)})
+         (fail "the new heads are not the source heads" {:expected mapped :got {:head (:head s) :heads (:heads s)}}))
+-      (when (not= (format-1-head-state src (:head heads)) (format-2-head-state s))
++      (when (not= src-state (store-head-state s))
+         (fail "the head trees or the active edges differ from the source head" {:head (:head heads)}))
+       (let [v (store/verify-full dst host)]
+         (when-not (:ok? v) (fail "the new store does not verify" {:bad (:bad v)}))
+-        {:transactions (count committed) :head (:head s) :revisions revs :transaction-ids txs
++        {:from-format src-fv :transactions (count committed) :head (:head s)
++         :revisions revs :transaction-ids txs
+          :dropped-tail (when (= :uncommitted state) (peek log))
+          :verify (dissoc v :store)}))))
+diff --git a/test/kimun/cli/stores_test.cljc b/test/kimun/cli/stores_test.cljc
+index 5675e222..0d1c8e8b 100644
+--- a/test/kimun/cli/stores_test.cljc
++++ b/test/kimun/cli/stores_test.cljc
+@@ -8,6 +8,8 @@
+             [babashka.fs :as fs]
+             [kimun.cli.main :as main]
+             [kimun.cli.store :as cli-store]
++            [kimun.host.default :as host]
++            [kimun.kernel.canon :as canon]
+             [kimun.kernel.store :as store]))
+ 
+ (def env {"USER" "tester"})
+@@ -265,7 +267,7 @@
+   (let [e (run (tmp) "stores" "nope")]
+     (is (= 6 (:exit e)))
+     (is (= "cli/usage" (get-in e [:error :type])))
+-    (is (= ["check" "health" "init" "link" "links" "reconcile" "show" "unlink" "update" "upgrade" "verify"] (get-in e [:error :data :known])))))
++    (is (= ["check" "gc" "health" "init" "link" "links" "pack" "reconcile" "show" "unlink" "update" "upgrade" "verify"] (get-in e [:error :data :known])))))
+ 
+ ;; ------------------------------------------------------------------ federation
+ 
+@@ -523,3 +525,51 @@
+     (is (= "target" (get-in e [:store :name])))
+     (is (= ["req-123"] (mapv :name (get-in (run target "docs" "list") [:data]))))
+     (is (empty? (get-in (run central "docs" "list") [:data])) "nothing tracked in the central store")))
++
++;; ---------------------------------------------------------------- pack / gc (docs/v2/10 §9–§10)
++
++(defn- ingest! [proj name text]
++  (spit (str (fs/path proj (str name ".md"))) text)
++  (is (true? (:ok (run proj "docs" "ingest" (str name ".md") "--name" name)))))
++
++(deftest pack-moves-the-loose-objects-into-a-packfile-and-the-store-keeps-working
++  (let [proj (tmp)
++        _ (run proj "stores" "init")
++        _ (ingest! proj "a" "# A\n\npara one\n")
++        _ (ingest! proj "b" "# B\n\npara two\n")
++        dir (str (fs/path proj ".kimun"))
++        loose (count (fs/list-dir (fs/path dir "objects")))
++        e (run proj "stores" "pack")]
++    (is (true? (:ok e)) (pr-str e))
++    (is (= loose (get-in e [:data :packed]) (get-in e [:data :objects])))
++    (is (zero? (count (fs/list-dir (fs/path dir "objects")))) "no loose object left")
++    (is (= 1 (count (filter #(str/ends-with? % ".pack") (map str (fs/list-dir (fs/path dir "packs")))))))
++    (testing "every read goes through the index and the hash still checks"
++      (is (= 2 (count (get-in (run proj "docs" "list") [:data]))))
++      (is (true? (:ok (run proj "docs" "show" "a" "--ast"))))
++      (is (true? (:ok (run proj "stores" "verify"))))
++      (is (= loose (get-in (run proj "stores" "check") [:data :objects]))))
++    (testing "a second pack with nothing loose is a no-op"
++      (is (= {:packed 0 :objects loose} (select-keys (get-in (run proj "stores" "pack") [:data]) [:packed :objects]))))))
++
++(deftest gc-reports-and-removes-what-no-revision-reaches
++  (let [proj (tmp)
++        _ (run proj "stores" "init")
++        _ (ingest! proj "a" "# A\n\npara\n")
++        _ (is (true? (:ok (run proj "stores" "pack"))))
++        dir (str (fs/path proj ".kimun"))
++        b (cli-store/backend dir)
++        lost-id (canon/digest host/host {:lost "writer"})
++        _ (store/write-object! b lost-id (canon/canon-str host/host {:lost "writer"}))
++        dry (run proj "stores" "gc")]
++    (is (true? (:ok dry)) (pr-str dry))
++    (is (= "dry-run" (get-in dry [:data :mode])))
++    (is (contains? (set (get-in dry [:data :sample])) lost-id))
++    (is (fs/exists? (fs/path dir "objects" lost-id)))
++    (let [e (run proj "stores" "gc" "--apply")]
++      (is (true? (:ok e)) (pr-str e))
++      (is (= "apply" (get-in e [:data :mode])))
++      (is (= 1 (get-in e [:data :removed :loose])))
++      (is (false? (fs/exists? (fs/path dir "objects" lost-id))) "the loser's object is gone")
++      (is (true? (:ok (run proj "stores" "verify")))))
++    (is (= 0 (get-in (run proj "stores" "gc") [:data :garbage])) "nothing left to collect")))
+diff --git a/test/kimun/cli/upgrade_test.cljc b/test/kimun/cli/upgrade_test.cljc
+index 29996e7c..6a3ef97a 100644
+--- a/test/kimun/cli/upgrade_test.cljc
++++ b/test/kimun/cli/upgrade_test.cljc
+@@ -72,7 +72,7 @@
+     (is (true? (:ok e)) (pr-str e))
+     (is (true? (get-in e [:data :upgraded])))
+     (is (= (count (store/read-log (cli-store/backend (get-in e [:data :backup])))) (get-in e [:data :transactions])))
+-    (is (= 2 (:format-version (store/read-descriptor (cli-store/backend dir)))))
++    (is (= 3 (:format-version (store/read-descriptor (cli-store/backend dir)))))
+     (is (= (get-in e [:data :head-before]) (:head-before ids)))
+     (is (= (:revision e) (:head ids) (m (:head-before ids))))
+     (testing "the backup is the untouched format-1 store"
+@@ -92,5 +92,5 @@
+       (is (true? (:ok (run proj "docs" "update" "a.md" "--name" "a"))))
+       (let [e2 (run proj "stores" "upgrade")]
+         (is (true? (:ok e2)) (pr-str e2))
+-        (is (= {:upgraded false :format-version 2 :path dir} (:data e2))))
++        (is (= {:upgraded false :format-version 3 :path dir} (:data e2))))
+       (is (true? (:ok (run proj "stores" "verify")))))))
+diff --git a/test/kimun/kernel/revision_format2_test.cljc b/test/kimun/kernel/revision_format2_test.cljc
+index f6d9a3d8..b870d832 100644
+--- a/test/kimun/kernel/revision_format2_test.cljc
++++ b/test/kimun/kernel/revision_format2_test.cljc
+@@ -287,7 +287,7 @@
+                               "nothing else entered the CAS")
+                           (:store r)))
+                       (store/init! b h caps) plans)]
+-    (is (= 2 (:format-version (store/read-descriptor b))))
++    (is (= 3 (:format-version (store/read-descriptor b))))
+     (is (= 0 (:listings @state)) "apply-plan and commit! never call object-ids")
+     (is (= (set (keys (:objects final))) (set (keys (:objects @state)))))
+     (is (= (select-keys final [:head :heads :revisions :trees :edges]) (select-keys (store/open b h) [:head :heads :revisions :trees :edges])))
+diff --git a/test/kimun/kernel/revision_test.cljc b/test/kimun/kernel/revision_test.cljc
+index 532fe2d1..f92cb2d6 100644
+--- a/test/kimun/kernel/revision_test.cljc
++++ b/test/kimun/kernel/revision_test.cljc
+@@ -48,10 +48,10 @@
+         (is (= (get-in fx [:expected :revision-id]) revision-id))
+         (is (= (tu/tx-001-revision-ids 1) revision-id))
+         (is (= #{:roots :trees :edges :parents :tx :actor :engines :timestamp} (set (keys revision))))))
+-    (testing "format 2: same transaction and tree roots, state held in three mmaps"
++    (testing "format 3: same transaction and tree roots, state held in four mmaps"
+       (let [{:keys [revision revision-id store]} (rev/apply-plan (rev/empty-store h caps) (:plan fx))]
+-        (is (= (tu/tx-001-revision-ids 2) revision-id))
+-        (is (= #{:trees :edges :incidence :parents :tx :actor :engines :timestamp} (set (keys revision))) "eight fields")
++        (is (= (tu/tx-001-revision-ids 3) revision-id))
++        (is (= #{:trees :edges :incidence :names :parents :tx :actor :engines :timestamp} (set (keys revision))) "nine fields")
+         (is (= (select-keys expected [:parents :tx :actor :engines :timestamp])
+                (select-keys revision [:parents :tx :actor :engines :timestamp])))
+         (is (= (:roots expected)
+@@ -59,7 +59,7 @@
+         (is (= (sort (:edges store)) (rev/active-edges store)))))))
+ 
+ (deftest fixture-tx-002-conflict
+-  (doseq [[fx apply-plan empty-store] [[(tu/format-2-fixture (read-fixture "test/fixtures/tx-002-conflict.edn")) rev/apply-plan rev/empty-store]
++  (doseq [[fx apply-plan empty-store] [[(tu/format-3-fixture (read-fixture "test/fixtures/tx-002-conflict.edn")) rev/apply-plan rev/empty-store]
+                                        [(read-fixture "test/fixtures/tx-002-conflict.edn") legacy/apply-plan legacy/empty-store]]]
+     (let [store (reduce (fn [s p] (:store (apply-plan s p))) (empty-store h (get-in fx [:store :capabilities])) (:base-plans fx))
+           e (try (apply-plan store (:concurrent-plan fx)) nil (catch #?(:clj clojure.lang.ExceptionInfo :cljs :default) e (ex-data e)))]
+@@ -140,7 +140,7 @@
+           r1 (rev/apply-plan s p) r2 (rev/apply-plan s p)]
+       (and (= (:revision-id r1) (:revision-id r2))
+            (= (:revision r1) (:revision r2))
+-           (= 8 (count (:revision r1)))))))
++           (= 9 (count (:revision r1)))))))
+ 
+ (defspec generated-plan-sequences-chain-revisions-invariant-15 30
+   (prop/for-all [ps g/gen-plan-sequence]
+diff --git a/test/kimun/kernel/store_test.cljc b/test/kimun/kernel/store_test.cljc
+index c95377f3..a90753bb 100644
+--- a/test/kimun/kernel/store_test.cljc
++++ b/test/kimun/kernel/store_test.cljc
+@@ -33,7 +33,7 @@
+   [dir]
+   (let [b (fs/backend dir)
+         fx1 (read-fixture "test/fixtures/tx-001.edn")
+-        fx2 (kimun.kernel.test-util/format-2-fixture (read-fixture "test/fixtures/tx-002-conflict.edn"))
++        fx2 (kimun.kernel.test-util/format-3-fixture (read-fixture "test/fixtures/tx-002-conflict.edn"))
+         s0 (store/init! b h (get-in fx1 [:store :capabilities]))
+         s1 (:store (store/commit! b s0 (:plan fx1)))
+         s2 (:store (store/commit! b s1 (second (:base-plans fx2))))]
+@@ -80,7 +80,7 @@
+   (let [dir (tmp-dir)
+         s (populate! dir)
+         b (fs/backend dir)
+-        fx2 (kimun.kernel.test-util/format-2-fixture (read-fixture "test/fixtures/tx-002-conflict.edn"))
++        fx2 (kimun.kernel.test-util/format-3-fixture (read-fixture "test/fixtures/tx-002-conflict.edn"))
+         stale (store/open b h)
+         ;; another writer commits first
+         _ (store/commit! b s (assoc (:disjoint-plan fx2) :base (:head s)))
+diff --git a/test/kimun/kernel/test_util.cljc b/test/kimun/kernel/test_util.cljc
+index dee0b435..61e07b72 100644
+--- a/test/kimun/kernel/test_util.cljc
++++ b/test/kimun/kernel/test_util.cljc
+@@ -32,10 +32,17 @@
+   "Revision id of test/fixtures/tx-001.edn under each store format. The fixtures
+    pin the format-1 id (as :expected and as the :base of later plans)."
+   {1 "93fd0bca29b4f94b68464a6952b42b1464055a26dd3dec4c3d37173c8a985053"
+-   2 "8ee693939d457251112165da68534a4d4508d1cbe17a7efe4b46f4483ed05992"})
++   2 "8ee693939d457251112165da68534a4d4508d1cbe17a7efe4b46f4483ed05992"
++   3 "12a8da5033414c436be805063c8d3df096b342a278653b6116ba04710b6e8236"})
+ 
+ (defn format-2-fixture
+   "A fixture with every reference to the format-1 revision id of tx-001
+    rewritten to its format-2 id (plans keep everything else)."
+   [fx]
+   (clojure.walk/postwalk-replace {(tx-001-revision-ids 1) (tx-001-revision-ids 2)} fx))
++
++(defn format-3-fixture
++  "A fixture with every reference to the format-1 revision id of tx-001
++   rewritten to its format-3 id (the current default; plans keep everything else)."
++  [fx]
++  (clojure.walk/postwalk-replace {(tx-001-revision-ids 1) (tx-001-revision-ids 3)} fx))
+diff --git a/test/kimun/kernel/upgrade_test.cljc b/test/kimun/kernel/upgrade_test.cljc
+index e94feafd..bd3d18ee 100644
+--- a/test/kimun/kernel/upgrade_test.cljc
++++ b/test/kimun/kernel/upgrade_test.cljc
+@@ -1,9 +1,9 @@
+ (ns kimun.kernel.upgrade-test
+-  "Upgrade of a format-1 store to format 2 (kimun.kernel.upgrade): a history
+-   built with the legacy engine is re-committed into a fresh format-2 store
+-   that keeps every node, edge and tree, every transaction's actor, timestamp,
+-   engines and ops, and the parent chain; the result passes the full
+-   verification and the source is never written."
++  "Upgrade of an older store to the current format (kimun.kernel.upgrade): a
++   history built with the legacy engine or with format 2 is re-committed into a
++   fresh store at the current format that keeps every node, edge and tree, every
++   transaction's actor, timestamp, engines and ops, and the parent chain; the
++   result passes the full verification and the source is never written."
+   (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is testing]]
+             [clojure.edn :as edn]
+             [clojure.test.check.generators :as gen]
+@@ -63,10 +63,9 @@
+             (store/init! b h caps {:format-version 1})
+             (map-indexed vector steps))))
+ 
+-(defn- tree-entries [s r]
+-  (into {} (map (fn [t] [t (rev/tree-entry s t r)])) (rev/tree-ids s r)))
++(defn- tree-entries [s r]  (into {} (map (fn [t] [t (rev/tree-entry s t r)])) (rev/tree-ids s r)))
+ 
+-(deftest a-format-1-history-upgrades-to-format-2-and-keeps-everything
++(deftest a-format-1-history-upgrades-to-the-current-format-and-keeps-everything
+   #?(:clj
+      (let [src-dir (tmp) dst-dir (tmp)
+            f1 (build-format-1! src-dir steps)
+@@ -79,7 +78,7 @@
+            revs (:revisions r)]
+        (is (= before (files src-dir)) "the source is only read")
+        (is (rev/legacy? f1))
+-       (is (= 2 (:format-version (store/read-descriptor dst)) (:format-version f2)))
++       (is (= 3 (:format-version (store/read-descriptor dst)) (:format-version f2)))
+        (is (= (dissoc (store/read-descriptor src) :format-version) (dissoc (store/read-descriptor dst) :format-version))
+            "the descriptor keeps every other key")
+        (is (= (count steps) (:transactions r) (count log2)))
+@@ -110,6 +109,37 @@
+            (is (rev/legacy? s))
+            (is (some? (store/commit! src s (plan (:head s) 99 "jp" [(text "later" :x) (own tid2 :x 0)])))))))))
+ 
++(defn- build-format-2!
++  "Like `build-format-1!` but into a fresh format-2 store (the engine of format
++   3 without the :names index): the source of the 2 -> 3 upgrade test."
++  [dir steps]
++  (let [b (fs/backend dir)]
++    (reduce (fn [s [n f]]
++              (:store (store/commit! b s (plan (:head s) n (if (even? n) "jp" "kimun/derive") (f s)))))
++            (store/init! b h caps {:format-version 2})
++            (map-indexed vector steps))))
++
++(deftest a-format-2-history-upgrades-to-the-current-format-and-keeps-everything
++  #?(:clj
++     (let [src-dir (tmp) dst-dir (tmp)
++           f2 (build-format-2! src-dir (take 5 steps))
++           r (upgrade/upgrade! (fs/backend src-dir) (fs/backend dst-dir) h)
++           f3 (store/open (fs/backend dst-dir) h)]
++       (is (= 2 (:from-format r)))
++       (is (= 3 (:format-version (store/read-descriptor (fs/backend dst-dir)))))
++       (is (= (:trees f2) (into {} (:trees f3))) "head trees keep their descriptor and merkle root")
++       (is (= (:edges f2) (:edges f3)))
++       (is (nil? (:names (rev/revision f2 (:head f2)))) "a format-2 Revision has no :names")
++       (is (string? (:names (rev/revision f3 (:head f3)))) "the upgraded head Revision carries the :names index")
++       (is (= [tid] (rev/trees-named f3 "a")))
++       (is (= [tid2] (rev/trees-named f3 "b")))
++       (is (:ok? (:verify r)))
++       (is (:ok? (store/verify-full (fs/backend dst-dir) h)))
++       (testing "every node and edge object of the source is in the new store under the same id"
++         (let [o2 (filter #(or (:class %) (:type %)) (vals (:objects f2)))]
++           (is (seq o2))
++           (doseq [o o2] (is (= o (rev/get-object f3 (:id o))))))))))
++
+ (deftest upgrade-refuses-what-it-cannot-do-safely
+   #?(:clj
+      (let [f2-dir (tmp) f1-dir (tmp) busy (tmp)]
+@@ -117,7 +147,7 @@
+        (build-format-1! f1-dir (take 2 steps))
+        (store/init! (fs/backend busy) h caps)
+        (is (= :store/error (:type (ex-data (try (upgrade/upgrade! (fs/backend f2-dir) (fs/backend (tmp)) h) (catch Exception e e)))))
+-           "a format-2 store is not a source")
++           "a store already at the current format is not a source")
+        (is (= :store/error (:type (ex-data (try (upgrade/upgrade! (fs/backend f1-dir) (fs/backend busy) h) (catch Exception e e)))))
+            "the destination must be empty")
+        (testing "a log that does not end at its heads is refused"

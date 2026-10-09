@@ -14,3 +14,5 @@ cierre de la sesión 2026-10-08/09. No es autoridad: es evidencia citada por `do
 | `SPEC15.md`, `GATE15.md`, `SPEC15*-report.md` | spec 15 (capa G) y su gate; el spec quedó en la rama `close/spec15` |
 | `plan-cierre.md` | bitácora del coordinador (tandas, merges, decisiones operativas) |
 | `close-common.md` | reglas comunes de los workers (incl. la regla de memoria `memcap`) |
+| `spec15/` | borrador del spec 15 (capa G), sus fixtures y los 12 informes del gate (6 rondas); rescatado de la rama `close/spec15`, borrada el 2026-10-09. Escrito **antes** de la corrección del dueño sobre la capa G (`docs/v2/drafts/capa-g-dudas.md`): úsese solo como referencia |
+| `A4-packfiles.patch` | código de la rama `close/A4` (packfiles en streaming, ids binarios, GC; su "formato 3" quedó superado), rescatado como parche; la rama se borró el 2026-10-09 |

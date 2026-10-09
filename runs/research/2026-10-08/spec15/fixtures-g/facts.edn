@@ -1,0 +1,175 @@
+;; `15-capa-g.md §1, §3, §4, §6`: hechos con sus nodos y sus aristas de anclaje.
+;; Aliases locales; el id real de cada nodo/arista es `H(canonical-bytes …)` (`02 §2.1`).
+;; Un span propio por proyección (cada uno cubre sujeto y predicado de su hecho) y
+;; una arista `binding` S→M por proposición, cada una con su `:prov`. Los hechos de
+;; propiedad `(property R p) @ W_i` (f2/f2b/f4) son la única fuente del álgebra de `R`
+;; (vocabulary.edn no lleva `:properties`).
+{:nodes
+ {;; hojas: una por párrafo de source.md (unidad de anclaje, decisión 32)
+  :leaf/text1 {:class :sign :kind :text
+               :content {:text "el agua comparte liquidez con la bencina"}}
+  :leaf/text2 {:class :sign :kind :text
+               :content {:text "comparte es transitiva"}}
+  :leaf/text3 {:class :sign :kind :text
+               :content {:text "comparte es conmutativa"}}
+  :leaf/text4 {:class :sign :kind :text
+               :content {:text "property es funcional"}}
+  :leaf/text5 {:class :sign :kind :text
+               :content {:text "el agua es liquidez"}}
+  ;; spans: `[inicio fin]` es semiabierto sobre grafemas NFC de la hoja (`02 §4.1`)
+  :sign/span1 {:class :sign :kind :span
+               :content {:leaf :leaf/text1 :range [3 25]}}
+  :sign/span2 {:class :sign :kind :span
+               :content {:leaf :leaf/text2 :range [0 21]}}
+  :sign/span3 {:class :sign :kind :span
+               :content {:leaf :leaf/text3 :range [0 23]}}
+  :sign/span4 {:class :sign :kind :span
+               :content {:leaf :leaf/text4 :range [0 21]}}
+  :sign/span5 {:class :sign :kind :span
+               :content {:leaf :leaf/text5 :range [3 19]}}
+  ;; raíces de las taxonomías declaradas en vocabulary.edn
+  :term/thing {:class :symbol :kind :term
+               :content {:name "thing" :lang "es"}}
+  :term/relation {:class :symbol :kind :term
+                  :content {:name "relation" :lang "es"}}
+  :term/literal {:class :symbol :kind :term
+                 :content {:name "literal" :lang "es"}}
+  ;; términos de la taxonomía `relations`
+  :term/comparte {:class :symbol :kind :term
+                  :content {:name "comparte" :lang "es"}}
+  :term/property {:class :symbol :kind :term
+                  :content {:name "property" :lang "es"}}
+  :term/es {:class :symbol :kind :term
+            :content {:name "es" :lang "es"}}
+  :term/sense {:class :symbol :kind :term
+               :content {:name "sense" :lang "es"}}
+  ;; términos de la taxonomía `terms`
+  :term/agua {:class :symbol :kind :term
+              :content {:name "agua" :lang "es"}}
+  :term/liquidez {:class :symbol :kind :term
+                  :content {:name "liquidez" :lang "es"}}
+  :term/transitive {:class :symbol :kind :term
+                    :content {:name "transitive" :lang "es"}}
+  :term/conmutativa {:class :symbol :kind :term
+                     :content {:name "conmutativa" :lang "es"}}
+  :term/functional {:class :symbol :kind :term
+                    :content {:name "functional" :lang "es"}}
+  ;; taxonomía base `facts` (§1): el término-hecho designa el nodo `:fact/:triple`
+  :term/fact {:class :symbol :kind :term
+              :content {:name "fact" :lang "es"}}
+  :term/f2b {:class :symbol :kind :term
+             :content {:name "f2b" :lang "es"}}
+  ;; taxonomía base `sense` (§1): los valores de sentido (raíz `sense` = `:term/sense`)
+  :term/sinnvoll {:class :symbol :kind :term
+                  :content {:name "sinnvoll" :lang "es"}}
+  :term/sinnlos {:class :symbol :kind :term
+                 :content {:name "sinnlos" :lang "es"}}
+  :term/unsinnig {:class :symbol :kind :term
+                  :content {:name "unsinnig" :lang "es"}}
+  ;; proposiciones (M)
+  :prop/f1 {:class :symbol :kind :proposition
+            :content {:form [:term/comparte :term/agua :term/liquidez]}}
+  :prop/f2 {:class :symbol :kind :proposition
+            :content {:form [:term/property :term/comparte :term/transitive]}}
+  :prop/f2b {:class :symbol :kind :proposition
+             :content {:form [:term/property :term/comparte :term/conmutativa]}}
+  :prop/f4 {:class :symbol :kind :proposition
+            :content {:form [:term/property :term/property :term/functional]}}
+  :prop/f3 {:class :symbol :kind :proposition
+            :content {:form [:term/es :term/agua :term/liquidez]}}
+  ;; hechos (G); el `:object` es siempre un id de término
+  :fact/f1 {:class :fact :kind :triple
+            :content {:subject :term/agua :predicate :term/comparte
+                      :object :term/liquidez :context :ctx/doc}}
+  :fact/f2 {:class :fact :kind :triple
+            :content {:subject :term/comparte :predicate :term/property
+                      :object :term/transitive :context :ctx/doc}}
+  :fact/f2b {:class :fact :kind :triple
+             :content {:subject :term/comparte :predicate :term/property
+                       :object :term/conmutativa :context :ctx/doc}}
+  :fact/f4 {:class :fact :kind :triple
+            :content {:subject :term/property :predicate :term/property
+                      :object :term/functional :context :ctx/doc}}
+  :fact/f3 {:class :fact :kind :triple
+            :content {:subject :term/agua :predicate :term/es
+                      :object :term/liquidez :context :ctx/doc}}}
+ :edges
+ [;; f1: observado directamente por un actor
+  {:alias :edge/b1 :type :binding :from :sign/span1 :to :prop/f1
+   :evidence {:ref-hash :prop/f1 :context :ctx/doc :actor "human/jp"
+              :prov [{:path "test/fixtures/g/source.md"
+                      :source-hash "sha-256:0000000000000000000000000000000000000000000000000000000000000000"
+                      :span {:leaf :leaf/text1 :range [3 25]}
+                      :extractor "human" :confidence "1.0"}]}}
+  {:alias :edge/p1 :type :projection :from :prop/f1 :to :fact/f1
+   :evidence {:ref-hash :fact/f1 :context :ctx/doc
+              :status :observed :curation :accepted :tier :observed
+              :actor "human/jp"
+              :prov [{:path "test/fixtures/g/source.md"
+                      :source-hash "sha-256:0000000000000000000000000000000000000000000000000000000000000000"
+                      :span {:leaf :leaf/text1 :range [3 25]}
+                      :extractor "human" :confidence "1.0"}]}}
+  ;; f2 y f2b: propuestos por un motor (siempre `:curation :proposed`, decisión 31; `:status`
+  ;; nulo hasta decisión; el enum de `:status` es el de `14 §5`); en conflicto porque
+  ;; `property` es funcional (`:fact/f4`)
+  {:alias :edge/b2 :type :binding :from :sign/span2 :to :prop/f2
+   :evidence {:ref-hash :prop/f2 :context :ctx/doc
+              :engine "descompositor/heuristic" :version "0.1"
+              :prov [{:path "test/fixtures/g/source.md"
+                      :source-hash "sha-256:0000000000000000000000000000000000000000000000000000000000000000"
+                      :span {:leaf :leaf/text2 :range [0 21]}
+                      :extractor "descompositor/heuristic@0.1" :confidence "0.97"}]}}
+  {:alias :edge/p2 :type :projection :from :prop/f2 :to :fact/f2
+   :evidence {:ref-hash :fact/f2 :context :ctx/doc
+              :status nil :curation :proposed :tier :statistical
+              :engine "descompositor/heuristic" :version "0.1"
+              :prov [{:path "test/fixtures/g/source.md"
+                      :source-hash "sha-256:0000000000000000000000000000000000000000000000000000000000000000"
+                      :span {:leaf :leaf/text2 :range [0 21]}
+                      :extractor "descompositor/heuristic@0.1" :confidence "0.97"}]}}
+  {:alias :edge/b2b :type :binding :from :sign/span3 :to :prop/f2b
+   :evidence {:ref-hash :prop/f2b :context :ctx/doc
+              :engine "descompositor/heuristic" :version "0.1"
+              :prov [{:path "test/fixtures/g/source.md"
+                      :source-hash "sha-256:0000000000000000000000000000000000000000000000000000000000000000"
+                      :span {:leaf :leaf/text3 :range [0 23]}
+                      :extractor "descompositor/heuristic@0.1" :confidence "0.93"}]}}
+  {:alias :edge/p2b :type :projection :from :prop/f2b :to :fact/f2b
+   :evidence {:ref-hash :fact/f2b :context :ctx/doc
+              :status nil :curation :proposed :tier :statistical
+              :engine "descompositor/heuristic" :version "0.1"
+              :prov [{:path "test/fixtures/g/source.md"
+                      :source-hash "sha-256:0000000000000000000000000000000000000000000000000000000000000000"
+                      :span {:leaf :leaf/text3 :range [0 23]}
+                      :extractor "descompositor/heuristic@0.1" :confidence "0.93"}]}}
+  ;; f4: la propiedad `functional` de `property`, asentada desde el vocabulario
+  {:alias :edge/b4 :type :binding :from :sign/span4 :to :prop/f4
+   :evidence {:ref-hash :prop/f4 :context :ctx/doc :actor "human/jp"
+              :prov [{:path "test/fixtures/g/source.md"
+                      :source-hash "sha-256:0000000000000000000000000000000000000000000000000000000000000000"
+                      :span {:leaf :leaf/text4 :range [0 21]}
+                      :extractor "human" :confidence "1.0"}]}}
+  {:alias :edge/p4 :type :projection :from :prop/f4 :to :fact/f4
+   :evidence {:ref-hash :fact/f4 :context :ctx/doc
+              :status :observed :curation :accepted :tier :observed
+              :actor "human/jp"
+              :prov [{:path "test/fixtures/g/source.md"
+                      :source-hash "sha-256:0000000000000000000000000000000000000000000000000000000000000000"
+                      :span {:leaf :leaf/text4 :range [0 21]}
+                      :extractor "human" :confidence "1.0"}]}}
+  ;; f3 (referido por decision.edn; el conflicto de `property` usa f2/f2b): propuesto
+  {:alias :edge/b3 :type :binding :from :sign/span5 :to :prop/f3
+   :evidence {:ref-hash :prop/f3 :context :ctx/doc
+              :engine "descompositor/heuristic" :version "0.1"
+              :prov [{:path "test/fixtures/g/source.md"
+                      :source-hash "sha-256:0000000000000000000000000000000000000000000000000000000000000000"
+                      :span {:leaf :leaf/text5 :range [3 19]}
+                      :extractor "descompositor/heuristic@0.1" :confidence "0.81"}]}}
+  {:alias :edge/p3 :type :projection :from :prop/f3 :to :fact/f3
+   :evidence {:ref-hash :fact/f3 :context :ctx/doc
+              :status nil :curation :proposed :tier :statistical
+              :engine "descompositor/heuristic" :version "0.1"
+              :prov [{:path "test/fixtures/g/source.md"
+                      :source-hash "sha-256:0000000000000000000000000000000000000000000000000000000000000000"
+                      :span {:leaf :leaf/text5 :range [3 19]}
+                      :extractor "descompositor/heuristic@0.1" :confidence "0.81"}]}}]}

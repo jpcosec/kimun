@@ -1,0 +1,18 @@
+;; `15-capa-g.md §5`: lo que `ask` devuelve sobre una contradicción interna al `W_i`.
+;; El informe de detección es `:kind :contradiction` (con `:facts`/`:edges`); toda consulta
+;; que toca el `W_i` lo devuelve como `:kind :ambiguous` con `:candidates` y nunca elige
+;; (`14 §6`). Los candidatos de una contradicción interna son los hechos en conflicto,
+;; `{:fact <id> :context <W_i>}` y **sin** `:phi` (al unir contextos llevarían `:phi`).
+;; Vive fuera del pool (caché derivada en `index/graph/conflicts/`, `10 §11`), no es
+;; nodo ni arista hasta que un actor lo resuelve (decisión 25). `property` es funcional
+;; (`facts.edn`, `:fact/f4`), así que dos valores distintos del mismo sujeto son una
+;; contradicción interna al W_i.
+;; `:conflict/id` es un placeholder: el id real es H(canonical-bytes del informe sin
+;; `:conflict/id`) (§5, §13).
+{:conflict/id nil
+ :kind :ambiguous
+ :context :ctx/doc
+ :facts [:fact/f2 :fact/f2b]
+ :edges [:edge/p2 :edge/p2b]
+ :candidates [{:fact :fact/f2 :context :ctx/doc}
+              {:fact :fact/f2b :context :ctx/doc}]}

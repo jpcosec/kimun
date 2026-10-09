@@ -1,0 +1,66 @@
+;; `15-capa-g.md §2, §13`: el nodo `:fact/:context`, el descriptor de su árbol
+;; `{:kind :context}` (`02 §3.1`), los descriptores de las cinco taxonomías que el
+;; vocabulario declara (`{:kind :taxonomy}`) y las aristas `ownership` del árbol de
+;; contexto **como posiciones** (`{:type :ownership :tree :parent :to :order}`, `02 §3.2`).
+;; `:ctx/doc` es el alias del nodo de contexto que usan los demás fixtures.
+;; Los `:to` y los `:root` de las taxonomías son aliases de `facts.edn` (términos
+;; `:term/*`); el id de árbol es un ULID nominal (inv. 13), no content-addressed.
+;; El árbol no lleva `:children` ni `:properties`: los hijos son aristas `ownership`
+;; y las propiedades algebraicas son hechos `(property R p) @ W_i` (`facts.edn`,
+;; alias `:fact/f2`), no campos del vocabulario.
+{:ctx/doc :node
+ :node {:class :fact :kind :context
+        :content {:name "doc:test/fixtures/g/source.md"
+                  :granularity :document
+                  :of {:path "test/fixtures/g/source.md"}}}
+ :tree {:tree :tree/ctx-doc
+        :kind :context
+        :name "doc:test/fixtures/g/source.md"
+        :root :node}
+ ;; taxonomías de primera clase que `vocabulary.edn` declara; `:root` es un id de término
+ ;; `facts`/`sense` son las base de todo `L_i` (`15 §1`): `facts` da el término-hecho y
+ ;; `sense` los valores de sentido (la raíz `sense` es el mismo término que la relación)
+ :taxonomies [{:tree :tree/terms :kind :taxonomy :name "terms" :root :term/thing}
+              {:tree :tree/relations :kind :taxonomy :name "relations" :root :term/relation}
+              {:tree :tree/literals :kind :taxonomy :name "literals" :root :term/literal}
+              {:tree :tree/facts :kind :taxonomy :name "facts" :root :term/fact}
+              {:tree :tree/sense :kind :taxonomy :name "sense" :root :term/sense}]
+ ;; árbol de contexto: hijos = términos y relaciones admisibles (`[]` = raíz = `:node`)
+ :ownership [{:type :ownership :tree :tree/ctx-doc :parent [] :to :node :order 0}
+             {:type :ownership :tree :tree/ctx-doc :parent [0] :to :term/thing :order 0}
+             {:type :ownership :tree :tree/ctx-doc :parent [0] :to :term/relation :order 1}
+             {:type :ownership :tree :tree/ctx-doc :parent [0] :to :term/literal :order 2}
+             {:type :ownership :tree :tree/ctx-doc :parent [0] :to :term/comparte :order 3}
+             {:type :ownership :tree :tree/ctx-doc :parent [0] :to :term/es :order 4}
+             {:type :ownership :tree :tree/ctx-doc :parent [0] :to :term/property :order 5}
+             {:type :ownership :tree :tree/ctx-doc :parent [0] :to :term/sense :order 6}
+             {:type :ownership :tree :tree/ctx-doc :parent [0] :to :term/agua :order 7}
+             {:type :ownership :tree :tree/ctx-doc :parent [0] :to :term/liquidez :order 8}
+             {:type :ownership :tree :tree/ctx-doc :parent [0] :to :term/transitive :order 9}
+             {:type :ownership :tree :tree/ctx-doc :parent [0] :to :term/conmutativa :order 10}
+             {:type :ownership :tree :tree/ctx-doc :parent [0] :to :term/functional :order 11}
+             ;; términos base admisibles: el término-hecho y los valores de sentido
+             {:type :ownership :tree :tree/ctx-doc :parent [0] :to :term/fact :order 12}
+             {:type :ownership :tree :tree/ctx-doc :parent [0] :to :term/f2b :order 13}
+             {:type :ownership :tree :tree/ctx-doc :parent [0] :to :term/sinnvoll :order 14}
+             {:type :ownership :tree :tree/ctx-doc :parent [0] :to :term/sinnlos :order 15}
+             {:type :ownership :tree :tree/ctx-doc :parent [0] :to :term/unsinnig :order 16}
+             ;; posiciones de las cinco taxonomías (una por nodo en cada árbol)
+             {:type :ownership :tree :tree/terms :parent [] :to :term/thing :order 0}
+             {:type :ownership :tree :tree/terms :parent [0] :to :term/agua :order 0}
+             {:type :ownership :tree :tree/terms :parent [0] :to :term/liquidez :order 1}
+             {:type :ownership :tree :tree/terms :parent [0] :to :term/transitive :order 2}
+             {:type :ownership :tree :tree/terms :parent [0] :to :term/conmutativa :order 3}
+             {:type :ownership :tree :tree/terms :parent [0] :to :term/functional :order 4}
+             {:type :ownership :tree :tree/relations :parent [] :to :term/relation :order 0}
+             {:type :ownership :tree :tree/relations :parent [0] :to :term/comparte :order 0}
+             {:type :ownership :tree :tree/relations :parent [0] :to :term/property :order 1}
+             {:type :ownership :tree :tree/relations :parent [0] :to :term/es :order 2}
+             {:type :ownership :tree :tree/relations :parent [0] :to :term/sense :order 3}
+             {:type :ownership :tree :tree/literals :parent [] :to :term/literal :order 0}
+             {:type :ownership :tree :tree/facts :parent [] :to :term/fact :order 0}
+             {:type :ownership :tree :tree/facts :parent [0] :to :term/f2b :order 0}
+             {:type :ownership :tree :tree/sense :parent [] :to :term/sense :order 0}
+             {:type :ownership :tree :tree/sense :parent [0] :to :term/sinnvoll :order 0}
+             {:type :ownership :tree :tree/sense :parent [0] :to :term/sinnlos :order 1}
+             {:type :ownership :tree :tree/sense :parent [0] :to :term/unsinnig :order 2}]}
