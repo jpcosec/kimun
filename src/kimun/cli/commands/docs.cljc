@@ -133,7 +133,8 @@
         {:keys [tree]} (resolve-document store token)]
     (out/ok "docs render" {:store (store-ref descriptor store-path)
                            :revision (:head store)
-                           :data (md/store->markdown host/host store tree)})))
+                           :data (or (tdocs/document-markdown store (or (tdocs/find-document store token) tree))
+                                     (md/store->markdown host/host store tree))})))
 
 (defn list-docs
   "`docs list [--model M]`: every document of the store by name. An untyped
@@ -343,7 +344,9 @@
     (out/ok "docs show" {:store (store-ref descriptor store-path) :revision (:head store)
                          :data (if ast?
                                  (let [{:keys [name tree]} (resolve-document store token)]
-                                   {:name name :tree tree :ast (md/store->ast store tree)})
+                                   {:name name :tree tree
+                                    :ast (or (tdocs/document-ast store (or (tdocs/find-document store token) tree))
+                                             (md/store->ast store tree))})
                                  (let [d (tdocs/document store token)] (assoc (doc-data d) :markdown (:source d))))})))
 
 (defn status

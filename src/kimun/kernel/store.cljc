@@ -432,6 +432,10 @@
     (cond
       (mmap/branch? o) (as (if (#{:trees :heads} kind) kind :obj) (mmap/child-ids o))
       (and (mmap/leaf? o) (= :heads kind)) (as :obj (map second (:entries o)))
+      (and (mmap/leaf? o) (= :trees kind))
+      ;; [descriptor-id merkle-root]: the descriptor is a CAS object; the merkle
+      ;; root names tree objects that may be cache, not CAS (docs/v2/14 §18.6)
+      (vec (mapcat (fn [[_ v]] (if (vector? v) [[(first v) :obj] [(second v) :tree-hash]] [])) (:entries o)))
       (mmap/leaf? o) (as :obj (mapcat (fn [[k v]] (concat (when-not (= :trees kind) [k]) (cond (vector? v) v (and (map? v) (:set v)) [(:set v)]))) (:entries o)))
       (and (map? o) (:incidence o) (:tx o)) (concat (as :trees [(:trees o)]) (as :obj (concat [(:edges o) (:incidence o) (:tx o)] (:parents o))))
       (and (map? o) (:roots o) (:tx o))            (as :soft (concat (vals (:roots o)) [(:trees o) (:edges o) (:tx o)] (:parents o)))
@@ -449,12 +453,17 @@
    leaf keys, id vectors and the nested edge-id set of a hub
    :incidence entry `{:set root}`), and the per-tree heads through the nodes of
    the :heads-root mmap; format-1 Revisions through :roots and the sets.
+   For a format-2 `:trees` mmap leaf, the descriptor is followed as an object
+   and its merkle root as a `:tree-hash`: if the tree is marked `:cached?` the
+   root is derived (cache, docs/v2/14 §19) and is not required to be in the
+   CAS; otherwise it is verified like any other object.
    Never raises on damaged content: an id that a format-2 structure names but
    that is absent or unreadable IS in the result (so `verify` reports it) and
    the walk goes on with what it can still read; what was reachable only
    through an unreadable object is not in the result."
   [store]
-  (let [objs (:objects store)]
+  (let [objs (:objects store)
+        cached (err/rescue-any (fn [_] #{}) (revision/cached-tree-roots store))]
     ;; format 2: the per-tree heads through the nodes of the heads mmap (a damaged one is
     ;; reported like any other, never raised while enumerating a view); format 1: the :heads map
     (loop [todo (if-let [r (:heads-root store)]
@@ -468,6 +477,7 @@
             (recur more seen)
             (let [o (object-or-nil objs id)]
               (cond
+                (and (= :tree-hash kind) (contains? cached id)) (recur more seen)
                 (and (nil? o) (= :soft kind)) (recur more seen)
                 (nil? o) (recur more (conj seen id))
                 :else (recur (into more (err/rescue-any (fn [_] []) (vec (references o kind)))) (conj seen id))))))))))

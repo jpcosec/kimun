@@ -162,6 +162,7 @@
      :descriptor descriptor
      :store (assoc (store/open b host/host)
                    :read-file (project-file-reader dir)
+                   :store-dir (str dir)
                    :content (or (:content descriptor) :by-reference))
      :path (str dir)}))
 

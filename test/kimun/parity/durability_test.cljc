@@ -34,7 +34,8 @@
     (is (true? (:ok (run p "rebuild-indexes"))))
     (is (= [] (filter #(str/includes? (str (fs/file-name %)) ".tmp") (files p))))
     ;; `lock`: the empty file of the commit lock (docs/v2/10-escala.md §7), created by the first commit
-    (is (= #{"store.edn" "heads.edn" "log.edn" "objects" "index" "lock"}
+    ;; `cache`: the derived object cache of by-reference documents (docs/v2/14 §18.6, §19), gitignored
+    (is (= #{"store.edn" "heads.edn" "log.edn" "objects" "index" "lock" "cache"}
            (set (map #(str (fs/file-name %)) (fs/list-dir (fs/path p ".kimun"))))))
     (is (every? #(re-matches #"[0-9a-f]{64}" (str (fs/file-name %))) (fs/list-dir (fs/path p ".kimun" "objects"))))
     (is (= "# Hola\n\n## Body\n\nOtro\n" (slurp (str (fs/path p "x.md")))) "the file holds the last write, whole")

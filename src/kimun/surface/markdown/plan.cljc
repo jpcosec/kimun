@@ -57,6 +57,46 @@
                            {:op :add-edge :edge {:type :ownership :tree :t :parent parent :to to :order order}})
                          edges)))}))
 
+(defn ast->tree
+  "Builds IN MEMORY the :document tree of `ast` and its node objects, without
+   persisting anything (docs/v2/14 §18.6): returns
+   `{:tree :descriptor :root :merkle-root :objects :nodes}`, where `:tree` is
+   the committed tree, `:descriptor` the registry descriptor (it carries
+   `:class` and `:content-hash`), `:root` the root node id, `:merkle-root` the
+   hash of the indexed structure, `:objects` `{tree-hash tree-object}` and
+   `:nodes` `{node-id node}`. `opts`: `:tree-id`, `:name`, `:class`,
+   `:content-hash`, `:cached?` (default true). The caller writes `:objects` and
+   `:nodes` to the document cache and registers the descriptor+root hash with
+   `{:op :register-tree}`."
+  [host ast {:keys [tree-id name class content-hash cached?] :or {cached? true}}]
+  (let [nodes (atom {})
+        reg! (fn [n]
+               (let [id (:id (node/make host (:class n) (:kind n) (:content n)))]
+                 (swap! nodes assoc id (assoc n :id id :address (node/address n)))
+                 id))
+        pos-of (fn pos-of [b]
+                 (let [bn (block-node b)
+                       kids (cond-> []
+                              (contains? text-bearing (:type b)) (conj {:leaf (:text b)})
+                              (:children b) (into (:children b)))]
+                   {:node (reg! bn) :hash nil
+                    :children (mapv (fn [c]
+                                      (if (:leaf c)
+                                        {:node (reg! (text-node (:leaf c))) :hash nil :children []}
+                                        (pos-of c)))
+                                    kids)}))
+        committed (tree/commit host {:root (pos-of ast)})
+        root (get-in committed [:root :node])
+        descriptor (cond-> {:tree tree-id :kind :document :name name :root root :cached? cached?}
+                     class (assoc :class class)
+                     content-hash (assoc :content-hash content-hash))]
+    {:tree (assoc committed :tree tree-id :descriptor descriptor)
+     :descriptor descriptor
+     :root root
+     :merkle-root (tree/merkle-root committed)
+     :objects (tree/objects committed)
+     :nodes @nodes}))
+
 (defn markdown->plan
   "parse + ast->plan."
   [host text opts]
