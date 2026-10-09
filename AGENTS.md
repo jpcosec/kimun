@@ -13,10 +13,35 @@ How an agent works in this repository.
 
 Then the documents the task references.
 
+## Resuming work (read this first)
+
+The last design session (2026-10-08/09) changed the direction. Before touching code:
+
+1. `docs/v2/drafts/sesion-2026-10-08-09.md` — what was decided and why, in order.
+2. `docs/v2/drafts/preguntas-abiertas.md` — questions only the owner can answer. Do not implement
+   anything that depends on an unanswered question (Q1–Q3 have no default).
+3. `docs/v2/14-juego-del-lenguaje.md` — start with its "cómo leer" box: §18–§21 are the current
+   principles (classes and instances, anchoring vs generation, cache / stable store / graph,
+   tracked vs trackable, hash ≠ identity).
+4. `docs/v2/12-ecosistema-y-pendientes.md §1` — the prioritised backlog.
+
+Branches: `main` is the only line of work. `close/spec15` (G-layer draft, written before the owner's
+correction in `drafts/capa-g-dudas.md`) and `close/A4` (packfiles, paused) are references, not
+pending merges. Evidence of the session: `runs/research/2026-10-08/`.
+
+## Workers and memory
+
+- Run heavy work through herdr pi workers (`/home/jp/setup/herdr/coordination.sh`, provider
+  `deepseek`, model `deepseek-flash`); briefs live in `~/.cache/coord-briefs/` and anything worth
+  keeping is copied to `runs/`.
+- Every `bb`/script call that may grow goes through `memcap` (`~/bin/memcap [GB] cmd…`, default
+  3 GB). Two OOMs on 2026-10-08 took down the desktop; process large corpora one item at a time.
+
 ## Layers and the desk
 
-- `kimun` is the data/document layer: a content-addressed store plus the Markdown, models
-  and query surfaces. `sldb` v1 and `kgdb` are frozen and superseded by it.
+- `kimun` is the data/document layer: a stable store (anchors and hashes of the environment;
+  format 4 keeps document trees in a recomputable cache) plus the Markdown, models and query
+  surfaces. The graph (models, G layer) is meant to become a separate package (`12 §1`). `sldb` v1 and `kgdb` are frozen and superseded by it.
 - The desk is a kimun store at `.kimun/`, never committed. Build it with
   `bin/kimun include build` (alias `bb desk`) from `kimun.include.edn` and
   `desk/models/*.edn`.

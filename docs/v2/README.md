@@ -41,7 +41,7 @@ De mayor a menor. Ante contradicción gana el número menor.
 | `14-juego-del-lenguaje.md` | principios del dueño P1–P15, autoridad por clase, contextos, verdad y sentido, formato del store, **clases e instancias, anclaje vs generación (§18), caché/store estable/grafo (§19), trackeable vs trackeado (§20), hash ≠ identidad (§21, pendiente)**, etapas y decisiones 21–39; ver su recuadro "cómo leer" |
 | `tests/promises.md` | promesa normativa de `02`/`04` → test que la prueba |
 | `tests/parity-v1.md` | marcador de paridad con sldb v1, DAG y desviaciones deliberadas |
-| `drafts/` | **no autoritativo**: registro de la sesión 2026-10-08/09, análisis previo del 14, dudas de la capa G, IDs a partir de Matrix |
+| `drafts/` | **no autoritativo**: registro de la sesión 2026-10-08/09, **preguntas abiertas al dueño**, análisis previo del 14, dudas de la capa G, IDs a partir de Matrix |
 | `runs/research/2026-10-08/` | evidencia de la sesión: spikes R1–R3, dossiers del store, reportes de las tandas A y S |
 | `09-evaluador-anclado.md` | archivado en `docs/archive/v2/09-evaluador-anclado.md` (no implementado) |
 
