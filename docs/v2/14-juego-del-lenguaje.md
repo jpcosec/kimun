@@ -179,6 +179,9 @@ pregunta (EDN)
 
 ## 9. Modelos como tipos de subgrafo (P10)
 
+> **Superado por §18** (2026-10-08) en lo que contradiga: todo documento es instancia de una clase; la
+> herencia resuelve lo que no calza; no todo el texto se indexa.
+
 - Un modelo es: un **símbolo-tipo** (posición en el árbol `models`, con herencia) + un **selector**
   (consulta sobre el AST visto como triples: "una sección cuyo heading es X seguida de una tabla…")
   + **proyecciones** (render a Markdown, a JSON Schema, a Python). Los documentos no "pasan por"
@@ -197,6 +200,10 @@ pregunta (EDN)
   recorrer y seleccionar); alternativas: patrones EDN, consultas tree-sitter. No se improvisa.
 
 ## 10. El store (lo que cambia en disco)
+
+> **El registro por documento lo fija §18** (2026-10-08): anchor + clase de la que es instancia + hash
+> raíz; árbol, bloques y valores de campos son caché. La tabla de abajo sigue valiendo como
+> diagnóstico del formato 2 → 3.
 
 Formato **3** del store; `10-escala.md` sigue siendo el dueño del formato y recibirá esta sección.
 `stores upgrade 2→3` reconstruye desde los archivos (`include build`), no migra copias.
@@ -361,3 +368,32 @@ Tabla original, con los defaults que se asumían:
 | Q13 | verbalización para embeddings (P15) | idioma fijo (¿cuál?) + plantilla por relación en el vocabulario `source` | español; plantilla en el vocabulario |
 | Q14 | spike del lenguaje de selección | etapa S; etapa A | A |
 | Q15 | índice por revisión (mmap) en stores `:git :track` | registro; derivado (modelo git) | derivado |
+
+## 18. Clases, instancias e indexación (2026-10-08)
+
+Principio del dueño; gobierna los modelos (revisa §9) y el registro del store (revisa §10).
+
+1. **Todo documento es instancia de una clase.** No hay documentos sin clase.
+   - **Documento genérico:** su clase es la estructura que da tree-sitter, cortada a una
+     granularidad declarada (perfil de indexación por tipo de archivo). Ejemplo en código: clases,
+     funciones y variables globales, no variables locales.
+   - **Documento gobernado:** instancia de una clase común (un modelo); de una clase salen muchos
+     documentos.
+2. **Lo que no calza se resuelve por herencia**, no forzando el árbol: `documento.resumen.resumen_tecnico`
+   hereda de `resumen` y agrega lo suyo. La jerarquía es un dato del store (Clojure `derive`/`isa?`),
+   inmutable y content-addressed. Esta es una razón de fondo de la elección de Clojure.
+3. **Una clase cambiada es otra clase.** Las clases son inmutables: la clase con que se clasificó un
+   documento sigue existiendo, y el documento sigue siendo instancia suya hasta que se reclasifique
+   explícitamente. No hay "texto viejo" que recuperar (cierra la pregunta de leer bajo el contrato
+   original sin guardar copias ni consultar git).
+4. **No todo el texto se indexa.** Lo que se infiere de *modelo + contexto* (fórmulas de cortesía,
+   "se despide atentamente Juanito Pérez", azúcar estilístico) se queda en el archivo y **no entra
+   al store**. Indexar es elegir qué de la estructura es conocimiento; no es meter el árbol entero en
+   un zapato chino.
+5. **Dónde se define cada cosa:**
+   - la **granularidad del perfil** por tipo de archivo se define **por store**;
+   - **qué es estructura y qué es contenido o azúcar** (cuándo un bloque extra amerita subclase, se
+     indexa como contenido de un campo, o se ignora) se define **por documento**.
+6. **Registro por documento en el store:** su anchor (ruta + fingerprint), la clase de la que es
+   instancia y el hash raíz de lo indexado. El árbol concreto, los bloques y los valores de los
+   campos son **caché** recomputable con `archivo + clase` y verificable contra el hash raíz.
