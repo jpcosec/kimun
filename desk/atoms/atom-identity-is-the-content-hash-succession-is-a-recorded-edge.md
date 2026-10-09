@@ -14,3 +14,5 @@ provenance: docs/v2/02-sustrato-computacional.md
 ## Answer
 
 Node identity is trivial and exact: same canonical content, same id, in any tree and any revision. Identity across edits is not identity but succession: the transaction that replaces X by X' records a supersedes edge because it knows it did so. Edges hanging from X are re-anchored to X' by explicit per-type rule or flagged for review. Heuristic reconciliation (by sample and position) is used only for changes made outside the kernel, and its result is marked drifted with a confidence value, never presented as identity.
+
+PENDIENTE — ver `docs/v2/14 §21` y `docs/v2/drafts/preguntas-abiertas.md`: la identidad es estructural (S) y semántica (M, G); el hash solo verifica (decisión 46).

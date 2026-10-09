@@ -93,7 +93,7 @@
                                         :store-documents #{"docs/a.md"}})))))))
 
 (deftest this-repo-include-describes-its-world
-  (testing "the checked-in kimun.include.edn covers exactly 17 models and 539 documents (4 desk documents moved to docs/archive on 2026-10-08)"
+  (testing "the checked-in kimun.include.edn declares no models and no documents: the desk models were retired on 2026-10-09 and will be regenerated (spec 16)"
     (when (fs/exists? "kimun.include.edn")
       (let [cfg (inc/parse (slurp "kimun.include.edn"))
             files (->> (fs/glob "desk" "**")
@@ -102,6 +102,5 @@
                        (filter #(re-matches #".*\.(md|edn)" %))
                        (map inc/normalize-path))
             p (inc/plan cfg files)]
-        (is (= 17 (count (:models p))))
-        (is (= 539 (count (:documents p))))
-        (is (= 209 (count (filter :force (:documents p)))))))))
+        (is (= [] (:models p)))
+        (is (= [] (:documents p)))))))

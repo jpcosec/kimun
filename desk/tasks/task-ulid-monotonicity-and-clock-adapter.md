@@ -1,16 +1,17 @@
 ---
 id: task-ulid-monotonicity-and-clock-adapter
 status: active
-summary: ''
+summary: 'Place time behind the Clock port in kimun.kernel.ports; ULID monotonicity reconsidered under docs/v2/14 §21.'
 tags:
 - workspace:desk
 - artifact:task
-- source:drawer
+- source:audit
 routine: routine-task-ulid-monotonicity-and-clock-adapter
 current_node: checklist-task-ulid-monotonicity-and-clock-adapter-execution-ready
 history: []
 references:
-- desk/drawer/tasks/task-ulid-monotonicity-and-clock-adapter.md
+- src/kimun/kernel/ports.cljc
+- docs/v2/14-juego-del-lenguaje.md
 depends_on: []
 pills: []
 files: []
@@ -36,19 +37,19 @@ Not provided.
 
 _Describe the concrete result this task must produce._
 
-Triage and resolve the inbox message promoted from `desk/inbox/20260829-174025-suggestion-ulid-monotonicity-and-clock-adapter.md`.
+Time sits behind the Clock port, and whether tree ids need monotonic ULIDs is decided.
 
 ## Scope
 
 _State what is in scope and what is out of scope._
 
-ULIDs are time-prefixed but not monotonic within the same millisecond; decide whether tree ids need monotonic ULIDs and move time behind a Clock port in sldb.kernel.ports.
+ULIDs are time-prefixed but not monotonic within the same millisecond; decide whether tree ids need monotonic ULIDs. Move time behind a Clock port in `kimun.kernel.ports` (decision 20 renames `sldb.kernel.*` to `kimun.kernel.*`). Reconsider under `docs/v2/14 §21` and decision 46: ids are structural (S) / semantic (M, G), so the role of ULID minting may change.
 
 ## Implementation Path
 
 _Outline the expected implementation route or affected surface._
 
-Promoted from desk/drawer/tasks/task-ulid-monotonicity-and-clock-adapter.md.
+`src/kimun/kernel/ports.cljc` and its host implementations.
 
 ## Validation
 
@@ -61,4 +62,4 @@ _List the checks required before this task can close._
 
 _Name the observable condition that makes the task complete._
 
-Promoted work is completed, validated, and closed with a commit.
+No ambient clock read remains in the kernel (only through the port), and the ULID monotonicity decision is recorded.

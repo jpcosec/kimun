@@ -1,0 +1,88 @@
+# F4 — validation (2026-10-09)
+
+## bin/kimun include build --rebuild
+moved existing store to /home/jp/proyectos/kimun-worktrees/F4/.kimun.bak-20261009-135312
+{
+  "ok" : true,
+  "command" : "include build",
+  "store" : {
+    "path" : "/home/jp/proyectos/kimun-worktrees/F4/.kimun"
+  },
+  "revision" : null,
+  "data" : {
+    "store" : "/home/jp/proyectos/kimun-worktrees/F4/.kimun",
+    "models" : 0,
+    "models-failed" : 0,
+    "documents" : 0,
+    "documents-failed" : 0,
+    "failed" : [ ]
+  },
+  "warnings" : [ ]
+}
+
+## bin/kimun include check
+{
+  "ok" : true,
+  "command" : "include check",
+  "store" : null,
+  "revision" : null,
+  "data" : {
+    "ok" : true,
+    "staged?" : false,
+    "findings" : {
+      "declared-missing" : 0,
+      "declared-not-in-store" : 0,
+      "declared-not-tracked" : 0,
+      "store-tracked" : 0,
+      "store-undeclared" : 0,
+      "tracked-undeclared" : 0
+    }
+  },
+  "warnings" : [ ]
+}
+
+## bin/kimun models check
+{
+  "ok" : true,
+  "command" : "models check",
+  "store" : {
+    "name" : "F4",
+    "path" : "/home/jp/proyectos/kimun-worktrees/F4/.kimun"
+  },
+  "revision" : null,
+  "data" : {
+    "ok" : true,
+    "models" : [ ]
+  },
+  "warnings" : [ ]
+}
+
+## bb lint
+rings and docstrings ok: 99 files
+
+## bb test
+
+Testing kimun.surface.sections-test
+
+Ran 11 tests containing 49 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.semantic-test
+
+Ran 13 tests containing 134 assertions.
+0 failures, 0 errors.
+
+Ran 109 namespaces in 109 s
+    24485 ms  kimun.cli.diagnostics-test
+    20873 ms  kimun.kernel.mmap-test
+     5982 ms  kimun.parity.closed-gaps-test
+     4677 ms  kimun.cli.adapters-test
+     4630 ms  kimun.cli.release-test
+     4589 ms  kimun.cli.docs-parity-test
+     3723 ms  kimun.surface.edges-parity-test
+     3164 ms  kimun.surface.models.segments-test
+     2855 ms  kimun.cli.migrate-test
+     2836 ms  kimun.surface.models.segments-parity-test
+     2312 ms  kimun.parity.merkle-promises-test
+     2192 ms  kimun.kernel.revision-format2-test
+{:test 889, :pass 9570, :fail 0, :error 0, :namespaces 109}

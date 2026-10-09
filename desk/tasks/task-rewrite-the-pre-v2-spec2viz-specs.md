@@ -1,16 +1,17 @@
 ---
 id: task-rewrite-the-pre-v2-spec2viz-specs
-status: active
-summary: ''
+status: closed
+summary: 'Closed 2026-10-09: docs/architecture/spec2viz/ only has v2-*.yml; target-*.yml live in docs/archive/architecture/spec2viz/.'
 tags:
 - workspace:desk
 - artifact:task
-- source:drawer
+- source:audit
 routine: routine-task-rewrite-the-pre-v2-spec2viz-specs
-current_node: checklist-task-rewrite-the-pre-v2-spec2viz-specs-execution-ready
-history: []
+current_node: checklist-task-rewrite-the-pre-v2-spec2viz-specs-closeout-ready
+history: ["2026-10-09: closed; the pre-v2 target-*.yml/manifest.yml are only in docs/archive/architecture/spec2viz/, and docs/architecture/spec2viz/ declares only v2-*.yml."]
 references:
-- desk/drawer/tasks/task-rewrite-the-pre-v2-spec2viz-specs.md
+- docs/architecture/spec2viz/
+- docs/archive/architecture/spec2viz/
 depends_on: []
 pills: []
 files: []
@@ -36,19 +37,19 @@ Not provided.
 
 _Describe the concrete result this task must produce._
 
-Triage and resolve the inbox message promoted from `desk/inbox/20260829-174027-suggestion-rewrite-the-pre-v2-spec2viz-specs.md`.
+Retire the pre-v2 spec2viz specs once the v2 ones exist.
 
 ## Scope
 
 _State what is in scope and what is out of scope._
 
-docs/architecture/spec2viz/target-*.yml describe the previous stage (Rust/Lisp era vocabulary in places); rewrite or retire them once the v2-*.yml specs exist, and update manifest.yml and vistas.yml accordingly.
+`docs/architecture/spec2viz/target-*.yml` described the previous stage (Rust/Lisp-era vocabulary) and were to be rewritten or retired once the `v2-*.yml` specs existed. Done: `target-*.yml` and `manifest.yml` are only in `docs/archive/architecture/spec2viz/`, and `docs/architecture/spec2viz/` declares only `v2-*.yml`.
 
 ## Implementation Path
 
 _Outline the expected implementation route or affected surface._
 
-Promoted from desk/drawer/tasks/task-rewrite-the-pre-v2-spec2viz-specs.md.
+`docs/archive/architecture/spec2viz/` (retired); `docs/architecture/spec2viz/v2-*.yml` (live).
 
 ## Validation
 
@@ -56,10 +57,10 @@ _List the checks required before this task can close._
 
 - bb lint
 - bb test
-- spec2viz diagram validate on every rewritten spec
+- spec2viz diagram validate on every v2 spec
 
 ## Done When
 
 _Name the observable condition that makes the task complete._
 
-Promoted work is completed, validated, and closed with a commit.
+No pre-v2 `target-*.yml` remains outside `docs/archive/`.

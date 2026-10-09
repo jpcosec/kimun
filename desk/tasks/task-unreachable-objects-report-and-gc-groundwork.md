@@ -1,16 +1,17 @@
 ---
 id: task-unreachable-objects-report-and-gc-groundwork
 status: active
-summary: ''
+summary: 'Pending: unreachable-objects report + name index/GC, reshaped by the stable store (docs/v2/12 §1 (Kernel y store, puntos 1 y 6)).'
 tags:
 - workspace:desk
 - artifact:task
-- source:drawer
+- source:audit
 routine: routine-task-unreachable-objects-report-and-gc-groundwork
 current_node: checklist-task-unreachable-objects-report-and-gc-groundwork-execution-ready
 history: []
 references:
-- desk/drawer/tasks/task-unreachable-objects-report-and-gc-groundwork.md
+- docs/v2/12-ecosistema-y-pendientes.md
+- docs/v2/14-juego-del-lenguaje.md
 depends_on: []
 pills: []
 files: []
@@ -24,7 +25,7 @@ inherit_acceptance_context: false
 atoms: []
 ---
 
-# Unreachable objects report and GC groundwork
+# Unreachable-objects report and GC groundwork
 
 ## Rationale
 
@@ -36,19 +37,19 @@ Not provided.
 
 _Describe the concrete result this task must produce._
 
-Triage and resolve the inbox message promoted from `desk/inbox/20260829-174026-suggestion-unreachable-objects-report-and-gc-groundwork.md`.
+A report of garbage candidates (unreachable objects) and the groundwork for the name index and GC.
 
 ## Scope
 
 _State what is in scope and what is out of scope._
 
-verify only checks reachable objects; add a report of unreachable objects in objects/ (garbage candidates) as groundwork for milestone 8 retention and GC.
+`verify` only checks reachable objects; add a report of unreachable objects as garbage candidates. Reshaped by the stable store (`docs/v2/12 §1` (Kernel y store, puntos 1 y 6); decision 45 / `docs/v2/14 §20`): the document tree and the build plan live in `<store>/cache/`, the plan leaves the CAS, and with Merkle-per-path the name index and GC change shape — do not ground this on the old `objects/` plus milestone 8. Blocked by the store-stable task (`docs/v2/12 §1`, punto 1).
 
 ## Implementation Path
 
 _Outline the expected implementation route or affected surface._
 
-Promoted from desk/drawer/tasks/task-unreachable-objects-report-and-gc-groundwork.md.
+`src/kimun/` store verification and cache; the derived tree under `<store>/cache/`.
 
 ## Validation
 
@@ -56,9 +57,10 @@ _List the checks required before this task can close._
 
 - bb lint
 - bb test
+- a store with known garbage reports exactly the unreachable objects
 
 ## Done When
 
 _Name the observable condition that makes the task complete._
 
-Promoted work is completed, validated, and closed with a commit.
+The store reports its garbage candidates without deleting anything, under the stable-store layout.

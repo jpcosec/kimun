@@ -14,13 +14,10 @@ tasks:
 - desk/tasks/task-test-coverage-and-lint-tooling-for-babashka.md
 # List of pill-xxx paths
 pills:
-- desk/contexts/pills.md
-- desk/contexts/pill-planning-contracts.md
+- desk/contexts/pill-guardrail-v2-implementation-gate.md
 # List of ritual-xxx paths
 rituals:
-- desk/rituals/execution.md
-- desk/rituals/testing.md
-- desk/rituals/closeout.md
+- desk/rituals/ritual-zero-context-audit-gate.md
 # e.g., system:sldb, workspace:desk
 tags:
 - workspace:desk
@@ -33,27 +30,30 @@ tags:
 
 _Explain what this board routes and why it exists._
 
-
+Legacy board (`docs/v2/12 §1`: `desk/tasks/Board.md` is not editable by the CLI). It routes the
+seven tasks promoted from the deskops drawer; keep it in sync by hand until the desk migrates to a
+modeled artifact. The planning-era pills and rituals are in `docs/archive/desk/`.
 
 ## Notes
 
 _Add short operational notes about the current routed set._
 
-- External oracle for canonical-bytes [active] - Triage and resolve the inbox message promoted from `desk/inbox/20260829-174023-suggestion-external-oracle-for-canonical-bytes.md`.
-- Contention test for heads commit! [active] - Triage and resolve the inbox message promoted from `desk/inbox/20260829-174024-suggestion-contention-test-for-heads-commit.md`.
-- ULID monotonicity and clock adapter [active] - Triage and resolve the inbox message promoted from `desk/inbox/20260829-174025-suggestion-ulid-monotonicity-and-clock-adapter.md`.
-- Unreachable objects report and GC groundwork [active] - Triage and resolve the inbox message promoted from `desk/inbox/20260829-174026-suggestion-unreachable-objects-report-and-gc-groundwork.md`.
-- Rewrite the pre-v2 spec2viz specs [active] - Triage and resolve the inbox message promoted from `desk/inbox/20260829-174027-suggestion-rewrite-the-pre-v2-spec2viz-specs.md`.
-- Node host parity for the v2 kernel [active] - Triage and resolve the inbox message promoted from `desk/inbox/20260829-174021-suggestion-node-host-parity-for-the-v2-kernel.md`.
+- External oracle for canonical-bytes [closed] - independent canonical-bytes oracle (`scripts/canon_oracle.py`, `bb oracle`).
+- Rewrite the pre-v2 spec2viz specs [closed] - pre-v2 `target-*.yml` retired to `docs/archive/architecture/spec2viz/`.
+- Contention test for heads commit! [active] - CAS retry and ConflictSet under concurrent writers (`kimun.kernel.heads`).
+- ULID monotonicity and clock adapter [active] - time behind the Clock port in `kimun.kernel.ports`.
+- Unreachable objects report and GC groundwork [active] - reshaped by the stable store (`docs/v2/12 §1` (Kernel y store, puntos 1 y 6)).
+- Node host parity for the v2 kernel [active] - deferred by decision 14 (drawer/UI); `kimun.host.*` if retaken.
+- Test coverage and lint tooling for Babashka [active] - lint done (`bb lint`); coverage and JVM run pending.
 
 ## Task Details
 
 _Generated from the task references above._
 
-- External oracle for canonical-bytes [active] - Triage and resolve the inbox message promoted from `desk/inbox/20260829-174023-suggestion-external-oracle-for-canonical-bytes.md`.
-- Contention test for heads commit! [active] - Triage and resolve the inbox message promoted from `desk/inbox/20260829-174024-suggestion-contention-test-for-heads-commit.md`.
-- ULID monotonicity and clock adapter [active] - Triage and resolve the inbox message promoted from `desk/inbox/20260829-174025-suggestion-ulid-monotonicity-and-clock-adapter.md`.
-- Unreachable objects report and GC groundwork [active] - Triage and resolve the inbox message promoted from `desk/inbox/20260829-174026-suggestion-unreachable-objects-report-and-gc-groundwork.md`.
-- Rewrite the pre-v2 spec2viz specs [active] - Triage and resolve the inbox message promoted from `desk/inbox/20260829-174027-suggestion-rewrite-the-pre-v2-spec2viz-specs.md`.
-- Node host parity for the v2 kernel [active] - Triage and resolve the inbox message promoted from `desk/inbox/20260829-174021-suggestion-node-host-parity-for-the-v2-kernel.md`.
-- Test coverage and lint tooling for Babashka [active] - Triage and resolve the inbox message promoted from `desk/inbox/20260829-174024-suggestion-test-coverage-and-lint-tooling-for-babashka.md`.
+- External oracle for canonical-bytes [closed] - `scripts/canon_oracle.py`; `bb oracle` 9/9 canonical ids (`docs/v2/05 §2`).
+- Rewrite the pre-v2 spec2viz specs [closed] - `docs/architecture/spec2viz/` declares only `v2-*.yml`.
+- Contention test for heads commit! [active] - `test/kimun/kernel/hardening_test.cljc` already lands disjoint trees; extend to same-tree contention.
+- ULID monotonicity and clock adapter [active] - reconsidered under `docs/v2/14 §21`.
+- Unreachable objects report and GC groundwork [active] - report garbage candidates; ground it on `<store>/cache/`.
+- Node host parity for the v2 kernel [active] - not active work (decision 14).
+- Test coverage and lint tooling for Babashka [active] - cloverage/bb coverage plus a JVM run.

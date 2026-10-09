@@ -1,16 +1,17 @@
 ---
 id: task-external-oracle-for-canonical-bytes
-status: active
-summary: ''
+status: closed
+summary: 'Closed 2026-10-09: scripts/canon_oracle.py and `bb oracle` (9/9 canonical ids, docs/v2/05 §2).'
 tags:
 - workspace:desk
 - artifact:task
-- source:drawer
+- source:audit
 routine: routine-task-external-oracle-for-canonical-bytes
-current_node: checklist-task-external-oracle-for-canonical-bytes-execution-ready
-history: []
+current_node: checklist-task-external-oracle-for-canonical-bytes-closeout-ready
+history: ["2026-10-09: closed; scripts/canon_oracle.py exists and `bb oracle` reports 9/9 canonical ids (docs/v2/05 §2)."]
 references:
-- desk/drawer/tasks/task-external-oracle-for-canonical-bytes.md
+- scripts/canon_oracle.py
+- docs/v2/05-estado.md
 depends_on: []
 pills: []
 files: []
@@ -36,19 +37,19 @@ Not provided.
 
 _Describe the concrete result this task must produce._
 
-Triage and resolve the inbox message promoted from `desk/inbox/20260829-174023-suggestion-external-oracle-for-canonical-bytes.md`.
+An independent implementation of canonical-bytes so conformity is not circular.
 
 ## Scope
 
 _State what is in scope and what is out of scope._
 
-A second, independent implementation of canonical-bytes (Python script scripts/canon_oracle.py) computing SHA-256 over the same fixture inputs so conformity is not circular; compare against test/fixtures/nodes.edn and trees.edn ids.
+A second, independent implementation of canonical-bytes (Python script `scripts/canon_oracle.py`) computing SHA-256 over the same fixture inputs; compare against `test/fixtures/nodes.edn` and `trees.edn` ids. Done: `bb oracle` (docs/v2/05 §2).
 
 ## Implementation Path
 
 _Outline the expected implementation route or affected surface._
 
-Promoted from desk/drawer/tasks/task-external-oracle-for-canonical-bytes.md.
+`scripts/canon_oracle.py`; task `oracle` in `bb.edn`.
 
 ## Validation
 
@@ -62,4 +63,4 @@ _List the checks required before this task can close._
 
 _Name the observable condition that makes the task complete._
 
-Promoted work is completed, validated, and closed with a commit.
+`bb oracle` recomputes the canonical ids independently and agrees with the fixtures (9/9).
