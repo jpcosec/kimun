@@ -270,8 +270,8 @@
         stale (for [eid (:edges old) :let [e (get-in store [:objects eid])]
                     :when (and (not (wanted-ids eid)) (source-or-file? (target store e)))] eid)]
     (-> []
-        (cond-> src (conj {:op :add-node :node src}))
-        (cond-> ext (conj {:op :add-node :node ext}))
+        (cond-> src (conj {:op :add-node :node src :as :src}))
+        (cond-> ext (conj {:op :add-node :node ext :as :ext}))
         (into (map (fn [eid] {:op :remove-edge :edge eid}) stale))
         (into (map (fn [e] {:op :add-edge :edge e}) wanted)))))
 

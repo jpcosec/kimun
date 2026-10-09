@@ -104,6 +104,38 @@
 
 (defn- fail [why data] (err/raise (or (:type data) :store/error) (str "store: " why) data))
 
+(defn load-object
+  "The parsed object `id` of backend `b`, or nil when absent: from the
+   backend's `ObjectCache` when it has one (each object is then read and parsed
+   at most once per backend instance), else read and parsed on every call.
+   Checks no hash (see `deserialize`)."
+  [b id]
+  (if (caching? b)
+    (or (cached-object b id)
+        (some->> (read-object b id) (deserialize id) (cache-object! b id)))
+    (some->> (read-object b id) (deserialize id))))
+
+(defn- plan-node-refs
+  "Ids of the nodes a resolved plan names by id (`:id` with no `:node`): a plan
+   written by this format does not embed node content (docs/v2/14 §10)."
+  [plan]
+  (into [] (keep (fn [op] (when (and (= :add-node (:op op)) (nil? (:node op))) (:id op)))) (:ops plan)))
+
+(defn- load-plan-objects
+  "`store` with the node objects `plan` names by id added to its :objects: they
+   are in the CAS (`commit!` writes every new object before the log line), and a
+   replay needs them to apply a node-free plan. Objects already in the store are
+   left alone; an object that cannot be read is left out (the hash check reports
+   it, the replay of the plan does not fail on it)."
+  [b store plan]
+  (reduce (fn [s id]
+            (if (or (nil? id) (contains? (:objects s) id))
+              s
+              (if-some [o (err/rescue-any (fn [_] nil) (load-object b id))]
+                (assoc-in s [:objects id] o)
+                s)))
+          store (plan-node-refs plan)))
+
 ;; ---------------------------------------------------------------- log tail
 
 (def no-heads
@@ -218,6 +250,7 @@
                 (fail (str "corrupt log line " (:torn-line entry)) {:type :store/corrupt-log :line (:torn-line entry) :cause "unterminated line"}))
               (let [plan (or (plan-of b entry)
                              (fail "missing resolved plan for a log line" {:type :store/corrupt-log :id id :cause "plan not found in the CAS"}))
+                    store (load-plan-objects b store plan)
                     r (revision/apply-plan store plan)]
                 (when (not= id (:id (:transaction r))) (fail "replayed transaction id differs from log" {:logged id :got (:id (:transaction r))}))
                 (when (not= revision (:revision-id r)) (fail "replayed revision id differs from log" {:logged revision :got (:revision-id r) :tx id}))
@@ -267,17 +300,6 @@
   (let [hd (or (read-heads b) no-heads)]
     (when-not (well-formed-heads? fv hd) (fail "heads.edn is malformed" {:type :store/corrupt-heads :heads hd}))
     hd))
-
-(defn load-object
-  "The parsed object `id` of backend `b`, or nil when absent: from the
-   backend's `ObjectCache` when it has one (each object is then read and parsed
-   at most once per backend instance), else read and parsed on every call.
-   Checks no hash (see `deserialize`)."
-  [b id]
-  (if (caching? b)
-    (or (cached-object b id)
-        (some->> (read-object b id) (deserialize id) (cache-object! b id)))
-    (some->> (read-object b id) (deserialize id))))
 
 (defn- checked-head-object
   "The object `id` named by heads.edn, read from `b` and checked: present,

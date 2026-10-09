@@ -82,7 +82,7 @@ Layout de un store formato 2 (`kimun.kernel.store`; detalle en `10`):
 | `stores upgrade` | — | `{:upgraded :format-version :path …}`; 1→2 reconstruye en un directorio hermano (`:transactions :backup :map`), 2→3 convierte en el sitio (líneas `{:id :revision}`, `:dropped-plans`); carrera de escritura ⇒ `store/stale` (4) |
 | `stores show` | — | `{:name :path :hash-alg :links :head :capabilities}`; sin replay |
 | `stores health` | — | `{:status :summary :findings :actions :next}`; `ok | degraded | needs-human` |
-| `stores update` | — | `{:updated [name] :skipped [{:document :category :action}] :status}` |
+| `stores update` | — | `{:updated [name] :skipped [{:document :category :action}] :status}`; todos los reparados van en UNA revisión, cuyo journal lleva `:documents` ({:address :fields}) |
 | `stores reconcile` | `[ROOT] [--apply]` | `{:root :discovered :missing :stale :applied}`; sin `--apply` no escribe |
 | `stores link` | `NAME PATH` | `{:link {:name :path} :resolved}` |
 | `stores unlink` | `NAME` | `{:unlinked {:name :path}}` |
@@ -280,7 +280,7 @@ Campos de documentos tipados. `DOC` es nombre, tree-id o `Model:doc`; un campo d
 
 | subcomando | opciones | `:data` |
 |---|---|---|
-| `journal show` | `--limit N`, `--by ACTOR`, `--tree NAME\|ID` | entradas, la más nueva primero |
+| `journal show` | `--limit N`, `--by ACTOR`, `--tree NAME\|ID` | entradas, la más nueva primero; una entrada puede llevar `:operation`/`:address`/`:fields` y, si la revisión reparó varios documentos (`stores update`), `:documents` |
 | `journal verify` | — | `{:revisions :checked :objects :bad}`; problema ⇒ `store/corrupt` (5) |
 
 ### serve

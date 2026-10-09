@@ -16,9 +16,10 @@
 - **Formato 3, resto de `14 §10`** (decisión 27; ver `10-escala.md §10`): el árbol estructural
   de un documento con anchor externo se sigue persistiendo entero (nodos `block`/`text`/`opaque`
   y tree objects) en vez de ser caché verificable (root hash + posiciones referenciadas), y el
-  plan resuelto de un `include build` sigue en el CAS, así que el store de este repo (8,75 MB
+  plan resuelto de un `include build` sigue en el CAS, así que el store de este repo (8,07 MB
   aparentes) no baja de los 433 KB del desk que indexa. Hacerlo exige un resolver de árbol que
   no guarda texto y, para un store `:git :ignore`, no persistir el plan (o el árbol) del build.
+  Ya hecho: el plan resuelto referencia los nodos por id (el contenido vive una sola vez).
 - **Packfiles**: el disco desperdicia un bloque de 4 KB por objeto pequeño. Números en
   `tests/parity-v1.md` §Diferido y `10-escala.md §9`.
 - **Índice de nombres O(árboles)**: `docs show` y `fields set` leen un descriptor por árbol;

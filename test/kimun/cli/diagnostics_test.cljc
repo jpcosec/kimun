@@ -253,6 +253,24 @@
       (is (= [] (:warnings chk))))
     (is (= {:updated [] :skipped [] :status :ok} (:data (run p "stores" "update"))) "nothing to do is not an error")))
 
+(deftest update-composes-one-revision-for-every-document-it-repairs
+  ;; S1b step 2: instead of one transaction per repaired document, all the
+  ;; `update-plan`s computed in memory compose into ONE revision, and the
+  ;; journal keeps what each document changed (`:documents`).
+  (let [p (project)
+        _ (is (true? (:ok (run p "docs" "create" "TicketDoc" "a" "--set" "title=A" "--set" "status=open"))))
+        _ (is (true? (:ok (run p "docs" "create" "TicketDoc" "b" "--set" "title=B" "--set" "status=open"))))
+        _ (is (true? (:ok (run p "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--description" "Field int." "--default" "5"))))
+        revisions-before (count (:data (run p "journal" "show")))
+        u (run p "stores" "update")]
+    (is (true? (:ok u)) (pr-str u))
+    (is (= #{"login" "a" "b"} (set (get-in u [:data :updated]))))
+    (is (= 1 (- (count (:data (run p "journal" "show"))) revisions-before)) "one revision for all three repairs")
+    (let [e (first (:data (run p "journal" "show")))]
+      (is (= "stores update" (:operation e)))
+      (is (= #{"TicketDoc:login" "TicketDoc:a" "TicketDoc:b"} (set (map :address (:documents e)))))
+      (is (every? #(contains? % :fields) (:documents e)) "each document carries the fields it changed"))))
+
 (deftest reconcile-reports-and-applies-only-when-requested
   ;; v1: test_reconcile_reports_and_applies_only_when_requested
   (let [base (str (ktu/temp-dir "kimun-reconcile-"))

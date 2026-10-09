@@ -249,8 +249,10 @@ naturaleza: el índice de nombres de `docs show`/`fields set` (§4).
 ## 10. Formato 3 (docs/v2/14 §10)
 
 El formato 3 **no cambia la estructura de la revisión** (los ocho campos de §5, los mmaps
-`:trees`/`:edges`/`:incidence`, los ids de nodo, arista, árbol y descriptor, y por tanto
-los de transacción y revisión). Cambia qué se escribe y de qué vive un documento.
+`:trees`/`:edges`/`:incidence`, y los ids de nodo, arista, árbol y descriptor). Los ids de
+transacción y revisión **sí cambian** para el mismo plan de entrada, porque hashean el plan
+resuelto, cuya forma fija el formato (S1b: referencia los nodos por id). Cambia qué se escribe
+y de qué vive un documento.
 
 ```
 <dir>/store.edn      {:format-version 3 … :content :inline}   ; :content ausente = by-reference
@@ -279,10 +281,18 @@ Qué cambia:
    archivo. Por defecto `:by-reference`.
 4. **El plan no se guarda dos veces.** La línea del log es `{:id tx-id :revision rev-id}`;
    el plan resuelto sigue en el CAS bajo `tx-id` (invariante 17) y `replay-open`/`verify-full`
-   lo leen de ahí. Las líneas de formato 2 (con `:plan`) se siguen leyendo.
+   lo leen de ahí. Las líneas de formato 2 (con `:plan`) se siguen leyendo. Además, el plan
+   resuelto **referencia los nodos por id**: un `:add-node` con alias se resuelve a
+   `{:op :add-node :id <node-id>}` y el contenido del nodo vive una sola vez, como objeto del
+   CAS; `replay-open`/`verify-full` reconstruyen el nodo desde el CAS cuando falta `:node`. El
+   plan de ENTRADA no cambia (sigue aceptando `:node` inline) y un plan resuelto almacenado sin
+   `:as` (formato 2 o un formato 3 anterior) se lee igual y reproduce su propio `tx-id`. Del
+   mismo plan de entrada cambian `tx-id` y `revision-id`; los ids de nodo, arista, árbol,
+   descriptor y mmap no.
 5. **Una revisión por `include build`** (§11): todos los modelos y documentos declarados
    componen UN `TransactionPlan` (`kimun.kernel.plan/compose-plans`) y un solo `commit!`.
-   `stores update` sigue haciendo una transacción por documento reparado.
+   `stores update` también compone en **UNA revisión** los `update-plan` de todos los documentos
+   que repara (el journal de esa revisión lleva `:documents`, con los campos que cambió cada uno).
 
 Ruta de upgrade: `stores upgrade` sobre un store formato 2 lo convierte **en el sitio**
 (reescribe las líneas del log sin `:plan` y el descriptor a `:format-version 3`, y verifica;
@@ -290,13 +300,14 @@ restaura si falla). Para un store `:git :ignore` el camino fuerte es `include bu
 que reconstruye el store desde los archivos y descarta las copias verbatim.
 
 Medido en este repo (desk de 433 KB, 539 documentos; antes = formato 2 del commit
-`b4e02790`, después = formato 3): aparente **28,35 MB → 8,75 MB** (`log.edn` 5,89 MB →
-151 B; índice mmap 12,34 MB → 0,71 MB; plan 5,68 MB → uno de 4,71 MB); en disco 119 MB →
-55 MB; `include build` 38 s → 13 s, con **1 revisión** en vez de 556. Detalle por clase en
-`runs/bench/format3-store-size.txt`; `bb store-size [DIR]` reproduce la tabla.
+`b4e02790`, después = formato 3): aparente **28,35 MB → 8,07 MB** (`log.edn` 5,89 MB →
+151 B; índice mmap 12,34 MB → 0,71 MB; plan 5,68 MB → uno de 4,03 MB, que ya no embebe el
+contenido de ningún nodo); en disco 119 MB → 55,4 MB; `include build` 38 s → 13 s, con **1
+revisión** en vez de 556. Detalle por clase en `runs/bench/format3-store-size.txt`; `bb
+store-size [DIR]` reproduce la tabla.
 
 Lo que el formato 3 todavía **no** hace (ver `12` §1): el árbol de un documento con anchor
 sigue persistiéndose entero (nodos `block`/`text`/`opaque` y tree objects), y el plan
-resuelto de un build sigue en el CAS, así que el store no baja de los 443 KB del desk que
+resuelto de un build sigue en el CAS, así que el store no baja de los 433 KB del desk que
 indexa. Convertir el árbol en caché verificable y no persistir el plan de un store
 `:git :ignore` es el resto del §10 del 14 (decisión 27).

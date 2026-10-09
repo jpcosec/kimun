@@ -66,7 +66,7 @@
         touched (into (set (map :tree ch)) (filter string?) (plan/touched-trees p))]
     (merge
      (when-let [m (some-> (get (:engines rev) "kimun/meta") edn/read-string)]
-       (select-keys m [:operation :address :fields]))
+       (select-keys m [:operation :address :fields :documents]))
      {:revision rev-id
      :parents (vec (:parents rev))
      :actor (:actor rev)
@@ -86,7 +86,9 @@
      :nodes-added :nodes-removed :moved (:text {:before [..] :after [..]})}]}`,
    plus, when the writing command recorded them (`kimun.surface.docs`):
    `:operation` (e.g. \"docs update\"), `:address` (`Model:doc`) and `:fields
-   {path {:before v :after v}}` with dotted paths for nested keys.
+   {path {:before v :after v}}` with dotted paths for nested keys; a command
+   that repairs several documents in ONE revision (`stores update`) records
+   `:documents [{:address :fields} …]` instead.
    Transactions whose revision is not in `store` are skipped (see `verify`).
    `opts`: `:actor` keeps entries by that actor, `:tree` those touching the tree
    with that id or name, `:limit` keeps the first n (newest)."

@@ -58,14 +58,15 @@ corpus y 1 abierta. Detalle y desviaciones: `tests/parity-v1.md`.
 `stores verify` 228,4 s → 32,0 s; `.kimun/` 606 MB → 97,7 MB; migración desde v1 522 s → 71 s.
 Abrir y commitear no crecen con la historia.
 
-**Suite** — 886 tests / 9.561 aserciones, 109 namespaces (última corrida de `bb test`,
+**Suite** — 888 tests / 9.577 aserciones, 109 namespaces (última corrida de `bb test`,
 2026-10-08, con el pod tree-sitter construido), 0 fallos. `bb oracle`: 9/9 ids
 canónicos; `bb lint`: 98 ficheros.
 
 **Formato 3 de este repo** (desk de 433 KB, 539 documentos; antes = formato 2 del commit
-`b4e02790`): aparente 28,35 MB → **8,75 MB** (`log.edn` 5,89 MB → 151 B; índice mmap
-12,34 MB → 0,71 MB); en disco 119 MB → 55 MB; 556 revisiones → **1**; `include build`
-38 s → 13 s. Detalle en `runs/bench/format3-store-size.txt` y `10-escala.md §10`.
+`b4e02790`): aparente 28,35 MB → **8,07 MB** (`log.edn` 5,89 MB → 151 B; índice mmap
+12,34 MB → 0,71 MB; plan 5,68 MB → uno de 4,03 MB, sin contenido de nodo); en disco 119 MB →
+55,4 MB; 556 revisiones → **1**; `include build` 38 s → 13 s. Detalle en
+`runs/bench/format3-store-size.txt` y `10-escala.md §10`.
 La promesa del 14 (menos que los 433 KB del desk) **no se cumple todavía**: el árbol del
 documento y el plan resuelto del build siguen en el CAS (`12 §1`).
 

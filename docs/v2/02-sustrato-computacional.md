@@ -379,6 +379,14 @@ Resultado: `Transaction {:id H(plan-resuelto) :plan plan :revision <id>}`, donde
 resuelto tiene los aliases sustituidos por ids, más el mapa `{alias → id}` y los ids de
 las aristas creadas, para que el autor pueda referirlas después.
 
+El plan resuelto que entra al `Transaction` (y que se hashea en `:id`) **referencia los
+nodos por id**: un `:add-node` con alias se resuelve a `{:op :add-node :id <node-id>}` y el
+contenido del nodo vive una sola vez, como objeto del CAS (`10-escala.md §10`;
+`14 §10`). El plan de ENTRADA sigue escribiendo `:node` inline; un plan resuelto almacenado
+sin `:as` (formato 2 o un formato 3 anterior) se sigue leyendo y reproduce su propio
+`tx-id`, mientras que el plan resuelto de un formato nuevo da otro `tx-id` para el mismo plan
+de entrada (los ids de nodo, arista, árbol, descriptor y mmap no dependen de esto).
+
 Semántica exacta de `:replace {:tree t :at p :new X'}`, con `X` = nodo en la posición `p`:
 
 1. `X'` ocupa **la misma posición** `p` (mismo padre, mismo orden); el subárbol de la
