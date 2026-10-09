@@ -208,15 +208,17 @@
 ;; ---------------------------------------------------------------- init / open
 
 (def format-version
-  "The format new stores are created with (docs/v2/14 §10)."
-  3)
+  "The format new stores are created with (docs/v2/14 §10, §18.6): format 4
+   registers a document with a file as cache (descriptor + merkle root, no tree
+   object and no block/text node in the CAS)."
+  4)
 
 (defn- empty-store
   "The empty store value of format `fv` (1 = legacy, 2/3 = current)."
   [host capabilities fv]
   (case fv
     1 (assoc (legacy/empty-store host capabilities) :format-version 1)
-    (2 3) (assoc (revision/empty-store host capabilities) :format-version fv)
+    (2 3 4) (assoc (revision/empty-store host capabilities) :format-version fv)
     (fail "unsupported store format" {:format-version fv})))
 
 (defn init!

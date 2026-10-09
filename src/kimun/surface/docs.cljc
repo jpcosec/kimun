@@ -256,7 +256,8 @@
   (let [host (:host store) tid (:tree doc)]
     (if-not (cached-tree? store tid)
       (when (revision/tree-descriptor store tid)
-        {:tree (revision/load-tree store tid (:head store)) :stale? false})
+        (let [t (revision/load-tree store tid (:head store))]
+          {:tree t :objects (when t (tree/objects t)) :stale? false}))
       (let [[_ merkle] (revision/tree-entry store tid)
             d (revision/tree-descriptor store tid)
             t (err/rescue-any (fn [_] nil) (revision/load-tree store tid (:head store)))
@@ -267,27 +268,39 @@
                                                              :content-hash (:content-hash d) :cached? true})
                                        :tree-id tid)]
                         (cache-write! store reg {:fingerprint (fingerprint host text) :class (:class d)})
-                        {:tree (:tree reg) :stale? (not= merkle (:merkle-root reg))}))]
+                        {:tree (:tree reg) :objects (:objects reg) :nodes (:nodes reg)
+                         :stale? (not= merkle (:merkle-root reg))}))]
         (if ok?
-          {:tree t :stale? false}
+          {:tree t :objects (tree/objects t) :stale? false}
           (when-let [text (and (:path doc) (:read-file store) ((:read-file store) (:path doc)))]
             (rebuild text)))))))
+
+(defn- with-tree
+  "`store` with the resolved tree `r` (see `doc-tree`) in its views, so the
+   Markdown/AST readers do not re-read a store whose object view may have
+   memoised a miss before the cache was repopulated."
+  [store {:keys [tree objects nodes]}]
+  (-> store
+      (assoc-in [:trees (:tree tree)] tree)
+      (update :objects merge objects nodes)))
 
 (defn document-markdown
   "Canonical Markdown of `doc` (a document map) or of the document named or
    identified by `token`, through `doc-tree`; nil when it cannot be resolved."
   [store doc-or-token]
-  (let [doc (if (map? doc-or-token) doc-or-token (find-document store doc-or-token))]
-    (when-let [{:keys [tree]} (and doc (doc-tree store doc))]
-      (md/store->markdown (:host store) store (:tree tree)))))
+  (let [doc (if (map? doc-or-token) doc-or-token (find-document store doc-or-token))
+        r (and doc (doc-tree store doc))]
+    (when-let [t (:tree r)]
+      (md/store->markdown (:host store) (with-tree store r) (:tree t)))))
 
 (defn document-ast
   "SLDB-MD AST of `doc` (a document map) or of the document named or identified
    by `token`, through `doc-tree`; nil when it cannot be resolved."
   [store doc-or-token]
-  (let [doc (if (map? doc-or-token) doc-or-token (find-document store doc-or-token))]
-    (when-let [{:keys [tree]} (and doc (doc-tree store doc))]
-      (md/store->ast store (:tree tree)))))
+  (let [doc (if (map? doc-or-token) doc-or-token (find-document store doc-or-token))
+        r (and doc (doc-tree store doc))]
+    (when-let [t (:tree r)]
+      (md/store->ast (with-tree store r) (:tree t)))))
 
 ;; ---------------------------------------------------------------- plans
 
