@@ -1,4 +1,4 @@
-# kimun (SLDB v2) — Estado (2026-10-08)
+# kimun (SLDB v2) — Estado (2026-10-09)
 
 > Solo estado actual y decisiones vigentes. La autoridad y el orden de lectura están en
 > `docs/v2/README.md`. Los pendientes, en `12-ecosistema-y-pendientes.md`. La historia
@@ -9,10 +9,10 @@
 Un motor de versionado content-addressed sobre lenguaje estructurado, en Clojure `.cljc`
 puro sobre Babashka, más las superficies que lo usan. Cada capacidad tiene un dueño:
 
-- **Kernel (formato 2 y 3)** — pool de nodos S/M/G, árboles de posiciones con Merkle, aristas
+- **Kernel (formatos 2, 3 y 4)** — pool de nodos S/M/G, árboles de posiciones con Merkle, aristas
   tipadas con evidencia, revisiones inmutables con sucesión, estados de anclaje derivados y
   reconciliación de ediciones externas. `open` lee las cabezas sin replay y `stores upgrade`
-  pasa un store 1→2 (reconstruido) o 2→3 (en el sitio). Contrato: `02-sustrato-computacional.md`;
+  pasa un store 1→2 (reconstruido), 2→3 (en el sitio) o 3→4 (pide `include build --rebuild`). En formato 4 un documento con archivo se registra (anchor + clase + hashes) y su árbol vive en un caché por hash. Contrato: `02-sustrato-computacional.md`;
   forma en disco: `10-escala.md`.
 - **Superficie Markdown** — perfil cerrado SLDB-MD: texto → CST → AST neutro → árbol de
   documento en el pool, render canónico y reingesta de ficheros editados por fuera. Dueño:
@@ -70,7 +70,7 @@ nodo raíz 62 KB + aristas 489 KB). El árbol del documento ya no está en el CA
 Detalle en `10-escala.md §11`. Lo que el formato 4 todavía **no** hace: el plan resuelto del
 build sigue en el CAS, así que el store no baja de los 433 KB del desk que indexa (`12 §1`).
 
-## 3. Decisiones de diseño (todas confirmadas por el usuario)
+## 3. Decisiones de diseño (confirmadas por el usuario salvo las marcadas EN REVISIÓN o PENDIENTE)
 
 | # | decisión | dónde |
 |---|---|---|
@@ -114,3 +114,9 @@ build sigue en el CAS, así que el store no baja de los 433 KB del desk que inde
 | 38 | embeddings sin idioma fijo ni plantilla; modelo multilingüe; `dog/perro/hund` misma vecindad es un test | `14 §16 P15` |
 | 39 | lenguaje de selección por spike en etapa A; índice por revisión derivado también en `:git :track` | `14 §12` |
 | 40 | **un documento se lee bajo el contrato con el que se escribió** (A1, 2026-10-08): la evidencia de la arista `derived` root→fuente registra `:contract` = id del descriptor, y la sucesión del modelo no la toca; `docs show|list`, `fields`, `sections`, `find`, `edges` y `stores check|health` leen ese descriptor (el nodo viejo sigue en el CAS) hasta que `docs update` o `stores update`/`--backfill` re-renderizan el payload registrado bajo el contrato actual. Un documento sin `:contract` (previo a A1 o migrado de v1) cae al contrato actual | `06`, `07 §1` |
+| 41 | **todo documento es instancia de una clase** (2026-10-09): genérico = estructura tree-sitter a la granularidad del perfil (por store); gobernado = un modelo; lo que no calza se resuelve por herencia (Clojure `derive`/`isa?`); una clase cambiada es otra clase (inmutable) | `14 §18` |
+| 42 | **anclaje y generación son modelos distintos**: el de anclaje selecciona lo que se ancla al leer (lo no seleccionado no entra al store); el de generación produce texto; el template de v1 confundía ambos y el round-trip estricto deja de ser obligación. El azúcar se observa en el nodo (sin anclaje / fórmula o string fijo en generación). Documentos **source** (el archivo es la verdad) vs **generados** (la verdad son los datos de la instancia; el desk de este repo es generado) | `14 §18.7–9` |
+| 43 | **tres capas**: caché (recomputable, borrable), store estable (hashes y anchors del ambiente para detectar mutaciones y reconciliar; nunca contenido) y grafo (modelos, clases, capa G) como paquete aparte sobre la base | `14 §19` |
+| 44 | **trackeable vs trackeado**: el Merkle del store estable va sobre lo trackeado (lo que alimenta el grafo), organizado **por ruta** (no por clase), para bajar por la rama que cambió y reconciliar localmente; de un documento solo se guarda/hashea la proyección trackeada; el plan del build va a caché o se elimina | `14 §20` |
+| 45 | **formato 4** (implementado, S1c): registro por documento (anchor + clase + hash raíz + hash de contenido) y árbol/bloques/campos como caché por hash en `<store>/cache/`; el mapa mmap vacío es una constante que no se exige en el CAS | `10 §11`, `14 §18–19` |
+| 46 | **(PENDIENTE DE CONFIRMAR)** el hash detecta mutaciones; no es identidad. La identidad de un nodo es su contenido en sentido semántico: ids estructurales para lo que ancla (S), semánticos para M/G (taxonomía de contextos, como Matrix). Revisaría el principio 3 de `01 §4` y las decisiones 1, 3 y 4 | `14 §21`, `drafts/ids-desde-matrix.md` |

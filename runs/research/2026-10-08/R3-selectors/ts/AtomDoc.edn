@@ -1,0 +1,8 @@
+{:model "AtomDoc",
+ :selector
+ {:yaml {:keys ["id" "title" "five_wh_one_plus" "tags" "provenance"]},
+  :sections {"Answer" {:field "answer", :body true, :to-end true}}},
+ :queries
+ [{:frontmatter "(minus_metadata) @fm"}
+  {"answer"
+   "((section (atx_heading (inline) @title)) @sec (#match? @title \"Answer\"))"}]}

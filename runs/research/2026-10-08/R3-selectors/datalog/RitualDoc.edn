@@ -1,0 +1,64 @@
+{:model "RitualDoc",
+ :schema
+ [:kind :tag :text :order :line-start :line-end :level :parent],
+ :note
+ "datoms [e attr value] from dl/encode; :order is the block path; recursion via :parent",
+ :queries
+ {"frontmatter"
+  {:query nil,
+   :post "GAP: Datalog cannot parse YAML; parse in the host",
+   :keys ["id" "steps" "tags"]},
+  "title"
+  {:query [?t ?o],
+   :where
+   [[?h :kind "heading"] [?h :level 1] [?h :text ?t] [?h :order ?o]],
+   :post "host: first row"},
+  "purpose"
+  {:query [?h ?o],
+   :where [[?h :kind "heading"] [?h :text "Purpose"] [?h :order ?o]],
+   :heading "Purpose",
+   :post
+   "host: slice source lines from end of heading to next heading level<=2 (last field -> EOF); strip placeholder"},
+  "trigger"
+  {:query [?h ?o],
+   :where [[?h :kind "heading"] [?h :text "Trigger"] [?h :order ?o]],
+   :heading "Trigger",
+   :post
+   "host: slice source lines from end of heading to next heading level<=2 (last field -> EOF); strip placeholder"},
+  "preconditions"
+  {:query [?l ?o],
+   :where
+   [[?h :kind "heading"]
+    [?h :text "Preconditions"]
+    [?h :order ?o]
+    [?l :kind "bullet_list"]],
+   :heading "Preconditions",
+   :post
+   "host: list block with order>h.order; items = its child texts"},
+  "validation"
+  {:query [?l ?o],
+   :where
+   [[?h :kind "heading"]
+    [?h :text "Validation"]
+    [?h :order ?o]
+    [?l :kind "bullet_list"]],
+   :heading "Validation",
+   :post
+   "host: list block with order>h.order; items = its child texts"},
+  "failure_modes"
+  {:query [?l ?o],
+   :where
+   [[?h :kind "heading"]
+    [?h :text "Failure Modes"]
+    [?h :order ?o]
+    [?l :kind "bullet_list"]],
+   :heading "Failure Modes",
+   :post
+   "host: list block with order>h.order; items = its child texts"},
+  "completion"
+  {:query [?h ?o],
+   :where
+   [[?h :kind "heading"] [?h :text "Completion"] [?h :order ?o]],
+   :heading "Completion",
+   :post
+   "host: slice source lines from end of heading to next heading level<=2 (last field -> EOF); strip placeholder"}}}

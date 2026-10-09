@@ -1,0 +1,16 @@
+{:model "AtomDoc",
+ :schema
+ [:kind :tag :text :order :line-start :line-end :level :parent],
+ :note
+ "datoms [e attr value] from dl/encode; :order is the block path; recursion via :parent",
+ :queries
+ {"frontmatter"
+  {:query nil,
+   :post "GAP: Datalog cannot parse YAML; parse in the host",
+   :keys ["id" "title" "five_wh_one_plus" "tags" "provenance"]},
+  "answer"
+  {:query [?h ?o],
+   :where [[?h :kind "heading"] [?h :text "Answer"] [?h :order ?o]],
+   :heading "Answer",
+   :post
+   "host: slice source lines from end of heading to next heading level<=2 (last field -> EOF); strip placeholder"}}}

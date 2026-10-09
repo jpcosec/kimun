@@ -1,7 +1,7 @@
 # Análisis — el grafo como juego del lenguaje (borrador, 2026-10-08)
 
 > Borrador fuera de la tabla de autoridad de `docs/v2/README.md`. Insumo para el spec 14
-> (store + juego del lenguaje). Fuentes: dossiers `~/.cache/coord-briefs/store-dossier-L{1,2,3}-report.md`
+> (store + juego del lenguaje). Fuentes: dossiers `runs/research/2026-10-08/store-dossier-L{1,2,3}-report.md`
 > (citas con `ruta:línea`), `wittgenstein/matrix-shrdlu-spec/specs/{matrix,grounding,provenance,SPEC}.md`.
 
 ## 0. El modelo del dueño (resumen fiel)

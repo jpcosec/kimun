@@ -1,0 +1,58 @@
+{:model "PillDoc",
+ :schema
+ [:kind :tag :text :order :line-start :line-end :level :parent],
+ :note
+ "datoms [e attr value] from dl/encode; :order is the block path; recursion via :parent",
+ :queries
+ {"frontmatter"
+  {:query nil,
+   :post "GAP: Datalog cannot parse YAML; parse in the host",
+   :keys
+   ["id"
+    "status"
+    "summary"
+    "routine"
+    "current_node"
+    "history"
+    "tags"]},
+  "title"
+  {:query [?t ?o],
+   :where
+   [[?h :kind "heading"] [?h :level 1] [?h :text ?t] [?h :order ?o]],
+   :post "host: first row"},
+  "what"
+  {:query [?h ?o],
+   :where [[?h :kind "heading"] [?h :text "What"] [?h :order ?o]],
+   :heading "What",
+   :post
+   "host: slice source lines from end of heading to next heading level<=2 (last field -> EOF); strip placeholder"},
+  "why"
+  {:query [?h ?o],
+   :where [[?h :kind "heading"] [?h :text "Why"] [?h :order ?o]],
+   :heading "Why",
+   :post
+   "host: slice source lines from end of heading to next heading level<=2 (last field -> EOF); strip placeholder"},
+  "when"
+  {:query [?h ?o],
+   :where [[?h :kind "heading"] [?h :text "When"] [?h :order ?o]],
+   :heading "When",
+   :post
+   "host: slice source lines from end of heading to next heading level<=2 (last field -> EOF); strip placeholder"},
+  "where"
+  {:query [?h ?o],
+   :where [[?h :kind "heading"] [?h :text "Where"] [?h :order ?o]],
+   :heading "Where",
+   :post
+   "host: slice source lines from end of heading to next heading level<=2 (last field -> EOF); strip placeholder"},
+  "how"
+  {:query [?h ?o],
+   :where [[?h :kind "heading"] [?h :text "How"] [?h :order ?o]],
+   :heading "How",
+   :post
+   "host: slice source lines from end of heading to next heading level<=2 (last field -> EOF); strip placeholder"},
+  "how_not"
+  {:query [?h ?o],
+   :where [[?h :kind "heading"] [?h :text "How Not"] [?h :order ?o]],
+   :heading "How Not",
+   :post
+   "host: slice source lines from end of heading to next heading level<=2 (last field -> EOF); strip placeholder"}}}

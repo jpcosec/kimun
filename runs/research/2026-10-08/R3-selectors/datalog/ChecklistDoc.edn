@@ -1,0 +1,31 @@
+{:model "ChecklistDoc",
+ :schema
+ [:kind :tag :text :order :line-start :line-end :level :parent],
+ :note
+ "datoms [e attr value] from dl/encode; :order is the block path; recursion via :parent",
+ :queries
+ {"frontmatter"
+  {:query nil,
+   :post "GAP: Datalog cannot parse YAML; parse in the host",
+   :keys ["id" "status" "condition_refs" "mode" "tags"]},
+  "title"
+  {:query [?t ?o],
+   :where
+   [[?h :kind "heading"] [?h :level 1] [?h :text ?t] [?h :order ?o]],
+   :post "host: first row"},
+  "summary"
+  {:query [?h ?o],
+   :where [[?h :kind "heading"] [?h :text "Summary"] [?h :order ?o]],
+   :heading "Summary",
+   :post
+   "host: slice source lines from end of heading to next heading level<=2 (last field -> EOF); strip placeholder"},
+  "items"
+  {:query [?l ?o],
+   :where
+   [[?h :kind "heading"]
+    [?h :text "Items"]
+    [?h :order ?o]
+    [?l :kind "bullet_list"]],
+   :heading "Items",
+   :post
+   "host: list block with order>h.order; items = its child texts"}}}

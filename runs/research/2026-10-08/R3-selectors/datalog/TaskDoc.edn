@@ -1,0 +1,68 @@
+{:model "TaskDoc",
+ :schema
+ [:kind :tag :text :order :line-start :line-end :level :parent],
+ :note
+ "datoms [e attr value] from dl/encode; :order is the block path; recursion via :parent",
+ :queries
+ {"frontmatter"
+  {:query nil,
+   :post "GAP: Datalog cannot parse YAML; parse in the host",
+   :keys
+   ["id"
+    "status"
+    "summary"
+    "tags"
+    "history"
+    "references"
+    "depends_on"
+    "pills"
+    "files"
+    "checklists"]},
+  "title"
+  {:query [?t ?o],
+   :where
+   [[?h :kind "heading"] [?h :level 1] [?h :text ?t] [?h :order ?o]],
+   :post "host: first row"},
+  "why"
+  {:query [?h ?o],
+   :where [[?h :kind "heading"] [?h :text "Rationale"] [?h :order ?o]],
+   :heading "Rationale",
+   :post
+   "host: slice source lines from end of heading to next heading level<=2 (last field -> EOF); strip placeholder"},
+  "goal"
+  {:query [?h ?o],
+   :where [[?h :kind "heading"] [?h :text "Goal"] [?h :order ?o]],
+   :heading "Goal",
+   :post
+   "host: slice source lines from end of heading to next heading level<=2 (last field -> EOF); strip placeholder"},
+  "scope"
+  {:query [?h ?o],
+   :where [[?h :kind "heading"] [?h :text "Scope"] [?h :order ?o]],
+   :heading "Scope",
+   :post
+   "host: slice source lines from end of heading to next heading level<=2 (last field -> EOF); strip placeholder"},
+  "implementation_path"
+  {:query [?h ?o],
+   :where
+   [[?h :kind "heading"]
+    [?h :text "Implementation Path"]
+    [?h :order ?o]],
+   :heading "Implementation Path",
+   :post
+   "host: slice source lines from end of heading to next heading level<=2 (last field -> EOF); strip placeholder"},
+  "validation"
+  {:query [?l ?o],
+   :where
+   [[?h :kind "heading"]
+    [?h :text "Validation"]
+    [?h :order ?o]
+    [?l :kind "bullet_list"]],
+   :heading "Validation",
+   :post
+   "host: list block with order>h.order; items = its child texts"},
+  "done_when"
+  {:query [?h ?o],
+   :where [[?h :kind "heading"] [?h :text "Done When"] [?h :order ?o]],
+   :heading "Done When",
+   :post
+   "host: slice source lines from end of heading to next heading level<=2 (last field -> EOF); strip placeholder"}}}

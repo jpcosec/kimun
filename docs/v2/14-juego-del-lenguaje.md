@@ -7,9 +7,20 @@
 > vigentes. Límite declarado por el dueño: motor AST-first para tratar texto, código y otros
 > archivos como conocimiento; conocimiento = colección de proposiciones `(R A B)`; Clojure.
 >
-> Insumos: dossiers de diseño del store (`~/.cache/coord-briefs/store-dossier-L{1,2,3}-report.md`),
+> Insumos: dossiers de diseño del store (`runs/research/2026-10-08/store-dossier-L{1,2,3}-report.md`),
 > `drafts/analisis-juego-del-lenguaje.md`, spikes R1 (Datalog en bb) y R2 (tree-sitter como pod),
 > `wittgenstein/matrix-shrdlu-spec/specs/{SPEC,matrix,grounding,provenance}.md`.
+
+> **Cómo leer este documento (2026-10-09).** Creció por adendas durante la sesión de diseño
+> (registro: `drafts/sesion-2026-10-08-09.md`). Estado por sección:
+> - **Vigentes:** §1–§8 (principios P1–P12 y su despliegue), §11 (motores), §13 (etapas),
+>   §16 (P13–P15), §17 (respuestas), **§18** (clases, instancias, anclaje y generación),
+>   **§19** (caché, store estable, grafo), **§20** (trackeable vs trackeado; Merkle de reconciliación).
+> - **Superados en parte:** §9 (por §18), §10 (el registro por documento lo fija §18–§20; la tabla
+>   queda como diagnóstico del formato 2→3), §12 decisiones 24 y 31 (en revisión por la capa G:
+>   `drafts/capa-g-dudas.md`).
+> - **Pendiente de confirmar:** **§21** (el hash detecta mutaciones; no es identidad). Revisa
+>   `01 §4` principio 3 y las decisiones 1, 3 y 4; lectura de base: `drafts/ids-desde-matrix.md`.
 
 ## 1. Principios rectores
 

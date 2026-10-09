@@ -1,0 +1,20 @@
+{:model "ChecklistDoc",
+ :selector
+ {:yaml {:keys ["id" "status" "condition_refs" "mode" "tags"]},
+  :h1 "title",
+  :sections
+  {"Summary"
+   {:field "summary",
+    :body true,
+    :ph "_Summarize what this checklist proves._"},
+   "Items"
+   {:field "items",
+    :list true,
+    :ph "_List the human-readable checks in this checklist._"}}},
+ :queries
+ [{:frontmatter "(minus_metadata) @fm"}
+  {:h1 "((section (atx_heading (atx_h1_marker) (inline) @t)) @sec)"}
+  {"summary"
+   "((section (atx_heading (inline) @title)) @sec (#match? @title \"Summary\"))"}
+  {"items"
+   "((section (atx_heading (inline) @title) (list (list_item (paragraph (inline) @item)))) (#match? @title \"Items\"))"}]}

@@ -4,6 +4,12 @@
 > describe qué es el objeto que se persiste y qué garantías tiene sentido pedirle.
 > El sustrato que lo construye está en `02-sustrato-computacional.md`.
 
+> **Revisiones posteriores (2026-10-09):** el principio 1 de §4 ("el pool es la fuente de verdad")
+> lo revisa `14 §2`/§19 (autoridad por clase: bytes → archivo; estructura → caché verificable;
+> hechos → grafo). El principio 3 ("la identidad de un nodo es su contenido") se mantiene **en
+> sentido semántico**; que el id sea el hash del contenido está en revisión (`14 §21`, pendiente):
+> el hash detecta mutaciones, no identifica.
+
 Fuentes: `raw/source/ecosystem/SMG_DEFINITIONS.md`, `raw/source/ecosystem/matrix-tractatus-intro.md`,
 `raw/source/ecosystem/sldb-v1-smg-ir.md`, y la conversación de diseño del 2026-08-29.
 

@@ -1,4 +1,4 @@
-# Ecosistema y pendientes — inventario (2026-10-08)
+# Ecosistema y pendientes — inventario (2026-10-09)
 
 > Pendientes abiertos en kimun, quién usa hoy sldb v1 y qué es `wittgenstein` (la capa G).
 > El estado y las decisiones vigentes están en `05-estado.md`; el detalle test a test de la
@@ -11,28 +11,35 @@
 1. **selfdoc**: falta la guarda de before-image al escribir (estado `corpus`) y el chequeo
    del grafo kgdb (estado `abierta`).
 
-### Kernel
+### Kernel y store (prioridad actual; registro de la sesión: `drafts/sesion-2026-10-08-09.md`)
 
-- **Formato 4, resto de `14 §10`/§18–§19** (decisión 27; ver `10-escala.md §11`): hecho el
-  registro por documento y el árbol como caché. Un documento con archivo se registra con
-  anchor + clase + hash raíz + hash de contenido; su árbol, bloques y nodos viven en
-  `<store>/cache/` (gitignored, borrable) y se recalculan del archivo. El store de este repo
-  baja de **8,07 MB a 2,51 MB** aparentes (objetos 12.494 → 4.808; tree-object 1,65 MB → 3,9 KB).
-  Lo que **no** baja: el plan resuelto del build sigue en el CAS (907 KB; invariante 17), que es
-  el grueso restante junto al registro y el mmap; `bb store-size` da el detalle.
-- **Packfiles**: el disco desperdicia un bloque de 4 KB por objeto pequeño (ahora también por
-  cada objeto del caché). Números en `tests/parity-v1.md` §Diferido y `10-escala.md §9`.
-- **Índice de nombres O(árboles)**: `docs show` y `fields set` leen un descriptor por árbol;
-  un índice persistente en la Revision lo haría constante (`10-escala.md §4`).
-- **Sin GC** ni informe de objetos inalcanzables.
+1. **Store estable sobre lo trackeado** (`14 §19–§20`, decisiones 43–44): Merkle **por ruta**
+   sobre la proyección trackeada de cada documento, para reconciliar localmente; el plan del build
+   sale del CAS (caché o eliminado); sin el índice mmap ordenado por ids internos ni las tres aristas
+   redundantes por documento (hoy 907 KB + 708 KB + 489 KB de los 2,51 MB del formato 4).
+2. **IDs** (`14 §21`, decisión 46, pendiente): ids estructurales para S, semánticos para M/G; el hash
+   solo verifica. Antes de tocar código, responder las dos preguntas de `drafts/ids-desde-matrix.md`.
+3. **Documentos sin modelo** (`docs ingest`) siguen persistiendo su árbol: registrarlos con la clase
+   genérica del perfil.
+4. **Separar el grafo** en un paquete aparte (`kimun.graph.*`: modelos, aristas semánticas, grafo,
+   capa G) con regla de anillo en `bb lint` (la base no lo importa).
+5. **Packfiles**: un bloque de 4 KB por objeto pequeño en disco (también en el caché). Trabajo
+   parcial en la rama `close/A4` (pausada; su "formato 3" con `:names`/GC quedó superado).
+6. **Índice de nombres** y **GC**: siguen pendientes; con el punto 1 cambian de forma.
 
 ### Funciones
 
+- **Modelos** (spec 16, decisiones 41–42): separar el modelo de anclaje del de generación; selector
+  EDN sobre tree-sitter (spike R3: 428/428); herencia de clases; features de v1 sí, bugs de v1 no.
+  Los atoms del desk pasan a nodos M/G del grafo (`AtomDoc` era un parche).
+- **Capa G** (pospuesta hasta cerrar S, M y el store): antes, leer el paper del dueño, la
+  documentación de wittgenstein y, si hace falta, el Tractatus. Correcciones del dueño en
+  `drafts/capa-g-dudas.md` (sentido × verdad anclado/derivado; no existe "propuesto"; más cercano a
+  Lean). El borrador del spec 15 quedó en la rama `close/spec15` (no mergeada; deuda D1–D9).
+- **Lenguaje de consulta (Datalog)**: Datalevin (pod) candidato, evaluador in-process de respaldo
+  (spike R1); el pod 1.2.0 no está publicado y 1.1.0 tiene bugs en reglas sembradas.
 - **Embeddings**: `kimun.surface.index.corpus/rank` acepta `:score-fn`, pero no hay modelo
-  conectado ni vectores persistidos.
-- **Capa G**: nada produce `:fact/:triple`; el evaluador de S-expressions (S4) y los
-  derivados (S5) no existen (`06 §6`, `docs/archive/v2/09-evaluador-anclado.md`).
-- **Lenguaje de consulta general** (Datalog/Datascript): el índice derivado es EAV-compatible.
+  conectado ni vectores persistidos; deben usar un modelo multilingüe (decisión 38).
 - **Cliente Python**: no existe; `python/kimun` solo exporta modelos y aloja adaptadores
   (`python/README.md`).
 - **Rutas HTTP para graph_ui**: `/kgdb/snapshot` y `/models/promote` no existen en `serve`.

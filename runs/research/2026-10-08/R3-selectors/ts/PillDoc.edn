@@ -1,0 +1,53 @@
+{:model "PillDoc",
+ :selector
+ {:yaml
+  {:keys
+   ["id"
+    "status"
+    "summary"
+    "routine"
+    "current_node"
+    "history"
+    "tags"]},
+  :h1 "title",
+  :sections
+  {"What"
+   {:field "what",
+    :body true,
+    :ph "_Define the context or guardrail this pill carries._"},
+   "Why"
+   {:field "why",
+    :body true,
+    :ph "_Explain why this context matters for safe execution._"},
+   "When"
+   {:field "when",
+    :body true,
+    :ph "_Describe when an agent should apply this pill._"},
+   "Where"
+   {:field "where",
+    :body true,
+    :ph "_Name the files, surfaces, or scope this pill applies to._"},
+   "How"
+   {:field "how",
+    :body true,
+    :ph "_Describe the correct way to apply this guidance._"},
+   "How Not"
+   {:field "how_not",
+    :body true,
+    :to-end true,
+    :ph "_Describe the shortcut or failure mode to avoid._"}}},
+ :queries
+ [{:frontmatter "(minus_metadata) @fm"}
+  {:h1 "((section (atx_heading (atx_h1_marker) (inline) @t)) @sec)"}
+  {"what"
+   "((section (atx_heading (inline) @title)) @sec (#match? @title \"What\"))"}
+  {"why"
+   "((section (atx_heading (inline) @title)) @sec (#match? @title \"Why\"))"}
+  {"when"
+   "((section (atx_heading (inline) @title)) @sec (#match? @title \"When\"))"}
+  {"where"
+   "((section (atx_heading (inline) @title)) @sec (#match? @title \"Where\"))"}
+  {"how"
+   "((section (atx_heading (inline) @title)) @sec (#match? @title \"How\"))"}
+  {"how_not"
+   "((section (atx_heading (inline) @title)) @sec (#match? @title \"How Not\"))"}]}

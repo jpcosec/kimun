@@ -1,0 +1,39 @@
+{:model/name "AtomDoc",
+ :model/version 1,
+ :base [],
+ :selector
+ [{:outer-index 0,
+   :outer-type "front_matter",
+   :outer-tag "",
+   :handler :yaml,
+   :markers
+   [{:key "id", :marker {:kind "rev", :traits [], :name "id"}}
+    {:key "title", :marker {:kind "rev", :traits [], :name "title"}}
+    {:key "five_wh_one_plus",
+     :marker {:kind "rev", :traits [], :name "five_wh_one_plus"}}
+    {:key "tags", :marker {:kind "rev", :traits [], :name "tags"}}
+    {:key "provenance",
+     :marker {:kind "optrev", :traits [], :name "provenance"}}]}
+  {:outer-index 1,
+   :outer-type "heading",
+   :outer-tag "h1",
+   :handler :text,
+   :props [],
+   :props-info [],
+   :regex "^.*?$",
+   :anchor true}
+  {:outer-index 2,
+   :outer-type "heading",
+   :outer-tag "h2",
+   :handler :text,
+   :anchor true,
+   :props [],
+   :regex "^\\QAnswer\\E$"}
+  {:outer-index 3,
+   :outer-type "paragraph",
+   :outer-tag "p",
+   :handler :text,
+   :props ["answer"],
+   :props-info [{:kind "rev", :traits [], :name "answer"}],
+   :regex "^(.*?)$",
+   :capture :section-body}]}

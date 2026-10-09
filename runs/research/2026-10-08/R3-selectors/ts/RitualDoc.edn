@@ -1,0 +1,45 @@
+{:model "RitualDoc",
+ :selector
+ {:yaml {:keys ["id" "steps" "tags"]},
+  :h1 "title",
+  :sections
+  {"Purpose"
+   {:field "purpose",
+    :body true,
+    :ph "_Explain why this ritual exists._"},
+   "Trigger"
+   {:field "trigger",
+    :body true,
+    :ph "_State when this ritual should start._"},
+   "Preconditions"
+   {:field "preconditions",
+    :list true,
+    :ph
+    "_List the conditions that must hold before running the ritual._"},
+   "Validation"
+   {:field "validation",
+    :list true,
+    :ph "_List the checks required before this task can close._"},
+   "Failure Modes"
+   {:field "failure_modes",
+    :list true,
+    :ph "_List common mistakes this ritual prevents._"},
+   "Completion"
+   {:field "completion",
+    :body true,
+    :ph "_Describe what completion looks like._"}}},
+ :queries
+ [{:frontmatter "(minus_metadata) @fm"}
+  {:h1 "((section (atx_heading (atx_h1_marker) (inline) @t)) @sec)"}
+  {"purpose"
+   "((section (atx_heading (inline) @title)) @sec (#match? @title \"Purpose\"))"}
+  {"trigger"
+   "((section (atx_heading (inline) @title)) @sec (#match? @title \"Trigger\"))"}
+  {"preconditions"
+   "((section (atx_heading (inline) @title) (list (list_item (paragraph (inline) @item)))) (#match? @title \"Preconditions\"))"}
+  {"validation"
+   "((section (atx_heading (inline) @title) (list (list_item (paragraph (inline) @item)))) (#match? @title \"Validation\"))"}
+  {"failure_modes"
+   "((section (atx_heading (inline) @title) (list (list_item (paragraph (inline) @item)))) (#match? @title \"Failure Modes\"))"}
+  {"completion"
+   "((section (atx_heading (inline) @title)) @sec (#match? @title \"Completion\"))"}]}

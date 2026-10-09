@@ -1,5 +1,9 @@
 # SLDB v2 — Sustrato computacional
 
+> **Revisión pendiente (2026-10-09):** `14 §21` cuestiona `id(nodo) = H(contenido)` como identidad
+> (el hash debería solo detectar mutaciones; ids estructurales para lo que ancla, semánticos para
+> M/G). Mientras no se confirme, este contrato sigue vigente y es el que implementa el kernel.
+
 > Qué construye la arquitectura. El "por qué" está en `01-orden-filosofico.md`; aquí
 > están las estructuras de datos, las invariantes operativas, las decisiones de runtime
 > y el roadmap. El hilo conductor es una analogía deliberada con el modelo de objetos

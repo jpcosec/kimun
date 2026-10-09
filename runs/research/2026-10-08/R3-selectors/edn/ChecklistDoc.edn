@@ -1,0 +1,66 @@
+{:model/name "ChecklistDoc",
+ :model/version 1,
+ :base ["PrimitiveDoc"],
+ :selector
+ [{:outer-index 0,
+   :outer-type "front_matter",
+   :outer-tag "",
+   :handler :yaml,
+   :markers
+   [{:key "id", :marker {:kind "rev", :traits [], :name "id"}}
+    {:key "status", :marker {:kind "rev", :traits [], :name "status"}}
+    {:key "condition_refs",
+     :marker {:kind "rev", :traits [], :name "condition_refs"}}
+    {:key "mode", :marker {:kind "rev", :traits [], :name "mode"}}
+    {:key "tags", :marker {:kind "rev", :traits [], :name "tags"}}]}
+  {:outer-index 1,
+   :outer-type "heading",
+   :outer-tag "h1",
+   :handler :text,
+   :props ["title"],
+   :props-info [{:kind "rev", :traits [], :name "title"}],
+   :regex "^(.*?)$"}
+  {:outer-index 2,
+   :outer-type "heading",
+   :outer-tag "h2",
+   :handler :text,
+   :anchor true,
+   :props [],
+   :regex "^\\QSummary\\E$"}
+  {:outer-index 3,
+   :outer-type "paragraph",
+   :outer-tag "p",
+   :handler :text,
+   :anchor true,
+   :props [],
+   :regex "^\\Q_Summarize what this checklist proves._\\E$"}
+  {:outer-index 4,
+   :outer-type "paragraph",
+   :outer-tag "p",
+   :handler :text,
+   :props ["summary"],
+   :props-info [{:kind "rev", :traits [], :name "summary"}],
+   :regex "^(.*?)$",
+   :capture :section-body}
+  {:outer-index 5,
+   :outer-type "heading",
+   :outer-tag "h2",
+   :handler :text,
+   :anchor true,
+   :props [],
+   :regex "^\\QItems\\E$"}
+  {:outer-index 6,
+   :outer-type "paragraph",
+   :outer-tag "p",
+   :handler :text,
+   :anchor true,
+   :props [],
+   :regex
+   "^\\Q_List the human-readable checks in this checklist._\\E$"}
+  {:outer-index 7,
+   :outer-type "bullet_list",
+   :outer-tag "ul",
+   :handler :list,
+   :name "items",
+   :marker {:kind "rev", :traits ["list"], :name "items"},
+   :item-template "⸢rev,list•items⸥"}]}

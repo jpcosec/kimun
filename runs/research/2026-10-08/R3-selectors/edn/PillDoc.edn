@@ -1,0 +1,163 @@
+{:model/name "PillDoc",
+ :model/version 1,
+ :base ["OperationalArtifactDoc" "PrimitiveDoc"],
+ :selector
+ [{:outer-index 0,
+   :outer-type "front_matter",
+   :outer-tag "",
+   :handler :yaml,
+   :markers
+   [{:key "id", :marker {:kind "rev", :traits [], :name "id"}}
+    {:key "status",
+     :marker {:kind "optrev", :traits [], :name "status"}}
+    {:key "summary",
+     :marker {:kind "optrev", :traits [], :name "summary"}}
+    {:key "routine",
+     :marker {:kind "optrev", :traits [], :name "routine"}}
+    {:key "current_node",
+     :marker {:kind "optrev", :traits [], :name "current_node"}}
+    {:key "history",
+     :marker {:kind "optrev", :traits ["list"], :name "history"}}
+    {:key "tags", :marker {:kind "rev", :traits [], :name "tags"}}]}
+  {:outer-index 1,
+   :outer-type "heading",
+   :outer-tag "h1",
+   :handler :text,
+   :props ["title"],
+   :props-info [{:kind "rev", :traits [], :name "title"}],
+   :regex "^(.*?)$"}
+  {:outer-index 2,
+   :outer-type "heading",
+   :outer-tag "h2",
+   :handler :text,
+   :anchor true,
+   :props [],
+   :regex "^\\QWhat\\E$"}
+  {:outer-index 3,
+   :outer-type "paragraph",
+   :outer-tag "p",
+   :handler :text,
+   :anchor true,
+   :props [],
+   :regex
+   "^\\Q_Define the context or guardrail this pill carries._\\E$"}
+  {:outer-index 4,
+   :outer-type "paragraph",
+   :outer-tag "p",
+   :handler :text,
+   :props ["what"],
+   :props-info [{:kind "rev", :traits [], :name "what"}],
+   :regex "^(.*?)$",
+   :capture :section-body}
+  {:outer-index 5,
+   :outer-type "heading",
+   :outer-tag "h2",
+   :handler :text,
+   :anchor true,
+   :props [],
+   :regex "^\\QWhy\\E$"}
+  {:outer-index 6,
+   :outer-type "paragraph",
+   :outer-tag "p",
+   :handler :text,
+   :anchor true,
+   :props [],
+   :regex
+   "^\\Q_Explain why this context matters for safe execution._\\E$"}
+  {:outer-index 7,
+   :outer-type "paragraph",
+   :outer-tag "p",
+   :handler :text,
+   :props ["why"],
+   :props-info [{:kind "rev", :traits [], :name "why"}],
+   :regex "^(.*?)$",
+   :capture :section-body}
+  {:outer-index 8,
+   :outer-type "heading",
+   :outer-tag "h2",
+   :handler :text,
+   :anchor true,
+   :props [],
+   :regex "^\\QWhen\\E$"}
+  {:outer-index 9,
+   :outer-type "paragraph",
+   :outer-tag "p",
+   :handler :text,
+   :anchor true,
+   :props [],
+   :regex "^\\Q_Describe when an agent should apply this pill._\\E$"}
+  {:outer-index 10,
+   :outer-type "paragraph",
+   :outer-tag "p",
+   :handler :text,
+   :props ["when"],
+   :props-info [{:kind "rev", :traits [], :name "when"}],
+   :regex "^(.*?)$",
+   :capture :section-body}
+  {:outer-index 11,
+   :outer-type "heading",
+   :outer-tag "h2",
+   :handler :text,
+   :anchor true,
+   :props [],
+   :regex "^\\QWhere\\E$"}
+  {:outer-index 12,
+   :outer-type "paragraph",
+   :outer-tag "p",
+   :handler :text,
+   :anchor true,
+   :props [],
+   :regex
+   "^\\Q_Name the files, surfaces, or scope this pill applies to._\\E$"}
+  {:outer-index 13,
+   :outer-type "paragraph",
+   :outer-tag "p",
+   :handler :text,
+   :props ["where"],
+   :props-info [{:kind "rev", :traits [], :name "where"}],
+   :regex "^(.*?)$",
+   :capture :section-body}
+  {:outer-index 14,
+   :outer-type "heading",
+   :outer-tag "h2",
+   :handler :text,
+   :anchor true,
+   :props [],
+   :regex "^\\QHow\\E$"}
+  {:outer-index 15,
+   :outer-type "paragraph",
+   :outer-tag "p",
+   :handler :text,
+   :anchor true,
+   :props [],
+   :regex "^\\Q_Describe the correct way to apply this guidance._\\E$"}
+  {:outer-index 16,
+   :outer-type "paragraph",
+   :outer-tag "p",
+   :handler :text,
+   :props ["how"],
+   :props-info [{:kind "rev", :traits [], :name "how"}],
+   :regex "^(.*?)$",
+   :capture :section-body}
+  {:outer-index 17,
+   :outer-type "heading",
+   :outer-tag "h2",
+   :handler :text,
+   :anchor true,
+   :props [],
+   :regex "^\\QHow Not\\E$"}
+  {:outer-index 18,
+   :outer-type "paragraph",
+   :outer-tag "p",
+   :handler :text,
+   :anchor true,
+   :props [],
+   :regex "^\\Q_Describe the shortcut or failure mode to avoid._\\E$"}
+  {:outer-index 19,
+   :outer-type "paragraph",
+   :outer-tag "p",
+   :handler :text,
+   :props ["how_not"],
+   :props-info [{:kind "rev", :traits [], :name "how_not"}],
+   :regex "^(.*?)$",
+   :capture :section-body}]}
