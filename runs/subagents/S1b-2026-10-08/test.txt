@@ -2,7 +2,7 @@ rings and docstrings ok: 98 files
 tree-sitter pod: available
 
 Testing kimun.adapters.python-unittest-test
-python unittest: Ran 32 tests in 1.717s | OK (skipped=1)
+python unittest: Ran 32 tests in 1.888s | OK (skipped=1)
 
 Ran 1 tests containing 1 assertions.
 0 failures, 0 errors.
@@ -73,7 +73,7 @@ Ran 12 tests containing 232 assertions.
 0 failures, 0 errors.
 
 Testing kimun.cli.include-test
-moved existing store to /tmp/kimun-test-1791504408628-93058619439179-14684640788569297791/kimun-include-4515556648144825568/.kimun.bak-20261008-210729
+moved existing store to /tmp/kimun-test-1791504780624-93430614707173-14391538172599096456/kimun-include-3589745357480438070/.kimun.bak-20261008-211345
 
 Ran 7 tests containing 37 assertions.
 0 failures, 0 errors.
@@ -124,7 +124,7 @@ Ran 5 tests containing 53 assertions.
 0 failures, 0 errors.
 
 Testing kimun.cli.release-test
-release_test: bundle --version in 278 ms
+release_test: bundle --version in 281 ms
 
 Ran 2 tests containing 32 assertions.
 0 failures, 0 errors.
@@ -560,17 +560,17 @@ Testing kimun.surface.semantic-test
 Ran 13 tests containing 134 assertions.
 0 failures, 0 errors.
 
-Ran 109 namespaces in 110 s
-    22963 ms  kimun.cli.diagnostics-test
-    18974 ms  kimun.kernel.mmap-test
-     5936 ms  kimun.parity.closed-gaps-test
-     5885 ms  kimun.cli.docs-parity-test
-     4665 ms  kimun.cli.adapters-test
-     4515 ms  kimun.cli.release-test
-     3895 ms  kimun.surface.models.segments-test
-     3744 ms  kimun.surface.edges-parity-test
-     3579 ms  kimun.cli.migrate-test
-     3199 ms  kimun.surface.models.segments-parity-test
-     2536 ms  kimun.parity.merkle-promises-test
-     2195 ms  kimun.surface.edges-test
+Ran 109 namespaces in 115 s
+    25362 ms  kimun.cli.diagnostics-test
+    19192 ms  kimun.kernel.mmap-test
+     6078 ms  kimun.cli.docs-parity-test
+     6011 ms  kimun.parity.closed-gaps-test
+     4993 ms  kimun.cli.adapters-test
+     4598 ms  kimun.cli.release-test
+     3822 ms  kimun.surface.models.segments-test
+     3769 ms  kimun.surface.edges-parity-test
+     3628 ms  kimun.cli.migrate-test
+     3219 ms  kimun.surface.models.segments-parity-test
+     2738 ms  kimun.parity.merkle-promises-test
+     2193 ms  kimun.surface.edges-test
 {:test 888, :pass 9577, :fail 0, :error 0, :namespaces 109}
