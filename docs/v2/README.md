@@ -38,7 +38,7 @@ De mayor a menor. Ante contradicción gana el número menor.
 | `11-adaptadores.md` | protocolo 1 de adaptadores (código → documentos) y el grupo `adapters` |
 | `12-ecosistema-y-pendientes.md` | pendientes de kimun, consumidores de v1 y la capa G (`wittgenstein`) |
 | `13-include.md` | `kimun.include.edn`: qué versiona un repo en git y el grupo `include` |
-| `14-juego-del-lenguaje.md` | principios rectores P1–P12, autoridad por clase (S/M/G), contextos, verdad y sentido, conflicto lógico, formato 3 del store, modelos como subgrafos, etapas S/A/C y decisiones 21–32 |
+| `14-juego-del-lenguaje.md` | principios rectores P1–P12, autoridad por clase (S/M/G), contextos, verdad y sentido, conflicto lógico, formato 3 del store, modelos como subgrafos, etapas S/A/C y decisiones 21–39 |
 | `tests/promises.md` | promesa normativa de `02`/`04` → test que la prueba |
 | `tests/parity-v1.md` | marcador de paridad con sldb v1, DAG y desviaciones deliberadas |
 | `09-evaluador-anclado.md` | archivado en `docs/archive/v2/09-evaluador-anclado.md` (no implementado) |
