@@ -79,3 +79,9 @@ Límite (dueño): AST-first; texto, código y otros archivos como conocimiento; 
 - S1c (3fa932c8): store estable sin contenido; registro por documento (anchor + clase + hash raíz + content-hash en el descriptor), op `:register-tree`, caché por hash en `.kimun/cache/`, resolver `doc-tree`. Store 7,88 → 2,51 MB (12.494 → 4.781 objetos); caché 2,3 MB aparte. Verificado: suite, oracle, marcador, rebuild, borrar caché.
 - Fix b4e6be0a: `journal show` fallaba (preexistente desde S1): el mapa vacío no se escribe si la primera revisión tiene contenido; loader lo resuelve como constante, reachable no lo exige ausente.
 - Pendiente del store: plan del build en CAS (907 KB), mmap (708 KB), aristas (489 KB); docs sin modelo (`docs ingest`) aún persisten árbol; packfiles (A4) para el bloque de 4 KB; paso 3: mover modelos/grafo a paquete aparte (`kimun.graph.*`) con regla de anillo.
+
+## 2026-10-09 ~15:00 — cierre de la jornada
+- Auditoría completa (L1–L4) y correcciones (F1–F4) mergeadas; ramas y worktrees cerrados; spec15/A4 rescatados en runs/research y borrados.
+- Revisión de codex (superset de Wittgenstein) commiteada con respuesta; nodos nuevos en 12 §1; D0 (a/b) y D-G pendientes del dueño.
+- Bugs: verify enmascarado por el caché (StoredObjects), árboles cacheados por descriptor, test aleatorio inestable, /tmp inundado por corridas ad hoc. Todo con tests.
+- origin/main = bd5eb4f7; suite 890/0; oracle 9/9; paridad 518, 0 brechas.
