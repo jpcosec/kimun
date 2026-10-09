@@ -438,3 +438,27 @@ Reglas:
    store lo sabe y se reconcilia; no se guarda una copia "por si acaso".
 3. El grafo es un **paquete aparte** de la base de kimun: la base (store estable + caché) no depende
    de modelos ni de G; el grafo depende de la base.
+
+## 20. Trackeable, trackeado y el Merkle de reconciliación (2026-10-09)
+
+Principio del dueño.
+
+1. **Trackeable** es la colección de todos los anchors posibles (todos los archivos del ambiente y
+   todos los nodos de su estructura). **Trackeado** es lo que alimenta el grafo de la KB: la
+   proyección que indexa el modelo de anclaje.
+2. **El Merkle del store estable es sobre lo trackeado.** Si cambia algo trackeado, el hash sube
+   hasta la raíz y se puede bajar solo por la rama que cambió, para **reconciliar localmente** sin
+   recalcular el resto.
+3. **Del árbol de un documento solo se guarda (y se hashea) la proyección que indexa lo trackeado.**
+   El resto es ruido: no se guarda ni se hashea. El fingerprint del archivo basta para saber que lo
+   trackeable cambió; el hash de la proyección dice si cambió lo trackeado.
+
+Diagnóstico del formato 4 (2026-10-09, este repo): el store (2,51 MB) se compone de (a) el **plan
+del build** (907 KB), la receta de la transacción, que duplica los objetos que produce; (b) el
+**índice mmap** (708 KB), un trie Merkle por revisión ordenado por **ids internos** (no por lo
+trackeado), que no localiza un cambio en términos de documento/campo; (c) **tres aristas por
+documento** (489 KB: `reference`→modelo, `derived`→modelo, `reference`→archivo) que dicen lo mismo
+("D es instancia de la clase X, anclado al archivo F") con hashes repetidos. Propuesta en discusión:
+árbol Merkle por ruta (como git), con una entrada por documento `{fingerprint, clase, hash de la
+proyección}` y los campos trackeados como hojas; revisiones apuntando a la raíz; sin plan en el CAS,
+sin trie por ids, sin las tres aristas.
