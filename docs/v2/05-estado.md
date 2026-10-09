@@ -97,14 +97,14 @@ documento y el plan resuelto del build siguen en el CAS (`12 §1`).
 | 21 | **autoridad por clase** (2026-10-08): bytes → archivo (+git); estructura → pool como caché verificable; hechos → pool, decisiones humanas además como documentos. Revisa `01 §4.1` | `14 §2` |
 | 22 | todo hecho vive en un `W_i`; contexto por defecto = el documento `source`; ruteo entre contextos solo por proyecciones promovidas | `14 §3` |
 | 23 | `R`, `A`, `B` son posiciones en taxonomías con herencia; las propiedades algebraicas de `R` se declaran por contexto; el vocabulario `L_i` es un documento `source` | `14 §4` |
-| 24 | afirmación = `:status` en evidencia de arista `projection`; `V`/`S` índice derivado por `(hecho, W_i)`; nada pasa a `TRUE` sin decisión registrada | `14 §5` |
+| 24 | **(EN REVISIÓN, ver `drafts/capa-g-dudas.md`)** afirmación = `:status` en evidencia de arista `projection`; `V`/`S` índice derivado por `(hecho, W_i)`; nada pasa a `TRUE` sin decisión registrada | `14 §5` |
 | 25 | conflicto lógico = propuesta fuera del pool; se resuelve por transacción; nunca en silencio | `14 §6` |
 | 26 | cada `W_i` se evalúa como matrices booleanas por relación; índices derivados; nunca `p×p` global; motor = implementación | `14 §8` |
 | 27 | **formato 3 del store**: sin copia verbatim; contenido por referencia con `inline` por caso; árbol estructural como caché; log como caché bajo `:git :ignore`; decisiones humanas como documentos | `14 §10` |
 | 28 | modelo = símbolo-tipo + selector + proyecciones; el template de v1 es un caso especial; la paridad v1 es su regresión | `14 §9` |
 | 29 | tree-sitter como pod es el parser de la capa M, por fases; SLDB-MD sigue como perfil cerrado; `blocks.cljc` como oráculo hasta paridad byte a byte | `14 §11`, spike R2 |
 | 30 | Datalog para la consulta de G; Datalevin (pod) candidato con respaldo in-process; índice G derivado | `14 §8`, spike R1 |
-| 31 | salida de prompt = `proposed` por defecto; políticas de promoción por store/contexto (harness) | `14 §7` |
+| 31 | **(EN REVISIÓN, ver `drafts/capa-g-dudas.md`)** salida de prompt = `proposed` por defecto; políticas de promoción por store/contexto (harness) | `14 §7` |
 | 32 | unidad de anclaje = hoja + grafemas NFC | `14 §7` |
 | 33 | unidad de escritura = revisión por acción + log de hechos en flujo consolidado | `14 §12` |
 | 34 | transversales de primera clase = pack mínimo de autodescripción (clase de datos, procedencia, contexto, kimun mismo); texto y código | `14 §12`, `§16 P13` |
