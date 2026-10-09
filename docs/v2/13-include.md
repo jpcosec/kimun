@@ -72,19 +72,18 @@ que lo mueve a `<store>.bak-<marca>`.
 
 ```clojure
 :store {:path ".kimun" :git :ignore}
-:models ["desk/models/*.edn"]          ; 17 modelos
+:models []      ; los modelos del desk se retiraron el 2026-10-09 (docs/archive/desk/README.md)
+:documents []
 ```
 
-Declara 539 documentos con **una regla por directorio**: en cada directorio
-todos los documentos comparten modelo, así que basta
-`desk/atoms/**/*.md`, `desk/tasks/**/*.md`, etc. Donde solo parte del
-directorio necesita `:force`, `:force` es el conjunto de rutas (185 átomos); donde todo lo
-necesita, la regla lleva `:force true` (inbox y tasks).
-
-Los ficheros que git sigue en esos directorios pero que **no** son documentos
-del mundo kimun se enumeran en `:exclude` (`desk/atoms/testing.md`,
-`desk/tasks/Board.md` y dos notas viejas de `desk/inbox`): excluidos, no
-producen hallazgo aunque sigan en git.
+El 2026-10-09 el dueño ordenó borrar los modelos del desk en vez de arreglarlos ("lo que
+importa es dejar una versión estable; los podemos generar después"): `desk/models/*.edn` ya no
+existe y spec 16 los regenerará (`docs/v2/12 §1`, Funciones/Modelos). El formato 1 exige `:model`
+en cada regla de `:documents` y no admite documentos sin modelo
+(`src/kimun/surface/include.cljc`), así que la versión estable es un include vacío: sin modelos y
+sin documentos, con los `.md` de `desk/` todavía en git. Los 33 atoms `epoch:v2`, los 21
+checklists de los 7 tasks activos y el resto de `desk/` no entran al store hasta que vuelva a
+haber modelos.
 
 El store es `.kimun/`, ignorado (`.gitignore`, bloque gestionado) y construido
 al vuelo:

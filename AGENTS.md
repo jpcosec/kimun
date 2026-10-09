@@ -47,8 +47,9 @@ correction in `docs/v2/drafts/capa-g-dudas.md`) and the paused packfiles work ar
   format 4 keeps document trees in a recomputable cache) plus the Markdown, models and query
   surfaces. The graph (models, G layer) is meant to become a separate package (`12 §1`). `sldb` v1 and `kgdb` are frozen and superseded by it.
 - The desk is a kimun store at `.kimun/`, never committed. Build it with
-  `bin/kimun include build` (alias `bb desk`) from `kimun.include.edn` and
-  `desk/models/*.edn`.
+  `bin/kimun include build` (alias `bb desk`) from `kimun.include.edn`. The desk models
+  (`desk/models/*.edn`) were retired on 2026-10-09 (`docs/archive/desk/README.md`): the include
+  declares no models or documents until spec 16 regenerates them (`12 §1`, Funciones/Modelos).
 - Manage the desk with kimun commands (`docs`, `fields`, `find`, `journal`), not with the
   deskops CLI.
 - Work is executed by herdr pi workers.

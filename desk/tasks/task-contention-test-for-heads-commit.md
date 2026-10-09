@@ -1,16 +1,17 @@
 ---
 id: task-contention-test-for-heads-commit
 status: active
-summary: ''
+summary: 'Exercise kimun.kernel.heads/commit! under concurrent writers; a base test already lands disjoint trees.'
 tags:
 - workspace:desk
 - artifact:task
-- source:drawer
+- source:audit
 routine: routine-task-contention-test-for-heads-commit
 current_node: checklist-task-contention-test-for-heads-commit-execution-ready
 history: []
 references:
-- desk/drawer/tasks/task-contention-test-for-heads-commit.md
+- src/kimun/kernel/heads.cljc
+- test/kimun/kernel/hardening_test.cljc
 depends_on: []
 pills: []
 files: []
@@ -36,19 +37,19 @@ Not provided.
 
 _Describe the concrete result this task must produce._
 
-Triage and resolve the inbox message promoted from `desk/inbox/20260829-174024-suggestion-contention-test-for-heads-commit.md`.
+Prove the CAS retry and ConflictSet paths of the heads commit under real concurrent writers.
 
 ## Scope
 
 _State what is in scope and what is out of scope._
 
-Exercise sldb.kernel.heads/commit! under real concurrent writers (futures on JVM, separate bb processes on the file backend) and prove the CAS retry and ConflictSet paths; also two processes committing to the same directory.
+Exercise `kimun.kernel.heads/commit!` (decision 20 renames `sldb.kernel.heads`) under real concurrent writers (futures on the JVM, separate bb processes on the file backend) and prove the CAS retry and ConflictSet paths, including two processes committing to the same directory. There is already `concurrent-commits-on-disjoint-trees-all-land` in `test/kimun/kernel/hardening_test.cljc`; check its real coverage before extending.
 
 ## Implementation Path
 
 _Outline the expected implementation route or affected surface._
 
-Promoted from desk/drawer/tasks/task-contention-test-for-heads-commit.md.
+`src/kimun/kernel/heads.cljc`; `test/kimun/kernel/hardening_test.cljc`.
 
 ## Validation
 
@@ -61,4 +62,4 @@ _List the checks required before this task can close._
 
 _Name the observable condition that makes the task complete._
 
-Promoted work is completed, validated, and closed with a commit.
+Concurrent commits to the same tree are serialised by compare-and-swap with no lost update, and the conflict path is covered by a test.

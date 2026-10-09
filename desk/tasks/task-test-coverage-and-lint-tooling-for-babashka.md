@@ -1,16 +1,17 @@
 ---
 id: task-test-coverage-and-lint-tooling-for-babashka
 status: active
-summary: ''
+summary: 'Lint done (`bb lint` = scripts/check_rings.clj, rings + docstrings); pending coverage and a JVM run of the suite.'
 tags:
 - workspace:desk
 - artifact:task
-- source:drawer
+- source:audit
 routine: routine-task-test-coverage-and-lint-tooling-for-babashka
 current_node: checklist-task-test-coverage-and-lint-tooling-for-babashka-execution-ready
-history: []
+history: ["2026-10-09: lint part done — `bb lint` exists (scripts/check_rings.clj) and is not clj-kondo; coverage/JVM remain."]
 references:
-- desk/drawer/tasks/task-test-coverage-and-lint-tooling-for-babashka.md
+- bb.edn
+- scripts/check_rings.clj
 depends_on: []
 pills: []
 files: []
@@ -36,19 +37,19 @@ Not provided.
 
 _Describe the concrete result this task must produce._
 
-Triage and resolve the inbox message promoted from `desk/inbox/20260829-174024-suggestion-test-coverage-and-lint-tooling-for-babashka.md`.
+A coverage measure for the suite and a JVM run of the same tests.
 
 ## Scope
 
 _State what is in scope and what is out of scope._
 
-Evaluate clj-kondo (lint), cloverage or a bb-compatible coverage approach, and a JVM run of the suite (needs the clojure CLI, absent on this machine) so that the same tests run on JVM and bb.
+Done: lint. `bb lint` exists (`scripts/check_rings.clj`: dependency rings + docstrings, docs/v2/03 §1/§3), but it is **not** clj-kondo and there is no `.clj-kondo/`. Pending: cloverage or a bb-compatible coverage approach, and a JVM run of the suite (needs the clojure CLI, absent on this machine) so the same tests run on JVM and bb.
 
 ## Implementation Path
 
 _Outline the expected implementation route or affected surface._
 
-Promoted from desk/drawer/tasks/task-test-coverage-and-lint-tooling-for-babashka.md.
+`bb.edn` (`test` depends on `lint`); coverage tooling; a JVM entry point.
 
 ## Validation
 
@@ -56,9 +57,11 @@ _List the checks required before this task can close._
 
 - bb lint
 - bb test
+- coverage report produced
+- the suite runs green on the JVM with the clojure CLI
 
 ## Done When
 
 _Name the observable condition that makes the task complete._
 
-Promoted work is completed, validated, and closed with a commit.
+Coverage is reported and the suite passes on both bb and the JVM.

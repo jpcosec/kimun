@@ -1,16 +1,17 @@
 ---
 id: task-node-host-parity-for-the-v2-kernel
 status: active
-summary: ''
+summary: 'Node/ClojureScript parity is deferred by decision 14 (drawer/UI); if retaken, use kimun.host.*.'
 tags:
 - workspace:desk
 - artifact:task
-- source:drawer
+- source:audit
 routine: routine-task-node-host-parity-for-the-v2-kernel
 current_node: checklist-task-node-host-parity-for-the-v2-kernel-execution-ready
 history: []
 references:
-- desk/drawer/tasks/task-node-host-parity-for-the-v2-kernel.md
+- docs/v2/05-estado.md
+- docs/v2/02-sustrato-computacional.md
 depends_on: []
 pills: []
 files: []
@@ -36,19 +37,19 @@ Not provided.
 
 _Describe the concrete result this task must produce._
 
-Triage and resolve the inbox message promoted from `desk/inbox/20260829-174021-suggestion-node-host-parity-for-the-v2-kernel.md`.
+If the Node host is ever retaken, the whole suite runs on ClojureScript/Node and the golden fixtures yield identical ids on both hosts.
 
 ## Scope
 
 _State what is in scope and what is out of scope._
 
-Run the whole bb suite on ClojureScript/Node (nbb or shadow-cljs): implement sldb.host.* cljs branches (hash via crypto, NFC via String.normalize, ulid via crypto.randomBytes, fs-store via fs), prove the golden fixtures yield identical ids on both hosts. Deferred from the first slice (docs/v2/02 section 8.1).
+Deferred by decision 14: Babashka is the definitive host and Node parity stays in the drawer (UI), so this task is not active work. If retaken: implement `kimun.host.*` cljs branches (hash via crypto, NFC via `String.normalize`, ulid via `crypto.randomBytes`, fs-store via `fs`) — decision 20 renames `sldb.host.*` to `kimun.host.*`.
 
 ## Implementation Path
 
 _Outline the expected implementation route or affected surface._
 
-Promoted from desk/drawer/tasks/task-node-host-parity-for-the-v2-kernel.md.
+`src/kimun/host/*.cljc` reader conditionals; the golden fixtures under `test/fixtures/`.
 
 ## Validation
 
@@ -56,9 +57,10 @@ _List the checks required before this task can close._
 
 - bb lint
 - bb test
+- the suite on ClojureScript/Node (nbb or shadow-cljs) with identical ids
 
 ## Done When
 
 _Name the observable condition that makes the task complete._
 
-Promoted work is completed, validated, and closed with a commit.
+The golden fixtures produce identical ids on Babashka and Node.
