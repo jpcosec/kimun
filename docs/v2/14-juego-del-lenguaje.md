@@ -411,3 +411,11 @@ Principio del dueño; gobierna los modelos (revisa §9) y el registro del store 
    - **en anclaje**, porque no hay nada anclado a él;
    - **en generación**, porque es una fórmula sobre el AST desde el que se genera, o un string fijo.
    No hace falta marcar documentos ni subclases para "ignorar" un párrafo.
+9. **Documentos source y documentos generados.** La autoridad depende de la dirección:
+   - **source (anclado):** el archivo es la verdad; el store guarda su anchor y solo los nodos con algo
+     anclado (§18.6, §18.8).
+   - **generado:** la verdad son los **datos de la instancia** (valores de campos, relaciones) más su
+     modelo de generación; el archivo es una proyección regenerable. El store guarda esos datos; el
+     árbol del archivo es salida de la generación, no se registra.
+   - El desk de este repo es **generado** (deskops escribe sus documentos): su store no baja de tamaño
+     por anclaje selectivo, sino por dejar de registrar el árbol y las instrucciones de armado.
