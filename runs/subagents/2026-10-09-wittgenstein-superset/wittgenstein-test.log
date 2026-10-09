@@ -1,0 +1,313 @@
+/home/jp/anaconda3/lib/python3.13/site-packages/pytest_asyncio/plugin.py:252: PytestDeprecationWarning: The configuration option "asyncio_default_fixture_loop_scope" is unset.
+The event loop scope for asynchronous fixtures will default to the fixture caching scope. Future versions of pytest-asyncio will default the loop scope for asynchronous fixtures to function scope. Set the default fixture loop scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: "function", "class", "module", "package", "session"
+
+  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))
+
+==================================== ERRORS ====================================
+___________ ERROR collecting matrix/tests/test_bitwise_execution.py ____________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_bitwise_execution.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_bitwise_execution'
+______________ ERROR collecting matrix/tests/test_block_matrix.py ______________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_block_matrix.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_block_matrix'
+_______________ ERROR collecting matrix/tests/test_bool_mult.py ________________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_bool_mult.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_bool_mult'
+____________ ERROR collecting matrix/tests/test_boolean_algebra.py _____________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_boolean_algebra.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_boolean_algebra'
+___________ ERROR collecting matrix/tests/test_boolean_functions.py ____________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_boolean_functions.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_boolean_functions'
+__________ ERROR collecting matrix/tests/test_boolean_subsumption.py ___________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_boolean_subsumption.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_boolean_subsumption'
+_______________ ERROR collecting matrix/tests/test_candidates.py _______________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_candidates.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_candidates'
+___________ ERROR collecting matrix/tests/test_cross_world_rules.py ____________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_cross_world_rules.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_cross_world_rules'
+_______________ ERROR collecting matrix/tests/test_deduction.py ________________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_deduction.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_deduction'
+__________ ERROR collecting matrix/tests/test_dimensional_collapse.py __________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_dimensional_collapse.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_dimensional_collapse'
+________________ ERROR collecting matrix/tests/test_evidence.py ________________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_evidence.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_evidence'
+___________ ERROR collecting matrix/tests/test_evidence_roundtrip.py ___________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_evidence_roundtrip.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_evidence_roundtrip'
+___________ ERROR collecting matrix/tests/test_information_energy.py ___________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_information_energy.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_information_energy'
+___________ ERROR collecting matrix/tests/test_operational_model.py ____________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_operational_model.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_operational_model'
+_______________ ERROR collecting matrix/tests/test_owl2matrix.py _______________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_owl2matrix.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_owl2matrix'
+________ ERROR collecting matrix/tests/test_propositional_evaluator.py _________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_propositional_evaluator.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_propositional_evaluator'
+_________ ERROR collecting matrix/tests/test_propositional_grammar.py __________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_propositional_grammar.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_propositional_grammar'
+________ ERROR collecting matrix/tests/test_propositional_inference.py _________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_propositional_inference.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_propositional_inference'
+_______ ERROR collecting matrix/tests/test_propositional_normal_forms.py _______
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_propositional_normal_forms.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_propositional_normal_forms'
+_________ ERROR collecting matrix/tests/test_propositional_rewrites.py _________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_propositional_rewrites.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_propositional_rewrites'
+___________ ERROR collecting matrix/tests/test_recursive_routing.py ____________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_recursive_routing.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_recursive_routing'
+____________ ERROR collecting matrix/tests/test_relation_algebra.py ____________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_relation_algebra.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_relation_algebra'
+___________ ERROR collecting matrix/tests/test_relation_identity.py ____________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_relation_identity.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_relation_identity'
+___________ ERROR collecting matrix/tests/test_relation_semantics.py ___________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_relation_semantics.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_relation_semantics'
+__________ ERROR collecting matrix/tests/test_relation_validation.py ___________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_relation_validation.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_relation_validation'
+__________ ERROR collecting matrix/tests/test_rule_matrix_compiler.py __________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_rule_matrix_compiler.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_rule_matrix_compiler'
+____________ ERROR collecting matrix/tests/test_runtime_curation.py ____________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_runtime_curation.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_runtime_curation'
+__________ ERROR collecting matrix/tests/test_s_expression_runtime.py __________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_s_expression_runtime.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_s_expression_runtime'
+________ ERROR collecting matrix/tests/test_serialization_roundtrip.py _________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_serialization_roundtrip.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_serialization_roundtrip'
+_____________ ERROR collecting matrix/tests/test_shrdlu_dialog.py ______________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_shrdlu_dialog.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_shrdlu_dialog'
+_________ ERROR collecting matrix/tests/test_shrdlu_english_parser.py __________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_shrdlu_english_parser.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_shrdlu_english_parser'
+_____________ ERROR collecting matrix/tests/test_shrdlu_lexicon.py _____________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_shrdlu_lexicon.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_shrdlu_lexicon'
+____________ ERROR collecting matrix/tests/test_shrdlu_lowering.py _____________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_shrdlu_lowering.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_shrdlu_lowering'
+______________ ERROR collecting matrix/tests/test_shrdlu_repl.py _______________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_shrdlu_repl.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_shrdlu_repl'
+_____________ ERROR collecting matrix/tests/test_shrdlu_spanish.py _____________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_shrdlu_spanish.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_shrdlu_spanish'
+___________ ERROR collecting matrix/tests/test_status_evaluation.py ____________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_status_evaluation.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_status_evaluation'
+_____________ ERROR collecting matrix/tests/test_symbol_kernel.py ______________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_symbol_kernel.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_symbol_kernel'
+____________ ERROR collecting matrix/tests/test_typed_assertions.py ____________
+ImportError while importing test module '/home/jp/proyectos/wittgenstein/matrix-shrdlu-spec/matrix/tests/test_typed_assertions.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/jp/anaconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+E   ModuleNotFoundError: No module named 'tests.test_typed_assertions'
+=========================== short test summary info ============================
+ERROR matrix/tests/test_bitwise_execution.py
+ERROR matrix/tests/test_block_matrix.py
+ERROR matrix/tests/test_bool_mult.py
+ERROR matrix/tests/test_boolean_algebra.py
+ERROR matrix/tests/test_boolean_functions.py
+ERROR matrix/tests/test_boolean_subsumption.py
+ERROR matrix/tests/test_candidates.py
+ERROR matrix/tests/test_cross_world_rules.py
+ERROR matrix/tests/test_deduction.py
+ERROR matrix/tests/test_dimensional_collapse.py
+ERROR matrix/tests/test_evidence.py
+ERROR matrix/tests/test_evidence_roundtrip.py
+ERROR matrix/tests/test_information_energy.py
+ERROR matrix/tests/test_operational_model.py
+ERROR matrix/tests/test_owl2matrix.py
+ERROR matrix/tests/test_propositional_evaluator.py
+ERROR matrix/tests/test_propositional_grammar.py
+ERROR matrix/tests/test_propositional_inference.py
+ERROR matrix/tests/test_propositional_normal_forms.py
+ERROR matrix/tests/test_propositional_rewrites.py
+ERROR matrix/tests/test_recursive_routing.py
+ERROR matrix/tests/test_relation_algebra.py
+ERROR matrix/tests/test_relation_identity.py
+ERROR matrix/tests/test_relation_semantics.py
+ERROR matrix/tests/test_relation_validation.py
+ERROR matrix/tests/test_rule_matrix_compiler.py
+ERROR matrix/tests/test_runtime_curation.py
+ERROR matrix/tests/test_s_expression_runtime.py
+ERROR matrix/tests/test_serialization_roundtrip.py
+ERROR matrix/tests/test_shrdlu_dialog.py
+ERROR matrix/tests/test_shrdlu_english_parser.py
+ERROR matrix/tests/test_shrdlu_lexicon.py
+ERROR matrix/tests/test_shrdlu_lowering.py
+ERROR matrix/tests/test_shrdlu_repl.py
+ERROR matrix/tests/test_shrdlu_spanish.py
+ERROR matrix/tests/test_status_evaluation.py
+ERROR matrix/tests/test_symbol_kernel.py
+ERROR matrix/tests/test_typed_assertions.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 38 errors during collection !!!!!!!!!!!!!!!!!!!
+38 errors in 1.34s

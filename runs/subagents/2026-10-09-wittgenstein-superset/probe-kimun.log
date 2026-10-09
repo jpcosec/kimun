@@ -1,0 +1,3 @@
+{:probe :replace-shared-node, :old "60b27a3f46971a7d6ec4966e25ff1673029ca35ba22ba7e027426ebb2b589178", :new "ee3262ad2d9bedc1d6c87176fd0a69e6d582664a430e2c7eac49d3b38a8abb59", :references [{:from "c81f8595f55b5b317e108b76757d15ad497458a158d51c8c24885e4a08cc3490", :to "60b27a3f46971a7d6ec4966e25ff1673029ca35ba22ba7e027426ebb2b589178"} {:from "c81f8595f55b5b317e108b76757d15ad497458a158d51c8c24885e4a08cc3490", :to "ee3262ad2d9bedc1d6c87176fd0a69e6d582664a430e2c7eac49d3b38a8abb59"}], :note "Reference successor created without any occurrence qualifier."}
+{:probe :nested-proposition, :accepted false, :error :node/invalid}
+{:probe :context-free-term, :same-id true, :note "Default shape requires name/lang, no declaration context."}

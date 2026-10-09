@@ -1,0 +1,4 @@
+{"probe": "fact_without_citation", "accepted": true, "evidence": {"tier": "observed", "curation": "confirmed", "history": []}}
+{"probe": "ask_after_unsinnig", "sense": "unsinnig", "answer": {"relation": "r", "subject": "a@ctx", "path": ["wigame:ctx:r"], "objects": [{"symbol": "b@ctx", "ctx": "ctx", "signs": ["b@ctx"], "prov": []}]}, "truth": "true"}
+{"probe": "ask_explicit_false", "cell": "false", "truth": "∅"}
+{"probe": "llm_ingest_evidence", "evidence": {"tier": "observed", "curation": "confirmed", "prov": [{"document_id": "source.md", "span": [0, 1], "extractor": "decompose/llm", "confidence": 1.0}]}}

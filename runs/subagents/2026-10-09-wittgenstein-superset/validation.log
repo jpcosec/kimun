@@ -1,0 +1,32 @@
+Validation closeout — 2026-10-09
+No product implementation changed; passing baselines and review evidence only.
+Initial Kimun HEAD: 89b0300d; final source snapshot: 3d090411.
+Failed combined pytest collection preserved separately; corrected invocations passed.
+
+kimun-test.log
+rings and docstrings ok: 99 files
+tree-sitter pod: available
+{:test 889, :pass 9580, :fail 0, :error 0, :namespaces 109}
+
+kimun-oracle.log
+ok  fact/context 146e6ca533092558…
+9 rows, 0 mismatches
+
+wittgenstein-pipeline-test.log
+.............................................................            [100%]
+132 passed, 1 skipped in 24.33s
+
+wittgenstein-engine-test.log
+...................................                                      [100%]
+179 passed in 1.74s
+
+wittgenstein-secondary-test.log
+................................................................         [100%]
+64 passed in 0.27s
+
+kimun-include-final-test.log
+Ran 7 tests containing 40 assertions.
+0 failures, 0 errors.
+
+kimun-include-check.log
+ok=true; all findings=0
