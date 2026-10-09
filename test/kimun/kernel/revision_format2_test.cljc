@@ -359,3 +359,20 @@
        (is (= (sort (keys (:trees s2))) (rev/tree-ids s2)))
        (is (every? (fn [[tid t]] (= [(tree/descriptor-id h (:descriptor t)) (tree/merkle-root t)] (rev/tree-entry s2 tid))) (:trees s2)))
        (is (= :plan/conflict (check-of #(store/commit! b s2 (:concurrent-plan fx2)))) "conflict detection of the legacy engine"))))
+
+(deftest diff-of-a-first-revision-with-content-resolves-the-empty-map
+  ;; The parent of a first revision is the empty map, a constant `init!` does not
+  ;; write and `apply-plan` writes only when some map of the revision is empty.
+  ;; One revision per build (docs/v2/14 §10) leaves all three maps non-empty, so
+  ;; the empty map is never in the CAS; `diff`/`journal show` must still resolve it.
+  (let [dir (str (ktu/temp-dir "kimun-first-rev-"))
+        b (fs/backend dir)
+        fx (edn/read-string (slurp "test/fixtures/tx-001.edn"))
+        s0 (store/init! b h (get-in fx [:store :capabilities]))
+        head (:head (:store (store/commit! b s0 (:plan fx))))
+        reopened (store/open b h)
+        empty-id (:root (mmap/empty h))]
+    (is (nil? (store/read-object b empty-id)) "precondition: the empty map is not in the CAS")
+    (let [d (rev/diff reopened nil head)]
+      (is (seq (:trees d)) "the first revision diffs against the empty map"))
+    (is (:ok? (store/verify b reopened)) "absent, the constant empty map is not damage")))

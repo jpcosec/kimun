@@ -462,10 +462,15 @@
    Never raises on damaged content: an id that a format-2 structure names but
    that is absent or unreadable IS in the result (so `verify` reports it) and
    the walk goes on with what it can still read; what was reachable only
-   through an unreadable object is not in the result."
+   through an unreadable object is not in the result. The empty map, a constant
+   (`revision/loader`), is not required in the CAS: absent, it is not reported."
   [store]
   (let [objs (:objects store)
-        cached (err/rescue-any (fn [_] #{}) (revision/cached-tree-roots store))]
+        cached (err/rescue-any (fn [_] #{}) (revision/cached-tree-roots store))
+        ;; the empty map is a constant the loader resolves without the CAS (revision/loader):
+        ;; ABSENT it is not damage; present but unreadable or altered it is reported as usual
+        empty-id (:root (mmap/empty (:host store)))
+        absent? (fn [id] (not (err/rescue-any (fn [_] true) (contains? objs id))))]
     ;; format 2: the per-tree heads through the nodes of the heads mmap (a damaged one is
     ;; reported like any other, never raised while enumerating a view); format 1: the :heads map
     (loop [todo (if-let [r (:heads-root store)]
@@ -481,6 +486,7 @@
               (cond
                 (and (= :tree-hash kind) (contains? cached id)) (recur more seen)
                 (and (nil? o) (= :soft kind)) (recur more seen)
+                (and (nil? o) (= empty-id id) (absent? id)) (recur more seen)
                 (nil? o) (recur more (conj seen id))
                 :else (recur (into more (err/rescue-any (fn [_] []) (vec (references o kind)))) (conj seen id))))))))))
 

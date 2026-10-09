@@ -79,12 +79,12 @@
 ;; ---------------------------------------------------------------- accessors
 
 (defn- loader
-  "id -> mmap node over `get-object`. The empty map of a store without
-   revisions is not in the CAS yet (the first revision writes it)."
+  "id -> mmap node over `get-object`. The empty map is a constant: it resolves
+   even when it is not in the CAS, which happens whenever no revision references
+   it (a store without revisions, or one whose first revision already has
+   content). `roots` falls back to it for the parent of the first revision."
   [store]
-  (if (:head store)
-    #(get-object store %)
-    (let [e (:new (mmap/empty (:host store)))] #(or (get-object store %) (get e %)))))
+  (let [e (:new (mmap/empty (:host store)))] #(or (get-object store %) (get e %))))
 
 (defn- roots
   "{:trees :edges :incidence} mmap roots of `rev-id` (the empty maps when nil/unknown)."
