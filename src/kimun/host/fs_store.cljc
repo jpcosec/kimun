@@ -174,7 +174,11 @@
                       (let [new-text (pr-str new)]
                         (write-atomic! hp new-text)
                         (reset! heads-memo {:text new-text :value new}))
-                      true))))))))
+                      true)))))))
+  store/StoredObjects
+  (read-stored-object [_ id]
+    ;; verify reads here: a cached copy must never stand in for a stored object
+    #?(:clj (read-text (path dir "objects" id)))))
 
 (defn backend
   "A files backend rooted at `dir`, with its own empty object cache and heads

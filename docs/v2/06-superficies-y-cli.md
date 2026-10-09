@@ -42,7 +42,7 @@ Códigos de salida (`kimun.cli.errors`): 0 ok, 1 `missing`/`empty`, 2 `ambiguous
 | 0 | ok |
 | 1 | `*/missing` o `*/empty` por nombre (`find/empty`, `graph/empty`, `links/missing`, `docs/missing`, `models/no-file`, `eval/missing`) |
 | 2 | `*/ambiguous` |
-| 3 | namespaces `query` `models` `validate` `docs` `fields` `sections` `find` `graph` `edges` `semantic` `include`; `:plan/rejected` salvo chequeo de capability |
+| 3 | namespaces `query` `models` `validate` `docs` `fields` `sections` `find` `graph` `edges` `semantic` `include` `links`; `:plan/rejected` salvo chequeo de capability |
 | 4 | `*/conflict`, `*/stale`, `plan/conflict`, `store/stale`, `store/busy` |
 | 5 | namespaces `store` `markdown` `index` `journal` `migrate` `serve` `adapters`; `cli/no-store`, `cli/store-exists` |
 | 6 | `cli/usage`, `org.babashka/cli`, `eval/not-available` |

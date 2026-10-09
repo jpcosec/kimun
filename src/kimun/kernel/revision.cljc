@@ -188,19 +188,6 @@
     (map (fn [[tid [desc-id _]]] [tid (get-object store desc-id)])
          (sort-by first (mmap/entries (loader store) (:trees (roots store (:head store))))))))
 
-(defn cached-tree-roots
-  "Set of the merkle roots of every tree of the head whose descriptor is marked
-   `:cached?` (docs/v2/14 §18.6): its tree objects and block/text nodes live in
-   the store cache, not in the CAS, so verification must treat them as derived.
-   Reads one descriptor per tree; used by `kimun.kernel.store/reachable`."
-  [store]
-  (if (legacy? store)
-    #{}
-    (into #{}
-          (keep (fn [[_ [desc-id merkle]]]
-                  (when (true? (:cached? (get-object store desc-id))) merkle)))
-          (mmap/entries (loader store) (:trees (roots store (:head store)))))))
-
 (defn load-tree
   "Committed tree {:tree :descriptor :root} of `tid` at `rev-id`, rebuilt from
    the CAS (loads the tree objects of that one tree); nil when absent. Equal to

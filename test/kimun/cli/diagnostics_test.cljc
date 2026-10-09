@@ -212,7 +212,10 @@
   (let [p0 (project)
         s (:store (cli-store/open! (file p0 ".kimun")))
         heads #{(:head s) (:heads-root s)}
-        candidates (vec (remove heads (sort (store/reachable s))))]
+        ;; the empty mmap is a constant the loader resolves without the CAS: deleting
+        ;; it is not damage (kimun.kernel.revision/loader), so it is no victim here
+        empty-map (:root (mmap/empty (:host s)))
+        candidates (vec (remove (conj heads empty-map) (sort (store/reachable s))))]
     (doseq [id (take 6 (shuffle candidates))]
       (let [p (damaged-copy p0 id (rand-nth [:altered :unparseable :deleted]))
             e (run p "stores" "check")
@@ -318,3 +321,19 @@
       (is (every? #(str/includes? (:message w) %) ["structural noise" "noisy" "NoteDoc" "## Entidades" "## Medicion 1"])
           "every noisy heading is named, not just counted")
       (is (str/includes? (get-in e [:data :documents :summary]) "1 noisy")))))
+
+(deftest check-reports-a-stored-object-even-when-the-cache-holds-a-copy
+  ;; Format 4 keeps a document's tree in <store>/cache/ and the files backend
+  ;; reads the cache as a fallback; an object the store must hold (here the
+  ;; document root, referenced by edges) can also be in the cache. Deleting it
+  ;; from objects/ must still be reported: verify reads the store, never the cache.
+  (let [p0 (project)
+        objs (set (map str (fs/list-dir (file p0 ".kimun" "objects"))))
+        cached (->> (fs/list-dir (file p0 ".kimun" "cache" "objects")) (map fs/file-name) set)
+        both (sort (filter #(contains? cached %) (map #(str (fs/file-name %)) objs)))]
+    (is (seq both) "precondition: some stored object also lives in the cache")
+    (let [id (first both)
+          p (damaged-copy p0 id :deleted)
+          e (run p "stores" "check")]
+      (is (false? (get-in e [:data :documents :valid])) id)
+      (is (= [id] (mapv :id (get-in e [:data :documents :findings 0 :bad]))) id))))

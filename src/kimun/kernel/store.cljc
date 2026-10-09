@@ -69,6 +69,19 @@
 
 ;; ---------------------------------------------------------------- object cache (optional port)
 
+(defprotocol StoredObjects
+  "Optional backend capability: read an object from the store itself, never from
+   a derived cache. A backend that serves some objects from a recomputable cache
+   (the files backend, format 4: docs/v2/10 §11) implements it so that `verify`
+   cannot mistake a cached copy for the stored object it must hold."
+  (read-stored-object [b id] "String content of the stored object `id`, or nil."))
+
+(defn- stored-content
+  "Content of object `id` as the store holds it: `read-stored-object` when the
+   backend separates its cache, else `read-object`."
+  [b id]
+  (if (satisfies? StoredObjects b) (read-stored-object b id) (read-object b id)))
+
 (defprotocol ObjectCache
   "Optional port of a Backend: a per-backend-instance cache id -> PARSED object
    (the value `deserialize` returns). CAS objects are immutable, so an entry is
@@ -443,7 +456,8 @@
       (and (mmap/leaf? o) (= :trees kind))
       ;; [descriptor-id merkle-root]: the descriptor is a CAS object; the merkle
       ;; root names tree objects that may be cache, not CAS (docs/v2/14 §18.6)
-      (vec (mapcat (fn [[_ v]] (if (vector? v) [[(first v) :obj] [(second v) :tree-hash]] [])) (:entries o)))
+      ;; the root's kind carries its descriptor id, so reachability decides per tree
+      (vec (mapcat (fn [[_ v]] (if (vector? v) [[(first v) :obj] [(second v) [:tree-hash (first v)]]] [])) (:entries o)))
       (mmap/leaf? o) (as :obj (mapcat (fn [[k v]] (concat (when-not (= :trees kind) [k]) (cond (vector? v) v (and (map? v) (:set v)) [(:set v)]))) (:entries o)))
       (and (map? o) (:incidence o) (:tx o)) (concat (as :trees [(:trees o)]) (as :obj (concat [(:edges o) (:incidence o) (:tx o)] (:parents o))))
       (and (map? o) (:roots o) (:tx o))            (as :soft (concat (vals (:roots o)) [(:trees o) (:edges o) (:tx o)] (:parents o)))
@@ -462,7 +476,7 @@
    :incidence entry `{:set root}`), and the per-tree heads through the nodes of
    the :heads-root mmap; format-1 Revisions through :roots and the sets.
    For a format-2 `:trees` mmap leaf, the descriptor is followed as an object
-   and its merkle root as a `:tree-hash`: if the tree is marked `:cached?` the
+   and its merkle root as a `[:tree-hash descriptor-id]`: if the tree is marked `:cached?` the
    root is derived (cache, docs/v2/14 §19) and is not required to be in the
    CAS; otherwise it is verified like any other object.
    Never raises on damaged content: an id that a format-2 structure names but
@@ -472,7 +486,15 @@
    (`revision/loader`), is not required in the CAS: absent, it is not reported."
   [store]
   (let [objs (:objects store)
-        cached (err/rescue-any (fn [_] #{}) (revision/cached-tree-roots store))
+        ;; a tree whose descriptor is marked :cached? keeps its tree objects in the
+        ;; store cache (docs/v2/14 §18.6): its root is derived, not required in the CAS.
+        ;; A descriptor that is absent, unreadable or altered (its content no longer
+        ;; hashes to its id) is reported on its own; its tree is treated as derived so
+        ;; one damaged descriptor does not make a whole tree look missing.
+        derived-tree? (fn [desc-id]
+                        (let [d (object-or-nil objs desc-id)]
+                          (or (not (and (map? d) (= desc-id (canon/digest (:host store) d))))
+                              (true? (:cached? d)))))
         ;; the empty map is a constant the loader resolves without the CAS (revision/loader):
         ;; ABSENT it is not damage; present but unreadable or altered it is reported as usual
         empty-id (:root (mmap/empty (:host store)))
@@ -490,11 +512,11 @@
             (recur more seen)
             (let [o (object-or-nil objs id)]
               (cond
-                (and (= :tree-hash kind) (contains? cached id)) (recur more seen)
+                (and (vector? kind) (derived-tree? (second kind))) (recur more seen)
                 (and (nil? o) (= :soft kind)) (recur more seen)
                 (and (nil? o) (= empty-id id) (absent? id)) (recur more seen)
                 (nil? o) (recur more (conj seen id))
-                :else (recur (into more (err/rescue-any (fn [_] []) (vec (references o kind)))) (conj seen id))))))))))
+                :else (recur (into more (err/rescue-any (fn [_] []) (vec (references o (if (vector? kind) :obj kind))))) (conj seen id))))))))))
 
 (defn verify
   "The cheap-ish check: recomputes H(file) for every object reachable from the
@@ -514,7 +536,7 @@
         tail (when (= :uncommitted state) (peek log))
         bad (concat
              (for [id ids
-                   :let [content (read-object b id)
+                   :let [content (stored-content b id)
                          reason (cond (nil? content) :missing
                                       (not= id (ports/digest-str hasher content)) :hash-mismatch)]
                    :when reason]
