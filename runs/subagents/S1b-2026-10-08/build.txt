@@ -1,0 +1,18 @@
+moved existing store to /home/jp/proyectos/kimun-worktrees/S1b/.kimun.bak-20261008-210529
+{
+  "ok" : true,
+  "command" : "include build",
+  "store" : {
+    "path" : "/home/jp/proyectos/kimun-worktrees/S1b/.kimun"
+  },
+  "revision" : "1b92812fc3f4b51fbdcdf1d6343f0ff51007da94d862fed84e98a67224f6d970",
+  "data" : {
+    "store" : "/home/jp/proyectos/kimun-worktrees/S1b/.kimun",
+    "models" : 17,
+    "models-failed" : 0,
+    "documents" : 539,
+    "documents-failed" : 0,
+    "failed" : [ ]
+  },
+  "warnings" : [ ]
+}
