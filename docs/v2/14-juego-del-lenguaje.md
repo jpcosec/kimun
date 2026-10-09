@@ -504,3 +504,15 @@ contenido") y las decisiones 1, 3 y 4 de `05`, que son la base del kernel actual
 §18.8 ("dos documentos idénticos tienen los mismos nodos"): ¿dos párrafos idénticos son dos nodos con
 el mismo hash (ID = ocurrencia), o un solo nodo con dos ocurrencias (y entonces de dónde sale el ID)?
 No se toca código hasta resolverlo.
+
+**Respuestas del dueño (2026-10-09):**
+- Los IDs **estructurales** cumplen la función de **anclaje** de contenido semántico hacia afuera, en
+  ingesta o en proyección (que al fin son lo mismo). Un ID estructural que se rompe es **un borrado o
+  una mutación**. Si es borrado, no se mantiene el nodo (no apunta a nada); el conocimiento podría
+  perdurar, pero sería otro nodo en otra capa y depende de lo anclado. Lo que importa es la
+  **transparencia**: si se borra un ID estructural que soporta un claim de conocimiento, se **declara**.
+  Si es mutación, el hash la detecta.
+- Un símbolo nuevo nace en el contexto del documento; subirlo de contexto o declararlo `equivalent` es
+  curaduría.
+- Sigue abierta la decisión de fondo (adoptarlo para todo el kernel): fuentes en
+  `docs/v2/drafts/fuentes-identidad.md`.

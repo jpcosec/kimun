@@ -6,43 +6,38 @@
 
 ## 1. Pendientes en kimun
 
-### Correctitud (de más a menos grave)
+### Qué bloquea qué (2026-10-09)
 
-1. **selfdoc**: falta la guarda de before-image al escribir (estado `corpus`) y el chequeo
-   del grafo kgdb (estado `abierta`).
+No hay prioridades: todo lo de esta lista se hace. El grafo dice qué depende de qué, para trabajar en
+paralelo sin romper invariantes. Registro de la sesión: `docs/v2/drafts/sesion-2026-10-08-09.md`.
 
-### Kernel y store (prioridad actual; registro de la sesión: `drafts/sesion-2026-10-08-09.md`)
+**Invariantes que ningún trabajo puede romper:** `bb lint` (anillos de `03 §1`) y `bb test` en verde;
+paridad v1 sin brechas (`scripts/parity/coverage.py … --strict --allow-open-prefix selfdoc/`);
+`bin/kimun include check` limpio; todo `bb`/script pesado bajo `memcap` (`AGENTS.md`). `bb oracle`
+(ids canónicos) solo puede cambiar dentro de K1, y a propósito.
 
-1. **Store estable sobre lo trackeado** (`14 §19–§20`, decisiones 43–44): Merkle **por ruta**
-   sobre la proyección trackeada de cada documento, para reconciliar localmente; el plan del build
-   sale del CAS (caché o eliminado); sin el índice mmap ordenado por ids internos ni las tres aristas
-   redundantes por documento (hoy 907 KB + 708 KB + 489 KB de los 2,51 MB del formato 4).
-2. **IDs** (`14 §21`, decisión 46, pendiente): ids estructurales para S, semánticos para M/G; el hash
-   solo verifica. Antes de tocar código, responder las dos preguntas de `drafts/ids-desde-matrix.md`.
-3. **Documentos sin modelo** (`docs ingest`) siguen persistiendo su árbol: registrarlos con la clase
-   genérica del perfil.
-4. **Separar el grafo** en un paquete aparte (`kimun.graph.*`: modelos, aristas semánticas, grafo,
-   capa G) con regla de anillo en `bb lint` (la base no lo importa).
-5. **Packfiles**: un bloque de 4 KB por objeto pequeño en disco (también en el caché). Trabajo
-   parcial en la rama `close/A4` (pausada; su "formato 3" con `:names`/GC quedó superado).
-6. **Índice de nombres** y **GC**: siguen pendientes; con el punto 1 cambian de forma.
+| id | trabajo | depende de | dónde está descrito |
+|---|---|---|---|
+| D0 | **decisión del dueño**: identidad = lugar (estructural para S, semántico para M/G); hash = verificación de mutación | — | `docs/v2/drafts/fuentes-identidad.md`, `14 §21`, decisión 46 |
+| K1 | kernel: ids por lugar, hash como atributo de verificación; borrado de un ID estructural se **declara** (transparencia) | D0 | `14 §21`, `docs/v2/drafts/ids-desde-matrix.md` |
+| K2a | store estable: registro por ruta (Merkle **por ruta** sobre lo trackeado) y plan del build fuera del CAS | — | `14 §19–§20`, decisiones 43–44, `10 §11` |
+| K2b | store estable: sin índice mmap por ids internos ni las tres aristas redundantes por documento | K1, K2a | `14 §20` (diagnóstico del formato 4) |
+| K3 | documentos sin modelo registrados con la clase genérica del perfil (hoy persisten su árbol) | — | `14 §18`, decisión 41 |
+| K4 | packfiles (bloque de 4 KB por objeto pequeño en disco y caché) | K2a | `runs/research/2026-10-08/A4-packfiles.patch`, `A4-report.md` |
+| K5 | índice de nombres y GC | K2a | `10 §4` |
+| P1 | separar el grafo en un paquete aparte (`kimun.graph.*`: modelos, aristas semánticas, grafo, capa G) con regla de anillo en `bb lint` | — (archivos disjuntos de K2a/K3 salvo `kimun.surface.docs`: coordinar) | `14 §19`, decisión 43 |
+| M1 | spec 16: modelos de anclaje y de generación, selector EDN sobre tree-sitter, herencia de clases; features de v1 sí, bugs no | — (spec); implementación ← P1, K1 | `14 §18`, decisiones 41–42, `runs/research/2026-10-08/R3-report.md` |
+| M2 | regenerar los modelos del desk (borrados el 2026-10-09 para dejar una versión estable) | M1 | `desk/`, `kimun.include.edn` |
+| S1 | parser M fase 2: cerrar el ~3 % de divergencia del CST en Markdown libre | — | `04 §11.2` |
+| S2 | parser M fase 3: anclas por rangos de bytes / nodos del CST | K1 | `runs/research/2026-10-08/R2-report.md §5` |
+| G1 | capa G: leer fuentes (paper, wittgenstein, Tractatus) y reescribir el spec sobre sentido × verdad (anclado/derivado) | D0, M1 | `docs/v2/drafts/capa-g-dudas.md`, `runs/research/2026-10-08/spec15/` (borrador previo, solo referencia) |
+| G2 | consulta Datalog (Datalevin pod + respaldo in-process) | G1 | `runs/research/2026-10-08/R1-report.md` |
+| G3 | embeddings sobre anchors (modelo multilingüe) | G1, K2a | decisión 38 |
+| C1 | selfdoc: guarda de before-image al escribir y chequeo del grafo kgdb | — | `tests/parity-v1.md` (estados `corpus` y `abierta`) |
+| C2 | cliente Python y rutas HTTP de graph_ui (`/kgdb/snapshot`, `/models/promote`) | K2a, P1 | `python/README.md`, `06` |
 
-### Funciones
-
-- **Modelos** (spec 16, decisiones 41–42): separar el modelo de anclaje del de generación; selector
-  EDN sobre tree-sitter (spike R3: 428/428); herencia de clases; features de v1 sí, bugs de v1 no.
-  Los atoms del desk pasan a nodos M/G del grafo (`AtomDoc` era un parche).
-- **Capa G** (pospuesta hasta cerrar S, M y el store): antes, leer el paper del dueño, la
-  documentación de wittgenstein y, si hace falta, el Tractatus. Correcciones del dueño en
-  `drafts/capa-g-dudas.md` (sentido × verdad anclado/derivado; no existe "propuesto"; más cercano a
-  Lean). El borrador del spec 15 quedó en la rama `close/spec15` (no mergeada; deuda D1–D9).
-- **Lenguaje de consulta (Datalog)**: Datalevin (pod) candidato, evaluador in-process de respaldo
-  (spike R1); el pod 1.2.0 no está publicado y 1.1.0 tiene bugs en reglas sembradas.
-- **Embeddings**: `kimun.surface.index.corpus/rank` acepta `:score-fn`, pero no hay modelo
-  conectado ni vectores persistidos; deben usar un modelo multilingüe (decisión 38).
-- **Cliente Python**: no existe; `python/kimun` solo exporta modelos y aloja adaptadores
-  (`python/README.md`).
-- **Rutas HTTP para graph_ui**: `/kgdb/snapshot` y `/models/promote` no existen en `serve`.
+En paralelo hoy, sin esperar al dueño: K2a, K3, P1 (coordinando `kimun.surface.docs`), M1 (spec),
+S1, C1. Esperan a D0: K1, K2b, S2, G1 y lo que cuelga de ellos.
 
 ### Deuda de diseño y experimentos
 

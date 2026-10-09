@@ -3,7 +3,7 @@
 > Borrador de trabajo, no autoridad. La capa G se retoma **después** de cerrar las capas S y M y el
 > store. Antes de tocarla hay que leer las fuentes: el paper del dueño sobre wittgenstein/Matrix, la
 > documentación de `/home/jp/proyectos/wittgenstein` (incl. `matrix-shrdlu-spec/specs/`) y, si hace
-> falta, el *Tractatus* completo. El spec `15-capa-g.md` (rama `close/spec15`, no mergeada) se
+> falta, el *Tractatus* completo. El spec `15-capa-g.md` (archivado en `runs/research/2026-10-08/spec15/`) se
 > escribió **sin** esa lectura y hay que revisarlo contra ella.
 
 ## Correcciones del dueño (textuales en espíritu)

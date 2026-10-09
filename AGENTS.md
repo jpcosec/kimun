@@ -18,16 +18,20 @@ Then the documents the task references.
 The last design session (2026-10-08/09) changed the direction. Before touching code:
 
 1. `docs/v2/drafts/sesion-2026-10-08-09.md` — what was decided and why, in order.
-2. `docs/v2/drafts/preguntas-abiertas.md` — questions only the owner can answer. Do not implement
-   anything that depends on an unanswered question (Q1–Q3 have no default).
+2. `docs/v2/drafts/preguntas-abiertas.md` — decisions only the owner can make (today: D0, node
+   identity; sources in `docs/v2/drafts/fuentes-identidad.md`). Do not implement anything that
+   depends on an open decision.
 3. `docs/v2/14-juego-del-lenguaje.md` — start with its "cómo leer" box: §18–§21 are the current
    principles (classes and instances, anchoring vs generation, cache / stable store / graph,
    tracked vs trackable, hash ≠ identity).
-4. `docs/v2/12-ecosistema-y-pendientes.md §1` — the prioritised backlog.
+4. `docs/v2/12-ecosistema-y-pendientes.md §1` — the backlog as a dependency graph (what blocks what,
+   and the invariants no work may break). There are no priorities: pick work whose dependencies are met.
+5. Always cite files by path when reporting to the owner.
 
-Branches: `main` is the only line of work. `close/spec15` (G-layer draft, written before the owner's
-correction in `drafts/capa-g-dudas.md`) and `close/A4` (packfiles, paused) are references, not
-pending merges. Evidence of the session: `runs/research/2026-10-08/`.
+Branches: `main` is the only line of work. Close a branch as soon as it is merged or abandoned, after
+copying anything worth keeping to `runs/`. The G-layer draft (spec 15, written before the owner's
+correction in `docs/v2/drafts/capa-g-dudas.md`) and the paused packfiles work are archived in
+`runs/research/2026-10-08/` (`spec15/`, `A4-packfiles.patch`). Evidence of the session: `runs/research/2026-10-08/`.
 
 ## Workers and memory
 

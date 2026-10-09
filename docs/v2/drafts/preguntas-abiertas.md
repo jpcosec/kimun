@@ -1,15 +1,18 @@
 # Preguntas abiertas al dueño (2026-10-09)
 
-> Lo que bloquea seguir. Cada respuesta se registra en `05-estado.md` (decisión) y se borra de aquí.
-> Contexto: `drafts/sesion-2026-10-08-09.md`. Sin respuesta, **no se aplica default** a Q1–Q3.
+> Lo que bloquea seguir. Cada respuesta se registra en `docs/v2/05-estado.md` (decisión) o en
+> `docs/v2/14-juego-del-lenguaje.md`, y se borra de aquí. Qué depende de cada una: `docs/v2/12 §1`.
 
-| # | pregunta | opciones | recomendación | desbloquea |
-|---|---|---|---|---|
-| Q1 | ¿Se confirma `14 §21` (hash ≠ identidad) para todo el kernel? Es reescribir nodos, aristas y revisiones. ¿Es lo siguiente, o primero se cierra el store estable con los ids actuales? | confirmar ahora / confirmar después del store / no | — | decisión 46; rediseño del kernel |
-| Q2 | Cuando cambia la estructura (sección renombrada, archivo movido), el ID estructural de lo anclado cambia. | (a) anchor roto que se reancla, el hash ayuda a ubicarlo; (b) el ID sobrevive | (a) | IDs estructurales de S |
-| Q3 | Un símbolo nuevo nace dentro del contexto del documento; subirlo o declararlo `equivalent` es curaduría. | sí / otra regla | sí | IDs semánticos de M/G |
-| Q4 | Documentos generados (el desk): sus datos se siguen reconstruyendo leyendo el `.md` con su modelo de anclaje, o pasan ya al grafo. | esperar al rediseño de deskops / ahora | esperar | registro de documentos generados |
-| Q5 | Qué sigue | (a) store estable: Merkle por ruta, plan fuera del CAS, sin índice ni aristas por hash; (b) separar el grafo en paquete aparte | (a) | `12 §1` puntos 1 y 4 |
-| Q6 | Ramas huérfanas `close/spec15` (capa G, previa a la corrección del dueño) y `close/A4` (packfiles a medias) | conservar como referencia / borrar | conservar | limpieza |
+| # | pregunta | material para decidir | bloquea |
+|---|---|---|---|
+| D0 | ¿Se adopta para todo el kernel "identidad = lugar (estructural para S, semántico para M/G); hash = verificación de mutación"? Revisa `01 §4` principio 3 y las decisiones 1, 3 y 4. | `docs/v2/drafts/fuentes-identidad.md` (fuentes con direcciones), `docs/v2/drafts/ids-desde-matrix.md`, `docs/v2/14-juego-del-lenguaje.md §21` | K1, K2b, S2, G1 (`12 §1`) |
 
-Suspendidas hasta retomar la capa G (ver `drafts/capa-g-dudas.md`): Q1, Q2, Q4, Q6, Q8 y Q9 del spec 15.
+Respondidas el 2026-10-09 (registradas en `14 §21`): ID estructural roto = borrado (se declara) o
+mutación (lo detecta el hash); un símbolo nuevo nace en el contexto del documento y subirlo o
+declararlo `equivalent` es curaduría. Los modelos del desk se borran para dejar una versión estable
+(se regeneran en M2). Las ramas `close/spec15` y `close/A4` se cerraron (contenido en
+`runs/research/2026-10-08/`).
+
+Suspendidas hasta la capa G (G1): las preguntas del borrador del spec 15
+(`runs/research/2026-10-08/spec15/15-capa-g.md §12`), que deben revisarse a la luz de
+`docs/v2/drafts/capa-g-dudas.md`.
