@@ -1,8 +1,9 @@
-id: sldb.v2.markdown_surface
-title: SLDB v2 — Markdown Surface (ring 2) Pipeline
+id: kimun.v2.markdown_surface
+title: kimun v2 — Markdown Surface (ring 2) Pipeline
 type: activity
 version: "1.0"
-# Source of truth: docs/v2/04-superficie-markdown.md; code: sldb.surface.markdown.{cst,inline,ast,render,plan,report}
+# Source of truth: docs/v2/04-superficie-markdown.md; code: kimun.surface.markdown.{cst,cst-ast,ast,inline,render,plan,report}
+# (decision 20: namespaces are kimun.*; data identifiers such as engine names stay sldb.*)
 
 data:
   start: text
@@ -56,7 +57,7 @@ data:
       next: apply
 
     apply:
-      label: "kernel apply-plan → :document tree of positions; identical items share tree objects"
+      label: "kernel apply-plan → :document tree of positions; identical items share tree objects (format 4: the tree of a document with file lives in <store>/cache/)"
       next: back
 
     back:

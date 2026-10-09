@@ -1,3 +1,4 @@
-;; v1 promises kimun does not hold today; pinned in test/kimun/parity/known_gaps_test.cljc.
+;; Vacío: ninguna brecha abierta de paridad con sldb v1 (ninguna promesa que kimun no cumpla
+;; todavía). Pinned in test/kimun/parity/known_gaps_test.cljc.
 ;; Checked by scripts/parity/coverage.py (see its docstring).
 {}

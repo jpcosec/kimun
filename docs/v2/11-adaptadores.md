@@ -1,11 +1,15 @@
-# kimun — Adaptadores de superficie (protocolo 1)
+# kimun — Adaptadores de superficie (protocolo 1) y pods
 
-> Un parser como tree-sitter, `ast` o `argparse` es un **adaptador de superficie**: un proceso
+> Un parser como `ast`, `argparse` o `click` es un **adaptador de superficie**: un proceso
 > aparte que lee código fuente y emite hechos estructurados como JSON. kimun convierte esos
 > hechos en documentos por su camino de escritura normal (`docs create|update|untrack`, `06`).
 > Este documento fija el protocolo, el planificador puro y el grupo `kimun adapters`. Los
 > adaptadores incluidos viven en `python/kimun/adapters/`; el planificador, en
 > `src/kimun/surface/adapters.cljc`; el grupo, en `src/kimun/cli/commands/adapters.cljc`.
+>
+> **Excepción: tree-sitter no es un adaptador de este protocolo, es un pod** in-process
+> (`kimun.host.treesitter`, decisión 19/29; `08 §4`). El protocolo 1 se generaliza con un
+> perfil **`propositions`** cuyos hechos son `(R A B) @ctx` con procedencia (`14 §11`).
 
 ## 1. Marco: S, M, G y por qué fuera de proceso
 
@@ -14,13 +18,12 @@ superficie), **M** (árbol sintáctico) y **G** (significado). Un adaptador trab
 frontera S→M: recibe el texto de un código y entrega hechos sobre su estructura. No toca el
 store; lo que kimun hace con los hechos es asunto del planificador (§6).
 
-Los adaptadores son **procesos separados por diseño**:
+Los adaptadores de este protocolo son **procesos separados por diseño**:
 
-- Babashka no puede cargar tree-sitter ni importar el código que se documenta (el adaptador
-  `argparse-cli` importa una fábrica de parser Python). Un proceso aparte lo resuelve sin
-  ampliar el runtime de kimun. (El caso de tree-sitter lo cubren ahora los **pods**, decisión
-  19/29: `kimun.host.treesitter` carga `pod-kimun-treesitter` en proceso, ver `08 §4`; este
-  protocolo 1 sigue siendo para adaptadores que emiten hechos.)
+- Babashka no puede importar el código que se documenta (el adaptador `argparse-cli` importa
+  una fábrica de parser Python). Un proceso aparte lo resuelve sin ampliar el runtime de kimun.
+  El parseo de tree-sitter, en cambio, es un **pod** in-process: `kimun.host.treesitter` carga
+  `pod-kimun-treesitter` en proceso (decisión 19/29, ver `08 §4`).
 - Terceros agregan adaptadores sin tocar kimun: basta un ejecutable que cumpla este contrato
   (§8).
 - El contrato es solo JSON por stdout más códigos de salida; no hay API de plugins.

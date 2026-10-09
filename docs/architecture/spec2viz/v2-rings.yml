@@ -1,14 +1,14 @@
-id: sldb.v2.rings
-title: SLDB v2 — Dependency Rings and Namespaces
+id: kimun.v2.rings
+title: kimun v2 — Dependency Rings and Namespaces
 type: component
 version: "1.0"
 # Source of truth: docs/v2/03-estandares-de-codigo.md §1. Arrows point inward only.
-# Enforced by scripts/check_rings.clj (bb lint).
+# Enforced by scripts/check_rings.clj (bb lint). Namespaces: decision 20 (`kimun.*`).
 
 data:
   nodes:
     Ring0:
-      label: "ring 0 · sldb.kernel.* (pure: data + functions; requires only clojure.* and kernel)"
+      label: "ring 0 · kimun.kernel.* (pure: data + functions; only clojure.* and kernel)"
       kind: core
       atoms:
         - atom-decision-pure-cljc-kernel-with-hosts-as-adapters
@@ -20,16 +20,21 @@ data:
         - pool
         - edge
         - tree
+        - mmap
         - plan
         - revision
         - heads
+        - reconcile
+        - standoff
         - store
+        - upgrade
+        - legacy
 
     ports:
-      label: "ports — Hasher · TextNormalizer · IdMinter (protocols)"
+      label: "ports — Hasher · TextNormalizer · IdMinter · Backend (protocols)"
       kind: core
     err:
-      label: "err — ex-info contract, rescue (only kernel reader conditional)"
+      label: "err — ex-info contract, rescue (kernel reader conditional)"
       kind: core
     canon:
       label: "canon — canonical-bytes, digest, normalize (§2.1)"
@@ -50,18 +55,21 @@ data:
       atoms:
         - atom-evidence-required-per-edge-type
     tree:
-      label: "tree — ULID ids, tree objects, dirty set, merkle-root (§3.1)"
+      label: "tree — ULID ids, tree objects of positions, dirty set, merkle-root (§3.1)"
       kind: core
       atoms:
         - atom-tree-as-index
         - atom-tree-identity-tree-objects-and-heads
+    mmap:
+      label: "mmap — history-independent Merkle maps (:trees :edges :incidence, §5)"
+      kind: core
     plan:
       label: "plan — schema, aliases, checks 5/6/7 (§5.1)"
       kind: core
       atoms:
         - atom-transactionplan-edn-schema-and-validation
     revision:
-      label: "revision — apply-plan, Revision, diff, ConflictSet (§5, §5.2)"
+      label: "revision — apply-plan, Revision of 8 fields, diff, ConflictSet (§5, §5.2)"
       kind: core
       atoms:
         - atom-revision-id-edge-set-and-diff
@@ -70,20 +78,37 @@ data:
     heads:
       label: "heads — CAS per entry, commit! (§3.1)"
       kind: core
+    reconcile:
+      label: "reconcile — drifted → proposal → supersedes (§6.5)"
+      kind: core
+      atoms:
+        - atom-drifted-is-a-reconciled-orphan
+    standoff:
+      label: "standoff — UAX #29 layers, virtual addresses (§4.1)"
+      kind: core
     store:
-      label: "store — Backend port, init/open/replay/commit!/verify (§8.1)"
+      label: "store — Backend port, init/open/verify/commit!, formats 2/3/4 (§8.1)"
       kind: core
       atoms:
         - atom-first-slice-runtime-choices
+    upgrade:
+      label: "upgrade — 1→2 rebuilt, 2→3 in place, 3→4 needs rebuild (§8)"
+      kind: core
+    legacy:
+      label: "legacy.revision — format-1 engine, opens by replay"
+      kind: core
 
     Ring1:
-      label: "ring 1 · sldb.host.* (adapters: implement ports; reader conditionals; I/O)"
+      label: "ring 1 · kimun.host.* (adapters: implement ports; reader conditionals; I/O)"
       kind: boundary
       contains:
         - host_hash
         - host_text
         - host_ulid
         - host_fs_store
+        - host_lazy
+        - host_store_cache
+        - host_treesitter
         - host_default
     host_hash:
       label: "host.hash — Sha256 (MessageDigest / node crypto)"
@@ -95,14 +120,60 @@ data:
       label: "host.ulid — ULID minting (SecureRandom / crypto)"
       kind: service
     host_fs_store:
-      label: "host.fs-store — files backend (objects/, log.edn, heads.edn, store.edn)"
+      label: "host.fs-store — files backend (objects/, cache/, log.edn, heads.edn)"
       kind: database
+    host_lazy:
+      label: "host.lazy — lazy store maps (LazyMaps port)"
+      kind: service
+    host_store_cache:
+      label: "host.store-cache — <store>/cache/ (derived tree objects and doc trees, format 4)"
+      kind: database
+    host_treesitter:
+      label: "host.treesitter — marks the M-layer parser pod in process (pod-kimun-treesitter)"
+      kind: service
     host_default:
       label: "host.default — composes the standard host {:hasher :text :ids}"
       kind: service
 
+    Ring2:
+      label: "ring 2 · kimun.surface.markdown.* (SLDB-MD profile: requires kernel + host)"
+      kind: core
+      contains:
+        - md_cst
+        - md_ast
+        - md_inline
+        - md_cst_ast
+        - md_render
+        - md_plan
+        - md_report
+    md_cst:
+      label: "surface.markdown.cst — lossless CST (inv. 8)"
+      kind: core
+    md_ast:
+      label: "surface.markdown.ast — neutral AST (§3.1)"
+      kind: core
+    md_inline:
+      label: "surface.markdown.inline — marks, escapes, graphemes"
+      kind: core
+    md_cst_ast:
+      label: "surface.markdown.cst-ast — tree-sitter CST → AST (phase 2)"
+      kind: core
+    md_render:
+      label: "surface.markdown.render — canonical spelling (inv. 9)"
+      kind: core
+    md_plan:
+      label: "surface.markdown.plan — AST ↔ store document tree (§8)"
+      kind: core
+    md_report:
+      label: "surface.markdown.report — coverage and opaque regions (§9)"
+      kind: core
+
     Ring3:
-      label: "ring 3 · tests (test/sldb/kernel, fixtures, generators)"
+      label: "ring 3 · kimun.* product (cli.* and surface.* beyond markdown: models, graph, index, http, docs…)"
+      kind: client
+
+    Ring4:
+      label: "ring 4 · tests (test/kimun/**, fixtures, generators)"
       kind: client
 
   edges:
@@ -118,6 +189,15 @@ data:
     - from: host_fs_store
       to: store
       relation: implements Backend
+    - from: host_lazy
+      to: store
+      relation: implements LazyMaps
+    - from: host_store_cache
+      to: store
+      relation: cache reader (format 4)
+    - from: host_treesitter
+      to: ports
+      relation: serves the M parser
     - from: host_default
       to: ports
       relation: composes host value
@@ -133,6 +213,9 @@ data:
     - from: tree
       to: canon
       relation: uses
+    - from: mmap
+      to: canon
+      relation: uses
     - from: plan
       to: canon
       relation: uses
@@ -143,9 +226,18 @@ data:
       to: tree
       relation: uses
     - from: revision
+      to: mmap
+      relation: uses
+    - from: revision
       to: edge
       relation: uses
     - from: revision
+      to: node
+      relation: uses
+    - from: reconcile
+      to: edge
+      relation: uses
+    - from: standoff
       to: node
       relation: uses
     - from: heads
@@ -154,9 +246,30 @@ data:
     - from: store
       to: revision
       relation: uses
+    - from: upgrade
+      to: store
+      relation: rebuilds
+    - from: legacy
+      to: revision
+      relation: format-1 engine
+    - from: Ring2
+      to: Ring1
+      relation: uses
+    - from: Ring2
+      to: Ring0
+      relation: uses
+    - from: Ring3
+      to: Ring2
+      relation: uses
     - from: Ring3
       to: Ring1
       relation: uses
     - from: Ring3
+      to: Ring0
+      relation: uses
+    - from: Ring4
+      to: Ring3
+      relation: uses
+    - from: Ring4
       to: Ring0
       relation: uses

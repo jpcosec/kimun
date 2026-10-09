@@ -2,8 +2,10 @@
 
 Trazabilidad entre cada enunciado normativo de `docs/v2/02-sustrato-computacional.md` y
 `docs/v2/04-superficie-markdown.md` y el test que **fallaría si la promesa se rompiera**.
-Fuente: dos lanes tester de contexto fresco
-(`runs/subagents/20260829-174447-…-testing/lane-{1,2}.md`) más los tests añadidos en
+Alcance ampliado: las secciones de abajo trazan también los formatos del store 2/3/4
+(`docs/v2/10-escala.md`, `docs/v2/14 §10` y `§18–§19`), no solo `02`/`04`.
+Fuente: dos tandas tester de contexto fresco (evidencia en `runs/subagents/` y
+`runs/research/2026-10-08/`) más los tests añadidos en
 `test/kimun/kernel/hardening_test.cljc`. Un test que compara la función consigo misma no
 cuenta. Los hitos 0–6 están cerrados; las promesas de 7–9 (efectos incluidos) figuran como
 *diferidas*. El estado de los hitos lo lleva `05-estado.md`.
@@ -36,8 +38,8 @@ Leyenda: `ok` probado · `oracle` probado además por una implementación indepe
 | objeto de árbol {:node :children [[c hash]…]}; merkle-root | tree_test/golden-fixture-trees-edn |
 | orden de hermanos entra al hash (inv. 14) | tree_test/sibling-order-enters-the-hash, reordering-siblings-changes-parent-hash |
 | dirty = nodo + ancestros; commit recomputa solo eso; compartición estructural | tree_test/dirty-set-is-exactly-the-path-to-root, changing-one-leaf-changes-only-its-path; hardening/tree-boundaries (200 niveles) |
-| un padre por árbol; nodo en N árboles con hashes independientes (inv. 5) | tree_test/one-node-in-two-trees…; hardening/replace-in-one-tree-leaves-other-trees-untouched |
-| árbol válido: sin ciclos, orden denso, sin duplicados | tree_test/remove-and-move-keep-validity, generated-trees-are-valid…; hardening/tree-boundaries (borde de orden, hijo duplicado, reemplazo de raíz, árbol de un nodo) |
+| un padre por árbol; nodo en N árboles con hashes independientes (inv. 5) | tree_test/one-node-at-several-positions-and-in-several-trees-invariant-5; hardening/replace-in-one-tree-leaves-other-trees-untouched |
+| árbol válido: sin ciclos, orden denso, sin duplicados | tree_test/detach-and-move-keep-validity, generated-trees-are-valid…; hardening/tree-boundaries (borde de orden, hijo duplicado, reemplazo de raíz, árbol de un nodo) |
 | Edge/Evidence: campos obligatorios por tipo; exactamente un origen; status válido | edge_test/evidence-requirements, ownership-and-non-ownership-shapes |
 | timestamp fuera del id (inv. 16); mismo origen ⇒ misma arista; orígenes distintos ⇒ dos | edge_test/timestamp-is-not-part-of-an-edge…, revision_test/adding-an-existing-edge-is-a-no-op |
 | claves extra de evidencia entran al id; origen string vacío admitido, nil no | hardening/edge-evidence-extra-keys-enter-the-id, edge-empty-origin-is-still-a-string |
@@ -72,7 +74,7 @@ Leyenda: `ok` probado · `oracle` probado además por una implementación indepe
 | check 7 pure-data (funciones, floats, timestamp) | plan_test/schema…, revision_test/the-seven-checks… |
 | todo-o-nada; el store de entrada no muta (inv. 15) | revision_test/apply-is-deterministic-and-all-or-nothing, the-seven-checks (sin cambio de estado) |
 | plan vacío ⇒ revisión no-op válida | hardening/empty-plan-is-a-valid-no-op-revision |
-| :replace: mismo :order, subárbol heredado, supersedes con actor del plan | revision_test/replace-keeps-order…, tree_test/replace-keeps-order-and-subtree |
+| :replace: mismo :order, subárbol heredado, supersedes con actor del plan | revision_test/replace-keeps-order…, tree_test/replace-keeps-position-and-subtree |
 | :replace re-ancla reference/binding en cualquier extremo; semantic/projection quedan; derived se invalida | revision_test/replace-keeps-order…, hardening/semantic-and-projection-stay-derived-is-invalidated-on-replace |
 | :replace en un árbol no toca otros árboles del nodo | hardening/replace-in-one-tree-leaves-other-trees-untouched |
 | cadena X''→X'→X, re-anclaje paso a paso | hardening/chained-replace-follows-step-by-step |
@@ -153,13 +155,13 @@ Leyenda: `ok` probado · `oracle` probado además por una implementación indepe
 
 ## Invariantes §10
 
-1 pool_test/tampered…, store_test/close-and-reopen · 2 node_test/same-content-same-id · 3 revision_test/heads-advance-only… · 4 tree_test/generated-trees-are-valid · 5 tree_test/one-node-at-several-positions-and-in-several-trees · 6 edge_test/evidence-requirements · 7 revision_test/replace-keeps-order… · 8, 9 cst_test/lossless-for-any-string, roundtrip_test/parse-render-identity (§04) · 10 pool_test/pool-is-rebuildable, store_test/replay… · 11 **deferred** (efectos) · 12 plan_test/opaque-replace-only · 13 tree_test/ulid-ids-are-nominal · 14 tree_test/sibling-order… · 15 revision_test/the-seven-checks · 16 edge_test/timestamp…, hardening/timestamp-enters-the-revision-id · 17 store_test/every-object-file… · 18 anchor_test/queries-are-pure-derived-and-deterministic, reconcile_test/a-proposal-is-outside-the-pool-until-an-actor-accepts-it
+1 pool_test/tampered…, store_test/close-and-reopen · 2 node_test/same-content-same-id · 3 revision_test/heads-advance-only… · 4 tree_test/generated-trees-are-valid · 5 tree_test/one-node-at-several-positions-and-in-several-trees-invariant-5 · 6 edge_test/evidence-requirements · 7 revision_test/replace-keeps-order… · 8, 9 cst_test/lossless-for-any-string, roundtrip_test/parse-render-identity (§04) · 10 pool_test/pool-is-rebuildable, store_test/replay… · 11 **deferred** (efectos) · 12 plan_test/opaque-replace-only · 13 tree_test/ulid-ids-are-nominal · 14 tree_test/sibling-order… · 15 revision_test/the-seven-checks · 16 edge_test/timestamp…, hardening/timestamp-enters-the-revision-id · 17 store_test/every-object-file… · 18 anchor_test/queries-are-pure-derived-and-deterministic, reconcile_test/a-proposal-is-outside-the-pool-until-an-actor-accepts-it
 
 ## §3.1 (revisado 2026-08-29) — árboles de posiciones
 
 | promesa | test |
 |---|---|
-| un nodo puede ocurrir en varias posiciones de un árbol y en varios árboles; cada posición tiene un padre (inv. 5) | tree_test/one-node-at-several-positions-and-in-several-trees, hardening/tree-boundaries ("same node at two positions") |
+| un nodo puede ocurrir en varias posiciones de un árbol y en varios árboles; cada posición tiene un padre (inv. 5) | tree_test/one-node-at-several-positions-and-in-several-trees-invariant-5, hardening/tree-boundaries ("same node at two positions") |
 | subárboles idénticos comparten objeto (dentro y entre árboles) | tree_test/identical-subtrees-share-objects, one-node-at-several-positions… |
 | posiciones por path; `positions`, `node-at`, `paths-of`, `from-objects` reconstruye desde el CAS | tree_test/positions-and-paths, from-objects-rebuilds-a-committed-tree |
 | `replace` es por posición (otras ocurrencias intactas); `detach`; `move` con corrección de path | tree_test/replace-keeps-position-and-subtree, detach-and-move-keep-validity |

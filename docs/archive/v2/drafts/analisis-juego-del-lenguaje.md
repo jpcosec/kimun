@@ -1,5 +1,8 @@
-# Análisis — el grafo como juego del lenguaje (borrador, 2026-10-08)
+# Análisis — el grafo como juego del lenguaje (borrador, 2026-10-08; archivado 2026-10-09)
 
+> Material histórico. Movido desde `docs/v2/drafts/` (auditoría L2, 2026-10-09): está superado por
+> `docs/v2/14 §1–§8` (y ya no describe `11`).
+>
 > Borrador fuera de la tabla de autoridad de `docs/v2/README.md`. Insumo para el spec 14
 > (store + juego del lenguaje). Fuentes: dossiers `runs/research/2026-10-08/store-dossier-L{1,2,3}-report.md`
 > (citas con `ruta:línea`), `wittgenstein/matrix-shrdlu-spec/specs/{matrix,grounding,provenance,SPEC}.md`.

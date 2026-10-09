@@ -1,40 +1,72 @@
 graph TD
-    subgraph Ring0 ["ring 0 · sldb.kernel.* (pure: data + functions; requires only clojure.* and kernel)"]
-        ports["ports — Hasher · TextNormalizer · IdMinter (protocols)"]
-        err["err — ex-info contract, rescue (only kernel reader conditional)"]
+    subgraph Ring0 ["ring 0 · kimun.kernel.* (pure: data + functions; only clojure.* and kernel)"]
+        ports["ports — Hasher · TextNormalizer · IdMinter · Backend (protocols)"]
+        err["err — ex-info contract, rescue (kernel reader conditional)"]
         canon["canon — canonical-bytes, digest, normalize (§2.1)"]
         node["node — 9 class/kind shapes, node-id (§2, §2.1)"]
         pool["pool — in-memory id → node"]
         edge["edge — Edge/Evidence shapes, edge-id (§3.2)"]
-        tree["tree — ULID ids, tree objects, dirty set, merkle-root (§3.1)"]
+        tree["tree — ULID ids, tree objects of positions, dirty set, merkle-root (§3.1)"]
+        mmap["mmap — history-independent Merkle maps (:trees :edges :incidence, §5)"]
         plan["plan — schema, aliases, checks 5/6/7 (§5.1)"]
-        revision["revision — apply-plan, Revision, diff, ConflictSet (§5, §5.2)"]
+        revision["revision — apply-plan, Revision of 8 fields, diff, ConflictSet (§5, §5.2)"]
         heads["heads — CAS per entry, commit! (§3.1)"]
-        store["store — Backend port, init/open/replay/commit!/verify (§8.1)"]
+        reconcile["reconcile — drifted → proposal → supersedes (§6.5)"]
+        standoff["standoff — UAX #29 layers, virtual addresses (§4.1)"]
+        store["store — Backend port, init/open/verify/commit!, formats 2/3/4 (§8.1)"]
+        upgrade["upgrade — 1→2 rebuilt, 2→3 in place, 3→4 needs rebuild (§8)"]
+        legacy["legacy.revision — format-1 engine, opens by replay"]
     end
-    subgraph Ring1 ["ring 1 · sldb.host.* (adapters: implement ports; reader conditionals; I/O)"]
+    subgraph Ring1 ["ring 1 · kimun.host.* (adapters: implement ports; reader conditionals; I/O)"]
         host_hash["host.hash — Sha256 (MessageDigest / node crypto)"]
         host_text["host.text — NFC (java.text.Normalizer / String.normalize)"]
         host_ulid["host.ulid — ULID minting (SecureRandom / crypto)"]
-        host_fs_store["host.fs-store — files backend (objects/, log.edn, heads.edn, store.edn)"]
+        host_fs_store["host.fs-store — files backend (objects/, cache/, log.edn, heads.edn)"]
+        host_lazy["host.lazy — lazy store maps (LazyMaps port)"]
+        host_store_cache["host.store-cache — #lt;store#gt;/cache/ (derived tree objects and doc trees, format 4)"]
+        host_treesitter["host.treesitter — marks the M-layer parser pod in process (pod-kimun-treesitter)"]
         host_default["host.default — composes the standard host {:hasher :text :ids}"]
     end
-    Ring3["ring 3 · tests (test/sldb/kernel, fixtures, generators)"]
+    subgraph Ring2 ["ring 2 · kimun.surface.markdown.* (SLDB-MD profile: requires kernel + host)"]
+        md_cst["surface.markdown.cst — lossless CST (inv. 8)"]
+        md_ast["surface.markdown.ast — neutral AST (§3.1)"]
+        md_inline["surface.markdown.inline — marks, escapes, graphemes"]
+        md_cst_ast["surface.markdown.cst-ast — tree-sitter CST → AST (phase 2)"]
+        md_render["surface.markdown.render — canonical spelling (inv. 9)"]
+        md_plan["surface.markdown.plan — AST ↔ store document tree (§8)"]
+        md_report["surface.markdown.report — coverage and opaque regions (§9)"]
+    end
+    Ring3["ring 3 · kimun.* product (cli.* and surface.* beyond markdown: models, graph, index, http, docs…)"]
+    Ring4["ring 4 · tests (test/kimun/**, fixtures, generators)"]
     host_hash -->|"implements"| ports
     host_text -->|"implements"| ports
     host_ulid -->|"implements"| ports
     host_fs_store -->|"implements Backend"| store
+    host_lazy -->|"implements LazyMaps"| store
+    host_store_cache -->|"cache reader (format 4)"| store
+    host_treesitter -->|"serves the M parser"| ports
     host_default -->|"composes host value"| ports
     canon -->|"uses host"| ports
     node -->|"uses"| canon
     edge -->|"uses"| canon
     tree -->|"uses"| canon
+    mmap -->|"uses"| canon
     plan -->|"uses"| canon
     revision -->|"uses"| plan
     revision -->|"uses"| tree
+    revision -->|"uses"| mmap
     revision -->|"uses"| edge
     revision -->|"uses"| node
+    reconcile -->|"uses"| edge
+    standoff -->|"uses"| node
     heads -->|"uses"| revision
     store -->|"uses"| revision
+    upgrade -->|"rebuilds"| store
+    legacy -->|"format-1 engine"| revision
+    Ring2 -->|"uses"| Ring1
+    Ring2 -->|"uses"| Ring0
+    Ring3 -->|"uses"| Ring2
     Ring3 -->|"uses"| Ring1
     Ring3 -->|"uses"| Ring0
+    Ring4 -->|"uses"| Ring3
+    Ring4 -->|"uses"| Ring0

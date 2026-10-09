@@ -1,8 +1,9 @@
-id: sldb.v2.store_layout
-title: SLDB v2 — Files Backend Layout and Recovery
+id: kimun.v2.store_layout
+title: "kimun v2 — Files Backend: open, check and verify (formats 2/3/4)"
 type: activity
 version: "1.0"
-# Source of truth: docs/v2/02 §8.1 (backend), §3.1 (reachability); code: sldb.kernel.store, sldb.host.fs-store
+# Source of truth: docs/v2/10 §5–§8 (format 2), §10 (format 3) and §11 (format 4); code:
+# kimun.kernel.store, kimun.host.fs-store, kimun.host.store-cache.
 
 data:
   start: open
@@ -13,52 +14,46 @@ data:
       next: read_descriptor
 
     read_descriptor:
-      label: "read store.edn {:format-version :hash-alg :capabilities}; hash-alg must match the host Hasher"
-      next: replay
+      label: "read store.edn {:format-version 2|3|4 :hash-alg :capabilities …}; hash-alg must match the host Hasher"
+      next: read_heads
 
-    replay:
-      label: "replay log.edn: for each Transaction line apply-plan(plan) on the rebuilt store"
-      next: check_ids
+    read_heads:
+      label: "read heads.edn {:head rev-id :heads-root id} (absent before the first commit = empty store)"
+      next: check_head
 
-    check_ids:
-      label: "replayed tx id and revision id equal the logged ones?"
+    check_head:
+      label: "check the head Revision (H == id, 8 fields) and :heads-root (mmap node); open NEVER reads or replays log.edn"
       kind: decision
       branches:
-        "yes": heads_present
-        "no": fail_replay
+        "ok": ready
+        "missing / hash mismatch / wrong shape": fail_open
 
-    fail_replay:
-      label: ":store/error — log and objects disagree"
-      next: end
-
-    heads_present:
-      label: "heads.edn present?"
-      kind: decision
-      branches:
-        "yes": compare_heads
-        "no": ready
-
-    compare_heads:
-      label: "heads.edn == replayed {:head :heads}?"
-      kind: decision
-      branches:
-        "yes": ready
-        "no": fail_heads
-
-    fail_heads:
-      label: ":store/error — heads.edn does not match the log"
+    fail_open:
+      label: ":store/corrupt-heads | :store/corrupt-head (exit 5)"
       next: end
 
     ready:
-      label: "store value ready (in memory); objects/ never trusted for state"
-      next: verify
+      label: "lazy store value (store.edn + heads only); which command?"
+      kind: decision
+      branches:
+        "any command (docs show…, commit)": ok_open
+        "stores check": verify
+        "stores verify / journal verify / replay-open": replay
+
+    ok_open:
+      label: "answer from the head Revision; other objects read on demand and never rehashed"
+      next: end
 
     verify:
-      label: "verify: reachable = closure from heads over revision → tree-set/edge-set/roots/tx → tree objects → nodes, edges"
+      label: "verify: reachable = closure from heads over revision → mmap :trees/:edges/:incidence → descriptors, tree objects, nodes, edges"
+      next: cache_note
+
+    cache_note:
+      label: "format 4: a tree marked :cached? is NOT required in objects/; its integrity is the resolver's (registered root vs recomputed)"
       next: hash_files
 
     hash_files:
-      label: "for each reachable id: H(objects/<id> content) == id?"
+      label: "for each reachable id: H(objects/<id>) == id?"
       kind: decision
       branches:
         "all": ok
@@ -69,7 +64,22 @@ data:
       next: end
 
     bad:
-      label: "{:ok? false :bad [{:id :reason :hash-mismatch|:missing}]}"
+      label: "{:ok? false :bad [{:id :reason :hash-mismatch|:missing}]} (exit 5)"
+      next: end
+
+    replay:
+      label: "replay log.edn: for each Transaction apply-plan(plan) and check tx/revision ids, :incidence and per-tree heads"
+      next: replay_check
+
+    replay_check:
+      label: "final heads == heads.edn? and the log tail is :clean (a dead-writer tail is reported, not an error)"
+      kind: decision
+      branches:
+        "consistent": verify
+        "inconsistent / damaged line": fail_replay
+
+    fail_replay:
+      label: ":store/corrupt {:bad [{:reason :replay-failed}]} (exit 5)"
       next: end
 
   end: end

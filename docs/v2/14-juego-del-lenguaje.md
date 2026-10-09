@@ -8,7 +8,7 @@
 > archivos como conocimiento; conocimiento = colección de proposiciones `(R A B)`; Clojure.
 >
 > Insumos: dossiers de diseño del store (`runs/research/2026-10-08/store-dossier-L{1,2,3}-report.md`),
-> `drafts/analisis-juego-del-lenguaje.md`, spikes R1 (Datalog en bb) y R2 (tree-sitter como pod),
+> `docs/archive/v2/drafts/analisis-juego-del-lenguaje.md` (histórico), spikes R1 (Datalog en bb) y R2 (tree-sitter como pod),
 > `wittgenstein/matrix-shrdlu-spec/specs/{SPEC,matrix,grounding,provenance}.md`.
 
 > **Cómo leer este documento (2026-10-09).** Creció por adendas durante la sesión de diseño
@@ -199,8 +199,8 @@ pregunta (EDN)
   una plantilla: el selector **clasifica** subgrafos y produce hechos `(instance-of <subgrafo>
   <Modelo>) @ W_i` con evidencia del motor que los reconoció.
 - El **template de v1 es un caso especial**: un selector que exige exactamente la secuencia de
-  bloques del template. Mismo comportamiento, otra base. La suite de paridad (515 tests portados,
-  `tests/parity-v1.md`) es la regresión de ese caso especial y no se pierde.
+  bloques del template. Mismo comportamiento, otra base. La suite de paridad (marcador 2026-10-09:
+  518/1/14/55/0/0/1/1, `tests/parity-v1.md`) es la regresión de ese caso especial y no se pierde.
 - Las **marcas de template** (`⸢rev•campo⸥`, `render`, traits) se conservan como azúcar sobre el
   selector; `07` se reescribe sobre esta base. La "receta por bloque" (`parity-v1:132`) deja de
   ser deuda: el selector es la receta.
@@ -210,18 +210,18 @@ pregunta (EDN)
 - **Lenguaje de selección:** pendiente de spike. Candidato principal: Datalog (una sola lengua para
   recorrer y seleccionar); alternativas: patrones EDN, consultas tree-sitter. No se improvisa.
 
-## 10. El store (lo que cambia en disco)
+## 10. El store (lo que cambia en disco) — sección histórica
 
-> **El registro por documento lo fija §18** (2026-10-08): anchor + clase de la que es instancia + hash
-> raíz; árbol, bloques y valores de campos son caché. La tabla de abajo sigue valiendo como
+> **Sección histórica del formato 3.** El registro por documento lo fija §18 (2026-10-08) y el
+> dueño vigente del formato es `10-escala.md §10–§11` (formato 4). La tabla de abajo queda como
 > diagnóstico del formato 2 → 3.
 
-Formato **3** del store; `10-escala.md` sigue siendo el dueño del formato y recibirá esta sección.
-`stores upgrade 2→3` reconstruye desde los archivos (`include build`), no migra copias.
+Formato **3** del store (histórico; sustituido por el formato 4 de `10 §11`). `stores upgrade 2→3`
+reconstruye desde los archivos (`include build`), no migra copias.
 
 | hoy (formato 2) | formato 3 |
 |---|---|
-| copia verbatim del texto (`source-node`, `src/kimun/surface/docs.cljc:65`) | **eliminada**; ningún spec la pedía |
+| copia verbatim del texto (signo `markdown/source`; referencia histórica) | **eliminada**; ningún spec la pedía |
 | hojas `:text` con su texto dentro del objeto | **contenido por referencia**: el objeto guarda el id (hash); los bytes se leen del archivo por el anchor externo. `inline` opcional por store (`:content :inline` en `store.edn`) para fuentes que no se pueden releer barato |
 | árbol de posiciones completo en el CAS por revisión | **caché verificable**: se persiste el root hash y las posiciones referenciadas por hechos; `index/` reconstruye el resto desde el archivo |
 | log + snapshot mmap por cada transacción de tracking | el log de kimun es **caché** cuando el store es `:git :ignore`; una revisión por `build`. Las **decisiones humanas** (confirmar, desambiguar, retractar, promover) se materializan como documentos `source` en el repo, así el store siempre se reconstruye desde archivos + decisiones (autopoiesis G/M→S de SMG) |
@@ -232,10 +232,9 @@ aristas con evidencia, `TransactionPlan` all-or-nothing, revisiones inmutables c
 estados de anclaje, capacidades por actor, `heads.edn` como punto de commit. Las 20 decisiones de
 `05` siguen en pie.
 
-**Tamaño esperado.** Hoy este repo guarda 27 MB (aparente; 119 MB en disco) por 0,44 MB de desk:
-`log.edn` 5,8 MB más un snapshot del índice por cada una de ~540 transacciones, más blob verbatim
-(763 KB) y hojas. Con formato 3 queda por documento un anchor externo (~150 B), los anchors que
-algún hecho referencia y los hechos. Advertencia medida: un índice *completo* de hashes en EDN
+**Tamaño (histórico).** La medición del formato 2→3 y del 3→4 vive en `10 §10–§11`: el desk de
+este repo (433 KB, 539 documentos) deja el store en 2,51 MB (formato 4), que **no baja** de los
+433 KB del desk que indexa (`12 §1`). Advertencia medida: un índice *completo* de hashes en EDN
 (64 hex por posición) pesa más que el texto que indexa; por eso el árbol es caché, no registro.
 
 ## 11. Motores y protocolo
@@ -264,14 +263,14 @@ Se numeran a continuación de `05` y pasan a su tabla cuando el dueño las confi
 | 21 | la autoridad se parte por clase: bytes → archivo (+git), estructura → pool, hechos → pool + documentos de decisión; revisa `01 §4.1` | confirmada por P1, P5, P12 |
 | 22 | todo hecho vive en un `W_i`; contexto por defecto = el documento `source`; ruteo solo por proyecciones promovidas | confirmada por P2 |
 | 23 | `R`, `A`, `B` son posiciones en taxonomías con herencia (`isa?`); las propiedades algebraicas de `R` se declaran por contexto; el vocabulario `L_i` es un documento `source` EDN | confirmada por P3 |
-| 24 | afirmación = `:status` en evidencia de arista `projection`; `V`/`S` = índice derivado por `(hecho, W_i)`; nada pasa a `TRUE` sin decisión registrada | confirmada (Q7) |
+| 24 | afirmación = `:status` en evidencia de arista `projection`; `V`/`S` = índice derivado por `(hecho, W_i)`; nada pasa a `TRUE` sin decisión registrada | **EN REVISIÓN** — ver `drafts/capa-g-dudas.md` (el eje afirmación no coincide con sentido × verdad) |
 | 25 | conflicto lógico = propuesta fuera del pool; se resuelve por transacción (separar contextos, retractar, fuente equivocada); nunca en silencio | confirmada por P4 |
 | 26 | `W_i` se evalúa como matrices booleanas por relación; índices derivados; nunca `p×p` global; motor = implementación (Matrix hoy, por protocolo) | confirmada por P9 |
-| 27 | formato 3: sin copia verbatim; contenido por referencia con `inline` por caso (p. ej. páginas web que cambian); árbol como caché verificable; log como caché bajo `:git :ignore`; decisiones humanas materializadas como documentos por la composición grafo→documento, formato según el caso | confirmada (Q4, Q5, Q6) |
+| 27 | **formato 4 del store**: registro por documento (anchor + clase + hash raíz + hash de contenido); el árbol/bloques/nodos de un documento con archivo son caché verificable en `<store>/cache/`; contenido por referencia con `inline` por caso; log como caché bajo `:git :ignore`; decisiones humanas como documentos | confirmada (Q4, Q5, Q6) |
 | 28 | modelo = símbolo-tipo + selector + proyecciones; el template de v1 es un caso especial del selector; la paridad v1 es su regresión | confirmada por P10 |
 | 29 | tree-sitter como pod es el parser de la capa M, por fases (R2 §5); SLDB-MD sigue siendo el perfil cerrado por encima; `blocks.cljc` queda como oráculo hasta la paridad byte a byte | confirmada por P6, P12 |
 | 30 | Datalog para la consulta de G; Datalevin (pod) como motor candidato con respaldo in-process; el índice G es derivado | confirmada por P12, pendiente el motor definitivo |
-| 31 | lo producido por prompt es `proposed` por defecto; versión = modelo + hash del prompt + parámetros. Un store o contexto puede declarar políticas de promoción automática: el mismo mecanismo sirve de **harness** para LLMs | confirmada (Q8) |
+| 31 | lo producido por prompt es `proposed` por defecto; versión = modelo + hash del prompt + parámetros. Un store o contexto puede declarar políticas de promoción automática: el mismo mecanismo sirve de **harness** para LLMs | **EN REVISIÓN** — ver `drafts/capa-g-dudas.md` (no existe la categoría "propuesto") |
 | 32 | unidad de anclaje = hoja + grafemas NFC; los chunks de wittgenstein se mapean al entrar | confirmada (Q9) |
 | 33 | unidad de escritura: una revisión por acción (build, assert, decisión) **más** un log de hechos append-only en flujo que se consolida en revisiones | confirmada (Q1 = b) |
 | 34 | transversales de primera clase = el **pack mínimo para que kimun diga dónde está parado**: clase de datos (texto, código, otro), procedencia (source, tier), contexto `W_i`, y la autodescripción de kimun (su store y sus modelos). Kimun procesa texto **y** código, y otros datos si hace falta; el pack debe cubrir ambos. Lista derivada de Q2, corregible por el dueño | confirmada (Q2) |
@@ -281,18 +280,24 @@ Se numeran a continuación de `05` y pasan a su tabla cuando el dueño las confi
 | 38 | embeddings (P15): **sin idioma fijo ni plantilla declarada**; se calculan sobre la forma canónica del hecho rendida con los signos de su contexto, con un modelo **multilingüe**. Que `dog`, `perro` y `hund` caigan en la misma vecindad es un **test exigido al modelo**, no algo que kimun fija | confirmada (Q13) |
 | 39 | el lenguaje de selección se decide por spike en la etapa A (Q14); el índice por revisión (mmap) pasa a **derivado** también en stores `:git :track`, modelo git: revisión → árbol raíz → entradas (Q15) | confirmada (defaults) |
 
+Decisiones 40–46, ya en la tabla de `05 §3`:
+
+| # | decisión | estado |
+|---|---|---|
+| 40 | un documento se lee bajo el contrato con el que se escribió: la evidencia de la arista `reference root→external` registra `:contract`; la sucesión del modelo no la toca | confirmada (A1) |
+| 41 | todo documento es instancia de una clase; lo que no calza se resuelve por herencia (`derive`/`isa?`); una clase cambiada es otra clase | confirmada (§18) |
+| 42 | anclaje y generación son modelos distintos; el azúcar se observa en el nodo; source vs generado | confirmada (§18.7–9) |
+| 43 | tres capas: caché, store estable (hashes y anchors, nunca contenido) y grafo (paquete aparte sobre la base) | confirmada (§19) |
+| 44 | trackeable vs trackeado: el Merkle del store estable va sobre lo trackeado, por ruta; el plan del build a caché o eliminado | confirmada (§20) |
+| 45 | formato 4 (implementado, S1c): registro por documento y árbol como caché por hash en `<store>/cache/` | confirmada (`10 §11`) |
+| 46 | el hash detecta mutaciones; no es identidad (ids estructurales para S, semánticos para M/G) | **PENDIENTE DE CONFIRMAR** — `§21`, `drafts/ids-desde-matrix.md` |
+
 ## 13. Etapas (P12)
 
-**Etapa S — la capa S bien (ahora).** Sin tocar G.
-
-1. Formato 3 del store: eliminar `source-node`; contenido por referencia; árbol como caché; una
-   revisión por `build`. Medir el tamaño de este repo antes y después. `stores upgrade 2→3` =
-   reconstruir.
-2. Parser M por pod tree-sitter, fases 1–2 de R2: segmentación (normalizar `\n` final, recortar la
-   línea en blanco del `list`), luego SLDB-MD como vista sobre el CST. `blocks.cljc` se queda como
-   oráculo diferencial; corpus + desk como regresión (1099 documentos).
-3. Empaquetado del pod por plataforma (`release.edn :pods`, `lib/`, `KIMUN_POD`).
-4. Documentar: `10` (formato 3), `04` (hojas por referencia), `11 §1`, `08` (pods en el bundle).
+**Etapa S — cerrada (S1, S1b, S1c y S2 hechos, 2026-10-09).** Formato 4 en disco (`10 §11`),
+parser M por pod tree-sitter y pod empaquetado; evidencia en `runs/research/2026-10-08/S1.md`–`S2.md`
+y `S{1,1b,1c,2}-report.md`. Lo siguiente **no** está en esta sección: está en `12 §1` (store estable
+sobre lo trackeado, IDs, separar el grafo, packfiles, modelos de anclaje/generación, capa G).
 
 **Etapa A — arquitectura sostenible.** Specs con gate de cero contexto:
 
@@ -305,14 +310,18 @@ Se numeran a continuación de `05` y pasan a su tabla cuando el dueño las confi
 **Etapa C — completar.** Motores (Matrix por protocolo, descompositor, embeddings), evaluación en
 dos etapas de punta a punta, descubrimiento de modelos, UIs y cliente Python, pendientes de `12`.
 
-## 14. Promesas (a trasladar a `tests/promises.md` cuando se implementen)
+## 14. Promesas (resumen; la traza viva está en `tests/promises.md`)
+
+La tabla promesa → test, con la evidencia implementada (incl. formatos 3 y 4), vive en
+`tests/promises.md`. Aquí solo el resumen, marcando lo no cumplido:
 
 - Un documento `source` sin cambios conserva intactos sus anchors y sus hechos curados tras un
   `rebuild` (hoja igual ⇒ mismo id).
 - Cambiar una hoja deja `orphan` solo los hechos anclados a ella; el resto queda `intact`.
 - `include build` desde cero, con los mismos archivos y documentos de decisión, produce el mismo
   root hash por documento y los mismos hechos afirmados.
-- Un store formato 3 de este repo ocupa menos que el texto del desk que indexa.
+- **Objetivo NO cumplido:** el store (2,51 MB en formato 4) **no** ocupa menos que el texto del
+  desk que indexa (433 KB); el plan del build sigue en el CAS (`12 §1`).
 - Dos hechos contradictorios en el mismo `W_i` producen un conflicto lógico; en `W_i` distintos
   no, hasta que se proyecte uno sobre otro.
 - Ninguna transacción lleva un hecho a `TRUE` sin `:actor` o motor con `:status :confirmed`.
@@ -325,7 +334,7 @@ dos etapas de punta a punta, descubrimiento de modelos, UIs y cliente Python, pe
 | `01 §4.1` | "el pool es la fuente de verdad; ningún formato externo es autoridad" → autoridad por clase (§2) |
 | `04` | hojas `:text` con contenido por referencia; el mapeo AST → pool no cambia |
 | `07` | modelo = símbolo-tipo + selector + proyecciones; template como caso especial (§9) |
-| `10` | formato 3 (§10) |
+| `10` | formato 4 (§10–§11) |
 | `11 §1` | tree-sitter como pod en proceso; perfil `propositions` (§11) |
 | `12 §3` | wittgenstein/Matrix = productor y evaluador por protocolo; kimun es la KB |
 | `docs/archive/v2/09` | se rescata §4 (derivados por hash) como anchors de evaluación (§7) |
@@ -347,9 +356,10 @@ dos etapas de punta a punta, descubrimiento de modelos, UIs y cliente Python, pe
   almacenamiento, como git con los packs); si los códigos se asignan por regla determinista sobre
   el conjunto de símbolos, el diccionario no se guarda y recomprimir equivale a reempaquetar.
 - **P15 — Todo hecho se mapea a una o varias `(R A B)`.** El embedding persistido se calcula sobre
-  una verbalización determinista de la forma canónica (plantilla fija por relación, idioma fijo),
-  clave `(id del hecho, motor, versión)`: hechos iguales ⇒ vector igual. Hipótesis para la etapa
-  C, no decisión: fijar hechos a vecindades del embedding como prefijo común en la compresión.
+  una verbalización determinista de la forma canónica (sin idioma fijo ni plantilla declarada;
+  modelo **multilingüe**, decisión 38), clave `(id del hecho, motor, versión)`: hechos iguales ⇒
+  vector igual. Hipótesis para la etapa C, no decisión: fijar hechos a vecindades del embedding
+  como prefijo común en la compresión.
 
 Implicaciones para la escritura del store (deducidas, a confirmar por el dueño): la unidad de
 escritura es la acción (build, assert, decisión), no el documento; se persisten anchors, hechos
