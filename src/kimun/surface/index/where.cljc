@@ -1,5 +1,5 @@
 (ns kimun.surface.index.where
-  "The `--where` filter (docs/v2/06 §6): `parse` turns an expression into a
+  "The `--where` filter (docs/v2/06 §3): `parse` turns an expression into a
    closed AST and `matches?` evaluates that AST against one document, both
    pure. Two surface syntaxes are accepted. The v1 string syntax, one
    predicate per expression: `has(f)`, `\"x\" in f`, `f ~ \"re\"`,

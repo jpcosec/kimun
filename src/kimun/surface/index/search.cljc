@@ -1,6 +1,6 @@
 (ns kimun.surface.index.search
   "`find` as a pure function over a federated view `[{:store name :index idx}]`
-   (docs/v2/06 §6; v1 `sldb.api.search` + `sldb.api.records`). No I/O.
+   (docs/v2/06 §3; v1 `sldb.api.search` + `sldb.api.records`). No I/O.
 
    `records` turns a view into v1's search records — one per store, model,
    document, document section and payload field — and `search` matches a TERM
@@ -21,7 +21,7 @@
 
 (def kinds "The record kinds `find` knows, as `--type` names them." #{:store :model :doc :section :field :tag})
 (def layers "The values of `--in`." #{:physical :semantic :all})
-(def fuzzy-threshold "Dice coefficient from which `--fuzzy` accepts a value (06 §6)." 0.7)
+(def fuzzy-threshold "Dice coefficient from which `--fuzzy` accepts a value (06 §3)." 0.7)
 (def ^:private plural-terms {"stores" :store "models" :model "docs" :doc "sections" :section "fields" :field})
 (def ^:private kind-rank {:store 0 :model 1 :tag 2 :doc 3 :section 4 :field 5})
 

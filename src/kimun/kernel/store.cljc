@@ -2,12 +2,17 @@
   "Persistence port and the host-independent parts of open/replay/verify
    (docs/v2/02 §8.1, milestone 3).
 
-   Layout (files-only backend, see kimun.host.fs-store):
-     <dir>/store.edn      {:format-version 2 :hash-alg :sha-256 :capabilities {...}}
+   Layout (files-only backend, see kimun.host.fs-store; docs/v2/10 §11, 14 §10):
+     <dir>/store.edn      {:format-version 4 :hash-alg :sha-256 :capabilities {...}}
      <dir>/objects/<id>   canonical EDN text of the hashed form of the object; H(file) == id
-     <dir>/log.edn        one Transaction map {:id :plan :revision} per line, append-only
-     <dir>/heads.edn      format 2: {:head rev-id :heads-root mmap-root-id} (the per-tree heads
-                          tree-id -> rev-id are an mmap in the CAS); format 1: {:head rev-id
+     <dir>/cache/         format 4: derived cache of a document with an external anchor —
+                          one entry per document keyed by (fingerprint, class, parser) plus
+                          its tree/block/field objects by hash; gitignored, deletable,
+                          recomputable from the file and verifiable against the root hash
+     <dir>/log.edn        one Transaction map per line, append-only: {:id :plan :revision} in
+                          formats 1–2, {:id :revision} in formats 3–4
+     <dir>/heads.edn      formats 2–4: {:head rev-id :heads-root mmap-root-id} (the per-tree
+                          heads tree-id -> rev-id are an mmap in the CAS); format 1: {:head rev-id
                           :heads {tree-id rev-id}}; written atomically (`heads-record`)
      <dir>/lock           empty; the exclusive lock of `commit-tx!` is taken on it
 
@@ -20,11 +25,12 @@
    `replay-open` ignores it, `verify` reports it and the next `commit-tx!`
    discards it before appending (never appends after it).
 
-   :format-version 2 (new stores) is the revision format of kimun.kernel.revision;
-   :format-version 1 is served by kimun.kernel.legacy.revision. The store value
-   carries :format-version and every function here dispatches on it.
+   :format-version 4 (new stores) is the revision format of kimun.kernel.revision;
+   formats 2 and 3 share that engine; :format-version 1 is served by
+   kimun.kernel.legacy.revision. The store value carries :format-version and
+   every function here dispatches on it.
 
-   `open` (format 2, host with the LazyMaps port) reads store.edn and
+   `open` (formats 2–4, host with the LazyMaps port) reads store.edn and
    heads.edn, checks the head Revision objects and replays NOTHING: see its
    docstring for what it checks and what it trusts. `replay-open` is the full
    verification by replay (log.edn through apply-plan, every transaction and
@@ -214,7 +220,7 @@
   4)
 
 (defn- empty-store
-  "The empty store value of format `fv` (1 = legacy, 2/3 = current)."
+  "The empty store value of format `fv` (1 = legacy, 2–4 = current)."
   [host capabilities fv]
   (case fv
     1 (assoc (legacy/empty-store host capabilities) :format-version 1)
@@ -353,7 +359,7 @@
 (defn open
   "Opens the store in backend `b`.
 
-   Format 2 on a host with the LazyMaps port: NO replay, the log is not read.
+   Formats 2–4 on a host with the LazyMaps port: NO replay, the log is not read.
    CHECKS: store.edn exists and its :hash-alg is the host's; heads.edn is
    well-formed (`no-heads` or {:head id :heads-root id}, :store/corrupt-heads);
    the :head object exists, its content hashes to the id and is a Revision,
@@ -387,8 +393,8 @@
 
 (defn- tx-line
   "The log line written for transaction `tx` of `store`: the whole Transaction
-   in formats 1–2, `{:id :revision}` in format 3 — the resolved plan is in the
-   CAS (invariant 17) and the line no longer duplicates it."
+   in formats 1–2, `{:id :revision}` in formats 3–4 — the resolved plan is in
+   the CAS (invariant 17) and the line no longer duplicates it."
   [store tx]
   (if (>= (or (:format-version store) 2) 3) (dissoc tx :plan) tx))
 

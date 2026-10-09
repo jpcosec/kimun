@@ -1,5 +1,5 @@
 (ns kimun.cli.linked
-  "Models and stores reached through links (docs/v2/06 §4), for `docs
+  "Models and stores reached through links (docs/v2/06 §2), for `docs
    create|track`: `--store ALIAS` picks a linked store as the one written to,
    and a model may be named `ALIAS:Model` or live, unqualified, in a single
    linked store.

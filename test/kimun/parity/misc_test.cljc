@@ -1,7 +1,7 @@
 (ns kimun.parity.misc-test
   "Address reads through the CLI: port of sldb v1 `test_address_surface.py`
    `test_singular_alias_routes_to_the_same_handler` (v1 `get` / `glob` aliases are
-   retired by docs/v2/06 §8; `find` with an address answers the same questions)."
+   retired by docs/v2/06 §5; `find` with an address answers the same questions)."
   (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is]]
             [babashka.fs :as fs]
             [kimun.cli.main :as main]))

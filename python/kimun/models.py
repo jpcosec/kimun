@@ -1,7 +1,7 @@
 """Export a sldb v1 `StructuredNLDoc` class as a kimun model descriptor (docs/v2/07 §2).
 
 `python -m kimun.models export mod:Class` prints the descriptor as EDN. It is the only
-bb→Python point of the product (docs/v2/06 §9); the parity recorder reuses `descriptor`.
+bb→Python point of the product (docs/v2/06 §6); the parity recorder reuses `descriptor`.
 """
 from __future__ import annotations
 

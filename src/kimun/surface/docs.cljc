@@ -5,7 +5,7 @@
    - a `:document` tree named after the document, built by
      `kimun.surface.markdown` from the source text, whose root block carries
      `:attrs {:doc <ulid>}` — one root node per document, its identity;
-   - the source text is NOT stored (format 3, docs/v2/14 §10): the file is the
+   - the source text is NOT stored (formats 3–4, docs/v2/14 §10): the file is the
      authority and the text is read from it by the external anchor. The typed
      payload is always `extract(descriptor, source)`: the canonical renderer
      escapes and re-flows text, so the tree is structure, never the input of
@@ -316,13 +316,6 @@
 (defn- meta-engines [m] {"kimun.surface.docs" "1" meta-key (pr-str m)})
 
 ;; ---------------------------------------------------------------- registered tree (cache)
-
-(defn- generic-class
-  "Class id of a document without a model: the indexing profile of its file
-   type (docs/v2/14 §18.1)."
-  [path]
-  (let [ext (some-> path (str/split #"\.") last str/lower-case)]
-    (str "generic/" (or ext "file"))))
 
 (defn- serialize-object
   "Canonical text of `obj` as it is written to the object cache: the same

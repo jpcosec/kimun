@@ -1,6 +1,6 @@
 (ns kimun.cli.commands.index
   "The `kimun rebuild-indexes` command (v1 `stores semantic-map` and the index
-   refresh of `stores update`; docs/v2/06 §5, §7): rebuilds the derived index
+   refresh of `stores update`; docs/v2/06 §3): rebuilds the derived index
    from the store and writes its cache, `.kimun/index/<head>.edn`. It is the
    only command that writes the cache — reads never do — and it commits
    nothing: no transaction, no journal entry, the store's revision is the one

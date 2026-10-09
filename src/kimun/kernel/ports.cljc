@@ -63,12 +63,3 @@
 (defn ids
   "The IdMinter of a host value."
   [host] (:ids host))
-
-(defn host?
-  "True when `host` carries the four ports."
-  [host]
-  (and (map? host)
-       (satisfies? Hasher (:hasher host))
-       (satisfies? TextNormalizer (:text host))
-       (satisfies? IdMinter (:ids host))
-       (satisfies? TextSegmenter (:segmenter host))))

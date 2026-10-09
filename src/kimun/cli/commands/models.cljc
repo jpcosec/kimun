@@ -57,7 +57,7 @@
 
 (defn from-python
   "The descriptor of v1 class `ref` (`module:Class`), exported by
-   `python3 -m kimun.models export` (docs/v2/06 §9) with `pythonpath` and the
+   `python3 -m kimun.models export` (docs/v2/06 §6) with `pythonpath` and the
    exporter's directory (`$KIMUN_PYTHON`, else `python/` beside `resources/`)
    on PYTHONPATH. Raises `:models/python-export` (exit 3) with stderr."
   [ref {:keys [pythonpath env cwd]}]

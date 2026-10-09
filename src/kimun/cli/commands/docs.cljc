@@ -1,5 +1,5 @@
 (ns kimun.cli.commands.docs
-  "The `kimun docs` group (docs/v2/06 §B, first slice of S2): `ingest`,
+  "The `kimun docs` group (docs/v2/06 §3, first slice of S2): `ingest`,
    `update`, `render` and `list`. A document is a `:document` tree of the
    store built by `kimun.surface.markdown`; every write is a `TransactionPlan`
    through `kimun.kernel.store/commit!` — no side door. Every command is

@@ -1,5 +1,5 @@
 (ns kimun.surface.index.build
-  "The derived index of a store (docs/v2/06 §6): one pure map computed from an
+  "The derived index of a store (docs/v2/06 §3): one pure map computed from an
    opened store, reconstructible from `(store, head)` alone and never
    authoritative (02 §10 inv. 10) — every value in it is read again from the
    store, so deleting it loses nothing.
@@ -21,7 +21,7 @@
   1)
 
 (def contract-keys
-  "The keys every index map carries (docs/v2/06 §6), plus `:version`."
+  "The keys every index map carries (docs/v2/06 §3), plus `:version`."
   [:version :head :models :docs :by-model :by-name :tags :tag-dag :equivalences :sections :links :anchors])
 
 (defn- lineage

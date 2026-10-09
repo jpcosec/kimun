@@ -1,5 +1,5 @@
 (ns kimun.cli.commands.stores
-  "The `kimun stores` group (docs/v2/06 §B): `init`, `check`, `health`,
+  "The `kimun stores` group (docs/v2/06 §3): `init`, `check`, `health`,
    `update`, `reconcile`, `verify`, `upgrade`, `show`, and the federation commands `link`, `unlink` and `links`. Every
    command is `(fn [args opts ctx] envelope)` where `args` are the positional
    tokens after the subcommand and `ctx` is `{:env env :cwd cwd}`; `dispatch`

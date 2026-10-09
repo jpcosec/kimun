@@ -1,5 +1,5 @@
 (ns kimun.surface.index.address-test
-  "Addresses over hand-built federated views (the index contract of 06 §6).
+  "Addresses over hand-built federated views (the index contract of 06 §3).
    Each deftest ported from v1 names its v1 function; the rule applied to v1's
    `invalid` tests is: a string outside the address space resolves to `[]`,
    a malformed address raises `:query/bad-address`."
@@ -75,7 +75,7 @@
     (is (= [] (address/list-address "st.{BaseNote}" view)))))
 
 (deftest get-and-glob-by-address
-  ;; v1 test_singular_alias_routes_to_the_same_handler (the alias is retired by 06 §8; the answers stay)
+  ;; v1 test_singular_alias_routes_to_the_same_handler (the alias is retired by 06 §5; the answers stay)
   (let [view (memo-view "done")]
     (is (= ["Memo2"] (map :value (address/resolve-address "st.{MemoDoc}.memo2.title" view))))
     (is (= ["st.{MemoDoc}.memo1.status" "st.{MemoDoc}.memo2.status"]

@@ -1,12 +1,12 @@
 (ns kimun.surface.index.address
-  "v1's address surface over the index (docs/v2/06 §6), pure: `address?`
+  "v1's address surface over the index (docs/v2/06 §3), pure: `address?`
    routes a TERM, `parse` turns an address into a closed AST,
    `resolve-address` answers what the address denotes and `list-address`
    what hangs one level below it (v1 `ls`). Nothing here reads a store: the
    input is the federated view `[{:store name :index idx} …]`, current store
    first.
 
-   Grammar (v1 `store/query_engine`, plus the unbraced form of 06 §6):
+   Grammar (v1 `store/query_engine`, plus the unbraced form of 06 §3):
 
      address := [store ':'] st | se | gse
      st      := 'st'                                   models of the store

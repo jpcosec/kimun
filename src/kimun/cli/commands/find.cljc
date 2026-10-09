@@ -1,5 +1,5 @@
 (ns kimun.cli.commands.find
-  "The `kimun find` command (docs/v2/06 §6; v1 `sldb find` and `sldb legacy
+  "The `kimun find` command (docs/v2/06 §3; v1 `sldb find` and `sldb legacy
    find`), over the pure engine `kimun.surface.index.search`.
 
    `find TERM [--in physical|semantic|all] [--type KIND[,KIND]] [--global]

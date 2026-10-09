@@ -1,6 +1,6 @@
 (ns kimun.cli.main-test
   "The CLI entry point: version, usage, formats and the not-yet-available
-   evaluator surface (docs/v2/06 §B)."
+   evaluator surface (docs/v2/06 §1)."
   (:require [clojure.test :refer [deftest is testing]]
             [clojure.edn :as edn]
             [clojure.java.io :as io]

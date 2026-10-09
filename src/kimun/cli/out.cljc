@@ -1,7 +1,7 @@
 (ns kimun.cli.out
-  "Result envelopes of the `kimun` CLI and their rendering (docs/v2/06 §B):
+  "Result envelopes of the `kimun` CLI and their rendering (docs/v2/06 §1):
    every command returns one envelope value, `{:ok true …}` or `{:ok false …}`,
-   which `emit` renders as json, edn, text or md (the `:markdown` projection
+   which `emit` renders as json, edn, text, md, yaml or ast (the `:markdown` projection
    of the data when the command provides one, else the text form). Building an envelope never
    performs I/O; printing is the caller's job."
   (:require [cheshire.core :as json]
