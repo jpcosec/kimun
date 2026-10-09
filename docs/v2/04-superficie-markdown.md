@@ -233,7 +233,7 @@ determinista de una pasada con una pila de delimitadores:
 
 `parse(render(A)) == A` para todo `A` canónico, y `render(parse(s))` es idempotente.
 
-## 7. Regiones opacas (docs/v2/01 §7, addressability)
+## 7. Regiones opacas (addressability; `docs/v2/01` §4, principio 7)
 
 Se conservan como `:sign/:opaque`, hash sobre el blob, y no se descienden:
 

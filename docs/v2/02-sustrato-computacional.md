@@ -9,7 +9,7 @@
 > y el roadmap. El hilo conductor es una analogía deliberada con el modelo de objetos
 > de Git, porque resuelve el mismo problema: objetos inmutables compartidos, indexados
 > por muchos árboles, con historial reproducible. El contrato del kernel vive en este
-> documento; la forma en disco de las revisiones (formato 2) y su coste los posee
+> documento; la forma en disco de las revisiones (formatos 2–4, vigente el 4) y su coste los posee
 > `10-escala.md`.
 
 ---
@@ -38,7 +38,7 @@ Node {
   class     : :sign | :symbol | :fact
   kind      : tipo dentro de la clase            ; :paragraph, :cst-block, :proposition, :triple …
   content   : datos canónicos del nodo           ; texto plano + offsets, forma lógica, (s p o)
-  address   : :structural | :opaque | :external  ; clase de direccionabilidad (01 §4.7)
+  address   : :structural | :opaque | :external  ; clase de direccionabilidad (01 §4, principio 7)
 }
 ```
 
@@ -185,13 +185,14 @@ Reglas:
   el hito 3; la *política* de retención
   es el hito 8, y los estados `orphan`/`drifted` de anclajes son el hito 5a/5b. Los nodos
   `:span` y los símbolos sin árbol propio se conservan por esta vía. La forma en disco de
-  la revisión en formato 2 (los tres mmaps) y el recorrido de `verify-full` los posee
+  la revisión en los formatos 2–4 (los tres mmaps) y el recorrido de `verify-full` los posee
   `10-escala.md` §5–§6.
 - **Heads y CAS**: el CAS es lógico y por *entrada*: la escritura se acepta solo si, para
   cada árbol tocado por el plan, el valor actual coincide con `:base`; una revisión mueve
-  en una sola escritura todas las entradas de los árboles que toca. En formato 2 (el de
-  los stores nuevos) la tabla `{tree-id revision-id}` vive en el CAS como mmap y la raíz
-  del mapa es `:heads-root`; `heads.edn` nombra esa raíz y la cabeza. El commit compara
+  en una sola escritura todas las entradas de los árboles que toca. En formato 4 (el de
+  los stores nuevos; 2/3 son legados, `10-escala.md §11`) la tabla `{tree-id revision-id}`
+  vive en el CAS como mmap y la raíz del mapa es `:heads-root`; `heads.edn` nombra esa
+  raíz y la cabeza. El commit compara
   las cabezas cargadas con las actuales y añade la línea del log y reemplaza `heads.edn`
   como una sola operación bajo lock exclusivo (`Backend/commit-tx!`); un escritor obsoleto
   no escribe ni log ni cabezas. El formato 1 (legado) usa `heads.edn = {:head :heads}` y
@@ -224,7 +225,7 @@ evidencias.
 | `supersedes` | `:actor` (lo toma del `:actor` del plan que ejecuta `:replace`) |
 | `reference` (S↔S) | `:ref-hash`, origen (`:actor` o `:engine`+`:version`) |
 | `binding` (S→M) | `:ref-hash`, origen, `:context` |
-| `projection` (M→G) | `:ref-hash`, origen, `:context`, `:status ∈ {:sinnvoll :sinnlos :unsinnig}` |
+| `projection` (M→G) | `:ref-hash`, origen, `:context`, `:status ∈ {:sinnvoll :sinnlos :unsinnig}` (**EN REVISIÓN** — ver `docs/v2/drafts/capa-g-dudas.md`: `14 §5` define el `:status` de esta misma arista como `#{observed confirmed rejected retracted}`; eje sentido × verdad) |
 | `semantic` (M↔M) | `:ref-hash`, origen, `:context` |
 | `derived` | `:ref-hash`, `:engine`, `:version` (`:context` opcional) |
 
@@ -232,8 +233,8 @@ evidencias.
 que se compara para detectar mutación. `:context` es el id del nodo `:fact/:context`
 (§2). Un binding distinto por cada `W_i`. Los campos obligatorios son un mínimo: una arista puede
 llevar claves de evidencia adicionales (contenido canónico), como el `:contract` = id del
-descriptor bajo el que se extrajo su fuente que la superficie `docs` añade a su `:derived`
-(A1, 2026-10-08), y que la sucesión del modelo deja en pie. Cada arista se persiste **individualmente**
+descriptor bajo el que se extrajo su fuente que la superficie `docs` añade a la evidencia de
+su arista `reference` hacia la fuente (A1, 2026-10-08), y que la sucesión del modelo deja en pie. Cada arista se persiste **individualmente**
 como objeto `objects/<edge-id>`; las aristas activas de una revisión (§5) se listan aparte,
 de modo que `get-object edge-id` devuelve la arista tras un replay.
 
@@ -279,7 +280,7 @@ hoja (texto plano, hash)
 ## 5. Revisiones y transacciones
 
 ```
-;; formato 2 (el de los stores nuevos)
+;; formato 4 (el de los stores nuevos; 2/3 legados, 10-escala.md §11)
 Revision {
   trees     : <raíz mmap tree-id → [descriptor-id merkle-root]>
   edges     : <raíz mmap edge-id → true>          ; aristas activas que no son de propiedad
@@ -296,11 +297,12 @@ revision-id = H(canonical-bytes(Revision))  ; sobre los ocho campos; provenance 
 
 El contrato es una **revisión de ocho campos**. Los cinco comunes son `parents`, `tx`,
 `actor`, `engines` y `timestamp`; los tres restantes son las colecciones de la revisión:
-`trees`, `edges` e `incidence` en **formato 2** (el de los stores nuevos), y `roots`,
+`trees`, `edges` e `incidence` en **formato 4** (el de los stores nuevos; 2/3 legados, con
+el mismo layout — `10-escala.md §11`), y `roots`,
 `trees` (*tree-set*) y `edges` (*edge-set*) en **formato 1** (legado). `engines` son los
 motores de esta transacción, no se heredan; `timestamp` entra al hash.
 
-En formato 2 `trees`, `edges` e `incidence` son raíces de mapas Merkle independientes de
+En los formatos 2–4 `trees`, `edges` e `incidence` son raíces de mapas Merkle independientes de
 la historia (`kimun.kernel.mmap`); `incidence` es derivada de `edges` y determinista. El
 formato 1 conserva `:roots`, el *tree-set* y el *edge-set* como objetos y abre por replay;
 `kimun stores upgrade` lo pasa a formato 2. La forma en disco (`store.edn`, `objects/`,
@@ -792,10 +794,10 @@ AST estructural neutro              invariante: parse_f(render_f(A)) == A  para 
 | Lenguaje del kernel | **Clojure, `.cljc` puro** (datos + funciones, sin I/O) | inmutabilidad y estructuras persistentes son el modelo; el host es un adaptador |
 | Lisp separado | **no** | Clojure es el Lisp; se conserva el boundary *planes como datos EDN* |
 | Host CLI | **Babashka** | binario nativo, arranque instantáneo, sin JVM para el usuario (decisión 14) |
-| Pods y plugins nativos | **permitidos con frontera de proceso** | decisión 19: servicios portables (Rust, C, Zig, Go…) y plugins en cualquier lenguaje, pocos y documentados; hoy ninguno en el repo; tree-sitter (C) es el primer candidato |
+| Pods y plugins nativos | **permitidos con frontera de proceso** | decisión 19: servicios portables (Rust, C, Zig, Go…) y plugins en cualquier lenguaje, pocos y documentados. El pod tree-sitter existe (`pods/treesitter`, decisión 29) y es el parser de la capa M; `bb pod` lo construye |
 | Scripting no confiable | **SCI** con allowlist de namespaces | el `capability-model` previsto; el evaluador (S4) todavía no existe |
 | Hashing | **SHA-256** a través del protocolo `Hasher` | BLAKE3 cuando exista en ambos hosts; el algoritmo se registra en el descriptor |
-| Persistencia | **log de transacciones + CAS de archivos** (formato 2) | reconstruible; el backend SQLite es una vía abierta, no implementada |
+| Persistencia | **log de transacciones + CAS de archivos** (formato 4; 2/3 legados) | reconstruible; el backend SQLite es una vía abierta, no implementada |
 | Índice de consulta | **mapa EAV derivado** y reconstruible (`kimun.surface.index`), cacheado por head | "el log es inmutable; los índices no"; sin Datascript |
 | Python | **adaptadores fuera de proceso** (`python/kimun/adapters`) y exportador de modelos | no hay FFI; no es centro arquitectónico |
 | Host UI / editor | **ClojureScript sobre Node** (drawer de paridad) | ProseMirror y `web-tree-sitter` cuando se construya la UI |
@@ -809,7 +811,7 @@ definitivo del CLI** (decisión 14) y la paridad Node/UI queda en el drawer.
 | tema | decisión |
 |---|---|
 | hash | SHA-256 a través del protocolo `Hasher` del host (bb: `java.security.MessageDigest`; cljs/Node: `crypto`). BLAKE3 cuando exista en ambos hosts. El algoritmo queda registrado en el descriptor del store |
-| backend | **solo archivos** (formato 2, `10-escala.md` §5): `<store>/objects/<id>` (CAS; cada objeto se escribe como texto UTF-8 con sus canonical-bytes EDN, de modo que `H(fichero) == nombre`), `<store>/log.edn` (append-only, una línea por transacción), `<store>/heads.edn` (`{:head :heads-root}`), `<store>/store.edn` (descriptor: `:hash-alg`, `:capabilities`, `:format-version`) y `<store>/lock`. `open` lee descriptor y cabezas y comprueba por hash y forma la revisión cabeza y la raíz de cabezas (sin replay); `stores check` (`verify`) hashea todo lo alcanzable, y `stores verify` (`verify-full`) replaya el log. El índice derivado existe y lo reconstruye `rebuild-indexes` (`kimun.surface.index`) |
+| backend | **solo archivos** (formato 4, `10-escala.md` §11; 2/3 legados): `<store>/objects/<id>` (CAS de registro y estructura referenciada; cada objeto se escribe como texto UTF-8 con sus canonical-bytes EDN, de modo que `H(fichero) == nombre`), `<store>/cache/{objects,docs}/…` (árbol/bloques de un documento con archivo, gitignored y borrable), `<store>/log.edn` (append-only, una línea por transacción), `<store>/heads.edn` (`{:head :heads-root}`), `<store>/store.edn` (descriptor: `:hash-alg`, `:capabilities`, `:format-version`) y `<store>/lock`. `open` lee descriptor y cabezas y comprueba por hash y forma la revisión cabeza y la raíz de cabezas (sin replay); `stores check` (`verify`) hashea todo lo alcanzable, y `stores verify` (`verify-full`) replaya el log. El índice derivado existe y lo reconstruye `rebuild-indexes` (`kimun.surface.index`) |
 | NFC | `java.text.Normalizer/normalize` con `Form/NFC` en Babashka/JVM; `String.prototype.normalize("NFC")` en cljs; detrás del mismo protocolo de host que el `Hasher` |
 | tests | `clojure.test` + `clojure.test.check` (incluido en Babashka). "Tests generativos" = propiedades test.check sobre generadores que cubren **todas las filas class/kind de §2.1**, árboles y planes; propiedad mínima: para todo plan válido, aplicar es determinista y `verify` sobre el store recargado reproduce los mismos hashes |
 | fixtures dorados | `test/fixtures/nodes.edn`: vector de `{:class :kind :content :expected-id}`, una entrada por fila de §2.1. `test/fixtures/trees.edn`: `{:nodes [...] :tree {:kind :document :root <alias> :children {<alias> [<alias> ...]}} :expected {:objects {<alias> <tree-hash>} :root <merkle-root>}}`. `test/fixtures/tx-<n>.edn`: `{:store {:capabilities {...}} :plan {...} :expected {:revision {:roots :trees :edges :parents :tx :actor :engines :timestamp} :revision-id ...}}` con `:timestamp` fijado en el plan para que el id sea reproducible; el test compara **los ocho campos y el id**. Generadores compartidos en `test/kimun/kernel/generators.cljc` (`gen-node`, `gen-tree`, `gen-valid-plan`, `gen-plan-sequence`), creados en el hito 0 y ampliados en cada hito. Los ids esperados se calculan una vez con la implementación, se revisan a mano y se congelan |

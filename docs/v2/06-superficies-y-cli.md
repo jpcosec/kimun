@@ -4,7 +4,7 @@
 > códigos de salida. Cada afirmación de aquí corresponde a `src/kimun/cli/**`
 > (`main.cljc`, `args.cljc`, `out.cljc`, `errors.cljc`, `store.cljc`, `commands/*`).
 > Autoridad según `docs/v2/README.md`. El kernel es `docs/v2/02`; los modelos, `07`; la
-> distribución, `08`; el formato 2 y la escala, `10`; los adaptadores, `11`; la inclusión en
+> distribución, `08`; los formatos del store y la escala, `10`; los adaptadores, `11`; la inclusión en
 > git, `13`. Los anillos y reglas de dependencia son `03`. La paridad medida con sldb v1 es
 > `docs/v2/tests/parity-v1.md`.
 
@@ -49,7 +49,7 @@ Códigos de salida (`kimun.cli.errors`): 0 ok, 1 `missing`/`empty`, 2 `ambiguous
 | 7 | `plan/rejected` con `{:check :capability}` |
 | 70 | cualquier otra cosa |
 
-## 2. El store `.kimun/` (formato 2)
+## 2. El store `.kimun/` (formato 4; 2/3 legados)
 
 Descubrimiento (`kimun.cli.store/resolve-store`): `--store` > `$KIMUN_STORE` > walk-up buscando `.kimun/store.edn` desde el cwd. Un valor de `--store` que no es ruta existente y parece nombre de enlace se busca como enlace del store actual o de un ancestro; si tampoco, `cli/no-store` (exit 5). Sin store, todo comando que lo exige falla con `cli/no-store` (exit 5).
 
@@ -306,7 +306,7 @@ Tabla de rutas como datos en `src/kimun/surface/http/routes.cljc`; cada ruta del
 | `stores list`, `store show` | `stores show` | descriptor y cabeceras sin replay |
 | `stores check` | `stores check` | abre por replay; findings como warnings |
 | — | `stores verify` | nuevo: recomputa hashes y verifica el replay |
-| — | `stores health`, `stores update`, `stores reconcile [--apply]`, `stores upgrade` | nuevos: diagnóstico, reparación sin decisión, federación, formato 2 |
+| — | `stores health`, `stores update`, `stores reconcile [--apply]`, `stores upgrade` | nuevos: diagnóstico, reparación sin decisión, federación, formato del store (1→2→3→4) |
 | `stores semantic-map` | `rebuild-indexes` | solo reconstruye bajo orden; leer nunca escribe |
 | `stores semantic-export`, `query` | `graph export\|snapshot\|query`, `semantic export` | export con rutas relativas, `producer kimun`, contrato v2 |
 | `models add\|update` | `models define` | modelo = datos en el árbol, no clase Python |

@@ -2,7 +2,7 @@
 
 > Reglas que `bb lint` hace cumplir antes de cada `bb test`. Lo que no se puede
 > comprobar mecánicamente se lista como norma de revisión. Autoridad: por debajo de
-> `01` y `02`, por encima de cualquier atom de práctica.
+> `01`, `14` y `02` (orden de `docs/v2/README.md`), por encima de cualquier atom de práctica.
 
 ## 1. Anillos de dependencia
 

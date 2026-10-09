@@ -52,6 +52,7 @@ consumidor); la migración se prueba sobre una copia en un directorio temporal, 
 | `bb lint` | anillos + docstrings + regla "sin `def` mutable en anillo 0" (`scripts/check_rings.clj`) |
 | `bb test` | suite del kernel en Babashka (clojure.test + test.check); depende de `lint` |
 | `bb oracle` | oráculo independiente en Python (`scripts/canon_oracle.py`) |
+| `bb store-size [DIR]` | bytes de objeto por clase, log y total de un store (`scripts/store_size.clj`) |
 | `bb cli <args>` | ejecuta `kimun.cli.main/-main` desde `src/` (desarrollo; `bin/kimun` es su envoltorio) |
 | `bb jar` | llama al `bb uberjar` **nativo** (`--classpath src:resources`, main `kimun.cli.main`) y estampa `resources/git-sha`; la task no puede llamarse `uberjar`: sombrearía el builtin y recursaría |
 | `bb desk` | alias fino de `kimun include build`: construye `.kimun/` desde `kimun.include.edn` |
