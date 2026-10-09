@@ -419,3 +419,22 @@ Principio del dueño; gobierna los modelos (revisa §9) y el registro del store 
      árbol del archivo es salida de la generación, no se registra.
    - El desk de este repo es **generado** (deskops escribe sus documentos): su store no baja de tamaño
      por anclaje selectivo, sino por dejar de registrar el árbol y las instrucciones de armado.
+
+## 19. Caché, store estable y grafo (2026-10-09)
+
+Principio del dueño. Kimun se separa en tres capas con reglas distintas, para no convertir el store
+en un zapato chino.
+
+| capa | contiene | regla |
+|---|---|---|
+| **caché** | árboles, bloques, campos extraídos, índices (Datalog, vectores, búsqueda) | derivado; se recalcula y se puede borrar sin perder nada |
+| **store estable** (base de kimun) | hashes y anchors del ambiente (texto, código y, a futuro, datos) + el registro mínimo de qué se trackea | **no guarda el contenido**: detecta cualquier modificación del ambiente por hash y permite **reconciliar** cuando la KB queda desactualizada respecto del ambiente |
+| **grafo** (paquete aparte, sobre la base) | modelos (anclaje y generación), clases y herencia, capa G (hechos, contextos) y todo lo que vive **solo** en el grafo | es el conocimiento; se ancla al ambiente a través de los hashes del store estable |
+
+Reglas:
+1. Hay cosas que viven **solo en el grafo** y cosas que **se leen del texto**; cada una se lee de su
+   lugar. El hash dice si lo leído del texto sigue vigente.
+2. Los hashes existen para **detectar cambios sin guardar el contenido**. Si el ambiente cambió, el
+   store lo sabe y se reconcilia; no se guarda una copia "por si acaso".
+3. El grafo es un **paquete aparte** de la base de kimun: la base (store estable + caché) no depende
+   de modelos ni de G; el grafo depende de la base.
