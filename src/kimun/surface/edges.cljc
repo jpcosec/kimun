@@ -243,7 +243,7 @@
   (let [names (export-ids store) f (endpoint store names from) t (endpoint store names to) c (context-node relation)]
     (if (some #(and (= relation (:relation %)) (= f (get-in % [:from :node])) (= t (get-in % [:to :node]))) (authored store))
       {:changed false}
-      (plan store opts [{:op :add-node :node c}
+      (plan store opts [{:op :add-node :node c :as :ctx}
                         {:op :add-edge :edge {:type :semantic :from f :to t :evidence {:ref-hash t :actor actor :context (id-of host c)}}}]))))
 
 (defn unrelate-plan

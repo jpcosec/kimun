@@ -24,6 +24,13 @@
    (kimun.kernel.mmap). :incidence is derived from :edges, deterministic, and never
    trusted by verification (a full replay recomputes it).
    revision-id = H(canonical-bytes Revision); Transaction {:id H(resolved plan) :plan :revision}.
+   The RESOLVED plan (the one stored in the CAS and hashed into the transaction
+   id) references every :add-node it can by `:id`: an op that declares an alias
+   becomes `{:op :add-node :id <node-id>}`, its content living as a CAS object
+   (docs/v2/14 §10, the text lives once); an op an input plan writes without an
+   alias keeps its inline `:node`. The INPUT plan is unchanged and still takes
+   `:node` inline, and a stored plan of an earlier format (inline `:node`
+   throughout) is still read and reproduces its own transaction id.
 
    A store value with :format-version 1 is served by kimun.kernel.legacy.revision:
    apply-plan, diff, tree-at and the accessors dispatch on it."
@@ -289,6 +296,7 @@
 (defn- ws-init [store plan]
   {:store store :host (:host store) :plan plan
    :aliases {} :edges-added #{} :edges-removed #{}
+   :declared #{}      ; node ids a resolved plan names that the store could not resolve
    :trees {}          ; only the trees this transaction read for writing
    :touched #{} :superseded []
    :e+ #{} :e- #{}    ; net delta over the active edge set of the base
@@ -297,7 +305,9 @@
 (defn- ws-object [ws id] (or (get (:new ws) id) (get-object (:store ws) id)))
 
 (defn- node-exists? [ws id]
-  (or (contains? (:new ws) id) (contains? (:objects (:store ws)) id)))
+  (or (contains? (:new ws) id)
+      (contains? (:objects (:store ws)) id)
+      (contains? (:declared ws) id)))
 
 (defn- ws-tree [ws tid] (or (get-in ws [:trees tid]) (committed-tree (:store ws) tid)))
 
@@ -341,13 +351,38 @@
 
 (defn- r [ws x] (plan/resolve-ref (:aliases ws) x))
 
+(defn- resolved-op
+  "The op that enters the resolved plan: aliases substituted. An :add-node that
+   declares an alias (`:as`) becomes `{:op :add-node :id <node-id>}` (its
+   content is a CAS object, not part of the plan); one without an alias is
+   already resolved — an old plan, or a node no later op names — and is kept
+   as it is, so re-applying a stored plan reproduces its own transaction id."
+  [aliases op]
+  (let [a (:as op)
+        op' (plan/substitute-aliases aliases (dissoc op :as))]
+    (if (and a (= :add-node (:op op')))
+      (assoc (dissoc op' :node) :id (get aliases a))
+      op')))
+
 (defn- rejecting [check op f]
   (err/rescue (fn [e] (plan/reject check op (ex-message e))) (f)))
 
-(defn- add-node-op [ws op]
-  (let [{:keys [class kind content]} (:node op)
-        n (rejecting :ids-exist op #(node/make (:host ws) class kind content))]
-    (-> ws (assoc-in [:new (:id n)] n) (bind-alias op (:id n)))))
+(defn- add-node-op
+  "Adds the node an :add-node op describes. An input op carries the content
+   (`:node`); a resolved op (the one a stored plan holds) names it by `:id` and
+   the node object must already be in the store (a reader puts it there from
+   the CAS: `kimun.kernel.store/replay-log`). A resolved op whose object is not
+   in the store is accepted and only declared: the hash check reports the
+   missing or unreadable object instead of the replay failing."
+  [ws op]
+  (if (contains? op :node)
+    (let [{:keys [class kind content]} (:node op)
+          n (rejecting :ids-exist op #(node/make (:host ws) class kind content))]
+      (-> ws (assoc-in [:new (:id n)] n) (bind-alias op (:id n))))
+    (let [id (:id op)]
+      (if-some [n (ws-object ws id)]
+        (-> ws (assoc-in [:new id] n) (bind-alias op id))
+        (update ws :declared conj id)))))
 
 (defn- new-tree-op [ws op]
   (let [root (require-node ws op (r ws (:root op)))
@@ -677,7 +712,7 @@
           plan0 (check-base store (assoc plan :ops raw-ops) raw-ops (plan/touched-trees plan))
           ws (reduce apply-op (ws-init store plan) (:ops plan))
           aliases (:aliases ws)
-          resolved-ops (mapv (fn [op] (plan/substitute-aliases aliases (dissoc op :as))) (:ops plan))
+          resolved-ops (mapv (partial resolved-op aliases) (:ops plan))
           touched (:touched ws)
           _ (plan/check-capabilities (:capabilities store) (assoc plan :ops resolved-ops) aliases)
           plan' (cond-> (assoc plan :ops resolved-ops)

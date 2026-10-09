@@ -12,6 +12,7 @@
             [kimun.kernel.generators :as g]
             [kimun.kernel.legacy.revision :as legacy]
             [kimun.kernel.mmap :as mmap]
+            [kimun.kernel.node :as node]
             [kimun.kernel.ports :as ports]
             [kimun.kernel.revision :as rev]
             [kimun.kernel.store :as store]
@@ -93,6 +94,17 @@
          (every? (fn [[_ v]] (canonical-incidence-value? s v)) (mmap/entries #(rev/get-object s %) (:incidence head)))
          (every? (fn [[n ids]] (= (vec ids) (rev/edges-touching s n))) (incidence-of s)))))
 
+(defn- node-ref-ops
+  "Resolved ops with every :add-node keyed by node id: format 2 replaces the
+   inline :node of an aliased op by its :id, the legacy engine keeps the
+   content (docs/v2/14 §10)."
+  [host ops]
+  (mapv (fn [op]
+          (if (= :add-node (:op op))
+            (assoc (dissoc op :node) :id (or (:id op) (node/node-id host (:node op))))
+            op))
+        ops))
+
 (defn- run-both
   "Applies the same steps to the legacy engine and to format 2; true when every
    step is accepted/rejected alike and leaves the same trees, edges and nodes."
@@ -113,7 +125,8 @@
             cl (recur l s (inc n) (rest steps))
             :else (let [rl (legacy/apply-plan l (plan (:head l) ops)) rs (rev/apply-plan s (plan (:head s) ops))]
                     (and (= (select-keys rl [:aliases :edges-added :superseded]) (select-keys rs [:aliases :edges-added :superseded]))
-                         (= (:ops (:plan (:transaction rl))) (:ops (:plan (:transaction rs))))
+                         (= (node-ref-ops h (:ops (:plan (:transaction rl))))
+                            (node-ref-ops h (:ops (:plan (:transaction rs)))))
                          (recur (:store rl) (:store rs) (inc n) (rest steps))))))))))
 
 (defspec format-2-and-legacy-engines-agree-on-random-histories 40
@@ -301,6 +314,26 @@
           old-heads (set (mapcat mmap-nodes (remove #{(:heads-root final)} @heads-roots)))
           unreached (remove (set (store/reachable final)) (keys (:objects final)))]
       (is (every? old-heads unreached) "every other object is reachable from the heads"))))
+
+(deftest the-resolved-plan-of-a-revision-references-nodes-by-id
+  ;; docs/v2/14 §10: the text lives once. The resolved plan (what the transaction
+  ;; id hashes and the CAS holds) names every aliased :add-node by id; the node
+  ;; object is the CAS object of that id, and the store still replays.
+  (let [dir (str (ktu/temp-dir "kimun-plan-refs-"))
+        b (fs/backend dir)
+        s0 (store/init! b h caps)
+        plan {:plan/version 1 :base nil :actor "jp" :engines {} :timestamp TS
+              :ops [{:op :add-node :node {:class :sign :kind :block :content {:format :markdown :type :document :attrs {}}} :as :root}
+                    {:op :add-node :node {:class :sign :kind :text :content {:text "el texto vive una vez"}} :as :p}
+                    {:op :new-tree :tree {:kind :document :name "doc"} :id "01ARZ3NDEKTSV4RRFFQ69G5FAV" :root :root :as :t}
+                    {:op :add-edge :edge {:type :ownership :tree :t :parent [] :to :p :order 0}}]}
+        r (store/commit! b s0 plan)
+        resolved (edn/read-string (store/read-object b (:id (:transaction r))))]
+    (is (= (:id (:transaction r)) (canon/digest h resolved)) "the CAS plan is exactly what the transaction id hashes")
+    (is (seq (filter #(= :add-node (:op %)) (:ops resolved))) "the plan adds nodes")
+    (is (every? #(not (contains? % :node)) (filter #(= :add-node (:op %)) (:ops resolved)))
+        "no add-node op carries node content")
+    (is (true? (:ok? (store/verify-full b h))) "the node-free plan replays")))
 
 ;; ---------------------------------------------------------------- format 1 through the store
 

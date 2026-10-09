@@ -48,12 +48,15 @@
         (is (= (get-in fx [:expected :revision-id]) revision-id))
         (is (= (tu/tx-001-revision-ids 1) revision-id))
         (is (= #{:roots :trees :edges :parents :tx :actor :engines :timestamp} (set (keys revision))))))
-    (testing "format 2: same transaction and tree roots, state held in three mmaps"
+    (testing "format 2: same parents, actor, engines and tree roots, state held in three mmaps"
       (let [{:keys [revision revision-id store]} (rev/apply-plan (rev/empty-store h caps) (:plan fx))]
         (is (= (tu/tx-001-revision-ids 2) revision-id))
         (is (= #{:trees :edges :incidence :parents :tx :actor :engines :timestamp} (set (keys revision))) "eight fields")
-        (is (= (select-keys expected [:parents :tx :actor :engines :timestamp])
-               (select-keys revision [:parents :tx :actor :engines :timestamp])))
+        ;; :tx differs from format 1: the resolved plan of this format names each aliased
+        ;; :add-node by id, and the transaction id hashes that resolved plan (docs/v2/14 §10)
+        (is (= (select-keys expected [:parents :actor :engines :timestamp])
+               (select-keys revision [:parents :actor :engines :timestamp])))
+        (is (not= (:tx expected) (:tx revision)) "the resolved plan, and so the transaction id, has the format's shape")
         (is (= (:roots expected)
                (into {} (map (fn [tid] [tid (second (rev/tree-entry store tid))])) (rev/tree-ids store))))
         (is (= (sort (:edges store)) (rev/active-edges store)))))))

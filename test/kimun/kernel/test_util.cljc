@@ -30,9 +30,12 @@
 
 (def tx-001-revision-ids
   "Revision id of test/fixtures/tx-001.edn under each store format. The fixtures
-   pin the format-1 id (as :expected and as the :base of later plans)."
+   pin the format-1 id (as :expected and as the :base of later plans). The
+   format-2 id changed with the format-3 plan (docs/v2/14 §10): a resolved plan
+   references the nodes it can by id, and the transaction id — hence the
+   revision id — hashes that resolved plan."
   {1 "93fd0bca29b4f94b68464a6952b42b1464055a26dd3dec4c3d37173c8a985053"
-   2 "8ee693939d457251112165da68534a4d4508d1cbe17a7efe4b46f4483ed05992"})
+   2 "2594415e6fd5bcc499c9fb658ac0e6b35a33b4da2440ace694d46d5d7ba23b44"})
 
 (defn format-2-fixture
   "A fixture with every reference to the format-1 revision id of tx-001

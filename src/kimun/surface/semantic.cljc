@@ -224,7 +224,7 @@
 
 (defn- relation-ops [host a b ctx actor]
   (let [to (id-of host (term b)) c (context ctx)]
-    [{:op :add-node :node (term a)} {:op :add-node :node (term b)} {:op :add-node :node c}
+    [{:op :add-node :node (term a) :as :ta} {:op :add-node :node (term b) :as :tb} {:op :add-node :node c :as :ctx}
      {:op :add-edge :edge {:type :semantic :from (id-of host (term a)) :to to
                            :evidence {:ref-hash to :actor actor :context (id-of host c)}}}]))
 
