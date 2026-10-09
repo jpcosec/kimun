@@ -27,14 +27,11 @@ target/
 **/target/
 **/*.rs.bk
 *.exe
-*.dll**/target/
-**/*.rs.bk
+*.dll
 
-# kimun (S0): the store is built on the run (bb desk) from desk/models and
-# desk/kimun-manifest.edn; never committed.
+# kimun (S0): the store is built on the run (bb desk) from kimun.include.edn
+# and the desk models; never committed.
 .kimun/
-target/
-dist/
 resources/git-sha
 .herdr-coordination.md
 # >>> kimun include (managed) >>>
@@ -57,6 +54,5 @@ resources/git-sha
 # tidy(root): editor/config and workflow log are never part of the repo
 .deskops.log
 .obsidian/
-target/
 # kimun include build --rebuild moves the previous store aside; never committed
 .kimun.bak-*/

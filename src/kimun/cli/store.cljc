@@ -1,6 +1,5 @@
 (ns kimun.cli.store
-  "Locating, opening and creating the `.kimun/` store of the CLI (docs/v2/06
-   §B): discovery walks up from the working directory, `--store` and
+  "Locating, opening and creating the `.kimun/` store of the CLI (docs/v2/06 §1): discovery walks up from the working directory, `--store` and
    `KIMUN_STORE` override it, and every open goes through
    `kimun.kernel.store/open` with the standard host."
   (:require [babashka.fs :as fs]
@@ -113,7 +112,7 @@
 
 (defn- validate-links!
   "Raises `:store/invalid-links` unless every link of `descriptor` is
-   `{:name valid :path relative}` with unique names (docs/v2/06 §4: link
+   `{:name valid :path relative}` with unique names (docs/v2/06 §2: link
    paths are relative to the store, never absolute)."
   [descriptor dir]
   (let [links (or (:links descriptor) [])

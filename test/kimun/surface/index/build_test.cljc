@@ -1,5 +1,5 @@
 (ns kimun.surface.index.build-test
-  "The derived index as a pure value: its contract (docs/v2/06 §6), that it
+  "The derived index as a pure value: its contract (docs/v2/06 §3), that it
    agrees with the surfaces it summarises, determinism, the EDN round trip
    and a document that no longer extracts. Each test names in a comment the
    v1 function whose promise it carries."

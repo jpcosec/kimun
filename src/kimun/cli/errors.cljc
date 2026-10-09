@@ -1,5 +1,5 @@
 (ns kimun.cli.errors
-  "Error contract of the `kimun` CLI (docs/v2/06 §B): maps every kernel or
+  "Error contract of the `kimun` CLI (docs/v2/06 §1): maps every kernel or
    surface error `:type` to a process exit code and turns any Throwable that
    escapes a command into a failure envelope, never a stacktrace."
   (:require [kimun.cli.out :as out]))

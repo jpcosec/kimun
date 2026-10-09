@@ -422,13 +422,6 @@
   ([template-or-descriptor sections _known-fields]
    (into {} (owner-pairs (template-of template-or-descriptor) sections))))
 
-(defn section-fields
-  "The inverse of `field-owners`: `{section-path [field…]}`, the fields each
-   section owns, in template order; sections owning nothing are absent."
-  [template-or-descriptor sections]
-  (reduce (fn [acc [field path]] (update acc path (fnil conj []) field))
-          {} (owner-pairs (template-of template-or-descriptor) sections)))
-
 (defn- flatten-payload [payload prefix]
   (if (map? payload)
     (mapcat (fn [[k v]] (flatten-payload v (if (seq prefix) (str prefix "." k) (str k)))) payload)

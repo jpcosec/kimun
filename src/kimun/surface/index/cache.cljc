@@ -1,6 +1,5 @@
 (ns kimun.surface.index.cache
-  "The derived index on disk: `<store-dir>/index/<head>.edn` (docs/v2/06 §B,
-   §6). The file is a cache of `kimun.surface.index.build/build` and never has
+  "The derived index on disk: `<store-dir>/index/<head>.edn` (docs/v2/06 §3). The file is a cache of `kimun.surface.index.build/build` and never has
    authority: it is used only when it parses, has the expected shape and
    version and names the head the opened store replayed to; on any doubt the
    index is rebuilt in memory.

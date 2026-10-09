@@ -180,7 +180,7 @@
       (let [changes (sort-by (comp order :action) changes)
             stale (first (filter #(and (#{"update" "delete"} (:action %)) (stale? ctx %)) changes))]
         (if stale
-          (fail :serve/stale (str (:id stale) " cambió en SLDB. Recarga para evitar sobrescribirlo.") {:id (:id stale)} 4)
+          (fail :serve/stale (str (:id stale) " changed in kimun; reload to avoid overwriting it.") {:id (:id stale)} 4)
           (loop [[c & more] changes done [] last-ok nil]
             (if-not c
               (assoc (or last-ok (out/ok "save" {:data {}})) :command "save" :data {:saved done})
@@ -193,7 +193,7 @@
 ;; --------------------------------------------------------- lint / ast / segments
 
 (defn lint
-  "`GET /lint` (retired in v2; docs/v2/06 §8): the `stores check` verdict in
+  "`GET /lint` (retired in v2; docs/v2/06 §5): the `stores check` verdict in
    v1's problem shape, `{:count :problems [{:kind :severity :doc :detail}]}`."
   [_request ctx]
   (let [e (run-command ctx ["stores" "check"])

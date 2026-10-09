@@ -9,8 +9,7 @@
    `kimun.host.fs-store`); the surface repopulates it through the resolver when
    it is absent (`kimun.surface.docs`).
    Pure I/O over a store directory; nothing here knows about nodes or trees."
-  (:require [babashka.fs :as fs]
-            [clojure.edn :as edn]))
+  (:require [babashka.fs :as fs]))
 
 (def dirname
   "Name of the cache directory inside a store."
@@ -78,12 +77,6 @@
   "Path of the document cache entry `key` of `store-dir`."
   [store-dir key] (str (fs/path (docs-dir store-dir) (str key ".edn"))))
 
-(defn read-entry
-  "The document cache entry `key` of `store-dir`, or nil when absent."
-  [store-dir key]
-  (let [f (entry-path store-dir key)]
-    (when (fs/regular-file? f) (edn/read-string (slurp (str f))))))
-
 (defn write-entry!
   "Writes the document cache entry `key` (index: fingerprint, class, parser,
    root hash, tree id); returns `key`."
@@ -92,24 +85,3 @@
     (fs/create-dirs d)
     (spit (entry-path store-dir key) (pr-str entry))
     key))
-
-(defn clear!
-  "Deletes the whole cache of `store-dir`; returns whether it existed."
-  [store-dir]
-  (let [d (cache-dir store-dir)]
-    (if (fs/exists? d) (do (fs/delete-tree d) true) false)))
-
-(defn total-bytes
-  "Apparent bytes of the whole cache of `store-dir` (0 when absent)."
-  [store-dir]
-  (let [d (cache-dir store-dir)]
-    (if (fs/exists? d)
-      (reduce + 0 (map #(if (fs/regular-file? %) (fs/size %) 0) (fs/glob d "**")))
-      0)))
-
-(defn object-bytes
-  "Apparent bytes of the cached objects of `store-dir`, by count and total."
-  [store-dir]
-  (let [ids (object-ids store-dir)]
-    {:count (count ids)
-     :bytes (reduce + 0 (map #(fs/size (fs/path (objects-dir store-dir) %)) ids))}))

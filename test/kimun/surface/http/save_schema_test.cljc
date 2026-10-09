@@ -130,7 +130,7 @@
                                       :expected {:title "OLD"}}]})]
         (is (= 409 (:status r)))
         (is (false? (get-in r [:json :ok])))
-        (is (str/includes? (get-in r [:json :error :message]) "book cambió en SLDB. Recarga para evitar sobrescribirlo.")))
+        (is (str/includes? (get-in r [:json :error :message]) "book changed in kimun; reload to avoid overwriting it.")))
       (is (= {:title "My Book"} (:payload ((docs-of base) "book")))))))
 
 ;; v1: test_batch_save_duplicate_create_rejected

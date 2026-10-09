@@ -1,7 +1,7 @@
 (ns kimun.cli.stores-test
   "The `stores` group end to end on temporary directories: init layout,
    duplicate init, check/verify/show, corruption, and store discovery
-   precedence (docs/v2/06 §B)."
+   precedence (docs/v2/06 §3)."
   (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is testing]]
             [clojure.edn :as edn]
             [clojure.string :as str]

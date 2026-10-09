@@ -1,6 +1,6 @@
 (ns kimun.cli.linked-models-test
   "`docs create|track` with a model, or a target store, reached through a
-   link (docs/v2/06 §4; `kimun.cli.linked`): the port of the two federation
+   link (docs/v2/06 §2; `kimun.cli.linked`): the port of the two federation
    tests of sldb v1 `tests/test_cli_v2.py`, plus the typed errors. Each test
    names in a comment the v1 function whose promise it carries."
   (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
