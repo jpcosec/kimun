@@ -65,7 +65,7 @@ canónicos; `bb lint`: 98 ficheros.
 **Formato 3 de este repo** (desk de 433 KB, 539 documentos; antes = formato 2 del commit
 `b4e02790`): aparente 28,35 MB → **8,07 MB** (`log.edn` 5,89 MB → 151 B; índice mmap
 12,34 MB → 0,71 MB; plan 5,68 MB → uno de 4,03 MB, sin contenido de nodo); en disco 119 MB →
-55,3 MB; 556 revisiones → **1**; `include build` 38 s → 13 s. Detalle en
+55,4 MB; 556 revisiones → **1**; `include build` 38 s → 13 s. Detalle en
 `runs/bench/format3-store-size.txt` y `10-escala.md §10`.
 La promesa del 14 (menos que los 433 KB del desk) **no se cumple todavía**: el árbol del
 documento y el plan resuelto del build siguen en el CAS (`12 §1`).

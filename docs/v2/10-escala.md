@@ -302,7 +302,7 @@ que reconstruye el store desde los archivos y descarta las copias verbatim.
 Medido en este repo (desk de 433 KB, 539 documentos; antes = formato 2 del commit
 `b4e02790`, después = formato 3): aparente **28,35 MB → 8,07 MB** (`log.edn` 5,89 MB →
 151 B; índice mmap 12,34 MB → 0,71 MB; plan 5,68 MB → uno de 4,03 MB, que ya no embebe el
-contenido de ningún nodo); en disco 119 MB → 55,3 MB; `include build` 38 s → 13 s, con **1
+contenido de ningún nodo); en disco 119 MB → 55,4 MB; `include build` 38 s → 13 s, con **1
 revisión** en vez de 556. Detalle por clase en `runs/bench/format3-store-size.txt`; `bb
 store-size [DIR]` reproduce la tabla.
 
