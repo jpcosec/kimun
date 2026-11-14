@@ -1,0 +1,42 @@
+=== main repo status (must remain clean on 9e106029) ===
+9e106029
+?? docs/research/
+?? runs/research/2026-10-13/
+=== worktree HEAD & status ===
+9e106029
+ M docs/v2/07-modelos-como-nodos.md
+ M docs/v2/12-ecosistema-y-pendientes.md
+ M docs/v2/README.md
+?? docs/v2/16-modelos-como-subgrafos.md
+?? runs/subagents/2026-11-14-m1-spec16/
+?? test/fixtures/models/spec16_examples.edn
+?? test/kimun/spec16_models_contract_test.cljc
+=== bb lint ===
+rings and docstrings ok: 103 files
+=== bb oracle ===
+ok  sign/text ffdf4147e59740e4…
+ok  sign/block bdc0ef299e3d88c5…
+ok  sign/opaque fcc5220a4af29a88…
+ok  sign/external b44fd9099808bc77…
+ok  sign/span f8bc24ee5fa9c801…
+ok  symbol/term 2a03e199175a4ed0…
+ok  symbol/proposition a6e631b8d0914123…
+ok  fact/triple 9d1307be57183a8d…
+ok  fact/context 146e6ca533092558…
+9 rows, 0 mismatches
+=== include check ===
+findings: {:declared-missing 0, :declared-not-in-store 0, :declared-not-tracked 0, :store-tracked 0, :store-undeclared 0, :tracked-undeclared 0}
+ok: true
+staged?: false
+=== directed test: kimun.spec16-models-contract-test ===
+
+Testing kimun.spec16-models-contract-test
+
+Ran 4 tests containing 278 assertions.
+0 failures, 0 errors.
+{:test 4, :pass 278, :fail 0, :error 0, :type :summary}
+=== markdown relative links (spec16, README, 07, 12) ===
+docs/v2/16-modelos-como-subgrafos.md: checked=10 missing=[]
+docs/v2/README.md: checked=0 missing=[]
+docs/v2/07-modelos-como-nodos.md: checked=2 missing=[]
+docs/v2/12-ecosistema-y-pendientes.md: checked=1 missing=[]

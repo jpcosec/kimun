@@ -66,7 +66,7 @@ paridad v1 sin brechas (`scripts/parity/coverage.py … --strict --allow-open-pr
 | K4 | packfiles (bloque de 4 KB por objeto pequeño en disco y caché) | K2a | `runs/research/2026-10-08/A4-packfiles.patch`, `A4-report.md` |
 | K5 | índice de nombres y GC | K2a | `10 §4` |
 | P1 | separar el grafo en un paquete aparte (`kimun.graph.*`: modelos, aristas semánticas, grafo, capa G) con regla de anillo en `bb lint` | — (archivos disjuntos de K2a/K3 salvo `kimun.surface.docs`: coordinar) | `14 §19`, decisión 43 |
-| M1 | spec 16: modelos de anclaje y de generación, selector EDN sobre tree-sitter, herencia de clases; features de v1 sí, bugs no | — (spec); implementación ← P1, K1 | `14 §18`, decisiones 41–42, `runs/research/2026-10-08/R3-report.md` |
+| M1 | **spec 16 redactado** (`16-modelos-como-subgrafos.md`): modelos de anclaje y de generación, selector EDN sobre tree-sitter, herencia de clases; features de v1 sí, bugs no | — (spec redactado); implementación ← P1, K1/D0 | `16-modelos-como-subgrafos.md`, `14 §18`, decisiones 41–42, `runs/research/2026-10-08/R3-report.md`, `test/fixtures/models/spec16_examples.edn` |
 | M2 | regenerar los modelos del desk (borrados el 2026-10-09 para dejar una versión estable) | M1 | `desk/`, `kimun.include.edn` |
 | S1 | parser M fase 2: cerrar el ~3 % de divergencia del CST en Markdown libre | — | `04 §11.2` |
 | S2 | parser M fase 3: anclas por rangos de bytes / nodos del CST | K1 | `runs/research/2026-10-08/R2-report.md §5` |

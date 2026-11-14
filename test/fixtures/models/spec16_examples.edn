@@ -1,0 +1,245 @@
+{:schema-version 1
+ :task "M1"
+ :spec "docs/v2/16-modelos-como-subgrafos.md"
+ :status :spec-draft
+ :implementation {:status :blocked
+                  :blocked-by [:P1 :K1 :D0]
+                  :code-changes false}
+
+ :open-decisions
+ {:D0 {:ref "docs/v2/drafts/preguntas-abiertas.md"
+       :summary "Identidad positiva del nodo y continuidad temporal (move/split/merge vs ambiguous)"
+       :status :open
+       :spec-prescribes-id-scheme false}
+  :A1.1 {:ref "runs/research/2026-11-14/concilio/ambiguedades.md"
+         :summary "Correspondencia entre sensor topologico S y unidad estructural M (nodo compartido vs par vinculado)"
+         :status :open}
+  :F10 {:ref "docs/v2/16-modelos-como-subgrafos.md#23-autoridad-documentos-source-frente-a-documentos-generados-14-189"
+        :summary "Ubicacion y formato durable de instancias generadas fuera de cache antes de M2"
+        :status :open}
+  :R3-quirks {:ref "runs/research/2026-10-08/R3-report.md"
+              :summary "Eleccion por modelo del desk en M2 entre :strict y :legacy-v1-template"
+              :status :open}}
+
+ :substrate-defaults
+ {:treesitter-strict {:parser :treesitter
+                      :grammar "markdown"
+                      :profile "sldb-md/v2"
+                      :compat :strict}
+  :legacy-v1-compat {:parser :sldb-md/blocks
+                     :grammar "markdown"
+                     :profile "sldb-md/v1"
+                     :compat :legacy-v1-template}}
+
+ :capabilities
+ [{:id :C1
+   :title "Secuencia exacta de bloques (caso v1)"
+   :substrate :any
+   :selector-example {:outer-type "heading" :outer-tag "h2" :regex "^\\QAnswer\\E$" :anchor true}}
+  {:id :C2
+   :title "Seccion u hoja opcional (optrev)"
+   :substrate :any
+   :selector-example {:key "provenance" :want :opt :marker {:kind "optrev" :name "provenance"}}}
+  {:id :C3
+   :title "Seccion por heading/regex en cualquier posicion"
+   :substrate :treesitter
+   :selector-example {:key "notes" :want :find :where {:outer-tag "h2" :regex "^\\QNotes\\E$"}}}
+  {:id :C4
+   :title "Lista anidada conservando jerarquia"
+   :substrate :treesitter
+   :selector-example {:key "items" :outer-type "list" :preserve-nesting true}}
+  {:id :C5
+   :title "Tabla estructurada tras heading"
+   :substrate :treesitter
+   :selector-example {:key "matrix" :want :table :outer-type "pipe_table"}}
+  {:id :C6
+   :title "Captura de valor con coordenadas de anclaje"
+   :substrate :treesitter
+   :output-shape [:value :path :spans :leaf-hashes]}]
+
+ :models
+ [{:model/name "PrimitiveDoc"
+   :model/version 2
+   :base []
+   :document-role :source
+   :authority :disk-file
+   :substrate {:parser :treesitter
+               :grammar "markdown"
+               :profile "sldb-md/v2"
+               :compat :strict}
+   :contract/digest "sha256:spec16-example-primitivedoc-v2"
+   :anchoring
+   {:fields [{:name "id" :type :string :required true :description "Identificador declarado en front matter"}
+             {:name "title" :type :string :required true :description "Titulo principal h1"}]
+    :selector [{:outer-index 0
+                :outer-type "front_matter"
+                :handler :yaml
+                :markers [{:key "id" :marker {:kind "rev" :name "id"}}]}
+               {:outer-index 1
+                :outer-type "heading"
+                :outer-tag "h1"
+                :handler :text
+                :props ["title"]
+                :regex "^(.*)$"}]}
+   :generation
+   {:projections {:markdown/default {:format :markdown :mode :sections :sugar :template-literals}}}}
+
+  {:model/name "ChecklistDoc"
+   :model/version 2
+   :base ["PrimitiveDoc"]
+   :document-role :source
+   :authority :disk-file
+   :substrate {:parser :treesitter
+               :grammar "markdown"
+               :profile "sldb-md/v2"
+               :compat :strict}
+   :contract/digest "sha256:spec16-example-checklistdoc-v2"
+   :anchoring
+   {:fields [{:name "summary" :type :text :required true :description "Resumen ejecutivo"}
+             {:name "items" :type [:list :string] :required true :description "Elementos verificables"}]
+    :selector [{:outer-index 0
+                :outer-type "heading"
+                :outer-tag "h2"
+                :handler :text
+                :anchor true
+                :regex "^\\QSummary\\E$"}
+               {:outer-index 1
+                :outer-type "paragraph"
+                :handler :text
+                :props ["summary"]
+                :capture :section-body
+                :regex "^(.*)$"}
+               {:outer-index 2
+                :outer-type "bullet_list"
+                :outer-tag "ul"
+                :handler :list
+                :name "items"}]}
+   :generation
+   {:projections {:markdown/default {:format :markdown :mode :sections :sugar :template-literals}
+                  :summary/short {:format :markdown :fields ["id" "summary"]}}}}
+
+  {:model/name "ResumenDoc"
+   :model/version 2
+   :base ["PrimitiveDoc"]
+   :document-role :source
+   :authority :disk-file
+   :substrate {:parser :treesitter
+               :grammar "markdown"
+               :profile "sldb-md/v2"
+               :compat :strict}
+   :contract/digest "sha256:spec16-example-resumendoc-v2"
+   :anchoring
+   {:fields [{:name "summary" :type :text :required true :description "Sintesis general del documento"}]
+    :selector [{:outer-index 0
+                :outer-type "heading"
+                :outer-tag "h2"
+                :handler :text
+                :anchor true
+                :regex "^\\QSummary\\E$"}
+               {:outer-index 1
+                :outer-type "paragraph"
+                :handler :text
+                :props ["summary"]
+                :capture :section-body
+                :regex "^(.*)$"}]}
+   :generation
+   {:projections {:markdown/default {:format :markdown :mode :sections :sugar :template-literals}}}}
+
+  {:model/name "ResumenTecnicoDoc"
+   :model/version 2
+   :base ["ResumenDoc"]
+   :document-role :source
+   :authority :disk-file
+   :substrate {:parser :treesitter
+               :grammar "markdown"
+               :profile "sldb-md/v2"
+               :compat :strict}
+   :contract/digest "sha256:spec16-example-resumentecnicodoc-v2"
+   :anchoring
+   {:composition :append-parent-steps-reindex
+    :fields [{:name "complexity" :type :string :required true :description "Complejidad algoritmica o estructural"}
+             {:name "tradeoffs" :type [:list :string] :required true :description "Compromisos de diseno"}]
+    :selector [{:outer-index 0
+                :outer-type "heading"
+                :outer-tag "h2"
+                :handler :text
+                :anchor true
+                :regex "^\\QComplexity\\E$"}
+               {:outer-index 1
+                :outer-type "paragraph"
+                :handler :text
+                :props ["complexity"]
+                :capture :section-body
+                :regex "^(.*)$"}
+               {:outer-index 2
+                :outer-type "heading"
+                :outer-tag "h2"
+                :handler :text
+                :anchor true
+                :regex "^\\QTradeoffs\\E$"}
+               {:outer-index 3
+                :outer-type "bullet_list"
+                :outer-tag "ul"
+                :handler :list
+                :name "tradeoffs"}]}
+   :generation
+   {:inherits-projections true
+    :projections {:summary/technical {:format :markdown
+                                      :fields ["id" "title" "summary" "complexity" "tradeoffs"]}}}}
+
+  {:model/name "ResumenDigestView"
+   :model/version 2
+   :base ["ResumenDoc"]
+   :document-role :generated
+   :authority :instance-data
+   :requires-open-decision :F10
+   :negative-control :F-W09
+   :substrate {:parser :treesitter
+               :grammar "markdown"
+               :profile "sldb-md/v2"
+               :compat :strict}
+   :contract/digest "sha256:spec16-example-resumendigestview-v2"
+   :anchoring
+   {:fields []
+    :selector []}
+   :generation
+   {:projections {:markdown/digest {:format :markdown
+                                    :mode :read-only-projection
+                                    :fields ["id" "title" "summary"]
+                                    :sugar :formula-and-literals}
+                  :edn/brief {:format :edn
+                              :fields ["id" "title" "summary"]}}}}]
+
+ :r3-measured-summary
+ {:baseline {:tool "kimun.surface.models.extract/extract"
+             :total-docs 543
+             :ok-docs 542
+             :error-docs 1
+             :error-sample "desk/tasks/Board.md"
+             :time-ms 165}
+  :corpus-docs 428
+  :desk-model-counts {"AtomDoc" 219
+                      "ChecklistDoc" 189
+                      "TaskDoc" 18
+                      "RitualDoc" 1
+                      "PillDoc" 1}
+  :candidates {:edn {:matched 428 :total 428 :pct 100.0 :time-ms 100 :p50-ms 0 :rss-mb 89}
+               :treesitter {:matched 423 :total 428 :pct 98.8 :time-ms 2939 :p50-ms 5 :rss-mb 95 :pod-mb 3.2}
+               :datalog {:matched 423 :total 428 :pct 98.8 :inproc-ms 343 :inproc-rss-mb 92 :datalevin-rss-mb 254}}}
+
+ :r3-discrepancy-cases
+ [{:id :atom-missing-answer
+   :model "AtomDoc"
+   :count 3
+   :docs ["git-orchestration-in-python"
+          "immutable-append-only-database"
+          "relation-ast-extensibility"]
+   :strict-expected :missing
+   :legacy-v1-quirk "section-body fallback captures from document start when ## Answer is absent"}
+  {:id :task-empty-done-when
+   :model "TaskDoc"
+   :count 2
+   :docs ["task-specify-diagram-traceability-contract"
+          "task-specify-specyaml-schema-contract"]
+   :strict-expected ""
+   :legacy-v1-quirk "extract v1 returns the heading line itself instead of empty string"}]}

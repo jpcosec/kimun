@@ -1,10 +1,10 @@
 # kimun — Modelos como nodos (pista S, §C del plan)
 
-> **Superado en lo conceptual por `14 §18` (2026-10-09):** el "modelo = plantilla" de este documento
+> **Superado en lo conceptual por [`14 §18`](14-juego-del-lenguaje.md#18-clases-instancias-e-indexación-2026-10-08) (2026-10-09) y especificado para la Etapa A en [`16-modelos-como-subgrafos.md`](16-modelos-como-subgrafos.md) (`M1`):** el "modelo = plantilla" de este documento
 > confunde dos cosas que kimun separa: el modelo de **anclaje** (qué se ancla al leer) y el de
 > **generación** (cómo se produce texto). Todo documento es instancia de una clase y lo que no calza
 > se resuelve por herencia. Este documento sigue describiendo lo **implementado** hoy (descriptores,
-> template, marcas, paridad v1) hasta que el spec de modelos (16) lo reemplace.
+> template, marcas, paridad v1) hasta que se implemente `16-modelos-como-subgrafos.md` tras `P1`, `D0` y `K1`.
 
 > Cómo un modelo de documento (lo que v1 llamaba `StructuredNLDoc`) deja de ser una clase
 > Python y pasa a ser un nodo del pool, sin tocar el kernel. Requisito del usuario, textual:
