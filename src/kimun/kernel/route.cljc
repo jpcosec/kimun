@@ -52,6 +52,12 @@
   [host p]
   (some->> (normalize-path p) (canon/normalize host)))
 
+(defn path-key
+  "The NFC-normalized path key of `p`, or nil when it is unsafe/not a string."
+  [host p]
+  (let [p (nfc-path host p)]
+    (when (valid-path? p) p)))
+
 (defn entry
   "A validated route entry: the required string fields, `:path` normalized and
    NFC (through `host`), and `:tree-id` when supplied. Extra keys are ignored.
@@ -93,6 +99,29 @@
   [host entries]
   (canon/digest host {:route/version schema
                       :entries (mapv hashed-entry (canonical-entries host entries))}))
+
+(defn canonical-map
+  "The complete route map path → entry, sorted by path and including the
+   `:tree-id` locator. This is the value persisted as a CAS object, so its
+   digest and the bytes of that object are the same thing."
+  [host entries]
+  (into (sorted-map)
+        (map (fn [e] [(:path e) e]))
+        (canonical-entries host entries)))
+
+(defn map-object
+  "The exact object persisted for a route map: `{:route/version … :entries
+   canonical-map}`. Its digest is `entries-digest`."
+  [host entries]
+  {:route/version schema :entries (canonical-map host entries)})
+
+(defn entries-digest
+  "Digest of the COMPLETE route map (including `:tree-id`) in `map-object`
+   form. This is the durable locator check; `root` hashes only the five
+   hashed/sensorized fields and cannot detect a changed tree-id. Neither root
+   nor digest is node identity: D0 remains open."
+  [host entries]
+  (canon/digest host (map-object host entries)))
 
 (defn lookup
   "The entry at `path` in `entries`, normalized to NFC, or nil."

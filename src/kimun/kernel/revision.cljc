@@ -40,6 +40,7 @@
             [kimun.kernel.edge :as edge]
             [kimun.kernel.tree :as tree]
             [kimun.kernel.plan :as plan]
+            [kimun.kernel.route :as route]
             [kimun.kernel.mmap :as mmap]
             [kimun.kernel.ports :as ports]
             [kimun.kernel.legacy.revision :as legacy]
@@ -51,7 +52,8 @@
   "A format-2 store with no objects, trees, edges or revisions."
   [host capabilities]
   {:host host :capabilities capabilities :format-version 2
-   :objects {} :trees {} :edges #{} :head nil :heads {} :heads-root nil :revisions {}})
+   :objects {} :trees {} :edges #{} :head nil :heads {} :heads-root nil :revisions {}
+   :routes {} :routes-root nil :routes-object nil :routes-available? true})
 
 (defn legacy?
   "True for a format-1 store value (served by kimun.kernel.legacy.revision)."
@@ -223,7 +225,8 @@
   [base]
   (if-let [lm (when-not (legacy? base) (ports/lazy-maps (:host base)))]
     (let [head (:head base)
-          core (select-keys base [:host :format-version :objects :revisions :head :heads-root])
+          core (select-keys base [:host :format-version :objects :revisions :head :heads-root
+                                  :routes :routes-root :routes-object :routes-available?])
           ids (delay (tree-ids core head))   ; enumerated at most once per view lineage, not once per scan
           provided (:trees base)
           cached (:cached-trees base)
@@ -316,6 +319,8 @@
    :trees {}          ; only the trees this transaction read for writing
    :touched #{} :superseded []
    :e+ #{} :e- #{}    ; net delta over the active edge set of the base
+   :routes (or (:routes store) {}) :routes-touched? false
+   :routes-available? (or (nil? (:routes-root store)) (:routes-available? store true))
    :new {}})          ; objects created by this transaction
 
 (defn- ws-object [ws id] (or (get (:new ws) id) (get-object (:store ws) id)))
@@ -432,8 +437,19 @@
             (plan/reject :ids-exist op (str "tree " tree-id " already exists and is not cache")))
         descriptor (assoc desc :tree tree-id)
         t {:tree tree-id :descriptor descriptor
-           :root {:node root :children [] :hash (:merkle-root op)}}]
-    (-> ws (assoc-in [:trees tree-id] t) (update :touched conj tree-id) (bind-alias op tree-id))))
+           :root {:node root :children [] :hash (:merkle-root op)}}
+        route-entry (when-let [r (:route op)]
+                      (when-not (:routes-available? ws)
+                        (plan/reject :route/rebuild-required op "route cache is absent; replay or rebuild before registering a route"))
+                      (rejecting :route/valid op #(route/entry (:host ws) (assoc r :tree-id tree-id))))
+        _ (when (and route-entry
+                     (let [owner (get-in ws [:routes (:path route-entry) :tree-id])]
+                       (and (string? owner) (not= owner tree-id))))
+            (plan/reject :route/ambiguous op (str "path " (:path route-entry) " already belongs to tree " (get-in ws [:routes (:path route-entry) :tree-id]))))
+        ws (cond-> (-> ws (assoc-in [:trees tree-id] t) (update :touched conj tree-id) (bind-alias op tree-id))
+             route-entry (-> (update :routes assoc (:path route-entry) route-entry)
+                             (assoc :routes-touched? true)))]
+    ws))
 
 (defn- require-tree [ws op tid]
   (when-not (ws-tree ws tid) (plan/reject :ids-exist op (str "unknown tree " tid)))
@@ -520,10 +536,27 @@
   (let [tid (require-tree ws op (r ws (:tree op)))]
     (with-tree ws op tid #(tree/detach % (:at op)))))
 
+(defn- remove-route-op
+  "Removes a tracked route entry without touching its tree or nodes: untrack is
+   a route fact, not a tree deletion. The root is recomputed even when the last
+   entry leaves."
+  [ws op]
+  (when-not (:routes-available? ws)
+    (plan/reject :route/rebuild-required op "route cache is absent; replay or rebuild before removing a route"))
+  (let [tid (r ws (:tree op))
+        _ (when-not (string? tid) (plan/reject :route/valid op "remove-route needs :tree"))
+        p (rejecting :route/valid op #(route/path-key (:host ws) (:path op)))]
+    (when-not p (plan/reject :route/valid op "remove-route needs a valid :path"))
+    (let [owner (get-in ws [:routes p :tree-id])]
+      (when (not= owner tid)
+        (plan/reject :route/ambiguous op (str "path " p " belongs to tree " owner ", not " tid))))
+    (-> ws (update :routes dissoc p) (assoc :routes-touched? true))))
+
 (defn- apply-op [ws op]
   (case (:op op)
     :new-tree    (new-tree-op ws op)
     :register-tree (register-tree-op ws op)
+    :remove-route (remove-route-op ws op)
     :add-node    (add-node-op ws op)
     :add-edge    (add-edge-op ws op)
     :remove-edge (remove-edge-op ws op)
@@ -789,16 +822,30 @@
           tx {:id tx-id :plan resolved-plan :revision rev-id}
           ;; every CAS object satisfies H(canonical-bytes object) == id (invariant 17):
           ;; the transaction is stored as its resolved plan; the Transaction map lives in the log
+          routes-map (when (:routes-touched? ws) (:routes ws))
+          routes-object-value (when routes-map (route/map-object host (vals routes-map)))
+          routes-object (when routes-map (route/entries-digest host (vals routes-map)))
           new-objects (-> (:new ws)
                           (into (mapcat (fn [[_ [_ objs]]] objs)) committed)
                           (cond-> (some #{(:root empty-map)} [(:root tm) (:root em) (:root im) (:root hm)]) (merge (:new empty-map)))
                           (merge (:new tm) (:new em) (:new im) (:new hm))
+                          (cond-> routes-object (assoc routes-object routes-object-value))
                           (assoc rev-id rev tx-id resolved-plan))
           store' (-> store
                      (update :objects merge new-objects)
                      (assoc :head rev-id)
                      (update :heads merge (into {} (map (fn [tid] [tid rev-id])) touched))
                      (assoc :heads-root (:root hm))
+                     (assoc :routes (if (or (:routes-touched? ws) (:routes-available? ws))
+                                      (:routes ws)
+                                      nil))
+                     (assoc :routes-root (if (:routes-touched? ws)
+                                           (route/root host (vals (:routes ws)))
+                                           (:routes-root store)))
+                     (assoc :routes-object (if (:routes-touched? ws)
+                                             routes-object
+                                             (:routes-object store)))
+                     (assoc :routes-write? (:routes-touched? ws))
                      (assoc-in [:revisions rev-id] rev)
                      (head-views trees' (:e+ ws) (:e- ws)))]
       {:store store' :transaction tx :revision rev :revision-id rev-id

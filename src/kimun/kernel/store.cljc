@@ -6,6 +6,9 @@
      <dir>/store.edn      {:format-version 4 :hash-alg :sha-256 :capabilities {...}}
      <dir>/objects/<id>   canonical EDN text of the hashed form of the object; H(file) == id
      <dir>/cache/         format 4: derived cache of a document with an external anchor —
+                          cache/routes/<root>.<head>.edn mirrors the durable CAS
+                          route-map object; open validates the CAS object first,
+                          so this is a contract mirror, not a measured accelerator —
                           one entry per document keyed by (fingerprint, class, parser) plus
                           its tree/block/field objects by hash; gitignored, deletable,
                           recomputable from the file and verifiable against the root hash;
@@ -48,7 +51,8 @@
             [kimun.kernel.err :as err]
             [kimun.kernel.mmap :as mmap]
             [kimun.kernel.legacy.revision :as legacy]
-            [kimun.kernel.revision :as revision]))
+            [kimun.kernel.revision :as revision]
+            [kimun.kernel.route :as route]))
 
 (defprotocol Backend
   "Port implemented by a persistence adapter (ring 1)."
@@ -77,6 +81,13 @@
    `objects/` (formats 1–3 and in-memory test backends)."
   (read-plan [b tx-id] "The resolved plan cached under `tx-id`, or nil.")
   (write-plan! [b tx-id plan] "Writes the resolved plan once; returns its id."))
+
+(defprotocol RouteCache
+  "Optional backend capability: the route entries behind `:routes-root` are
+   derived cache. The root is durable in heads.edn; the entries may be rebuilt
+   by replay from the `:route` values in the log, never invented by `open`."
+  (read-routes [b root head] "The route entry map cached under `root` at `head`, or nil.")
+  (write-routes! [b root head routes] "Writes route entries once; returns `root`."))
 
 ;; ---------------------------------------------------------------- object cache (optional port)
 
@@ -176,11 +187,14 @@
   "The heads.edn value of `store`, the commit point `commit-tx!` compares and
    replaces: `no-heads` before the first commit; format 2 {:head rev-id
    :heads-root id}, the root of the mmap tree-id -> rev-id in the CAS (its size
-   does not grow with the number of trees); format 1 {:head rev-id :heads {tree-id rev-id}}."
+   does not grow with the number of trees); format 4 adds `:routes-root` when
+   the store tracks a route tree; format 1 {:head rev-id :heads {tree-id rev-id}}."
   [store]
   (cond (nil? (:head store)) no-heads
         (revision/legacy? store) {:head (:head store) :heads (:heads store)}
-        :else {:head (:head store) :heads-root (:heads-root store)}))
+        :else (cond-> {:head (:head store) :heads-root (:heads-root store)}
+                (some? (:routes-root store)) (assoc :routes-root (:routes-root store))
+                (some? (:routes-object store)) (assoc :routes-object (:routes-object store)))))
 
 (defn transaction?
   "True for a well-formed log entry: `{:id :plan :revision}` in format 2,
@@ -324,7 +338,13 @@
              (and (= #{:head :heads} (set (keys hd)))
                   (map? (:heads hd)) (every? string? (keys (:heads hd))) (every? string? (vals (:heads hd)))
                   (string? (:head hd)))
-             (and (= #{:head :heads-root} (set (keys hd))) (string? (:head hd)) (string? (:heads-root hd)))))))
+             (or (and (= #{:head :heads-root} (set (keys hd)))
+                      (string? (:head hd)) (string? (:heads-root hd)))
+                 (and (= #{:head :heads-root :routes-root} (set (keys hd)))
+                      (string? (:head hd)) (string? (:heads-root hd)) (string? (:routes-root hd)))
+                 (and (= #{:head :heads-root :routes-root :routes-object} (set (keys hd)))
+                      (string? (:head hd)) (string? (:heads-root hd))
+                      (string? (:routes-root hd)) (string? (:routes-object hd))))))))
 
 (defn- checked-heads
   "heads.edn of `b` (absent = `no-heads`), raising :store/corrupt-heads when it
@@ -352,14 +372,39 @@
                 (if (caching? b) (cache-object! b id o) o)
                 (bad shape))))))
 
+(defn- route-object?
+  "Shape of the durable route-map object: `{:route/version … :entries path→entry}`."
+  [o]
+  (and (map? o) (= route/schema (:route/version o)) (map? (:entries o))))
+
 (defn- open-from-heads
   [b host capabilities fv]
   (let [lm (ports/lazy-maps host)
         hd (checked-heads b fv)
-        {:keys [head heads-root]} hd
+        {:keys [head heads-root routes-root routes-object]} hd
         checked (cond-> {}
                   head (assoc head (checked-head-object b host head revision-object? :not-a-revision))
-                  heads-root (assoc heads-root (checked-head-object b host heads-root mmap/node? :not-an-mmap-node)))
+                  heads-root (assoc heads-root (checked-head-object b host heads-root mmap/node? :not-an-mmap-node))
+                  routes-object (assoc routes-object
+                                       (checked-head-object b host routes-object route-object? :not-a-route-map)))
+        cas-routes (when routes-object (some-> (get checked routes-object) :entries))
+        cached-routes (when (and routes-root (satisfies? RouteCache b))
+                        (read-routes b routes-root head))
+        route-ok? (fn [m]
+                    (boolean
+                     (and (map? m)
+                          (err/rescue-any
+                           (fn [_] false)
+                           (let [es (route/canonical-entries host (vals m))]
+                             (and (every? (fn [[k e]]
+                                            (= k (:path (route/entry host e))))
+                                          m)
+                                  (= routes-root (route/root host es))
+                                  (= routes-object (route/entries-digest host es))))))))
+        cached-ok? (route-ok? cached-routes)
+        cas-ok? (route-ok? cas-routes)
+        raw-routes (if cached-ok? cached-routes (when cas-ok? cas-routes))
+        routes (when raw-routes raw-routes)
         objects (ports/lazy-map lm
                                 (fn [id] (when (string? id) (load-object b id)))
                                 #(object-ids b)
@@ -380,7 +425,10 @@
                                              seen)))
                                   {})]
     (revision/lazy-store {:host host :capabilities capabilities :format-version fv
-                          :objects objects :revisions revisions :head head :heads heads :heads-root heads-root})))
+                          :objects objects :revisions revisions :head head :heads heads :heads-root heads-root
+                          :routes-root routes-root :routes-object routes-object :routes routes
+                          :routes-available? (boolean (or (nil? routes-root) (some? raw-routes)))
+                          :routes-invalid? (boolean (and routes-root cached-routes (not cached-ok?)))})))
 
 (defn open
   "Opens the store in backend `b`.
@@ -451,6 +499,12 @@
     ;; is written to the derived cache before the commit, so a successful commit
     ;; is replayable. A backend without the port keeps the legacy CAS shape.
     (when plan-cache? (write-plan! b (:id tx) (:plan tx)))
+    (when (and (satisfies? RouteCache b)
+               (:routes-write? s')
+               (:routes-available? s')
+               (some? (:routes-root s'))
+               (some? (:routes s')))
+      (write-routes! b (:routes-root s') (:head s') (:routes s')))
     (doseq [[id obj] new-objects] (write-object! b id (serialize host obj)))
     (when-not (commit-tx! b expected (tx-line store tx) (heads-record s'))
       (fail "heads moved since the store was loaded; reload and retry" {:type :store/stale :expected expected}))
@@ -533,9 +587,10 @@
         absent? (fn [id] (not (err/rescue-any (fn [_] true) (contains? objs id))))]
     ;; format 2: the per-tree heads through the nodes of the heads mmap (a damaged one is
     ;; reported like any other, never raised while enumerating a view); format 1: the :heads map
-    (loop [todo (if-let [r (:heads-root store)]
-                  (into [[r :heads]] (when (:head store) [[(:head store) :obj]]))
-                  (mapv #(vector % :obj) (remove nil? (cons (:head store) (vals (:heads store))))))
+    (loop [todo (cond-> (if-let [r (:heads-root store)]
+                         (into [[r :heads]] (when (:head store) [[(:head store) :obj]]))
+                         (mapv #(vector % :obj) (remove nil? (cons (:head store) (vals (:heads store))))))
+                   (:routes-object store) (conj [(:routes-object store) :obj]))
            seen #{}]
       (if (empty? todo)
         seen

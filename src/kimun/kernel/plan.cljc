@@ -27,7 +27,7 @@
    registration of a tree whose structure is cache, not store (docs/v2/14
    §18.6): it records the descriptor and the merkle root the surface computed,
    without persisting positions, tree objects or block/text nodes."
-  #{:new-tree :register-tree :add-node :add-edge :remove-edge :replace :move :detach})
+  #{:new-tree :register-tree :remove-route :add-node :add-edge :remove-edge :replace :move :detach})
 
 (def ^:private timestamp-re #"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$")
 
@@ -127,7 +127,7 @@
 (defn- op-tree [op]
   (case (:op op)
     (:new-tree :register-tree) (:id op)
-    (:replace :move :detach) (:tree op)
+    (:replace :move :detach :remove-route) (:tree op)
     (:add-edge :remove-edge) (when (= :ownership (get-in op [:edge :type])) (get-in op [:edge :tree]))
     nil))
 

@@ -114,6 +114,9 @@
   store/PlanCache
   (read-plan [_ tx-id] (cache/read-plan dir tx-id))
   (write-plan! [_ tx-id plan] (cache/write-plan! dir tx-id plan))
+  store/RouteCache
+  (read-routes [_ root head] (cache/read-routes dir root head))
+  (write-routes! [_ root head routes] (cache/write-routes! dir root head routes))
   store/Backend
   (read-descriptor [_]
     #?(:clj (some-> (read-text (path dir "store.edn")) edn/read-string)))
