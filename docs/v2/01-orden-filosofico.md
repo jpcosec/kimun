@@ -1,5 +1,10 @@
 # SLDB v2 — Orden filosófico
 
+> **Corrección del dueño, 2026-11-14:** las afirmaciones de §2 y §4.3 que
+> equiparan identidad del nodo con contenido/hash o con lugar quedan superadas.
+> La unidad es un nodo con identidad propia cuya definición positiva sigue abierta.
+> La dirección vigente y su alcance están en la cabecera de `14-juego-del-lenguaje.md`.
+
 > De dónde se decanta la arquitectura. Este documento no describe mecanismos;
 > describe qué es el objeto que se persiste y qué garantías tiene sentido pedirle.
 > El sustrato que lo construye está en `02-sustrato-computacional.md`.

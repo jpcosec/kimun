@@ -1,5 +1,11 @@
 # SLDB v2 — Sustrato computacional
 
+> **Corrección del dueño, 2026-11-14:** este documento describe el kernel
+> implementado, pero `id(nodo) = H(contenido)` ya no es la identidad objetivo;
+> tampoco lo es el anclaje estructural/topológico. Revisar el contrato antes de
+> implementar K1. Ver la cabecera de `14-juego-del-lenguaje.md` y
+> `runs/research/2026-11-14/concilio/auditoria-spec.md`.
+
 > **Revisión pendiente (2026-10-09):** `14 §21` cuestiona `id(nodo) = H(contenido)` como identidad
 > (el hash debería solo detectar mutaciones; ids estructurales para lo que ancla, semánticos para
 > M/G). Mientras no se confirme, este contrato sigue vigente y es el que implementa el kernel.

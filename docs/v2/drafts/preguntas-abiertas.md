@@ -1,5 +1,15 @@
 # Preguntas abiertas al dueño (2026-10-09)
 
+> **Actualización 2026-11-14:** las alternativas D0/D-G de la tabla inferior son históricas
+> y ya no deben presentarse como elecciones vigentes. El dueño aclaró que identidad no es hash
+> ni anclaje topológico y encargó definirla mediante revisión documental con el concilio.
+> Exige seguir topologías marcadas y cambios temporales, con niveles de abstracción.
+> Las dos verificaciones son vigencia respecto de una huella y, condicionalmente, verdad del
+> resultado de ejecuciones marcadas. Estamos en S–M; G se aborda después.
+> Dirección registrada en la cabecera de `docs/v2/14-juego-del-lenguaje.md`.
+> Pendiente de diseño: contrato de unidad/continuidad a través de cambios y contrato de ejecución;
+> no se considera aprobada una representación técnica ni desbloqueada su implementación.
+
 > Lo que bloquea seguir. Cada respuesta se registra en `docs/v2/05-estado.md` (decisión) o en
 > `docs/v2/14-juego-del-lenguaje.md`, y se borra de aquí. Qué depende de cada una: `docs/v2/12 §1`.
 

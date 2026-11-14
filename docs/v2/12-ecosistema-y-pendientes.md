@@ -1,5 +1,12 @@
 # Ecosistema y pendientes — inventario (2026-10-09)
 
+> **Actualización 2026-11-14:** las filas D0 y K1 de §1 que dicen «identidad =
+> lugar» e «ids por lugar» están superadas por la corrección del dueño en
+> `14-juego-del-lenguaje.md`. K1 sigue bloqueada hasta definir identidad en
+> positivo y su continuidad. G espera la base S–M. El backlog aún no incorpora
+> heartbeat, relaciones/embeddings por unidad ni ejecuciones marcadas; la
+> auditoría y el mapa de ambigüedades están en `runs/research/2026-11-14/concilio/`.
+
 > Pendientes abiertos en kimun, quién usa hoy sldb v1 y qué es `wittgenstein` (motor de la capa G).
 > El estado y las decisiones vigentes están en `05-estado.md`; el detalle test a test de la
 > paridad, en `tests/parity-v1.md` y `scripts/parity/coverage.py`.

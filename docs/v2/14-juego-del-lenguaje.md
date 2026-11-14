@@ -1,5 +1,35 @@
 # kimun — El grafo como juego del lenguaje: principios, autoridad y store
 
+> **Corrección del dueño, 2026-11-14 — dirección vigente para la frontera S–M.**
+> Kimun cumple una función de sistema nervioso en un sistema autopoiético de conocimiento:
+> sensoriza documentos y código, detecta mutaciones de topología y, eventualmente, acciones,
+> para permitir regulación y otras acciones. Merkle es el mecanismo de sensorización.
+> La identidad del nodo **no es el hash ni su anclaje estructural en la topología**.
+> Debe permitir identificar las topologías marcadas y seguir sus cambios en el tiempo,
+> con niveles de abstracción. Su definición y representación técnica siguen por elaborar;
+> esto sustituye la propuesta de §21 «identidad = lugar» y no aprueba CAS, UUID ni otra codificación.
+> Las verificaciones requeridas son: (1) lo marcado no cambió respecto de la huella registrada,
+> afirmación que deja de sostenerse ante una mutación; (2) si se incorpora marcar ejecuciones,
+> verificar la verdad del resultado. El contrato preciso de ejecuciones queda por especificar.
+> El trabajo actual está entre **S (texto como signo) y M (desacople estructural/semántico)**;
+> solo con esa base se aborda G, el conocimiento. Esta corrección no fija una lógica de verdad de G.
+> Revisión solicitada al concilio: `runs/research/2026-11-14/concilio/`.
+
+> **Precisión posterior del dueño, 2026-11-14 — unidad, relaciones y heartbeat.**
+> La unidad es un **nodo con identidad propia**, un espacio mínimo donde convergen varias
+> dimensiones. Su valor proviene de las relaciones que pueden declararse sobre ella:
+> jerárquicas, horizontales, métricas y/o recursivas (herencia, temporales, secuenciales).
+> El sistema está concebido para trabajar con LLMs: cada unidad tiene sentido relacional
+> discreto, semántico y estructural, además de **embeddings continuos**.
+> **Autopoiesis y VSM aplican al sistema, no a la unidad**; la unidad permite recursión.
+> Queda retirada como definición general la propuesta del concilio que exigía a cada unidad
+> ser una elaboración/pregunta con ciclo propio de revisión.
+> El dueño propone un **daemon cuya única función es el heartbeat para recalcular señales**:
+> un momento de autopercepción. El sistema es asíncrono: mutaciones, señales externas y
+> respuestas a acciones provocadas internamente pueden activar respuestas.
+> La representación de identidad, relaciones y embeddings, y los contratos operativos del
+> heartbeat y de activación, siguen por especificar; esta dirección no implica implementación.
+
 > Borrador estable (2026-10-08), escrito para fijar lo que kimun es antes de seguir construyendo.
 > **Revisa** `01 §4.1` (autoridad única del pool), `07` (modelo = plantilla), `11 §1` (tree-sitter
 > fuera de proceso) y `12 §3` (wittgenstein como "la capa G"). Mientras esas revisiones no se
