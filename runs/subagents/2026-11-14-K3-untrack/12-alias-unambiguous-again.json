@@ -1,0 +1,6 @@
+{
+ "ok": true,
+ "name": "plain",
+ "qualified": "tickets/plain.md",
+ "model": "TicketDoc"
+}

@@ -216,6 +216,13 @@ persistía el árbol entero y el archivo no quedaba anclado.
 - `docs list` lo muestra entre los no tipados con `:class "generic/md"`. No es un documento tipado:
   `docs show NAME` (sin `--ast`), `fields`, `sections` y `find` siguen sin verlo, igual que antes.
 - El nombre sigue siendo único entre documentos sin modelo.
+- `docs untrack NAME` y `docs delete NAME --yes` valen también para estos documentos (por nombre,
+  ruta o id de árbol): se retira el anclaje, el archivo deja de sensorizarse y su ruta y su nombre
+  quedan libres; el árbol queda en la historia, oculto.
+- Tipados y genéricos se resuelven **juntos** (regla de K8): un alias que comparten un documento
+  tipado y uno genérico es `docs/ambiguous` (exit 2) con ambos candidatos (el genérico lleva `:class`
+  en vez de `:model`), en `docs show|render|update|untrack|delete`. El nombre cualificado o el id de
+  árbol los distingue; el diagnóstico nombra al genérico por su id de árbol si el alias es compartido.
 
 Compatibilidad: un documento sin modelo ingerido antes de K3 conserva su árbol persistido y se lee
 y actualiza como antes; no hay migración automática (se vuelve a ingerir con otro nombre o tras

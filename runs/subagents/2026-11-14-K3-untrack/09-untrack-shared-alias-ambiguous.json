@@ -1,0 +1,27 @@
+{
+ "ok": false,
+ "exit": 2,
+ "result": {
+  "type": "docs/ambiguous",
+  "message": "2 documents answer to `plain`: notes/plain.md, tickets/plain.md — name one by its qualified name or its tree id",
+  "data": {
+   "document": "plain",
+   "candidates": [
+    {
+     "name": "plain",
+     "qualified": "notes/plain.md",
+     "tree": "01M7DCZG71XJKR1M6B8BKXSENN",
+     "path": "notes/plain.md",
+     "class": "generic/md"
+    },
+    {
+     "name": "plain",
+     "qualified": "tickets/plain.md",
+     "tree": "01M7DCZGN0S597JE795PJ53Q57",
+     "path": "tickets/plain.md",
+     "model": "TicketDoc"
+    }
+   ]
+  }
+ }
+}

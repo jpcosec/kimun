@@ -1,0 +1,9 @@
+{
+ "ok": true,
+ "exit": 0,
+ "result": {
+  "name": "plain",
+  "path": "notes/plain.md",
+  "file-deleted?": false
+ }
+}

@@ -218,24 +218,27 @@
     (->> (revision/tree-descriptors store) (filter #(= :document (:kind (second %))))
          (keep (fn [[tid d]] (describe store current by-from [tid {:descriptor d}]))) (sort-by (juxt :name :tree)) vec)))
 
+(declare describe-generic generic-documents)
+
 (defn hidden-trees
-  "Ids of `:document` trees that are typed-document roots no longer tracked
-   (untracked documents stay in history; listings skip them). `docs` is
-   `(documents store)` when the caller already has it."
+  "Ids of `:document` trees that are document roots no longer tracked
+   (untracked documents stay in history; listings skip them): typed ones, and
+   documents of a generic class (K3) whose anchor was removed. A generic
+   document that is still anchored is not hidden: it is listed with the
+   untyped ones. `docs` is `(documents store)` when the caller already has it."
   ([store] (hidden-trees store (documents store)))
   ([store docs]
-   (let [tracked (set (map :tree docs))]
+   (let [tracked (into (set (map :tree docs)) (map :tree) (generic-documents store))]
      (set (for [[tid d] (revision/tree-descriptors store)
-                :when (and (get-in store [:objects (:root d) :content :attrs :doc]) (not (tracked tid))
-                           ;; a generic document (K3) is listed with the untyped ones, not hidden
-                           (not (generic-class? (:class d))))] tid)))))
+                :when (and (get-in store [:objects (:root d) :content :attrs :doc]) (not (tracked tid)))] tid)))))
 
 (defn candidates
-  "The tracked documents `token` may mean as a tree id or a short name, by
-   name then tree id. It describes only the trees that can match (a document's
-   `:name` is its tree's descriptor name and its `:tree` the tree id): every
-   write resolves its document here, so it costs what the matching trees cost
-   — the name index of the kernel, then the edges of those roots only."
+  "The tracked documents `token` may mean as a tree id or a short name, typed
+   or of a generic class (K3, `:generic true`), by name then tree id. It
+   describes only the trees that can match (a document's `:name` is its tree's
+   descriptor name and its `:tree` the tree id): every write resolves its
+   document here, so it costs what the matching trees cost — the name index of
+   the kernel, then the edges of those roots only."
   [store token]
   (let [cands (->> (cons token (revision/trees-named store token)) distinct
                    (keep (fn [tid] (when-let [d (revision/tree-descriptor store tid)]
@@ -243,9 +246,18 @@
     (if (empty? cands)
       []
       (let [current (mstore/models store) by-from (edges-from store (map (comp tree/root second) cands))]
-        (->> cands (keep #(describe store current by-from %)) (sort-by (juxt :name :tree)) vec)))))
+        (->> cands
+             (keep (fn [[tid t :as c]]
+                     (or (describe store current by-from c)
+                         (describe-generic store by-from [tid (:descriptor t)]))))
+             (sort-by (juxt :name :tree)) vec)))))
 
-(defn- candidate-data [d] (select-keys d [:name :qualified :tree :path :model]))
+(defn- candidate-data
+  "What an ambiguity error says of a candidate; a generic one (K3) has no
+   `:model` and names its `:class` instead."
+  [d]
+  (cond-> (select-keys d [:name :qualified :tree :path :model])
+    (:generic d) (assoc :class (:class d))))
 
 (defn- ambiguous!
   "Raises `:docs/ambiguous` (exit 2) for `token` with its `found` documents."
@@ -256,12 +268,13 @@
                   " — name one by its qualified name or its tree id")
              {:document token :candidates (mapv candidate-data found)}))
 
-(defn find-document
-  "The tracked document identified by `token`, or nil. `token` is, in order: a
-   tree id; a short name (`:name`); a qualified name (the path of the
-   document's file). A short name shared by several documents is not resolved:
-   it raises `:docs/ambiguous` (exit 2) with `:candidates [{:name :qualified
-   :tree :path :model}]`. A qualified name is looked up only when nothing has
+(defn resolve-any
+  "The tracked document identified by `token`, typed or of a generic class
+   (`:generic true`), or nil. `token` is, in order: a tree id; a short name
+   (`:name`); a qualified name (the path of the document's file). A short name
+   shared by several documents — typed, generic or both — is not resolved: it
+   raises `:docs/ambiguous` (exit 2) with `:candidates [{:name :qualified :tree
+   :path :model}]` (`:class` instead of `:model` for a generic one). A qualified name is looked up only when nothing has
    that name and the token looks like a path (it has a `/` or a `.`); that
    lookup reads every document."
   [store token]
@@ -273,9 +286,19 @@
       (seq found) (ambiguous! token found)
       (and (string? token) (re-find #"[/.]" token))
       (let [q (qualified-path (:host store) token)
-            by-path (filterv #(and (:path %) (= q (:qualified %))) (documents store))]
+            by-path (filterv #(and (:path %) (= q (:qualified %)))
+                             (concat (documents store) (generic-documents store)))]
         (case (count by-path) 0 nil 1 (first by-path) (ambiguous! token by-path)))
       :else nil)))
+
+(defn find-document
+  "The tracked **typed** document identified by `token` (see `resolve-any`),
+   or nil — also when `token` names a document of a generic class. A short
+   name shared with any other document, typed or generic, raises
+   `:docs/ambiguous`: it never picks one."
+  [store token]
+  (let [d (resolve-any store token)]
+    (when-not (:generic d) d)))
 
 (defn refuse-collision!
   "Raises `:docs/exists` when a new document `name` with file `path` (nil for
@@ -688,15 +711,12 @@
          (sort-by (juxt :name :tree)) vec)))
 
 (defn generic-document
-  "The generic document identified by `token` (a tree id, a name or the path
-   of its file), or nil. A name or path that means several is `:docs/ambiguous`."
+  "The document of a generic class identified by `token` (a tree id, a name or
+   the path of its file; see `resolve-any`), or nil — also when `token` names
+   a typed document. A shared name is `:docs/ambiguous`."
   [store token]
-  (let [all (generic-documents store)
-        q (when (string? token) (qualified-path (:host store) token))
-        found (or (seq (filter #(= token (:tree %)) all))
-                  (seq (filter #(= token (:name %)) all))
-                  (seq (filter #(= q (:qualified %)) all)))]
-    (case (count found) 0 nil 1 (first found) (ambiguous! token (vec found)))))
+  (let [d (resolve-any store token)]
+    (when (:generic d) d)))
 
 (defn refuse-anchored!
   "Raises `:docs/exists` when the file `path` is already the anchor of a
@@ -766,12 +786,17 @@
 (defn untrack-plan
   "Plan that stops tracking document `token`: the edges this surface owns (to
    its model, source and file) are removed, its tree stays in history; edges
-   others wrote from it stay and become orphans their owners can report. Returns `{:plan :name :tree :path}`."
+   others wrote from it stay and become orphans their owners can report. Returns `{:plan :name :tree :path}`.
+   `token` names a typed document or, failing that, one registered under a
+   generic class (K3): its anchor edge is removed, so its file is no longer
+   watched and its path and name are free again. Raises `:docs/missing`."
   [store token {:keys [actor timestamp operation]}]
-  (let [doc (document store token)]
+  (let [doc (or (resolve-any store token)
+                (err/raise :docs/missing (str "no document named or identified by `" token "`") {:document token}))]
     {:name (:name doc) :tree (:tree doc) :path (:path doc)
      :plan {:plan/version 1 :base (:head store) :actor actor :timestamp timestamp
-            :engines (meta-engines {:operation (or operation "docs untrack") :address (str (:model doc) ":" (:name doc)) :fields {}})
+            :engines (meta-engines {:operation (or operation "docs untrack")
+                                    :address (str (or (:model doc) (:class doc)) ":" (:name doc)) :fields {}})
             :ops (vec (for [eid (:edges doc) :when (owned-edge? store (get-in store [:objects eid]))]
                         {:op :remove-edge :edge eid}))}}))
 

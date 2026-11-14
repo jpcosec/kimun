@@ -215,3 +215,71 @@
       (let [dup (run p "docs" "ingest" "login.md" "--name" "raw")]
         (is (= ["docs/exists" "login.md" "login"]
                [(get-in dup [:error :type]) (get-in dup [:error :data :path]) (get-in dup [:error :data :document])]))))))
+
+(deftest a-generic-document-can-be-untracked-and-its-path-is-free-again
+  (let [[p e] (project)
+        tree (get-in e [:data :tree])]
+    (let [u (run p "docs" "untrack" "plain")]
+      (is (true? (:ok u)) (pr-str u))
+      (is (= {:name "plain" :path "notes/plain.md" :file-deleted? false} (:data u))))
+    (is (fs/exists? (file p "notes" "plain.md")) "untrack keeps the file")
+    (is (= [] (tdocs/generic-documents (opened p))))
+    (is (= [] (:data (run p "docs" "list"))) "the tree stays in history, hidden")
+    (is (= [0 []] (let [d (:data (run p "stores" "sense"))] [(:tracked d) (:signals d)]))
+        "the file is no longer watched")
+    (is (= ["docs/missing" 1] ((juxt #(get-in % [:error :type]) :exit) (run p "docs" "untrack" "plain"))))
+    (testing "the path and the name can be registered again, as a new document"
+      (let [again (run p "docs" "ingest" "notes/plain.md")]
+        (is (true? (:ok again)) (pr-str again))
+        (is (not= tree (get-in again [:data :tree])))
+        (is (= ["plain"] (mapv :name (:data (run p "docs" "list")))))))
+    (testing "by path and by tree id"
+      (is (true? (:ok (run p "docs" "untrack" "notes/plain.md"))))
+      (let [t (get-in (run p "docs" "ingest" "notes/plain.md") [:data :tree])]
+        (is (true? (:ok (run p "docs" "untrack" t))))))
+    (testing "docs delete removes the file too, and asks for --yes"
+      (run p "docs" "ingest" "notes/plain.md")
+      (is (= "docs/confirmation-required" (get-in (run p "docs" "delete" "plain") [:error :type])))
+      (is (= 1 (count (tdocs/generic-documents (opened p)))))
+      (is (true? (get-in (run p "docs" "delete" "plain" "--yes") [:data :file-deleted?])))
+      (is (not (fs/exists? (file p "notes" "plain.md"))))
+      (is (= [] (tdocs/generic-documents (opened p)))))
+    (is (true? (:ok (run p "stores" "verify"))))))
+
+(deftest an-alias-shared-by-a-typed-and-a-generic-document-is-ambiguous
+  (let [[p] (project)]
+    (spit (file p "ticket.edn") ticket)
+    (is (true? (:ok (run p "models" "define" "-f" "ticket.edn"))))
+    (is (true? (:ok (run p "docs" "create" "TicketDoc" "plain" "--set" "title=T" "--set" "status=open"
+                         "--path" "tickets/plain.md"))))
+    (let [typed (get-in (run p "docs" "show" "tickets/plain.md") [:data :tree])
+          generic (:tree (tdocs/generic-document (opened p) "notes/plain.md"))
+          head #(:head (opened p))]
+      (is (string? typed))
+      (is (string? generic))
+      (doseq [argv [["docs" "untrack" "plain"]
+                    ["docs" "show" "plain"]
+                    ["docs" "render" "plain"]
+                    ["docs" "update" "plain"]
+                    ["docs" "update" "notes/plain.md" "--name" "plain"]]]
+        (let [before (head)
+              e (apply run p argv)]
+          (is (= ["docs/ambiguous" 2] [(get-in e [:error :type]) (:exit e)]) (pr-str argv))
+          (is (= [["notes/plain.md" generic "generic/md" nil] ["tickets/plain.md" typed nil "TicketDoc"]]
+                 (mapv (juxt :qualified :tree :class :model) (sort-by :qualified (get-in e [:error :data :candidates]))))
+              (pr-str argv))
+          (is (= before (head)) "nothing was written")))
+      (testing "sensing names each without ambiguity"
+        (spit (file p "notes" "plain.md") text-reformatted)
+        (is (= [[:source/reformatted "plain" false (str "kimun docs update notes/plain.md --name " generic)]]
+               (signals p)))
+        (is (= ["plain"] (get-in (run p "stores" "update") [:data :updated])))
+        (is (= [] (signals p))))
+      (testing "the qualified name and the tree id tell them apart"
+        (is (= text-1 (:data (run p "docs" "render" "notes/plain.md"))) "render is canonical Markdown")
+        (is (= "T" (get-in (run p "docs" "show" typed) [:data :payload "title"])))
+        (is (true? (:ok (run p "docs" "untrack" "notes/plain.md"))) "only the generic one is untracked")
+        (is (= [] (tdocs/generic-documents (opened p))))
+        (is (= typed (get-in (run p "docs" "show" "plain") [:data :tree]))
+            "the alias is unambiguous again and still means the typed document")))))
+

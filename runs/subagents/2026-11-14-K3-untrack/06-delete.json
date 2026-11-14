@@ -1,0 +1,9 @@
+{
+ "ok": true,
+ "exit": 0,
+ "result": {
+  "name": "a",
+  "path": "a.md",
+  "file-deleted?": true
+ }
+}

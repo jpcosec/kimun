@@ -168,7 +168,7 @@
   "The finding of generic document `doc` (K3): its file against the recorded
    fingerprint, its structure against the registered root when the text
    changed, and its parse contract against the one in force."
-  [store env read-file doc]
+  [store env shared read-file doc]
   (let [host (:host store)
         text (when (:path doc) (read-file (:path doc)))
         content-ok (and (some? text) (= (:fingerprint doc) (tdocs/fingerprint host text)))
@@ -184,7 +184,9 @@
                    (= :changed (:status pc)) :contract-moved
                    :else :ok)
         who (str "document `" (:name doc) "` (" (:class doc) ")")
-        update (str "kimun docs update " (:path doc) " --name " (:name doc))]
+        ;; a shared short name is an ambiguous alias (K8): the command then names the tree
+        update (str "kimun docs update " (:path doc) " --name "
+                    (if (contains? shared (:name doc)) (:tree doc) (:name doc)))]
     {:category category :model nil :class (:class doc) :generic true
      :document (:name doc) :qualified (:qualified doc) :tree (:tree doc) :path (:path doc) :state :intact
      :needs-human (not (or (clean category) (safe category)))
@@ -254,16 +256,20 @@
          [docs models] (if damaged?
                          (err/rescue-any (fn [_] [[] []])
                                          (let [all (tdocs/documents store)
-                                               shared (set (keep (fn [[n c]] (when (> c 1) n)) (frequencies (map :name all))))
+                                               generic (tdocs/generic-documents store)
+                                               shared (set (keep (fn [[n c]] (when (> c 1) n))
+                                                                 (frequencies (map :name (concat all generic)))))
                                                ds (into (mapv #(diagnose store env shared read-file %) all)
-                                                        (map #(diagnose-generic store env read-file %))
-                                                        (tdocs/generic-documents store))]
+                                                        (map #(diagnose-generic store env shared read-file %))
+                                                        generic)]
                                            (walk/postwalk identity [ds (mapv #(model-finding ds %) (mstore/models store))])))
                          (let [all (tdocs/documents store)
-                                               shared (set (keep (fn [[n c]] (when (> c 1) n)) (frequencies (map :name all))))
+                                               generic (tdocs/generic-documents store)
+                                               shared (set (keep (fn [[n c]] (when (> c 1) n))
+                                                                 (frequencies (map :name (concat all generic)))))
                                                ds (into (mapv #(diagnose store env shared read-file %) all)
-                                                        (map #(diagnose-generic store env read-file %))
-                                                        (tdocs/generic-documents store))]
+                                                        (map #(diagnose-generic store env shared read-file %))
+                                                        generic)]
                            [ds (mapv #(model-finding ds %) (mstore/models store))]))
          corrupt (when (and verify (not (:ok? verify)))
                    {:category :corrupt :model nil :document nil :path nil :needs-human true :action (action-of :corrupt nil)

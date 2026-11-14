@@ -57,12 +57,14 @@
 
 (defn resolve-document
   "The document named or identified by `token`: a tree id (ULID) present in
-   the store, else the single `:document` tree with that name. Raises
+   the store, a tracked document (typed or of a generic class) by short or
+   qualified name, else the single `:document` tree with that name. Raises
    `:docs/missing` (exit 1) when none and `:docs/ambiguous` (exit 2) when
    several documents share the name."
   [store token]
-  (if-let [typed (tdocs/find-document store token)]
-    (select-keys typed [:name :tree :root])
+  ;; typed and generic documents are resolved together: an alias they share is ambiguous (K8)
+  (if-let [tracked (tdocs/resolve-any store token)]
+    (select-keys tracked [:name :tree :root])
   (if (and (tree/ulid? token) (contains? (:trees store) token))
     (let [d (:descriptor (get-in store [:trees token]))]
       {:name (:name d) :tree token :root (:root d)})
