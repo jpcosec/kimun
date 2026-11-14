@@ -1,4 +1,4 @@
-# Freeform CST->AST divergence fixture
+# Freeform ordered-list width transition fixture (9 -> 10)
 
 8. primer item con [ref][1]
 9. ```python
@@ -13,34 +13,15 @@
    ref [x][1] link
    
    ---
+11. ````
+   ~~~
+   ```
+   x = 1
+   ```
+   ````
+   
+   ###
+   
+   párrafo tras código en item 11
 
-- <div class="w">
-  **x**
-  </div>
-- párrafo tras bloque html en item
-
-````python
-```
-~~~
-print("a")
-````
-
-~~~ `not-fence`
-texto bajo tilde con backtick en info string
-
-> cita inicial
-continuación perezosa de la cita
-> - ```clj
->   (+ 1 2)
->   ```
-
-| solo | cabecera |
-
-<!-- comentario -->
-sigue siendo html en el perfil
-
-1) item con paréntesis
-
-    código indentado
-párrafo adjunto a setext
-===
+> cita posterior al cierre de la lista
