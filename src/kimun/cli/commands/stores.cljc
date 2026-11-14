@@ -1,18 +1,21 @@
 (ns kimun.cli.commands.stores
   "The `kimun stores` group (docs/v2/06 §3): `init`, `check`, `health`,
-   `sense`, `update`, `reconcile`, `verify`, `upgrade`, `show`, and the federation commands `link`, `unlink` and `links`. Every
+   `sense`, `heartbeat`, `update`, `reconcile`, `verify`, `upgrade`, `show`, and the federation commands `link`, `unlink` and `links`. Every
    command is `(fn [args opts ctx] envelope)` where `args` are the positional
    tokens after the subcommand and `ctx` is `{:env env :cwd cwd}`; `dispatch`
    routes a subcommand name."
   (:require [babashka.fs :as fs]
+            [cheshire.core :as json]
             [clojure.edn :as edn]
             [clojure.string :as str]
             [kimun.cli.commands.docs :as docs]
             [kimun.cli.compose :as compose]
+            [kimun.cli.errors :as errors]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
             [kimun.surface.diagnostics :as diag]
             [kimun.surface.docs :as tdocs]
+            [kimun.surface.heartbeat :as heartbeat]
             [kimun.surface.signals :as signals]
             [kimun.host.default :as host]
             [kimun.kernel.err :as err]
@@ -100,27 +103,101 @@
                                 :data data
                                 :warnings warnings})))))
 
+(defn- observe
+  "One read-only observation of the store at `dir`: opens it from scratch,
+   runs the diagnostics and returns the success envelope whose `:data` is
+   `{:observed-at :tracked :valid :signals :counts :summary}`. Shared by
+   `stores sense` and every beat of `stores heartbeat`, so both report the
+   same signals."
+  [command dir]
+  (let [{:keys [descriptor store path] :as opened} (cli-store/open! dir)
+        report (diagnose opened)
+        signals (signals/from-report report)]
+    (out/ok command {:store (store-ref descriptor path)
+                     :revision (:head store)
+                     :data {:observed-at (docs/timestamp)
+                            :tracked (:checked report)
+                            :valid (:valid report)
+                            :signals signals
+                            :counts (signals/counts signals)
+                            :summary (signals/summary signals)}})))
+
 (defn sense
   "`stores sense [--once]`: one read-only observation of tracked documents.
    Reuses the existing diagnostics report and emits structured signals
    (`kimun.surface.signals`); it writes nothing. `--once` is accepted to make
-   the single observation explicit; this cut never loops, so it is not a
-   heartbeat daemon. Data: `{:mode :once :observed-at :tracked :valid :signals
+   the single observation explicit; this command never loops (the loop is
+   `stores heartbeat`). Data: `{:mode :once :observed-at :tracked :valid :signals
    :counts :summary}`. `:observed-at` is the wall-clock of this response only;
    it is never written to the store as an event."
   [_args opts {:keys [env cwd]}]
-  (let [{:keys [descriptor store path] :as opened} (cli-store/open! (cli-store/resolve-store opts env cwd))
-        report (diagnose opened)
-        signals (signals/from-report report)]
-    (out/ok "stores sense" {:store (store-ref descriptor path)
-                            :revision (:head store)
-                            :data {:mode :once
-                                   :observed-at (docs/timestamp)
-                                   :tracked (:checked report)
-                                   :valid (:valid report)
-                                   :signals signals
-                                   :counts (signals/counts signals)
-                                   :summary (signals/summary signals)}})))
+  (update (observe "stores sense" (cli-store/resolve-store opts env cwd))
+          :data #(merge (array-map :mode :once) %)))
+
+(defn- emit-line!
+  "Writes `record` as one compact JSON line on stdout and flushes; false when
+   stdout no longer accepts output (the consumer closed the pipe)."
+  [record]
+  (try (println (json/generate-string record))
+       (flush)
+       (not (.checkError System/out))
+       (catch java.io.IOException _ false)))
+
+(defn heartbeat
+  "`stores heartbeat [--interval SECONDS] [--beats N]`: the heartbeat daemon.
+   Every interval it repeats the observation of `stores sense` and writes it to
+   stdout; that is all it does (no action, no LLM, no embedding, no write to
+   the store or the log). It is the explicit exception to \"one envelope on
+   stdout\" (docs/v2/06 §1): the output is NDJSON, one compact JSON record per
+   line — `started`, then `beat` or `error` per attempt, then `stopped`
+   (`kimun.surface.heartbeat`); `--format` does not apply to the stream.
+
+   `--interval` is a fixed delay in seconds after each observation (default
+   30, minimum 0.1); `--beats` ends after N attempts (default: until stopped).
+   A failed observation is an `error` record and the next beat tries again
+   from scratch. SIGINT/SIGTERM stop between observations with a `stopped`
+   record (the hook waits up to 2 s for it); a closed stdout ends the loop.
+   A bad option or a missing store fails before any record, as the usual
+   failure envelope. The returned envelope carries `{:streamed true}` in its
+   metadata so `kimun.cli.main` does not print it after the stream."
+  [_args opts {:keys [env cwd]}]
+  (let [interval-ms (or (heartbeat/parse-interval (:interval opts))
+                        (err/raise :cli/usage (str "--interval needs seconds between 0.1 and 86400, got `" (:interval opts) "`")
+                                   {:option "interval" :value (:interval opts)}))
+        beats (let [b (heartbeat/parse-beats (:beats opts))]
+                (if (= :invalid b)
+                  (err/raise :cli/usage (str "--beats needs a positive integer, got `" (:beats opts) "`")
+                             {:option "beats" :value (:beats opts)})
+                  b))
+        dir (cli-store/resolve-store opts env cwd)
+        _ (when (or (nil? dir) (not (cli-store/store? dir))) (cli-store/open! dir))
+        descriptor (store/read-descriptor (cli-store/backend dir))
+        ref (store-ref descriptor (str dir))
+        stop (promise)
+        done (promise)
+        hook (Thread. (fn [] (deliver stop true) (deref done 2000 nil)))
+        runtime (Runtime/getRuntime)]
+    (.addShutdownHook runtime hook)
+    (try
+      (let [r (heartbeat/run {:observe #(errors/wrap (fn [] (observe "stores heartbeat" dir)))
+                              :emit emit-line!
+                              :wait #(true? (deref stop % false))
+                              :stop? #(realized? stop)
+                              :clock docs/timestamp
+                              :now-ms #(System/currentTimeMillis)
+                              :store ref
+                              :interval-ms interval-ms
+                              :beats beats})]
+        (with-meta (out/ok "stores heartbeat" {:store ref :data r}) {:streamed true}))
+      (catch Throwable e
+        ;; nothing but NDJSON may follow the first record: the failure is the last line
+        (emit-line! {:kind "stopped" :at (docs/timestamp) :reason "fatal"
+                     :error {:type "cli/unexpected" :message (or (ex-message e) (str (class e)))}})
+        (with-meta (out/failure :cli/unexpected (or (ex-message e) (str (class e))) {} 70)
+          {:streamed true :throwable e}))
+      (finally
+        (deliver done true)
+        (try (.removeShutdownHook runtime hook) (catch IllegalStateException _ nil))))))
 
 (defn health
   "`stores health`: the verdict of the store (`kimun.surface.diagnostics/health`):
@@ -434,13 +511,15 @@
   {:name {:ref "NAME" :desc "Store name (stores init)"}
    :content {:ref "MODE" :desc "Content mode of the store: by-reference (default) or inline (stores init)"}
    :apply {:desc "Write what the comparison found (stores reconcile)" :coerce :boolean}
-   :once {:desc "Make the single observation explicit (stores sense; no daemon)" :coerce :boolean}})
+   :once {:desc "Make the single observation explicit (stores sense; no daemon)" :coerce :boolean}
+   :interval {:ref "SECONDS" :desc "Seconds between observations, decimals allowed (stores heartbeat; default 30, minimum 0.1)"}
+   :beats {:ref "N" :desc "Stop after N observations (stores heartbeat; default: until interrupted)"}})
 
 (def commands
   "Subcommand name → command fn."
   {"init" init "check" check "verify" verify "upgrade" upgrade-store "show" show
    "link" link "unlink" unlink "links" links
-   "health" health "sense" sense "update" update-store "reconcile" reconcile})
+   "health" health "sense" sense "heartbeat" heartbeat "update" update-store "reconcile" reconcile})
 
 (defn dispatch
   "Runs subcommand `sub` of the `stores` group (`args` are the positional tokens);

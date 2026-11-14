@@ -21,6 +21,7 @@ Todo comando escribe **un** valor en stdout, construido por `kimun.cli.out`:
 - `:type` es el keyword del error (`03 §2`) impreso como `"ns/name"`; el stacktrace solo con `--debug` (a stderr).
 - Un comando con `:warnings` sigue en `:ok true`.
 - Un exit distinto de 0 siempre lleva `:ok false` y `:exit` repetido en el envelope.
+- **Excepción explícita: `stores heartbeat`.** Es el único comando que escribe una secuencia en stdout (NDJSON, un registro JSON compacto por línea) en vez de un envelope; su contrato está en §3, «El latido». Un fallo anterior al primer registro (opción inválida, sin store) sí es el envelope de fallo habitual.
 
 Opciones globales (`kimun.cli.args`):
 
@@ -85,11 +86,63 @@ Layout de un store formato 4 (`kimun.kernel.store`; detalle en `10`):
 | `stores show` | — | `{:name :path :hash-alg :links :head :capabilities}`; sin replay |
 | `stores health` | — | `{:status :summary :findings :actions :next}`; `ok | degraded | needs-human` |
 | `stores sense` | `[--once]` | una observación read-only: `{:mode :once :observed-at :tracked :valid :signals :counts :summary}`; reusa `kimun.surface.diagnostics`, no escribe y no inicia daemon. `:observed-at` es la hora de esta respuesta, no un evento persistido; las señales cubren las categorías del diagnóstico, no todo cambio topológico |
+| `stores heartbeat` | `[--interval SECONDS] [--beats N]` | daemon: repite la observación de `stores sense` cada intervalo y la escribe como NDJSON (`started`, `beat`/`error`, `stopped`); no escribe en el store. Contrato abajo, «El latido» |
 | `stores update` | — | `{:updated [name] :skipped [{:document :category :action}] :status}`; todos los reparados van en UNA revisión, cuyo journal lleva `:documents` ({:address :fields}) |
 | `stores reconcile` | `[ROOT] [--apply]` | `{:root :discovered :missing :stale :applied}`; sin `--apply` no escribe |
 | `stores link` | `NAME PATH` | `{:link {:name :path} :resolved}` |
 | `stores unlink` | `NAME` | `{:unlinked {:name :path}}` |
 | `stores links` | — | `{:links [{:name :path :resolved :status}]}`; enlace roto es warning |
+
+#### El latido (`stores heartbeat`)
+
+Contrato del daemon de heartbeat que el dueño propuso el 2026-11-14 (cabecera de `14`): su **única
+función es sensar**. Código: `kimun.surface.heartbeat` (el bucle, sin proceso ni reloj propios) y
+`kimun.cli.commands.stores/heartbeat`.
+
+**Qué hace y qué no.** Cada latido abre el store desde cero y recalcula la misma observación que
+`stores sense` (mismo código): las señales de `kimun.surface.signals` sobre el diagnóstico existente.
+No despacha acciones, no llama LLMs, no calcula embeddings, no repara, y no escribe en el store, el
+log, las cabeceras, la caché ni ningún otro archivo. No cambia la identidad ni amplía qué topologías
+se observan: cubre las categorías del diagnóstico, igual que `sense`. No guarda nada entre latidos
+salvo, en memoria, la huella de la última observación exitosa (para `changed`).
+
+**Salida.** NDJSON en stdout, con flush por línea; `--format` no aplica al flujo. Registros, en orden:
+
+| `kind` | cuándo | campos |
+|---|---|---|
+| `started` | una vez, al inicio | `schema` (`"kimun.heartbeat/1"`), `at`, `store {name path}`, `interval-ms`, `beats` (`null` = sin límite) |
+| `beat` | observación lograda | `seq`, `store`, `revision` (cabecera observada), `changed`, `elapsed-ms`, `observation` = el `:data` de `stores sense` sin `:mode` (`observed-at tracked valid signals counts summary`) |
+| `error` | observación fallida | `seq`, `at`, `error {type message data}` (la forma del envelope de fallo), `consecutive-errors`, `elapsed-ms` |
+| `stopped` | una vez, al terminar en orden | `at`, `reason` (`beats` · `cancelled` · `fatal`), `beats` (intentos), `errors` (fallidos) |
+
+**Semántica de la observación.**
+
+- Un `beat` es el **estado completo** recalculado, no un delta: quien llega tarde o pierde una línea
+  no pierde información; el siguiente latido la repite. Dos latidos sin cambios dan las mismas señales.
+- `changed` compara cabecera, `tracked`, `valid` y señales con la última observación lograda **de este
+  proceso** (el primer latido es `true`; la hora no cuenta). Es una ayuda para el consumidor, no un
+  evento: no se persiste y no sobrevive al proceso.
+- Una señal no es una acción ni un hecho registrado: quién responde, y cómo, queda fuera del daemon.
+- `seq` cuenta intentos desde 1, logrados o no.
+
+**Intervalo.** `--interval SECONDS`, con decimales; por defecto 30, mínimo 0.1, máximo 86400. Es un
+retardo fijo contado **desde el final** de una observación: las observaciones nunca se solapan ni se
+acumulan si una tarda más que el intervalo. `--beats N` termina tras N intentos (para scripts y pruebas).
+
+**Error transitorio.** Toda observación fallida se trata como transitoria: se emite `error`, el bucle
+sigue y el latido siguiente vuelve a abrir el store desde cero (por ejemplo, un store que desaparece
+y vuelve: `cli/no-store` y luego `beat`). No hay reintento inmediato ni espera creciente, y el daemon
+no decide rendirse: `consecutive-errors` deja esa decisión al consumidor.
+
+**Cancelación.** SIGINT o SIGTERM se atienden entre observaciones y durante la espera, nunca a mitad
+de una: se emite `stopped` con `reason: "cancelled"` y el proceso termina con el estado de la señal
+(130 o 143). El proceso espera ese registro hasta 2 s; si la observación en curso tarda más, termina
+sin `stopped`. Si el consumidor cierra stdout, el bucle termina sin escribir más (exit 0). Un fin de
+flujo sin `stopped` debe leerse como final abrupto. Con `--beats`, `reason: "beats"` y exit 0.
+
+**Límites conocidos.** Cada latido incluye la verificación de hashes del store (`stores check`), así
+que su costo crece con el store; el intervalo lo elige quien lo lanza (bajo `memcap` si el store es
+grande, `AGENTS.md`). No hay activación por eventos: el daemon solo da el pulso.
 
 ### docs
 

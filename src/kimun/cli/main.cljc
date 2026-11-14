@@ -79,6 +79,7 @@
              "  stores show                 descriptor and heads without replay"
              "  stores health               verdict: ok | degraded (run: …) | needs-human (inspect: …)"
              "  stores sense [--once]       one read-only observation: structured signals from tracked documents"
+             "  stores heartbeat [--interval SECONDS] [--beats N]   repeat that observation; NDJSON stream on stdout, writes nothing"
              "  stores update               apply the repairs that need no decision (reformatted files, moved contracts)"
              "  stores reconcile [ROOT] [--apply]  compare stores found under ROOT with the links"
              "  stores link NAME PATH       link another store (a .kimun or its project dir); path stored relative to this store"
@@ -194,10 +195,12 @@
 
 (defn -main
   "Prints the envelope of `run` to stdout and exits with its code; with
-   `--debug` the stacktrace of a failure goes to stderr."
+   `--debug` the stacktrace of a failure goes to stderr. An envelope whose
+   metadata says `:streamed` already wrote its output and is not printed."
   [& argv]
   (let [{:keys [envelope fmt debug]} (run argv (System/getenv) (System/getProperty "user.dir"))]
-    (println (out/emit envelope fmt))
+    (when-not (:streamed (meta envelope))
+      (println (out/emit envelope fmt)))
     (when-let [t (and debug (:throwable (meta envelope)))]
       (binding [*out* *err*] (.printStackTrace ^Throwable t (java.io.PrintWriter. *out* true))))
     (flush)

@@ -1,0 +1,13 @@
+{
+  "ok" : false,
+  "error" : {
+    "type" : "cli/usage",
+    "message" : "--interval needs seconds between 0.1 and 86400, got `0`",
+    "data" : {
+      "option" : "interval",
+      "value" : "0"
+    }
+  },
+  "exit" : 6
+}
+exit=6

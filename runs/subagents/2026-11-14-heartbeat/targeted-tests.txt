@@ -1,0 +1,15 @@
+
+Testing kimun.surface.heartbeat-test
+
+Testing kimun.cli.heartbeat-test
+
+Testing kimun.cli.sense-test
+
+Testing kimun.surface.signals-test
+
+Testing kimun.cli.stores-test
+
+Testing kimun.cli.main-test
+
+Ran 55 tests containing 356 assertions.
+0 failures, 0 errors.

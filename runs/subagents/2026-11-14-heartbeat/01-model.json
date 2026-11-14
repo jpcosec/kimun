@@ -1,0 +1,19 @@
+{
+  "ok" : true,
+  "command" : "models define",
+  "store" : {
+    "name" : "evidence",
+    "path" : "/tmp/kimun-heartbeat-evidence-blwwf4/.kimun"
+  },
+  "revision" : "e1533f6eee15ab834c3705f014b859f9f5b0e515e9d2c3afa2cc455a11a53fe7",
+  "data" : {
+    "name" : "TicketDoc",
+    "version" : 1,
+    "id" : "e50111d3ee90ae5af74696d7625a0fe7cdfb88b732b9217d6bd0d1a1452840ae",
+    "created?" : true,
+    "unchanged?" : false,
+    "backfill" : [ ],
+    "backfilled" : [ ]
+  },
+  "warnings" : [ ]
+}
