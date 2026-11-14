@@ -68,7 +68,15 @@
 
 (defn check
   "`stores check`: opens the store (replaying the log) and reports
-   `{:name :path :hash-alg :revisions :trees :objects :head :links}` where
+   `{:name :path :hash-alg :revisions :trees :objects :head :links}` (plus
+   `:routes-root`, `:route-count`, `:routes-complete?`, `:routes-missing`,
+   `:routes-shared` and `:routes-outside` once a document with a file is
+   registered: the root of the route Merkle of K2a, the routes under it and
+   what it does not cover — documents registered before routes existed
+   (`routes/partial` warning), legacy second documents on a file another one
+   holds (`routes/shared-path`) and documents whose file is outside the
+   project (`routes/outside-project`); a root that leaves something out is
+   never reported as complete) where
    `:links` is the `kimun.cli.store/links` report; a link whose target is
    missing or not a store is a warning `{:type \"link/missing\" :message …}`
    (the command stays `:ok`). When the store tracks typed documents (or is
@@ -81,7 +89,9 @@
   [_args opts {:keys [env cwd]}]
   (let [{:keys [descriptor store path] :as opened} (cli-store/open! (cli-store/resolve-store opts env cwd))
         link-report (cli-store/links path)
-        report (diagnose opened)]
+        report (diagnose opened)
+        ;; what the route root does not cover; unreadable when the store is damaged (reported below)
+        coverage (err/rescue-any (fn [_] {:missing [] :shared [] :outside []}) (tdocs/route-coverage store))]
     (let [data (cond-> {:name (:name descriptor)
                         :path path
                         :hash-alg (:hash-alg descriptor)
@@ -91,10 +101,43 @@
                         :objects (err/rescue-any (fn [_] nil) (count (:objects store)))
                         :head (:head store)
                         :links link-report}
+                 ;; the route Merkle (K2a) covers the registered files that hold a route, not everything
+                 ;; tracked: what it leaves out (unrouted, shared or outside the project) is listed with it
+                 (or (:routes-root store) (some #(seq (get coverage %)) [:missing :shared :outside]))
+                 (assoc :routes-root (:routes-root store)
+                        :route-count (err/rescue-any (fn [_] nil) (count (:routes store)))
+                        :routes-complete? (every? #(empty? (get coverage %)) [:missing :shared :outside])
+                        :routes-missing (mapv :qualified (:missing coverage))
+                        :routes-shared (mapv #(select-keys % [:name :qualified]) (:shared coverage))
+                        :routes-outside (mapv #(select-keys % [:name :qualified]) (:outside coverage)))
                  (or (seq (:documents report)) (seq (:findings report)))
                  (assoc :documents (assoc report :tracked (count (:documents report)))))
-          warnings (into (mapv link-warning (remove #(= :ok (:status %)) link-report))
-                         (map finding-warning) (:findings report))]
+          partial (when (seq (:missing coverage))
+                    [{:type "routes/partial"
+                      :message (str "the route root covers " (:routed coverage) " of " (:registered coverage)
+                                    " registered documents: " (count (:missing coverage))
+                                    " were registered before routes existed and are not under it — `kimun docs update NAME`"
+                                    " (typed) or `kimun docs update FILE --name NAME` registers each one's route")
+                      :missing (mapv :qualified (:missing coverage))}])
+          shared (when (seq (:shared coverage))
+                   [{:type "routes/shared-path"
+                     :message (str (count (:shared coverage)) " document(s) track a file whose route another document holds: "
+                                   (str/join ", " (map #(str (:name %) " (" (:qualified %) ")") (:shared coverage)))
+                                   " — the route map has one entry per path, so the route root does not cover them;"
+                                   " they are still tracked and sensed")
+                     :documents (mapv #(select-keys % [:name :qualified]) (:shared coverage))}])
+          outside (when (seq (:outside coverage))
+                    [{:type "routes/outside-project"
+                      :message (str (count (:outside coverage)) " document(s) track a file outside the project: "
+                                    (str/join ", " (map #(str (:name %) " (" (:qualified %) ")") (:outside coverage)))
+                                    " — a path that leaves the project cannot be a route, so the route root does not cover them;"
+                                    " they are still tracked and sensed")
+                      :documents (mapv #(select-keys % [:name :qualified]) (:outside coverage))}])
+          warnings (-> (mapv link-warning (remove #(= :ok (:status %)) link-report))
+                       (into partial)
+                       (into shared)
+                       (into outside)
+                       (into (map finding-warning) (:findings report)))]
       (if (false? (:valid report))
         ;; an invalid store is a failure a script can see (v1 exited non-zero);
         ;; the whole report travels in the error data, warnings included

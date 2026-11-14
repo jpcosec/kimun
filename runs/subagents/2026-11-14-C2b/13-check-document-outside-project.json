@@ -1,0 +1,14 @@
+{
+ "ok": false,
+ "route-count": 1,
+ "routes-complete?": false,
+ "routes-missing": [],
+ "routes-shared": [],
+ "routes-outside": [
+  {
+   "name": "far",
+   "qualified": "../kimun-c2b-out-adB5sE/far.md"
+  }
+ ],
+ "warnings": []
+}

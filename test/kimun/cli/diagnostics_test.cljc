@@ -191,7 +191,8 @@
           (is (= ["store/corrupt" 5 bad] [(get-in sverify [:error :type]) (out/exit-code sverify) (get-in sverify [:error :data :bad])]))
           (is (= ["store/corrupt" 5 bad] [(get-in jverify [:error :type]) (out/exit-code jverify) (get-in jverify [:error :data :bad])]))
           (is (= :needs-human (get-in (run p "stores" "health") [:data :status]))))))
-    (doseq [[what id] [["head Revision" (:head s)] ["root of the per-tree heads" (:heads-root s)]]
+    (doseq [[what id] (cond-> [["head Revision" (:head s)] ["root of the per-tree heads" (:heads-root s)]]
+                        (:routes-object s) (conj ["route map object" (:routes-object s)]))
             mode [:altered :unparseable :deleted]]
       (testing (str what " " mode ": open itself refuses, every command reports it, nothing raises")
         (let [p (damaged-copy p0 id mode)
@@ -211,7 +212,8 @@
   ;; the two that open itself checks (the head Revision and the root of the per-tree heads, see the table)
   (let [p0 (project)
         s (:store (cli-store/open! (file p0 ".kimun")))
-        heads #{(:head s) (:heads-root s)}
+        ;; the route map object (K2a) is the third object open itself checks: `store/corrupt-head`
+        heads (cond-> #{(:head s) (:heads-root s)} (:routes-object s) (conj (:routes-object s)))
         ;; the empty mmap is a constant the loader resolves without the CAS: deleting
         ;; it is not damage (kimun.kernel.revision/loader), so it is no victim here
         empty-map (:root (mmap/empty (:host s)))

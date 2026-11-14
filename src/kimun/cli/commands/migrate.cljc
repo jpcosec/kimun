@@ -80,7 +80,10 @@
                 (let [o {:actor actor :timestamp (docs/timestamp) :operation "migrate"}
                       plan (:plan (if old
                                     (tdocs/update-plan host/host store name text o)
-                                    (tdocs/track-plan host/host store stored name text (assoc o :doc (ulid) :tree-id (ulid) :path (:path item)))))
+                                    ;; a v1 store may hold two documents on one file: they are brought in as they are
+                                    ;; (the second without a route, reported by `stores check`), not refused
+                                    (tdocs/track-plan host/host store stored name text
+                                                      (assoc o :doc (ulid) :tree-id (ulid) :path (:path item) :shared-path :allow))))
                       r (when plan (store/commit! backend store plan))]
                   [(cond-> (assoc-in state [:known name] {:model stored :source text}) r (assoc :store (:store r)))
                    (assoc item :bucket :migrated :source-hash h :change (if old :updated :tracked)

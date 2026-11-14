@@ -80,7 +80,7 @@ Layout de un store formato 4 (`kimun.kernel.store`; detalle en `10`):
 | subcomando | opciones | `:data` y notas |
 |---|---|---|
 | `stores init` | `--name NAME`, `--content by-reference\|inline` | `{:path :name :actor :capabilities}`; `--content inline` escribe `:content :inline` en `store.edn` (docs/v2/10 §10); falla `cli/store-exists` (5) si ya hay store |
-| `stores check` | — | `{:name :path :hash-alg :revisions :trees :objects :head :links}` + `:documents` si hay findings; abre por replay; store inválido ⇒ `store/invalid` (5) |
+| `stores check` | — | `{:name :path :hash-alg :revisions :trees :objects :head :links}` + `:routes-root :route-count :routes-complete? :routes-missing :routes-shared :routes-outside` si hay documentos registrados con archivo (abajo, «Rutas») + `:documents` si hay findings; abre por replay; store inválido ⇒ `store/invalid` (5) |
 | `stores verify` | — | `{:checked :bad}`; verify-full (replay + hash); corrupción ⇒ `store/corrupt` (5) |
 | `stores upgrade` | — | `{:upgraded :format-version :path …}`; 1→2 reconstruye en un directorio hermano (`:transactions :backup :map`), 2→3 convierte en el sitio (líneas `{:id :revision}`, `:dropped-plans`), 3→4 reporta `:needs-rebuild true :action "kimun include build --rebuild"` (el registro como caché exige los archivos); carrera de escritura ⇒ `store/stale` (4) |
 | `stores show` | — | `{:name :path :hash-alg :links :head :capabilities}`; sin replay |
@@ -195,6 +195,62 @@ Fuera de este corte:
   (`links/missing`). `[[a/README.md]]` se resuelve por ruta, como antes.
 - Buscar por nombre cualificado lee todos los documentos (no hay índice por ruta hasta C2); por
   nombre corto e id de árbol cuesta lo de antes.
+
+#### Rutas de lo trackeado (K2a, corte C2b)
+
+Cada documento registrado con archivo —tipado o de clase genérica— lleva una **ruta** en el mapa
+de rutas del store (`kimun.kernel.route`, `10 §11`), cuya raíz es el Merkle de `14 §20`. La
+superficie `docs` la mantiene en cada escritura; la entrada es:
+
+| campo | qué cubre | tipado | `generic/md` |
+|---|---|---|---|
+| `:path` | localizador: la ruta cualificada | igual | igual |
+| `:fingerprint` | los bytes de la fuente | hash del texto | igual |
+| `:class` | qué clase selecciona | id del descriptor del modelo | `"generic/md"` |
+| `:projection-hash` | la estructura leída: digest canónico del AST neutro, **antes** de ponerle el id del documento | igual | igual |
+| `:content-hash` | lo que la clase selecciona de esa estructura | hash del payload extraído | el mismo que `:projection-hash`: la clase selecciona la estructura entera |
+
+- **La raíz no depende de ids nominales.** Registrar los mismos archivos de nuevo, con ULID nuevos,
+  da la misma raíz. El `tree-id` va en la entrada como localizador, fuera de la raíz.
+- **Qué mueve la raíz:** una edición (fingerprint, proyección y, en tipados, contenido), un
+  reformateo (solo el fingerprint; la proyección no cambia), un cambio de clase y una ruta que entra
+  o sale. **No** la mueve un cambio de contrato de parse que deja la misma estructura: eso lo
+  sensoriza K6 (`contract/changed`).
+- **Mover** un documento a otra ruta (`docs update OTRO.md --name N` en un genérico; `:path` en
+  `update-plan` para un tipado) retira la ruta anterior y registra la nueva **en el mismo commit**.
+- **`docs untrack|delete`** retira la ruta junto con el anclaje; la ruta queda libre.
+- **Una ruta, un documento.** Registrar un documento nuevo —tipado o genérico— sobre un archivo cuya
+  ruta tiene otro es `docs/exists` (3) y nombra al que la tiene.
+- **Duplicados heredados.** Un store de v1 puede traer dos documentos sobre el mismo archivo. Entran
+  solo por el modo explícito que usa `migrate --from-v1` (`track-plan` con `:shared-path :allow`): el
+  segundo queda trackeado y sensorizado pero **sin ruta**, la ruta sigue con el primero, y
+  `stores check` lo declara (`:routes-shared`, warning `routes/shared-path`).
+- **Archivo fuera del proyecto.** La API admite `--store` desde otro directorio y guarda una ruta
+  relativa con `..`. El mapa de rutas rechaza una ruta así (`kimun.kernel.route/valid-path?`), de
+  modo que ese documento sigue funcionando **sin ruta** y `stores check` lo declara
+  (`:routes-outside`, warning `routes/outside-project`). Admitir `..` en el mapa cambiaría una
+  guarda del kernel; queda como decisión aparte.
+- La ruta es **localizador, no identidad**: nada aquí decide qué pasa con un documento cuyo archivo
+  se movió por fuera (sigue siendo `source/missing`).
+
+**Raíz parcial (stores anteriores a las rutas).** Un documento registrado antes de C2 no tiene
+ruta, y la raíz cubre solo lo escrito después. Eso **se declara, nunca se informa como completo**:
+`stores check` da `:routes-complete? false`, `:routes-missing [rutas]` y el warning `routes/partial`
+con cuántos documentos cubre la raíz; el store sigue válido. `:routes-complete?` también es false
+mientras haya documentos en `:routes-shared` o `:routes-outside`: la raíz no los cubre. Cada documento gana su ruta al
+volver a registrarse, aunque su archivo no haya cambiado: `docs update NAME` (tipado) o
+`docs update FILE --name NAME` (genérico). `include build --rebuild` la completa de una vez.
+
+**Pendiente, tarea C4:** no hay todavía un comando que registre de una vez las rutas que faltan en
+un store existente sin reconstruirlo (por ejemplo dentro de `stores update`), y `stores sense` /
+`heartbeat` no informan la cobertura: solo `stores check`.
+
+El objeto del mapa de rutas es, junto con la revisión de cabecera y la raíz de cabeceras por árbol,
+uno de los tres que la apertura misma verifica: dañado o ausente, todo comando falla con
+`store/corrupt-head` (5).
+
+Límites: los documentos `:inline`, los sin archivo y los no tipados con árbol persistido no tienen
+ruta ni cuentan para la cobertura.
 
 #### Documentos sin modelo: clase genérica (K3)
 

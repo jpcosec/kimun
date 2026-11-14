@@ -2,7 +2,7 @@
   "Ports of sldb v1 api/ tests about creating stores, editing derived models,
    resolving a store location and saving payloads. kimun has one surface (the
    CLI over `kimun.surface.*`), so each v1 `api.*` call is driven as its command."
-  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is testing]]
             [clojure.string :as str]
             [babashka.fs :as fs]
             [kimun.cli.main :as main]))
@@ -107,7 +107,13 @@
       (is (true? (:ok c)) (pr-str c))
       (is (not (fs/absolute? recorded)) "stored relative to the project root")
       (is (= (real (fs/path elsewhere "t1.md")) (real (fs/path p recorded)))
-          "the recorded path, taken from the project root, is the file written"))))
+          "the recorded path, taken from the project root, is the file written")
+      (testing "the route Merkle (K2a) does not cover a file outside the project, and says so"
+        (let [k (run p "stores" "check")]
+          (is (true? (:ok k)) "the store is valid")
+          (is (= [false [{:name "t1" :qualified recorded}]]
+                 ((juxt :routes-complete? :routes-outside) (:data k))))
+          (is (= ["routes/outside-project"] (mapv :type (filter #(= "routes/outside-project" (:type %)) (:warnings k))))))))))
 
 ;; v1: api/test_api_stores.py::test_open_store_without_store_outside_any_project_raises
 (deftest no-store-outside-any-project-says-to-init

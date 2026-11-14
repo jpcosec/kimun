@@ -1,0 +1,57 @@
+
+Testing kimun.cli.routes-test
+
+Testing kimun.cli.semantic-test
+
+Testing kimun.surface.semantic-test
+
+Testing kimun.parity.api-misc-test
+
+Testing kimun.surface.edges-parity-test
+
+Testing kimun.cli.migrate-test
+SKIPPED kimun.cli.migrate-test/real-store-sample-extracts-as-in-v1: /home/jp/proyectos/hum-ecosystem/tools/sldb/.sldb is not on this machine
+
+Testing kimun.kernel.route-store-test
+
+Testing kimun.kernel.route-test
+
+Testing kimun.cli.generic-docs-test
+
+Testing kimun.cli.docs-test
+
+Testing kimun.cli.journal-test
+
+Testing kimun.cli.stores-test
+
+Testing kimun.cli.typed-docs-test
+
+Testing kimun.parity.hashing-test
+
+Testing kimun.surface.journal-test
+
+Testing kimun.cli.upgrade-test
+
+Testing kimun.cli.diagnostics-test
+
+Testing kimun.cli.sense-test
+
+Testing kimun.cli.names-test
+
+Testing kimun.cli.contract-test
+
+Testing kimun.cli.find-test
+
+Testing kimun.cli.index-test
+
+Testing kimun.cli.links-test
+
+Testing kimun.cli.golden-test
+
+Testing kimun.cli.main-test
+
+Testing kimun.cli.include-test
+moved existing store to /tmp/kimun-adhoc-17772084994525613209/kimun-include-4211929977454084971/.kimun.bak-20261114-133410
+
+Ran 222 tests containing 2807 assertions.
+0 failures, 0 errors.

@@ -1,0 +1,13 @@
+{
+ "ok": false,
+ "exit": 3,
+ "error": {
+  "type": "docs/exists",
+  "message": "the file archive/plain.md is already tracked as document `plain`",
+  "data": {
+   "path": "archive/plain.md",
+   "document": "plain",
+   "tree": "01M7DDWNHJEE9XWH1F72AD120S"
+  }
+ }
+}

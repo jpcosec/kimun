@@ -48,8 +48,13 @@
         stamp {:actor "human/tester" :timestamp "2026-01-01T00:00:00.000Z"}
         commit (fn [s plan] (:store (store/commit! backend s plan)))
         s (reduce (fn [s d] (commit s (:plan (mstore/define-plan host/host s d (assoc stamp :tree-id (ulid)))))) s descriptors)]
+    ;; the frozen v1 fixture holds two documents on one file (`Board` and `desk-board`, both on
+    ;; desk/tasks/Board.md): v1 allowed it. A new `docs track` refuses a held file (one route, one
+    ;; document, K2a); the fixture is rebuilt in the explicit legacy mode a v1 migration uses, where
+    ;; the second document is tracked without a route. The graph compared below does not depend on routes.
     (reduce (fn [s d] (commit s (:plan (tdocs/track-plan host/host s (d "model") (d "name") (d "text")
-                                                         (assoc stamp :doc (ulid) :tree-id (ulid) :path (d "path"))))))
+                                                         (assoc stamp :doc (ulid) :tree-id (ulid) :path (d "path")
+                                                                :shared-path :allow)))))
             s documents)))
 
 (defn- v1-view

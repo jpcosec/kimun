@@ -456,12 +456,97 @@
                                    :tree (:tree-id reg) :root-hash (:merkle-root reg)}))))
   reg)
 
+(defn projection-hash
+  "Hash of the structure read from `text`: the canonical digest of the neutral
+   AST of `ast/parse`, taken BEFORE the document's `:doc` id is put on it. It
+   therefore does not change when the same file is registered again under new
+   ULIDs, nor when only blank lines or wrapping move; it changes when the
+   structure does."
+  [host text]
+  (canon/digest host (ast/parse host text)))
+
+(defn route-entry
+  "The route entry of a registered document (K2a, `kimun.kernel.route`):
+   `{:path :fingerprint :class :projection-hash :content-hash}`.
+   - `:path` the qualified path of its file (a locator, not an identity);
+   - `:fingerprint` the bytes of the source;
+   - `:class` what selects: a model descriptor id, or a generic class;
+   - `:projection-hash` the structure read (`projection-hash`);
+   - `:content-hash` what the class selects of that structure: the hash of the
+     extracted payload for a typed document; for a generic class, which selects
+     the whole structure, the projection hash itself — equal by definition of
+     the class, not by accident."
+  [host {:keys [path text class content-hash]}]
+  (let [p (projection-hash host text)]
+    {:path (qualified-path host path) :fingerprint (fingerprint host text) :class class
+     :projection-hash p :content-hash (or content-hash p)}))
+
+(defn route-owner
+  "The tree id that holds the route of `path` in `store`, or nil (also when
+   the store records no routes)."
+  [store path]
+  (get-in store [:routes (qualified-path (:host store) path) :tree-id]))
+
+(defn route-state
+  "How the document with tree `tree-id` and file `path` stands in the route
+   map of `store`:
+   - `:routed`   it holds the route of its path;
+   - `:unrouted` nobody holds it: the document was registered before routes
+                 existed, and its next write registers it;
+   - `:shared`   another document holds it. The route map has one entry per
+                 path and a new document on a held file is refused; a second
+                 document on the same file exists only as legacy (stores
+                 migrated from v1 have them, `track-plan` `:shared-path
+                 :allow`): tracked and sensed, without a route;
+   - `:outside`  its file is outside the project (a relative path with
+                 `..`, which the API admits with `--store`): the route map
+                 refuses such a path, so the document has no route.
+   The route root covers only `:routed` documents; the other three are
+   reported by `route-coverage`, never silently left out."
+  [store tree-id path]
+  (let [q (qualified-path (:host store) path)
+        owner (when q (route-owner store q))]
+    (cond (not (route/valid-path? q)) :outside
+          (= owner tree-id) :routed
+          (some? owner) :shared
+          :else :unrouted)))
+
+(defn routed?
+  "True when document `doc` (a typed or generic document map with a file)
+   holds the route of its own path in `store`."
+  [store doc]
+  (= :routed (route-state store (:tree doc) (:path doc))))
+
+(defn- leave-route-ops
+  "`[{:op :remove-route}]` when tree `tree-id` holds the route of `old-path`
+   and is about to stop tracking that path (it moves to `new-path`, or to none
+   when nil); else `[]`. A document registered before routes existed holds
+   none, so nothing is removed for it."
+  [store tree-id old-path new-path]
+  (let [host (:host store) old (qualified-path host old-path)]
+    (if (and old (not= old (qualified-path host new-path)) (= tree-id (route-owner store old)))
+      [{:op :remove-route :tree tree-id :path old}]
+      [])))
+
+(defn- refuse-routed!
+  "Raises `:docs/exists` when the route of `path` is held by a tree other than
+   `except`: one route, one document. The error names the document that holds
+   the file (the kernel would reject the plan with `:route/ambiguous`)."
+  [store path except]
+  (when-let [owner (route-owner store path)]
+    (when (not= owner except)
+      (let [q (qualified-path (:host store) path)
+            holder (:name (revision/tree-descriptor store owner))]
+        (err/raise :docs/exists (str "the file " q " is already tracked as document `" holder "`")
+                   {:path q :document holder :tree owner})))))
+
 (defn- registry
   "The registry of a by-reference document (docs/v2/14 §18.6): builds its tree
    in memory, writes the derived objects to the cache and returns `{:reg :ops}`
    where `:reg` carries the merkle root and `:ops` are the plan ops that
    register it — the root node, the external anchor, the model edges and the
-   `:register-tree` op. No ownership edge and no block/text node enters the
+   `:register-tree` op, which carries the document's `:route` entry when it
+   has a file. No ownership edge and no block/text node enters the
    plan: that structure is recomputable from `archivo + clase`."
   [host store {:keys [doc tree-id name text path class content-hash actor]}]
   (let [a (assoc-in (ast/parse host text) [:attrs :doc] doc)
@@ -481,8 +566,12 @@
      :wanted wanted
      :ops (-> [{:op :add-node :node (root-node host doc) :as :root}]
               (cond-> ext (conj {:op :add-node :node ext :as :ext}))
-              (conj {:op :register-tree :tree (dissoc (:descriptor reg) :tree)
-                     :id tree-id :root :root :merkle-root (:merkle-root reg) :as :t})
+              (conj (cond-> {:op :register-tree :tree (dissoc (:descriptor reg) :tree)
+                             :id tree-id :root :root :merkle-root (:merkle-root reg) :as :t}
+                      ;; a route only where the path can hold one for this document (`route-state`)
+                      (and path (#{:routed :unrouted} (route-state store tree-id path)))
+                      (assoc :route (route-entry host {:path path :text text :class class
+                                                       :content-hash content-hash}))))
               (into (map (fn [e] {:op :add-edge :edge e}) wanted)))}))
 
 (defn- registry-stale
@@ -495,12 +584,16 @@
 
 (defn- registry-ops
   "Ops of a by-reference document: its registry plus the removal of the stale
-   owned edges of `old` (an existing document map, or nil)."
+   owned edges of `old` (an existing document map, or nil). When `old` held
+   the route of another path, that route is removed first, in the same plan,
+   so a moved document never keeps two routes."
   [host store opts old]
   (let [{:keys [reg wanted ops]} (registry host store opts)]
     {:reg reg
-     :ops (into ops (map (fn [eid] {:op :remove-edge :edge eid})
-                         (registry-stale host store wanted (:root reg) old)))}))
+     :ops (-> (vec (leave-route-ops store (:tree-id opts) (:path old) (:path opts)))
+              (into ops)
+              (into (map (fn [eid] {:op :remove-edge :edge eid})
+                         (registry-stale host store wanted (:root reg) old))))}))
 
 (defn- binding-ops
   "Ops tying `root` to the model and (when `path`) the file, removing the edges
@@ -564,9 +657,14 @@
    `:inline` the source text is stored in the store instead of read from the
    file (default: the store descriptor's `:content`). A document with a path
    (and not `:inline`) is registered as CACHE (docs/v2/14 §18.6): no ownership
-   edge, no block/text node and no tree object enters the plan."
-  [host store model name text {:keys [doc tree-id path actor timestamp operation inline]}]
+   edge, no block/text node and no tree object enters the plan. One route, one
+   document: a file whose route another document holds is `:docs/exists` —
+   unless `:shared-path :allow` is given, the explicit legacy mode for stores
+   that already hold two documents on one file (a v1 migration): the document
+   is then tracked without a route and reported as `:shared`."
+  [host store model name text {:keys [doc tree-id path actor timestamp operation inline shared-path]}]
   (refuse-collision! store name path)
+  (when (and path (not= :allow shared-path)) (refuse-routed! store path nil))
   (let [m (require-model store model)
         payload (extract/extract (:descriptor m) text)
         ch (content-hash host payload)
@@ -601,7 +699,8 @@
    again). `opts`: `:path` (default: the recorded one), `:actor`, `:timestamp`,
    `:operation`, `:inline` (default: keep the document's mode). Returns `{:plan
    :name :tree :payload :before :unchanged?}`;
-   `:plan` is nil when neither the text, the path nor the contract moved. A
+   `:plan` is nil when neither the text, the path nor the contract moved and
+   the document already holds its route. A
    recorded parse contract that is no longer the one in force counts as moved
    (the document is re-registered under the current one), as does one whose
    digest does not verify; a document with no recorded parse contract is not
@@ -616,7 +715,10 @@
         cached? (and path (not inline?) (not (revision/legacy? store)))
         ;; with by-reference content the tracked text is the file: "unchanged" is the fingerprint
         ;; matching what the doc was written with, not the text read back from the file
+        ;; a registered document without its route (written before routes existed) is not "unchanged":
+        ;; writing it again is what gives it one
         same? (and (= path (:path doc)) (= :intact (:state doc))
+                   (or (not cached?) (not= :unrouted (route-state store (:tree doc) path)))
                    (contains? #{:same :unrecorded}
                               (:status (parse-contract/compare-recorded host (parse-contract/environment)
                                                                         (:parse-contract doc) (:id m))))
@@ -661,7 +763,7 @@
    ownership edge, no block/text node and no tree object enters the plan.
    `old-edges` are the edge ids of the document being replaced (or nil): the
    ones to a file that are no longer wanted are removed."
-  [host store {:keys [doc tree-id name text path actor]} old-edges]
+  [host store {:keys [doc tree-id name text path actor old-path]} old-edges]
   (let [a (assoc-in (ast/parse host text) [:attrs :doc] doc)
         reg (assoc (md/ast->tree host a {:tree-id tree-id :name name :class generic-class}) :tree-id tree-id)
         root (:root reg)
@@ -674,11 +776,13 @@
         stale (for [eid old-edges :let [e (get-in store [:objects eid])]
                     :when (and (not= eid wanted-id) (source-or-file? (target store e)))] eid)]
     {:reg reg
-     :ops (-> [{:op :add-node :node (root-node host doc) :as :root}
+     :ops (-> (vec (leave-route-ops store tree-id old-path path))
+              (into [{:op :add-node :node (root-node host doc) :as :root}
                {:op :add-node :node ext :as :ext}
                {:op :register-tree :tree (dissoc (:descriptor reg) :tree)
-                :id tree-id :root :root :merkle-root (:merkle-root reg) :as :t}
-               {:op :add-edge :edge wanted}]
+                :id tree-id :root :root :merkle-root (:merkle-root reg) :as :t
+                :route (route-entry host {:path path :text text :class generic-class})}
+               {:op :add-edge :edge wanted}])
               (into (map (fn [eid] {:op :remove-edge :edge eid}) stale)))}))
 
 (defn- describe-generic
@@ -761,18 +865,20 @@
   "Plan that registers again the generic document `doc` (a map of
    `generic-documents`) from `text`, at `path` (default: its recorded one):
    `{:plan :name :tree :blocks :unchanged?}`. `:plan` is nil when neither the
-   fingerprint, the path nor the parse contract moved. Raises `:docs/exists`
+   fingerprint, the path nor the parse contract moved and the document already
+   holds its route. Raises `:docs/exists`
    when `path` is already tracked by another document."
   [host store doc text {:keys [path actor timestamp operation]}]
   (let [path (or path (:path doc))
         _ (refuse-anchored! store path (:tree doc))
         same? (and (= (qualified-path host path) (:qualified doc))
+                   (not= :unrouted (route-state store (:tree doc) path))
                    (= (:fingerprint doc) (fingerprint host text))
                    (contains? #{:same :unrecorded}
                               (:status (parse-contract/compare-recorded host (parse-contract/environment)
                                                                         (:parse-contract doc) generic-class))))
         {:keys [reg ops]} (generic-ops host store {:doc (:doc doc) :tree-id (:tree doc) :name (:name doc)
-                                                   :text text :path path :actor actor}
+                                                   :text text :path path :actor actor :old-path (:path doc)}
                                        (:edges doc))]
     (when-not same? (cache-write! store reg {:fingerprint (fingerprint host text) :class generic-class}))
     {:name (:name doc) :tree (:tree doc) :unchanged? same?
@@ -783,13 +889,36 @@
                                       :address (str generic-class ":" (:name doc)) :fields {}})
               :ops (vec ops)})}))
 
+(defn route-coverage
+  "How much of what is registered the route map covers: `{:registered n
+   :routed n :missing [doc] :shared [doc] :outside [doc]}` over the documents
+   whose tree is registered as cache with a file (typed and generic); `doc` is
+   `{:name :qualified :tree}`. `:missing` are documents registered before
+   routes existed (their next write gives them one); `:shared` are legacy
+   second documents on a file whose route another holds; `:outside` are
+   documents whose file is outside the project (`route-state`). The route
+   root covers none of the three: the coverage is complete only when all are
+   empty."
+  [store]
+  (let [docs (->> (concat (documents store) (generic-documents store))
+                  (filter #(and (:path %) (cached-tree? store (:tree %))))
+                  (map #(assoc % :route-state (route-state store (:tree %) (:path %)))))
+        of (fn [state] (->> docs (filter #(= state (:route-state %))) (sort-by (juxt :qualified :name))
+                            (mapv #(select-keys % [:name :qualified :tree]))))]
+    {:registered (count docs)
+     :routed (count (of :routed))
+     :missing (of :unrouted)
+     :shared (of :shared)
+     :outside (of :outside)}))
+
 (defn untrack-plan
   "Plan that stops tracking document `token`: the edges this surface owns (to
    its model, source and file) are removed, its tree stays in history; edges
    others wrote from it stay and become orphans their owners can report. Returns `{:plan :name :tree :path}`.
    `token` names a typed document or, failing that, one registered under a
    generic class (K3): its anchor edge is removed, so its file is no longer
-   watched and its path and name are free again. Raises `:docs/missing`."
+   watched and its path and name are free again. The route the document holds
+   (K2a) is removed in the same plan. Raises `:docs/missing`."
   [store token {:keys [actor timestamp operation]}]
   (let [doc (or (resolve-any store token)
                 (err/raise :docs/missing (str "no document named or identified by `" token "`") {:document token}))]
@@ -797,8 +926,10 @@
      :plan {:plan/version 1 :base (:head store) :actor actor :timestamp timestamp
             :engines (meta-engines {:operation (or operation "docs untrack")
                                     :address (str (or (:model doc) (:class doc)) ":" (:name doc)) :fields {}})
-            :ops (vec (for [eid (:edges doc) :when (owned-edge? store (get-in store [:objects eid]))]
-                        {:op :remove-edge :edge eid}))}}))
+            ;; the route leaves with the anchor, in the same plan: the path is free for another document
+            :ops (into (vec (leave-route-ops store (:tree doc) (:path doc) nil))
+                       (for [eid (:edges doc) :when (owned-edge? store (get-in store [:objects eid]))]
+                         {:op :remove-edge :edge eid}))}}))
 
 (defn sync-report
   "`[{:name :path :status}]` for tracked documents with a file, where
