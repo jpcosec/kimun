@@ -52,7 +52,9 @@
         es (journal/entries store txs)]
     (is (= 3 (count es)))
     (is (= (map :revision (reverse txs)) (map :revision es)) "newest first")
-    (is (= [{:add-node 5 :new-tree 1 :add-edge 4}] (take 1 (reverse (map :ops es)))))
+    ;; K3: a document without a model is registered (root, anchor, tree registration, anchor edge);
+    ;; its blocks are cache, not ops of the plan
+    (is (= [{:add-node 2 :register-tree 1 :add-edge 1}] (take 1 (reverse (map :ops es)))))
     (is (= (:head store) (:revision (first es))))
     (is (= [] (:parents (last es))))
     (is (= [(:revision (second es))] (:parents (first es))) "the parent link is the chain")
@@ -66,7 +68,11 @@
 (deftest successive-writes-all-remain
   (let [proj (project "# A\n")
         _ (run proj "docs" "ingest" "doc.md" "--name" "a")
-        _ (run proj "docs" "ingest" "doc.md" "--name" "b")
+        ;; one sensed path, one document (K3): the second document has its own file
+        _ (spit (str (fs/path proj "doc2.md")) "# B\n")
+        _ (run proj "docs" "ingest" "doc2.md" "--name" "b")
+        ;; K3: re-registering an unchanged file writes nothing, so the third write needs a change
+        _ (spit (str (fs/path proj "doc.md")) "# A\n\nmore\n")
         _ (run proj "docs" "update" "doc.md" "--name" "a")
         {:keys [store txs]} (loaded proj)]
     (is (= 3 (count (journal/entries store txs))))

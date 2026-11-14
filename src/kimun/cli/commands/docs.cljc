@@ -23,6 +23,7 @@
             [kimun.kernel.err :as err]
             [kimun.kernel.ports :as ports]
             [kimun.kernel.revision :as revision]
+            [kimun.kernel.route :as route]
             [kimun.kernel.store :as store]
             [kimun.kernel.tree :as tree]
             [kimun.surface.markdown.plan :as md]))
@@ -37,7 +38,8 @@
      :cljs (.toISOString (js/Date.))))
 
 (defn documents
-  "`[{:name :tree :root}]` of every untyped `:document` tree in `store`, by
+  "`[{:name :tree :root}]` of every untyped `:document` tree in `store` (plus
+   `:class` for one registered under the generic class, K3), by
    name then id (typed ones, tracked or hidden, are left out). `typed` is
    `(tdocs/documents store)` when the caller already has it. Reads the tree
    descriptors only."
@@ -47,7 +49,9 @@
      (->> (revision/tree-descriptors store)
           (keep (fn [[tid d]]
                   (when (and (= :document (:kind d)) (not (skip tid)))
-                    {:name (:name d) :tree tid :root (:root d)})))
+                    (cond-> {:name (:name d) :tree tid :root (:root d)}
+                      ;; registered under the generic class (K3): its tree is cache
+                      (tdocs/generic-class? (:class d)) (assoc :class (:class d))))))
           (sort-by (juxt :name :tree))
           vec))))
 
@@ -82,11 +86,30 @@
 (defn- name-of [opts path]
   (or (:name opts) (str (fs/strip-ext (fs/file-name path)))))
 
+(defn- project-root* [store-path] (str (fs/parent (fs/absolutize store-path))))
+
+(defn- inside-path
+  "`abs` relative to the project of the store at `store-path`, or nil when the
+   file is outside it (it cannot be anchored by a relative path). The path is
+   taken as written: a symlink inside the project is anchored by its own path,
+   whatever it points to, as `docs track` does."
+  [store-path abs]
+  (let [rel (route/normalize-path (str (fs/relativize (fs/path (project-root* store-path)) (fs/absolutize abs))))]
+    ;; by segment: `../x.md` is outside, `..foo.md` is a file name like any other
+    (when (route/valid-path? rel) rel)))
+
 (defn ingest
-  "`docs ingest FILE [--name NAME]`: parses the Markdown file and commits a
-   new `:document` tree named NAME (default: the file name without extension).
-   Data: `{:name :tree :path :blocks}`. Raises `:docs/exists` (exit 3) when a
-   document with that name is already in the store."
+  "`docs ingest FILE [--name NAME]`: registers the Markdown file as a new
+   document without a model, named NAME (default: the file name without
+   extension). In a by-reference store (the default) the document is
+   registered under the generic class (K3, docs/v2/14 §18.1): its external
+   anchor, the class `generic/md` and the root hash enter the store and its
+   tree is cache — `:class` and `:anchor` (the relative path) are in the data,
+   and the file is watched by `stores sense`. In an `:inline` or format-1
+   store, or for a file outside the project, the tree is persisted as before.
+   Data: `{:name :tree :path :blocks}` plus `:class :anchor` when registered.
+   Raises `:docs/exists` (exit 3) when a document with that name is already in
+   the store."
   [args opts {:keys [env cwd]}]
   (let [file (require-arg! args 0 "a Markdown FILE" "ingest")
         [path text] (read-file! file cwd)
@@ -95,19 +118,32 @@
         _ (when (seq (filter #(= name (:name %)) (documents store)))
             (err/raise :docs/exists (str "a document named `" name "` already exists; use `docs update`") {:document name}))
         tree-id (ports/ulid (:ids host/host))
-        plan (md/markdown->plan host/host text {:tree-id tree-id :name name :actor (:actor opts)
-                                                :timestamp (timestamp) :base (:head store)})
-        r (store/commit! backend store plan)
-        t (get-in r [:store :trees tree-id])]
-    (out/ok "docs ingest" {:store (store-ref descriptor store-path)
-                           :revision (:revision-id r)
-                           :data {:name name :tree tree-id :path path
-                                  :blocks (count (tree/children-at t []))}})))
+        anchor (when (tdocs/generic-registrable? store) (inside-path store-path path))]
+    (if anchor
+      (let [{:keys [plan blocks]} (tdocs/generic-plan host/host store name text anchor
+                                                      {:doc (ports/ulid (:ids host/host)) :tree-id tree-id
+                                                       :actor (:actor opts) :timestamp (timestamp)})
+            r (store/commit! backend store plan)]
+        (out/ok "docs ingest" {:store (store-ref descriptor store-path)
+                               :revision (:revision-id r)
+                               :data {:name name :tree tree-id :path path :blocks blocks
+                                      :class tdocs/generic-class :anchor anchor}}))
+      (let [plan (md/markdown->plan host/host text {:tree-id tree-id :name name :actor (:actor opts)
+                                                    :timestamp (timestamp) :base (:head store)})
+            r (store/commit! backend store plan)
+            t (get-in r [:store :trees tree-id])]
+        (out/ok "docs ingest" {:store (store-ref descriptor store-path)
+                               :revision (:revision-id r)
+                               :data {:name name :tree tree-id :path path
+                                      :blocks (count (tree/children-at t []))}})))))
 
 (defn update-doc
   "`docs update FILE --name NAME|TREE`: re-ingests the file into the existing
    document, as an edit made outside the kernel (`docs/v2/04 §8`: no
-   succession is recorded). Data: `{:name :tree :path :blocks}`."
+   succession is recorded). A document registered under the generic class
+   (K3) is registered again from FILE — its anchor, fingerprint, root hash and
+   parse contract — and `:unchanged?` says whether anything moved. Data:
+   `{:name :tree :path :blocks}`."
   [args opts {:keys [env cwd]}]
   (let [file (require-arg! args 0 "a Markdown FILE" "update")
         token (or (:name opts) (get args 1)
@@ -115,14 +151,27 @@
         [path text] (read-file! file cwd)
         {:keys [backend descriptor store] store-path :path} (cli-store/open! (cli-store/resolve-store opts env cwd))
         {:keys [name tree]} (resolve-document store token)
-        plan (md/markdown->update-plan host/host store tree text
-                                       {:actor (:actor opts) :timestamp (timestamp) :base (:head store)})
-        r (store/commit! backend store plan)
-        t (get-in r [:store :trees tree])]
-    (out/ok "docs update" {:store (store-ref descriptor store-path)
-                           :revision (:revision-id r)
-                           :data {:name name :tree tree :path path
-                                  :blocks (count (tree/children-at t []))}})))
+        generic (tdocs/generic-document store tree)
+        anchor (when generic (inside-path store-path path))]
+    (when (and generic (nil? anchor))
+      (err/raise :docs/outside-project (str "`" file "` is outside the project of this store: a registered document needs a file inside it")
+                 {:path path :document name}))
+    (if generic
+      (let [{:keys [plan blocks unchanged?]} (tdocs/generic-update-plan host/host store generic text
+                                                                        {:path anchor :actor (:actor opts) :timestamp (timestamp)})
+            r (if plan (store/commit! backend store plan) {:revision-id (:head store)})]
+        (out/ok "docs update" {:store (store-ref descriptor store-path)
+                               :revision (:revision-id r)
+                               :data {:name name :tree tree :path path :blocks blocks
+                                      :class (:class generic) :anchor anchor :unchanged? (boolean unchanged?)}}))
+      (let [plan (md/markdown->update-plan host/host store tree text
+                                           {:actor (:actor opts) :timestamp (timestamp) :base (:head store)})
+            r (store/commit! backend store plan)
+            t (get-in r [:store :trees tree])]
+        (out/ok "docs update" {:store (store-ref descriptor store-path)
+                               :revision (:revision-id r)
+                               :data {:name name :tree tree :path path
+                                      :blocks (count (tree/children-at t []))}})))))
 
 (defn render
   "`docs render NAME|TREE`: the canonical Markdown of the document, as the
@@ -133,7 +182,8 @@
         {:keys [tree]} (resolve-document store token)]
     (out/ok "docs render" {:store (store-ref descriptor store-path)
                            :revision (:head store)
-                           :data (or (tdocs/document-markdown store (or (tdocs/find-document store token) tree))
+                           :data (or (tdocs/document-markdown store (or (tdocs/find-document store token)
+                                                                        (tdocs/generic-document store tree) tree))
                                      (md/store->markdown host/host store tree))})))
 
 (defn list-docs
@@ -347,7 +397,8 @@
                          :data (if ast?
                                  (let [{:keys [name tree]} (resolve-document store token)]
                                    {:name name :tree tree
-                                    :ast (or (tdocs/document-ast store (or (tdocs/find-document store token) tree))
+                                    :ast (or (tdocs/document-ast store (or (tdocs/find-document store token)
+                                                                           (tdocs/generic-document store tree) tree))
                                              (md/store->ast store tree))})
                                  (let [d (tdocs/document store token)] (assoc (doc-data d) :markdown (:source d))))})))
 

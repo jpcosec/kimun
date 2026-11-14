@@ -1,0 +1,15 @@
+{
+ "ok": true,
+ "exit": 0,
+ "result": {
+  "updated": [],
+  "skipped": [
+   {
+    "document": "plain",
+    "category": "edited",
+    "action": "kimun docs update notes/plain.md --name plain"
+   }
+  ],
+  "status": "needs-human"
+ }
+}

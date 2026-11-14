@@ -1,0 +1,12 @@
+{
+ "ok": true,
+ "exit": 0,
+ "result": {
+  "name": "..foo",
+  "tree": "01M7DBR8XWV4BRRXXXS5YP8Q24",
+  "path": "/tmp/kimun-k3-ev-6Dyova/..foo.md",
+  "blocks": 1,
+  "class": "generic/md",
+  "anchor": "..foo.md"
+ }
+}

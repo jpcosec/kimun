@@ -231,6 +231,9 @@
         (is (true? (:ok e)) (pr-str e))
         (is (= (peek revs) (get-in e [:data :uncommitted-tail :revision])))
         (is (= (second revs) (:revision e))))
+      ;; K3: the ingested file is watched, and at the second revision it read "para two"; with the
+      ;; file as that revision recorded it, the store is valid (the tail is reported, not a failure)
+      (spit (str (fs/path proj "doc.md")) "# T\n\npara two\n")
       (is (true? (:ok (run proj "stores" "check"))))))
   (testing "a heads.edn whose head is one behind but whose per-tree heads are the last commit's is not a dead writer: it does not replay"
     (let [{:keys [proj revs] :as h} (history)]

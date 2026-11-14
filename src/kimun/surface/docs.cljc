@@ -39,7 +39,14 @@
    tree id is the stable reference, and the qualified name follows the
    locator. `find-document` resolves a tree id, a short name or a qualified
    name, and raises `:docs/ambiguous` with the candidates when a short name
-   means more than one document; it never picks one."
+   means more than one document; it never picks one.
+
+   Documents without a model (K3): in a format-4, by-reference store a file
+   ingested without a model is registered like a typed one — an external
+   anchor, the class `generic/md` and the root hash, its tree as cache — and
+   not persisted block by block. It is not a typed document (`documents` does
+   not list it): `generic-documents` does. Its root node carries `:doc`, its
+   own, like a typed document's."
   (:require [clojure.edn :as edn]
             [clojure.string :as str]
             [kimun.host.store-cache :as store-cache]
@@ -146,6 +153,17 @@
   [host p]
   (some->> p route/normalize-path (canon/normalize host)))
 
+(def generic-class
+  "Class of a document without a model (docs/v2/14 §18.1, 10 §11): the
+   structure the Markdown profile gives, whole. Only the Markdown profile
+   exists; a per-store granularity and other file types wait for spec 16."
+  "generic/md")
+
+(defn generic-class?
+  "True when `class` (the `:class` of a tree descriptor) is a generic class."
+  [class]
+  (and (string? class) (str/starts-with? class "generic/")))
+
 (defn- owned-edge?
   "True for an edge this surface wrote from a document root: to its model, its
    source or its file. Any other edge leaving the root — an authored relation,
@@ -162,7 +180,8 @@
   [store current by-from [tid t]]
   (let [root (tree/root t) rn (get-in store [:objects root]) es (get by-from root)
         d (:descriptor t)]
-    (when (and (get-in rn [:content :attrs :doc]) (seq es))
+    ;; a document of the generic class (K3) has no model: it is not a typed document
+    (when (and (get-in rn [:content :attrs :doc]) (seq es) (not (generic-class? (:class d))))
       (let [by (fn [pred] (filter #(pred (target store %)) es))
             model-ids (set (map :to (by model-node?)))
             entry (first (filter #(contains? model-ids (:id %)) current))
@@ -207,7 +226,9 @@
   ([store docs]
    (let [tracked (set (map :tree docs))]
      (set (for [[tid d] (revision/tree-descriptors store)
-                :when (and (get-in store [:objects (:root d) :content :attrs :doc]) (not (tracked tid)))] tid)))))
+                :when (and (get-in store [:objects (:root d) :content :attrs :doc]) (not (tracked tid))
+                           ;; a generic document (K3) is listed with the untyped ones, not hidden
+                           (not (generic-class? (:class d))))] tid)))))
 
 (defn candidates
   "The tracked documents `token` may mean as a tree id or a short name, by
@@ -600,6 +621,147 @@
                      (assoc :engines engines)
                      (update :ops into (binding-ops host store (:root doc) {:model-id (:id m) :text text :path path :actor actor
                                                                             :content-hash ch :inline? inline?} doc))))}))))
+
+;; ---------------------------------------------------------------- generic documents (K3)
+
+(defn generic-registrable?
+  "True when a document without a model is registered by reference in `store`
+   (class `generic-class`, tree as cache): the store is not a format-1 one and
+   its content mode is not `:inline` — the rule typed documents follow. Otherwise its tree is persisted, as before K3."
+  [store]
+  (and (not (revision/legacy? store)) (not= :inline (:content store))))
+
+(defn- generic-ops
+  "Ops registering the file `path` with text `text` as the generic document
+   `doc`/`tree-id`: its root node, its external anchor (whose edge records the
+   class as `:contract` and the parse contract), and the `:register-tree`. No
+   ownership edge, no block/text node and no tree object enters the plan.
+   `old-edges` are the edge ids of the document being replaced (or nil): the
+   ones to a file that are no longer wanted are removed."
+  [host store {:keys [doc tree-id name text path actor]} old-edges]
+  (let [a (assoc-in (ast/parse host text) [:attrs :doc] doc)
+        reg (assoc (md/ast->tree host a {:tree-id tree-id :name name :class generic-class}) :tree-id tree-id)
+        root (:root reg)
+        ext (external-node host path text)
+        xid (id-of host ext)
+        wanted {:type :reference :from root :to xid
+                :evidence {:ref-hash xid :actor actor :contract generic-class
+                           :parse-contract (parse-contract/record host (parse-contract/environment) generic-class)}}
+        wanted-id (:id (edge/make host wanted))
+        stale (for [eid old-edges :let [e (get-in store [:objects eid])]
+                    :when (and (not= eid wanted-id) (source-or-file? (target store e)))] eid)]
+    {:reg reg
+     :ops (-> [{:op :add-node :node (root-node host doc) :as :root}
+               {:op :add-node :node ext :as :ext}
+               {:op :register-tree :tree (dissoc (:descriptor reg) :tree)
+                :id tree-id :root :root :merkle-root (:merkle-root reg) :as :t}
+               {:op :add-edge :edge wanted}]
+              (into (map (fn [eid] {:op :remove-edge :edge eid}) stale)))}))
+
+(defn- describe-generic
+  "The map of the generic document of tree `[tid d]` (`d` its descriptor), or
+   nil when the tree is not one: `{:name :qualified :tree :root :doc :class
+   :generic :path :fingerprint :parse-contract :merkle-root :edges}`."
+  [store by-from [tid d]]
+  (when (and (= :document (:kind d)) (generic-class? (:class d)))
+    (let [root (:root d)
+          es (get by-from root)
+          ext-edge (some #(when (= :external (:kind (target store %))) %) es)
+          ext (target store ext-edge)
+          path (get-in ext [:content :locator :path])]
+      (when ext-edge
+        {:name (:name d) :qualified (or (qualified-path (:host store) path) (:name d))
+         :tree tid :root root :doc (get-in store [:objects root :content :attrs :doc])
+         :class (:class d) :generic true
+         :path path :fingerprint (get-in ext [:content :fingerprint])
+         :parse-contract (get-in ext-edge [:evidence :parse-contract])
+         :merkle-root (second (revision/tree-entry store tid))
+         :edges (mapv :id es)}))))
+
+(defn generic-documents
+  "Every document of `store` registered under a generic class (K3), by name
+   then tree id."
+  [store]
+  (let [by-from (edges-by-from store)]
+    (->> (revision/tree-descriptors store)
+         (keep #(describe-generic store by-from %))
+         (sort-by (juxt :name :tree)) vec)))
+
+(defn generic-document
+  "The generic document identified by `token` (a tree id, a name or the path
+   of its file), or nil. A name or path that means several is `:docs/ambiguous`."
+  [store token]
+  (let [all (generic-documents store)
+        q (when (string? token) (qualified-path (:host store) token))
+        found (or (seq (filter #(= token (:tree %)) all))
+                  (seq (filter #(= token (:name %)) all))
+                  (seq (filter #(= q (:qualified %)) all)))]
+    (case (count found) 0 nil 1 (first found) (ambiguous! token (vec found)))))
+
+(defn refuse-anchored!
+  "Raises `:docs/exists` when the file `path` is already the anchor of a
+   tracked document, typed or generic, other than tree `except` (nil for
+   none). One sensed path, one document: the route registry of K2a (cut C2)
+   rejects a duplicate path, so a generic registration does not create one.
+   This is uniqueness of the locator, not an identity."
+  [store path except]
+  (let [q (qualified-path (:host store) path)
+        holder (some #(when (and (:path %) (= q (:qualified %)) (not= except (:tree %))) %)
+                     (concat (generic-documents store) (documents store)))]
+    (when holder
+      (err/raise :docs/exists
+                 (str "the file " q " is already tracked as document `" (:name holder) "`")
+                 {:path q :document (:name holder) :tree (:tree holder)}))))
+
+(defn generic-root
+  "The merkle root the Markdown `text` would be registered with as generic
+   document `doc`: computed in memory, nothing is written. Sensing compares it
+   with the registered root to tell a reformatting from an edit."
+  [host doc text]
+  (:merkle-root (md/ast->tree host (assoc-in (ast/parse host text) [:attrs :doc] (:doc doc))
+                              {:tree-id (:tree doc) :name (:name doc) :class (:class doc)})))
+
+(defn generic-plan
+  "Plan that registers the file `path` (relative to the project) with text
+   `text` as a new document `name` of the generic class: `{:plan :name :tree
+   :blocks}`. `opts`: `:doc` and `:tree-id` (fresh ULIDs), `:actor`,
+   `:timestamp`. The derived tree is written to the cache. Raises
+   `:docs/exists` when the file is already tracked (`refuse-anchored!`)."
+  [host store name text path {:keys [doc tree-id actor timestamp]}]
+  (refuse-anchored! store path nil)
+  (let [{:keys [reg ops]} (generic-ops host store {:doc doc :tree-id tree-id :name name :text text
+                                                   :path path :actor actor} nil)]
+    (cache-write! store reg {:fingerprint (fingerprint host text) :class generic-class})
+    {:name name :tree tree-id :blocks (count (tree/children-at (:tree reg) []))
+     :plan {:plan/version 1 :base (:head store) :actor actor :timestamp timestamp
+            :engines (meta-engines {:operation "docs ingest" :address (str generic-class ":" name) :fields {}})
+            :ops (vec ops)}}))
+
+(defn generic-update-plan
+  "Plan that registers again the generic document `doc` (a map of
+   `generic-documents`) from `text`, at `path` (default: its recorded one):
+   `{:plan :name :tree :blocks :unchanged?}`. `:plan` is nil when neither the
+   fingerprint, the path nor the parse contract moved. Raises `:docs/exists`
+   when `path` is already tracked by another document."
+  [host store doc text {:keys [path actor timestamp operation]}]
+  (let [path (or path (:path doc))
+        _ (refuse-anchored! store path (:tree doc))
+        same? (and (= (qualified-path host path) (:qualified doc))
+                   (= (:fingerprint doc) (fingerprint host text))
+                   (contains? #{:same :unrecorded}
+                              (:status (parse-contract/compare-recorded host (parse-contract/environment)
+                                                                        (:parse-contract doc) generic-class))))
+        {:keys [reg ops]} (generic-ops host store {:doc (:doc doc) :tree-id (:tree doc) :name (:name doc)
+                                                   :text text :path path :actor actor}
+                                       (:edges doc))]
+    (when-not same? (cache-write! store reg {:fingerprint (fingerprint host text) :class generic-class}))
+    {:name (:name doc) :tree (:tree doc) :unchanged? same?
+     :blocks (count (tree/children-at (:tree reg) []))
+     :plan (when-not same?
+             {:plan/version 1 :base (:head store) :actor actor :timestamp timestamp
+              :engines (meta-engines {:operation (or operation "docs update")
+                                      :address (str generic-class ":" (:name doc)) :fields {}})
+              :ops (vec ops)})}))
 
 (defn untrack-plan
   "Plan that stops tracking document `token`: the edges this surface owns (to

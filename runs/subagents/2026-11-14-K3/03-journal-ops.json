@@ -1,0 +1,9 @@
+{
+ "operation": "docs ingest",
+ "address": "generic/md:plain",
+ "ops": {
+  "add-node": 2,
+  "register-tree": 1,
+  "add-edge": 1
+ }
+}

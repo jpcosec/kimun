@@ -47,7 +47,8 @@
     (testing "list names it"
       (let [l (run proj "docs" "list")]
         (is (true? (:ok l)) (pr-str l))
-        (is (= [{:name "doc" :tree (get-in e [:data :tree]) :root (get-in l [:data 0 :root])}] (:data l)))))
+        ;; K3: a document without a model is registered under the generic class
+        (is (= [{:name "doc" :tree (get-in e [:data :tree]) :root (get-in l [:data 0 :root]) :class "generic/md"}] (:data l)))))
     (testing "render by name and by tree id is the canonical Markdown"
       (let [by-name (run proj "docs" "render" "doc")
             by-id (run proj "docs" "render" (get-in e [:data :tree]))]

@@ -1,0 +1,23 @@
+{
+ "tracked": 1,
+ "valid": false,
+ "summary": "1 signal(s) — 1 warning",
+ "signals": [
+  {
+   "type": "source/mutated",
+   "category": "edited",
+   "document": "plain",
+   "path": "notes/plain.md",
+   "needs-human": true,
+   "action": "kimun docs update notes/plain.md --name plain",
+   "detail": {
+    "content-ok": false,
+    "contract-ok": true,
+    "contract": {
+     "status": "same",
+     "changed": []
+    }
+   }
+  }
+ ]
+}

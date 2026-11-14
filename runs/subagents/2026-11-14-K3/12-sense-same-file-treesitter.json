@@ -1,0 +1,26 @@
+{
+ "tracked": 1,
+ "valid": false,
+ "summary": "1 signal(s) — 1 info",
+ "signals": [
+  {
+   "type": "contract/changed",
+   "category": "contract-moved",
+   "document": "plain",
+   "path": "notes/plain.md",
+   "needs-human": false,
+   "action": "kimun docs update notes/plain.md --name plain",
+   "detail": {
+    "content-ok": true,
+    "contract-ok": false,
+    "contract": {
+     "status": "changed",
+     "changed": [
+      "parser",
+      "grammar"
+     ]
+    }
+   }
+  }
+ ]
+}

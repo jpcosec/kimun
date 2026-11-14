@@ -1,0 +1,40 @@
+
+Testing kimun.cli.generic-docs-test
+
+Testing kimun.cli.docs-test
+
+Testing kimun.cli.journal-test
+
+Testing kimun.cli.stores-test
+
+Testing kimun.cli.typed-docs-test
+
+Testing kimun.parity.hashing-test
+
+Testing kimun.surface.journal-test
+
+Testing kimun.cli.upgrade-test
+
+Testing kimun.cli.diagnostics-test
+
+Testing kimun.cli.sense-test
+
+Testing kimun.cli.names-test
+
+Testing kimun.cli.contract-test
+
+Testing kimun.cli.find-test
+
+Testing kimun.cli.index-test
+
+Testing kimun.cli.links-test
+
+Testing kimun.cli.golden-test
+
+Testing kimun.cli.main-test
+
+Testing kimun.cli.include-test
+moved existing store to /tmp/kimun-adhoc-8730170650320288485/kimun-include-2898123850196997733/.kimun.bak-20261114-124818
+
+Ran 155 tests containing 1661 assertions.
+0 failures, 0 errors.

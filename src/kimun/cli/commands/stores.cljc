@@ -249,6 +249,16 @@
         ts (docs/timestamp)
         {:keys [final plans metas warnings]}
         (reduce (fn [{:keys [final plans metas] :as acc} f]
+                  (if (:generic f)
+                    ;; a document without a model (K3): its file is registered again as it is
+                    (let [doc (tdocs/generic-document final (:tree f))
+                          {:keys [plan]} (tdocs/generic-update-plan host/host final doc (read-file (:path doc))
+                                                                    {:actor (:actor opts) :timestamp ts :operation "stores update"})
+                          meta (when plan (edn/read-string (get-in plan [:engines tdocs/meta-key])))]
+                      (-> acc
+                          (assoc :final (if plan (:store (revision/apply-plan final plan)) final))
+                          (cond-> plan (update :plans conj plan))
+                          (cond-> meta (update :metas conj meta))))
                   (let [doc (tdocs/document final (or (:tree f) (:document f)))
                         ;; only a redefined model asks for the text to be re-rendered; when the
                         ;; parser moved (K6) the file is already right and is only registered again
@@ -269,7 +279,7 @@
                         (assoc :final st)
                         (cond-> plan (update :plans conj plan))
                         (cond-> meta (update :metas conj meta))
-                        (update :warnings into w))))
+                        (update :warnings into w)))))
                 {:final base :plans [] :metas [] :warnings []}
                 safe)
         composed (when (seq plans)

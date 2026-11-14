@@ -38,6 +38,11 @@
    comparison of the recorded parse contract (`:unrecorded` for a document
    written before K6, which is never reported as changed for that). The
    environment that reads documents is resolved once per report.
+   A document without a model registered under the generic class (K3,
+   `kimun.surface.docs/generic-documents`) is diagnosed too, with `:generic
+   true` and no `:model`: `:missing`, `:edited` (its structure changed),
+   `:reformatted` (its text changed, its structure did not), the contract
+   categories, or `:ok`. It has no fields, so `:fields-ok` follows `:content-ok`.
    A store-level finding `:corrupt` (v1's tampered hash) comes from the
    kernel's verification: `kimun stores verify` names the objects."
   (:require [clojure.string :as str]
@@ -159,6 +164,45 @@
                  extras)]
     (dissoc (assoc f :message (message-of f)) :token)))
 
+(defn- diagnose-generic
+  "The finding of generic document `doc` (K3): its file against the recorded
+   fingerprint, its structure against the registered root when the text
+   changed, and its parse contract against the one in force."
+  [store env read-file doc]
+  (let [host (:host store)
+        text (when (:path doc) (read-file (:path doc)))
+        content-ok (and (some? text) (= (:fingerprint doc) (tdocs/fingerprint host text)))
+        pc (parse-contract/compare-recorded host env (:parse-contract doc) (:class doc))
+        category (cond
+                   (nil? text) :missing
+                   (not content-ok) (if (= (:merkle-root doc)
+                                           (err/rescue-any (fn [_] nil) (tdocs/generic-root host doc text)))
+                                      :reformatted
+                                      :edited)
+                   (= :inconsistent (:status pc)) :contract-inconsistent
+                   (= :parser-unavailable (:status pc)) :parser-unavailable
+                   (= :changed (:status pc)) :contract-moved
+                   :else :ok)
+        who (str "document `" (:name doc) "` (" (:class doc) ")")
+        update (str "kimun docs update " (:path doc) " --name " (:name doc))]
+    {:category category :model nil :class (:class doc) :generic true
+     :document (:name doc) :qualified (:qualified doc) :tree (:tree doc) :path (:path doc) :state :intact
+     :needs-human (not (or (clean category) (safe category)))
+     :inspect (:path doc)
+     :action (when-not (= :ok category) (if (= :missing category) nil update))
+     :content-ok (boolean content-ok) :fields-ok (boolean content-ok)
+     :contract-ok (contains? #{:same :unrecorded} (:status pc))
+     :contract (select-keys pc [:status :changed])
+     :message (case category
+                :ok "ok"
+                :missing (str who ": registered at " (:path doc) ", not on disk — restore the file if it was moved by accident")
+                :reformatted (str who ": the text of " (:path doc) " changed, its structure is identical (reformatting) — safe to run: " update)
+                :edited (str who ": " (:path doc) " was edited outside the store — decide first: if the edit was intended, " update)
+                :contract-moved (str who ": the contract it is read under is not the one it was recorded under ["
+                                     (str/join ", " (map name (:changed pc))) "], not the document — safe to run: " update)
+                :parser-unavailable (str who ": it was recorded under a parser that cannot be used here; nothing says the document changed — build the pod (bb pod), or accept the parser in force with " update)
+                :contract-inconsistent (str who ": its recorded parse-contract digest does not match its recorded components — inspect it, then " update))}))
+
 (defn- model-finding [docs {:keys [name version]}]
   (let [mine (filter #(= name (:model %)) docs)
         moved (filterv #(= :superseded (:state %)) mine)
@@ -211,11 +255,15 @@
                          (err/rescue-any (fn [_] [[] []])
                                          (let [all (tdocs/documents store)
                                                shared (set (keep (fn [[n c]] (when (> c 1) n)) (frequencies (map :name all))))
-                                               ds (mapv #(diagnose store env shared read-file %) all)]
+                                               ds (into (mapv #(diagnose store env shared read-file %) all)
+                                                        (map #(diagnose-generic store env read-file %))
+                                                        (tdocs/generic-documents store))]
                                            (walk/postwalk identity [ds (mapv #(model-finding ds %) (mstore/models store))])))
                          (let [all (tdocs/documents store)
                                                shared (set (keep (fn [[n c]] (when (> c 1) n)) (frequencies (map :name all))))
-                                               ds (mapv #(diagnose store env shared read-file %) all)]
+                                               ds (into (mapv #(diagnose store env shared read-file %) all)
+                                                        (map #(diagnose-generic store env read-file %))
+                                                        (tdocs/generic-documents store))]
                            [ds (mapv #(model-finding ds %) (mstore/models store))]))
          corrupt (when (and verify (not (:ok? verify)))
                    {:category :corrupt :model nil :document nil :path nil :needs-human true :action (action-of :corrupt nil)

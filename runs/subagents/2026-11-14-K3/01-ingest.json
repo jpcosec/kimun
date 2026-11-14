@@ -1,0 +1,12 @@
+{
+ "ok": true,
+ "exit": 0,
+ "result": {
+  "name": "plain",
+  "tree": "01M7DBR32J6R48J2HHM6V0YV1D",
+  "path": "/tmp/kimun-k3-ev-6Dyova/notes/plain.md",
+  "blocks": 3,
+  "class": "generic/md",
+  "anchor": "notes/plain.md"
+ }
+}

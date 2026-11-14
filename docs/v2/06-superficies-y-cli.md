@@ -196,10 +196,39 @@ Fuera de este corte:
 - Buscar por nombre cualificado lee todos los documentos (no hay índice por ruta hasta C2); por
   nombre corto e id de árbol cuesta lo de antes.
 
+#### Documentos sin modelo: clase genérica (K3)
+
+`14 §18.1`: no hay documentos sin clase. Un archivo ingerido sin modelo se registra como un
+documento tipado con archivo (`10 §11`): entra al store su **anclaje externo** (ruta relativa y
+fingerprint, con el contrato de parse de K6), la **clase** `generic/md` en el descriptor del árbol y
+el **hash raíz**; el árbol y sus bloques son **caché**, recalculable desde el archivo. Antes de K3 se
+persistía el árbol entero y el archivo no quedaba anclado.
+
+- Vale para stores por referencia (el defecto) con el archivo dentro del proyecto. En un store
+  `:inline` o formato 1, o con un archivo fuera del proyecto, el árbol se persiste como antes.
+- El documento **queda sensorizado**: `stores check|health|sense|heartbeat` lo cuentan en `:tracked` y
+  dan `source/missing`, `source/mutated` (cambió la estructura), `source/reformatted` (cambió el texto,
+  no la estructura) y las señales de contrato de K6. El finding lleva `:generic true` y `:model nil`.
+  `stores update` vuelve a registrar lo que no requiere decisión, sin reescribir el archivo.
+- **Una ruta, un documento**: ingerir un archivo que ya ancla otro documento (tipado o genérico), o
+  reanclar sobre él, es `docs/exists` (3). Es unicidad del localizador, no identidad; coincide con el
+  rechazo de rutas duplicadas del registro de rutas de K2a.
+- `docs list` lo muestra entre los no tipados con `:class "generic/md"`. No es un documento tipado:
+  `docs show NAME` (sin `--ast`), `fields`, `sections` y `find` siguen sin verlo, igual que antes.
+- El nombre sigue siendo único entre documentos sin modelo.
+
+Compatibilidad: un documento sin modelo ingerido antes de K3 conserva su árbol persistido y se lee
+y actualiza como antes; no hay migración automática (se vuelve a ingerir con otro nombre o tras
+`docs untrack`). No cambia la versión de formato.
+
+Fuera de este corte: el **perfil de indexación por tipo de archivo** y su granularidad por store
+(`14 §18.5`) no existen todavía: `generic/md` es el árbol SLDB-MD completo, y otros tipos de
+archivo esperan al spec 16 (M1). `include` sigue sin admitir documentos sin modelo (`13`).
+
 | subcomando | opciones | `:data` y notas |
 |---|---|---|
-| `docs ingest FILE` | `--name N` | `{:name :tree :path :blocks}`; `docs/exists` (3) si el nombre ya existe |
-| `docs update FILE --name N` | — | reingesta de un documento no tipado (edición externa) |
+| `docs ingest FILE` | `--name N` | `{:name :tree :path :blocks}` más `:class "generic/md" :anchor <ruta relativa>` cuando se registra bajo la clase genérica (K3, abajo); `docs/exists` (3) si el nombre ya existe o el archivo ya está trackeado |
+| `docs update FILE --name N` | — | reingesta de un documento sin modelo (edición externa); si está registrado bajo la clase genérica vuelve a registrar el archivo y añade `:class :anchor :unchanged?` |
 | `docs update NAME [FILE]` | `--data F`, `--set k=v` | reingesta/edición parcial de un documento tipado; `:unchanged?` |
 | `docs render NAME\|TREE` | — | Markdown canónico como string de `:data` (`--format text` lo imprime crudo) |
 | `docs list` | `--model M` | untyped `{:name :tree :root}`; typed añade `:model :model-version :state :path` |

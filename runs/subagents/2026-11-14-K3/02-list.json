@@ -1,0 +1,12 @@
+{
+ "ok": true,
+ "exit": 0,
+ "result": [
+  {
+   "name": "plain",
+   "tree": "01M7DBR32J6R48J2HHM6V0YV1D",
+   "root": "8ff62a1ec8b1de21c67e4782817ca108ea4d9ff4f19ecc7286df8f1b349007a8",
+   "class": "generic/md"
+  }
+ ]
+}
