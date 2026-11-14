@@ -7,11 +7,17 @@
   (:require [babashka.fs :as fs]
             [cheshire.core :as json]
             [clojure.java.io :as io]
+            [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
+            [clojure.test.check.generators :as gen]
+            [clojure.test.check.properties :as prop]
             [kimun.host.default :as host]
             [kimun.host.treesitter :as ts]
+            [kimun.kernel.generators :as g]
+            [kimun.kernel.test-util :refer [defspec]]
             [kimun.surface.markdown.ast :as ast]
-            [kimun.surface.markdown.cst-ast :as cst-ast])
+            [kimun.surface.markdown.cst-ast :as cst-ast]
+            [kimun.surface.markdown.render :as render])
   (:import (java.util.zip GZIPInputStream)))
 
 (def packed "test/fixtures/parity/engine.cases.jsonl.gz")
@@ -82,3 +88,53 @@
         (is (zero? errors) "neither parser may throw")
         (is (zero? divergent)
             (str divergent " of " total " documents diverge"))))))
+
+(def freeform-fixture "test/fixtures/markdown/freeform_divergences.md")
+
+(deftest freeform-divergence-classes-parity
+  (testing "representative free-form Markdown classes match parse-native under the pod"
+    (if-not (ts/available?)
+      (println "skipped freeform-divergence-classes-parity: tree-sitter pod absent")
+      (do
+        (let [s (slurp freeform-fixture)]
+          (is (= (ast/parse-native host/host s) (cst-ast/parse host/host s))
+              "combined freeform fixture must match native AST"))
+        (doseq [[label s]
+                [["ordered list crossing 9->10 with 3-space code fence"
+                  "8. a\n9. b\n10. ```clj\n   x = 1\n   ```\n   \n   ref [x][1] link\n   \n   ---\n"]
+                 ["html block inside list item (pod ERROR recovery)"
+                  "- <div class=\"w\">\n  **x**\n  </div>\n- after\n"]
+                 ["tilde fence with backtick info string"
+                  "~~~ `not-fence`\nplain paragraph\n"]
+                 ["lazy quote continuation and nested list fence"
+                  "> line 1\nlazy continuation\n> - ```\n>   x\n>   ```\n"]
+                 ["single-line table and html comment before paragraph"
+                  "| a | b |\n\n<!-- comment -->\nstill html\n"]
+                 ["paren list marker, indented code, and setext heading coalescing"
+                  "1) paren\n\n    indented\nsetext title\n===\n"]]]
+          (testing label
+            (is (= (ast/parse-native host/host s) (cst-ast/parse host/host s)) label)))))))
+
+(defspec gen-ast-pod-parity 200
+  (prop/for-all [a g/gen-ast]
+    (if-not (ts/available?)
+      true
+      (let [md (render/render host/host a)]
+        (= a (cst-ast/parse host/host md) (ast/parse-native host/host md))))))
+
+(def ^:private gen-free-line
+  (gen/elements
+   ["a" "b" "" "   " "# h" "## h #" "---" "***" "> q" "> > q2" ">> q3"
+    "- x" "* y" "+ z" "1. a" "9. a" "10. b" "1) paren"
+    "  indented2" "   indented3" "    indented4"
+    "```" "```clj" "````" "~~~" "~~~ `bad`" "  ```"
+    "| a | b |" "|---|---|" "<div>" "</div>" "<!-- c -->" "=== " "--- "]))
+
+(def ^:private gen-free-md
+  (gen/fmap #(str/join "\n" %) (gen/vector gen-free-line 0 18)))
+
+(defspec freeform-markdown-pod-parity 200
+  (prop/for-all [md gen-free-md]
+    (if-not (ts/available?)
+      true
+      (= (ast/parse-native host/host md) (cst-ast/parse host/host md)))))

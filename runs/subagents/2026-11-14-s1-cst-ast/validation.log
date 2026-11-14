@@ -1,0 +1,55 @@
+=== bb lint ===
+rings and docstrings ok: 103 files
+=== bb oracle ===
+ok  sign/text ffdf4147e59740e4…
+ok  sign/block bdc0ef299e3d88c5…
+ok  sign/opaque fcc5220a4af29a88…
+ok  sign/external b44fd9099808bc77…
+ok  sign/span f8bc24ee5fa9c801…
+ok  symbol/term 2a03e199175a4ed0…
+ok  symbol/proposition a6e631b8d0914123…
+ok  fact/triple 9d1307be57183a8d…
+ok  fact/context 146e6ca533092558…
+9 rows, 0 mismatches
+=== kimun.surface.markdown.* tests (default KIMUN_PARSER) ===
+
+Testing kimun.surface.markdown.cst-test
+
+Testing kimun.surface.markdown.inline-test
+
+Testing kimun.surface.markdown.frontmatter-test
+
+Testing kimun.surface.markdown.cst-ast-parity-test
+pod-ast-parity: 735/735 identical (divergent 0, errors 0)
+  by class: {}
+
+Testing kimun.surface.markdown.roundtrip-test
+
+Testing kimun.surface.markdown.drift-test
+
+Testing kimun.surface.markdown.plan-test
+
+Ran 25 tests containing 199 assertions.
+0 failures, 0 errors.
+{:test 25, :pass 199, :fail 0, :error 0, :type :summary}
+=== kimun.surface.markdown.* tests (KIMUN_PARSER=treesitter) ===
+
+Testing kimun.surface.markdown.cst-test
+
+Testing kimun.surface.markdown.inline-test
+
+Testing kimun.surface.markdown.frontmatter-test
+
+Testing kimun.surface.markdown.cst-ast-parity-test
+pod-ast-parity: 735/735 identical (divergent 0, errors 0)
+  by class: {}
+
+Testing kimun.surface.markdown.roundtrip-test
+
+Testing kimun.surface.markdown.drift-test
+
+Testing kimun.surface.markdown.plan-test
+
+Ran 25 tests containing 199 assertions.
+0 failures, 0 errors.
+{:test 25, :pass 199, :fail 0, :error 0, :type :summary}
