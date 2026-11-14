@@ -4,13 +4,18 @@
 `sldb` (v1, Python) and `kgdb`, merged into one product. The name is Mapudungun (*kimün*,
 knowledge).
 
-(PENDING: the hash detects mutations and addresses the kernel; it is not identity —
-`docs/v2/14-juego-del-lenguaje.md` §21.)
+> **Open decision (`D0`, `docs/v2/14-juego-del-lenguaje.md §21`, `docs/v2/drafts/preguntas-abiertas.md`):**
+> the hash detects mutations and addresses objects in the current CAS storage implementation, but
+> **hash ≠ identity**. Positive node identity and continuity remain open under decision `D0`.
 
-The kernel is pure Clojure (`.cljc`) running on Babashka: a pool of immutable nodes (S/M/G)
-addressed by the hash of their canonical content, trees of positions as indexes, typed edges
-with evidence, succession by `supersedes`, derived anchor states, and reconciliation of
-external edits. Markdown documents are projections of it.
+The current implementation is pure Clojure (`.cljc`) running on Babashka: a CAS store of
+immutable objects (S/M/G data records keyed by the hash of their canonical content bytes — while
+positive node identity and continuity remain open under `D0`), trees of positions as indexes,
+typed edges with evidence, succession by `supersedes`, derived anchor states, and reconciliation
+of external edits. Markdown documents are projections of it. At the product horizon, `kimun`
+targets a contextual knowledge superset combining this durable document base with the
+capabilities inventoried in `docs/v2/tests/wittgenstein-manifest.md` (status: base S/M
+surfaces only; contextual `G` capabilities are not yet implemented).
 
 ## Install
 
@@ -51,6 +56,7 @@ bb desk                           # build this repo's desk store (.kimun) from k
 - `docs/v2/README.md` — authority table and reading order for the direction docs; **start here**
 - `docs/v2/05-estado.md` — current status and decisions
 - `docs/v2/06-superficies-y-cli.md` — the CLI inventory and the envelope/exit-code contract
+- `docs/v2/tests/wittgenstein-manifest.md` — inclusion manifest (`C01–C28`, Wittgenstein `W1`/`W2`) and current status
 - `docs/faq.md` — scope and how to read "desk" here
 - `python/README.md` — the Python side (model exporter and adapters)
 

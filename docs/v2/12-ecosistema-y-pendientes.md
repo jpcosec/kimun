@@ -70,21 +70,21 @@ paridad v1 sin brechas (`scripts/parity/coverage.py … --strict --allow-open-pr
 | M2 | regenerar los modelos del desk (borrados el 2026-10-09 para dejar una versión estable) | M1 | `desk/`, `kimun.include.edn` |
 | S1 | parser M fase 2: cerrar el ~3 % de divergencia del CST en Markdown libre | — | `04 §11.2` |
 | S2 | parser M fase 3: anclas por rangos de bytes / nodos del CST | K1 | `runs/research/2026-10-08/R2-report.md §5` |
-| G1 | capa G: leer fuentes (paper, wittgenstein, Tractatus) y reescribir el spec sobre sentido × verdad | D0, D-G, M1, T01 | `docs/v2/drafts/capa-g-dudas.md`, `runs/research/2026-10-08/spec15/` (borrador previo, solo referencia) |
+| G1 | capa G: leer fuentes (paper, wittgenstein, Tractatus) y reescribir el spec sobre sentido × verdad | D0, D-G, M1, T01 (cerrada) | `docs/v2/drafts/capa-g-dudas.md`, `runs/research/2026-10-08/spec15/` (borrador previo, solo referencia) |
 | G2 | consulta Datalog (Datalevin pod + respaldo in-process) | G1 | `runs/research/2026-10-08/R1-report.md` |
 | G3 | embeddings sobre anchors (modelo multilingüe) | G1, K2a | decisión 38 |
 | C1 | selfdoc: guarda de before-image al escribir y chequeo del grafo kgdb | — | `tests/parity-v1.md` (estados `corpus` y `abierta`) |
 | C2 | cliente Python y rutas HTTP de graph_ui (`/kgdb/snapshot`, `/models/promote`) | K2a, P1 | `python/README.md`, `06` |
-| T01 | manifest de inclusión C01–C28 (Wittgenstein W1+W2) con `required/deferred/excluded`, fixture y evidencia | — (documentación) | `docs/reviews/wittgenstein-superset/proposals/01-superset-contract.md`, `reviews/01-coverage.md` |
+| T01 | **cerrada (2026-11-14)**: manifest de inclusión `C01–C28` (Wittgenstein `W1` + `W2`) con `required`/`deferred`/`excluded`, fixture Curie/Franklin y controles negativos | — (documentación) | `docs/v2/tests/wittgenstein-manifest.md`, `test/fixtures/wittgenstein/manifest.edn` (`test/kimun/wittgenstein_manifest_test.cljc`) |
 | K6 | contrato de parse/selector registrado como digest (gramática, perfil, normalización, selector, clase); distinguir `source-changed` / `contract-changed` / `parser-unavailable` / `rebuild-mismatch` | — | `docs/reviews/wittgenstein-superset/reviews/02-findings.md` F08, `proposals/03-store-and-authority.md` |
 | K7 | licencia de inferencia/ruteo separada del alcance de búsqueda (stores enlazados y tags globales no autorizan cruces de contexto) | G1 | F22 |
 | K8 | nombres cualificados por ruta; el nombre corto es alias (hoy `a/README.md` y `b/README.md` chocan) | — (alinear con K2a) | F23 |
 | DOC1 | reescribir `14` por tema (integrar adendas §16–§21; separar contrato objetivo, implementado e histórico) | — | F18 |
 
-Insumo de G1: la revisión `docs/reviews/wittgenstein-superset/` (propuestas P4 grafo contextual y P5 T02–T13) y la respuesta `respuesta-claude.md`.
+Insumo de G1: la revisión `docs/reviews/wittgenstein-superset/` (propuestas P4 grafo contextual y P5 T02–T13), `tests/wittgenstein-manifest.md` (`T01`) y la respuesta `respuesta-claude.md`.
 
-En paralelo hoy, sin esperar al dueño: T01, K2a, K3, K6, K8, P1 (coordinando `kimun.surface.docs`),
-M1 (spec), S1, C1 (más F25: before-image de la escritura del source), DOC1. Esperan a D0: K1, K2b, S2, G1 y lo que cuelga de ellos.
+En paralelo hoy, sin esperar al dueño: K2a, K3, K6, K8, P1 (coordinando `kimun.surface.docs`), (`T01` ya cerrada),
+M1 (spec), S1, C1 (C1/F25 cerrado; sigue chequeo kgdb), DOC1. Esperan a D0: K1, K2b, S2, G1 y lo que cuelga de ellos.
 
 ### Deuda de diseño y experimentos
 
@@ -170,8 +170,31 @@ verdad y sentido sin lugar en el triple; símbolos atados al idioma (`she@Q7186`
 en inglés.
 
 Estado del repo: raíz sin commits, falta `MIGRATION.md`, no existe el layout del README, las
-dos líneas del motor (`f13c67d`, `f016c75`) no están reconciliadas (sí comparten historia vía
+dos líneas del motor (`W1`: `matrix-shrdlu-spec`, `f13c67d`, capacidades `C01–C20`; `W2`:
+`Matrix/Matrix`, `f016c75`, capacidades `C21–C28`) no están reconciliadas (sí comparten historia vía
 `origin/main`, contra lo que dice el README); persistencia mínima (un YAML por WiGame).
+
+El contrato completo de inclusión entre ambas líneas está fijado en
+[`docs/v2/tests/wittgenstein-manifest.md`](tests/wittgenstein-manifest.md) (respaldo legible por
+máquina en `test/fixtures/wittgenstein/manifest.edn`, 28 capacidades: `25 required`, `3 deferred`,
+`5` exclusiones transversales `X01–X05`):
+
+- **Línea `W1` (`C01–C20`):** extracción con offsets, símbolo contextual (`s = (w, c)`), descomposición
+  offline (`:proposed`), `WiGame` por `(contexto, relación)`, `Li`/`Vi`/`Si`, álgebra relacional,
+  fórmulas anidadas, deducción, runtime (`retract`/`why`/`ambiguity`/`define`), evidencia multi-cita,
+  rutas de contexto, `CHIC`, convergencia/proyección dirigida, mantenimiento (`C_k`/`D_i`), métricas
+  SIA tras protocolo externo, `ask` con `Si`, arnés corpus (`memcap`) y snapshot lógico (`C20`).
+  Solo el diálogo REPL completo en prosa (`C18`) queda diferido; su contrato API/sesión pasa a
+  `T13` y la vista mínima del circuito y de las señales sigue siendo requerida en *Operación y vista* (§1).
+- **Línea `W2` (`C21–C28`):** axiomas de orden estricto y total (`C21`), enrutamiento por término medio
+  objeto→sujeto (`C22`), `shape_guard` lógico (`C23`), ensamblado hipertensor/partición (`C24`,
+  diferido como opt-in bajo `memcap` sin obligar matriz global `p×p` por decisión 26), esquemas de
+  reglas con variables y grounding finito (`C25`), reflexión controlada `rel:`/`ctx:` (`C26`), emisión
+  determinista desde instancia (`C27`) e importadores OWL/UNL/legacy (`C28`, diferidos hasta
+  seleccionar consumidor).
+- **Exclusiones deliberadas (`X01–X05`):** kernels globales legacy, causalidad experimental
+  (`appendix_causality`), layout YAML ad-hoc e IDs aleatorios como autoridad, equivalencia textual de
+  prosa REPL y defectos conocidos de `W1`/`W2` (`F06`, `F13`, `F14`, `F15`, `F16`, `F17`).
 
 Pendiente de kimun: el adaptador que lee S/M de kimun y escribe hechos G con evidencia en
 aristas, y el diseño de esa frontera (decisión 19, `05-estado.md §3`).

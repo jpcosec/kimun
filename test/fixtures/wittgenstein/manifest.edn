@@ -1,0 +1,619 @@
+{:schema-version 1
+ :task "T01"
+ :doc-path "docs/v2/tests/wittgenstein-manifest.md"
+ :authority-notes
+ ["Declarative inclusion contract for Wittgenstein W1 + W2 contextual knowledge capabilities."
+  "Status semantics: :implemented | :partial | :direction | :absent. Drafts (:direction) never count as :implemented."
+  "Open owner decisions (:D0 node identity, :D-G truth/sense/curation axes) remain unresolved; fixtures avoid prescribing internal encodings."]
+ :lines
+ {:W1 {:repo "wittgenstein/matrix-shrdlu-spec"
+       :primary-spec "specs/SPEC.md"
+       :capabilities-range ["C01" "C20"]}
+  :W2 {:repo "wittgenstein/Matrix/Matrix"
+       :primary-spec "docs/semantic_fields.md"
+       :capabilities-range ["C21" "C28"]}}
+ :summary-counts
+ {:total 28
+  :by-line {:W1 20 :W2 8}
+  :by-disposition {:required 25 :deferred 3 :excluded 0}
+  :by-kimun-status {:implemented 0 :partial 12 :direction 5 :absent 11}
+  :transversal-exclusions 5
+  :transversal-deferrals 2}
+ :capabilities
+ [{:id "C01"
+   :line :W1
+   :source "populator/extract.py, contexts.py"
+   :title "Ingesta de texto, chunks, signos locales y offsets"
+   :disposition :required
+   :reason "Cada hecho necesita procedencia exacta al texto fuente bajo normalización explícita."
+   :kimun-status :partial
+   :blocked-by [:S2 :K6]
+   :target-task :T05
+   :fixture :F-W01
+   :negative-control :N-F12
+   :expected-outcome "Mapeo verificable crudo->NFC->hoja que conserva spans multipunto y digest del source."
+   :current-evidence ["docs/v2/04-superficie-markdown.md" "test/kimun/surface/"]
+   :intentional-deviation "Verifica citas contra bytes/grafemas NFC por hoja, no offsets planos sobre texto mutado (F12)."}
+  {:id "C02"
+   :line :W1
+   :source "specs/convergence.md §1"
+   :title "Símbolo = signo en contexto (s = (w, c))"
+   :disposition :required
+   :reason "Invariante P2 de 14-juego-del-lenguaje y convergence: homónimos no colapsan por string."
+   :kimun-status :partial
+   :blocked-by [:D0 :K1 :G1]
+   :target-task :T03
+   :fixture :F-W01
+   :negative-control :N-F02
+   :expected-outcome "Todo símbolo exige contexto; she@Curie y she@Franklin permanecen distintos aunque compartan signo e idioma."
+   :current-evidence ["src/kimun/kernel/node.cljc (:term sin contexto obligatorio; F02)"]
+   :intentional-deviation "Separa deduplicación estructural de signos de identidad contextual positiva pendiente de D0."}
+  {:id "C03"
+   :line :W1
+   :source "pipeline/decompose.py, decompose_batch.py"
+   :title "Declaraciones heurísticas/LLM con caché offline"
+   :disposition :required
+   :reason "Ingesta de proposiciones desde texto o adapters externos sin depender de red en tests."
+   :kimun-status :direction
+   :blocked-by [:G1]
+   :target-task :T07
+   :fixture :F-W02
+   :negative-control :N-F06
+   :expected-outcome "Adaptador declarativo determinista offline con source, contexto, signos y soporte verificable."
+   :current-evidence ["docs/v2/11-adaptadores.md" "docs/v2/14-juego-del-lenguaje.md §7"]
+   :intentional-deviation "Rechaza F06: la salida heurística o LLM entra como :proposed, jamás como :confirmed automático."}
+  {:id "C04"
+   :line :W1
+   :source "pipeline/ingest.py"
+   :title "Construcción de WiGame por (contexto, relación)"
+   :disposition :required
+   :reason "Unidad de evaluación contextual local frente a grafos planos sin alcance."
+   :kimun-status :absent
+   :blocked-by [:D0 :D-G :G1]
+   :target-task :T08
+   :fixture :F-W03
+   :negative-control :N-F15
+   :expected-outcome "Mundos tipados por (contexto, relación, contrato) evaluables localmente."
+   :current-evidence ["docs/v2/02-sustrato-computacional.md (triple G solo como dato)"]
+   :intentional-deviation "Escritura inmutable vía TransactionPlan y sucesión de revisiones, no mutación in-place."}
+  {:id "C05"
+   :line :W1
+   :source "core/li_space.py, system/wigame.py"
+   :title "Espacio Li, admisibilidad y ejes"
+   :disposition :required
+   :reason "Distingue lo sinsentido/inaplicable (Unsinnig/Sinnlos) de lo falso empírico."
+   :kimun-status :direction
+   :blocked-by [:D-G :G1]
+   :target-task :T02
+   :fixture :F-W03
+   :negative-control :N-F13
+   :expected-outcome "Firma local de R que separa :unsinnig/:inapplicable de :false/:unknown."
+   :current-evidence ["docs/v2/14-juego-del-lenguaje.md §4-§8"]
+   :intentional-deviation "La inadmisibilidad estructural no se anula por aprobación humana de un hecho (F05)."}
+  {:id "C06"
+   :line :W1
+   :source "core/matrices (ViMatrix, SiMatrix)"
+   :title "Verdad (Vi) separada de sentido (Si) y calificación modal"
+   :disposition :required
+   :reason "Evita colapsar ausencia, falsedad explícita, sentido y curación en una sola bandera."
+   :kimun-status :direction
+   :blocked-by [:D-G :G1]
+   :target-task :T02
+   :fixture :F-W03
+   :negative-control :N-F14
+   :expected-outcome "Ejes ortogonales verdad, sentido, soporte y curación con preservación de FALSE explícito."
+   :current-evidence ["src/kimun/kernel/edge.cljc (:status solo sentido; F04)"]
+   :intentional-deviation "Preserva FALSE explícito aunque el símbolo se califique (F14); derivado no implica TRUE automático."}
+  {:id "C07"
+   :line :W1
+   :source "core/relations"
+   :title "Álgebra de relaciones (simetría, inversión, transitividad, exclusión)"
+   :disposition :required
+   :reason "Inferencia relacional acotada al contexto de cada relación."
+   :kimun-status :direction
+   :blocked-by [:G1]
+   :target-task :T06
+   :fixture :F-W04
+   :negative-control :N-F22
+   :expected-outcome "Propiedades declaradas por (contexto, relación) y aplicadas en el cierre contextual."
+   :current-evidence ["docs/v2/14-juego-del-lenguaje.md §4"]
+   :intentional-deviation "Propiedades contextuales; jamás flags globales compartidos por nombre de relación."}
+  {:id "C08"
+   :line :W1
+   :source "kernel/formulas.py, rule_matrix.py"
+   :title "Fórmulas anidadas y conectivos lógicos"
+   :disposition :required
+   :reason "Expresividad de reglas (if, and, or, not, iff, xor) prometida en 14 §4."
+   :kimun-status :absent
+   :blocked-by [:G1]
+   :target-task :T06
+   :fixture :F-W05
+   :negative-control :N-F03
+   :expected-outcome "IR lógico recursivo con validación previa de operadores, aridad y alcance contextual."
+   :current-evidence ["src/kimun/kernel/node.cljc (:proposition rechaza subformas anidadas; F03)"]
+   :intentional-deviation "Valida aridad, firmas y alcance de esquema antes de admitir la regla en un mundo."}
+  {:id "C09"
+   :line :W1
+   :source "system/deduction.py"
+   :title "Deducción contextual (modus ponens, conjunciones, punto fijo)"
+   :disposition :required
+   :reason "Cierre deductivo con trazabilidad completa de premisas y reglas."
+   :kimun-status :absent
+   :blocked-by [:G1]
+   :target-task :T10
+   :fixture :F-W05
+   :negative-control :N-F17
+   :expected-outcome "Derivación contextual que registra premisas, regla y árbol de prueba AND/OR."
+   :current-evidence ["pending (G1 / T10)"]
+   :intentional-deviation "Distingue soporte conjuntivo (AND) de pruebas alternativas (OR) y evita ciclos infinitos (F17)."}
+  {:id "C10"
+   :line :W1
+   :source "s_expression_runtime.py"
+   :title "Operaciones semánticas (retract, why, ambiguity, define)"
+   :disposition :required
+   :reason "Explicación, retracción con mantenimiento de verdad y resolución de ambigüedad."
+   :kimun-status :absent
+   :blocked-by [:G1]
+   :target-task :T10
+   :fixture :F-W05
+   :negative-control :N-F17
+   :expected-outcome "API semántica observable donde retract conserva pruebas alternativas intactas y why expone soporte."
+   :current-evidence ["docs/v2/06-superficies-y-cli.md §6 (reconocido como no implementado)"]
+   :intentional-deviation "Toda mutación usa TransactionPlan y crea revisión sucedida en vez de mutar en memoria."}
+  {:id "C11"
+   :line :W1
+   :source "core/evidence.py"
+   :title "Evidencia multi-cita, conteos, historial y derived_from"
+   :disposition :required
+   :reason "Auditoría de múltiples fuentes sin confundir popularidad con validez."
+   :kimun-status :partial
+   :blocked-by [:K6 :G1]
+   :target-task :T04
+   :fixture :F-W02
+   :negative-control :N-F15
+   :expected-outcome "Múltiples citas ancladas e historial de derivación preservados por hecho/arista."
+   :current-evidence ["docs/v2/02-sustrato-computacional.md §3.2" "kimun journal"]
+   :intentional-deviation "Rechaza F15: ningún hecho confirmado entra sin ancla de source o axioma/decisión registrada."}
+  {:id "C12"
+   :line :W1
+   :source "routing/context.py, context_route.py"
+   :title "Taxonomía de contextos y rutas (ancestor, sibling, bridge)"
+   :disposition :required
+   :reason "Trazar de dónde a dónde viaja una premisa entre contextos sin mezclar dominios."
+   :kimun-status :partial
+   :blocked-by [:K7 :G1]
+   :target-task :T08
+   :fixture :F-W06
+   :negative-control :N-F22
+   :expected-outcome "Rutas trazables que separan alcance físico de búsqueda de licencia de inferencia."
+   :current-evidence ["Árboles de documento y jerarquía de tags; evaluación de rutas ausente"]
+   :intentional-deviation "Rechaza F22: un store enlazado o tag global nunca autoriza transporte sin puente aprobado."}
+  {:id "C13"
+   :line :W1
+   :source "pipeline/convergence.py"
+   :title "Convergencia jerárquica CHIC (contextos x rasgos)"
+   :disposition :required
+   :reason "Inducir estructura taxonómica entre contextos con parámetros reproducibles."
+   :kimun-status :direction
+   :blocked-by [:G1]
+   :target-task :T09
+   :fixture :F-W07
+   :negative-control :N-F02
+   :expected-outcome "Taxonomía derivada con configuración, semilla y soporte versionados y reproducibles."
+   :current-evidence ["docs/reviews/wittgenstein-superset/reviews/01-coverage.md"]
+   :intentional-deviation "Resultados tratados como índice derivado reconstruible con cotas explícitas de memoria (F21)."}
+  {:id "C14"
+   :line :W1
+   :source "symbol_convergence, converge_in_batches"
+   :title "Convergencia de símbolos y proyección dirigida"
+   :disposition :required
+   :reason "Alinear referentes entre contextos sin colapsar identidad local."
+   :kimun-status :partial
+   :blocked-by [:K7 :G1]
+   :target-task :T09
+   :fixture :F-W01
+   :negative-control :N-F02
+   :expected-outcome "Proyección dirigida (project_to / as_seen_by) con dirección, corroboración y revisión explícita."
+   :current-evidence ["src/kimun/surface/semantic.cljc (equivalent-add global sobre tags)"]
+   :intentional-deviation "Reemplaza fusión simétrica ingenua de strings por correspondencia dirigida revisada."}
+  {:id "C15"
+   :line :W1
+   :source "maintain_wigame"
+   :title "Mantenimiento de mundos (gates C_k, discriminantes D_i, split/merge)"
+   :disposition :required
+   :reason "Refinar mundos cuando emergen discriminantes sin perder anchors previos."
+   :kimun-status :absent
+   :blocked-by [:G1]
+   :target-task :T10
+   :fixture :F-W07
+   :negative-control :N-F13
+   :expected-outcome "Split/merge de mundos preservando anchors, citas y estado de compuertas."
+   :current-evidence ["pending (G1 / T10)"]
+   :intentional-deviation "Puertas inadmisibles quedan marcadas como :unsinnig y nunca como falso empírico."}
+  {:id "C16"
+   :line :W1
+   :source "sia/{intensity,cohesion,aroma,hierarchy,similarity}.py"
+   :title "Métricas SIA sobre frontera externa"
+   :disposition :required
+   :reason "Conservar capacidades analíticas de SIA sin acoplar lógica de dominio a Python."
+   :kimun-status :absent
+   :blocked-by [:G1]
+   :target-task :T07
+   :fixture :F-W07
+   :negative-control :N-F06
+   :expected-outcome "Invocación tras protocolo fuera de proceso o vista derivada bajo presupuesto."
+   :current-evidence ["docs/v2/11-adaptadores.md (frontera declarada; motor semántico ausente)"]
+   :intentional-deviation "Métricas estadísticas jamás se presentan como prueba deductiva (14 §13, F20)."}
+  {:id "C17"
+   :line :W1
+   :source "pipeline/query.py"
+   :title "Consulta ask con ruta, soporte y cita"
+   :disposition :required
+   :reason "Consulta epistémica justificada sobre hechos y contextos."
+   :kimun-status :partial
+   :blocked-by [:G1]
+   :target-task :T08
+   :fixture :F-W06
+   :negative-control :N-F13
+   :expected-outcome "Resuelve signo en contexto, evalúa Vi y Si, exige ruta autorizada y cita source anclado."
+   :current-evidence ["graph query y graph path consultan grafo documental, no WiGames (F01)"]
+   :intentional-deviation "Rechaza F13: ask jamás devuelve TRUE cuando Si es :unsinnig."}
+  {:id "C18"
+   :line :W1
+   :source "prototypes/shrdlu"
+   :title "Diálogo SHRDLU (aclaraciones, foco, anáfora, why, conceptos nuevos)"
+   :disposition :deferred
+   :reason "Solo el diálogo REPL completo en prosa queda diferido; el contrato API de sesión (T13) y la vista mínima del circuito/señales (12 §1, Operación y vista) siguen siendo requeridos."
+   :kimun-status :absent
+   :blocked-by [:G1]
+   :target-task :T13
+   :fixture :F-W08
+   :negative-control :N-F17
+   :expected-outcome "Aclaraciones, foco y estado pending ligados a revisión vía API; elección obsoleta rechazada; vista mínima del circuito y señales operativa."
+   :current-evidence ["docs/faq.md (REPL completo en prosa diferido; vista mínima requerida en 12 §1)"]
+   :intentional-deviation "Prosa literal del REPL excluida (X04); se mide contrato de estado de sesión/API y visibilidad mínima del circuito."}
+  {:id "C19"
+   :line :W1
+   :source "tests, experiments, corpus/physicists"
+   :title "Evaluación gold, controles negativos y presupuesto de memoria"
+   :disposition :required
+   :reason "Evitar falsos positivos de recuperación documental sin validez semántica."
+   :kimun-status :partial
+   :blocked-by [:G1]
+   :target-task :T14
+   :fixture :F-W01
+   :negative-control :N-F20
+   :expected-outcome "Gates semánticos con controles negativos, tiempos cold/warm y presupuesto memcap."
+   :current-evidence ["bb test" "bb oracle" "scripts/parity/coverage.py"]
+   :intentional-deviation "Mide alcance, falsos positivos y prueba además de QA y citas; excluye auto-ajuste de umbral (F20)."}
+  {:id "C20"
+   :line :W1
+   :source "Serialización YAML de WiGames"
+   :title "Snapshot lógico interoperable completo"
+   :disposition :required
+   :reason "Export/import reproducible entre herramientas y reconstrucción sin pérdida de estado semántico."
+   :kimun-status :partial
+   :blocked-by [:G1]
+   :target-task :T12
+   :fixture :F-W09
+   :negative-control :N-F16
+   :expected-outcome "Round-trip lógico determinista que conserva reglas, FALSE, UNKNOWN, :unsinnig, citas y rutas."
+   :current-evidence ["CAS y revisiones EDN del kernel; falta snapshot de mundos G"]
+   :intentional-deviation "Layout de archivos YAML crudo excluido (X03); snapshot lógico completo reemplaza export parcial (F16)."}
+  {:id "C21"
+   :line :W2
+   :source "core/relations/order.py, relation_algebra.py"
+   :title "Axiomas de orden estricto y total"
+   :disposition :required
+   :reason "Preservar inferencia sobre órdenes contextuales de W2."
+   :kimun-status :partial
+   :blocked-by [:G1]
+   :target-task :T11
+   :fixture :F-W04
+   :negative-control :N-F22
+   :expected-outcome "Irreflexividad, antisimetría y totalidad sobre clausura dentro del contexto del juego."
+   :current-evidence ["graph order ejecuta orden topológico de nodos, no axiomas de relación"]
+   :intentional-deviation "Axiomas locales al contexto del juego sin afectar relaciones homónimas en otros contextos."}
+  {:id "C22"
+   :line :W2
+   :source "routing/middle_term.py"
+   :title "Enrutamiento por término medio (composición objeto->sujeto)"
+   :disposition :required
+   :reason "Componer caminos entre dos relaciones distintas verificando admisibilidad de ambos tramos."
+   :kimun-status :absent
+   :blocked-by [:G1]
+   :target-task :T11
+   :fixture :F-W04
+   :negative-control :N-F13
+   :expected-outcome "Composición R1(a,m) ^ R2(m,b) con witness m y ambos tramos válidos (TRUE + sinnvoll)."
+   :current-evidence ["pending (G1 / T11)"]
+   :intentional-deviation "Si un tramo es :unsinnig, corta la ruta y nunca inventa una relación sintética nueva."}
+  {:id "C23"
+   :line :W2
+   :source "system/shape_guard.py"
+   :title "Guarda de forma lógica (mundos degenerados, objetos empaquetados)"
+   :disposition :required
+   :reason "Detectar errores de forma antes de ejecutar deducción o consulta."
+   :kimun-status :partial
+   :blocked-by [:G1]
+   :target-task :T11
+   :fixture :F-W03
+   :negative-control :N-F03
+   :expected-outcome "Diagnóstico explicable previo a evaluación para aridades inválidas u objetos empaquetados."
+   :current-evidence ["Validación de forma EDN de modelos/nodos, sin guarda lógica"]
+   :intentional-deviation "Separa diagnóstico de forma estructural de evaluación de verdad/falsedad empírica."}
+  {:id "C24"
+   :line :W2
+   :source "system/{hypertensor,partition}.py"
+   :title "Ensamblado por rutas, energía y poder discriminativo"
+   :disposition :deferred
+   :reason "Optimización/vista derivada opt-in; no puede exigirse matriz global p x p por decisión 26."
+   :kimun-status :absent
+   :blocked-by [:G1]
+   :target-task :T11
+   :fixture :F-W07
+   :negative-control :N-F21
+   :expected-outcome "Vista derivada opt-in con cota de memoria memcap sin requerir bloque global p x p."
+   :current-evidence ["pending (opt-in tras G1; decisión 26)"]
+   :intentional-deviation "Sujeta a presupuesto estricto; JAX/GPU y bloque global nunca son obligatorios."}
+  {:id "C25"
+   :line :W2
+   :source "kernel/rule_schema.py"
+   :title "Esquemas de reglas con variables y grounding finito"
+   :disposition :required
+   :reason "Generalizar reglas contextuales sin explosión combinatoria ni símbolos literales fantasma."
+   :kimun-status :absent
+   :blocked-by [:G1 :G2]
+   :target-task :T11
+   :fixture :F-W05
+   :negative-control :N-F21
+   :expected-outcome "Grounding finito sobre universo/contexto declarado y con límite de instancias."
+   :current-evidence ["pending (G1 / G2 / T11)"]
+   :intentional-deviation "Prohíbe crear signo literal \"x\" para ?x y exige cota de expansión previa (F21)."}
+  {:id "C26"
+   :line :W2
+   :source "system/reflection.py"
+   :title "Reflexión controlada (relaciones y contextos reificados rel:/ctx:)"
+   :disposition :required
+   :reason "Razonar sobre relaciones y contextos de primer orden manteniendo integridad referencial."
+   :kimun-status :partial
+   :blocked-by [:G1]
+   :target-task :T11
+   :fixture :F-W10
+   :negative-control :N-F05
+   :expected-outcome "Correspondencia reversible rel:/ctx: y detección explícita de referencias colgantes."
+   :current-evidence ["Contexto existe como nodo; falta reflexión operativa entre niveles"]
+   :intentional-deviation "Reificar una forma inválida no la vuelve admisible ni verdadera en realidad (F05)."}
+  {:id "C27"
+   :line :W2
+   :source "system/projection_emit.py"
+   :title "Emisión determinista de S-expresiones y documentos desde instancia"
+   :disposition :required
+   :reason "Proyectar conocimiento validado hacia artefactos textuales trazables."
+   :kimun-status :partial
+   :blocked-by [:M1 :G1]
+   :target-task :T12
+   :fixture :F-W09
+   :negative-control :N-F16
+   :expected-outcome "Generación determinista lógica y documental desde instancia conservando procedencia."
+   :current-evidence ["docs render desde árbol y modelos v1; falta emisión desde capa G"]
+   :intentional-deviation "Separa anclaje de generación (14 §18) y evita round-trip textual estricto en generados."}
+  {:id "C28"
+   :line :W2
+   :source "Importadores OWL/UNL y legacy de W2"
+   :title "Interoperabilidad OWL/UNL y formatos legacy"
+   :disposition :deferred
+   :reason "Requiere elegir casos de uso y consumidores concretos antes de comprometer paridad."
+   :kimun-status :absent
+   :blocked-by [:G1]
+   :target-task :post-T14
+   :fixture :F-W09
+   :negative-control :N-F16
+   :expected-outcome "Formatos inventariados; importador futuro sujeto a contrato y fixtures dedicados."
+   :current-evidence ["Solo migrate --from-v1 implementado"]
+   :intentional-deviation "Diferido sin promesa de cobertura total hasta definición explícita de consumidor."}]
+ :exclusions
+ [{:id "X01"
+   :disposition :excluded
+   :title "Kernels globales históricos y modelos sin contexto de W1/W2"
+   :reason "Rompen contextualidad (14 P2) y escala acotada por contexto (decisión 26)."}
+  {:id "X02"
+   :disposition :excluded
+   :title "Causalidad experimental (appendix_causality)"
+   :reason "Co-ocurrencia estadística no demuestra intervención causal."}
+  {:id "X03"
+   :disposition :excluded
+   :title "Layout YAML ad-hoc, IDs aleatorios y timestamps como autoridad"
+   :reason "Kimun exige revisiones inmutables, CAS y planes verificables (C20 cubre snapshot lógico)."}
+  {:id "X04"
+   :disposition :excluded
+   :title "Equivalencia textual de prosa del REPL interactivo"
+   :reason "Compatibilidad medida por contrato de estado de sesión, aclaración, foco y why (C18/T13)."}
+  {:id "X05"
+   :disposition :excluded
+   :title "Compatibilidad con defectos conocidos de W1/W2 (F06, F13, F14, F15, F16, F17)"
+   :reason "Auto-confirmar LLM, ignorar Si=unsinnig, perder FALSE al calificar, hechos sin cita o export con pérdida son bugs."}]
+ :deferrals
+ [{:id "D01"
+   :disposition :deferred
+   :capabilities ["C18"]
+   :title "Diálogo REPL conversacional completo en prosa (C18)"
+   :required-companion "Vista mínima del circuito y de las señales (12 §1, Operación y vista) + API de sesión (T13)"
+   :reason "Solo el REPL completo en prosa queda diferido; la vista mínima del circuito/señales (12 §1, el sistema cuaja cuando se puede ver) y el estado de sesión/API (T13) siguen requeridos."}
+  {:id "D02"
+   :disposition :deferred
+   :capabilities ["C24" "C28"]
+   :title "Aceleración JAX/GPU, hipertensor global y cobertura total OWL/UNL"
+   :reason "Optimizaciones o importadores opt-in sujetos a presupuesto memcap y selección explícita de consumidor."}]
+ :negative-controls
+ {:N-F02 {:finding "F02"
+          :description "Dos signos homónimos ('she', 'Nobel') en contextos distintos jamás colapsan por string."}
+  :N-F03 {:finding "F03"
+          :description "Fórmulas con aridad inválida o términos empaquetados (ej. (* pedrito es_hermano_de_maria)) se rechazan con diagnóstico explicable antes de evaluar."}
+  :N-F05 {:finding "F05"
+          :description "Aprobación o reificación humana no vuelve admisible una firma :unsinnig ni verdadera una proposición empíricamente falsa."}
+  :N-F06 {:finding "F06"
+          :description "Declaración emitida por LLM/heurístico ingresa como :proposed, nunca auto-confirmada ni probada por frecuencia SIA."}
+  :N-F12 {:finding "F12"
+          :description "Citas sobre source Unicode/markup verifican substring exacto tras mapeo crudo->NFC->hoja; hash stale o redondeo de offset falla explícitamente."}
+  :N-F13 {:finding "F13"
+          :description "ask y middle_term jamás devuelven TRUE ni componen rutas cuando cualquier tramo tiene Si = :unsinnig."}
+  :N-F14 {:finding "F14"
+          :description "Un hecho explícitamente FALSE bajo un símbolo calificado conserva :false y no se degrada a :unknown."}
+  :N-F15 {:finding "F15"
+          :description "Ningún hecho confirmado es aceptado sin ancla verificable en source o decisión/axioma registrado."}
+  :N-F16 {:finding "F16"
+          :description "Export/import de snapshot lógico no puede perder reglas, FALSE explícito, UNKNOWN, :unsinnig, citas ni rutas."}
+  :N-F17 {:finding "F17"
+          :description "Retracción preserva pruebas alternativas válidas (OR), detecta ciclos sin crear raíz y rechaza selecciones sobre revisiones obsoletas."}
+  :N-F20 {:finding "F20"
+          :description "Test o recuperación documental con cita verde no basta para declarar validez lógica de proposiciones ajenas al contrato."}
+  :N-F21 {:finding "F21"
+          :description "Variables de esquema (?x) no crean símbolos literales y la expansión combinatoria respeta cotas de universo y memoria memcap."}
+  :N-F22 {:finding "F22"
+          :description "Enlace físico entre stores o igualdad global de tags no concede licencia de transporte ni filtra propiedades algebraicas entre contextos."}}
+ :canonical-fixtures
+ {:F-W01
+  {:name "curie-franklin-homonym-and-contextual-projection"
+   :capabilities ["C01" "C02" "C14" "C19"]
+   :sources
+   [{:doc-ref "doc-curie"
+     :path "corpus/physicists/curie.md"
+     :text "Marie Curie was born in Warsaw. She later received two Nobel Prizes."}
+    {:doc-ref "doc-franklin"
+     :path "corpus/physicists/franklin.md"
+     :text "Rosalind Franklin worked on X-ray diffraction in London. She did not receive a Nobel Prize."}]
+   :contexts
+   [{:ctx-ref :ctx-curie-bio :label "Biografía Marie Curie"}
+    {:ctx-ref :ctx-franklin-bio :label "Biografía Rosalind Franklin"}
+    {:ctx-ref :ctx-nobel-eval :label "Evaluación contextual Nobel"}]
+   :contextual-symbols
+   [{:sym-ref :sym/she-curie :sign "she" :lang "en" :context :ctx-curie-bio}
+    {:sym-ref :sym/marie-curie-nobel :sign "Marie Curie" :lang "en" :context :ctx-nobel-eval}
+    {:sym-ref :sym/she-franklin :sign "she" :lang "en" :context :ctx-franklin-bio}
+    {:sym-ref :sym/warsaw-curie :sign "Warsaw" :lang "en" :context :ctx-curie-bio}
+    {:sym-ref :sym/london-franklin :sign "London" :lang "en" :context :ctx-franklin-bio}]
+   :revised-correspondence
+   [{:from :sym/marie-curie-nobel
+     :to :sym/she-curie
+     :projection :project-to
+     :reviewed true
+     :forbid-merge-with [:sym/she-franklin]}]
+   :assertions
+   [{:triple [:born-in :sym/she-curie :sym/warsaw-curie]
+     :context :ctx-curie-bio
+     :truth :true
+     :sense :sinnvoll
+     :provenance {:doc-ref "doc-curie" :sentence-index 0 :extractor :human-or-anchored-rule :curation :confirmed}}
+    {:triple [:born-in :sym/she-franklin :sym/london-franklin]
+     :context :ctx-franklin-bio
+     :truth :false
+     :sense :sinnvoll
+     :note "worked in London != born in London; negative boundary test"}]
+   :queries
+   [{:ask [:born-in :sym/she-curie :sym/warsaw-curie]
+     :context :ctx-curie-bio
+     :expected {:truth :true :sense :sinnvoll :cited-doc "doc-curie" :forbid-contributors [:sym/she-franklin]}}
+    {:ask [:born-in :sym/she-franklin :sym/warsaw-curie]
+     :context :ctx-franklin-bio
+     :expected {:truth :unknown :must-not-use :sym/she-curie}}]
+   :local-edit-effect
+   {:mutate-source "doc-curie"
+    :expected "Soporte anclado de Curie pasa a stale; evidencia y mundo de Rosalind Franklin permanecen intactos."}
+   :negative-control :N-F02}
+  :F-W02
+  {:name "multi-citation-and-llm-proposed-isolation"
+   :capabilities ["C03" "C11"]
+   :assertions
+   [{:source-kind :llm
+     :expected-curation :proposed
+     :must-require-review-for :confirmed}
+    {:source-kind :unanchored-claim
+     :expected-accepted false}]
+   :negative-control :N-F06}
+  :F-W03
+  {:name "wigame-sense-truth-and-qualified-false"
+   :capabilities ["C04" "C05" "C06" "C23"]
+   :assertions
+   [{:triple [:prime-minister :sym/london-franklin :sym/warsaw-curie]
+     :expected-sense :unsinnig
+     :expected-ask-truth-must-not-be :true}
+    {:triple [:received-nobel :sym/she-franklin :ctx-nobel-eval]
+     :qualified-lookup "she@ctx-franklin-bio"
+     :query-unqualified "she"
+     :expected-truth :false}
+    {:malformed-term "(* pedrito es_hermano_de_maria)"
+     :expected-diagnostic :shape-guard/packed-object}]
+   :negative-control :N-F14}
+  :F-W04
+  {:name "contextual-relation-order-and-middle-term"
+   :capabilities ["C07" "C21" "C22"]
+   :assertions
+   [{:composition [[:mentor-of :a :m] [:worked-at :m :b]]
+     :leg-1 {:truth :true :sense :sinnvoll}
+     :leg-2 {:truth :true :sense :unsinnig}
+     :expected-route :rejected-by-sense}
+    {:order-relation :precedes
+     :context :ctx-timeline
+     :axioms [:irreflexive :antisymmetric :total-over-closure]}]
+   :negative-control :N-F22}
+  :F-W05
+  {:name "nested-rules-finite-schema-retract-and-alternative-proofs"
+   :capabilities ["C08" "C09" "C10" "C25"]
+   :assertions
+   [{:rule-form (implies (and (P ?x) (Q ?x)) (R ?x))
+     :finite-universe [:u1 :u2]
+     :expected-must-not-intern-symbol "x"}
+    {:proof-or [:proof-1 :proof-2]
+     :retract :proof-1
+     :expected-derived-still-supported-by :proof-2}]
+   :negative-control :N-F17}
+  :F-W06
+  {:name "context-routing-license-vs-linked-store-and-ask-si-gate"
+   :capabilities ["C12" "C17"]
+   :assertions
+   [{:linked-store :store-b
+     :bridge-license nil
+     :expected-physical-search :allowed
+     :expected-inference-transport :denied}
+    {:fact-truth :true
+     :fact-sense :unsinnig
+     :expected-ask-result-not :true}]
+   :negative-control :N-F13}
+  :F-W07
+  {:name "chic-convergence-gates-and-budgeted-hypertensor"
+   :capabilities ["C13" "C15" "C16" "C24"]
+   :assertions
+   [{:domain "vegetables"
+     :inadmissible-gate {:target :carrot :gate :peel-seed-pod}
+     :expected-sense :unsinnig
+     :must-not-conflate-absence-with :false}
+    {:metric-kind :sia-cohesion
+     :must-not-count-as :deductive-proof}]
+   :negative-control :N-F21}
+  :F-W08
+  {:name "session-clarification-bound-to-revision"
+   :capabilities ["C18"]
+   :assertions
+   [{:pending-clarification-revision :rev-1
+     :store-head-at-reply :rev-2
+     :expected :rejected-stale-revision}]
+   :negative-control :N-F17}
+  :F-W09
+  {:name "deterministic-projection-emit-and-lossless-logical-snapshot"
+   :capabilities ["C20" "C27" "C28"]
+   :assertions
+   [{:world-values-present [:true :false :unknown :unsinnig]
+     :rules-present true
+     :routes-present true
+     :expected-round-trip :lossless-logical-state}]
+   :negative-control :N-F16}
+  :F-W10
+  {:name "controlled-reflection-and-dangling-ref-check"
+   :capabilities ["C26"]
+   :assertions
+   [{:reified-relation "rel:born-in"
+     :reified-context "ctx:ctx-curie-bio"
+     :dangling-target "ctx:non-existent"
+     :expected-diagnostic :reflection/dangling-reference}]
+   :negative-control :N-F05}}}

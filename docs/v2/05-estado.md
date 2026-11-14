@@ -63,6 +63,18 @@ Abrir y commitear no crecen con la historia.
 2026-10-09, con el pod tree-sitter construido), 0 fallos. `bb oracle`: 9/9 ids
 canónicos; `bb lint`: 99 ficheros.
 
+**Inclusión Wittgenstein (`C01–C28`, 2026-11-14)** — manifiesto `T01` en
+`tests/wittgenstein-manifest.md` y `test/fixtures/wittgenstein/manifest.edn`: **28**
+capacidades inventariadas (`20` de `W1` `matrix-shrdlu-spec`, `8` de `W2` `Matrix/Matrix`;
+**25** `required`, **3** `deferred`: solo diálogo `C18` REPL completo en prosa (la vista mínima
+del circuito/señales en `12 §1` y el API de sesión `T13` siguen requeridos), `C24` hipertensor
+opt-in, `C28` OWL/UNL; más **5** exclusiones transversales `X01–X05`). Estado honesto en
+`kimun` hoy: **0** `implemented`, **12** `partial` (`C01`, `C02`, `C11`, `C12`, `C14`, `C17`,
+`C19`, `C20`, `C21`, `C23`, `C26`, `C27`), **5** `direction` (`C03`, `C05`, `C06`, `C07`,
+`C13`) y **11** `absent` (`C04`, `C08`, `C09`, `C10`, `C15`, `C16`, `C18`, `C22`, `C24`, `C25`,
+`C28`). Ninguna intención marcada como `direction` cuenta como implementada; `D0` y `D-G`
+siguen abiertas para el dueño.
+
 **Formato 4 de este repo** (desk de 433 KB, 539 documentos; antes = formato 3 de S1b, después
 = formato 4): aparente **8,07 MB → 2,51 MB** (objetos 12.494 → 4.808; tree-object 1,65 MB →
 3,9 KB; plan 4,03 MB → 907 KB; el registro: anchor externo 172 KB + descriptor 186 KB +
