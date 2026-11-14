@@ -1,0 +1,12 @@
+[{:path "docs/a.md"
+  :fingerprint "sha-256:111"
+  :class "TestDoc"
+  :projection-hash "aaaa"
+  :content-hash "bbbb"
+  :tree-id "T1"}
+ {:path "docs/b.md"
+  :fingerprint "sha-256:222"
+  :class "TestDoc"
+  :projection-hash "cccc"
+  :content-hash "dddd"
+  :tree-id "T2"}]
