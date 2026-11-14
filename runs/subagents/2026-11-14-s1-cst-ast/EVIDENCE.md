@@ -1,34 +1,32 @@
-# S1 — Ajuste quirúrgico CST→AST (`:has_error` + transición `9→10`) y evidencia de uso pod vs fallback
+# S1 — Restauración de código verde (`65ca4b5f`), medición pod vs fallback y limitación
 
-## Veredicto técnico
+## Estado restaurado
 
-El recorte quirúrgico en `src/kimun/surface/markdown/cst_ast.cljc` conserva intactos `blocks-of` y `lazy-continuation` sin duplicar `cst/parse`, limitando la intervención exactamente a las dos divergencias observadas en propiedad/Markdown real:
+Se restauraron `src/kimun/surface/markdown/cst_ast.cljc`, `test/kimun/surface/markdown/cst_ast_parity_test.cljc` y `test/fixtures/markdown/freeform_divergences.md` exactamente al estado de `65ca4b5f`, dejando `src/kimun/surface/markdown/ast.cljc` intacto (con `*parser*`, `requested-parser` y `effective-parser` de K6).
 
-1. **Subárboles con `ERROR` anidado (`unknown?` + `:has_error root`):** `tree-sitter-md 0.5.3` marca `:has_error true` en ancestros (`list`, `block_quote`, `root`) sin propagar `:error true` cuando un HTML block u otra construcción anidada entra en recuperación de error.
-2. **Transición de ancho en listas ordenadas (`coalesce-list-spans` / `extend-list-end` / `list-continues?`):** cuando el marcador pasa de `9.` (`w = 3`) a `10.`, CommonMark exige 4 espacios y corta la lista a mitad de ítem; `extend-list-end` solo extiende spans `"list"` que continúan bajo las reglas de ancho del primer marcador (`docs/v2/04 §3.1`) y absorbe/reparsea nodos posteriores dislocados (incluidos fences internos mal cerrados por el corte prematuro).
+## Medición directa sobre `65ca4b5f` (pod vs reconciliación vs fallback)
 
-De esta forma el rol de `tree-sitter` se mantiene íntegro sobre toda la estructura normal: `100%` de corpus+desk y `96.7%` de los documentos `gen-ast` sin error pasan directo por `blocks-of` sobre los nodos del pod (`:pod-direct`), sin re-segmentación global.
+Medido sobre los `735` documentos reales (corpus de paridad + desk) y una muestra de `2,000` documentos de `gen-ast`:
 
-## Medición directa: pod directo vs coalescencia vs fallback
-
-Medido sobre `cst_ast.cljc` (corpus+desk de 735 documentos reales + muestra de 2,000 documentos generados por `gen-ast`):
-
-| conjunto | `:pod-direct` | `:pod-with-list-coalesce` | `:fallback-s2-error` | `:fallback-nested-has-error` | divergencias |
+| conjunto | docs `:pod-all-blocks` | docs `:pod-with-reconciled-blocks` | docs `:fallback-s2-error` | docs `:fallback-nested-has-error` | bloques pod vs reconciliados |
 |---|---|---|---|---|---|
-| Corpus + desk (`735` docs) | `735` (`100.0%`) | `0` (`0.0%`) | `0` (`0.0%`) | `0` (`0.0%`) | `0` |
-| `gen-ast` (`2,000` docs) | `1,199` (`59.95%` total; `96.7%` sin error) | `41` (`2.05%` total; `3.3%` sin error) | `614` (`30.70%`) | `146` (`7.30%`) | `0` |
+| Corpus + desk (`735` docs) | `735` (`100.0%`) | `0` (`0.0%`) | `0` (`0.0%`) | `0` (`0.0%`) | `3,292` pod (`100.0%`) / `0` reconciliados (`0.0%`) |
+| `gen-ast` (`2,000` docs) | `1,185` (`59.25%` total; `97.37%` sin error) | `32` (`1.60%` total; `2.63%` sin error) | `620` (`31.00%`) | `163` (`8.15%`) | `2,446` pod (`98.08%`) / `48` reconciliados (`1.92%`) |
 
-## Alcance, pruebas sin error y brecha documentada
+## Nota de limitación arquitectónica y alcance
 
-- **Casos sin `ERROR` probados explícitamente por el camino del pod:** `test/fixtures/markdown/freeform_divergences.md` y los casos dirigidos `9→10` y `9→11` en `cst_ast_parity_test/freeform-divergence-classes-parity` verifican `(not (:has_error (first (ts/parse-block s))))` antes de comparar `cst-ast/parse` vs `ast/parse-native`. El caso `- <div class="w">\n  **x**\n  </div>\n  \n  after\n` verifica `(:has_error root)` verdadero y paridad vía fallback.
-- **No se afirma paridad 100% en Markdown libre arbitrario:** este corte cierra únicamente `:has_error` anidado y transiciones `9→10`.
-- **Brecha detectada en `plan-test/golden-outside-profile` bajo `KIMUN_PARSER=treesitter`:** en `test/fixtures/markdown/outside-profile.md`, la línea `<span>html inline</span> en párrafo.` es parseada por tree-sitter como nodo `"paragraph"` (lo que en `blocks-of` produce `"markdown/unparsed"`), mientras que SLDB-MD regla 7 (`cst/classify`) la clasifica como `:html` (`"markdown/html"`). Se deja documentado fuera de estas dos clases para no reintroducir duplicación de `cst/parse`.
-- **`src/kimun/surface/markdown/ast.cljc` intacto:** preserva `*parser*`, `requested-parser` y `effective-parser` de K6.
+- **Por qué `65ca4b5f` queda como línea base verde:** en el corte alternativo quirúrgico (`coalesce-list-spans` + `blocks-of`), la suite de pruebas de superficie falló en `plan-test/golden-outside-profile` bajo `KIMUN_PARSER=treesitter` (en `test/fixtures/markdown/outside-profile.md`, `<span>html inline</span> en párrafo.` es `"paragraph"` para tree-sitter —produciendo `"markdown/unparsed"`— pero `:html` según regla 7 de `docs/v2/04 §3.1`), además de requerir un caso más específico para disparar `:has_error` en lista. Restaurar `65ca4b5f` mantiene `100%` verde en las pruebas de perfil.
+- **Limitación conocida de `reconcile-blocks` en `65ca4b5f`:** aunque en ejecución normal acepta los nodos del pod en `3,292/3,292` bloques reales (`100%`) y `2,446/2,494` bloques generados sin error (`98.08%`), para decidirlo evalúa `profile-block-at` en cada bloque tope, replicando las reglas de corte de `cst/parse`. Si en un paso posterior se quiere eliminar esa evaluación por bloque sin romper `golden-outside-profile`, habrá que cubrir además el mapeo `"paragraph"` → `:html` (regla 7) además de `9→10` y `:has_error`.
+- **No se afirma paridad universal:** `gen-free-md` en `cst_ast_parity_test` prueba 200 casos sobre un generador acotado de líneas, no todo CommonMark libre arbitrario.
 
-## Validación (`validation.log`)
+## Validación verde (`validation.log`)
 
-- **Suite completa aislada de S1 (reportada por coordinador):** `942` tests, `9.883` aserciones (`0` fallos, `0` errores).
+- **Suite completa aislada de `65ca4b5f` (reportada en coordinación):** `942` tests, `9.883` aserciones, `0` fallos, `0` errores.
 - `~/bin/memcap bb lint` → `rings and docstrings ok: 103 files`
 - `~/bin/memcap bb oracle` → `9 rows, 0 mismatches`
-- `kimun.surface.markdown.*` (default `KIMUN_PARSER`, 7 namespaces incluyendo `plan-test`): `Ran 24 tests containing 199 assertions. 0 failures, 0 errors.` (`pod-ast-parity`: `735/735 identical`).
-- `cst-ast-parity-test`, `roundtrip-test`, `frontmatter-test`, `drift-test` bajo `KIMUN_PARSER=treesitter`: `Ran 13 tests containing 95 assertions. 0 failures, 0 errors.` (`pod-ast-parity`: `735/735 identical`).
+- `kimun.surface.markdown.*` (7 namespaces: `cst-test`, `inline-test`, `frontmatter-test`, `cst-ast-parity-test`, `roundtrip-test`, `drift-test`, `plan-test`), **default `KIMUN_PARSER`:**
+  - `pod-ast-parity`: `735/735 identical (divergent 0, errors 0)`
+  - `Ran 25 tests containing 199 assertions. 0 failures, 0 errors.`
+- Mismos 7 namespaces bajo **`KIMUN_PARSER=treesitter`**:
+  - `pod-ast-parity`: `735/735 identical (divergent 0, errors 0)`
+  - `Ran 25 tests containing 199 assertions. 0 failures, 0 errors.`

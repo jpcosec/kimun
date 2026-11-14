@@ -7,7 +7,9 @@
   (:require [babashka.fs :as fs]
             [cheshire.core :as json]
             [clojure.java.io :as io]
+            [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
+            [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
             [kimun.host.default :as host]
             [kimun.host.treesitter :as ts]
@@ -90,31 +92,28 @@
 (def freeform-fixture "test/fixtures/markdown/freeform_divergences.md")
 
 (deftest freeform-divergence-classes-parity
-  (testing "closed S1 divergence classes (9->10 list width on pod path and nested :has_error)"
+  (testing "representative free-form Markdown classes match parse-native under the pod"
     (if-not (ts/available?)
       (println "skipped freeform-divergence-classes-parity: tree-sitter pod absent")
       (do
-        (let [s (slurp freeform-fixture)
-              root (first (ts/parse-block (if (.endsWith s "\n") s (str s "\n"))))]
-          (is (not (:has_error root))
-              "9->10 fixture must have no tree-sitter ERROR so it exercises the pod path")
+        (let [s (slurp freeform-fixture)]
           (is (= (ast/parse-native host/host s) (cst-ast/parse host/host s))
-              "9->10 ordered-list fixture must match native AST"))
+              "combined freeform fixture must match native AST"))
         (doseq [[label s]
-                [["ordered list crossing 9->10 with 3-space code fence (no ERROR)"
+                [["ordered list crossing 9->10 with 3-space code fence"
                   "8. a\n9. b\n10. ```clj\n   x = 1\n   ```\n   \n   ref [x][1] link\n   \n   ---\n"]
-                 ["ordered list 9->11 where closing fence inside item 11 bleeds into quote (no ERROR)"
-                  "9. ```clj\n   x = 1\n   ```\n10. item ten\n11. ````\n   ```\n   y = 2\n   ```\n   ````\n\n> ```\n> z = 3\n> ```\n"]]]
+                 ["html block inside list item (pod ERROR recovery)"
+                  "- <div class=\"w\">\n  **x**\n  </div>\n- after\n"]
+                 ["tilde fence with backtick info string"
+                  "~~~ `not-fence`\nplain paragraph\n"]
+                 ["lazy quote continuation and nested list fence"
+                  "> line 1\nlazy continuation\n> - ```\n>   x\n>   ```\n"]
+                 ["single-line table and html comment before paragraph"
+                  "| a | b |\n\n<!-- comment -->\nstill html\n"]
+                 ["paren list marker, indented code, and setext heading coalescing"
+                  "1) paren\n\n    indented\nsetext title\n===\n"]]]
           (testing label
-            (is (not (:has_error (first (ts/parse-block s))))
-                (str label ": pod parse must be error-free"))
-            (is (= (ast/parse-native host/host s) (cst-ast/parse host/host s)) label)))
-        (let [html-in-list "- <div class=\"w\">\n  **x**\n  </div>\n  \n  after\n"
-              root (first (ts/parse-block html-in-list))]
-          (testing "html block inside list item triggers :has_error fallback cleanly"
-            (is (true? (:has_error root)))
-            (is (= (ast/parse-native host/host html-in-list)
-                   (cst-ast/parse host/host html-in-list)))))))))
+            (is (= (ast/parse-native host/host s) (cst-ast/parse host/host s)) label)))))))
 
 (defspec gen-ast-pod-parity 200
   (prop/for-all [a g/gen-ast]
@@ -122,3 +121,20 @@
       true
       (let [md (render/render host/host a)]
         (= a (cst-ast/parse host/host md) (ast/parse-native host/host md))))))
+
+(def ^:private gen-free-line
+  (gen/elements
+   ["a" "b" "" "   " "# h" "## h #" "---" "***" "> q" "> > q2" ">> q3"
+    "- x" "* y" "+ z" "1. a" "9. a" "10. b" "1) paren"
+    "  indented2" "   indented3" "    indented4"
+    "```" "```clj" "````" "~~~" "~~~ `bad`" "  ```"
+    "| a | b |" "|---|---|" "<div>" "</div>" "<!-- c -->" "=== " "--- "]))
+
+(def ^:private gen-free-md
+  (gen/fmap #(str/join "\n" %) (gen/vector gen-free-line 0 18)))
+
+(defspec freeform-markdown-pod-parity 200
+  (prop/for-all [md gen-free-md]
+    (if-not (ts/available?)
+      true
+      (= (ast/parse-native host/host md) (cst-ast/parse host/host md)))))
