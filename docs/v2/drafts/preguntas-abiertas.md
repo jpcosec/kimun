@@ -10,6 +10,13 @@
 > Pendiente de diseño: contrato de unidad/continuidad a través de cambios y contrato de ejecución;
 > no se considera aprobada una representación técnica ni desbloqueada su implementación.
 
+> **Aclaración posterior, 2026-11-14:** el dueño distingue dos etapas,
+> `anchoring` y `hecho detectado`, y separa realidad de hecho. Esto resuelve
+> el nudo conceptual de la D0 anterior; la tabla inferior conserva su texto
+> histórico. El bloqueo restante para K1 es un contrato positivo de identidad
+> y continuidad de nodos, y de vínculo entre etapas. Véase
+> `runs/research/2026-11-14/concilio/d0-dos-etapas-{claude,agy,pi}.md`.
+
 > Lo que bloquea seguir. Cada respuesta se registra en `docs/v2/05-estado.md` (decisión) o en
 > `docs/v2/14-juego-del-lenguaje.md`, y se borra de aquí. Qué depende de cada una: `docs/v2/12 §1`.
 

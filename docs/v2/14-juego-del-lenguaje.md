@@ -30,6 +30,19 @@
 > La representación de identidad, relaciones y embeddings, y los contratos operativos del
 > heartbeat y de activación, siguen por especificar; esta dirección no implica implementación.
 
+> **Aclaración del dueño, 2026-11-14 — dos etapas.** «Realidad y hecho son cosas
+> distintas»: **(1) anchoring; (2) el hecho detectado**. El valor de verdad
+> de una proposición está en su relación con la realidad. El dueño propone
+> representar una proposición como `(R A B)`, donde `R` relaciona hechos `A`
+> y `B`; esa recursión es el modelo de kimun, no una transcripción literal
+> del *Tractatus*. Zettelkasten orienta la separación entre referencia a la
+> fuente y ficha direccionable que participa en una red de vínculos. La huella
+> comprueba vigencia del anchor; no fija por sí sola la verdad del hecho.
+> La separación conceptual de D0 queda aclarada. Siguen por especificar la
+> identidad positiva y continuidad de los nodos y el contrato entre etapas.
+> Lectura cruzada: `runs/research/2026-11-14/concilio/brief-d0-dos-etapas.md`
+> y los tres informes `d0-dos-etapas-{claude,agy,pi}.md`.
+
 > Borrador estable (2026-10-08), escrito para fijar lo que kimun es antes de seguir construyendo.
 > **Revisa** `01 §4.1` (autoridad única del pool), `07` (modelo = plantilla), `11 §1` (tree-sitter
 > fuera de proceso) y `12 §3` (wittgenstein como "la capa G"). Mientras esas revisiones no se

@@ -32,6 +32,14 @@ Este complemento no fija prioridades ni decide la identidad por inferencia.
 | G | T01, D-G, G1–G3, K7 y consultas justificadas sobre contextos | cierre de S–M; fuentes de `wittgenstein` | fixtures contextuales y trazas de soporte; sin inferencia entre contextos por coincidencia de texto |
 | Operación y vista | C1/F25, K4/K5, C2/API, seguridad, CI/release reproducible, piloto y vista del circuito | contratos de alcance y capas correspondientes | suite, oráculo, include check, fallos inyectados, bundle limpio y recorrido visible del cambio a la respuesta |
 
+**D0, actualización 2026-11-14:** el dueño fijó dos etapas, `anchoring` y
+`hecho detectado`, y distinguió realidad de hecho. La separación conceptual
+permite especificar y avanzar en la sensorización de la primera etapa (K2a,
+K6, K8 y S1) sin cambiar identidad del kernel. K1, K2b y S2 aún necesitan
+el contrato positivo de identidad y continuidad y el vínculo entre etapas.
+Los informes del concilio están en
+`runs/research/2026-11-14/concilio/d0-dos-etapas-{claude,agy,pi}.md`.
+
 El primer daemon de latido está implementado en `stores heartbeat`
 (`runs/subagents/2026-11-14-heartbeat/`): recalcula y emite señales sin ejecutar
 respuestas. Su revisión independiente está en
