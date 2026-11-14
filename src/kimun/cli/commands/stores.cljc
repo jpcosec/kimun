@@ -58,7 +58,8 @@
 
 (def ^:private warning-type
   {:reformatted "docs/file-modified" :edited "docs/file-modified" :missing "docs/file-missing"
-   :contract-moved "docs/superseded" :unextractable "docs/unextractable" :noise "docs/structural-noise"
+   :contract-moved "docs/superseded" :parser-unavailable "docs/parser-unavailable"
+   :contract-inconsistent "docs/contract-inconsistent" :unextractable "docs/unextractable" :noise "docs/structural-noise"
    :orphan "docs/orphan" :corrupt "store/corrupt"})
 
 (defn- finding-warning [f]
@@ -249,7 +250,9 @@
         {:keys [final plans metas warnings]}
         (reduce (fn [{:keys [final plans metas] :as acc} f]
                   (let [doc (tdocs/document final (:document f))
-                        moved? (= :contract-moved (:category f))
+                        ;; only a redefined model asks for the text to be re-rendered; when the
+                        ;; parser moved (K6) the file is already right and is only registered again
+                        moved? (and (= :contract-moved (:category f)) (= :superseded (:state f)))
                         text (if moved?
                                (tdocs/move-text final doc nil (compose/context final path))
                                (or (some-> (:path doc) read-file) (:source doc)))

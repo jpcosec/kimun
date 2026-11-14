@@ -1,0 +1,25 @@
+{
+ "valid": false,
+ "summary": "1 signal(s) — 1 info",
+ "signals": [
+  {
+   "type": "contract/changed",
+   "category": "contract-moved",
+   "needs-human": false,
+   "action": "kimun docs update login",
+   "detail": {
+    "state": "intact",
+    "content-ok": true,
+    "fields-ok": true,
+    "contract-ok": false,
+    "contract": {
+     "status": "changed",
+     "changed": [
+      "parser",
+      "grammar"
+     ]
+    }
+   }
+  }
+ ]
+}

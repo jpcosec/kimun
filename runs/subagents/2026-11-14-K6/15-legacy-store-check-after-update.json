@@ -1,0 +1,9 @@
+{
+ "category": "ok",
+ "content-ok": true,
+ "contract-ok": true,
+ "contract": {
+  "status": "same",
+  "changed": []
+ }
+}

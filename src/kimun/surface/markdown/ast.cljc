@@ -104,6 +104,28 @@
   [host s]
   {:type :document :attrs {} :children (blocks host (cst/parse-document s))})
 
+(def ^:dynamic *parser*
+  "Overrides `KIMUN_PARSER` for the dynamic scope (tests, embedding hosts):
+   \"native\" or \"treesitter\"; nil reads the environment."
+  nil)
+
+(defn requested-parser
+  "The parser that was asked for: `*parser*`, else `KIMUN_PARSER`, else
+   \"native\". It may not be the one in force (`effective-parser`)."
+  []
+  #?(:clj (or *parser* (System/getenv "KIMUN_PARSER") "native")
+     :cljs "native"))
+
+(defn effective-parser
+  "The parser `parse` uses right now: \"treesitter\" when it is selected
+   (`*parser*`, else `KIMUN_PARSER`) and the pod is available, else \"native\".
+   The parse contract of a document records it (`kimun.surface.parse-contract`)."
+  []
+  #?(:clj (if (and (= "treesitter" (requested-parser)) (ts/available?))
+            "treesitter"
+            "native")
+     :cljs "native"))
+
 (defn parse
   "Markdown text → neutral AST `{:type :document :attrs {} :children [...]}`.
    Defaults to the in-process parser (`parse-native`). `KIMUN_PARSER=treesitter`
@@ -112,7 +134,7 @@
    diverges on some generated/free-form Markdown (R2 §5 fase 2; see
    `cst-ast-parity-test`), so it stays behind the flag."
   [host s]
-  #?(:clj (if (and (= "treesitter" (System/getenv "KIMUN_PARSER")) (ts/available?))
+  #?(:clj (if (= "treesitter" (effective-parser))
             ((requiring-resolve 'kimun.surface.markdown.cst-ast/parse) host s)
             (parse-native host s))
      :cljs (parse-native host s)))

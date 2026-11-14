@@ -24,13 +24,17 @@
    - the file on disk, when there is one: an `:external` sign `{:locator {:kind
      :file :path <relative to the project root>} :sample :fingerprint
      \"<alg>:<hex>\"}` (02 §6.4) tied by a `:reference` edge root→external
-     whose evidence records `:contract`.
+     whose evidence records `:contract` and `:parse-contract`, the whole
+     contract the document was parsed and extracted under with its digest
+     (`kimun.surface.parse-contract`, K6). A document written before K6 has no
+     `:parse-contract`; it gains one the next time it is written.
    Reading an old store that still holds the verbatim source sign
    (`{markdown/source blob}`) is supported: its text wins over the file.
    Untracking removes those edges; the tree stays in history and is hidden."
   (:require [clojure.edn :as edn]
             [clojure.string :as str]
             [kimun.host.store-cache :as store-cache]
+            [kimun.surface.parse-contract :as parse-contract]
             [kimun.surface.models.extract :as extract]
             [kimun.surface.models.render :as render]
             [kimun.surface.models.store :as mstore]
@@ -156,6 +160,7 @@
          :model (or (:name entry) (some-> any :content :blob edn/read-string :model/name))
          :model-version (:version entry) :model-id (:id entry)
          :contract-id (get-in (anchor-edge store es) [:evidence :contract])
+         :parse-contract (get-in (anchor-edge store es) [:evidence :parse-contract])
          :inline (boolean (some #(stored-source? (target store %)) es))
          :recorded-content-hash (or (get-in (anchor-edge store es) [:evidence :content-hash])
                                    (get-in d [:content-hash]))
@@ -354,7 +359,8 @@
         ext (when path (external-node host path text))
         xid (when ext (id-of host ext))
         ext-ref (when ext {:type :reference :from root :to xid
-                           :evidence {:ref-hash xid :actor actor :contract class}})
+                           :evidence {:ref-hash xid :actor actor :contract class
+                                      :parse-contract (parse-contract/record host (parse-contract/environment) class)}})
         wanted (cond-> [{:type :reference :from root :to class :evidence {:ref-hash class :actor actor}}
                         {:type :derived :from root :to class
                          :evidence {:ref-hash class :engine "kimun.surface.models" :version "1"}}]
@@ -401,12 +407,12 @@
         ;; format 4: the extracted payload's content hash lives in the registry
         ;; descriptor of a cached document, not in the edge evidence; the field
         ;; hashes are gone (readers recompute them from the payload when needed)
-        marks (cond-> {:contract model-id}
+        marks (cond-> {:contract model-id :parse-contract (parse-contract/record host (parse-contract/environment) model-id)}
                 content-hash (assoc :content-hash content-hash))
         ext-ref (when ext {:type :reference :from root :to xid
                            :evidence (merge {:ref-hash xid :actor actor} marks)})
         wanted (cond-> [{:type :reference :from root :to model-id
-                         :evidence (cond-> (merge {:ref-hash model-id :actor actor} marks) ext (dissoc :contract :content-hash :field-hashes))}
+                         :evidence (cond-> (merge {:ref-hash model-id :actor actor} marks) ext (dissoc :contract :parse-contract :content-hash :field-hashes))}
                         {:type :derived :from root :to model-id
                          :evidence {:ref-hash model-id :engine "kimun.surface.models" :version "1"}}]
                  ext-ref (conj ext-ref)
@@ -484,7 +490,11 @@
    again). `opts`: `:path` (default: the recorded one), `:actor`, `:timestamp`,
    `:operation`, `:inline` (default: keep the document's mode). Returns `{:plan
    :name :tree :payload :before :unchanged?}`;
-   `:plan` is nil when neither the text, the path nor the contract moved."
+   `:plan` is nil when neither the text, the path nor the contract moved. A
+   recorded parse contract that is no longer the one in force counts as moved
+   (the document is re-registered under the current one), as does one whose
+   digest does not verify; a document with no recorded parse contract is not
+   rewritten for that alone."
   [host store token text {:keys [path actor timestamp operation inline]}]
   (let [doc (document store token)
         m (require-model store (:model doc))
@@ -496,6 +506,9 @@
         ;; with by-reference content the tracked text is the file: "unchanged" is the fingerprint
         ;; matching what the doc was written with, not the text read back from the file
         same? (and (= path (:path doc)) (= :intact (:state doc))
+                   (contains? #{:same :unrecorded}
+                              (:status (parse-contract/compare-recorded host (parse-contract/environment)
+                                                                        (:parse-contract doc) (:id m))))
                    (if (:path doc)
                      (and (some? (:fingerprint doc)) (= (:fingerprint doc) (fingerprint host text)))
                      (= text (:source doc))))

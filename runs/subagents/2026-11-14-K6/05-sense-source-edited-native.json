@@ -1,0 +1,25 @@
+{
+ "valid": false,
+ "summary": "1 signal(s) — 1 warning",
+ "signals": [
+  {
+   "type": "source/mutated",
+   "category": "edited",
+   "needs-human": true,
+   "action": "kimun docs update login",
+   "detail": {
+    "fields": [
+     "status"
+    ],
+    "state": "intact",
+    "content-ok": false,
+    "fields-ok": false,
+    "contract-ok": true,
+    "contract": {
+     "status": "same",
+     "changed": []
+    }
+   }
+  }
+ ]
+}

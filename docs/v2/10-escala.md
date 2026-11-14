@@ -378,6 +378,58 @@ según el contenido (`stores check|health`); archivo ausente ⇒ `:missing`; cla
 ella). La acción de reparación sigue siendo `docs update NAME` / `stores update`, que
 re-registran fingerprint, clase y hash raíz. Ningún cambio silencioso.
 
+### 11.1 Contrato de parse registrado con digest (K6, primer corte)
+
+El `:contract` solo decía la clase. Si la misma fuente se leía con otro parser, nada lo registraba
+y un diagnóstico podía confundirlo con una edición externa (F08 de
+`docs/reviews/wittgenstein-superset/reviews/02-findings.md`). Desde K6 la arista de anclaje lleva
+además `:parse-contract`, el contrato completo con su digest (`kimun.surface.parse-contract`):
+
+```clojure
+{:contract/version 1
+ :parser ["kimun.surface.markdown/native" "1"]   ; parser en vigor y store-cache/parser-version
+ :grammar "builtin"                              ; o "<pod>/<versión> tree-sitter/<versión>"
+ :normalization "nfc"
+ :extractor ["kimun.surface.models" "1"]
+ :class "<id del descriptor>"                    ; campos y plantilla: selector y clase
+ :digest "sha-256:<hex>"}                        ; de los seis componentes, en orden fijo
+```
+
+- El parser registrado es el **efectivo** (`kimun.surface.markdown.ast/effective-parser`):
+  `KIMUN_PARSER=treesitter` solo cuenta si el pod está disponible.
+- Los componentes viajan con el digest para poder decir **cuál** cambió. Al leer, el digest se
+  recalcula de los componentes; si no coincide, la evidencia no se usa.
+- El entorno que lee (parser, gramática) se resuelve **una vez por diagnóstico**, no por documento.
+
+Qué distingue la sensorización (`stores check|health|sense|heartbeat`):
+
+| situación | categoría | señal | `content-ok` | `contract-ok` | reparación |
+|---|---|---|---|---|---|
+| cambió la fuente | `:edited` · `:reformatted` · `:missing` | `source/*` | false | según el contrato | como antes |
+| cambió el contrato (parser, gramática, extractor o clase), fuente intacta | `:contract-moved` | `contract/changed` | true | false | segura: `docs update` / `stores update`; no reescribe el archivo si la clase no cambió |
+| el parser registrado no se puede usar aquí, o el pod no responde | `:parser-unavailable` | `contract/parser-unavailable` | true | false | decide una persona |
+| el digest no corresponde a sus componentes | `:contract-inconsistent` | `contract/inconsistent` | true | false | decide una persona |
+
+`:contract {:status :changed}` del finding (y del `:detail` de la señal) nombra los componentes que
+difieren; `:parser` aparece solo si cambió el parser, nunca por un cambio de extractor o de clase.
+Si cambian fuente y contrato a la vez, la categoría es la de la fuente y `contract-ok` es false.
+
+**Compatibilidad y migración.** No cambia la versión de formato: es una clave de evidencia adicional
+(`02 §3.2`). Un documento escrito antes de K6 no tiene `:parse-contract`: se lee igual, su estado es
+`:unrecorded` y **nunca** se informa como cambio de contrato por eso. Adquiere el contrato la próxima
+vez que se escribe (`docs update` con cambios, `stores update`, `include build --rebuild`); no hay
+migración forzada. Un kimun anterior ignora la clave.
+
+**Fuera de este corte.**
+
+- `rebuild-mismatch` (fuente y contrato iguales, raíz recalculada distinta): exige recalcular el árbol
+  en cada observación, y hoy el único camino de recálculo escribe en la caché.
+- Gramática y perfil de documentos de código, y selector EDN sobre tree-sitter: dependen del spec 16
+  (M1), que no está escrito.
+- Descriptores de los modelos base: el descriptor los nombra, no los resuelve.
+- Versión por componente del parser nativo: gramática y normalización son código y comparten
+  `store-cache/parser-version`, que se sube a mano.
+
 **Verificación.** `reachable`/`verify` no exige en el CAS los tree objects de un árbol
 marcado `:cached?`: son derivados y su integridad la comprueba el resolver (raíz registrada
 vs recomputada). El resto de objetos (nodos raíz, anchors, aristas, descriptores, mmaps,

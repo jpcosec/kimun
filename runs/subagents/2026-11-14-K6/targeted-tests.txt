@@ -1,0 +1,17 @@
+
+Testing kimun.surface.parse-contract-test
+
+Testing kimun.cli.contract-test
+
+Testing kimun.cli.sense-test
+
+Testing kimun.surface.signals-test
+
+Testing kimun.cli.diagnostics-test
+
+Testing kimun.surface.diagnostics-test
+
+Testing kimun.cli.heartbeat-test
+
+Ran 56 tests containing 805 assertions.
+0 failures, 0 errors.

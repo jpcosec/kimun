@@ -21,6 +21,8 @@
           :reformatted :source/reformatted
           :missing :source/missing
           :contract-moved :contract/changed
+          :parser-unavailable :contract/parser-unavailable
+          :contract-inconsistent :contract/inconsistent
           :unextractable :source/unreadable
           :noise :source/noise
           :orphan :model/missing}

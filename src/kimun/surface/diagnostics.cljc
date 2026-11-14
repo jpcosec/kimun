@@ -14,14 +14,30 @@
                        a human decides before anything runs;
    - `:missing`        (missing) the tracked file is not on disk — a human
                        restores it or runs `kimun docs untrack NAME`;
-   - `:contract-moved` (contract_mutation) the model was redefined and the
-                       document's text is untouched — safe: `docs update NAME`
-                       or redefining the model with `--backfill`;
+   - `:contract-moved` (contract_mutation) the document's text is untouched
+                       and the contract it is read under moved: the model
+                       was redefined, or the parser/extractor is not the one
+                       recorded (`kimun.surface.parse-contract`, K6) — safe:
+                       `docs update NAME` (or `--backfill` for a model);
+   - `:parser-unavailable` the document was recorded under a parser that
+                       cannot be used here (the tree-sitter pod is absent or
+                       does not answer): neither the source nor the contract
+                       is known to have moved — a human installs the parser
+                       or accepts the one in force with `docs update NAME`;
+   - `:contract-inconsistent` the recorded parse-contract digest is not the
+                       digest of its recorded components: the evidence is not
+                       trusted — a human checks, then `docs update NAME`;
    - `:unextractable`  the text no longer extracts under the model's contract;
    - `:noise`          the text (the file's when it was edited, else the
                        recorded source) carries headings or frontmatter keys
                        the model does not declare (`kimun.surface.models.noise`);
    - `:orphan`         the document's model is gone.
+   Every document finding says which of the two moved: `:content-ok` (the
+   source still has the recorded fingerprint) and `:contract-ok` (the recorded
+   contract is the one in force), plus `:contract {:status :changed}` — the
+   comparison of the recorded parse contract (`:unrecorded` for a document
+   written before K6, which is never reported as changed for that). The
+   environment that reads documents is resolved once per report.
    A store-level finding `:corrupt` (v1's tampered hash) comes from the
    kernel's verification: `kimun stores verify` names the objects."
   (:require [clojure.string :as str]
@@ -30,7 +46,8 @@
             [kimun.surface.docs :as tdocs]
             [kimun.surface.models.extract :as extract]
             [kimun.surface.models.noise :as noise]
-            [kimun.surface.models.store :as mstore]))
+            [kimun.surface.models.store :as mstore]
+            [kimun.surface.parse-contract :as parse-contract]))
 
 (def safe
   "Categories a command repairs without a decision (v1: \"safe to run\")."
@@ -47,12 +64,12 @@
 (defn- action-of [category doc-name]
   (case category
     :ok nil
-    (:reformatted :edited :contract-moved) (str "kimun docs update " doc-name)
+    (:reformatted :edited :contract-moved :parser-unavailable :contract-inconsistent) (str "kimun docs update " doc-name)
     :missing (str "kimun docs untrack " doc-name)
     :corrupt "kimun stores verify"
     nil))
 
-(defn- message-of [{:keys [category document model path fields error noise]}]
+(defn- message-of [{:keys [category document model path fields error noise contract]}]
   (let [who (str "document `" document "` (" model ")")]
     (case category
       :ok "ok"
@@ -63,8 +80,17 @@
                    "; if not, restore the file from the recorded source (kimun docs show " document ")")
       :missing (str who ": tracked at " path ", not on disk — decide first: restore the file if it was moved by accident, or kimun docs untrack "
                     document " if it is gone on purpose")
-      :contract-moved (str who ": the contract of model `" model "` moved, not the document (its text is unchanged) — safe to run: kimun docs update "
-                           document ", or redefine the model with --backfill")
+      :contract-moved (if (and (seq (:changed contract)) (not (some #{:class} (:changed contract))))
+                        (str who ": the contract it is read under is not the one it was recorded under ["
+                             (str/join ", " (map name (:changed contract)))
+                             "], not the document (its text is unchanged) — safe to run: kimun docs update " document)
+                        (str who ": the contract of model `" model "` moved, not the document (its text is unchanged) — safe to run: kimun docs update "
+                             document ", or redefine the model with --backfill"))
+      :parser-unavailable (str who ": it was recorded under a parser that cannot be used here (the tree-sitter pod is absent or does not answer);"
+                               " nothing says the document or its contract changed — decide first: build the pod (bb pod), or accept the parser in force with kimun docs update "
+                               document)
+      :contract-inconsistent (str who ": its recorded parse-contract digest does not match its recorded components; the evidence is not trusted"
+                                  " — inspect it, then kimun docs update " document " records the contract in force")
       :unextractable (str who ": its text no longer extracts under the contract of `" model "` (" error
                           ") — fix " (or path "the document") " or the model's template, then kimun docs update " document)
       :noise (str who ": structural noise — " (noise/describe noise) " — remove it from " (or path "the document")
@@ -74,7 +100,7 @@
 (defn- classify
   "`[category extras]` of document `doc` given the text of its file (nil when
    it has none or it is gone) and its model's descriptor."
-  [store doc descriptor text]
+  [store env doc descriptor text]
   (let [host (:host store)
         content-ok (or (nil? (:path doc)) (and (some? text) (= (:fingerprint doc) (tdocs/fingerprint host text))))
         recorded (when (and descriptor (:source doc)) (try-extract descriptor (:source doc)))
@@ -91,7 +117,12 @@
         noise-of (fn [t] (let [n (noise/structural-noise descriptor t {:related (keep :descriptor (map #(mstore/find-model store (:name %)) (mstore/models store)))})]
                            (when (noise/noisy? n) n)))
         noisy (fn [base n] [:noise (assoc base :noise n :undeclared (mapv :raw (:headings n)))])
-        base {:content-ok (boolean content-ok) :fields-ok (boolean (and content-ok (:payload recorded) (= :intact (:state doc))))}]
+        pc (parse-contract/compare-recorded host env (:parse-contract doc) (:model-id doc))
+        contract-moved? (or (= :superseded (:state doc)) (= :changed (:status pc)))
+        base {:content-ok (boolean content-ok) :fields-ok (boolean (and content-ok (:payload recorded) (= :intact (:state doc))))
+              :contract-ok (and (not contract-moved?) (not= :orphan (:state doc))
+                                (contains? #{:same :unrecorded} (:status pc)))
+              :contract (select-keys pc [:status :changed])}]
     (cond
       (and (:path doc) (nil? text)) [:missing (assoc base :content-ok false :fields-ok false :path-exists false)]
       (= :orphan (:state doc)) [:orphan base]
@@ -102,14 +133,16 @@
                          [:reformatted (assoc base :fields-ok true)]
                          [:edited (assoc base :fields changed)])
       (:error recorded) [:unextractable (assoc base :error (:error recorded))]
-      (= :superseded (:state doc)) [:contract-moved base]
+      (= :inconsistent (:status pc)) [:contract-inconsistent base]
+      (= :parser-unavailable (:status pc)) [:parser-unavailable base]
+      contract-moved? [:contract-moved base]
       :else (if-let [n (noise-of (:source doc))] (noisy base n) [:ok base]))))
 
-(defn- diagnose [store read-file doc]
+(defn- diagnose [store env read-file doc]
   (let [descriptor (or (tdocs/contract-descriptor store doc)
                        (some->> (:model doc) (mstore/find-model store) :descriptor))
         text (when (:path doc) (read-file (:path doc)))
-        [category extras] (classify store doc descriptor text)
+        [category extras] (classify store env doc descriptor text)
         f (merge {:category category :model (:model doc) :document (:name doc) :path (:path doc) :state (:state doc)
                   :needs-human (not (or (clean category) (safe category)))
                   :inspect (if (= :contract-moved category) (str "model `" (:model doc) "` (kimun models history " (:model doc) "), not this document")
@@ -160,13 +193,14 @@
   ([store read-file] (report store read-file {}))
   ([store read-file {:keys [verify]}]
    (let [damaged? (and verify (not (:ok? verify)))
+         env (parse-contract/environment)
          ;; a store with damaged objects may not be readable at all (e.g. a lost mmap node of the
          ;; head Revision): the corruption is the finding, the documents are diagnosed only if they still can be
          [docs models] (if damaged?
                          (err/rescue-any (fn [_] [[] []])
-                                         (let [ds (mapv #(diagnose store read-file %) (tdocs/documents store))]
+                                         (let [ds (mapv #(diagnose store env read-file %) (tdocs/documents store))]
                                            (walk/postwalk identity [ds (mapv #(model-finding ds %) (mstore/models store))])))
-                         (let [ds (mapv #(diagnose store read-file %) (tdocs/documents store))]
+                         (let [ds (mapv #(diagnose store env read-file %) (tdocs/documents store))]
                            [ds (mapv #(model-finding ds %) (mstore/models store))]))
          corrupt (when (and verify (not (:ok? verify)))
                    {:category :corrupt :model nil :document nil :path nil :needs-human true :action (action-of :corrupt nil)
