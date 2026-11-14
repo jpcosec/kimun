@@ -372,7 +372,8 @@
    replays the whole log (every transaction and revision id, final heads
    against heads.edn) and recomputes the hash of every reachable object; a log
    that does not replay is `:bad [{:reason :replay-failed}]`. (`stores check`
-   runs only the hash check, on the store as opened from its heads.) Data `{:checked :bad}`, plus `:uncommitted-tail`
+   runs only the hash check, on the store as opened from its heads.) Data
+   `{:checked :bad :routes}`, plus `:uncommitted-tail`
    when the log ends with a line the heads do not record; a mismatch is the
    failure `store/corrupt` (exit 5) carrying `:bad`."
   [_args opts {:keys [env cwd]}]
@@ -381,7 +382,8 @@
     (if ok?
       (out/ok "stores verify" {:store (store-ref descriptor path)
                                :revision (:head store)
-                               :data (cond-> {:checked checked :bad bad}
+                               :data (cond-> {:checked checked :bad bad
+                                              :routes (err/rescue-any (fn [_] nil) (store/route-coverage store))}
                                        ;; a writer died mid-commit: reported, not a failure; the next commit discards it
                                        uncommitted-tail (assoc :uncommitted-tail (select-keys uncommitted-tail [:id :revision :torn-line])))})
       (out/failure :store/corrupt

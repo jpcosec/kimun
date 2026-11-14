@@ -1,0 +1,17 @@
+{
+  "ok" : true,
+  "command" : "include build",
+  "store" : {
+    "path" : "/tmp/kimun-c4-final/.kimun"
+  },
+  "revision" : null,
+  "data" : {
+    "store" : "/tmp/kimun-c4-final/.kimun",
+    "models" : 0,
+    "models-failed" : 0,
+    "documents" : 0,
+    "documents-failed" : 0,
+    "failed" : [ ]
+  },
+  "warnings" : [ ]
+}

@@ -1,0 +1,14 @@
+
+Testing kimun.kernel.route-store-test
+
+Testing kimun.kernel.store-test
+
+Testing kimun.cli.stores-test
+
+Testing kimun.cli.diagnostics-test
+
+Testing kimun.cli.include-test
+moved existing store to /tmp/kimun-adhoc-10872115849171031392/kimun-include-7749571426942049200/.kimun.bak-20261114-132317
+
+Ran 88 tests containing 1109 assertions.
+0 failures, 0 errors.

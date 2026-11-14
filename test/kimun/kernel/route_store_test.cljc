@@ -27,14 +27,21 @@
    :projection-hash "projection" :content-hash "content"})
 
 (defn- register-plan [base root tree-id route]
-  (let [root-id (:id root)]
+  (let [root-id (:id root)
+        ext (node/make h :sign :external
+                       {:locator {:kind :file :path "docs/a.md"}
+                        :sample "" :fingerprint "sha-256:1111111111111111111111111111111111111111111111111111111111111111"})
+        ext-id (:id ext)]
     {:plan/version 1 :base base :actor "jp" :engines {} :timestamp TS
      :ops [{:op :add-node :node root :as :r}
            {:op :register-tree
             :tree {:kind :document :name "d" :class "C" :content-hash "content" :cached? true
                    :root root-id}
             :id tree-id :root root-id :merkle-root "projection"
-            :route route :as :t}]}))
+            :route route :as :t}
+           {:op :add-node :node ext :as :ext}
+           {:op :add-edge :edge {:type :reference :from root-id :to ext-id
+                                 :evidence {:ref-hash ext-id :actor "jp"}}}]}))
 
 (defn- fresh []
   (let [dir (str (ktu/temp-dir "kimun-route-store-"))
@@ -239,3 +246,42 @@
     (is (= (:routes s1) (:routes s2)))
     (is (not (bfs/exists? (cache/route-path dir root (:head s2))))
         "a no-route commit does not fabricate an empty cache under the new head")))
+
+(deftest route-coverage-reports-complete-and-partial-stores
+  (let [[_ b s0] (fresh)
+        r (root-node)
+        s1 (:store (store/commit! b s0 (register-plan nil r T (route-entry "fp1"))))
+        t2 "01ARZ3NDEKTSV4RRFFQ69G5FAW"
+        root2 (node/make h :sign :block {:format :markdown :type :document :attrs {:name "other"}})
+        s2 (:store (store/commit! b s1 (register-plan (:head s1) root2 t2 nil)))
+        c1 (store/route-coverage s1)
+        c2 (store/route-coverage s2)]
+    (is (= {:complete? true :cached-trees 1 :routed-trees 1
+            :missing-trees [] :orphan-routes []}
+           (select-keys c1 [:complete? :cached-trees :routed-trees :missing-trees :orphan-routes])))
+    (is (false? (:complete? c2)))
+    (is (= 2 (:cached-trees c2)))
+    (is (= 1 (:routed-trees c2)))
+    (is (= [t2] (:missing-trees c2)))
+    (let [orphan (assoc s1 :routes (assoc (:routes s1) "ghost.md"
+                                          (assoc (route-entry "fp1") :path "ghost.md" :tree-id t2)))]
+      (is (false? (:complete? (store/route-coverage orphan))))
+      (is (= ["ghost.md"] (:orphan-routes (store/route-coverage orphan)))))))
+
+(deftest untracking-a-file-does-not-leave-a-partial-route-root
+  (let [[_ b s0] (fresh)
+        r (root-node)
+        s1 (:store (store/commit! b s0 (register-plan nil r T (route-entry "fp1"))))
+        anchor (first (filter #(let [e (rev/get-object s1 %)]
+                                 (and (= :reference (:type e))
+                                      (= :external (:kind (rev/get-object s1 (:to e))))))
+                              (rev/active-edges s1)))
+        p {:plan/version 1 :base (:head s1) :actor "jp" :engines {} :timestamp TS
+           :ops [{:op :remove-route :tree T :path "docs/a.md"}
+                 {:op :remove-edge :edge anchor}]}
+        s2 (:store (store/commit! b s1 p))]
+    (is (= {:complete? true :cached-trees 0 :routed-trees 0
+            :missing-trees [] :orphan-routes []}
+           (select-keys (store/route-coverage s2)
+                        [:complete? :cached-trees :routed-trees :missing-trees :orphan-routes])))
+    (is (= 1 (rev/tree-count s2)) "the historical tree remains in the store")))

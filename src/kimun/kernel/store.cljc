@@ -514,6 +514,42 @@
           (update :new-objects dissoc (:id tx)))
       r)))
 
+(defn route-coverage
+  "Verifiable coverage of the durable route map against the documents CURRENTLY
+   anchored to a file at the head: a cached tree counts only when an active
+   `:reference` edge points from its root to an external node. Historical trees
+   left by untrack do not count and do not make the root partial. Returns
+   `:missing-trees` (anchored tree ids with no route) and `:orphan-routes`
+   (paths whose tree is no longer anchored). `:complete?` is false when the
+   route source is unavailable, even if both lists are empty. This reports
+   coverage; it does not invent a missing route."
+  [store]
+  (let [trees (revision/tree-descriptors store)
+        root->tree (into {} (map (fn [[tid d]] [(:root d) tid]) trees))
+        external? (fn [id] (= :external (:kind (revision/get-object store id))))
+        anchored (set (keep (fn [e]
+                              (when (and (= :reference (:type e))
+                                         (external? (:to e)))
+                                (get root->tree (:from e))))
+                            (map #(revision/get-object store %) (revision/active-edges store))))
+        cached (filter (fn [[tid d]] (and (true? (:cached? d)) (contains? anchored tid))) trees)
+        anchored-ids (set anchored)
+        cached-ids (set (map first cached))
+        routes (or (:routes store) {})
+        owners (set (keep :tree-id (vals routes)))
+        missing (vec (sort (remove owners cached-ids)))
+        orphan (vec (sort (keep (fn [[p e]]
+                                  (when-not (contains? anchored-ids (:tree-id e)) p))
+                                routes)))]
+    {:complete? (boolean (and (:routes-available? store)
+                              (empty? missing) (empty? orphan)))
+     :routes-available? (boolean (:routes-available? store))
+     :routes-root (:routes-root store)
+     :cached-trees (count cached)
+     :routed-trees (count (filter owners cached-ids))
+     :missing-trees missing
+     :orphan-routes orphan}))
+
 ;; ---------------------------------------------------------------- verify
 
 (defn- object-or-nil
