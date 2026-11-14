@@ -38,3 +38,7 @@ Comandos bajo `~/bin/memcap` (ver salida completa en `runs/subagents/2026-11-14-
   - Total: `Ran 25 tests containing 199 assertions. 0 failures, 0 errors.`
 
 Nota de alcance: un intento previo de correr `bb test` completo sobre todo el repo fue cancelado al observar fallos en `kimun.cli.diagnostics-test` originados por cambios concurrentes en curso en `src/kimun/surface/diagnostics.cljc` / `src/kimun/cli/commands/stores.cljc` (fuera del alcance de S1).
+
+## Verificación posterior en worktree aislado
+
+Desde el commit `65ca4b5f`, con el pod disponible y sin los cambios K2a en curso, se ejecutó `~/bin/memcap 3 bb test`. Salida: `full-test-isolated.txt` — **942 tests, 9.883 aserciones, 0 fallos, 0 errores**. Esto cierra la validación de la suite completa para S1.
