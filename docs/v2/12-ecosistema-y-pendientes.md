@@ -13,6 +13,28 @@
 
 ## 1. Pendientes en kimun
 
+### Complemento de cierre (2026-11-14)
+
+La tabla de 2026-10-09 abajo conserva el inventario anterior. El concilio revisó
+sus huecos en `runs/research/2026-11-14/concilio/backlog-agy.md` (inventario
+exhaustivo) y `backlog-pi.md` (dependencias y pruebas). La auditoría del spec
+está en `auditoria-spec.md`; las ambigüedades discriminables en `ambiguedades.md`.
+Este complemento no fija prioridades ni decide la identidad por inferencia.
+
+| frente | tareas para cerrarlo | depende de | evidencia de cierre |
+|---|---|---|---|
+| Autoridad y contratos | integrar la dirección 2026-11-14 en `01`, `02`, `05`, `12`, `14`; cerrar D0 en positivo y casos de continuidad; distinguir nodo, observación y ancla | corrección del dueño; mapa de ambigüedades | contrato único S–M con casos de editar, mover, copiar, dividir, fusionar, borrar y cambio de contrato |
+| Sensor y store | K2a/K2b, K6, K8, K3, anclas CST, caché verificable, origen de señales, coste incremental | contrato S–M; K2b y anclas dependen de D0 | Merkle por ruta sobre lo trackeado; mutación local visible y reconciliable sin pérdida silenciosa |
+| Modelos y código | P1, M1/spec 16, M2, S1, superficie de código; separar anclaje de generación | contrato S–M; implementación de M1 depende de P1 y D0 | documento y función de código clasificados, anclados, consultables y regenerables |
+| Relaciones y continuo | tipar relaciones jerárquicas, horizontales, métricas y recursivas; consulta por unidad; embeddings por unidad y actualización asíncrona | D0 y contrato de relaciones | relaciones declaradas recorribles; vecindad continua visible con modelo y vigencia identificables |
+| Heartbeat y respuestas | estabilizar señal, daemon de recálculo, cursores/épocas y consumo asíncrono, causalidad sin bucles | `stores sense` es primer corte; contrato del heartbeat y sensor S–M | cambios externos y resultados internos se observan sin ejecutar acciones en el daemon; reinicio y repetición cubiertos |
+| Ejecuciones marcadas | definir recibo, resultado, dependencias, verificador e invalidación | contrato S–M y canal asíncrono | resultado histórico y vigencia actual distinguibles en un caso reproducible |
+| G | T01, D-G, G1–G3, K7 y consultas justificadas sobre contextos | cierre de S–M; fuentes de `wittgenstein` | fixtures contextuales y trazas de soporte; sin inferencia entre contextos por coincidencia de texto |
+| Operación y vista | C1/F25, K4/K5, C2/API, seguridad, CI/release reproducible, piloto y vista del circuito | contratos de alcance y capas correspondientes | suite, oráculo, include check, fallos inyectados, bundle limpio y recorrido visible del cambio a la respuesta |
+
+El siguiente corte encargado a Claude es un daemon que recalcula y emite señales
+sin ejecutar respuestas. Su implementación se revisa y valida por separado.
+
 ### Qué bloquea qué (2026-10-09)
 
 No hay prioridades: todo lo de esta lista se hace. El grafo dice qué depende de qué, para trabajar en
