@@ -1,0 +1,4 @@
+{"kind":"started","schema":"kimun.heartbeat/1","at":"2026-11-14T10:55:02.570Z","store":{"name":"fix","path":"/tmp/kimun-hbfix-xyq5/.kimun"},"interval-ms":200,"beats":2}
+{"kind":"beat","seq":1,"store":{"name":"fix","path":"/tmp/kimun-hbfix-xyq5/.kimun"},"revision":null,"changed":true,"elapsed-ms":1,"observation":{"observed-at":"2026-11-14T10:55:02.571Z","tracked":0,"valid":true,"signals":[],"counts":{"total":0,"by-type":{},"by-severity":{}},"summary":"no signals"}}
+{"kind":"beat","seq":2,"store":{"name":"fix","path":"/tmp/kimun-hbfix-xyq5/.kimun"},"revision":null,"changed":false,"elapsed-ms":1,"observation":{"observed-at":"2026-11-14T10:55:02.773Z","tracked":0,"valid":true,"signals":[],"counts":{"total":0,"by-type":{},"by-severity":{}},"summary":"no signals"}}
+{"kind":"stopped","at":"2026-11-14T10:55:02.773Z","reason":"beats","beats":2,"errors":0}

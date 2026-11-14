@@ -9,6 +9,7 @@
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.main :as main]
+            [kimun.surface.heartbeat :as heartbeat]
             [kimun.test-util :as ktu]))
 
 (def env {"USER" "tester"})
@@ -41,15 +42,18 @@
           (for [f (fs/glob root "**" {:hidden true}) :when (fs/regular-file? f)]
             [(str (fs/relativize root f)) (slurp (str f))]))))
 
-(defn- stream
-  "Runs `stores heartbeat` with `argv` in-process: `{:envelope e :lines [record]}`,
-   every stdout line parsed as JSON."
+(defn- stream*
+  "Runs `stores heartbeat` with `argv` in-process: `{:envelope e :raw stdout}`."
   [p & argv]
   (let [e (atom nil)
         out (with-out-str (reset! e (apply run p "stores" "heartbeat" argv)))]
-    {:envelope @e
-     :raw out
-     :lines (mapv #(json/parse-string % true) (str/split-lines out))}))
+    {:envelope @e :raw out}))
+
+(defn- stream
+  "`stream*` plus `:lines`, every stdout line parsed as JSON."
+  [p & argv]
+  (let [r (apply stream* p argv)]
+    (assoc r :lines (mapv #(json/parse-string % true) (str/split-lines (:raw r))))))
 
 (deftest the-stream-is-ndjson-and-repeats-the-observation-of-sense
   (let [p (project)
@@ -115,20 +119,42 @@
   (let [{:keys [envelope raw]} (stream (str (ktu/temp-dir "kimun-nostore-")) "--beats" "1")]
     (is (= ["cli/no-store" 5 ""] [(get-in envelope [:error :type]) (:exit envelope) raw]))))
 
-(deftest sigterm-stops-in-order-with-a-stopped-record
+(deftest a-fatal-loop-is-a-streamed-failure-with-exit-70
+  (let [p (project)
+        {:keys [envelope raw]}
+        (with-redefs [heartbeat/run (fn [_] {:reason :fatal :beats 3 :errors 1
+                                             :error {:type "heartbeat/fatal" :message "clock broke"}})]
+          (stream* p "--beats" "5"))]
+    (is (= "" raw) "the command adds no output of its own: the loop wrote the stopped record")
+    (is (= [false "heartbeat/fatal" "clock broke" {:beats 3 :errors 1} 70]
+           [(:ok envelope) (get-in envelope [:error :type]) (get-in envelope [:error :message])
+            (get-in envelope [:error :data]) (:exit envelope)]))
+    (is (true? (:streamed (meta envelope))) "main must not print an envelope after the stream")))
+
+(defn- signalled
+  "Starts the daemon as a separate process, waits for its first beat, sends it
+   `signal` with `kill` (Process.destroy would close this side of the pipe
+   before the last record is read) and returns `{:first [record] :rest [record] :exit n}`."
+  [signal]
   (let [p (project)
         proc (process/process {:dir p :err :string :extra-env {"USER" "tester"}}
                               "bb" "--config" (str (fs/absolutize "bb.edn"))
                               "-m" "kimun.cli.main" "--" "stores" "heartbeat" "--interval" "0.2")
         rdr (io/reader (:out proc))
-        first-two [(.readLine rdr) (.readLine rdr)]]
-    (is (= ["started" "beat"] (mapv #(:kind (json/parse-string % true)) first-two)))
-    ;; `kill`, not Process.destroy: destroy closes this side of the pipe before the last record is read
-    (process/shell "kill" "-TERM" (str (.pid ^Process (:proc proc))))
-    (let [rest-lines (vec (line-seq rdr))
-          exit (:exit @proc)
-          final (json/parse-string (last rest-lines) true)]
-      (is (= {:kind "stopped" :reason "cancelled" :errors 0} (select-keys final [:kind :reason :errors])))
-      (is (every? #(contains? #{"beat" "stopped"} (:kind (json/parse-string % true))) rest-lines)
-          "nothing but whole NDJSON records follows")
-      (is (= 143 exit) "the process ends with the status of the signal"))))
+        parse #(json/parse-string % true)
+        first-two [(parse (.readLine rdr)) (parse (.readLine rdr))]]
+    (process/shell "kill" (str "-" signal) (str (.pid ^Process (:proc proc))))
+    (let [rest-lines (mapv parse (line-seq rdr))]
+      {:first first-two :rest rest-lines :exit (:exit @proc)})))
+
+(deftest sigterm-and-sigint-stop-in-order-with-a-stopped-record
+  (doseq [[signal status] [["TERM" 143] ["INT" 130]]]
+    (testing signal
+      (let [r (signalled signal)
+            final (last (:rest r))]
+        (is (= ["started" "beat"] (mapv :kind (:first r))))
+        (is (= {:kind "stopped" :reason "cancelled" :errors 0} (select-keys final [:kind :reason :errors])))
+        (is (= #{:kind :at :reason :beats :errors} (set (keys final))))
+        (is (every? #(contains? #{"beat" "stopped"} (:kind %)) (:rest r))
+            "nothing but whole NDJSON records follows")
+        (is (= status (:exit r)) "the process ends with the status of the signal")))))

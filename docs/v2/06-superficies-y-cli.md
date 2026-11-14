@@ -113,7 +113,7 @@ salvo, en memoria, la huella de la última observación exitosa (para `changed`)
 | `started` | una vez, al inicio | `schema` (`"kimun.heartbeat/1"`), `at`, `store {name path}`, `interval-ms`, `beats` (`null` = sin límite) |
 | `beat` | observación lograda | `seq`, `store`, `revision` (cabecera observada), `changed`, `elapsed-ms`, `observation` = el `:data` de `stores sense` sin `:mode` (`observed-at tracked valid signals counts summary`) |
 | `error` | observación fallida | `seq`, `at`, `error {type message data}` (la forma del envelope de fallo), `consecutive-errors`, `elapsed-ms` |
-| `stopped` | una vez, al terminar en orden | `at`, `reason` (`beats` · `cancelled` · `fatal`), `beats` (intentos), `errors` (fallidos) |
+| `stopped` | una vez, al terminar en orden | `at`, `reason` (`beats` · `cancelled` · `fatal`), `beats` (intentos), `errors` (fallidos); siempre esos cuatro. Con `fatal` se añade `error {type message}` |
 
 **Semántica de la observación.**
 
@@ -137,8 +137,18 @@ no decide rendirse: `consecutive-errors` deja esa decisión al consumidor.
 **Cancelación.** SIGINT o SIGTERM se atienden entre observaciones y durante la espera, nunca a mitad
 de una: se emite `stopped` con `reason: "cancelled"` y el proceso termina con el estado de la señal
 (130 o 143). El proceso espera ese registro hasta 2 s; si la observación en curso tarda más, termina
-sin `stopped`. Si el consumidor cierra stdout, el bucle termina sin escribir más (exit 0). Un fin de
-flujo sin `stopped` debe leerse como final abrupto. Con `--beats`, `reason: "beats"` y exit 0.
+sin `stopped`. Con `--beats`, `reason: "beats"` y exit 0.
+
+**Consumidor ausente.** Si el consumidor cierra stdout, el bucle termina sin escribir más (exit 0).
+No hay registro `stopped` para ese caso: `stdout-closed` es un resultado interno del bucle
+(`kimun.surface.heartbeat/outcomes`), no un `reason`. Un fin de flujo sin `stopped` debe leerse como
+final abrupto. El cierre se detecta sobre el stdout del proceso (`System/out`): es el único destino
+soportado; si se invoca el comando en proceso con `*out*` reasignado, las líneas van a ese writer y
+el cierre del consumidor no se detecta.
+
+**Fallo fatal.** Si falla el propio bucle (no una observación), el flujo termina con `stopped`,
+`reason: "fatal"`, los mismos `beats`/`errors` y `error {type message}` (tipo `heartbeat/fatal`), y el
+proceso sale con 70. Ese registro se escribe si stdout aún lo admite.
 
 **Límites conocidos.** Cada latido incluye la verificación de hashes del store (`stores check`), así
 que su costo crece con el store; el intervalo lo elige quien lo lanza (bajo `memcap` si el store es

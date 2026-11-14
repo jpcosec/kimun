@@ -102,6 +102,34 @@
       (is (= {:reason :stdout-closed :beats 0 :errors 0} result))
       (is (empty? records)))))
 
+(deftest a-failure-of-the-loop-itself-ends-with-a-fatal-stopped-of-the-same-shape
+  (let [records (atom []) waits (atom 0)
+        result (hb/run {:observe #(observation "r1" [])
+                        :emit #(do (swap! records conj %) true)
+                        :wait (fn [_] (if (= 2 (swap! waits inc)) (throw (ex-info "clock broke" {})) false))
+                        :stop? (constantly false) :clock (constantly "T") :now-ms (constantly 0)
+                        :store {} :interval-ms 100 :beats nil})]
+    (is (= ["started" "beat" "beat" "stopped"] (mapv :kind @records)))
+    (is (= {:kind "stopped" :at "T" :reason "fatal" :beats 2 :errors 0
+            :error {:type "heartbeat/fatal" :message "clock broke"}}
+           (last @records)))
+    (is (= {:reason :fatal :beats 2 :errors 0 :error {:type "heartbeat/fatal" :message "clock broke"}}
+           result)))
+  (testing "an emit that raises cannot also deliver the stopped record; run still returns"
+    (let [n (atom 0)
+          result (hb/run {:observe #(observation "r1" [])
+                          :emit (fn [_] (if (> (swap! n inc) 1) (throw (ex-info "sink broke" {})) true))
+                          :wait (constantly false) :stop? (constantly false) :clock (constantly "T")
+                          :now-ms (constantly 0) :store {} :interval-ms 100 :beats nil})]
+      (is (= [:fatal 0 "sink broke"] [(:reason result) (:beats result) (get-in result [:error :message])])))))
+
+(deftest every-stopped-record-has-the-same-fields-and-a-known-reason
+  (is (= #{:beats :cancelled :fatal} hb/stop-reasons))
+  (is (= (conj hb/stop-reasons :stdout-closed) hb/outcomes))
+  (doseq [r hb/stop-reasons]
+    (is (= #{:kind :at :reason :beats :errors} (set (keys (hb/stopped "T" r 1 0))))))
+  (is (= [:kind :at :reason :beats :errors :error] (keys (hb/stopped "T" :fatal 1 0 {:type "x" :message "m"})))))
+
 (deftest interval-and-beats-are-validated
   (is (= 30000 (hb/parse-interval nil)))
   (is (= [100 1500 60000] (mapv hb/parse-interval ["0.1" "1.5" " 60 "])))

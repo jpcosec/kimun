@@ -136,7 +136,11 @@
 
 (defn- emit-line!
   "Writes `record` as one compact JSON line on stdout and flushes; false when
-   stdout no longer accepts output (the consumer closed the pipe)."
+   stdout no longer accepts output (the consumer closed the pipe). The line is
+   written through `*out*` and the closed pipe is detected on the process's
+   `System/out`: the two are the same stream in the CLI, the only supported
+   host. Where `*out*` is rebound (an in-process test, an embedding) the line
+   goes to the rebound writer and a closed consumer is not detected."
   [record]
   (try (println (json/generate-string record))
        (flush)
@@ -158,8 +162,10 @@
    from scratch. SIGINT/SIGTERM stop between observations with a `stopped`
    record (the hook waits up to 2 s for it); a closed stdout ends the loop.
    A bad option or a missing store fails before any record, as the usual
-   failure envelope. The returned envelope carries `{:streamed true}` in its
-   metadata so `kimun.cli.main` does not print it after the stream."
+   failure envelope. A failure of the loop itself ends the stream with a
+   `stopped` record of reason `fatal` and exit 70. The returned envelope
+   carries `{:streamed true}` in its metadata so `kimun.cli.main` does not
+   print it after the stream."
   [_args opts {:keys [env cwd]}]
   (let [interval-ms (or (heartbeat/parse-interval (:interval opts))
                         (err/raise :cli/usage (str "--interval needs seconds between 0.1 and 86400, got `" (:interval opts) "`")
@@ -188,13 +194,11 @@
                               :store ref
                               :interval-ms interval-ms
                               :beats beats})]
-        (with-meta (out/ok "stores heartbeat" {:store ref :data r}) {:streamed true}))
-      (catch Throwable e
-        ;; nothing but NDJSON may follow the first record: the failure is the last line
-        (emit-line! {:kind "stopped" :at (docs/timestamp) :reason "fatal"
-                     :error {:type "cli/unexpected" :message (or (ex-message e) (str (class e)))}})
-        (with-meta (out/failure :cli/unexpected (or (ex-message e) (str (class e))) {} 70)
-          {:streamed true :throwable e}))
+        ;; nothing but NDJSON may follow the first record: either way the envelope is not printed
+        (with-meta (if (= :fatal (:reason r))
+                     (out/failure :heartbeat/fatal (get-in r [:error :message]) (select-keys r [:beats :errors]) 70)
+                     (out/ok "stores heartbeat" {:store ref :data r}))
+          {:streamed true}))
       (finally
         (deliver done true)
         (try (.removeShutdownHook runtime hook) (catch IllegalStateException _ nil))))))
