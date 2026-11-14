@@ -215,7 +215,8 @@
         ;; the empty mmap is a constant the loader resolves without the CAS: deleting
         ;; it is not damage (kimun.kernel.revision/loader), so it is no victim here
         empty-map (:root (mmap/empty (:host s)))
-        candidates (vec (remove (conj heads empty-map) (sort (store/reachable s))))]
+        candidates (vec (filter #(fs/exists? (file p0 ".kimun" "objects" %))
+                                (remove (conj heads empty-map) (sort (store/reachable s)))))]
     (doseq [id (take 6 (shuffle candidates))]
       (let [p (damaged-copy p0 id (rand-nth [:altered :unparseable :deleted]))
             e (run p "stores" "check")

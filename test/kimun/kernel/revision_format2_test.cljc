@@ -8,6 +8,7 @@
             [kimun.kernel.test-util :as tu :refer [defspec]]
             [kimun.host.default :as host]
             [kimun.host.fs-store :as fs]
+            [kimun.host.store-cache :as store-cache]
             [kimun.kernel.canon :as canon]
             [kimun.kernel.generators :as g]
             [kimun.kernel.legacy.revision :as legacy]
@@ -186,7 +187,8 @@
 (deftest a-hub-keeps-its-edges-in-a-nested-set-and-costs-a-few-nodes-per-edge
   (let [texts (mapv #(str "t" %) (range 40))
         {:keys [store hub edges]} (hub-store texts 1)
-        other (hub-store (reverse texts) 7)]
+        other (hub-store (reverse texts) 7)
+        plans (set (keep :tx (vals (:revisions store))))]
     (testing "above the threshold the value is {:set root}; the accessor still answers the sorted ids"
       (is (= [:set] (keys (hub-value store hub))))
       (is (= 40 (count (rev/edges-touching store hub))))
@@ -217,7 +219,8 @@
     (testing "reachable walks the nested sets: everything this history wrote is reachable from its head"
       (let [reach (store/reachable store)]
         (is (contains? reach (:set (hub-value store hub))))
-        (is (every? reach (keys (:objects store))))
+        (is (every? #(or (contains? plans %) (reach %)) (keys (:objects store)))
+          "tx plans are provenance, not reachable objects")
         (let [root (:set (hub-value store hub))
               damaged (store/reachable (update store :objects dissoc root))]
           (is (contains? damaged root) "a missing nested root is in the result (verify reports it), not raised")
@@ -307,13 +310,17 @@
     (is (= (set (keys (:objects final))) (set (keys (:objects @state)))))
     (is (= (select-keys final [:head :heads :revisions :trees :edges]) (select-keys (store/open b h) [:head :heads :revisions :trees :edges])))
     (is (:ok? (store/verify b final)))
-    (is (= (count (store/reachable final)) (:checked (store/verify b final))))
+    (is (= (count (remove (set (keep :tx (vals (:revisions final)))) (store/reachable final)))
+           (:checked (store/verify b final)))
+        "the tx digests are reachable but are not hashed as ordinary objects")
     ;; heads.edn names the root of the per-tree heads mmap: the nodes a later commit replaced
     ;; are the only objects no head reaches any more (nothing references an old heads root)
     (let [mmap-nodes (fn mmap-nodes [id] (cons id (mapcat mmap-nodes (mmap/child-ids (get (:objects final) id)))))
           old-heads (set (mapcat mmap-nodes (remove #{(:heads-root final)} @heads-roots)))
+          plans (set (keep :tx (vals (:revisions final))))
           unreached (remove (set (store/reachable final)) (keys (:objects final)))]
-      (is (every? old-heads unreached) "every other object is reachable from the heads"))))
+      (is (every? #(or (old-heads %) (plans %)) unreached)
+          "only replaced heads roots and tx plan digests are unreachable"))))
 
 (deftest the-resolved-plan-of-a-revision-references-nodes-by-id
   ;; docs/v2/14 §10: the text lives once. The resolved plan (what the transaction
@@ -328,8 +335,12 @@
                     {:op :new-tree :tree {:kind :document :name "doc"} :id "01ARZ3NDEKTSV4RRFFQ69G5FAV" :root :root :as :t}
                     {:op :add-edge :edge {:type :ownership :tree :t :parent [] :to :p :order 0}}]}
         r (store/commit! b s0 plan)
-        resolved (edn/read-string (store/read-object b (:id (:transaction r))))]
-    (is (= (:id (:transaction r)) (canon/digest h resolved)) "the CAS plan is exactly what the transaction id hashes")
+        tx-id (:id (:transaction r))
+        resolved (or (store-cache/read-plan dir tx-id)
+                     (some-> (store/read-object b tx-id) edn/read-string))]
+    (is (map? resolved) "the resolved plan is available from the plan cache")
+    (is (not (bfs/exists? (str dir "/objects/" tx-id))) "it is not a CAS object")
+    (is (= tx-id (canon/digest h resolved)) "the cached plan is exactly what the transaction id hashes")
     (is (seq (filter #(= :add-node (:op %)) (:ops resolved))) "the plan adds nodes")
     (is (every? #(not (contains? % :node)) (filter #(= :add-node (:op %)) (:ops resolved)))
         "no add-node op carries node content")

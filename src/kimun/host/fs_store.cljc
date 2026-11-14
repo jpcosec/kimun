@@ -111,6 +111,9 @@
   store/ObjectCache
   (cached-object [_ id] (get @cache id))
   (cache-object! [_ id obj] (swap! cache assoc id obj) obj)
+  store/PlanCache
+  (read-plan [_ tx-id] (cache/read-plan dir tx-id))
+  (write-plan! [_ tx-id plan] (cache/write-plan! dir tx-id plan))
   store/Backend
   (read-descriptor [_]
     #?(:clj (some-> (read-text (path dir "store.edn")) edn/read-string)))
@@ -122,7 +125,10 @@
     ;; by-reference document) is read as a fallback: derived, deletable and
     ;; recomputable from the file (docs/v2/14 §18.6, §19)
     #?(:clj (or (read-text (path dir "objects" id))
-                (cache/read-object dir id))))
+                (cache/read-object dir id)
+                ;; a resolved plan is not a CAS object: the in-memory object
+                ;; view still exposes it so journal/history read it as before
+                (some-> (cache/read-plan dir id) pr-str))))
   (write-object! [_ id content]
     #?(:clj (let [p (path dir "objects" id)]
               (when-not (exists? p) (write-atomic! p content)))))

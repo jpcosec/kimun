@@ -8,7 +8,9 @@
      <dir>/cache/         format 4: derived cache of a document with an external anchor —
                           one entry per document keyed by (fingerprint, class, parser) plus
                           its tree/block/field objects by hash; gitignored, deletable,
-                          recomputable from the file and verifiable against the root hash
+                          recomputable from the file and verifiable against the root hash;
+                          cache/plans/<tx-id>.edn holds the resolved build plan (K2a),
+                          read by replay and checked by verify-full
      <dir>/log.edn        one Transaction map per line, append-only: {:id :plan :revision} in
                           formats 1–2, {:id :revision} in formats 3–4
      <dir>/heads.edn      formats 2–4: {:head rev-id :heads-root mmap-root-id} (the per-tree
@@ -66,6 +68,15 @@
      log line, then replaces the heads with `new`; returns true. An adapter
      whose lock is held by another process may raise :store/busy instead of
      waiting, having written nothing."))
+
+;; ---------------------------------------------------------------- plan cache (optional port)
+
+(defprotocol PlanCache
+  "Optional backend capability: the resolved plan of a transaction lives in the
+   store's derived cache, not in the CAS. A backend without it keeps the plan in
+   `objects/` (formats 1–3 and in-memory test backends)."
+  (read-plan [b tx-id] "The resolved plan cached under `tx-id`, or nil.")
+  (write-plan! [b tx-id plan] "Writes the resolved plan once; returns its id."))
 
 ;; ---------------------------------------------------------------- object cache (optional port)
 
@@ -254,11 +265,13 @@
 
 (defn- plan-of
   "The resolved plan of a log entry of `b`: `:plan` when the line carries it
-   (format 2), else the CAS object `:id` (format 3; its text is what is
-   hashed, and the caller checks `H(text) == id` through `apply-plan`)."
+   (format 2), else the CAS object `:id` (legacy), else the derived plan cache
+   (`PlanCache`). A plan is identified by the digest of its resolved form; its
+   absence is reported by replay, never silently accepted."
   [b entry]
   (or (:plan entry)
-      (some-> (read-object b (:id entry)) edn/read-string)))
+      (some-> (read-object b (:id entry)) edn/read-string)
+      (when (satisfies? PlanCache b) (read-plan b (:id entry)))))
 
 (defn- replay-log
   "Replays the entries `log` over the empty store of backend `b`."
@@ -406,8 +419,8 @@
 
 (defn- tx-line
   "The log line written for transaction `tx` of `store`: the whole Transaction
-   in formats 1–2, `{:id :revision}` in formats 3–4 — the resolved plan is in
-   the CAS (invariant 17) and the line no longer duplicates it."
+   in formats 1–2, `{:id :revision}` in formats 3–4 — the resolved plan lives in
+   the CAS (legacy) or the derived plan cache and the line never duplicates it."
   [store tx]
   (if (>= (or (:format-version store) 2) 3) (dissoc tx :plan) tx))
 
@@ -424,14 +437,28 @@
   (let [host (:host store)
         r (revision/apply-plan store plan)
         s' (:store r)
-        new-objects (if (revision/legacy? store)
-                      (into {} (remove #(contains? (:objects store) (key %))) (:objects s'))
-                      (:new-objects r))
+        tx (:transaction r)
+        ;; Only format 4 is the K2a plan-cache format. Format 3 is legacy:
+        ;; its resolved plan stays in the CAS so its replay path is unchanged.
+        plan-cache? (and (satisfies? PlanCache b)
+                         (>= (or (:format-version store) 2) 4))
+        new-objects (cond-> (if (revision/legacy? store)
+                              (into {} (remove #(contains? (:objects store) (key %))) (:objects s'))
+                              (:new-objects r))
+                      plan-cache? (dissoc (:id tx)))
         expected (heads-record store)]
+    ;; The plan is provenance/audit, not authority: with a PlanCache backend it
+    ;; is written to the derived cache before the commit, so a successful commit
+    ;; is replayable. A backend without the port keeps the legacy CAS shape.
+    (when plan-cache? (write-plan! b (:id tx) (:plan tx)))
     (doseq [[id obj] new-objects] (write-object! b id (serialize host obj)))
-    (when-not (commit-tx! b expected (tx-line store (:transaction r)) (heads-record s'))
+    (when-not (commit-tx! b expected (tx-line store tx) (heads-record s'))
       (fail "heads moved since the store was loaded; reload and retry" {:type :store/stale :expected expected}))
-    r))
+    (if plan-cache?
+      (-> r
+          (update :store update :objects dissoc (:id tx))
+          (update :new-objects dissoc (:id tx)))
+      r)))
 
 ;; ---------------------------------------------------------------- verify
 
@@ -459,8 +486,11 @@
       ;; the root's kind carries its descriptor id, so reachability decides per tree
       (vec (mapcat (fn [[_ v]] (if (vector? v) [[(first v) :obj] [(second v) [:tree-hash (first v)]]] [])) (:entries o)))
       (mmap/leaf? o) (as :obj (mapcat (fn [[k v]] (concat (when-not (= :trees kind) [k]) (cond (vector? v) v (and (map? v) (:set v)) [(:set v)]))) (:entries o)))
-      (and (map? o) (:incidence o) (:tx o)) (concat (as :trees [(:trees o)]) (as :obj (concat [(:edges o) (:incidence o) (:tx o)] (:parents o))))
-      (and (map? o) (:roots o) (:tx o))            (as :soft (concat (vals (:roots o)) [(:trees o) (:edges o) (:tx o)] (:parents o)))
+      ;; `:tx` is a provenance digest, not a CAS object: the resolved plan may
+      ;; live in the plan cache (K2a). `verify-full` checks plans when present;
+      ;; this walk deliberately does not turn a cache absence into corruption.
+      (and (map? o) (:incidence o) (:tx o)) (concat (as :trees [(:trees o)]) (as :obj (concat [(:edges o) (:incidence o)] (:parents o))))
+      (and (map? o) (:roots o) (:tx o))            (as :soft (concat (vals (:roots o)) [(:trees o) (:edges o)] (:parents o)))
       (and (map? o) (:node o) (contains? o :children)) (as :obj (cons (:node o) (mapcat identity (:children o))))
       (and (vector? o) (every? vector? o))         (as :soft (map second o))
       (and (vector? o) (every? string? o))         (as :soft o)
@@ -474,7 +504,9 @@
    Format-2 Revisions are walked through their three mmaps (branch children,
    leaf keys, id vectors and the nested edge-id set of a hub
    :incidence entry `{:set root}`), and the per-tree heads through the nodes of
-   the :heads-root mmap; format-1 Revisions through :roots and the sets.
+   the :heads-root mmap; format-1 Revisions through :roots and the sets. The
+   `:tx` digest is provenance, not an object: a resolved plan in the CAS or the
+   PlanCache is verified by `verify-full`, not by this walk.
    For a format-2 `:trees` mmap leaf, the descriptor is followed as an object
    and its merkle root as a `[:tree-hash descriptor-id]`: if the tree is marked `:cached?` the
    root is derived (cache, docs/v2/14 §19) and is not required to be in the
@@ -518,10 +550,22 @@
                 (nil? o) (recur more (conj seen id))
                 :else (recur (into more (err/rescue-any (fn [_] []) (vec (references o (if (vector? kind) :obj kind))))) (conj seen id))))))))))
 
+(defn- plan-ids
+  "The transaction digests named by log entries, ascending. Reading the log
+   avoids parsing a damaged older Revision just to decide which plans to check."
+  [log]
+  (->> log
+       (map :id)
+       (remove nil?)
+       set
+       sort
+       vec))
+
 (defn verify
   "The cheap-ish check: recomputes H(file) for every object reachable from the
    heads of `store` (detects a missing or tampered object; does not read the
-   log beyond its tail and does not detect heads that disagree with it). Returns
+   log beyond its tail, does not detect heads that disagree with it, and does
+   not check transaction plans: `verify-full` does). Returns
    {:ok? bool :checked n :bad [{:id :reason (:missing | :hash-mismatch)}]},
    plus :uncommitted-tail <log entry> when the log ends with a line the heads
    do not record (reported, not an error: see `log-tail`). Also reads the log
@@ -530,8 +574,8 @@
    cut or overwritten) is the bad entry {:reason :log-heads-mismatch}."
   [b store]
   (let [hasher (ports/hasher (:host store))
-        ids (sort (reachable store))
         log (vec (read-log b))
+        ids (sort (reachable store))
         state (log-tail (read-heads b) (last-two log))
         tail (when (= :uncommitted state) (peek log))
         bad (concat
@@ -545,17 +589,113 @@
     (cond-> {:ok? (empty? bad) :checked (count ids) :bad (vec bad)}
       tail (assoc :uncommitted-tail tail))))
 
+(defn- cached-plan
+  "The plan object of `id`: legacy CAS text first, then the PlanCache value;
+   nil when neither exists. A damaged cached plan is reported as missing, never
+   as a corrupt object."
+  [b id]
+  (or (when (satisfies? PlanCache b)
+        (err/rescue-any (fn [_] nil) (read-plan b id)))
+      (err/rescue-any (fn [_] nil) (read-object b id))))
+
+(defn- plan-check
+  "Plan evidence of `store`: `{:ids [...] :missing [...] :bad [...]}`. A plan
+   present in the CAS or the cache must hash to its transaction id; an absent
+   plan is `:missing`, not `:bad`."
+  [b host log]
+  (let [ids (plan-ids log)
+        entries (keep (fn [entry]
+                        (when (string? (:id entry))
+                          [(:id entry) (or (:plan entry) (cached-plan b (:id entry)))]))
+                      log)
+        digest (fn [content]
+                 (if (string? content)
+                   (ports/digest-str (ports/hasher host) content)
+                   (canon/digest host content)))
+        missing (mapv first (remove second entries))
+        bad (vec (for [[id content] entries
+                       :when (and content
+                                  (not= id (err/rescue-any (fn [_] nil) (digest content))))]
+                   {:id id :reason :hash-mismatch}))]
+    {:ids ids :missing missing :bad bad}))
+
+(defn- log-id-mismatches
+  "Log entries whose `:id` disagrees with the `:tx` of the Revision they name.
+   A damaged/unreadable Revision is left to `verify`/replay; this check catches
+   a hand-altered durable log line before a missing plan can be mistaken for a
+   cache absence."
+  [store log]
+  (vec (for [{:keys [id revision]} log
+             :when (and (string? id) (string? revision))
+             :let [rev (err/rescue-any (fn [_] nil) (get (:revisions store) revision))]
+             :when (and (map? rev) (string? (:tx rev)) (not= id (:tx rev)))]
+         {:id id :revision revision :tx (:tx rev)})))
+
 (defn verify-full
-  "The full verification, trusting only store.edn and log.edn: `replay-open`
-   (every logged plan through apply-plan, every transaction and revision id,
-   the final heads against heads.edn, :incidence recomputed) and then `verify`
-   over the REPLAYED store. Detects what `verify` detects plus a truncated or
-   altered log line and heads that disagree with the log. Never raises for a
-   corrupt store: returns `verify`'s map plus :store (the replayed value), or
-   {:ok? false :checked 0 :bad [{:reason :replay-failed :message m :data d}]}."
+  "The full verification. Replays the log only when every transaction plan is
+   available from the CAS or the `PlanCache`; a complete replay checks every
+   transaction and revision id, the final heads and the recomputed incidence,
+   then `verify` checks the replayed store. A missing plan is not corruption:
+   the object check still runs on the store opened from the heads, and the
+   result carries `:replay-unavailable {:reason :plan-cache-missing :missing
+   [tx-id …]}`; the command must not claim a complete replay. A present plan
+   whose digest differs is `:bad` (`:hash-mismatch`). Never raises for a corrupt
+   store: returns `verify`'s map plus `:store` and `:replay`, or
+   `{:ok? false :checked 0 :bad [{:reason :replay-failed …}]}`."
   [b host]
-  (let [s (err/rescue (fn [e] {::failed {:reason :replay-failed :message (ex-message e) :data (dissoc (ex-data e) :file :replayed)}})
-                      (replay-open b host))]
-    (if-let [f (::failed s)]
-      {:ok? false :checked 0 :bad [f]}
-      (assoc (verify b s) :store s))))
+  (let [opened (err/rescue-any (fn [_] nil) (open b host))
+        log-result (err/rescue-any
+                    (fn [e] {::log-failed {:reason :replay-failed :message (ex-message e)
+                                           :data (dissoc (ex-data e) :file :replayed)}})
+                    (vec (committed-log b)))
+        log-error (::log-failed log-result)
+        log (if log-error [] log-result)
+        log-bad (when opened (log-id-mismatches opened log))
+        plans (when opened (plan-check b host log))
+        missing (:missing plans)
+        plan-bad (:bad plans)
+        replayed (when-not (or log-error (seq log-bad) (seq plan-bad) (seq missing))
+                   (err/rescue (fn [e] {::failed {:reason :replay-failed :message (ex-message e)
+                                                   :data (dissoc (ex-data e) :file :replayed)}})
+                               (replay-open b host)))]
+    (cond
+      log-error
+      {:ok? false :checked 0 :bad [log-error]}
+
+      (seq log-bad)
+      {:ok? false :checked 0
+       :bad [{:reason :replay-failed
+              :message "a durable log line names a transaction id that is not its revision's tx"
+              :data {:log-id-mismatch log-bad}}]}
+
+      ;; A present plan whose digest differs is a hash mismatch. Do not replay:
+      ;; replaying would report only :replay-failed and lose the evidence.
+      (and (seq plan-bad) opened)
+      (let [v (verify b opened)]
+        (assoc v
+               :store opened
+               :bad (vec (concat (:bad v) plan-bad))
+               :ok? false
+               :replay {:status :skipped :reason :plan-hash-mismatch}))
+
+      (and (seq missing) opened)
+      (let [v (verify b opened)]
+        (assoc v
+               :store opened
+               :bad (vec (concat (:bad v) plan-bad))
+               :ok? (and (:ok? v) (empty? plan-bad))
+               :replay-unavailable {:reason :plan-cache-missing :missing missing}
+               :replay {:status :unavailable :reason :plan-cache-missing}))
+
+      (::failed replayed)
+      {:ok? false :checked 0 :bad [(::failed replayed)]}
+
+      (map? replayed)
+      (let [v (verify b replayed)
+            bad (vec (concat (:bad v) plan-bad))]
+        (assoc v :store replayed :bad bad :ok? (and (:ok? v) (empty? bad))
+               :replay {:status :complete}))
+
+      :else
+      {:ok? false :checked 0 :bad [{:reason :replay-failed
+                                    :message "the store could not be opened for verification"}]})))

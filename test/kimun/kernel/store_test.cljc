@@ -9,6 +9,7 @@
             [kimun.kernel.revision :as rev]
             [kimun.kernel.store :as store]
             [kimun.host.fs-store :as fs]
+            [kimun.host.store-cache :as store-cache]
             [kimun.kernel.generators :as g]
             #?@(:clj [[clojure.java.io :as io]
                       [babashka.fs :as bfs]
@@ -323,8 +324,11 @@
    (deftest the-lazy-and-the-eager-store-show-the-same-views
      (let [[dir b s] (docs-store! 4 2)
            eager-host (dissoc h :lazy-maps)
-           views (fn [st] (assoc (snapshot st) :trees (into {} (:trees st)) :objects (into {} (:objects st))
-                                 :capabilities (:capabilities st) :format-version (:format-version st)))
+           views (fn [st]
+                   (let [plans (set (keep :tx (vals (:revisions st))))]
+                     (assoc (snapshot st) :trees (into {} (:trees st))
+                            :objects (into {} (remove (fn [[id _]] (contains? plans id)) (:objects st)))
+                            :capabilities (:capabilities st) :format-version (:format-version st))))
            lazy (store/open b h)
            eager (store/open b eager-host)]
        (is (not (kimun.kernel.ports/lazy-maps? eager-host)))
@@ -447,7 +451,8 @@
            (is (failed? r))
            (is (nil? (:open r)) "open does not read the log: only the full verification sees it")))
        (testing "an altered log line"
-         ;; format 3 lines carry {:id :revision} only: the id names the resolved plan in the CAS
+         ;; K2a: the log :id is compared with the revision's :tx before a missing
+         ;; plan can be reported as a cache absence. An altered id is corruption.
          (let [r (full (fn [_ log _] (spit log (str/replace-first (slurp log) ":id \"" ":id \"0"))))]
            (is (failed? r))
            (is (nil? (:open r)))))
@@ -507,8 +512,9 @@
            (is (identical? (get (:objects o1) (:head s)) (get (:objects o2) (:head s))) "parsed once: the same value"))
          (reset! reads {})
          (is (:ok? (store/verify b o1)))
-         (is (= (frequencies (store/reachable o1)) (frequencies (present)))
-             "the hash check reads every reachable object from the backend, cached or not"))
+         (let [plans (set (keep :tx (vals (:revisions o1))))]
+           (is (= (frequencies (remove plans (store/reachable o1))) (frequencies (present)))
+               "the hash check reads every reachable non-plan object from the backend, cached or not")))
        (is (empty? (fs/cached-ids (fs/backend dir))) "instances share nothing"))))
 
 #?(:clj
@@ -544,3 +550,74 @@
        (let [v (store/verify-full b h)]
          (is (true? (:ok? v)))
          (is (= (:id (:transaction dead)) (:id (:uncommitted-tail v))))))))
+
+;; ---------------------------------------------------------------- K2a plan cache
+
+#?(:clj
+   (deftest resolved-plans-live-in-cache-and-replay-still-works
+     (let [[dir b s] (docs-store! 3 0)
+           tx-id (:tx (rev/revision s (:head s)))
+           plan-file (store-cache/plan-path dir tx-id)
+           object-file (str dir "/objects/" tx-id)]
+       (is (bfs/exists? plan-file) "the resolved plan is in cache/plans")
+       (is (not (bfs/exists? object-file)) "the resolved plan is not in the CAS")
+       (is (:ok? (store/verify-full b h)))
+       (is (= {:status :complete} (:replay (store/verify-full b h))))
+       (is (= (:head s) (:head (store/replay-open b h))) "cache plan replays"))))
+
+#?(:clj
+   (deftest a-missing-plan-cache-is-replay-unavailable-not-corruption
+     (let [[dir b s] (docs-store! 3 0)
+           tx-id (:tx (rev/revision s (:head s)))
+           plan-file (store-cache/plan-path dir tx-id)
+           _ (bfs/delete plan-file)
+           v (store/verify-full b h)]
+       (is (true? (:ok? v)) "the object check still passes")
+       (is (= [] (:bad v)) "a missing cache plan is not a corrupt object")
+       (is (= {:reason :plan-cache-missing :missing [tx-id]} (:replay-unavailable v)))
+       (is (= {:status :unavailable :reason :plan-cache-missing} (:replay v)))
+       (is (:ok? (store/verify b (store/open b h))) "the cheap check is unaffected")
+       (is (= :store/corrupt-log (:type (ex-of #(store/replay-open b h))))
+           "replay refuses instead of pretending it is complete"))))
+
+#?(:clj
+   (deftest a-legacy-cas-plan-is-still-checked-and-replayable
+     (let [[dir b s] (docs-store! 2 0)
+           tx-id (:tx (rev/revision s (:head s)))
+           plan (store-cache/read-plan dir tx-id)
+           plan-file (store-cache/plan-path dir tx-id)
+           _ (spit (str dir "/objects/" tx-id) (store/serialize h plan))
+           _ (bfs/delete plan-file)
+           v (store/verify-full b h)]
+       (is (= {:status :complete} (:replay v)))
+       (is (true? (:ok? v)))
+       (is (= (:head s) (:head (store/replay-open b h)))
+           "the legacy CAS plan keeps the old replay path"))))
+
+#?(:clj
+   (deftest a-tampered-cached-plan-is-a-hash-mismatch-not-a-replay-failure
+     (let [[dir b s] (docs-store! 2 0)
+           tx-id (:tx (rev/revision s (:head s)))
+           plan-file (store-cache/plan-path dir tx-id)
+           plan (store-cache/read-plan dir tx-id)
+           _ (spit plan-file (pr-str (assoc plan :actor "tampered")))
+           v (store/verify-full b h)]
+       (is (false? (:ok? v)))
+       (is (= [{:id tx-id :reason :hash-mismatch}] (:bad v)))
+       (is (= {:status :skipped :reason :plan-hash-mismatch} (:replay v)))
+       (is (nil? (:replay-unavailable v))
+           "a present but wrong plan is corruption, not a missing cache"))))
+
+#?(:clj
+   (deftest format-3-keeps-its-resolved-plan-in-the-cas
+     (let [dir (tmp-dir)
+           b (fs/backend dir)
+           s0 (store/init! b h {"jp" :all} {:format-version 3})
+           s1 (:store (store/commit! b s0 (doc-plan s0 1)))
+           tx-id (:tx (rev/revision s1 (:head s1)))]
+       (is (bfs/exists? (str dir "/objects/" tx-id))
+           "format 3 is legacy CAS: the plan is an object")
+       (is (not (bfs/exists? (store-cache/plan-path dir tx-id)))
+           "format 3 does not use the format-4 plan cache")
+       (is (= (:head s1) (:head (store/replay-open b h))))
+       (is (= {:status :complete} (:replay (store/verify-full b h)))))))

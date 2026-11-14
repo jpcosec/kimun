@@ -1,0 +1,77 @@
+{
+  "ok" : true,
+  "command" : "journal show",
+  "store" : {
+    "name" : "c3",
+    "path" : "/tmp/kimun-k2a-c3-uAqQv9/.kimun"
+  },
+  "revision" : "bcd6b199c68fef1b96ba5c087db97af63d56074d91b1a8c0e79baeb5dc178cc1",
+  "data" : [ {
+    "address" : "TicketDoc:login",
+    "revision" : "bcd6b199c68fef1b96ba5c087db97af63d56074d91b1a8c0e79baeb5dc178cc1",
+    "fields" : {
+      "status" : {
+        "before" : null,
+        "after" : "open"
+      },
+      "title" : {
+        "before" : null,
+        "after" : "T"
+      }
+    },
+    "operation" : "docs create",
+    "transaction" : "f476efada3f8a1f43a7c63d5ca36a6d8be942b1e21d1eb3ba70f6c5789356438",
+    "ops" : {
+      "add-node" : 2,
+      "register-tree" : 1,
+      "add-edge" : 3
+    },
+    "parents" : [ "ee6ce7dc5b25d8e6db60c414b28d974e1d3bfc3f11be71b969d6a820c582bb8c" ],
+    "changes" : [ {
+      "tree" : "01M7DBGZEC1ZJP913XFWDGDN53",
+      "name" : "login",
+      "kind" : "document",
+      "created?" : true,
+      "nodes-added" : 5,
+      "nodes-removed" : 0,
+      "moved" : 0,
+      "text" : {
+        "before" : [ ],
+        "after" : [ "Status: open", "T" ]
+      }
+    } ],
+    "timestamp" : "2026-11-14T15:41:26.348Z",
+    "actor" : "human/jp",
+    "trees" : [ {
+      "name" : "login",
+      "kind" : "document",
+      "tree" : "01M7DBGZEC1ZJP913XFWDGDN53"
+    } ]
+  }, {
+    "revision" : "ee6ce7dc5b25d8e6db60c414b28d974e1d3bfc3f11be71b969d6a820c582bb8c",
+    "parents" : [ ],
+    "actor" : "human/jp",
+    "timestamp" : "2026-11-14T15:41:25.680Z",
+    "transaction" : "c83155cd431d2b097a486c5fe6cafd26dfa9473c06be58d72a6a57d4c558ac75",
+    "ops" : {
+      "add-node" : 2,
+      "new-tree" : 1,
+      "add-edge" : 1
+    },
+    "trees" : [ {
+      "name" : "models",
+      "kind" : "taxonomy",
+      "tree" : "01M7DBGYSH9TAB9R84BVJ0WDGW"
+    } ],
+    "changes" : [ {
+      "tree" : "01M7DBGYSH9TAB9R84BVJ0WDGW",
+      "name" : "models",
+      "kind" : "taxonomy",
+      "created?" : true,
+      "nodes-added" : 2,
+      "nodes-removed" : 0,
+      "moved" : 0
+    } ]
+  } ],
+  "warnings" : [ ]
+}

@@ -1,0 +1,14 @@
+{
+  "ok" : true,
+  "command" : "stores verify",
+  "store" : {
+    "name" : "c3",
+    "path" : "/tmp/kimun-k2a-c3-uAqQv9/.kimun"
+  },
+  "revision" : "bcd6b199c68fef1b96ba5c087db97af63d56074d91b1a8c0e79baeb5dc178cc1",
+  "data" : {
+    "checked" : 19,
+    "bad" : [ ]
+  },
+  "warnings" : [ ]
+}

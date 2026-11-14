@@ -1,0 +1,20 @@
+{
+  "ok" : true,
+  "command" : "stores init",
+  "store" : {
+    "name" : "c3",
+    "path" : "/tmp/kimun-k2a-c3-uAqQv9/.kimun"
+  },
+  "revision" : null,
+  "data" : {
+    "path" : "/tmp/kimun-k2a-c3-uAqQv9/.kimun",
+    "name" : "c3",
+    "actor" : "human/jp",
+    "capabilities" : {
+      "human/jp" : "all",
+      "kimun/derive" : "all",
+      "kimun/materialize" : "all"
+    }
+  },
+  "warnings" : [ ]
+}

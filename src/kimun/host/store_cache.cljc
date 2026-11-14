@@ -9,7 +9,8 @@
    `kimun.host.fs-store`); the surface repopulates it through the resolver when
    it is absent (`kimun.surface.docs`).
    Pure I/O over a store directory; nothing here knows about nodes or trees."
-  (:require [babashka.fs :as fs]))
+  (:require [babashka.fs :as fs]
+            [clojure.edn :as edn]))
 
 (def dirname
   "Name of the cache directory inside a store."
@@ -32,6 +33,35 @@
 (defn docs-dir
   "Path of the per-document cache entries of `store-dir`."
   [store-dir] (str (fs/path (cache-dir store-dir) "docs")))
+
+(defn plans-dir
+  "Path of the resolved-plan cache of `store-dir` (K2a): the build plan is
+   provenance/audit, not a CAS object."
+  [store-dir] (str (fs/path (cache-dir store-dir) "plans")))
+
+(defn plan-path
+  "Path of the cached plan `tx-id` of `store-dir`."
+  [store-dir tx-id] (str (fs/path (plans-dir store-dir) (str tx-id ".edn"))))
+
+(defn read-plan
+  "The resolved plan cached under `tx-id` of `store-dir`, or nil when absent or
+   unreadable. The digest check belongs to the caller."
+  [store-dir tx-id]
+  (let [f (plan-path store-dir tx-id)]
+    (when (fs/regular-file? f)
+      (try (edn/read-string (slurp (str f)))
+           (catch Exception _ nil)))))
+
+(defn write-plan!
+  "Writes the resolved plan once under `tx-id`; existing plans are not
+   rewritten. Returns `tx-id`."
+  [store-dir tx-id plan]
+  (let [d (plans-dir store-dir)
+        f (plan-path store-dir tx-id)]
+    (when-not (fs/exists? f)
+      (fs/create-dirs d)
+      (spit (str f) (pr-str plan)))
+    tx-id))
 
 (defn read-object
   "Text of the cached object `id` of `store-dir`, or nil when absent."

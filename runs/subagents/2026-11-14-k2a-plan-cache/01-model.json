@@ -1,0 +1,19 @@
+{
+  "ok" : true,
+  "command" : "models define",
+  "store" : {
+    "name" : "c3",
+    "path" : "/tmp/kimun-k2a-c3-uAqQv9/.kimun"
+  },
+  "revision" : "ee6ce7dc5b25d8e6db60c414b28d974e1d3bfc3f11be71b969d6a820c582bb8c",
+  "data" : {
+    "name" : "TicketDoc",
+    "version" : 1,
+    "id" : "e50111d3ee90ae5af74696d7625a0fe7cdfb88b732b9217d6bd0d1a1452840ae",
+    "created?" : true,
+    "unchanged?" : false,
+    "backfill" : [ ],
+    "backfilled" : [ ]
+  },
+  "warnings" : [ ]
+}

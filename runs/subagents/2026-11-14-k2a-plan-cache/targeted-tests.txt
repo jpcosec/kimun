@@ -1,0 +1,24 @@
+
+Testing kimun.kernel.store-test
+
+Testing kimun.kernel.revision-format2-test
+
+Testing kimun.cli.diagnostics-test
+
+Testing kimun.cli.stores-test
+
+Testing kimun.cli.journal-test
+
+Testing kimun.cli.include-test
+moved existing store to /tmp/kimun-adhoc-10567493173423028742/kimun-include-4332457428710871994/.kimun.bak-20261114-124217
+
+Testing kimun.cli.upgrade-test
+
+Testing kimun.parity.merkle-promises-test
+
+Testing kimun.cli.models-test
+
+Testing kimun.surface.journal-test
+
+Ran 124 tests containing 1559 assertions.
+0 failures, 0 errors.
