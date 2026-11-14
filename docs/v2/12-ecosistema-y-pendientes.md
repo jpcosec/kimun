@@ -32,8 +32,11 @@ Este complemento no fija prioridades ni decide la identidad por inferencia.
 | G | T01, D-G, G1–G3, K7 y consultas justificadas sobre contextos | cierre de S–M; fuentes de `wittgenstein` | fixtures contextuales y trazas de soporte; sin inferencia entre contextos por coincidencia de texto |
 | Operación y vista | C1/F25, K4/K5, C2/API, seguridad, CI/release reproducible, piloto y vista del circuito | contratos de alcance y capas correspondientes | suite, oráculo, include check, fallos inyectados, bundle limpio y recorrido visible del cambio a la respuesta |
 
-El siguiente corte encargado a Claude es un daemon que recalcula y emite señales
-sin ejecutar respuestas. Su implementación se revisa y valida por separado.
+El primer daemon de latido está implementado en `stores heartbeat`
+(`runs/subagents/2026-11-14-heartbeat/`): recalcula y emite señales sin ejecutar
+respuestas. Su revisión independiente está en
+`runs/research/2026-11-14/concilio/review-heartbeat-pi.md`; la integración
+asíncrona, el coste incremental y la cobertura topológica completa siguen abiertos.
 
 ### Qué bloquea qué (2026-10-09)
 
