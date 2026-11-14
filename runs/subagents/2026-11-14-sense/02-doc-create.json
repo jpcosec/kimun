@@ -1,0 +1,28 @@
+{
+  "ok" : true,
+  "command" : "docs create",
+  "store" : {
+    "name" : "evidence",
+    "path" : "/tmp/kimun-sense-evidence-x7XEGg/.kimun"
+  },
+  "revision" : "09fbf9a6e61735d31df0a8d691697ea786e6c81283333d1a5c8e18e084552359",
+  "data" : {
+    "path" : "login.md",
+    "tree" : "01M7CBJ79E6HTNKBAZZHRGFSB0",
+    "payload" : {
+      "title" : "T",
+      "status" : "open"
+    },
+    "model-version" : 1,
+    "content-hash" : "8c709fbc1ce561b23311f5f821f0b6887fc7a2b8ac6d331bd1c081d6b086b390",
+    "name" : "login",
+    "state" : "intact",
+    "field-hashes" : {
+      "title" : "57cb45de78dd46c65752468897bbc5ca4c01cffaf1dec35653e040bf7d8de523",
+      "status" : "35ff74aeea25311f4fe759a6b762c8cd41a79adb23dd5615b92cf215175a63e5"
+    },
+    "source-hash" : "25dac35628c9d605a1a886918a64040eca5892f4d2c10a121a8f90d11994d4c5",
+    "model" : "TicketDoc"
+  },
+  "warnings" : [ ]
+}

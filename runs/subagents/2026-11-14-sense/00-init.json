@@ -1,0 +1,20 @@
+{
+  "ok" : true,
+  "command" : "stores init",
+  "store" : {
+    "name" : "evidence",
+    "path" : "/tmp/kimun-sense-evidence-x7XEGg/.kimun"
+  },
+  "revision" : null,
+  "data" : {
+    "path" : "/tmp/kimun-sense-evidence-x7XEGg/.kimun",
+    "name" : "evidence",
+    "actor" : "human/jp",
+    "capabilities" : {
+      "human/jp" : "all",
+      "kimun/derive" : "all",
+      "kimun/materialize" : "all"
+    }
+  },
+  "warnings" : [ ]
+}

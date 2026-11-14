@@ -1,6 +1,6 @@
 (ns kimun.cli.commands.stores
   "The `kimun stores` group (docs/v2/06 §3): `init`, `check`, `health`,
-   `update`, `reconcile`, `verify`, `upgrade`, `show`, and the federation commands `link`, `unlink` and `links`. Every
+   `sense`, `update`, `reconcile`, `verify`, `upgrade`, `show`, and the federation commands `link`, `unlink` and `links`. Every
    command is `(fn [args opts ctx] envelope)` where `args` are the positional
    tokens after the subcommand and `ctx` is `{:env env :cwd cwd}`; `dispatch`
    routes a subcommand name."
@@ -13,6 +13,7 @@
             [kimun.cli.store :as cli-store]
             [kimun.surface.diagnostics :as diag]
             [kimun.surface.docs :as tdocs]
+            [kimun.surface.signals :as signals]
             [kimun.host.default :as host]
             [kimun.kernel.err :as err]
             [kimun.kernel.plan :as plan]
@@ -98,6 +99,28 @@
                                 :revision (:head store)
                                 :data data
                                 :warnings warnings})))))
+
+(defn sense
+  "`stores sense [--once]`: one read-only observation of tracked documents.
+   Reuses the existing diagnostics report and emits structured signals
+   (`kimun.surface.signals`); it writes nothing. `--once` is accepted to make
+   the single observation explicit; this cut never loops, so it is not a
+   heartbeat daemon. Data: `{:mode :once :observed-at :tracked :valid :signals
+   :counts :summary}`. `:observed-at` is the wall-clock of this response only;
+   it is never written to the store as an event."
+  [_args opts {:keys [env cwd]}]
+  (let [{:keys [descriptor store path] :as opened} (cli-store/open! (cli-store/resolve-store opts env cwd))
+        report (diagnose opened)
+        signals (signals/from-report report)]
+    (out/ok "stores sense" {:store (store-ref descriptor path)
+                            :revision (:head store)
+                            :data {:mode :once
+                                   :observed-at (docs/timestamp)
+                                   :tracked (:checked report)
+                                   :valid (:valid report)
+                                   :signals signals
+                                   :counts (signals/counts signals)
+                                   :summary (signals/summary signals)}})))
 
 (defn health
   "`stores health`: the verdict of the store (`kimun.surface.diagnostics/health`):
@@ -410,13 +433,14 @@
   "Options of the `stores` group (babashka.cli spec, merged by `kimun.cli.main`)."
   {:name {:ref "NAME" :desc "Store name (stores init)"}
    :content {:ref "MODE" :desc "Content mode of the store: by-reference (default) or inline (stores init)"}
-   :apply {:desc "Write what the comparison found (stores reconcile)" :coerce :boolean}})
+   :apply {:desc "Write what the comparison found (stores reconcile)" :coerce :boolean}
+   :once {:desc "Make the single observation explicit (stores sense; no daemon)" :coerce :boolean}})
 
 (def commands
   "Subcommand name → command fn."
   {"init" init "check" check "verify" verify "upgrade" upgrade-store "show" show
    "link" link "unlink" unlink "links" links
-   "health" health "update" update-store "reconcile" reconcile})
+   "health" health "sense" sense "update" update-store "reconcile" reconcile})
 
 (defn dispatch
   "Runs subcommand `sub` of the `stores` group (`args` are the positional tokens);

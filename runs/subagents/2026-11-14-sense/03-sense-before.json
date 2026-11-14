@@ -1,0 +1,23 @@
+{
+  "ok" : true,
+  "command" : "stores sense",
+  "store" : {
+    "name" : "evidence",
+    "path" : "/tmp/kimun-sense-evidence-x7XEGg/.kimun"
+  },
+  "revision" : "09fbf9a6e61735d31df0a8d691697ea786e6c81283333d1a5c8e18e084552359",
+  "data" : {
+    "mode" : "once",
+    "observed-at" : "2026-11-14T06:22:53.130Z",
+    "tracked" : 1,
+    "valid" : true,
+    "signals" : [ ],
+    "counts" : {
+      "total" : 0,
+      "by-type" : { },
+      "by-severity" : { }
+    },
+    "summary" : "no signals"
+  },
+  "warnings" : [ ]
+}

@@ -78,6 +78,7 @@
              "  stores upgrade              upgrade a store to the current format (1→2, 2→3 in place; 3→4 asks for include build --rebuild)"
              "  stores show                 descriptor and heads without replay"
              "  stores health               verdict: ok | degraded (run: …) | needs-human (inspect: …)"
+             "  stores sense [--once]       one read-only observation: structured signals from tracked documents"
              "  stores update               apply the repairs that need no decision (reformatted files, moved contracts)"
              "  stores reconcile [ROOT] [--apply]  compare stores found under ROOT with the links"
              "  stores link NAME PATH       link another store (a .kimun or its project dir); path stored relative to this store"

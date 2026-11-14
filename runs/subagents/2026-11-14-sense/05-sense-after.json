@@ -1,0 +1,43 @@
+{
+  "ok" : true,
+  "command" : "stores sense",
+  "store" : {
+    "name" : "evidence",
+    "path" : "/tmp/kimun-sense-evidence-x7XEGg/.kimun"
+  },
+  "revision" : "09fbf9a6e61735d31df0a8d691697ea786e6c81283333d1a5c8e18e084552359",
+  "data" : {
+    "mode" : "once",
+    "observed-at" : "2026-11-14T06:22:53.527Z",
+    "tracked" : 1,
+    "valid" : false,
+    "signals" : [ {
+      "path" : "login.md",
+      "category" : "edited",
+      "type" : "source/mutated",
+      "document" : "login",
+      "needs-human" : true,
+      "severity" : "warning",
+      "action" : "kimun docs update login",
+      "message" : "document `login` (TicketDoc): login.md was edited outside the store [fields: status] — decide first: if the edit was intended, kimun docs update login; if not, restore the file from the recorded source (kimun docs show login)",
+      "model" : "TicketDoc",
+      "detail" : {
+        "fields" : [ "status" ],
+        "state" : "intact",
+        "content-ok" : false,
+        "fields-ok" : false
+      }
+    } ],
+    "counts" : {
+      "total" : 1,
+      "by-type" : {
+        "source/mutated" : 1
+      },
+      "by-severity" : {
+        "warning" : 1
+      }
+    },
+    "summary" : "1 signal(s) — 1 warning"
+  },
+  "warnings" : [ ]
+}

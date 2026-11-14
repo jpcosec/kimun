@@ -1,0 +1,19 @@
+{
+  "ok" : true,
+  "command" : "models define",
+  "store" : {
+    "name" : "evidence",
+    "path" : "/tmp/kimun-sense-evidence-x7XEGg/.kimun"
+  },
+  "revision" : "1cfa76a9f96a2564f78bd5e9a2aff2189df23f0e0725f06b1d352192fed35e4c",
+  "data" : {
+    "name" : "TicketDoc",
+    "version" : 1,
+    "id" : "e50111d3ee90ae5af74696d7625a0fe7cdfb88b732b9217d6bd0d1a1452840ae",
+    "created?" : true,
+    "unchanged?" : false,
+    "backfill" : [ ],
+    "backfilled" : [ ]
+  },
+  "warnings" : [ ]
+}
