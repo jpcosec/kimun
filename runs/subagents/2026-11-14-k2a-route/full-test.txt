@@ -2,7 +2,7 @@ rings and docstrings ok: 103 files
 tree-sitter pod: available
 
 Testing kimun.adapters.python-unittest-test
-python unittest: Ran 32 tests in 2.079s | OK (skipped=1)
+python unittest: Ran 32 tests in 2.862s | OK (skipped=1)
 
 Ran 1 tests containing 1 assertions.
 0 failures, 0 errors.
@@ -24,6 +24,11 @@ Ran 17 tests containing 291 assertions.
 Testing kimun.cli.compose-test
 
 Ran 4 tests containing 36 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.contract-test
+
+Ran 8 tests containing 58 assertions.
 0 failures, 0 errors.
 
 Testing kimun.cli.corpus-test
@@ -78,7 +83,7 @@ Ran 7 tests containing 68 assertions.
 0 failures, 0 errors.
 
 Testing kimun.cli.include-test
-moved existing store to /tmp/kimun-test-1794668155907-60589884788832-17802715337565675380/kimun-include-13629667266561181842/.kimun.bak-20261114-115647
+moved existing store to /tmp/kimun-test-1794668381070-60815047333357-11509126908420524810/kimun-include-17475861815780155687/.kimun.bak-20261114-120044
 
 Ran 7 tests containing 37 assertions.
 0 failures, 0 errors.
@@ -130,7 +135,7 @@ Ran 5 tests containing 53 assertions.
 0 failures, 0 errors.
 
 Testing kimun.cli.release-test
-release_test: bundle --version in 73 ms
+release_test: bundle --version in 197 ms
 
 Ran 2 tests containing 32 assertions.
 0 failures, 0 errors.
@@ -227,7 +232,7 @@ Ran 9 tests containing 50 assertions.
 
 Testing kimun.kernel.route-test
 
-Ran 4 tests containing 23 assertions.
+Ran 6 tests containing 29 assertions.
 0 failures, 0 errors.
 
 Testing kimun.kernel.standoff-test
@@ -571,6 +576,11 @@ Testing kimun.surface.models.store-test
 Ran 3 tests containing 99 assertions.
 0 failures, 0 errors.
 
+Testing kimun.surface.parse-contract-test
+
+Ran 4 tests containing 24 assertions.
+0 failures, 0 errors.
+
 Testing kimun.surface.sections-test
 
 Ran 11 tests containing 49 assertions.
@@ -586,17 +596,17 @@ Testing kimun.surface.signals-test
 Ran 4 tests containing 15 assertions.
 0 failures, 0 errors.
 
-Ran 114 namespaces in 148 s
-    30189 ms  kimun.cli.diagnostics-test
-    23158 ms  kimun.kernel.mmap-test
-    14412 ms  kimun.parity.merkle-promises-test
-     6130 ms  kimun.surface.models.segments-test
-     6060 ms  kimun.parity.closed-gaps-test
-     5889 ms  kimun.surface.edges-parity-test
-     5631 ms  kimun.cli.docs-parity-test
-     5250 ms  kimun.cli.adapters-test
-     4508 ms  kimun.surface.models.segments-parity-test
-     4148 ms  kimun.surface.edges-test
-     3571 ms  kimun.cli.release-test
-     2345 ms  kimun.kernel.revision-format2-test
-{:test 919, :pass 9749, :fail 0, :error 0, :namespaces 114}
+Ran 116 namespaces in 189 s
+    36427 ms  kimun.kernel.mmap-test
+    31975 ms  kimun.cli.diagnostics-test
+    10930 ms  kimun.cli.release-test
+     6752 ms  kimun.surface.edges-parity-test
+     6658 ms  kimun.cli.docs-parity-test
+     6648 ms  kimun.surface.models.segments-test
+     6140 ms  kimun.parity.closed-gaps-test
+     5471 ms  kimun.cli.adapters-test
+     5013 ms  kimun.surface.edges-test
+     4860 ms  kimun.parity.merkle-promises-test
+     4424 ms  kimun.surface.models.segments-parity-test
+     3833 ms  kimun.cli.graph-test
+{:test 933, :pass 9837, :fail 0, :error 0, :namespaces 116}

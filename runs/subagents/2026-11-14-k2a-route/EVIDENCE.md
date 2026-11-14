@@ -16,8 +16,8 @@ No store, revision, include, K6 or S1 file is changed. No identity is invented:
 ## Validation
 
 - `lint.txt`: `bb lint` via `~/bin/memcap 3` — 103 files, rings/docstrings ok.
-- `targeted-tests.txt`: `kimun.kernel.route-test` — 4 tests, 23 assertions, 0 failures.
-- `full-test.txt`: `bb test` via `~/bin/memcap 3` — 919 tests, 9.749 assertions,
+- `targeted-tests.txt`: `kimun.kernel.route-test` — 6 tests, 29 assertions, 0 failures.
+- `full-test.txt`: `bb test` via `~/bin/memcap 3` — 933 tests, 9.837 assertions,
   0 failures, 0 errors.
 
 ## Worktree note
@@ -37,4 +37,7 @@ independent of them.
 The golden fixture root is
 `348a08fe24e1a340377e8cd399bbf3cad0cd46fb0d75777e868c3ba845b9d757`.
 Changing `:tree-id` leaves it unchanged; changing fingerprint, class, projection hash,
-content hash or path moves it. Duplicate paths raise `:route/ambiguous`.
+content hash or path moves it. Paths are normalized to NFC before sorting and
+duplicate detection, so canonically equivalent Unicode paths raise
+`:route/ambiguous`. Duplicate paths raise `:route/ambiguous`; absolute drive
+paths (`C:/…`, `C:…`) and UNC/absolute paths are rejected.

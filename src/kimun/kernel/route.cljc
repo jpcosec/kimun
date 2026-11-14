@@ -36,22 +36,29 @@
         (str/replace #"^(\./)+" ""))))
 
 (defn valid-path?
-  "True for a relative, non-empty path without `.`/`..`/empty segments, NUL or
-   an absolute leading slash. The path is a locator; this check does not make it
-   an identity."
+  "True for a relative, non-empty path without `.`/`..`/empty segments, NUL,
+   an absolute leading slash or a Windows drive prefix (`C:/…`, `C:…`). The
+   path is a locator; this check does not make it an identity."
   [p]
   (and (string? p)
        (not (str/blank? p))
        (not (str/starts-with? p "/"))
        (not (str/includes? p "\u0000"))
+       (not (re-matches #"[A-Za-z]:.*" p))
        (every? (complement #{"" "." ".."}) (str/split p #"/" -1))))
 
+(defn- nfc-path
+  "The normalized path in NFC; nil when `p` is not a string."
+  [host p]
+  (some->> (normalize-path p) (canon/normalize host)))
+
 (defn entry
-  "A validated route entry: the required string fields, `:path` normalized, and
-   `:tree-id` when supplied. Extra keys are ignored. Raises `:route/invalid` for
-   a missing field, a non-string value or an unsafe path."
-  [{:keys [path tree-id] :as m}]
-  (let [p (normalize-path path)]
+  "A validated route entry: the required string fields, `:path` normalized and
+   NFC (through `host`), and `:tree-id` when supplied. Extra keys are ignored.
+   Raises `:route/invalid` for a missing field, a non-string value or an unsafe
+   path."
+  [host {:keys [path tree-id] :as m}]
+  (let [p (nfc-path host path)]
     (when-not (valid-path? p)
       (invalid (str "unsafe path " (pr-str path)) {:path path}))
     (doseq [k required]
@@ -69,10 +76,11 @@
   [(str (:path e)) (:fingerprint e) (:class e) (:projection-hash e) (:content-hash e)])
 
 (defn canonical-entries
-  "Validated entries sorted by path. Raises `:route/ambiguous` when two entries
-   address the same path; the conflict is visible, never resolved by hash."
-  [entries]
-  (let [es (->> entries (map entry) (sort-by :path) vec)]
+  "Validated entries sorted by their NFC path. Raises `:route/ambiguous` when
+   two entries address the same NFC path; the conflict is visible, never
+   resolved by hash."
+  [host entries]
+  (let [es (->> entries (map #(entry host %)) (sort-by :path) vec)]
     (doseq [[a b] (partition 2 1 es)
             :when (= (:path a) (:path b))]
       (err/raise :route/ambiguous (str "route: duplicate path " (:path a)) {:path (:path a)}))
@@ -84,22 +92,22 @@
    sorted by path. `:tree-id`, revisions and time do not enter the root."
   [host entries]
   (canon/digest host {:route/version schema
-                      :entries (mapv hashed-entry (canonical-entries entries))}))
+                      :entries (mapv hashed-entry (canonical-entries host entries))}))
 
 (defn lookup
-  "The entry at `path` in `entries`, normalized, or nil."
-  [entries path]
-  (let [p (normalize-path path)]
-    (some #(when (= p (:path %)) %) (canonical-entries entries))))
+  "The entry at `path` in `entries`, normalized to NFC, or nil."
+  [host entries path]
+  (let [p (nfc-path host path)]
+    (some #(when (= p (:path %)) %) (canonical-entries host entries))))
 
 (defn diff
   "Path diff between two entry collections:
    `{:added [entry …] :removed [entry …] :changed [{:path p :before e :after e} …]}`.
    An entry whose `:tree-id` changed but whose hashed fields did not is not a
    change; a changed fingerprint, class, projection or content hash is."
-  [before after]
-  (let [b (into {} (map (juxt :path identity)) (canonical-entries before))
-        a (into {} (map (juxt :path identity)) (canonical-entries after))
+  [host before after]
+  (let [b (into {} (map (juxt :path identity)) (canonical-entries host before))
+        a (into {} (map (juxt :path identity)) (canonical-entries host after))
         paths (sort (distinct (concat (keys b) (keys a))))]
     {:added (vec (keep #(when-not (contains? b %) (get a %)) paths))
      :removed (vec (keep #(when-not (contains? a %) (get b %)) paths))

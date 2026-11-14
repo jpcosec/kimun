@@ -1,5 +1,5 @@
 
 Testing kimun.kernel.route-test
 
-Ran 4 tests containing 23 assertions.
+Ran 6 tests containing 29 assertions.
 0 failures, 0 errors.
