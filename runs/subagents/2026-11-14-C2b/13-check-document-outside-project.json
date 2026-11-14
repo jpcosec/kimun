@@ -1,5 +1,5 @@
 {
- "ok": false,
+ "ok": true,
  "route-count": 1,
  "routes-complete?": false,
  "routes-missing": [],
@@ -7,8 +7,19 @@
  "routes-outside": [
   {
    "name": "far",
-   "qualified": "../kimun-c2b-out-adB5sE/far.md"
+   "qualified": "../kimun-c2b-x-2fNOxw/far.md"
   }
  ],
- "warnings": []
+ "warnings": [
+  {
+   "type": "routes/outside-project",
+   "message": "1 document(s) track a file outside the project: far (../kimun-c2b-x-2fNOxw/far.md) — a path that leaves the project cannot be a route, so the route root does not cover them; they are still tracked and sensed",
+   "documents": [
+    {
+     "name": "far",
+     "qualified": "../kimun-c2b-x-2fNOxw/far.md"
+    }
+   ]
+  }
+ ]
 }

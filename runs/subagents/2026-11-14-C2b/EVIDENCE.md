@@ -48,7 +48,9 @@ Existing tests touched, none weakened:
 ## Manual run (two temporary stores, `store-path.txt`)
 
 Files `01`–`12` were taken on base `790007e2` before the two regressions were
-fixed; the scenarios they show did not change. `13` was taken on `ac09b764`.
+fixed; the scenarios they show did not change. `13` was taken on `ac09b764`, on a
+third, fresh store: a first take on the store of `01`–`12` showed an invalid store,
+because that store had been left with an edited file by scenario `11`.
 
 | file | scenario | result |
 |---|---|---|
