@@ -334,3 +334,55 @@
 (deftest cites-spec-references
   (is (= ["07" "12a"] (a/cites "See spec 12a and Spec 07; spec 07 again, not spec 7.")))
   (is (= [] (a/cites nil))))
+
+;; v1: tests/selfdoc/test_python_scanner.py::test_kgdb_graph_check_rejects_missing_or_stale_source_nodes
+;; v1: tests/selfdoc/test_python_scanner.py::test_source_graph_check_rejects_missing_or_stale_source_nodes
+(deftest source-graph-check-rejects-missing-or-stale-source-nodes
+  (testing "v1 snapshot contract: missing target, stale sha256/ast, current match, extra stale node, malformed input"
+    (let [snapshot {"nodes" [{"identity" {"node_id" "node" "node_type" "python_symbol"}
+                              "source" {"sha256" "a"}
+                              "ast" {"line" 1}}]}]
+      (is (false? (a/source-graph-current? snapshot nil)))
+      (is (= {:current? false :status :missing :missing ["node"] :stale [] :orphan []}
+             (a/source-graph-check snapshot nil)))
+      (is (false? (a/source-graph-current?
+                   snapshot
+                   {"nodes" [{"id" "node" "schema" {"source" {"sha256" "b"} "ast" {"line" 1}}}]})))
+      (is (= {:current? false :status :stale :missing [] :stale ["node"] :orphan []}
+             (a/source-graph-check
+              snapshot
+              {"nodes" [{"id" "node" "schema" {"source" {"sha256" "b"} "ast" {"line" 1}}}]})))
+      (is (true? (a/source-graph-current?
+                  snapshot
+                  {"nodes" [{"id" "node" "schema" {"source" {"sha256" "a"} "ast" {"line" 1}}}]})))
+      (is (false? (a/source-graph-current?
+                   snapshot
+                   {"nodes" [{"id" "node" "schema" {"source" {"sha256" "a"} "ast" {"line" 1}}}
+                             {"id" "stale" "schema" {}}]})))
+      (is (= {:current? false :status :stale :missing [] :stale [] :orphan ["stale"]}
+             (a/source-graph-check
+              snapshot
+              {"nodes" [{"id" "node" "schema" {"source" {"sha256" "a"} "ast" {"line" 1}}}
+                        {"id" "stale" "schema" {}}]})))
+      (is (= {:current? false :status :unreadable :missing ["node"] :stale [] :orphan []}
+             (a/source-graph-check snapshot "not json")))))
+  (testing "kimun planned vs tracked PythonSymbolDoc nodes"
+    (let [planned (docs symbols-output sym-opts)
+          names (vec (sort (map :name planned)))
+          tracked (mapv (fn [d] {:name (:name d) :model (:model d) :path (:path d) :payload (:fields d)}) planned)]
+      (is (false? (a/source-graph-current? planned nil)))
+      (is (= {:current? false :status :missing :missing names :stale [] :orphan []}
+             (a/source-graph-check planned nil)))
+      (is (true? (a/source-graph-current? planned tracked)))
+      (let [first-name (:name (first tracked))
+            stale-sha (update tracked 0 assoc-in [:payload "source_sha256"] "0000")
+            stale-span (update tracked 0 assoc-in [:payload "source_span"] "1:999")
+            with-orphan (conj tracked {:name "stale-sym" :model "PythonSymbolDoc"
+                                       :path "knowledge/symbols/stale-sym.md"
+                                       :payload {"id" "stale-sym"}})]
+        (is (= {:current? false :status :stale :missing [] :stale [first-name] :orphan []}
+               (a/source-graph-check planned stale-sha)))
+        (is (= {:current? false :status :stale :missing [] :stale [first-name] :orphan []}
+               (a/source-graph-check planned stale-span)))
+        (is (= {:current? false :status :stale :missing [] :stale [] :orphan ["stale-sym"]}
+               (a/source-graph-check planned with-orphan)))))))

@@ -355,4 +355,127 @@
   "v1 `citations.cites`: the sorted distinct spec numbers a docstring cites
    (`spec 07`, `Spec 12a`)."
   [docstring]
-  (vec (sort (set (map second (re-seq #"(?i)\bspec\s+(\d{2}[a-z]?)\b" (or docstring ""))))))) 
+  (vec (sort (set (map second (re-seq #"(?i)\bspec\s+(\d{2}[a-z]?)\b" (or docstring "")))))))
+
+(defn- stringify-data
+  "Normalizes map keys to strings recursively for uniform node comparison."
+  [x]
+  (cond
+    (map? x) (into {} (map (fn [[k v]] [(if (keyword? k) (name k) (str k)) (stringify-data v)])) x)
+    (sequential? x) (mapv stringify-data x)
+    :else x))
+
+(defn- valid-node-id? [x] (and (string? x) (not (str/blank? x))))
+
+(defn source-node
+  "Canonical `{:id str :source map :ast map}` view of a source node (planned
+   or tracked `PythonSymbolDoc`, adapter fact, or v1 snapshot/graph node); nil
+   when `node` is not a valid source node."
+  [node]
+  (when (map? node)
+    (let [m (stringify-data node)
+          fields (or (get m "fields") (get m "payload"))
+          identity-map (get m "identity")
+          has-schema? (or (map? identity-map)
+                          (contains? m "schema")
+                          (map? (get m "source"))
+                          (map? (get m "ast")))]
+      (cond
+        (and (map? fields)
+             (or (= "PythonSymbolDoc" (get m "model"))
+                 (contains? fields "source_sha256")))
+        (let [id (or (get fields "id") (get m "name"))]
+          (when (valid-node-id? id)
+            {:id id
+             :source {"path" (get fields "source_path")
+                      "sha256" (get fields "source_sha256")}
+             :ast {"kind" (get fields "kind")
+                   "module" (get fields "module")
+                   "name" (get fields "qualname")
+                   "span" (get fields "source_span")}}))
+
+        has-schema?
+        (let [id (or (when (map? identity-map) (get identity-map "node_id"))
+                     (get m "id")
+                     (get m "name"))
+              schema (if (contains? m "schema") (get m "schema") m)]
+          (when (and (valid-node-id? id) (map? schema))
+            {:id id
+             :source (let [s (get schema "source")] (if (map? s) s {}))
+             :ast (let [a (get schema "ast")] (if (map? a) a {}))}))
+
+        (and (valid-node-id? (get m "id"))
+             (or (contains? m "source_hash") (contains? m "qualified_name")))
+        (let [sp (get m "span")]
+          {:id (get m "id")
+           :source {"path" (get m "path")
+                    "sha256" (some-> (get m "source_hash") (str/replace-first #"^sha256:" ""))}
+           :ast {"kind" (get m "kind")
+                 "name" (get m "qualified_name")
+                 "span" (when (map? sp) (str (get sp "start_line") ":" (get sp "end_line")))}})))))
+
+(defn- extract-source-nodes
+  "Extracts `[ok? by-id]` from a snapshot (`{:nodes ...}` / `{\"nodes\" ...}`)
+   or sequential collection of nodes / `PythonSymbolDoc` documents."
+  [x]
+  (let [raw (cond
+              (sequential? x) x
+              (and (map? x) (contains? x "nodes")) (get x "nodes")
+              (and (map? x) (contains? x :nodes)) (:nodes x)
+              :else ::invalid)]
+    (if (or (= ::invalid raw) (not (sequential? raw)))
+      [false nil]
+      (let [symbol-only (filter (fn [el]
+                                  (let [m (when (map? el) (or (get el :model) (get el "model")))]
+                                    (or (nil? m) (= "PythonSymbolDoc" m))))
+                                raw)
+            parsed (mapv source-node symbol-only)
+            by-id (reduce (fn [acc n]
+                            (cond
+                              (nil? n) (reduced ::invalid)
+                              (contains? acc (:id n)) (reduced ::invalid)
+                              :else (assoc acc (:id n) (select-keys n [:source :ast]))))
+                          {} parsed)]
+        (if (= ::invalid by-id)
+          [false nil]
+          [true by-id])))))
+
+(defn source-graph-check
+  "Verifies that recorded `actual` source nodes match scanned `expected` nodes
+   without missing, stale, or extra nodes (v1 `kgdb_sync.graph_is_current` /
+   `source_graph_file.graph_state`). Returns `{:current? bool :status kw
+   :missing [ids] :stale [ids] :orphan [ids]}` where `:status` is `:missing`
+   when `actual` is nil, `:unreadable` when malformed, `:current` on exact
+   match, and `:stale` otherwise."
+  [expected actual]
+  (let [[exp-ok? exp-map] (extract-source-nodes expected)
+        exp-ids (if exp-ok? (vec (sort (keys exp-map))) [])]
+    (cond
+      (not exp-ok?)
+      {:current? false :status :unreadable :missing [] :stale [] :orphan []}
+
+      (nil? actual)
+      {:current? false :status :missing :missing exp-ids :stale [] :orphan []}
+
+      :else
+      (let [[act-ok? act-map] (extract-source-nodes actual)]
+        (if (not act-ok?)
+          {:current? false :status :unreadable :missing exp-ids :stale [] :orphan []}
+          (let [missing (vec (sort (remove #(contains? act-map %) (keys exp-map))))
+                stale (vec (sort (filter (fn [id]
+                                           (and (contains? act-map id)
+                                                (not= (get exp-map id) (get act-map id))))
+                                         (keys exp-map))))
+                orphan (vec (sort (remove #(contains? exp-map %) (keys act-map))))
+                current? (and (empty? missing) (empty? stale) (empty? orphan))]
+            {:current? current?
+             :status (if current? :current :stale)
+             :missing missing
+             :stale stale
+             :orphan orphan}))))))
+
+(defn source-graph-current?
+  "True iff `actual` source nodes match `expected` with no missing, stale, or
+   extra nodes (v1 `kgdb_sync.graph_is_current`)."
+  [expected actual]
+  (boolean (:current? (source-graph-check expected actual)))) 

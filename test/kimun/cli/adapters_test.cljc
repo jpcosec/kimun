@@ -534,3 +534,55 @@
             (is (= [greet] (mapv :name (:updated (:data s)))))
             (is (str/includes? (slurp f) "much better greeting") "normal sync writes updated source")
             (is (= (inc n) (count (journal p))))))))))
+
+;; v1: tests/selfdoc/test_python_scanner.py::test_kgdb_graph_check_rejects_missing_or_stale_source_nodes
+;; v1: tests/selfdoc/test_python_scanner.py::test_source_graph_check_rejects_missing_or_stale_source_nodes
+(deftest kgdb-graph-check-rejects-missing-or-stale-source-nodes
+  (if-not (fs/exists? real-adapter)
+    (println "skipped kgdb-graph-check-rejects-missing-or-stale-source-nodes: python/kimun/adapters/python_symbols.py is absent")
+    (let [p (real-project)
+          tools (file p "src" "demo" "tools.py")]
+      (testing "missing: python-check rejects unsynced source nodes before sync"
+        (let [c (adapters p "python-check" {:system "demo"})]
+          (is (false? (:ok c)))
+          (is (= 1 (:exit c)))
+          (is (= :missing (get-in c [:error :data :source-graph :status])))
+          (is (false? (get-in c [:error :data :source-graph :current?])))
+          (is (= 3 (count (get-in c [:error :data :source-graph :missing]))))))
+      (testing "current: python-check passes immediately after python-sync"
+        (is (true? (:ok (adapters p "python-sync" {:system "demo"}))))
+        (let [c (adapters p "python-check" {:system "demo"})]
+          (is (true? (:ok c)))
+          (is (true? (get-in c [:data :source-graph :current?])))
+          (is (= :current (get-in c [:data :source-graph :status])))))
+      (testing "stale source: editing function implementation without re-sync fails python-check"
+        (spit tools (str/replace-first (slurp tools) "return name" "return name.upper() if loud else name"))
+        (let [c (adapters p "python-check" {:system "demo"})
+              sg (get-in c [:error :data :source-graph])]
+          (is (false? (:ok c)))
+          (is (= 1 (:exit c)))
+          (is (= :stale (:status sg)))
+          (is (false? (:current? sg)))
+          (is (contains? (set (:stale sg)) "python-demo-demo-tools-greet"))))
+      (is (true? (:ok (adapters p "python-sync" {:system "demo"}))))
+      (testing "modified-externally: tampering symbol markdown on disk fails check"
+        (let [f (file p "knowledge" "symbols" "python-demo-demo-tools-greet.md")
+              orig (slurp f)]
+          (spit f (str orig "\n<!-- stale edit -->\n"))
+          (let [c (adapters p "python-check" {:system "demo"})
+                sg (get-in c [:error :data :source-graph])]
+            (is (false? (:ok c)))
+            (is (= 1 (:exit c)))
+            (is (= :stale (:status sg)))
+            (is (= ["python-demo-demo-tools-greet"] (:stale sg)))
+            (is (some #(= ["python-demo-demo-tools-greet" "modified-externally"] [(:name %) (:status %)])
+                      (get-in c [:error :data :documents]))))
+          (spit f orig)))
+      (testing "extra orphan node: removing a symbol from source fails python-check until re-sync"
+        (spit tools (str "\"\"\"Tools of the demo.\"\"\"\nimport os\n\n\ndef greet(name, loud=False):\n    \"\"\"Return a greeting for name.\"\"\"\n    return name.upper() if loud else name\n"))
+        (let [c (adapters p "python-check" {:system "demo"})
+              sg (get-in c [:error :data :source-graph])]
+          (is (false? (:ok c)))
+          (is (= 1 (:exit c)))
+          (is (= :stale (:status sg)))
+          (is (= #{"python-demo-demo-tools-box" "python-demo-demo-tools-box-put"} (set (:orphan sg)))))))))

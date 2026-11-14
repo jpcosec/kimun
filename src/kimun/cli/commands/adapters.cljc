@@ -271,22 +271,54 @@
     (into {} (map (fn [d] [(:path d) (expected-before-image store root adopt-by-path tracked-by-path d)])) planned)))
 
 (defn inspect
-  "Plan against the store: `{:plan :report :restore :adopt :before-images}`;
-   `:restore` are the unchanged documents whose file is gone (v1 `missing`),
-   which count as drift; `:before-images` maps each planned path to its
-   verified on-disk before-image (nil when absent, `:modified-externally` when
-   the file on disk diverged from the tracked store)."
+  "Plan against the store: `{:plan :report :restore :adopt :before-images
+   :source-graph}`; `:restore` are the unchanged documents whose file is gone
+   (v1 `missing`), which count as drift; `:before-images` maps each planned
+   path to its verified on-disk before-image (nil when absent,
+   `:modified-externally` when the file on disk diverged from the tracked
+   store); `:source-graph` reports `source-graph-check` on symbol nodes."
   [store root {:keys [planned scope]}]
   (let [tracked-docs (tracked store scope)
         plan (planner/sync-plan planned tracked-docs)
         adopt (adoptable store root (:create plan))
         adopted (set (map (comp :name :doc) adopt))
+        before-images (before-images-for store root planned adopt tracked-docs)
         restore (filterv #(not (fs/regular-file? (fs/path root (:path %)))) (:unchanged plan))
+        tampered (filterv #(= :modified-externally (get before-images (:path %))) (:unchanged plan))
         report (planner/drift-report plan)
-        gone (mapv (fn [d] {:name (:name d) :path (:path d) :model (:model d) :status "missing-file" :fields []}) restore)]
+        gone (mapv (fn [d] {:name (:name d) :path (:path d) :model (:model d) :status "missing-file" :fields []}) restore)
+        tampered-rows (mapv (fn [d] {:name (:name d) :path (:path d) :model (:model d) :status "modified-externally" :fields []}) tampered)
+        actual-nodes (if (and (empty? tracked-docs)
+                              (some #(= "PythonSymbolDoc" (:model %)) planned))
+                       nil
+                       tracked-docs)
+        base-sg (planner/source-graph-check planned actual-nodes)
+        missing-sym-ids (keep #(when (= "PythonSymbolDoc" (:model %)) (:name %)) restore)
+        stale-sym-ids (keep #(when (= "PythonSymbolDoc" (:model %)) (:name %)) tampered)
+        source-graph (let [miss (vec (sort (into (set (:missing base-sg)) missing-sym-ids)))
+                           st (vec (sort (into (set (:stale base-sg)) stale-sym-ids)))
+                           cur? (and (empty? miss) (empty? st) (empty? (:orphan base-sg)))
+                           st-kw (cond
+                                   cur? :current
+                                   (= :missing (:status base-sg)) :missing
+                                   (= :unreadable (:status base-sg)) :unreadable
+                                   :else :stale)]
+                       (assoc base-sg
+                              :current? cur?
+                              :status st-kw
+                              :missing miss
+                              :stale st))
+        docs-report (into (mapv #(if (contains? adopted (:name %)) (assoc % :status "untracked") %) (:documents report))
+                          (concat gone tampered-rows))]
     {:plan plan :restore restore :adopt adopt
-     :before-images (before-images-for store root planned adopt tracked-docs)
-     :report {:drift? (boolean (or (:drift? report) (seq gone))) :documents (into (mapv #(if (contains? adopted (:name %)) (assoc % :status "untracked") %) (:documents report)) gone)}}))
+     :before-images before-images
+     :source-graph source-graph
+     :report {:drift? (boolean (or (:drift? report)
+                                   (seq gone)
+                                   (seq tampered-rows)
+                                   (and (= "symbols" (:profile scope))
+                                        (not (:current? source-graph)))))
+              :documents docs-report}}))
 
 (defn- doc-opts [opts] (select-keys opts [:store :actor :format]))
 
@@ -379,14 +411,14 @@
    (let [[adapter path argv] (positional sub args)
          {:keys [descriptor store] store-path :path} (open-store opts ctx)
          p (planned sub adapter path argv opts ctx (project-root store-path))
-         {:keys [report]} (inspect store (project-root store-path) p)]
+         {:keys [report source-graph]} (inspect store (project-root store-path) p)]
      (when (:drift? report)
        (err/raise drift-type (str "documentation drift: " (count (:documents report)) " document(s) differ from the code ("
                                   (str/join ", " (map (fn [[k v]] (str (count v) " " k)) (sort (group-by :status (:documents report)))))
                                   "); run `adapters sync`")
-                  (merge (scope-data p) {:reason "drift"} report)))
+                  (merge (scope-data p) {:reason "drift" :source-graph source-graph} report)))
      (out/ok (str "adapters " sub) {:store (store-ref descriptor store-path) :revision (:head store)
-                                    :data (merge (scope-data p) report)}))))
+                                    :data (merge (scope-data p) {:source-graph source-graph} report)}))))
 
 (defn sync
   "`adapters sync ADAPTER PATH …`: defines the profile's models when absent,

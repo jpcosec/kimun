@@ -73,7 +73,7 @@ paridad v1 sin brechas (`scripts/parity/coverage.py … --strict --allow-open-pr
 | G1 | capa G: leer fuentes (paper, wittgenstein, Tractatus) y reescribir el spec sobre sentido × verdad | D0, D-G, M1, T01 (cerrada) | `docs/v2/drafts/capa-g-dudas.md`, `runs/research/2026-10-08/spec15/` (borrador previo, solo referencia) |
 | G2 | consulta Datalog (Datalevin pod + respaldo in-process) | G1 | `runs/research/2026-10-08/R1-report.md` |
 | G3 | embeddings sobre anchors (modelo multilingüe) | G1, K2a | decisión 38 |
-| C1 | selfdoc: guarda de before-image al escribir y chequeo del grafo kgdb | — | `tests/parity-v1.md` (estados `corpus` y `abierta`) |
+| C1 | **cerrada (2026-11-14)**: selfdoc: guarda de before-image al escribir (`C1/F25`) y chequeo de actualidad de nodos fuente (`source-graph-check` / `python-check` sin KGDB externo) | — | `tests/parity-v1.md`, `11-adaptadores.md`, `kimun.cli.adapters-test`, `kimun.parity.adapters-parity-test` |
 | C2 | cliente Python y rutas HTTP de graph_ui (`/kgdb/snapshot`, `/models/promote`) | K2a, P1 | `python/README.md`, `06` |
 | T01 | **cerrada (2026-11-14)**: manifest de inclusión `C01–C28` (Wittgenstein `W1` + `W2`) con `required`/`deferred`/`excluded`, fixture Curie/Franklin y controles negativos | — (documentación) | `docs/v2/tests/wittgenstein-manifest.md`, `test/fixtures/wittgenstein/manifest.edn` (`test/kimun/wittgenstein_manifest_test.cljc`) |
 | K6 | contrato de parse/selector registrado como digest (gramática, perfil, normalización, selector, clase); distinguir `source-changed` / `contract-changed` / `parser-unavailable` / `rebuild-mismatch` | — | `docs/reviews/wittgenstein-superset/reviews/02-findings.md` F08, `proposals/03-store-and-authority.md` |
@@ -83,8 +83,8 @@ paridad v1 sin brechas (`scripts/parity/coverage.py … --strict --allow-open-pr
 
 Insumo de G1: la revisión `docs/reviews/wittgenstein-superset/` (propuestas P4 grafo contextual y P5 T02–T13), `tests/wittgenstein-manifest.md` (`T01`) y la respuesta `respuesta-claude.md`.
 
-En paralelo hoy, sin esperar al dueño: K2a, K3, K6, K8, P1 (coordinando `kimun.surface.docs`), (`T01` ya cerrada),
-M1 (spec), S1, C1 (C1/F25 cerrado; sigue chequeo kgdb), DOC1. Esperan a D0: K1, K2b, S2, G1 y lo que cuelga de ellos.
+En paralelo hoy, sin esperar al dueño: K2a, K3, K6, K8, P1 (coordinando `kimun.surface.docs`), (`T01` y `C1` ya cerradas),
+M1 (spec ya cerrada), S1, DOC1. Esperan a D0: K1, K2b, S2, G1 y lo que cuelga de ellos.
 
 ### Deuda de diseño y experimentos
 

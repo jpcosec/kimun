@@ -1,0 +1,11 @@
+
+Testing kimun.surface.adapters-test
+
+Testing kimun.cli.adapters-test
+python-and-treesitter-adapters-agree compared 7 documents
+
+Testing kimun.parity.adapters-parity-test
+
+Ran 47 tests containing 1929 assertions.
+0 failures, 0 errors.
+{:test 47, :pass 1929, :fail 0, :error 0, :type :summary}

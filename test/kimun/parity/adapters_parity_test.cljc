@@ -187,3 +187,68 @@
         (is (= (subs (str cmd/drift-type) 1) (get-in c [:error :type])))
         (is (not (fs/exists? (fs/path p "knowledge"))) "check writes nothing"))
       (finally (fs/delete-tree p)))))
+
+;; v1: tests/selfdoc/test_python_scanner.py::test_kgdb_graph_check_rejects_missing_or_stale_source_nodes
+;; v1: tests/selfdoc/test_python_scanner.py::test_source_graph_check_rejects_missing_or_stale_source_nodes
+(deftest kgdb-graph-check-rejects-missing-or-stale-source-nodes
+  (testing "pure source-graph check matches v1 graph_is_current contract"
+    (let [snapshot {"nodes" [{"identity" {"node_id" "node" "node_type" "python_symbol"}
+                              "source" {"sha256" "a"}
+                              "ast" {"line" 1}}]}]
+      (is (false? (ad/source-graph-current? snapshot nil)))
+      (is (false? (ad/source-graph-current?
+                   snapshot
+                   {"nodes" [{"id" "node" "schema" {"source" {"sha256" "b"} "ast" {"line" 1}}}]})))
+      (is (true? (ad/source-graph-current?
+                  snapshot
+                  {"nodes" [{"id" "node" "schema" {"source" {"sha256" "a"} "ast" {"line" 1}}}]})))
+      (is (false? (ad/source-graph-current?
+                   snapshot
+                   {"nodes" [{"id" "node" "schema" {"source" {"sha256" "a"} "ast" {"line" 1}}}
+                             {"id" "stale" "schema" {}}]})))))
+  (testing "CLI python-check rejects missing, stale source sha256/ast, and extra tracked source nodes"
+    (let [p (str (ktu/temp-dir "kimun-adapters-parity-kgdb-"))
+          env {"USER" "tester"}
+          mod (fs/path p "src" "sldb" "links" "composer.py")]
+      (try
+        (is (true? (get-in (main/run ["stores" "init" "--name" "p"] env p) [:envelope :ok])))
+        (fs/create-dirs (fs/parent mod))
+        (fs/copy (fx "src" "sldb" "links" "composer.py") mod)
+        (let [missing (errors/wrap #(cmd/dispatch "python-check" [] {:format "json" :actor "human/tester" :system "sldb" :source-root "src"}
+                                                  {:env env :cwd p}))]
+          (is (not (:ok missing)))
+          (is (= 1 (:exit missing)))
+          (is (= :missing (get-in missing [:error :data :source-graph :status])))
+          (is (seq (get-in missing [:error :data :source-graph :missing]))))
+        (is (true? (:ok (errors/wrap #(cmd/dispatch "python-sync" [] {:format "json" :actor "human/tester" :system "sldb" :source-root "src"}
+                                                    {:env env :cwd p})))))
+        (let [ok-res (errors/wrap #(cmd/dispatch "python-check" [] {:format "json" :actor "human/tester" :system "sldb" :source-root "src"}
+                                                 {:env env :cwd p}))]
+          (is (:ok ok-res))
+          (is (true? (get-in ok-res [:data :source-graph :current?]))))
+        (spit (str mod) (str (slurp (str mod)) "\n\ndef extra_symbol():\n    return 1\n"))
+        (let [new-node (errors/wrap #(cmd/dispatch "python-check" [] {:format "json" :actor "human/tester" :system "sldb" :source-root "src"}
+                                                   {:env env :cwd p}))]
+          (is (not (:ok new-node)))
+          (is (= 1 (:exit new-node)))
+          (is (contains? (set (get-in new-node [:error :data :source-graph :missing]))
+                         "python-sldb-sldb-links-composer-extra_symbol")))
+        (is (true? (:ok (errors/wrap #(cmd/dispatch "python-sync" [] {:format "json" :actor "human/tester" :system "sldb" :source-root "src"}
+                                                    {:env env :cwd p})))))
+        (spit (str mod) (str/replace-first (slurp (str mod)) "return 1" "return 2"))
+        (let [stale (errors/wrap #(cmd/dispatch "python-check" [] {:format "json" :actor "human/tester" :system "sldb" :source-root "src"}
+                                                {:env env :cwd p}))]
+          (is (not (:ok stale)))
+          (is (= 1 (:exit stale)))
+          (is (= :stale (get-in stale [:error :data :source-graph :status])))
+          (is (contains? (set (get-in stale [:error :data :source-graph :stale]))
+                         "python-sldb-sldb-links-composer-extra_symbol")))
+        (fs/copy (fx "src" "sldb" "links" "composer.py") mod {:replace-existing true})
+        (let [orphan (errors/wrap #(cmd/dispatch "python-check" [] {:format "json" :actor "human/tester" :system "sldb" :source-root "src"}
+                                                 {:env env :cwd p}))]
+          (is (not (:ok orphan)))
+          (is (= 1 (:exit orphan)))
+          (is (= :stale (get-in orphan [:error :data :source-graph :status])))
+          (is (contains? (set (get-in orphan [:error :data :source-graph :orphan]))
+                         "python-sldb-sldb-links-composer-extra_symbol")))
+        (finally (fs/delete-tree p))))))

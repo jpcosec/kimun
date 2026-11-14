@@ -212,7 +212,11 @@ ordenadas por nombre:
 
 `drift-report(plan)` da `{:drift? bool :documents [...]}` con estado `missing` (habría que
 crear), `changed` (habría que actualizar) u `orphan` (habría que dejar de rastrear); el grupo
-CLI agrega `missing-file` y `untracked` (§7).
+CLI agrega `missing-file`, `modified-externally` y `untracked` (§7). Para los nodos fuente del
+perfil de símbolos (y cualquier snapshot/grafo compatible de v1), `source-node`,
+`source-graph-check(expected actual)` y `source-graph-current?(expected actual)` verifican
+actualidad sin nodo faltante, desactualizado (`source_path`/`source_sha256` o metadatos AST) ni
+huérfano extra (`:status` ∈ `:missing`, `:unreadable`, `:stale`, `:current`).
 
 **Regla de untrack.** Un símbolo que desaparece del código no borra su documento: `sync` hace
 `docs untrack` y el archivo queda en disco. El alcance del untrack es etiqueta del adaptador +
@@ -272,8 +276,8 @@ así que un `--x` desconocido antes de `--` es error de uso.
 |---|---|
 | `scan` | `{:adapter :profile :language :system :output :facts n :documents [{:name :model :path :fact :fields}]}` |
 | `sync` | claves de alcance + `{:models {:defined :present} :counts {:created :updated :untracked :unchanged :restored :adopted} :created :updated [{:name :changed}] :untracked :unchanged :restored :adopted}` |
-| `check` sin deriva | claves de alcance + `{:drift? false :documents []}` |
-| `check` con deriva | fallo con datos `{:reason "drift" :drift? true :documents [{:name :path :model :status :fields}]}`; `status` ∈ `missing`, `changed`, `orphan`, `missing-file`, `untracked` (archivo existente adoptable; cuenta como deriva, exit 1) |
+| `check` sin deriva | claves de alcance + `{:drift? false :documents [] :source-graph {:current? true :status :current ...}}` |
+| `check` con deriva | fallo con datos `{:reason "drift" :drift? true :source-graph {...} :documents [{:name :path :model :status :fields}]}`; `status` ∈ `missing`, `changed`, `orphan`, `missing-file`, `modified-externally`, `untracked` (archivo existente adoptable; cuenta como deriva, exit 1) |
 | `list` | `[{:name :file :available? :profile :languages :options :missing}]`; un adaptador que no responde: `{:name :file :available? false :missing [] :error}` |
 
 `missing-file` / `restored` es adición del CLI sobre el planificador: un documento rastreado e
@@ -454,8 +458,10 @@ python|javascript` y `--system` (aceptada, no usada).
   de python no cambia).
 - Los documentos de símbolos se ordenan por id de hecho (v1: orden de archivo/DFS); los
   payloads son idénticos. El perfil cli conserva el orden de v1.
-- `check`: la deriva sale con 1 (como v1) pero vía `:adapters/missing`; `missing-file` es
-  una adición sobre el informe de v1.
+- `check`: la deriva sale con 1 (como v1) pero vía `:adapters/missing`; `missing-file` y
+  `modified-externally` completan el informe, y `:source-graph` (`source-graph-check`) porta el
+  chequeo de actualidad de nodos fuente (`kgdb_sync.graph_is_current` / `source_graph_file.graph_state`)
+  sobre el store de kimun sin archivo KGDB externo ni `D0`.
 - Los símbolos duplicados desambiguados por el adaptador (p. ej. `Engine.label~2`, mismo
   `qualified_name`) colisionan en el id de documento, como en v1 (`collide`).
 - Esquinas no exactas conocidas: flotantes dentro de `attrs` se imprimen con `str` de Clojure,
