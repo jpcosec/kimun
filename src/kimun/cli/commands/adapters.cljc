@@ -185,12 +185,14 @@
 
 (defn- tracked
   "The tracked documents `scope` owns (`kimun.surface.adapters/owned?`):
-   `[{:name :model :path :payload}]`."
+   `[{:name :model :path :payload :source :fingerprint}]`."
   [store scope]
   (let [models (set (get planner/profile-models (:profile scope)))]
     (vec (for [d (tdocs/documents store) :when (contains? models (:model d))
                :let [full (tdocs/document store (:tree d))
-                     t {:name (:name d) :model (:model d) :path (:path d) :payload (when (map? (:payload full)) (strings (:payload full)))}]
+                     t {:name (:name d) :model (:model d) :path (:path d)
+                        :source (:source full) :fingerprint (:fingerprint full)
+                        :payload (when (map? (:payload full)) (strings (:payload full)))}]
                :when (and (:payload t) (planner/owned? scope t))]
            t))))
 
@@ -225,59 +227,120 @@
 (defn- adoptable
   "v1 `_prepare` + the `untracked` branch of `_save_document`: the planned new
    documents whose file already exists and reads as a document of the planned
-   model with the planned id — `[{:doc planned :existing payload :changed
-   [parser-owned fields that differ]}]`. The model's stored descriptor is used,
-   else the frozen one in memory (nothing is written)."
+   model with the planned id — `[{:doc planned :existing payload :previous text
+   :changed [parser-owned fields that differ]}]`. The model's stored descriptor
+   is used, else the frozen one in memory (nothing is written)."
   [store root creates]
   (vec (for [d creates
              :let [f (fs/path root (:path d))]
              :when (fs/regular-file? f)
-             :let [existing (try (let [desc (or (:descriptor (mstore/find-model store (:model d)))
-                                                (edn/read-string (slurp (io/resource (str "kimun/adapters/models/" (:model d) ".edn")))))
-                                       payload (strings (mextract/extract desc (slurp (str f))))]
-                                   (when (= (get payload "id") (get (:fields d) "id")) payload))
-                                 (catch Exception _ nil))]
+             :let [previous (try (slurp (str f)) (catch Exception _ nil))
+                   existing (when previous
+                              (try (let [desc (or (:descriptor (mstore/find-model store (:model d)))
+                                                  (edn/read-string (slurp (io/resource (str "kimun/adapters/models/" (:model d) ".edn")))))
+                                         payload (strings (mextract/extract desc previous))]
+                                     (when (= (get payload "id") (get (:fields d) "id")) payload))
+                                   (catch Exception _ nil)))]
              :when existing]
-         {:doc d :existing existing
+         {:doc d :existing existing :previous previous
           :changed (vec (sort (filter #(not= (get existing %) (get (:fields d) %)) (keys (:fields d)))))})))
 
-(defn- inspect
-  "Plan against the store: `{:plan :report :restore}`; `:restore` are the
-   unchanged documents whose file is gone (v1 `missing`), which count as drift."
+(defn- current-source [root path]
+  (let [f (fs/path root path)]
+    (when (fs/regular-file? f) (slurp (str f)))))
+
+(defn- matches-tracked-source? [host t disk-text]
+  (if (:fingerprint t)
+    (= (:fingerprint t) (tdocs/fingerprint host disk-text))
+    (= disk-text (:source t))))
+
+(defn- expected-before-image [store root adopt-by-path tracked-by-path d]
+  (let [path (:path d)]
+    (cond (contains? adopt-by-path path)
+          (:previous (get adopt-by-path path))
+          (contains? tracked-by-path path)
+          (when-some [disk-text (current-source root path)]
+            (if (matches-tracked-source? (or (:host store) host/host) (get tracked-by-path path) disk-text)
+              disk-text
+              :modified-externally))
+          :else nil)))
+
+(defn- before-images-for [store root planned adopt tracked-docs]
+  (let [adopt-by-path (into {} (map (juxt (comp :path :doc) identity)) adopt)
+        tracked-by-path (into {} (map (juxt :path identity)) tracked-docs)]
+    (into {} (map (fn [d] [(:path d) (expected-before-image store root adopt-by-path tracked-by-path d)])) planned)))
+
+(defn inspect
+  "Plan against the store: `{:plan :report :restore :adopt :before-images}`;
+   `:restore` are the unchanged documents whose file is gone (v1 `missing`),
+   which count as drift; `:before-images` maps each planned path to its
+   verified on-disk before-image (nil when absent, `:modified-externally` when
+   the file on disk diverged from the tracked store)."
   [store root {:keys [planned scope]}]
-  (let [plan (planner/sync-plan planned (tracked store scope))
+  (let [tracked-docs (tracked store scope)
+        plan (planner/sync-plan planned tracked-docs)
         adopt (adoptable store root (:create plan))
         adopted (set (map (comp :name :doc) adopt))
         restore (filterv #(not (fs/regular-file? (fs/path root (:path %)))) (:unchanged plan))
         report (planner/drift-report plan)
         gone (mapv (fn [d] {:name (:name d) :path (:path d) :model (:model d) :status "missing-file" :fields []}) restore)]
     {:plan plan :restore restore :adopt adopt
+     :before-images (before-images-for store root planned adopt tracked-docs)
      :report {:drift? (boolean (or (:drift? report) (seq gone))) :documents (into (mapv #(if (contains? adopted (:name %)) (assoc % :status "untracked") %) (:documents report)) gone)}}))
 
 (defn- doc-opts [opts] (select-keys opts [:store :actor :format]))
 
+(defn check-before-images!
+  "Verifies that none of `paths` (default: all paths in `:before-images` of
+   `inspected`) changed on disk since planning or were modified externally
+   before `sync`. Raises `:adapters/conflict` (exit 4) before writing."
+  ([inspected root]
+   (check-before-images! inspected root (sort (keys (:before-images inspected)))))
+  ([{:keys [before-images]} root paths]
+   (let [changed (vec (for [path paths
+                            :when (contains? before-images path)
+                            :let [expected (get before-images path)
+                                  current (current-source root path)]
+                            :when (or (= :modified-externally expected)
+                                      (not= current expected))]
+                        path))]
+     (when (seq changed)
+       (err/raise :adapters/conflict
+                  (str "refusing to sync: " (count changed)
+                       " document(s) changed during planning or were modified externally (before-image guard), e.g. "
+                       (first changed))
+                  {:reason "before-image" :paths changed})))))
+
 (defn- preflight!
   "v1's preflight: a planned file that exists without being a tracked
-   generated document refuses the whole sync (`:adapters/conflict`, exit 4)
-   before anything is written."
-  [{:keys [plan adopt]} root]
+   generated document, or a file modified externally / during planning,
+   refuses the whole sync (`:adapters/conflict`, exit 4) before anything is
+   written."
+  [{:keys [plan adopt] :as inspected} root]
   (when-let [taken (seq (filter #(fs/exists? (fs/path root (:path %))) (remove (set (map :doc adopt)) (:create plan))))]
     (err/raise :adapters/conflict
                (str "refusing to sync: " (count taken) " planned file(s) exist and are not tracked as generated documents, e.g. " (:path (first taken)))
-               {:paths (mapv :path taken)})))
+               {:paths (mapv :path taken)}))
+  (check-before-images! inspected root))
 
-(defn- apply-plan!
-  "Applies a sync plan through `docs create`, `docs update` and `docs untrack`."
-  [{:keys [plan restore adopt]} opts ctx root]
+(defn apply-plan!
+  "Applies a sync plan through `docs create`, `docs update` and `docs untrack`,
+   re-verifying the before-image guard immediately before writing."
+  [{:keys [plan restore adopt] :as inspected} opts ctx root]
+  (check-before-images! inspected root)
   (doseq [{:keys [doc existing changed]} adopt]
+    (check-before-images! inspected root [(:path doc)])
     (fail! (docs/track [(:model doc) (str (fs/path root (:path doc)))] (assoc (doc-opts opts) :name (:name doc)) ctx))
     (when (seq changed)
+      (check-before-images! inspected root [(:path doc)])
       (with-payload-file (planner/merge-payload doc existing)
         #(fail! (docs/update-any [(:name doc)] (assoc (doc-opts opts) :data %) ctx)))))
   (doseq [d (remove (set (map :doc adopt)) (:create plan))]
+    (check-before-images! inspected root [(:path d)])
     (with-payload-file (:payload d)
       #(fail! (docs/create [(:model d) (:name d)] (assoc (doc-opts opts) :data % :path (str (fs/path root (:path d)))) ctx))))
   (doseq [d (concat (:update plan) restore)]
+    (check-before-images! inspected root [(:path d)])
     (with-payload-file (:payload d)
       #(fail! (docs/update-any [(:name d)] (assoc (doc-opts opts) :data %) ctx))))
   (doseq [d (:untrack plan)]

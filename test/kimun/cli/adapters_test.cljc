@@ -13,7 +13,10 @@
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.commands.adapters :as cmd]
             [kimun.cli.errors :as errors]
-            [kimun.cli.main :as main]))
+            [kimun.cli.main :as main]
+            [kimun.cli.store :as cli-store]
+            [kimun.host.hash :as hash]
+            [kimun.surface.adapters :as planner]))
 
 (def env
   "Test environment; forwards the real `KIMUN_ADAPTER_PYTHON` to dispatch when set."
@@ -470,3 +473,64 @@
       (let [n (count (journal fresh)) again (fake-run fresh "sync")]
         (is (true? (:ok again)))
         (is (= n (count (journal fresh))) "a second sync writes nothing")))))
+
+;; v1: tests/selfdoc/test_preflight.py::test_before_image_guard_prevents_clobbering_concurrent_edits
+(deftest before-image-guard-prevents-clobbering-concurrent-edits
+  (let [sha256 (fn [s] (hash/sha256-hex (.getBytes ^String s "UTF-8")))
+        plan-for (fn [p]
+                   (let [output (json/parse-string (slurp (file p "facts.json")))]
+                     {:planned (:documents (planner/plan-documents output {:system "demo" :output "knowledge" :sha256 sha256}))
+                      :scope {:adapter "python-symbols" :profile "symbols" :language "python" :system "demo" :output "knowledge"}}))]
+    (testing "concurrent edit during planning refuses apply-plan! before writing"
+      (let [p (project)
+            store (:store (cli-store/open! (cli-store/resolve-store {} env p)))
+            planned (plan-for p)
+            inspected (cmd/inspect store p planned)
+            target-file (file p (:path (first (:planned planned))))
+            n (count (journal p))]
+        (fs/create-dirs (fs/parent target-file))
+        (spit target-file "A concurrent edit")
+        (let [e (errors/wrap #(cmd/apply-plan! inspected {:format "json" :actor "human/tester"} {:env env :cwd p} p))]
+          (is (false? (:ok e)))
+          (is (= "adapters/conflict" (error-type e)))
+          (is (= 4 (:exit e)))
+          (is (= "before-image" (get-in e [:error :data :reason])))
+          (is (str/includes? (get-in e [:error :message]) "changed during planning"))
+          (is (= "A concurrent edit" (slurp target-file)))
+          (is (= n (count (journal p)))))))
+    (testing "external edit on disk prevents adapters sync from overwriting silently, while normal sync writes"
+      (let [p (project)
+            names (:created (:data (fake-run p "sync")))
+            greet (doc-named names "greet")
+            f (file p "knowledge" "symbols" (str greet ".md"))
+            tracked-text (slurp f)]
+        (is (str/includes? tracked-text "Return a greeting") "normal create wrote the selfdoc file")
+        (set-doc! p "demo.tools.greet" "Return a much better greeting.")
+        (let [n (count (journal p))]
+          (spit f "External edit on disk\n")
+          (let [c (fake-run p "sync")]
+            (is (false? (:ok c)))
+            (is (= "adapters/conflict" (error-type c)))
+            (is (= 4 (:exit c)))
+            (is (= "before-image" (get-in c [:error :data :reason])))
+            (is (= [(:path (first (filter #(= greet (:name %)) (:planned (plan-for p)))))]
+                   (get-in c [:error :data :paths])))
+            (is (= "External edit on disk\n" (slurp f)) "externally modified source is not overwritten")
+            (is (= n (count (journal p))) "nothing committed on before-image conflict"))
+          (spit f tracked-text)
+          (testing "concurrent edit between inspect and apply-plan! on a tracked update is also refused"
+            (let [store (:store (cli-store/open! (cli-store/resolve-store {} env p)))
+                  inspected (cmd/inspect store p (plan-for p))]
+              (spit f "Edited between inspect and apply\n")
+              (let [c2 (errors/wrap #(cmd/apply-plan! inspected {:format "json" :actor "human/tester"} {:env env :cwd p} p))]
+                (is (false? (:ok c2)))
+                (is (= "adapters/conflict" (error-type c2)))
+                (is (= 4 (:exit c2)))
+                (is (= "Edited between inspect and apply\n" (slurp f)))
+                (is (= n (count (journal p)))))))
+          (spit f tracked-text)
+          (let [s (fake-run p "sync")]
+            (is (true? (:ok s)) (pr-str (:error s)))
+            (is (= [greet] (mapv :name (:updated (:data s)))))
+            (is (str/includes? (slurp f) "much better greeting") "normal sync writes updated source")
+            (is (= (inc n) (count (journal p))))))))))

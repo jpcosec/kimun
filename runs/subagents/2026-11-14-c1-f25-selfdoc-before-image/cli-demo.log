@@ -1,0 +1,187 @@
+=== 1. stores init ===
+{
+  "ok" : true,
+  "command" : "stores init",
+  "store" : {
+    "name" : "demo-store",
+    "path" : "/tmp/kimun-c1-demo-1NlYUT/.kimun"
+  },
+  "revision" : null,
+  "data" : {
+    "path" : "/tmp/kimun-c1-demo-1NlYUT/.kimun",
+    "name" : "demo-store",
+    "actor" : "human/jp",
+    "capabilities" : {
+      "human/jp" : "all",
+      "kimun/derive" : "all",
+      "kimun/materialize" : "all"
+    }
+  },
+  "warnings" : [ ]
+}
+=== 2. normal initial sync (creates files) ===
+{
+  "ok" : true,
+  "command" : "adapters sync",
+  "store" : {
+    "name" : "demo-store",
+    "path" : "/tmp/kimun-c1-demo-1NlYUT/.kimun"
+  },
+  "revision" : "3608b7a9287ecf3b954a516c274cebc8596f8e93f42ea9a2b059ac2fd9957631",
+  "data" : {
+    "adapter" : "python-symbols",
+    "counts" : {
+      "created" : 1,
+      "adopted" : 0,
+      "updated" : 0,
+      "untracked" : 0,
+      "unchanged" : 0,
+      "restored" : 0
+    },
+    "system" : "demo",
+    "updated" : [ ],
+    "unchanged" : [ ],
+    "restored" : [ ],
+    "created" : [ "python-demo-demo-tools-greet" ],
+    "output" : "knowledge",
+    "models" : {
+      "defined" : [ "PythonSymbolDoc" ],
+      "present" : [ ]
+    },
+    "untracked" : [ ],
+    "language" : "python",
+    "adopted" : [ ],
+    "facts" : 3,
+    "profile" : "symbols"
+  },
+  "warnings" : [ ]
+}
+exit=0
+---
+id: python-demo-demo-tools-greet
+system: demo
+module: demo.tools
+qualname: greet
+kind: FunctionDef
+source_path: demo/tools.py
+source_span: '3:5'
+source_sha256: 7a6906e83819de5748cde5d4ee2cb023f8e3cd291e69089496399d79521a3698
+architecture_spec: Not declared.
+tags: []
+provenance: python-ast:python:demo.tools:greet; contract-sha256:db4e271602973d97d972a99d84a8b68d4e36e7780333a29b0c3d69efe2810245
+---
+
+# greet
+
+## Signature
+
+greet(name)
+
+## Docstring
+
+Return a greeting.
+
+## Imports
+
+[]
+
+## Purpose
+
+Not documented.
+
+## Architecture
+
+Not documented.
+=== 3. edit source code + external edit on selfdoc file ===
+{
+  "ok" : false,
+  "error" : {
+    "type" : "adapters/conflict",
+    "message" : "refusing to sync: 1 document(s) changed during planning or were modified externally (before-image guard), e.g. knowledge/symbols/python-demo-demo-tools-greet.md",
+    "data" : {
+      "reason" : "before-image",
+      "paths" : [ "knowledge/symbols/python-demo-demo-tools-greet.md" ]
+    }
+  },
+  "exit" : 4
+}
+exit=4
+--- file on disk after refused sync ---
+External edit on disk
+=== 4. restore tracked before-image and run normal sync (writes updated doc) ===
+{
+  "ok" : true,
+  "command" : "adapters sync",
+  "store" : {
+    "name" : "demo-store",
+    "path" : "/tmp/kimun-c1-demo-1NlYUT/.kimun"
+  },
+  "revision" : "61c788291ea6db18c78778a79ddb2eb7789eb7ef3e387cca920403478561ebb7",
+  "data" : {
+    "adapter" : "python-symbols",
+    "counts" : {
+      "created" : 0,
+      "adopted" : 0,
+      "updated" : 1,
+      "untracked" : 0,
+      "unchanged" : 0,
+      "restored" : 0
+    },
+    "system" : "demo",
+    "updated" : [ {
+      "name" : "python-demo-demo-tools-greet",
+      "changed" : [ "docstring", "provenance", "source_sha256" ]
+    } ],
+    "unchanged" : [ ],
+    "restored" : [ ],
+    "created" : [ ],
+    "output" : "knowledge",
+    "models" : {
+      "defined" : [ ],
+      "present" : [ "PythonSymbolDoc" ]
+    },
+    "untracked" : [ ],
+    "language" : "python",
+    "adopted" : [ ],
+    "facts" : 3,
+    "profile" : "symbols"
+  },
+  "warnings" : [ ]
+}
+exit=0
+--- file on disk after normal sync ---
+---
+id: python-demo-demo-tools-greet
+system: demo
+module: demo.tools
+qualname: greet
+kind: FunctionDef
+source_path: demo/tools.py
+source_span: '3:5'
+source_sha256: 21b8ce9f8a8dd89764d29486d444f45d794e052b80a783a9110c72c42711c34d
+architecture_spec: Not declared.
+tags: []
+provenance: python-ast:python:demo.tools:greet; contract-sha256:07959582955df49c7741a06dee862b4c20eba8bfd26a8633d4b880c07fdf4df3
+---
+
+# greet
+
+## Signature
+
+greet(name)
+
+## Docstring
+
+Return a much warmer greeting.
+
+## Imports
+
+[]
+
+## Purpose
+
+Not documented.
+
+## Architecture
+
+Not documented.

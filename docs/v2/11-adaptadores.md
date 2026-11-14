@@ -286,7 +286,7 @@ igual al código cuyo archivo desapareció (el `missing` de v1); `sync` reescrib
 |---|---|---|
 | `:adapters/missing` (`reason "unknown-adapter"`) | `ADAPTER` no es incluido ni archivo | 1 |
 | `:adapters/missing` (`reason "drift"`) | `check` halló deriva | 1 |
-| `:adapters/conflict` | en una ruta planificada hay un archivo no adoptable (no extrae bajo el modelo o su `id` no es el planificado); antes de escribir nada | 4 |
+| `:adapters/conflict` | en una ruta planificada hay un archivo no adoptable (no extrae bajo el modelo o su `id` no es el planificado) o un archivo modificado externamente / durante la planificación (`reason "before-image"`); antes de escribir nada | 4 |
 | `:adapters/runtime` | el adaptador sale con 3 o no puede arrancar | 5 |
 | `:adapters/failed` | el adaptador sale con 1 u otro código; datos `{:adapter :exit :stderr}`, mensaje con la línea `error:` | 5 |
 | `:adapters/invalid-output` | stdout no es un objeto JSON, `validate` o el planificador reportan problemas | 5 |
@@ -449,8 +449,7 @@ python|javascript` y `--system` (aceptada, no usada).
 - `untrack` es una adición: v1 solo informaba `removed` (y `sync` salía con 1); aquí `check` informa
   `orphan` (exit 1) y `sync` hace `docs untrack` conservando el archivo (§6.5). La adopción
   de un archivo retenido porta la rama "untracked" de `_save_document` de v1.
-- `sync` no tiene guarda de imagen previa del archivo (la de v1, "changed during planning"): `docs update`
-  re-renderiza desde el payload rastreado; solo se protegen escrituras concurrentes al store.
+- `sync` aplica la guarda de imagen previa (`check-before-images!`, `C1/F25`): si un archivo planificado fue modificado externamente respecto al store o cambió en disco durante la planificación (o antes de escribirlo), `sync` falla con `:adapters/conflict` (exit 4, `{:reason "before-image"}`) antes de modificar el store o el disco.
 - Los lenguajes no Python reutilizan `PythonSymbolDoc` con prefijo `<lenguaje>-<system>-` (el id
   de python no cambia).
 - Los documentos de símbolos se ordenan por id de hecho (v1: orden de archivo/DFS); los
