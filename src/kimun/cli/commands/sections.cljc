@@ -100,7 +100,7 @@
         [d es] (doc-entries store token)
         sec (sections/resolve-section es wanted)
         model (mstore/find-model store (:model d))
-        doc (tdocs/document store (:name d))]
+        doc (tdocs/document store (:tree d))]
     (when-not model (err/raise :models/missing (str "no model named `" (:model d) "`") {:model (:model d)}))
     (when-not (:payload doc)
       (err/raise :sections/unreadable (str "the source of `" (:name d) "` no longer extracts: " (:error doc)) {:document (:name d)}))

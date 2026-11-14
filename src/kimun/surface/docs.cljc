@@ -30,7 +30,16 @@
      `:parse-contract`; it gains one the next time it is written.
    Reading an old store that still holds the verbatim source sign
    (`{markdown/source blob}`) is supported: its text wins over the file.
-   Untracking removes those edges; the tree stays in history and is hidden."
+   Untracking removes those edges; the tree stays in history and is hidden.
+
+   Names (K8, docs/v2/06 §3 «Nombres de documento»): a document's `:name` is a
+   short alias and several documents may share it when each has its own file.
+   `:qualified` is the path of its file (the anchor's locator, normalised),
+   or the name when it has none. Neither is the identity of the document: the
+   tree id is the stable reference, and the qualified name follows the
+   locator. `find-document` resolves a tree id, a short name or a qualified
+   name, and raises `:docs/ambiguous` with the candidates when a short name
+   means more than one document; it never picks one."
   (:require [clojure.edn :as edn]
             [clojure.string :as str]
             [kimun.host.store-cache :as store-cache]
@@ -44,6 +53,7 @@
             [kimun.kernel.node :as node]
             [kimun.kernel.ports :as ports]
             [kimun.kernel.revision :as revision]
+            [kimun.kernel.route :as route]
             [kimun.kernel.store :as kstore]
             [kimun.kernel.tree :as tree]
             [kimun.surface.markdown.ast :as ast]
@@ -131,6 +141,11 @@
           (or (try (md/store->markdown host store tid)
                    (catch #?(:clj Exception :cljs :default) _ nil))
               ft)))))
+(defn qualified-path
+  "`p` as a qualified name: `\\` as `/`, leading `./` removed, NFC. Nil for nil."
+  [host p]
+  (some->> p route/normalize-path (canon/normalize host)))
+
 (defn- owned-edge?
   "True for an edge this surface wrote from a document root: to its model, its
    source or its file. Any other edge leaving the root — an authored relation,
@@ -168,12 +183,14 @@
          :class (or (get-in d [:class]) (get-in (anchor-edge store es) [:evidence :contract]))
          :cached? (true? (get-in d [:cached?]))
          :state (cond (nil? entry) :orphan (contains? extracted (:id entry)) :intact :else :superseded)
-         :path path :fingerprint (get-in ext [:content :fingerprint])
+         :path path :qualified (or (qualified-path (:host store) path) (get-in t [:descriptor :name]))
+         :fingerprint (get-in ext [:content :fingerprint])
          :source (source-of (:host store) store tid es path (get-in ext [:content :fingerprint])) :edges (mapv :id es)}))))
 
 (defn documents
-  "Every tracked typed document of `store`, by name: `{:name :tree :root :doc
-   :model :model-version :model-id :state :path :fingerprint :source :edges}`.
+  "Every tracked typed document of `store`, by name: `{:name :qualified :tree
+   :root :doc :model :model-version :model-id :state :path :fingerprint :source
+   :edges}`.
    `:state` is `:intact` (extracted under the current contract), `:superseded`
    (the model was redefined since) or `:orphan` (its model is gone)."
   [store]
@@ -192,17 +209,68 @@
      (set (for [[tid d] (revision/tree-descriptors store)
                 :when (and (get-in store [:objects (:root d) :content :attrs :doc]) (not (tracked tid)))] tid)))))
 
-(defn find-document "The tracked document named or identified by `token`, or nil." [store token]
-  ;; same answer as the first match of `documents`, describing only the trees that can match
-  ;; (a document's :name is its tree's descriptor name and its :tree the tree id): every write
-  ;; (create, fields set, edit) resolves its document here, so it must cost what the matching
-  ;; trees cost: the name index of the kernel, then the edges of those roots only
+(defn candidates
+  "The tracked documents `token` may mean as a tree id or a short name, by
+   name then tree id. It describes only the trees that can match (a document's
+   `:name` is its tree's descriptor name and its `:tree` the tree id): every
+   write resolves its document here, so it costs what the matching trees cost
+   — the name index of the kernel, then the edges of those roots only."
+  [store token]
   (let [cands (->> (cons token (revision/trees-named store token)) distinct
                    (keep (fn [tid] (when-let [d (revision/tree-descriptor store tid)]
                                      (when (= :document (:kind d)) [tid {:descriptor d}])))))]
-    (when (seq cands)
+    (if (empty? cands)
+      []
       (let [current (mstore/models store) by-from (edges-from store (map (comp tree/root second) cands))]
-        (->> cands (keep #(describe store current by-from %)) (sort-by (juxt :name :tree)) first)))))
+        (->> cands (keep #(describe store current by-from %)) (sort-by (juxt :name :tree)) vec)))))
+
+(defn- candidate-data [d] (select-keys d [:name :qualified :tree :path :model]))
+
+(defn- ambiguous!
+  "Raises `:docs/ambiguous` (exit 2) for `token` with its `found` documents."
+  [token found]
+  (err/raise :docs/ambiguous
+             (str (count found) " documents answer to `" token "`: "
+                  (str/join ", " (map :qualified found))
+                  " — name one by its qualified name or its tree id")
+             {:document token :candidates (mapv candidate-data found)}))
+
+(defn find-document
+  "The tracked document identified by `token`, or nil. `token` is, in order: a
+   tree id; a short name (`:name`); a qualified name (the path of the
+   document's file). A short name shared by several documents is not resolved:
+   it raises `:docs/ambiguous` (exit 2) with `:candidates [{:name :qualified
+   :tree :path :model}]`. A qualified name is looked up only when nothing has
+   that name and the token looks like a path (it has a `/` or a `.`); that
+   lookup reads every document."
+  [store token]
+  (let [found (candidates store token)
+        exact (filter #(= token (:tree %)) found)]
+    (cond
+      (seq exact) (first exact)
+      (= 1 (count found)) (first found)
+      (seq found) (ambiguous! token found)
+      (and (string? token) (re-find #"[/.]" token))
+      (let [q (qualified-path (:host store) token)
+            by-path (filterv #(and (:path %) (= q (:qualified %))) (documents store))]
+        (case (count by-path) 0 nil 1 (first by-path) (ambiguous! token by-path)))
+      :else nil)))
+
+(defn refuse-collision!
+  "Raises `:docs/exists` when a new document `name` with file `path` (nil for
+   none) cannot live beside the tracked ones: another document has that name
+   and one of the two has no file (nothing would tell them apart), or it has
+   the same file. Two documents may share a short name when their files
+   differ; the name is then an ambiguous alias."
+  [store name path]
+  (let [q (qualified-path (:host store) path)]
+    (doseq [d (candidates store name) :when (= name (:name d))]
+      (cond
+        (or (nil? path) (nil? (:path d)))
+        (err/raise :docs/exists (str "a document named `" name "` already exists") {:document name})
+        (= q (:qualified d))
+        (err/raise :docs/exists (str "a document named `" name "` already tracks " (:qualified d))
+                   {:document name :path (:qualified d)})))))
 
 (defn contract-descriptor
   "The descriptor node the document was last written with — the `:contract`
@@ -448,14 +516,13 @@
    `opts`: `:doc` and `:tree-id` (fresh ULIDs), `:path` (relative, or nil),
    `:actor`, `:timestamp`, `:operation` (journal label, default \"docs track\").
    Returns `{:plan :name :tree :payload}`. Raises `:docs/exists` when the name
-   is tracked, `:models/missing`, and the extraction errors of the model. With
+   cannot be shared (`refuse-collision!`), `:models/missing`, and the extraction errors of the model. With
    `:inline` the source text is stored in the store instead of read from the
    file (default: the store descriptor's `:content`). A document with a path
    (and not `:inline`) is registered as CACHE (docs/v2/14 §18.6): no ownership
    edge, no block/text node and no tree object enters the plan."
   [host store model name text {:keys [doc tree-id path actor timestamp operation inline]}]
-  (when (find-document store name)
-    (err/raise :docs/exists (str "a document named `" name "` already exists") {:document name}))
+  (refuse-collision! store name path)
   (let [m (require-model store model)
         payload (extract/extract (:descriptor m) text)
         ch (content-hash host payload)

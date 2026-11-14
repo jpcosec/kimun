@@ -1,0 +1,8 @@
+[
+ {
+  "type": "source/mutated",
+  "document": "README",
+  "path": "a/README.md",
+  "action": "kimun docs update a/README.md"
+ }
+]

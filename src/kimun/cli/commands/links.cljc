@@ -51,25 +51,32 @@
       (usage! (str "`--depth` needs a positive integer, got `" v "`") {:subcommand "recover" :depth (str v)}))))
 
 (defn- project
-  "`{:root :predicates :by-name :by-path}`: the project root, the store's
-   predicate registry (`kimun.surface.edges/predicate-registry`), the tracked
-   documents' absolute paths by name, and their stored sources by absolute
-   path. Without a store the root is `cwd`, nothing is tracked and the
-   predicates are the defaults."
+  "`{:root :predicates :by-name :ambiguous :by-path}`: the project root, the
+   store's predicate registry (`kimun.surface.edges/predicate-registry`), the
+   tracked documents' absolute paths by name, and their stored sources by
+   absolute path. A short name shared by several documents (K8) is not in
+   `:by-name`: it is in `:ambiguous`, name → the qualified names it may mean,
+   so a link is never bound to one of them by chance. Without a store the root
+   is `cwd`, nothing is tracked and the predicates are the defaults."
   [opts {:keys [env cwd]}]
   (if-let [dir (cli-store/resolve-store opts env cwd)]
     (let [{:keys [store]} (cli-store/open! dir)
           root (str (fs/parent (fs/absolutize dir)))
-          docs (map #(assoc % :abs (absolute root (:path %))) (tdocs/documents store))]
+          docs (map #(assoc % :abs (absolute root (:path %))) (tdocs/documents store))
+          shared (into {} (keep (fn [[n ds]] (when (> (count ds) 1) [n (mapv :qualified (sort-by :qualified ds))])))
+                       (group-by :name docs))]
       {:root root
        :predicates (edges/predicate-registry store)
-       :by-name (into {} (map (juxt :name :abs)) docs)
+       :ambiguous shared
+       :by-name (into {} (comp (remove #(contains? shared (:name %))) (map (juxt :name :abs))) docs)
        :by-path (into {} (map (juxt :abs :source)) docs)})
-    {:root (str (fs/absolutize cwd)) :by-name {} :by-path {}}))
+    {:root (str (fs/absolutize cwd)) :by-name {} :ambiguous {} :by-path {}}))
 
 (defn- lookup-fn
   "Precedence of v1: tracked name, then beside the linking document, then under
-   the project root. Only the first hit is returned."
+   the project root. Only the first hit is returned. A name shared by several
+   tracked documents is not a tracked name here (see `project`): the link
+   resolves as a file path or stays unresolved."
   [{:keys [root by-name]}]
   (fn [{:keys [target from]}]
     (let [beside (try (absolute (fs/parent from) target) (catch Exception _ nil))
@@ -84,11 +91,17 @@
 
 (defn- root-document
   "The absolute path of the root document `ref`: an existing file (relative to
-   `cwd`), else a tracked name; otherwise `:links/missing`."
-  [ref {:keys [by-name]} cwd]
+   `cwd`), else a tracked name; otherwise `:links/missing`. A name shared by
+   several documents is `:docs/ambiguous` (exit 2) with their qualified names."
+  [ref {:keys [by-name ambiguous]} cwd]
   (let [f (absolute cwd ref)]
     (cond (file? f) f
           (contains? by-name ref) (get by-name ref)
+          (contains? ambiguous ref)
+          (err/raise :docs/ambiguous
+                     (str (count (get ambiguous ref)) " documents answer to `" ref "`: " (str/join ", " (get ambiguous ref))
+                          " — name one by its qualified name")
+                     {:document ref :candidates (get ambiguous ref)})
           :else (err/raise :links/missing (str "no tracked document or file named `" ref "`") {:document ref}))))
 
 (defn- setup [sub args opts {:keys [cwd] :as ctx}]

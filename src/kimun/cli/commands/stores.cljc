@@ -249,14 +249,14 @@
         ts (docs/timestamp)
         {:keys [final plans metas warnings]}
         (reduce (fn [{:keys [final plans metas] :as acc} f]
-                  (let [doc (tdocs/document final (:document f))
+                  (let [doc (tdocs/document final (or (:tree f) (:document f)))
                         ;; only a redefined model asks for the text to be re-rendered; when the
                         ;; parser moved (K6) the file is already right and is only registered again
                         moved? (and (= :contract-moved (:category f)) (= :superseded (:state f)))
                         text (if moved?
                                (tdocs/move-text final doc nil (compose/context final path))
                                (or (some-> (:path doc) read-file) (:source doc)))
-                        {:keys [plan]} (tdocs/update-plan host/host final (:document f) text
+                        {:keys [plan]} (tdocs/update-plan host/host final (or (:tree f) (:document f)) text
                                                           {:actor (:actor opts) :timestamp ts :operation "stores update"})
                         st (if plan (:store (revision/apply-plan final plan)) final)
                         meta (when plan (edn/read-string (get-in plan [:engines tdocs/meta-key])))

@@ -189,7 +189,7 @@
   [store scope]
   (let [models (set (get planner/profile-models (:profile scope)))]
     (vec (for [d (tdocs/documents store) :when (contains? models (:model d))
-               :let [full (tdocs/document store (:name d))
+               :let [full (tdocs/document store (:tree d))
                      t {:name (:name d) :model (:model d) :path (:path d) :payload (when (map? (:payload full)) (strings (:payload full)))}]
                :when (and (:payload t) (planner/owned? scope t))]
            t))))

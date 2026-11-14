@@ -1,0 +1,13 @@
+{
+ "ok": true,
+ "exit": 0,
+ "result": {
+  "path": "a/README.md",
+  "qualified": "a/README.md",
+  "tree": "01M7DA7ZBX3MB9Q1RFH291NJ5B",
+  "payload": {},
+  "name": "README",
+  "state": "intact",
+  "model": "TicketDoc"
+ }
+}

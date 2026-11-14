@@ -1,0 +1,12 @@
+{
+ "ok": false,
+ "exit": 3,
+ "result": {
+  "type": "docs/exists",
+  "message": "a document named `README` already tracks a/README.md",
+  "data": {
+   "document": "README",
+   "path": "a/README.md"
+  }
+ }
+}

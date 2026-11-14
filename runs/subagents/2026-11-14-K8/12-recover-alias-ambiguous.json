@@ -1,0 +1,15 @@
+{
+ "ok": false,
+ "exit": 2,
+ "error": {
+  "type": "docs/ambiguous",
+  "message": "2 documents answer to `README`: a/README.md, b/README.md — name one by its qualified name",
+  "data": {
+   "document": "README",
+   "candidates": [
+    "a/README.md",
+    "b/README.md"
+   ]
+  }
+ }
+}

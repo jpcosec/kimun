@@ -1,0 +1,19 @@
+
+Testing kimun.cli.names-test
+
+Testing kimun.cli.typed-docs-test
+
+Testing kimun.cli.contract-test
+
+Testing kimun.cli.sense-test
+
+Testing kimun.cli.diagnostics-test
+
+Testing kimun.cli.links-test
+
+Testing kimun.cli.fields-test
+
+Testing kimun.cli.sections-test
+
+Ran 75 tests containing 1082 assertions.
+0 failures, 0 errors.

@@ -1,0 +1,20 @@
+{
+ "ok": false,
+ "exit": 1,
+ "error": "links/missing",
+ "links": [
+  {
+   "target": "README",
+   "resolved": false,
+   "source": null
+  },
+  {
+   "target": "a/README.md",
+   "resolved": true,
+   "source": "path"
+  }
+ ],
+ "unresolved": [
+  "README"
+ ]
+}

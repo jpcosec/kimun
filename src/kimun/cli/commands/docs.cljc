@@ -138,12 +138,13 @@
 
 (defn list-docs
   "`docs list [--model M]`: every document of the store by name. An untyped
-   document is `{:name :tree :root}`; a typed one adds `:model :model-version
-   :state :path`. `--model` keeps the documents of that model."
+   document is `{:name :tree :root}`; a typed one adds `:qualified :model
+   :model-version :state :path` (`:qualified` is the path of its file, the
+   name that tells apart documents sharing a short name). `--model` keeps the documents of that model."
   [_args opts {:keys [env cwd]}]
   (let [{:keys [descriptor store] store-path :path} (cli-store/open! (cli-store/resolve-store opts env cwd))
         docs (tdocs/documents store)
-        typed (map #(select-keys % [:name :tree :root :model :model-version :state :path]) docs)
+        typed (map #(select-keys % [:name :qualified :tree :root :model :model-version :state :path]) docs)
         all (if (:model opts) (filter #(= (:model opts) (:model %)) typed) (concat typed (documents store docs)))]
     (out/ok "docs list" {:store (store-ref descriptor store-path)
                          :revision (:head store)
@@ -186,11 +187,14 @@
 
 (defn- open [opts {:keys [env cwd]}] (cli-store/open! (cli-store/resolve-store opts env cwd)))
 
-(defn- doc-data [d] (select-keys d [:name :model :model-version :state :path :tree :payload :error :source-hash :content-hash :field-hashes]))
+(defn- doc-data [d] (select-keys d [:name :qualified :model :model-version :state :path :tree :payload :error :source-hash :content-hash :field-hashes]))
 
-(defn- done [command descriptor store-path r store' name extra]
+(defn- done
+  "The envelope of a document write; `token` is the tree id of the document
+   written (a short name may be shared, K8)."
+  [command descriptor store-path r store' token extra]
   (out/ok command (merge {:store (store-ref descriptor store-path) :revision (:revision-id r)
-                          :data (doc-data (tdocs/document store' name))} extra)))
+                          :data (doc-data (tdocs/document store' token))} extra)))
 
 ;; The refusal of v1's `refuse_structural_noise` + `refuse_undeclared_frontmatter`: a heading the
 ;; template never declares is swallowed into a field, a frontmatter key it never declares is lost
@@ -217,9 +221,7 @@
     (:store (store/commit! backend store plan))
     store))
 
-(defn- refuse-tracked! [store name]
-  (when (tdocs/find-document store name)
-    (err/raise :docs/exists (str "a document named `" name "` already exists") {:document name})))
+(defn- refuse-tracked! [store name path] (tdocs/refuse-collision! store name path))
 
 (defn create
   "`docs create MODEL NAME --data FILE | --set field=value… [--path P]`:
@@ -240,18 +242,18 @@
         root (project-root store-path)
         path (relative-path root (fs/path (if alias root cwd) (or (:path opts) (str name ".md"))))
         text (str (mrender/render d payload (compose/context store store-path)) "\n")
-        _ (refuse-tracked! store name)
+        _ (refuse-tracked! store name path)
         _ (mextract/extract d text)
         _ (refuse-noise! model d name text)
         _ (when (fs/exists? (fs/path root path))
             (err/raise :docs/conflict (str "the file " path " already exists; choose another --path") {:path path}))
         store (bind-model! backend store m opts)
-        {:keys [plan]} (tdocs/track-plan host/host store model name text
+        {:keys [plan tree]} (tdocs/track-plan host/host store model name text
                                          {:doc (ports/ulid (:ids host/host)) :tree-id (ports/ulid (:ids host/host))
                                           :path path :actor (:actor opts) :timestamp (timestamp) :operation "docs create"
                                           :inline (:inline opts)})
         r (store/commit! backend store plan)]
-    (done "docs create" descriptor store-path r (:store r) name {:warnings (write-file! root path text)})))
+    (done "docs create" descriptor store-path r (:store r) tree {:warnings (write-file! root path text)})))
 
 (defn track
   "`docs track MODEL FILE [--name N]`: tracks an existing Markdown file as a
@@ -266,7 +268,7 @@
         {:keys [backend descriptor store] store-path :path} opened
         name (name-of opts p)
         {model :name d :descriptor :as m} (linked/resolve-model opened home token)
-        _ (refuse-tracked! store name)
+        _ (refuse-tracked! store name (relative-path (project-root store-path) p))
         _ (when-not (:force opts)
             ;; noise first: a dropped frontmatter key would otherwise surface as a bare round-trip failure
             (refuse-noise! model d name text)
@@ -276,12 +278,12 @@
                            (str "`" file "` does not round-trip under " model ": rendering what was extracted gives a different text; fix the file or pass --force")
                            {:document name :model model}))))
         store (bind-model! backend store m opts)
-        {:keys [plan]} (tdocs/track-plan host/host store model name text
+        {:keys [plan tree]} (tdocs/track-plan host/host store model name text
                                          {:doc (ports/ulid (:ids host/host)) :tree-id (ports/ulid (:ids host/host))
                                           :path (relative-path (project-root store-path) p) :actor (:actor opts) :timestamp (timestamp)
                                           :inline (:inline opts)})
         r (store/commit! backend store plan)]
-    (done "docs track" descriptor store-path r (:store r) name {})))
+    (done "docs track" descriptor store-path r (:store r) tree {})))
 
 (defn update-typed
   "`docs update NAME [FILE] [--data F | --set k=v]`: re-reads the document's
@@ -296,7 +298,7 @@
         root (project-root store-path)
         payload? (or (:data opts) (seq (:set opts)))
         current (:descriptor (mstore/model store (:model doc)))
-        full (tdocs/document store (:name doc))
+        full (tdocs/document store (:tree doc))
         no-input? (and (not payload?) (not (get args 1)))
         stored (when (and no-input? (:path doc)) (second (read-file! (str (fs/path root (:path doc))) cwd)))
         migrate? (and no-input? (= :superseded (:state doc)) (= (or stored (:source full)) (:source full)))
@@ -307,10 +309,10 @@
                    stored stored
                    :else (err/raise :cli/usage "`docs update` needs a FILE, --data or --set for a document without a file" {}))
         _ (refuse-noise! (:model doc) (or current {}) (:name doc) text)
-        {:keys [plan unchanged?]} (tdocs/update-plan host/host store (:name doc) text {:actor (:actor opts) :timestamp (timestamp)})
+        {:keys [plan unchanged?]} (tdocs/update-plan host/host store (:tree doc) text {:actor (:actor opts) :timestamp (timestamp)})
         r (if plan (store/commit! backend store plan) {:store store :revision-id (:head store)})
         warnings (if (and (or payload? migrate?) (:path doc)) (write-file! root (:path doc) text) [])]
-    (update (done "docs update" descriptor store-path r (:store r) (:name doc) {:warnings warnings})
+    (update (done "docs update" descriptor store-path r (:store r) (:tree doc) {:warnings warnings})
             :data assoc :unchanged? (boolean unchanged?))))
 
 (defn untrack

@@ -73,7 +73,9 @@
     (is (= [] (:data (run p "docs" "list"))))
     (is (= 1 (:exit (run p "docs" "create" "GhostDoc" "x" "--set" "title=t"))) "unknown model is missing")
     (run p "docs" "create" "TicketDoc" "one" "--set" "title=T" "--set" "status=s")
-    (let [dup (run p "docs" "create" "TicketDoc" "one" "--set" "title=T" "--set" "status=s" "--path" "other.md")]
+    ;; K8: the short name is an alias. The same name on the same file is still a duplicate; on
+    ;; another file it is a second document (kimun.cli.names-test), which v1 refused.
+    (let [dup (run p "docs" "create" "TicketDoc" "one" "--set" "title=T" "--set" "status=s")]
       (is (= "docs/exists" (get-in dup [:error :type])))
       (is (= 3 (:exit dup))))
     (let [u (run p "docs" "update" "ghost" "--set" "title=x")]

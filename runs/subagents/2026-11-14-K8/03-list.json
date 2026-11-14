@@ -1,0 +1,22 @@
+{
+ "ok": true,
+ "exit": 0,
+ "result": [
+  {
+   "name": "README",
+   "qualified": "a/README.md",
+   "tree": "01M7DA7ZBX3MB9Q1RFH291NJ5B",
+   "model": "TicketDoc",
+   "state": "intact",
+   "path": "a/README.md"
+  },
+  {
+   "name": "README",
+   "qualified": "b/README.md",
+   "tree": "01M7DA7ZVES4R11GY41M0MKZ6X",
+   "model": "TicketDoc",
+   "state": "intact",
+   "path": "b/README.md"
+  }
+ ]
+}

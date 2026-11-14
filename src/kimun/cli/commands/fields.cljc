@@ -93,7 +93,7 @@
   "The document with its payload and its model descriptor: `[doc descriptor]`.
    A document whose source no longer extracts is `:fields/unreadable` (exit 3)."
   [store doc]
-  (let [full (tdocs/document store (:name doc))
+  (let [full (tdocs/document store (:tree doc))
         d (or (tdocs/contract-descriptor store full) (:descriptor (mstore/model store (:model full))))]
     (when-not (map? (:payload full))
       (err/raise :fields/unreadable (str "`" (:name full) "` does not extract under " (:model full) ": " (:error full) "; fix it with `docs update`")

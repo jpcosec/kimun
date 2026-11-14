@@ -156,6 +156,46 @@ grande, `AGENTS.md`). No hay activación por eventos: el daemon solo da el pulso
 
 ### docs
 
+#### Nombres de documento (K8)
+
+Un documento tipado tiene tres formas de nombrarse; ninguna de las dos primeras es su identidad.
+
+| forma | qué es | estabilidad |
+|---|---|---|
+| nombre corto (`:name`) | un **alias**: por defecto el nombre del archivo sin extensión | varios documentos pueden compartirlo |
+| nombre cualificado (`:qualified`) | la **ruta** del archivo, relativa al proyecto y normalizada (`/`, sin `./`, NFC); es el localizador del anclaje | sigue al archivo: si la ruta cambia, cambia |
+| id de árbol (`:tree`) | la referencia estable del documento en el store | no cambia |
+
+- `a/README.md` y `b/README.md` son dos documentos con alias `README`. Antes de K8 el segundo se
+  rechazaba con `docs/exists`.
+- Todo comando que recibe un documento (`docs show|update|untrack|delete|recover|compose`, `fields`,
+  `sections`) acepta cualquiera de las tres formas. Orden: id de árbol, nombre corto, nombre cualificado.
+- **Un alias que nombra a más de un documento no se resuelve nunca**: falla con `docs/ambiguous`
+  (exit 2) y `:candidates [{:name :qualified :tree :path :model}]`. No se elige por orden, por hash
+  ni por última escritura.
+- `docs/exists` (3) queda para lo que nada distingue: el mismo nombre sobre el mismo archivo, o el
+  mismo nombre cuando alguno de los dos documentos no tiene archivo.
+- El diagnóstico (`stores check|health|sense|heartbeat`) sigue dando `:document` = nombre corto, con
+  `:path`, y añade `:qualified` y `:tree` al finding. Si el alias es compartido, `:action` y el mensaje
+  nombran el documento por su nombre cualificado. `stores update` repara por id de árbol.
+- La ruta **no es identidad**: un archivo movido es una fuente ausente (`source/missing`), no se
+  reapunta solo. Qué pasa con un documento cuando su archivo se mueve es la regla de continuidad de
+  D0, abierta.
+
+Fuera de este corte:
+
+- **`include`** sigue nombrando por el nombre del archivo sin extensión y rechaza dos declarados
+  con el mismo (`include/conflict`, `13`). Compara lo declarado con el store por nombre; pasarlo a
+  ruta va con el registro de rutas de K2a (corte C2 de
+  `runs/research/2026-11-14/concilio/k2a-implementacion.md`), que aún no existe.
+- Los documentos **no tipados** (`docs ingest`) siguen con nombre único.
+- Enlaces: `docs recover|compose ALIAS` con un alias compartido falla con `docs/ambiguous`. Dentro de
+  un documento, `[[alias]]` compartido **no** se liga a ningún documento del store: se resuelve solo
+  si nombra un archivo (junto al documento o bajo la raíz) y, si no, queda en `:unresolved`
+  (`links/missing`). `[[a/README.md]]` se resuelve por ruta, como antes.
+- Buscar por nombre cualificado lee todos los documentos (no hay índice por ruta hasta C2); por
+  nombre corto e id de árbol cuesta lo de antes.
+
 | subcomando | opciones | `:data` y notas |
 |---|---|---|
 | `docs ingest FILE` | `--name N` | `{:name :tree :path :blocks}`; `docs/exists` (3) si el nombre ya existe |

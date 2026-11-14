@@ -61,7 +61,10 @@
   (try {:payload (extract/extract descriptor text)}
        (catch #?(:clj clojure.lang.ExceptionInfo :cljs ExceptionInfo) e {:error (ex-message e)})))
 
-(defn- action-of [category doc-name]
+(defn- action-of
+  "The command that repairs `category`; `doc-name` is the token that names the
+   document without ambiguity (its qualified name when the short one is shared)."
+  [category doc-name]
   (case category
     :ok nil
     (:reformatted :edited :contract-moved :parser-unavailable :contract-inconsistent) (str "kimun docs update " doc-name)
@@ -69,8 +72,10 @@
     :corrupt "kimun stores verify"
     nil))
 
-(defn- message-of [{:keys [category document model path fields error noise contract]}]
-  (let [who (str "document `" document "` (" model ")")]
+(defn- message-of [{:keys [category model path fields error noise contract] shown :document token :token}]
+  (let [who (str "document `" shown "` (" model ")")
+        ;; the commands a message names take the unambiguous token
+        document (or token shown)]
     (case category
       :ok "ok"
       :reformatted (str who ": the text of " path " changed, its fields are identical (reformatting) — safe to run: kimun docs update " document)
@@ -138,18 +143,21 @@
       contract-moved? [:contract-moved base]
       :else (if-let [n (noise-of (:source doc))] (noisy base n) [:ok base]))))
 
-(defn- diagnose [store env read-file doc]
+(defn- diagnose [store env shared read-file doc]
   (let [descriptor (or (tdocs/contract-descriptor store doc)
                        (some->> (:model doc) (mstore/find-model store) :descriptor))
         text (when (:path doc) (read-file (:path doc)))
         [category extras] (classify store env doc descriptor text)
-        f (merge {:category category :model (:model doc) :document (:name doc) :path (:path doc) :state (:state doc)
+        ;; a short name shared by several documents is an ambiguous alias (K8): commands get the qualified name
+        token (if (contains? shared (:name doc)) (:qualified doc) (:name doc))
+        f (merge {:category category :model (:model doc) :document (:name doc) :qualified (:qualified doc) :tree (:tree doc)
+                  :token token :path (:path doc) :state (:state doc)
                   :needs-human (not (or (clean category) (safe category)))
                   :inspect (if (= :contract-moved category) (str "model `" (:model doc) "` (kimun models history " (:model doc) "), not this document")
-                               (or (:path doc) (str "kimun docs show " (:name doc))))
-                  :action (action-of category (:name doc))}
+                               (or (:path doc) (str "kimun docs show " token)))
+                  :action (action-of category token)}
                  extras)]
-    (assoc f :message (message-of f))))
+    (dissoc (assoc f :message (message-of f)) :token)))
 
 (defn- model-finding [docs {:keys [name version]}]
   (let [mine (filter #(= name (:model %)) docs)
@@ -176,6 +184,9 @@
   "The diagnosis of `store`. `read-file` is `(fn [relative-path] text-or-nil)`;
    `opts` may carry `:verify`, the result of `kimun.kernel.store/verify`
    (`{:ok? :checked :bad}`), which adds the store-level finding `:corrupt`.
+   A document finding also carries `:qualified` and `:tree`; when several
+   documents share a short name, `:action` and the message name each by its
+   qualified name, so the repair command is never ambiguous (K8).
    Returns `{:valid :summary :checked :counts {category n} :models [finding]
    :documents [finding] :findings [finding]}`: `:documents` has one finding per
    tracked document (`:ok` included), `:findings` only what is not `:ok`
@@ -198,9 +209,13 @@
          ;; head Revision): the corruption is the finding, the documents are diagnosed only if they still can be
          [docs models] (if damaged?
                          (err/rescue-any (fn [_] [[] []])
-                                         (let [ds (mapv #(diagnose store env read-file %) (tdocs/documents store))]
+                                         (let [all (tdocs/documents store)
+                                               shared (set (keep (fn [[n c]] (when (> c 1) n)) (frequencies (map :name all))))
+                                               ds (mapv #(diagnose store env shared read-file %) all)]
                                            (walk/postwalk identity [ds (mapv #(model-finding ds %) (mstore/models store))])))
-                         (let [ds (mapv #(diagnose store env read-file %) (tdocs/documents store))]
+                         (let [all (tdocs/documents store)
+                                               shared (set (keep (fn [[n c]] (when (> c 1) n)) (frequencies (map :name all))))
+                                               ds (mapv #(diagnose store env shared read-file %) all)]
                            [ds (mapv #(model-finding ds %) (mstore/models store))]))
          corrupt (when (and verify (not (:ok? verify)))
                    {:category :corrupt :model nil :document nil :path nil :needs-human true :action (action-of :corrupt nil)
