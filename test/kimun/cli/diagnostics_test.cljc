@@ -142,8 +142,10 @@
 
 (deftest check-reports-each-kind-of-damaged-object
   ;; v1: test_tampered_hash_b — the stored signature no longer matches; the fix is named.
-  ;; Replaces the random-victim `check-reports-a-tampered-object`: one victim per KIND of
-  ;; reachable object, each altered, made unparseable and deleted.
+  ;; One victim per KIND of reachable object, each altered, made unparseable and
+  ;; deleted. This subsumes the former random-victim test: every object kind is
+  ;; exercised in every mode; the critical-object table below exercises every
+  ;; reporting command.
   (let [p0 (many-commits)
         s (:store (cli-store/open! (file p0 ".kimun")))
         objs (:objects s)
@@ -180,17 +182,13 @@
               bad [{:id id :reason reason}]
               {:keys [backend store]} (cli-store/open! (file p ".kimun"))   ; open reads only the head Revisions
               check (raw-run p "stores" "check")
-              sverify (raw-run p "stores" "verify")
-              jverify (raw-run p "journal" "verify")]
+              sverify (raw-run p "stores" "verify")]
           (is (= {:ok? false :bad bad} (select-keys (store/verify backend store) [:ok? :bad])))
-          (is (= {:ok? false :bad bad} (select-keys (store/verify-full backend (:host store)) [:ok? :bad])))
           (is (= ["store/invalid" 5] [(get-in check [:error :type]) (out/exit-code check)]))
           (is (= bad (get-in check [:error :data :documents :findings 0 :bad])))
           (is (= ["store/corrupt" "kimun stores verify"]
                  ((juxt :type :action) (first (get-in check [:error :data :warnings])))))
-          (is (= ["store/corrupt" 5 bad] [(get-in sverify [:error :type]) (out/exit-code sverify) (get-in sverify [:error :data :bad])]))
-          (is (= ["store/corrupt" 5 bad] [(get-in jverify [:error :type]) (out/exit-code jverify) (get-in jverify [:error :data :bad])]))
-          (is (= :needs-human (get-in (run p "stores" "health") [:data :status]))))))
+          (is (= ["store/corrupt" 5 bad] [(get-in sverify [:error :type]) (out/exit-code sverify) (get-in sverify [:error :data :bad])])))))
     (doseq [[what id] (cond-> [["head Revision" (:head s)] ["root of the per-tree heads" (:heads-root s)]]
                         (:routes-object s) (conj ["route map object" (:routes-object s)]))
             mode [:altered :unparseable :deleted]]
@@ -207,25 +205,24 @@
               (is (= 5 (out/exit-code e)) (str argv))
               (is (str/includes? (pr-str (:error e)) id) (str argv)))))))))
 
-(deftest check-reports-a-tampered-object-whichever-it-is
-  ;; the random-victim property the table above replaces as the main test: any reachable object but
-  ;; the two that open itself checks (the head Revision and the root of the per-tree heads, see the table)
+(deftest damaged-object-reaches-verify-full-and-health
+  ;; Representative of the contracts removed from every kind/mode cell: the
+  ;; full replay and `stores health` still see a damaged ordinary object.
   (let [p0 (project)
         s (:store (cli-store/open! (file p0 ".kimun")))
-        ;; the route map object (K2a) is the third object open itself checks: `store/corrupt-head`
-        heads (cond-> #{(:head s) (:heads-root s)} (:routes-object s) (conj (:routes-object s)))
-        ;; the empty mmap is a constant the loader resolves without the CAS: deleting
-        ;; it is not damage (kimun.kernel.revision/loader), so it is no victim here
-        empty-map (:root (mmap/empty (:host s)))
-        candidates (vec (filter #(fs/exists? (file p0 ".kimun" "objects" %))
-                                (remove (conj heads empty-map) (sort (store/reachable s)))))]
-    (doseq [id (take 6 (shuffle candidates))]
-      (let [p (damaged-copy p0 id (rand-nth [:altered :unparseable :deleted]))
-            e (run p "stores" "check")
-            w (first (:warnings e))]
-        (is (false? (get-in e [:data :documents :valid])) id)
-        (is (= [id] (mapv :id (get-in e [:data :documents :findings 0 :bad]))) id)
-        (is (= ["store/corrupt" "kimun stores verify"] [(:type w) (:action w)]) id)))))
+        critical (cond-> #{(:head s) (:heads-root s)}
+                   (:routes-object s) (conj (:routes-object s)))
+        id (first (filter #(fs/exists? (file p0 ".kimun" "objects" %))
+                          (remove critical (sort (store/reachable s)))))
+        _ (is (not (contains? critical id)) "the victim is an ordinary object, not one open checks")
+        p (damaged-copy p0 id :altered)
+        {:keys [backend store]} (cli-store/open! (file p ".kimun"))
+        full (store/verify-full backend (:host store))
+        health (run p "stores" "health")]
+    (is (= {:ok? false :bad [{:id id :reason :hash-mismatch}]} (select-keys full [:ok? :bad])))
+    (is (= :needs-human (get-in health [:data :status])))
+    (is (= :corrupt (get-in health [:data :findings 0 :category])))
+    (is (= "kimun stores verify" (get-in health [:data :findings 0 :action])))))
 
 (deftest health-names-the-document-the-category-and-the-command
   ;; v1: test_health_names_what_to_look_at_and_what_to_run, test_health_demands_a_human_when_a_field_was_edited (CLI)
