@@ -63,16 +63,28 @@
         (doseq [q (range 1 16)]
           (is (re-find (re-pattern (str "(?m)^\\| Q" q " \\|")) s17)
               (str "Missing Q" q " row in §17")))))
-    (testing "2026-11-14 owner directions remain intact and D0 is explicitly open without positive identity"
+    (testing "2026-11-14 owner directions remain intact; D0 is the S–M contract the council derived from them, not a question pending for the owner, and its rules are labelled as council inferences"
       (let [s21 (section-slice doc "## 21. ")]
         (doseq [phrase ["no es el hash ni su anclaje estructural en la topología"
                         "no aprueba CAS, UUID ni otra codificación"
                         "Autopoiesis y VSM aplican al sistema, no a la unidad"
                         "Realidad y hecho son cosas\n> distintas"
-                        "D0 ABIERTO"]]
+                        "D0 no es una pregunta pendiente al dueño"
+                        "D0: contrato S–M derivado"]]
           (is (str/includes? doc phrase) (str "Missing owner/D0 guard: " phrase)))
+        (is (not (str/includes? doc "D0 ABIERTO")) "the obsolete block is gone")
         (is (str/includes? s21 "sustituye"))
-        (is (str/includes? s21 "ABIERTO en `D0`"))))))
+        (doseq [needle ["inferencias del concilio" "no hay\n> pregunta pendiente al dueño"
+                        "hecho detectado" "anclaje" "observación"
+                        "Una unidad no se bifurca ni se funde"
+                        "El sensor propone; el cierre, la continuidad y la proyección entre contextos se declaran"
+                        "La ausencia no termina una unidad"
+                        "proyección declarada"
+                        "Sigue sin aprobar CAS, UUID ni otra codificación"
+                        "pendiente tras `D0`" "Implementación (`K1`)" "Diseño de G, no de S–M"
+                        "runs/research/2026-11-15/concilio/d0-contrato-sintesis.md"]]
+          (is (str/includes? s21 (str/replace needle "\\n" "\n")) (str "Missing D0 contract marker in §21: " needle)))
+        (is (not (str/includes? s21 "ABIERTO en `D0`")))))))
 
 (deftest doc14-resolves-f18-contradictions-across-strata
   (let [doc (read-doc14)
@@ -104,12 +116,13 @@
         s13 (section-slice doc "## 13. ")]
     (is (some? s12))
     (is (some? s13))
-    (testing "§13 distinguishes S1 base, S1 phase 2 (~3%), and S2 phase 3 blocked by K1/D0"
+    (testing "§13 distinguishes S1 base, S1 phase 2 (~3%), and S2 phase 3 waiting for K1"
       (is (str/includes? s13 "etapa S.2"))
       (is (str/includes? s13 "65ca4b5f"))
       (is (str/includes? s13 "~3 %"))
       (is (str/includes? s13 "**`S2` fase 3"))
-      (is (str/includes? s13 "**bloqueada por `K1` / `D0`**")))
+      (is (str/includes? s13 "**espera a `K1`**"))
+      (is (not (str/includes? s13 "Bloqueados por `D0`"))))
     (testing "§13 and decision 44 mark K2a as partial: C2a/C2b/C4/C5 implemented, schema 1 (flat O(n) digest) kept as legacy, schema 2 the tree, the fan-out cost still open"
       (is (not (str/includes? s13 "**`K2a` (cerrada):**")))
       (doseq [needle ["C2a" "C2b" "C4" "C5" "digest plano `O(n)`" "Merkle incremental" "b4931b7c"

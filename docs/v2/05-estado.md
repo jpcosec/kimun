@@ -72,8 +72,8 @@ opt-in, `C28` OWL/UNL; más **5** exclusiones transversales `X01–X05`). Estado
 `kimun` hoy: **0** `implemented`, **12** `partial` (`C01`, `C02`, `C11`, `C12`, `C14`, `C17`,
 `C19`, `C20`, `C21`, `C23`, `C26`, `C27`), **5** `direction` (`C03`, `C05`, `C06`, `C07`,
 `C13`) y **11** `absent` (`C04`, `C08`, `C09`, `C10`, `C15`, `C16`, `C18`, `C22`, `C24`, `C25`,
-`C28`). Ninguna intención marcada como `direction` cuenta como implementada; `D0` y `D-G`
-siguen abiertas para el dueño.
+`C28`). Ninguna intención marcada como `direction` cuenta como implementada. `D-G` sigue abierta
+para el dueño; `D0` ya no (decisión 46): su contrato S–M está derivado y espera a K1.
 
 **Formato 4 de este repo** (desk de 433 KB, 539 documentos; antes = formato 3 de S1b, después
 = formato 4): aparente **8,07 MB → 2,51 MB** (objetos 12.494 → 4.808; tree-object 1,65 MB →
@@ -132,4 +132,4 @@ build sigue en el CAS, así que el store no baja de los 433 KB del desk que inde
 | 43 | **tres capas**: caché (recomputable, borrable), store estable (hashes y anchors del ambiente para detectar mutaciones y reconciliar; nunca contenido) y grafo (modelos, clases, capa G) como paquete aparte sobre la base | `14 §19` |
 | 44 | **trackeable vs trackeado**: el Merkle del store estable va sobre lo trackeado (lo que alimenta el grafo), organizado **por ruta** (no por clase), para bajar por la rama que cambió y reconciliar localmente; de un documento solo se guarda/hashea la proyección trackeada; el plan del build va a caché o se elimina | `14 §20` |
 | 45 | **formato 4** (implementado, S1c): registro por documento (anchor + clase + hash raíz + hash de contenido) y árbol/bloques/campos como caché por hash en `<store>/cache/`; el mapa mmap vacío es una constante que no se exige en el CAS | `10 §11`, `14 §18–19` |
-| 46 | **(PENDIENTE DE CONFIRMAR)** el hash detecta mutaciones; no es identidad. La identidad de un nodo es su contenido en sentido semántico: ids estructurales para lo que ancla (S), semánticos para M/G (taxonomía de contextos, como Matrix). Revisaría el principio 3 de `01 §4` y las decisiones 1, 3 y 4 | `14 §21`, `drafts/ids-desde-matrix.md` |
+| 46 | el hash detecta mutaciones; no es identidad, y tampoco lo es el anclaje estructural (corrección del dueño, 2026-11-14, que sustituye «identidad = lugar»). **Contrato S–M derivado por el concilio (2026-11-15), sin pregunta pendiente al dueño:** la unidad es el hecho detectado, con identidad propia acuñada al marcarla; el anclaje es su referencia vigente, sin identidad de nodo; una observación nueva no es una unidad nueva; la ausencia no termina una unidad (el sensor informa `missing`; cerrar o re-anclar se declara); uno a uno conserva la unidad, y copiar, dividir o fusionar crean unidades nuevas con linaje declarado. Las reglas son inferencias del concilio. Implementación pendiente: K1. Revisa el principio 3 de `01 §4` y las decisiones 1, 3 y 4 en lo que toca a unidades (los valores pueden seguir direccionándose por hash) | `14 §21`, `runs/research/2026-11-15/concilio/d0-contrato-sintesis.md` |

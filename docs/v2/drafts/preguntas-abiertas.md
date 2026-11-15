@@ -1,6 +1,6 @@
 # Preguntas abiertas al dueño (2026-10-09)
 
-> **Actualización 2026-11-14:** las alternativas D0/D-G de la tabla inferior son históricas
+> **Actualización 2026-11-14 (estado histórico; para D0 vale la nota del 2026-11-15):** las alternativas D0/D-G de la tabla inferior son históricas
 > y ya no deben presentarse como elecciones vigentes. El dueño aclaró que identidad no es hash
 > ni anclaje topológico y encargó definirla mediante revisión documental con el concilio.
 > Exige seguir topologías marcadas y cambios temporales, con niveles de abstracción.
@@ -10,20 +10,39 @@
 > Pendiente de diseño: contrato de unidad/continuidad a través de cambios y contrato de ejecución;
 > no se considera aprobada una representación técnica ni desbloqueada su implementación.
 
-> **Aclaración posterior, 2026-11-14:** el dueño distingue dos etapas,
+> **Aclaración posterior, 2026-11-14 (estado histórico; el «bloqueo restante» que nombra quedó resuelto el 2026-11-15):** el dueño distingue dos etapas,
 > `anchoring` y `hecho detectado`, y separa realidad de hecho. Esto resuelve
 > el nudo conceptual de la D0 anterior; la tabla inferior conserva su texto
 > histórico. El bloqueo restante para K1 es un contrato positivo de identidad
 > y continuidad de nodos, y de vínculo entre etapas. Véase
 > `runs/research/2026-11-14/concilio/d0-dos-etapas-{claude,agy,pi}.md`.
 
+> **Actualización 2026-11-15 — D0 ya no es una pregunta al dueño.** El dueño corrigió al
+> concilio: las premisas de identidad ya estaban fijadas (identidad ≠ hash ≠ anclaje
+> topológico; realidad ≠ hecho; dos etapas, anchoring → hecho detectado; seguir las topologías
+> marcadas en el tiempo; hecho relacional `(R A B)`; Zettelkasten como fuente) y no hay que
+> pedírselas otra vez. El concilio derivó de ellas un contrato de identidad y continuidad para
+> S–M: `runs/research/2026-11-15/concilio/d0-contrato-sintesis.md`. Sus reglas son **inferencias del concilio**, no
+> texto del dueño. Lo que queda es implementación (K1) y decisiones técnicas del equipo, como el
+> formato del id. La base de la recursión de `(R A B)` y la lógica de verdad son de G. D0 salió
+> de la tabla de preguntas activas; su texto anterior está más abajo, como historia.
+
 > Lo que bloquea seguir. Cada respuesta se registra en `docs/v2/05-estado.md` (decisión) o en
 > `docs/v2/14-juego-del-lenguaje.md`, y se borra de aquí. Qué depende de cada una: `docs/v2/12 §1`.
 
 | # | pregunta | material para decidir | bloquea |
 |---|---|---|---|
-| D0 | ¿Se adopta para todo el kernel "identidad = lugar (estructural para S, semántico para M/G); hash = verificación de mutación"? Revisa `01 §4` principio 3 y las decisiones 1, 3 y 4. Opciones: (a) IDs taxonómicos puros, ningún CAS como identidad; (b) conservar el CAS para objetos de contenido y añadir ocurrencias S, símbolos M contextuales y hechos G en contexto con IDs propios (propuesta P2 de codex). | `docs/v2/drafts/fuentes-identidad.md` (fuentes con direcciones), `docs/v2/drafts/ids-desde-matrix.md`, `docs/v2/14-juego-del-lenguaje.md §21` | K1, K2b, S2, G1 (`12 §1`) |
 | D-G | Eje de verdad en G: (a) literal del dueño — verdad = anclado/derivado, sentido = sinnvoll/sinnlos/unsinnig; (b) P4 de codex — anclado/derivado es el eje de *soporte*, y además existe un valor operacional TRUE/FALSE/UNKNOWN para falso explícito y desconocimiento | `docs/v2/drafts/capa-g-dudas.md`, `docs/reviews/wittgenstein-superset/proposals/04-contextual-graph.md`, `docs/reviews/wittgenstein-superset/respuesta-claude.md` (Matiz 1) | G1 |
+
+**Retirada de las preguntas activas el 2026-11-15: D0.** No bloquea ni se le pregunta al
+dueño. Sus premisas ya estaban fijadas; el concilio derivó de ellas el contrato de identidad y
+continuidad en S–M (`14 §21`, `runs/research/2026-11-15/concilio/d0-contrato-sintesis.md`), y
+lo que queda es implementarlo (K1). El texto con que figuraba en la tabla se conserva como
+historia; sus alternativas (a) y (b) ya no son elecciones vigentes:
+
+| # | pregunta (histórica) | material | bloqueaba |
+|---|---|---|---|
+| D0 | ¿Se adopta para todo el kernel "identidad = lugar (estructural para S, semántico para M/G); hash = verificación de mutación"? Revisa `01 §4` principio 3 y las decisiones 1, 3 y 4. Opciones: (a) IDs taxonómicos puros, ningún CAS como identidad; (b) conservar el CAS para objetos de contenido y añadir ocurrencias S, símbolos M contextuales y hechos G en contexto con IDs propios (propuesta P2 de codex). | `docs/v2/drafts/fuentes-identidad.md` (fuentes con direcciones), `docs/v2/drafts/ids-desde-matrix.md`, `docs/v2/14-juego-del-lenguaje.md §21` | K1, K2b, S2, G1 (`12 §1`) |
 
 Respondidas el 2026-10-09 (registradas en `14 §21`): ID estructural roto = borrado (se declara) o
 mutación (lo detecta el hash); un símbolo nuevo nace en el contexto del documento y subirlo o

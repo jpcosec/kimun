@@ -43,6 +43,14 @@
 > Lectura cruzada: `runs/research/2026-11-14/concilio/brief-d0-dos-etapas.md`
 > y los tres informes `d0-dos-etapas-{claude,agy,pi}.md`.
 
+> **Actualización 2026-11-15 — D0 no es una pregunta pendiente al dueño.** Las tres notas de
+> arriba ya fijan las premisas. El concilio derivó de ellas el contrato de identidad y
+> continuidad para S–M, resumido en `§21` y completo en
+> `runs/research/2026-11-15/concilio/d0-contrato-sintesis.md`. Sus reglas son inferencias
+> del concilio, no texto del dueño. Donde este documento dice que algo «espera a `D0`» o a
+> «`K1`/`D0`», léase: espera a `K1`, la implementación de ese contrato. La base de la recursión
+> de `(R A B)` y la lógica de verdad siguen siendo de G.
+
 > **Borrador estable y alcance de autoridad (2026-10-08; reordenado por tema el 2026-11-15, DOC1 / F18).**
 > Fija lo que kimun es antes de seguir construyendo sobre la base S/M y ordena las adendas
 > `§16–§21` separando **contrato objetivo**, **estado implementado**, **decisiones abiertas (`D0`, `D-G`)**
@@ -67,7 +75,7 @@
 > |---|---|---|---|
 > | **I. Principios y arquitectura de tres capas** | `§1`, `§16`, `§19`, `§2` | Contrato objetivo + Estado implementado (Formato 4) | Principios rectores `P1–P15` ya conciliados, integración de `P13–P15`, separación caché / store estable / grafo y autoridad por clase S / M / G |
 > | **II. Documentos, clases, anclaje vs. generación y Merkle** | `§18`, `§9`, `§20`, `§7` | Mixto: `§18.6`/`§20` cortes `C2a`/`C2b`/`C4`/`C5` implementados (árbol Merkle por ruta en stores nuevos; coste dentro de un directorio ancho pendiente); `§18`/`§9` especificados en `16`; `§7` parte en `D-G` | Clases e instancias (`§18.1–§18.9`), modelos como subgrafos (remite a `16-modelos-como-subgrafos.md`), trackeable vs. trackeado y anchors |
-> | **III. Identidad del nodo y frontera S–M (`D0`)** | `§21` | **Abierto (`D0`)** + dirección vigente `2026-11-14` | Distinción entre ID del nodo, contenido, huella Merkle y embedding; sustitución de «identidad = lugar» sin fijar aún representación positiva |
+> | **III. Identidad del nodo y frontera S–M (`D0`)** | `§21` | **Contrato S–M derivado por el concilio (`D0`, 2026-11-15)**; implementación pendiente (`K1`) | Distinción entre ID del nodo, contenido, huella Merkle y embedding; sustitución de «identidad = lugar»; unidad, anclaje, observación y continuidad |
 > | **IV. El juego del lenguaje en la capa G (`D-G`)** | `§3`, `§4`, `§5`, `§6`, `§8`, `§11` | Contrato objetivo; `§5` y `proposed` **En revisión (`D-G`)** | Contextos `W_i`, recursión `(R A B)` y jerarquía, sentidos × verdad, conflicto lógico, evaluación en dos etapas y protocolo de motores |
 > | **V. Estado implementado vs. contrato objetivo** | `§12`, `§13`, `§14`, `§15` | Matriz de estado, decisiones y referencias | Decisiones `21–46` con estrato/dueño/evidencia, etapas `S`/`A`/`C`, promesas resumidas y revisiones a otros docs |
 > | **VI. Registro histórico** | `§10`, `§17` | **Registro histórico (2026-10-08)** | Diagnóstico del formato 2→3 y cuestionario `Q1–Q15` original con sus defaults superados anotados sin reescribir la historia |
@@ -373,21 +381,24 @@ Reglas vigentes y frontera de revisión:
 
 ---
 
-# Tema III — Identidad del nodo, frontera S–M y decisión abierta `D0` (`§21`)
+# Tema III — Identidad del nodo, frontera S–M y contrato `D0` (`§21`)
 
-## 21. El hash detecta mutaciones; no es identidad (2026-10-09; actualizado el 2026-11-14) — D0 ABIERTO
+## 21. El hash detecta mutaciones; no es identidad (2026-10-09; actualizado el 2026-11-14 y el 2026-11-15) — D0: contrato S–M derivado
 
-> **Estado: ABIERTO (`D0`, decisión 46).** Esta sección integra la corrección inicial del `2026-10-09`
-> con las tres precisiones explícitas del dueño del `2026-11-14` (`cabecera`). **No aprueba CAS,
-> UUID ni ninguna codificación concreta como identidad positiva** ni resuelve `D0` por vía documental.
-> Fuentes y opciones para el concilio y el dueño: `docs/v2/drafts/preguntas-abiertas.md`,
+> **Estado: contrato S–M derivado por el concilio (`D0`, decisión 46, 2026-11-15); no hay
+> pregunta pendiente al dueño.** Esta sección integra la corrección inicial del `2026-10-09`,
+> las tres precisiones del dueño del `2026-11-14` (`cabecera`) y el contrato que el concilio
+> derivó de ellas. **Sigue sin aprobar CAS, UUID ni otra codificación como identidad**: el
+> formato del id es una decisión técnica del equipo, dentro de las propiedades que fija el
+> contrato. Contrato completo, casos e inferencias:
+> `runs/research/2026-11-15/concilio/d0-contrato-sintesis.md`. Fuentes:
 > `docs/v2/drafts/fuentes-identidad.md` y `runs/research/2026-11-14/concilio/`.
 
 Distinción base confirmada (separa cuatro funciones que el diseño content-addressed puro mezclaba):
 
 | cosa | qué es | para qué |
 |---|---|---|
-| **ID del nodo** | identidad propia del nodo (por especificar positivamente en `D0`) | identificar las topologías marcadas y seguir su continuidad en el tiempo con niveles de abstracción; soportar vínculos |
+| **ID del nodo** | identidad propia del nodo, acuñada en el acto de marcarlo (contrato `D0`, abajo) | identificar las topologías marcadas y seguir su continuidad en el tiempo con niveles de abstracción; soportar vínculos |
 | **content** | lo que el nodo dice / expresa | el conocimiento |
 | **hash (Merkle)** | huella criptográfica del content o proyección | **sensorizar el ambiente**: comprobar si lo marcado cambió respecto de la huella registrada (`§20`) |
 | **embedding** | ubicación semántica continua en un espacio multilingüe | vecindad, co-ocurrencia y búsqueda aproximada junto a relaciones discretas (`§1 P11, P15`) |
@@ -422,14 +433,52 @@ Qué quedó **zanjado por el dueño (`2026-10-09` y `2026-11-14`)**:
    registro de conocimiento; pueden eliminarse o moverse a caché (`K2a` inició el camino por ruta; `K2b`
    espera `D0`/`K1`).
 
-Qué queda **ABIERTO en `D0`** (y bloquea a `K1`, `K2b`, `S2`, `G1` y la implementación de `M1`):
+**Contrato de identidad y continuidad en S–M (`D0`, derivado por el concilio el `2026-11-15`).**
+Las reglas son **inferencias del concilio** a partir de lo zanjado arriba; ninguna es texto del
+dueño. Resumen (reglas `I1–I13`, casos y contraste de lecturas en
+`runs/research/2026-11-15/concilio/d0-contrato-sintesis.md`):
 
-- **Definición y representación positiva de la identidad** y continuidad de los nodos entre versiones,
-  niveles de abstracción y fuentes (ni CAS, ni UUID, ni lugar han sido aprobados como representación).
-- **Alcance sobre `01 §4` principio 3 y decisiones `1`, `3`, `4` de `05`**, y resolución de la tensión con
-  `§18.8` (¿dos párrafos con bytes idénticos son dos ocurrencias distintas o un único nodo compartido?).
-- **Contrato operativo entre etapas `(1) anchoring` y `(2) hecho detectado`**, contrato preciso de
-  marcado de ejecuciones y contratos operativos del daemon de heartbeat.
+| | qué es | ¿identidad de nodo? |
+|---|---|---|
+| **realidad** | el documento, la sección, la función | no entra al grafo |
+| **unidad** | el **hecho detectado**: que se marcó una topología y se la sigue | sí, propia; nace al marcarla y no cambia |
+| **anclaje** | la referencia vigente de la unidad a la realidad: localizador + contrato de lectura | no; la unidad tiene anclajes sucesivos |
+| **observación** | la afirmación fechada de lo leído (huella, proyección); deja de sostenerse ante una mutación | no en S–M: es un evento registrado sobre la unidad |
+
+1. **Una observación nueva no es una unidad nueva.** Editar, reformatear o releer dan
+   observaciones de la misma unidad. Cada lectura es una observación con su fecha, aunque lea
+   lo mismo: «no cambió» y «no se leyó» son distintos.
+2. **Mientras el anclaje resuelve, un cambio es una mutación de esa unidad.**
+3. **La ausencia no termina una unidad.** Cuando el anclaje deja de resolver, el sensor informa
+   `missing` y la unidad sigue, sin anclaje vigente; un montaje que desaparece un instante no
+   la mata. Cerrarla (el borrado, que «se declara») o re-anclarla en otro lugar son
+   declaraciones, con actor y evidencia, que nombran lo que pasó en medio.
+4. **Una unidad no se bifurca ni se funde.** Copiar, dividir y fusionar crean unidades nuevas,
+   unidas a las anteriores por linaje declarado. Dos marcas son dos unidades aunque lo leído
+   sea idéntico (resuelve la tensión de `§18.8`), y lo mismo en dos fuentes son dos unidades;
+   unirlas entre contextos es una **proyección declarada**, no `equivalent` por defecto.
+5. **El sensor no distingue editar de reemplazar** (poner otra cosa sin relación bajo el mismo
+   localizador). Por defecto es una mutación; el reemplazo se declara. Vale en cada nivel: lo
+   reemplazado es la extensión marcada (archivo, sección, campo).
+6. **El sensor propone; el cierre, la continuidad y la proyección entre contextos se declaran.**
+7. **El id** es único en el store que lo acuña, nunca reutilizado, opaco al contenido, a la ruta
+   y a la coordenada de una relación, y estable de por vida. Direccionar **valores** por hash
+   sigue siendo válido; lo que no puede es servir de identidad de una unidad.
+
+Qué queda **pendiente tras `D0`**, y nada de ello es una pregunta al dueño sobre identidad:
+
+- **Implementación (`K1`)**: llevar el contrato al kernel debajo del nivel documento, donde hoy
+  bloques y texto se identifican por contenido; formato del id; regla de arrastre de
+  identidades al reconstruir un store (la identidad no se puede recomputar). `K2b`, `S2` y la
+  implementación de `M1` esperan a `K1`.
+- **Alcance sobre `01 §4` principio 3 y decisiones `1`, `3`, `4` de `05`**: se revisa al
+  implementar `K1`, en lo que toca a unidades.
+- **Diseño de G, no de S–M**: la base de la recursión de `(R A B)` (un store finito no puede
+  cumplir a la vez «todo hecho es un trío», «sus términos son siempre hechos» y «sin ciclos»),
+  si en G una observación pasa a ser un nodo (en S–M no lo es), y la lógica de verdad y sentido (`D-G`). Registrado sin regla
+  adoptada en el anexo A de la síntesis.
+- **Contratos operativos aparte**: marcado de ejecuciones y activación del heartbeat, que el
+  dueño dejó por especificar.
 
 ---
 
@@ -589,7 +638,7 @@ Reúne las decisiones `21–46` (numeradas a continuación de `05 §3`), señala
 | 43 | Tres capas: caché, store estable (hashes/anchors, nunca contenido) y grafo (`kimun.graph.*` paquete aparte) | **Parcialmente implementado**: `Formato 4` en `main`; primer corte de `P1` implementado (`70b8abe9`: `kimun.graph.*` con anillo en `bb lint`; modelos/`semantic`/`edges` pendientes de `M1`/`D0`); `K2a` con cortes `C2a`/`C2b`/`C4` implementados y estructura Merkle incremental/coste pendiente | `14 §19`, `12 §1`, `03 §1` | `durability_test`, `lint_test` |
 | 44 | Trackeable vs. trackeado; Merkle del store estable por ruta sobre lo trackeado; plan fuera del CAS | **Parcial (`K2a`)**: cortes `C2a`, `C2b`, `C4` y `C5` implementados (`3b2d6d5d`..`b4931b7c`: plan fuera del CAS, mapa durable de rutas y, en stores nuevos, árbol Merkle incremental por directorio con descenso local — esquema 2; los stores anteriores siguen en esquema 1, `route-root` como digest plano `O(n)` de entradas ordenadas, hasta `stores upgrade`); **pendiente el coste dentro de un directorio ancho (sin fan-out) y medir en un store real**; retirada de `mmap`/aristas redundantes es `K2b` (`D0`/`K1`) | `14 §20`, `10 §11`, `10 §11.2`, `06-superficies-y-cli.md` | `route_store_test`, `route_tree_test`, `route_tree_store_test`, `route_schema_test`, `routes_test`, `c4_route_rebuild_test` |
 | 45 | Formato 4 implementado (`S1c`): registro por documento y árbol como caché por hash en `<store>/cache/` | **Implementado (`S1c`)** | `10-escala.md §11`, `05 §1` | `durability_test`, `diagnostics_test` |
-| 46 | El hash detecta mutaciones; no es identidad (ni lugar es identidad positiva; dirección `2026-11-14`) | **ABIERTO (`D0`)** | `14 §21`, `drafts/preguntas-abiertas.md`, `drafts/fuentes-identidad.md` | **Sin código hasta cierre de `D0`** (`K1`, `K2b`, `S2`, `G1` bloqueados) |
+| 46 | El hash detecta mutaciones; no es identidad (ni lugar es identidad positiva; dirección `2026-11-14`) | **Contrato S–M derivado por el concilio (`D0`, 2026-11-15)**; implementación pendiente | `14 §21`, `runs/research/2026-11-15/concilio/d0-contrato-sintesis.md`, `drafts/fuentes-identidad.md` | **Sin código todavía**: lo implementa `K1`; `K2b`, `S2` y `M1` esperan a `K1`; `G1` además a `D-G` |
 
 ## 13. Etapas (P12)
 
@@ -640,9 +689,9 @@ Estado real de ejecución por etapa (el backlog vivo y dependencias residen en
       3000 documentos libres muestreados** (`runs/subagents/2026-11-15-S1/`): el ~3 % era la medición
       histórica de `66ff1e9c`, con la vista pod-driven. Lo que resta es cobertura pod-driven (619
       bloques de 500 documentos que la vista no adopta) y pasa a la fase 3 (`S2`, `04 §11.2`).
-  - **Fase 3 del parser M (bloqueada por `D0`):**
+  - **Fase 3 del parser M (espera a `K1`):**
     - **`S2` fase 3 del parser M (`12 §1` — anclas por rangos de bytes / nodos del CST):**
-      **bloqueada por `K1` / `D0`** (`runs/research/2026-10-08/R2-report.md §5`; distinta de la
+      **espera a `K1`**, la implementación del contrato `D0` (`runs/research/2026-10-08/R2-report.md §5`; distinta de la
       `etapa S.2` de octubre que empaquetó el pod de bloques).
 - **Etapa A — Arquitectura sostenible:**
   - `M1` redactado y contratado (`ac09b764`, `docs/v2/16-modelos-como-subgrafos.md`; implementación
@@ -653,7 +702,7 @@ Estado real de ejecución por etapa (el backlog vivo y dependencias residen en
     `kimun.graph.io` (mover `models.*`, `semantic` y `edges` espera `M1` y `D0`);
   - `DOC1` cerrado (este reordenamiento por tema, `F18`; contrato en `test/kimun/doc14_contract_test.cljc`,
     evidencia en `runs/subagents/2026-11-15-doc1-spec14-por-tema/`);
-  - Bloqueados por `D0` (y `D-G` para `G1`): `K1`, `K2b`, resto de `P1`, `S2` (fase 3) y `15-capa-g.md` (`G1`).
+  - `K1` (implementación del contrato `D0`, ya derivado; no espera al dueño). Esperan a `K1`: `K2b`, resto de `P1`, `S2` (fase 3); `15-capa-g.md` (`G1`) espera además a `D-G`.
 - **Etapa C — Completar el sistema nervioso y la capa G:** motores (`Matrix`/wittgenstein por
   protocolo, descompositor, embeddings `G3`), Datalog `G2`, evaluación en dos etapas de punta a
   punta, descubrimiento de modelos, `M2` (regeneración de modelos del desk), `C2` (cliente Python y
