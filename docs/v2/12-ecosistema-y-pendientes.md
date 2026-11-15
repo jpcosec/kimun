@@ -68,7 +68,7 @@ paridad v1 sin brechas (`scripts/parity/coverage.py … --strict --allow-open-pr
 | P1 | **parcial (primer corte `70b8abe9`, `runs/subagents/2026-11-15-P1/` + fix `971b6b2c`)**: `kimun.graph.*` en paquete aparte con regla de anillo en `bb lint` y cruce declarado `kimun.surface.semantic` → `kimun.graph.io`; mover `models.*`, `semantic` y `edges` espera `M1`/`D0` | — (corte restante ← `M1`/`D0`) | `14 §19`, decisión 43, `03 §1` |
 | M1 | **spec 16 redactado** (`16-modelos-como-subgrafos.md`): modelos de anclaje y de generación, selector EDN sobre tree-sitter, herencia de clases; features de v1 sí, bugs no | — (spec redactado); implementación ← P1, K1/D0 | `16-modelos-como-subgrafos.md`, `14 §18`, decisiones 41–42, `runs/research/2026-10-08/R3-report.md`, `test/fixtures/models/spec16_examples.edn` |
 | M2 | regenerar los modelos del desk (borrados el 2026-10-09 para dejar una versión estable) | M1 | `desk/`, `kimun.include.edn` |
-| S1 | **parcial (`65ca4b5f`, `6930afa8`, `runs/subagents/2026-11-14-s1-cst-ast/`)**: base del parser M fase 2 cerrada en SLDB-MD (`735/735` idénticos); sigue abierto cerrar el ~3 % de divergencia del CST en Markdown libre | — | `04 §11.2`, `14 §13` |
+| S1 | **cerrada (2026-11-15)**: base del parser M fase 2 en SLDB-MD (`65ca4b5f`, `6930afa8`, `735/735` idénticos); el ~3 % en Markdown libre era la medición histórica de `66ff1e9c` (vista pod-driven). Con la reconciliación conservadora la divergencia de AST es **0/500 y 0/3000** documentos muestreados, igual que `1099/1099` en corpus + desk; lo que queda es cobertura pod-driven (619 bloques de 500 documentos no adoptados, clases medidas) y pasa a `S2` fase 3 | — | `04 §11.2`, `14 §13`, `runs/subagents/2026-11-15-S1/` |
 | S2 | parser M fase 3: anclas por rangos de bytes / nodos del CST | K1 | `runs/research/2026-10-08/R2-report.md §5`, `14 §13` |
 | G1 | capa G: leer fuentes (paper, wittgenstein, Tractatus) y reescribir el spec sobre sentido × verdad | D0, D-G, M1, T01 (cerrada) | `docs/v2/drafts/capa-g-dudas.md`, `runs/research/2026-10-08/spec15/` (borrador previo, solo referencia) |
 | G2 | consulta Datalog (Datalevin pod + respaldo in-process) | G1 | `runs/research/2026-10-08/R1-report.md` |
@@ -83,7 +83,7 @@ paridad v1 sin brechas (`scripts/parity/coverage.py … --strict --allow-open-pr
 
 Insumo de G1: la revisión `docs/reviews/wittgenstein-superset/` (propuestas P4 grafo contextual y P5 T02–T13), `tests/wittgenstein-manifest.md` (`T01`) y la respuesta `respuesta-claude.md`.
 
-En paralelo hoy, sin esperar al dueño: `K2a` (cortes `C2a`/`C2b`/`C4`/`C5` en `main`; pendiente el coste dentro de un directorio ancho y medir en un store real) y `S1` (pendiente ~3 % Markdown libre). Ya implementadas en `main` para su alcance actual: `K3`, `K6` (digest + `rebuild-mismatch` en Markdown; código espera `M1`), `K8`, `C1`, `T01`, `DOC1`, `M1` (spec) y primer corte de `P1` (`70b8abe9`). Esperan a D0: `K1`, `K2b`, resto de `P1`, `S2` (fase 3), `G1` y lo que cuelga de ellos.
+En paralelo hoy, sin esperar al dueño: `K2a` (cortes `C2a`/`C2b`/`C4`/`C5` en `main`; pendiente el coste dentro de un directorio ancho y medir en un store real). Ya implementadas en `main` para su alcance actual: `K3`, `K6` (digest + `rebuild-mismatch` en Markdown; código espera `M1`), `K8`, `C1`, `T01`, `DOC1`, `M1` (spec), `S1` (2026-11-15) y primer corte de `P1` (`70b8abe9`). Esperan a D0: `K1`, `K2b`, resto de `P1`, `S2` (fase 3), `G1` y lo que cuelga de ellos.
 
 ### Deuda de diseño y experimentos
 
@@ -91,9 +91,11 @@ En paralelo hoy, sin esperar al dueño: `K2a` (cortes `C2a`/`C2b`/`C4`/`C5` en `
   (decisión 29, fase 1 de R2 §5) y `parse-native` queda como oráculo diferencial (paridad de
   kinds y spans 1099/1099 en corpus + desk, `blocks-parity-test`). La fase 2 existe
   (`kimun.surface.markdown.cst-ast`, bandera `KIMUN_PARSER=treesitter`): AST idéntico
-  1099/1099 en corpus + desk, pero ~3 % de divergencia en Markdown libre, así que el default
-  sigue siendo `native` (ver `04 §11.2`). Pendiente: cerrar esas clases y la fase 3 (rangos de
-  bytes e ids de nodo del CST).
+  1099/1099 en corpus + desk y 0 divergencias en 500 y 3000 documentos libres muestreados
+  (`runs/subagents/2026-11-15-S1/`); el default sigue siendo `native` porque la vista
+  reconcilia con el perfil en vez de dejar conducir al CST (619 bloques de 500 documentos), y
+  eso se resuelve en la fase 3 (rangos de bytes e ids de nodo del CST), no con una reparación
+  de divergencia (ver `04 §11.2`).
 - **Composiciones del descriptor**: la clave es la de v1 (`:py/compositions`), aceptada junto
   a `:compositions`; `07 §2` propone `{:model :field :order}`.
 - **Concesiones de M/G**: `:symbol` y `:fact` resuelven por existir en el CAS, porque todavía

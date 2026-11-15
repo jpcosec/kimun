@@ -393,9 +393,15 @@ se aplica *después* del parse. El render canónico sigue siendo función del AS
 Estado de la bandera `KIMUN_PARSER`:
 
 - **Default `native`** (el parser in-process, `ast/parse-native`; es el oráculo).
-- `KIMUN_PARSER=treesitter` usa la vista del pod. Sobre el corpus de paridad + el desk da AST
-  idéntico en **1099/1099** (`cst-ast-parity-test`), pero sobre Markdown libre divergen
-  ~3 % de los documentos generados por los tests de propiedad (mismo tipo de bloque con
-  contenido distinto, sobre todo listas anidadas y fences), así que la bandera sigue
-  opt-in; el reporte de S2 lista las clases. La vista cae al parser in-process ante un
-  ERROR del pod o cualquier error interno, de modo que la bandera es segura.
+- `KIMUN_PARSER=treesitter` usa la vista del pod. Da AST idéntico en **1099/1099** del
+  corpus de paridad + el desk (`cst-ast-parity-test`) y en **0/500 y 0/3000 divergencias**
+  sobre Markdown libre muestreado con el alfabeto de `gen-free-md`
+  (`runs/subagents/2026-11-15-S1/`). La vista solo adopta un bloque del pod cuando su span y
+  su kind coinciden con el perfil; donde no coinciden usa el corte del perfil, así que el AST
+  es idéntico por construcción y la bandera es segura. Lo que queda no es divergencia sino
+  **cobertura pod-driven**: en 500 documentos libres hay 619 bloques del pod que la vista no
+  adopta, todos por diferencias documentadas entre CommonMark y el perfil (lista `1)`, cita
+  con continuación perezosa, fence con backtick en el info, tabla/html hasta línea en blanco,
+  setext e indented code fuera de perfil, listas ordenadas con inicio ≠ 1 que no interrumpen
+  párrafo). Reducirlos es trabajo de la fase 3 (`S2`). La vista cae al parser in-process ante
+  un ERROR del pod o cualquier error interno.

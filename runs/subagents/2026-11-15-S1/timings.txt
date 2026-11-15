@@ -1,0 +1,5 @@
+batch 10 wall_s=0.15 maxrss_kb=93192
+batch 110 wall_s=0.16 maxrss_kb=93432
+batch 210 wall_s=0.15 maxrss_kb=92924
+batch 310 wall_s=0.12 maxrss_kb=93240
+batch 410 wall_s=0.14 maxrss_kb=93200

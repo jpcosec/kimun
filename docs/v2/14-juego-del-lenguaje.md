@@ -634,10 +634,12 @@ Estado real de ejecución por etapa (el backlog vivo y dependencias residen en
       (`contract/rebuild-mismatch`), reparable tras decisión con `docs update` (evidencia en
       `runs/subagents/2026-11-15-k6-rebuild-mismatch/`); resta únicamente la extensión a documentos
       de código al implementar `M1`.
-    - **`S1` fase 2 del parser M (`cst_ast.cljc`, `KIMUN_PARSER=treesitter`, parcial):** base
-      reconciliada en `65ca4b5f`, `03a9f552`, `6930afa8` (evidencia `runs/subagents/2026-11-14-s1-cst-ast/`,
-      paridad `735/735` documentos reales en corpus + desk); **sigue abierto cerrar el ~3 % de
-      divergencia en Markdown libre** fuera del perfil cerrado (`04 §11.2`).
+    - **`S1` fase 2 del parser M (`cst_ast.cljc`, `KIMUN_PARSER=treesitter`, cerrada 2026-11-15):**
+      base reconciliada en `65ca4b5f`, `03a9f552`, `6930afa8` (evidencia `runs/subagents/2026-11-14-s1-cst-ast/`),
+      paridad `735/735` documentos reales en corpus + desk y **0 divergencias de AST en 500 y
+      3000 documentos libres muestreados** (`runs/subagents/2026-11-15-S1/`): el ~3 % era la medición
+      histórica de `66ff1e9c`, con la vista pod-driven. Lo que resta es cobertura pod-driven (619
+      bloques de 500 documentos que la vista no adopta) y pasa a la fase 3 (`S2`, `04 §11.2`).
   - **Fase 3 del parser M (bloqueada por `D0`):**
     - **`S2` fase 3 del parser M (`12 §1` — anclas por rangos de bytes / nodos del CST):**
       **bloqueada por `K1` / `D0`** (`runs/research/2026-10-08/R2-report.md §5`; distinta de la

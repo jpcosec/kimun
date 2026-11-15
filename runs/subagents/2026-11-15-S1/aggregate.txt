@@ -1,0 +1,14 @@
+S1 free-form sampling (generator alphabet = cst_ast_parity_test gen-free-md, seed 1)
+  docs 500  AST identical 500  divergent 0  docs with >=1 rejected cell 239  rejected cells 619
+  docs 3000  AST identical 3000  divergent 0  docs with >=1 rejected cell 1453  rejected cells 3798
+classes over 3000 docs, 3798 rejected cells:
+   1465  I bloque del perfil absorbe lineas donde el pod abre nodos (R7/R8)
+    966  B regla 6: limites de lista
+    297  E fuera del perfil: indented code / setext
+    273  A regla 8: el perfil ve tabla hasta blanco
+    268  H regla 7: el perfil absorbe html hasta blanco
+    182  C regla 5: continuacion perezosa de cita
+    174  D regla 2: fence con backtick en el info
+    115  G CommonMark: lista con inicio != 1 no interrumpe parrafo
+     49  F frontmatter con blanco antes del cierre
+      9  A regla 8: tabla del pod de una linea vs perfil

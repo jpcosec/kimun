@@ -1,0 +1,25 @@
+S1 — casos mínimos por clase (extraídos de cells-500.txt, seed 1)
+
+A: doc 97 (1 celdas)  "|---|---|"
+B: doc 174 (1 celdas)  "1) paren\n9. a"
+C: doc 167 (1 celdas)  "> q\na\n=== \n## h #"
+D: doc 82 (1 celdas)  "~~~ `bad`"
+E1 setext: doc 33 (1 celdas)  "   indented3\n---"
+F: doc 280 (1 celdas)  "--- \nb\n````\n1. a\n--- "
+G: doc 212 (1 celdas)  "a\n|---|---|"
+H: doc 135 (2 celdas)  "<!-- c -->\n# h"
+
+Detalle (líneas del bloque):
+     line 0 paragraph :paragraph->:table :kind-mismatch pod=["|---|---|"] profile=[":table 0-1" ["|---|---|"]]
+     line 0 list :list->:paragraph :kind-mismatch pod=["1) paren"] profile=[":paragraph 0-1" ["1) paren"]]
+     line 0 block_quote :quote->:quote :span-mismatch pod=["> q" "a" "=== "] profile=[":quote 0-1" ["> q"]]
+     line 0 fenced_code_block :code->:paragraph :kind-mismatch pod=["~~~ `bad`"] profile=[":paragraph 0-1" ["~~~ `bad`"]]
+     line 0 setext_heading null->:paragraph :kind-mismatch pod=["   indented3" "---"] profile=[":paragraph 0-1" ["   indented3"]]
+     line 0 minus_metadata :frontmatter->:thematic-break :kind-mismatch pod=["--- " "b" "````" "1. a" "--- "] profile=[":thematic-break 0-1" ["--- "]]
+     line 0 paragraph :paragraph->:paragraph :span-mismatch pod=["a" "|---|---|"] profile=[":paragraph 0-1" ["a"]]
+     line 0 html_block :html->:html :span-mismatch pod=["<!-- c -->"] profile=[":html 0-2" ["<!-- c -->" "# h"]]
+     line 1 atx_heading :heading->null :no-profile-block pod=["# h"] profile=[":html 0-2" ["<!-- c -->" "# h"]]
+
+Nota: el caso mínimo de indented code es una sola línea con 4 espacios
+(`"    indented4"` → pod `indented_code_block`, perfil `:paragraph`); aparece en
+la muestra 500 docs y en el alfabeto de `gen-free-md`.

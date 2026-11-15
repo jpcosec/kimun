@@ -130,9 +130,11 @@
   "Markdown text → neutral AST `{:type :document :attrs {} :children [...]}`.
    Defaults to the in-process parser (`parse-native`). `KIMUN_PARSER=treesitter`
    selects the pod view (`kimun.surface.markdown.cst-ast`): it matches the
-   in-process parser on the parity corpus and the desk (1099/1099) but still
-   diverges on some generated/free-form Markdown (R2 §5 fase 2; see
-   `cst-ast-parity-test`), so it stays behind the flag."
+   in-process parser on the parity corpus and the desk (1099/1099) and on the
+   free-form samples of `runs/subagents/2026-11-15-S1/` (0 divergences), because
+   it adopts a pod block only where the profile segments it the same way. It
+   stays behind the flag for the pod blocks it still reconciles (R2 §5 fase 2;
+   see `cst-ast-parity-test`)."
   [host s]
   #?(:clj (if (= "treesitter" (effective-parser))
             ((requiring-resolve 'kimun.surface.markdown.cst-ast/parse) host s)
