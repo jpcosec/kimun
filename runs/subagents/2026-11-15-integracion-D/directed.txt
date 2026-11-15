@@ -1,0 +1,11 @@
+
+Testing kimun.surface.models.selector-test
+
+Testing kimun.cli.fault-injection-test
+
+Testing kimun.cli.fields-test
+
+Testing kimun.surface.models.subgraph-test
+
+Ran 27 tests containing 1346 assertions.
+0 failures, 0 errors.
