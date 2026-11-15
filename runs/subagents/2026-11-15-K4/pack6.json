@@ -1,0 +1,20 @@
+{
+  "ok" : true,
+  "command" : "stores pack",
+  "store" : {
+    "name" : "bench",
+    "path" : "/home/jp/.cache/kimun-bench/k4-600/.kimun"
+  },
+  "revision" : "5bdefc42178313f9ef6364ab43f081054632da2c8ebce6a89b8107c2be0dce8b",
+  "data" : {
+    "path" : "/home/jp/.cache/kimun-bench/k4-600/.kimun",
+    "packed" : 18215,
+    "pack" : "1794759272265-151706241900037",
+    "bytes" : 14763953,
+    "kept-loose" : 603,
+    "skipped-damaged" : [ ],
+    "packs" : 1,
+    "checked" : 16723
+  },
+  "warnings" : [ ]
+}

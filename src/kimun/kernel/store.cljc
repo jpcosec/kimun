@@ -6,6 +6,9 @@
      <dir>/store.edn      {:format-version 4 :hash-alg :sha-256 :capabilities {...} :route-schema 2}
                           (:route-schema absent = route schema 1, docs/v2/10 §11.2)
      <dir>/objects/<id>   canonical EDN text of the hashed form of the object; H(file) == id
+     <dir>/packs/<n>.pack K4: small loose objects moved explicitly by `stores pack`
+                          (records + a footer naming the index digest; the pack is
+                          store, its .idx is derived, docs/v2/10 §11.4)
      <dir>/cache/         format 4: derived cache of a document with an external anchor —
                           cache/routes/<root>.<head>.edn mirrors the durable CAS
                           route-map object of route schema 1 (schema 2 keeps the map

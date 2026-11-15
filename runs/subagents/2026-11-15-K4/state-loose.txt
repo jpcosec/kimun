@@ -1,0 +1,15 @@
+== state: loose ==
+objects_du_apparent 88539797
+objects_du_blocks 151674880
+packs_exists no
+cache_du_apparent 5744059
+cache_du_blocks 52817920
+store_du_apparent 94377050
+store_du_blocks 204599296
+objects_files 18818
+cache_files 12344
+store_files 31166
+log_size 92714
+small_under_4096 18215
+ge_4096 603
+fs ext2/ext3 block 4096

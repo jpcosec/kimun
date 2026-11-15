@@ -79,6 +79,8 @@
              "  stores show                 descriptor and heads without replay"
              "  stores health               verdict: ok | degraded (run: …) | needs-human (inspect: …)"
              "  stores unreachable [--ids]  read-only inventory of stored objects the heads do not reach (removes nothing)"
+             "  stores pack [--max-bytes N] move loose objects smaller than N bytes (default 4096) into a pack"
+             "  stores unpack              write every packed object back to objects/ and remove the packs"
              "  stores sense [--once]       one read-only observation: structured signals from tracked documents"
              "  stores heartbeat [--interval SECONDS] [--beats N]   repeat that observation; NDJSON stream on stdout, writes nothing"
              "  stores update               apply the repairs that need no decision (reformatted files, moved contracts)"

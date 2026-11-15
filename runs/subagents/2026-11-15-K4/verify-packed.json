@@ -1,0 +1,23 @@
+{
+  "ok" : true,
+  "command" : "stores verify",
+  "store" : {
+    "name" : "bench",
+    "path" : "/home/jp/.cache/kimun-bench/k4-600/.kimun"
+  },
+  "revision" : "5bdefc42178313f9ef6364ab43f081054632da2c8ebce6a89b8107c2be0dce8b",
+  "data" : {
+    "checked" : 16723,
+    "bad" : [ ],
+    "routes" : {
+      "complete?" : true,
+      "routes-available?" : true,
+      "routes-root" : "fb7072a46d8e95a64952fb9809fd3a768791739077f201982359d5669bbd157d",
+      "cached-trees" : 613,
+      "routed-trees" : 613,
+      "missing-trees" : [ ],
+      "orphan-routes" : [ ]
+    }
+  },
+  "warnings" : [ ]
+}

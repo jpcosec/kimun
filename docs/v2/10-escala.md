@@ -631,3 +631,85 @@ borrar todos los candidatos deja un store que abre en la misma cabecera, con las
 que pasa `verify` y `verify-full` (el log sigue reproduciéndose) y acepta una escritura nueva.
 Borrar un plan `:held` deja `verify` en verde y el replay no disponible: por eso no es
 candidato.
+
+### 11.4 Packs de objetos pequeños (K4, primer corte)
+
+Un objeto suelto de menos de 4 KB ocupa un bloque entero: en un store real la
+mayoría son así y de ahí los 551 MB en bloques de §9. `stores pack` mueve los
+objetos pequeños a un pack; `stores unpack` los devuelve.
+
+```
+<dir>/packs/<name>.pack   "KMNPACK1"                                    8 B
+                          registro*: longitud (4, big-endian) + contenido UTF-8,
+                                     en orden estricto de id
+                          pie: "KMNPIDX1" (8) + número de registros (8)
+                               + SHA-256 del índice canónico (32)        48 B
+<dir>/packs/<name>.idx    índice canónico, 44 B por registro:
+                          id (32 binarios) + offset (8) + longitud (4)
+```
+
+- **El pack es store** (única copia de lo que contiene); el `.idx` es
+  **derivado** y el **pie es store**. El pack no escribe el id por registro: el
+  id es el SHA-256 del contenido.
+- **Empaquetar es explícito** y corre bajo el lock de escritura; nunca es parte
+  de un commit. Solo objetos sueltos con tamaño `< --max-bytes` (por defecto
+  4096, tope 16 MiB). Un suelto cuyo contenido no hashea a su nombre **no** se
+  empaqueta: queda suelto y se informa (`:skipped-damaged`).
+- **Carga**: se usa el `.idx` cuando su tamaño y su SHA-256 coinciden con el
+  pie (sin rehashear contenidos); si no, se reconstruye **una vez** con el pack.
+  Si el índice reconstruido tampoco coincide con el pie, el pack o el pie están
+  dañados: `:store/corrupt-pack`. La recuperación es `stores unpack`, que lee
+  solo el pack e ignora el índice y el pie.
+- **Lectura**: búsqueda binaria sobre los bytes del índice (los ids están
+  ordenados); el rango se valida contra el cuerpo del pack antes de reservar
+  memoria; **no hay hash por lectura** y un fallo no se reintenta. Un registro
+  dañado dentro del pack se lee tal cual y `verify` lo informa como
+  `:hash-mismatch`, igual que un suelto dañado.
+- **Frescura para un lector vivo**: un backend recuerda la fecha de modificación
+  de `packs/` y relista solo si cambió. Como esa fecha puede tener granularidad
+  de un segundo, un sello igual solo se cree cuando tiene más de 2 s: durante
+  los 2 s siguientes a un `pack`/`unpack` el directorio se lista en cada lectura.
+  Un pack que desaparece entre la búsqueda y la lectura (otro proceso hizo
+  `unpack`) se resuelve leyendo el suelto.
+- **Vuelta atrás**: `stores unpack` escribe cada objeto que falte, reemplaza un
+  suelto dañado aunque tenga el mismo tamaño, comprueba que todos están y solo
+  entonces borra `.pack` y `.idx`.
+- Formato del store: sigue en **4** (empaquetar no cambia ids, revisiones ni
+  cabeceras). Un binario anterior a K4 **no lee** un store empaquetado: no
+  encuentra los objetos que están en el pack y falla al abrir
+  (`store/corrupt-head`, `:missing`). `stores unpack` con un binario que conozca
+  los packs lo deja legible otra vez.
+- **Durabilidad**: se fuerza el fichero del pack (`force`) y, tras el `move`, el
+  directorio `packs/` **antes** de borrar los sueltos (mejor esfuerzo: algunas
+  plataformas no lo admiten). No se fuerza `objects/` al escribir un objeto, ni
+  el directorio del store: la garantía es «el pack y su entrada existen antes de
+  perder la otra copia», no un `fsync` completo del sistema de ficheros.
+- **Recuperación**: `unpack` lee solo el pack, pero necesita su **armazón**
+  intacto (magia `KMNPACK1`, longitud de cada registro, magia y cuenta del pie).
+  Un pack truncado a mitad de registro no se recupera por partes.
+
+Medido en un store sintético de 600 documentos (`runs/subagents/2026-11-15-K4/measurement.md`):
+`.kimun` en bloques **204,6 → 145,6 MB (−28,8 %)**; `objects/` en bloques
+151,7 → 77,1 MB; `docs list` 0,72–0,73 → 0,84–0,86 s (**×1,16**); `stores verify`
+75,7 → 77,5 s (+2,4 %); `stores pack` 4,54 s, `stores unpack` 7,5 s; `objects/`
+byte-idéntico tras `unpack`.
+
+El ×1,16 de `docs list` (unos 0,12 s) corresponde a sus 4.198 lecturas de pack
+(de 4.202 lecturas de objeto), unos 29 µs por lectura. De eso, abrir, leer y
+cerrar el `.pack` son unos 4 µs medidos aparte —no se cachea el canal: un
+backend por latido de `stores heartbeat` filtraría un descriptor por pack—; el
+resto (el `stat` de frescura del directorio y la búsqueda binaria, que corre
+interpretada) **no está desglosado**. El sobrecoste
+grande que hubo primero (×1,55) **no** era eso: era la conversión del id en cada
+búsqueda, un bucle interpretado de 32 pasos (~52 µs por id, 217 ms por comando),
+que `java.util.HexFormat` deja en ~1 µs; lo mismo bajó `stores pack` de 12,3 s a
+4,54 s. La lectura empaquetada **no** cuesta lo mismo que la suelta, y el factor
+está medido en un solo store de 600 documentos: no hay medición a otra escala.
+
+**Límites de este corte.** `cache/` **no se empaqueta** y es la mayor parte de
+los ficheros pequeños del formato 4 (aquí 12.344 ficheros, **36 % de los bloques
+del store empaquetado**), así que el objetivo de bloques de §9 no se alcanza con
+packs solo. No hay reempaquetado ni GC: un objeto empaquetado que
+deja de ser alcanzable sigue en el pack y solo `unpack` + otro `pack` lo
+reordena. La durabilidad es la del punto de arriba y no más: no hay `fsync` de
+`objects/` ni del directorio del store.

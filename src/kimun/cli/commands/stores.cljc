@@ -1,6 +1,8 @@
 (ns kimun.cli.commands.stores
   "The `kimun stores` group (docs/v2/06 §3): `init`, `check`, `health`,
-   `sense`, `heartbeat`, `update`, `reconcile`, `verify`, `unreachable`, `upgrade`, `show`, and the federation commands `link`, `unlink` and `links`. Every
+   `sense`, `heartbeat`, `update`, `reconcile`, `verify`, `unreachable`, `pack`,
+   `unpack`, `upgrade`, `show`, and the federation commands `link`, `unlink` and
+   `links`. Every
    command is `(fn [args opts ctx] envelope)` where `args` are the positional
    tokens after the subcommand and `ctx` is `{:env env :cwd cwd}`; `dispatch`
    routes a subcommand name."
@@ -18,6 +20,7 @@
             [kimun.surface.heartbeat :as heartbeat]
             [kimun.surface.signals :as signals]
             [kimun.host.default :as host]
+            [kimun.host.fs-store :as fs-store]
             [kimun.kernel.err :as err]
             [kimun.kernel.plan :as plan]
             [kimun.kernel.revision :as revision]
@@ -399,9 +402,10 @@
 
 (defn- tally
   "`{:count n :bytes n :by-class {class {:count n :bytes n}}}` of `items`
-   (`{:id :class}`), with the size of each object file under `dir`."
-  [dir items]
-  (let [size (fn [i] (let [f (fs/path dir "objects" (:id i))] (if (fs/exists? f) (fs/size f) 0)))
+   (`{:id :class}`), with the stored size of each object (`fs-store/stored-size`:
+   a loose file or its length inside a pack)."
+  [backend items]
+  (let [size (fn [i] (long (or (fs-store/stored-size backend (:id i)) 0)))
         sized (map #(assoc % :bytes (size %)) items)
         total (fn [xs] {:count (count xs) :bytes (reduce + 0 (map :bytes xs))})]
     (assoc (total sized)
@@ -445,7 +449,7 @@
   [_args opts {:keys [env cwd]}]
   (let [{:keys [backend descriptor store path]} (cli-store/open! (cli-store/resolve-store opts env cwd))
         r (store/unreachable backend store)
-        size (fn [i] (let [f (fs/path path "objects" (:id i))] (assoc i :bytes (if (fs/exists? f) (fs/size f) 0))))
+        size (fn [i] (assoc i :bytes (long (or (fs-store/stored-size backend (:id i)) 0))))
         tail (:uncommitted-tail r)]
     (out/ok "stores unreachable"
             {:store (store-ref descriptor path)
@@ -453,10 +457,10 @@
              :data (cond-> {:path path
                             :note unreachable-note
                             :stored (:stored r) :reached (:reached r) :unreachable (:unreachable r)
-                            :candidates (tally path (:candidates r))
-                            :roots (tally path (filter :root? (:candidates r)))
+                            :candidates (tally backend (:candidates r))
+                            :roots (tally backend (filter :root? (:candidates r)))
                             :lost-revisions (mapv :id (filter #(= :revision (:class %)) (:candidates r)))
-                            :held (tally path (:held r))
+                            :held (tally backend (:held r))
                             :damaged (:damaged r)
                             :stable? (:stable? r)}
                      tail (assoc :uncommitted-tail (select-keys tail [:id :revision :torn-line]))
@@ -466,6 +470,87 @@
                          []
                          [{:type "unreachable/unstable"
                            :message "the heads moved while the inventory was taken; run it again"}])})))
+
+(def ^:private max-pack-bytes
+  "The largest `stores pack --max-bytes` accepts: a pack record is held in
+   memory while it is written, so the option has a ceiling."
+  16777216)
+
+(defn- pack-only!
+  "Raises :store/error unless `descriptor` is a format-4 store: packs are part of
+   the format-4 layout (docs/v2/10 §11.4)."
+  [descriptor path what]
+  (when-not (= 4 (:format-version descriptor))
+    (err/raise :store/error
+               (str what " needs a format-4 store; " path " is format " (:format-version descriptor))
+               {:path path :format-version (:format-version descriptor)})))
+
+(defn- checked-max-bytes
+  "`--max-bytes` as a long in [1, max-pack-bytes], or nil when it was not given;
+   anything else is `:cli/usage`."
+  [opts]
+  (when-let [v (:max-bytes opts)]
+    (let [n (try (parse-long (str v)) (catch Exception _ nil))
+          bad (fn [why]
+                (err/raise :cli/usage
+                           (str "`stores pack --max-bytes` " why ", got `" v "`")
+                           {:group "stores" :subcommand "pack" :option "max-bytes" :value v}))]
+      (cond (nil? n) (bad "needs an integer")
+            (< n 1) (bad "needs a positive integer")
+            (> n max-pack-bytes) (bad (str "is at most " max-pack-bytes " (16 MiB)"))
+            :else n))))
+
+(defn pack
+  "`stores pack [--max-bytes N]`: moves the loose objects smaller than N bytes
+   (default 4096) into a new pack under `packs/` and removes the loose copies
+   (`kimun.host.fs-store/pack!`; docs/v2/10 §11.4). Explicit and never part of a
+   commit; only a format-4 store. The store is verified after packing: a failure
+   is `store/corrupt` (exit 5) and the loose files are already gone (`stores
+   unpack` writes them back). Data: `{:path :packed :pack :bytes :kept-loose
+   :skipped-damaged :packs :checked}`."
+  [_args opts {:keys [env cwd]}]
+  (let [path (cli-store/resolve-store opts env cwd)
+        {:keys [backend descriptor]} (cli-store/open! path)
+        _ (pack-only! descriptor path "stores pack")
+        max-bytes (checked-max-bytes opts)
+        r (fs-store/pack! backend (cond-> {} max-bytes (assoc :max-bytes max-bytes)))
+        reopened (cli-store/open! path)
+        v (store/verify (:backend reopened) (:store reopened))]
+    (if (:ok? v)
+      (out/ok "stores pack"
+              {:store (store-ref descriptor path)
+               :revision (:head (:store reopened))
+               :data {:path path :packed (:packed r) :pack (:pack r) :bytes (:bytes r)
+                      :kept-loose (:kept-loose r) :skipped-damaged (:skipped-damaged r)
+                      :packs (:packs (fs-store/pack-stats (:backend reopened)))
+                      :checked (:checked v)}})
+      (out/failure :store/corrupt
+                   (str (count (:bad v)) " problem(s) after packing " path
+                        "; the loose copies are already removed: run `stores unpack` to write them back")
+                   {:path path :pack (:pack r) :checked (:checked v) :bad (:bad v)}
+                   5))))
+
+(defn unpack
+  "`stores unpack`: writes every packed object back to `objects/` and removes the
+   pack (`kimun.host.fs-store/unpack!`; docs/v2/10 §11.4). Only a format-4 store.
+   The store is verified after unpacking: a failure is `store/corrupt` (exit 5).
+   Data: `{:path :packs :unpacked :checked}`."
+  [_args opts {:keys [env cwd]}]
+  (let [path (cli-store/resolve-store opts env cwd)
+        {:keys [backend descriptor]} (cli-store/open! path)
+        _ (pack-only! descriptor path "stores unpack")
+        r (fs-store/unpack! backend)
+        reopened (cli-store/open! path)
+        v (store/verify (:backend reopened) (:store reopened))]
+    (if (:ok? v)
+      (out/ok "stores unpack"
+              {:store (store-ref descriptor path)
+               :revision (:head (:store reopened))
+               :data {:path path :packs (:packs r) :unpacked (:unpacked r) :checked (:checked v)}})
+      (out/failure :store/corrupt
+                   (str (count (:bad v)) " problem(s) after unpacking " path)
+                   {:path path :checked (:checked v) :bad (:bad v)}
+                   5))))
 
 (def ^:private layout
   "Entries of a store directory that the upgrade rebuilds, or drops: the
@@ -684,6 +769,7 @@
    :apply {:desc "Write what the comparison found (stores reconcile)" :coerce :boolean}
    :once {:desc "Make the single observation explicit (stores sense; no daemon)" :coerce :boolean}
    :ids {:desc "List the id, class and bytes of every object (stores unreachable)" :coerce :boolean}
+   :max-bytes {:ref "N" :desc "Largest loose object, in bytes, that `stores pack` moves into a pack (default 4096, at most 16777216)"}
    :interval {:ref "SECONDS" :desc "Seconds between observations, decimals allowed (stores heartbeat; default 30, minimum 0.1)"}
    :beats {:ref "N" :desc "Stop after N observations (stores heartbeat; default: until interrupted)"}})
 
@@ -691,7 +777,7 @@
   "Subcommand name → command fn."
   {"init" init "check" check "verify" verify "upgrade" upgrade-store "show" show
    "link" link "unlink" unlink "links" links
-   "unreachable" unreachable "health" health "sense" sense "heartbeat" heartbeat "update" update-store "reconcile" reconcile})
+   "unreachable" unreachable "pack" pack "unpack" unpack "health" health "sense" sense "heartbeat" heartbeat "update" update-store "reconcile" reconcile})
 
 (defn dispatch
   "Runs subcommand `sub` of the `stores` group (`args` are the positional tokens);

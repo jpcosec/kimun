@@ -1,0 +1,15 @@
+== state: packed ==
+objects_du_apparent 73775844
+objects_du_blocks 77066240
+packs_du_apparent 15638281
+packs_du_blocks 15650816
+cache_du_apparent 5744059
+cache_du_blocks 52817920
+store_du_apparent 95251378
+store_du_blocks 145641472
+objects_files 603
+packs_files 2
+cache_files 12344
+store_files 12953
+pack_size 14836821
+idx_size 801460

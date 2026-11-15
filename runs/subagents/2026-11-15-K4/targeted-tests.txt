@@ -1,0 +1,22 @@
+
+Testing kimun.host.pack-test
+
+Testing kimun.cli.pack-test
+
+Testing kimun.cli.stores-test
+
+Testing kimun.cli.unreachable-test
+
+Testing kimun.kernel.unreachable-test
+
+Testing kimun.cli.heartbeat-test
+
+Testing kimun.kernel.store-test
+
+Testing kimun.kernel.hardening-test
+
+Testing kimun.cli.main-test
+
+Ran 134 tests containing 1035 assertions.
+0 failures, 0 errors.
+exit 0

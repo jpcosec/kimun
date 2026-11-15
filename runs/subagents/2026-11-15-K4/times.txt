@@ -1,0 +1,36 @@
+verify_loose 76.07 s 223020 KB
+docs_list_loose 0.74 s 141360 KB
+pack 17.42 s 196668 KB
+docs_list_packed 2.86 s 215728 KB
+verify_packed 83.05 s 259820 KB
+docs_list_packed_r1 2.75 s 213224 KB
+docs_list_packed_r2 2.83 s 212252 KB
+docs_list_packed_r3 2.77 s 213408 KB
+stores_show_packed 0.32 s 126924 KB
+docs_list_packed_r4 2.78 s 210416 KB
+docs_list_packed_r5 2.76 s 214200 KB
+docs_list_loose_r1 0.73 s 137572 KB
+docs_list_loose_r2 0.73 s 140316 KB
+docs_list_loose_r3 0.72 s 137784 KB
+verify_loose 75.68 s 258604 KB
+pack 12.30 s 225384 KB
+docs_list_packed_r1 1.02 s 152920 KB
+docs_list_packed_r2 1.12 s 152532 KB
+docs_list_packed_r3 1.05 s 162360 KB
+verify_packed 77.53 s 239572 KB
+unpack 7.53 s 214664 KB
+pack2 12.24 s 207592 KB
+unpack2 7.53 s 214116 KB
+pack3 12.89 s 209352 KB
+docs_list_packed_R3_r1 1.11 s 155900 KB
+docs_list_packed_R3_r2 1.14 s 156772 KB
+docs_list_packed_R3_r3 1.11 s 160508 KB
+docs_list_packed_R6_r1 0.86 s 148016 KB
+docs_list_packed_R6_r2 0.85 s 148244 KB
+docs_list_packed_R6_r3 0.84 s 147768 KB
+pack_R6 4.54 s 225156 KB
+docs_list_AFTER_PACK_R6_r1 (packed) 0.86 s 148204 KB
+docs_list_AFTER_PACK_R6_r2 (packed) 0.87 s 155924 KB
+# NOTE: the two runs above were mislabelled `docs_list_loose_R6_*` in the shell loop;
+# they ran AFTER `stores pack`, so they are packed-state runs (same 0.84-0.86 s band).
+# The loose-state reference for this store is the earlier docs_list_loose_r1..r3 (0.72-0.73 s).

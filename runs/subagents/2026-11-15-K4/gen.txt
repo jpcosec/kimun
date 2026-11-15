@@ -1,0 +1,8 @@
+docs 100 elapsed_s 4.2 ms_per_commit_last100 42
+docs 200 elapsed_s 12.1 ms_per_commit_last100 79
+docs 300 elapsed_s 23.4 ms_per_commit_last100 114
+docs 400 elapsed_s 38.2 ms_per_commit_last100 148
+docs 500 elapsed_s 56.4 ms_per_commit_last100 182
+docs 600 elapsed_s 78.2 ms_per_commit_last100 218
+Command exited with non-zero status 130
+gen 81.48 s 186696 KB

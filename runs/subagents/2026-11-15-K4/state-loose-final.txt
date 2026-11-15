@@ -1,0 +1,11 @@
+== state: loose (after unpack) ==
+objects_du_apparent 88539797
+objects_du_blocks 151674880
+packs_dir_present 0
+cache_du_apparent 5744059
+cache_du_blocks 52817920
+store_du_apparent 94377050
+store_du_blocks 204603392
+objects_files 18818
+cache_files 12344
+store_files 31166
