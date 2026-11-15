@@ -1,0 +1,35 @@
+
+Testing kimun.cli.release-test
+
+FAIL in (release-archives-are-byte-identical-across-builds) (/tmp/kimun-r1-wt/test/kimun/cli/release_test.cljc:115)
+same tree, two builds (and two uberjars) -> same tar.gz
+expected: (= (:sha256 a) (:sha256 b))
+  actual: (not (= "ccd6320d80e76c209a6553e3ed6974931b0072a3931abfd280bed6b0471dd372" "277e1e7d888ea5d05f2ee5158021ad40cb224dc4aea31959dbe52f256a1216ec"))
+
+FAIL in (release-archives-are-byte-identical-across-builds) (/tmp/kimun-r1-wt/test/kimun/cli/release_test.cljc:115)
+expected: (= (slurp (str (fs/path tmp "out-a" "SHA256SUMS"))) (slurp (str (fs/path tmp "out-b" "SHA256SUMS"))))
+  actual: (not (= "ccd6320d80e76c209a6553e3ed6974931b0072a3931abfd280bed6b0471dd372  kimun-2.0.0-alpha.1-linux-amd64.tar.gz\n" "277e1e7d888ea5d05f2ee5158021ad40cb224dc4aea31959dbe52f256a1216ec  kimun-2.0.0-alpha.1-linux-amd64.tar.gz\n"))
+release_test: bundle --version in 383 ms
+
+FAIL in (release-archive-entries-are-sorted-owned-by-root-and-stamped-with-the-epoch) (/tmp/kimun-r1-wt/test/kimun/cli/release_test.cljc:130)
+entries in lexicographic order
+expected: (= (sort (names dflt)) (names dflt))
+  actual: (not (= ("kimun-2.0.0-alpha.1-linux-amd64/" "kimun-2.0.0-alpha.1-linux-amd64/LICENSE" "kimun-2.0.0-alpha.1-linux-amd64/VERSION" "kimun-2.0.0-alpha.1-linux-amd64/bin/" "kimun-2.0.0-alpha.1-linux-amd64/bin/kimun" "kimun-2.0.0-alpha.1-linux-amd64/bin/kimun.cmd" "kimun-2.0.0-alpha.1-linux-amd64/lib/" "kimun-2.0.0-alpha.1-linux-amd64/lib/bb" "kimun-2.0.0-alpha.1-linux-amd64/lib/kimun.jar") ("kimun-2.0.0-alpha.1-linux-amd64/" "kimun-2.0.0-alpha.1-linux-amd64/bin/" "kimun-2.0.0-alpha.1-linux-amd64/bin/kimun" "kimun-2.0.0-alpha.1-linux-amd64/bin/kimun.cmd" "kimun-2.0.0-alpha.1-linux-amd64/VERSION" "kimun-2.0.0-alpha.1-linux-amd64/lib/" "kimun-2.0.0-alpha.1-linux-amd64/lib/bb" "kimun-2.0.0-alpha.1-linux-amd64/lib/kimun.jar" "kimun-2.0.0-alpha.1-linux-amd64/LICENSE")))
+
+FAIL in (release-archive-entries-are-sorted-owned-by-root-and-stamped-with-the-epoch) (/tmp/kimun-r1-wt/test/kimun/cli/release_test.cljc:130)
+uid/gid 0
+expected: (every? (fn* [%1] (str/includes? %1 " 0/0 ")) (:lines dflt))
+  actual: (not (every? #object[sci.impl.fns$fun$arity_1__1465 0x41189510 "sci.impl.fns$fun$arity_1__1465@41189510"] ["drwxrwxr-x 1000/1000         0 2026-11-15 21:57 kimun-2.0.0-alpha.1-linux-amd64/" "drwxrwxr-x 1000/1000         0 2026-11-15 21:57 kimun-2.0.0-alpha.1-linux-amd64/bin/" "-rwxr-xr-x 1000/1000       575 2026-11-15 21:57 kimun-2.0.0-alpha.1-linux-amd64/bin/kimun" "-rw-rw-r-- 1000/1000       216 2026-11-15 21:57 kimun-2.0.0-alpha.1-linux-amd64/bin/kimun.cmd" "-rw-rw-r-- 1000/1000        14 2026-11-15 21:57 kimun-2.0.0-alpha.1-linux-amd64/VERSION" "drwxrwxr-x 1000/1000         0 2026-11-15 21:57 kimun-2.0.0-alpha.1-linux-amd64/lib/" "-rwxr-xr-x 1000/1000  70059328 2026-11-15 21:57 kimun-2.0.0-alpha.1-linux-amd64/lib/bb" "-rw-rw-r-- 1000/1000    396225 2026-11-15 21:57 kimun-2.0.0-alpha.1-linux-amd64/lib/kimun.jar" "-rw-rw-r-- 1000/1000      1074 2026-11-15 21:57 kimun-2.0.0-alpha.1-linux-amd64/LICENSE"]))
+
+FAIL in (release-archive-entries-are-sorted-owned-by-root-and-stamped-with-the-epoch) (/tmp/kimun-r1-wt/test/kimun/cli/release_test.cljc:130)
+default epoch 1980-01-01
+expected: (= #{"1980-01-01"} (set (map (fn* [%1] (nth (str/split %1 #"\s+") 3)) (:lines dflt))))
+  actual: (not (= #{"1980-01-01"} #{"2026-11-15"}))
+
+FAIL in (release-archive-entries-are-sorted-owned-by-root-and-stamped-with-the-epoch) (/tmp/kimun-r1-wt/test/kimun/cli/release_test.cljc:130)
+SOURCE_DATE_EPOCH honored
+expected: (= #{"2023-11-14"} (set (map (fn* [%1] (nth (str/split %1 #"\s+") 3)) (:lines fixed))))
+  actual: (not (= #{"2023-11-14"} #{"2026-11-15"}))
+
+Ran 4 tests containing 46 assertions.
+6 failures, 0 errors.

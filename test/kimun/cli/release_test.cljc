@@ -20,12 +20,22 @@
   (when-not (fs/exists? jar)
     (p/shell {:dir root :out :string :err :string} "bb" "jar")))
 
-(defn- release! [out]
-  (let [r (p/shell {:dir root :out :string :err :string :continue true}
+(defn- release!
+  ([out] (release! out jar nil))
+  ([out the-jar extra-env]
+   (let [r (p/shell {:dir root :out :string :err :string :continue true :extra-env extra-env}
                    "bb" "scripts/release.clj" "--local-bb" "--platforms" "linux-amd64"
-                   "--out" out "--jar" jar)]
+                   "--out" out "--jar" the-jar)]
     (is (zero? (:exit r)) (str "release failed: " (:err r)))
-    (edn/read-string (:out r))))
+    (edn/read-string (:out r)))))
+
+(defn- build-jar!
+  "Builds a fresh uberjar at `dest` (outside the worktree)."
+  [dest]
+  (let [r (p/shell {:dir root :out :string :err :string :continue true}
+                   "bb" "--classpath" "src:resources" "uberjar" dest "-m" "kimun.cli.main")]
+    (is (zero? (:exit r)) (:err r))
+    dest))
 
 (defn- run-bundle
   "Runs `launcher` with `args` in `dir` under a PATH without bb; returns
@@ -101,3 +111,35 @@
                      "--out" (str tmp) "--jar" jar)]
       (is (= 2 (:exit r)))
       (is (str/includes? (:err r) "unknown platform")))))
+
+(deftest release-archives-are-byte-identical-across-builds
+  (fs/with-temp-dir [tmp {:prefix "kimun-release-det"}]
+    (let [jar-a (build-jar! (str (fs/path tmp "a.jar")))
+          _ (Thread/sleep 2500)             ; zip entries carry 2 s timestamps
+          jar-b (build-jar! (str (fs/path tmp "b.jar")))
+          a (first (:bundles (release! (str (fs/path tmp "out-a")) jar-a nil)))
+          _ (Thread/sleep 1100)
+          _ (doseq [f (fs/glob (:dir a) "**")] (fs/set-last-modified-time f (java.nio.file.attribute.FileTime/fromMillis 1e12)))
+          b (first (:bundles (release! (str (fs/path tmp "out-b")) jar-b nil)))]
+      (is (= (:sha256 a) (:sha256 b)) "same tree, two builds (and two uberjars) -> same tar.gz")
+      (is (= (slurp (str (fs/path tmp "out-a" "SHA256SUMS")))
+             (slurp (str (fs/path tmp "out-b" "SHA256SUMS")))))
+      (is (= (slurp (str (fs/path tmp "out-a" "SHA256SUMS")))
+             (str (:sha256 a) "  " (fs/file-name (:archive a)) "\n"))))))
+
+(deftest release-archive-entries-are-sorted-owned-by-root-and-stamped-with-the-epoch
+  (fs/with-temp-dir [tmp {:prefix "kimun-release-meta"}]
+    (ensure-jar!)
+    (let [listing (fn [env]
+                    (let [b (first (:bundles (release! (str (fs/path tmp (str "o" (hash env)))) jar env)))]
+                      {:sha (:sha256 b)
+                       :lines (str/split-lines
+                               (:out (p/shell {:out :string :extra-env {"TZ" "UTC"}} "tar" "--numeric-owner" "-tvzf" (:archive b))))}))
+          dflt (listing nil)
+          fixed (listing {"SOURCE_DATE_EPOCH" "1700000000"})
+          names (fn [{:keys [lines]}] (map #(last (str/split % #" ")) lines))]
+      (is (= (sort (names dflt)) (names dflt)) "entries in lexicographic order")
+      (is (every? #(str/includes? % " 0/0 ") (:lines dflt)) "uid/gid 0")
+      (is (= #{"1980-01-01"} (set (map #(nth (str/split % #"\s+") 3) (:lines dflt)))) "default epoch 1980-01-01")
+      (is (= #{"2023-11-14"} (set (map #(nth (str/split % #"\s+") 3) (:lines fixed)))) "SOURCE_DATE_EPOCH honored")
+      (is (not= (:sha dflt) (:sha fixed))))))

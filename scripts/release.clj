@@ -38,6 +38,45 @@
    :macos-aarch64 #(str "babashka-" % "-macos-aarch64.tar.gz")
    :windows-amd64 #(str "babashka-" % "-windows-amd64.zip")})
 
+;; Reproducible archives (docs/v2/12 §1 "CI/release reproducible"): every timestamp, the
+;; entry order, the owner and the gzip header are fixed, so the same inputs give the same
+;; bytes. The timestamp is $SOURCE_DATE_EPOCH or 1980-01-01 (the zip minimum).
+(def default-epoch 315532800)
+
+(defn- source-epoch
+  "Seconds since the epoch stamped on every archived file."
+  []
+  (if-let [s (not-empty (System/getenv "SOURCE_DATE_EPOCH"))]
+    (or (parse-long s) (fail 2 "SOURCE_DATE_EPOCH is not an integer:" s))
+    default-epoch))
+
+(defn- normalize-jar!
+  "Rewrites jar `src` to `dest` with entries sorted by name and a fixed timestamp
+   (an uberjar stamps the build time of every entry, so two builds never match)."
+  [src dest epoch]
+  (let [t (java.time.LocalDateTime/ofEpochSecond epoch 0 java.time.ZoneOffset/UTC)]
+    (with-open [zf (java.util.zip.ZipFile. (fs/file src))
+                out (java.util.zip.ZipOutputStream. (io/output-stream (fs/file dest)))]
+      (doseq [e (sort-by #(.getName ^java.util.zip.ZipEntry %) (enumeration-seq (.entries zf)))]
+        (let [ne (java.util.zip.ZipEntry. (.getName ^java.util.zip.ZipEntry e))]
+          (.setTimeLocal ne t)
+          (.putNextEntry out ne)
+          (when-not (.isDirectory ^java.util.zip.ZipEntry e)
+            (with-open [in (.getInputStream zf e)] (io/copy in out)))
+          (.closeEntry out))))))
+
+(defn- normalize-tree!
+  "Fixes mtime and permissions of every file under `dir` (independent of umask)."
+  [dir epoch]
+  (let [ft (java.nio.file.attribute.FileTime/fromMillis (* 1000 epoch))]
+    (doseq [f (cons (fs/path dir) (fs/glob dir "**" {:hidden true}))]
+      (try (fs/set-posix-file-permissions
+            f (cond (fs/directory? f) "rwxr-xr-x"
+                    (fs/executable? f) "rwxr-xr-x"
+                    :else "rw-r--r--"))
+           (catch Exception _ nil))
+      (fs/set-last-modified-time f ft))))
+
 (defn- windows? [platform] (str/starts-with? (name platform) "windows"))
 
 (def posix-launcher
@@ -124,7 +163,8 @@ exec \"$DIR/lib/bb\" --jar \"$DIR/lib/kimun.jar\" -- \"$@\"
 
 (defn- bundle!
   [{:keys [version] :as cfg} platform {:keys [out jar local-bb pin]}]
-  (let [name (str "kimun-" version "-" (clojure.core/name platform))
+  (let [epoch (source-epoch)
+        name (str "kimun-" version "-" (clojure.core/name platform))
         dir (fs/path out name)
         bin (fs/path dir "bin") lib (fs/path dir "lib")
         bb-name (if (windows? platform) "bb.exe" "bb")
@@ -137,7 +177,7 @@ exec \"$DIR/lib/bb\" --jar \"$DIR/lib/kimun.jar\" -- \"$@\"
                    (let [{:keys [archive]} (pinned-bb! cfg platform out pin)]
                      (extract-bb! archive (fs/path out ".cache" (str "bb-" (clojure.core/name platform))) platform)))]
       (fs/copy bb-src (fs/path lib bb-name) {:replace-existing true}))
-    (fs/copy jar (fs/path lib "kimun.jar") {:replace-existing true})
+    (normalize-jar! jar (fs/path lib "kimun.jar") epoch)
     (when pod
       (fs/copy pod (fs/path lib pod-name) {:replace-existing true})
       (let [expected (get-in cfg [:pods platform :sha256])
@@ -156,13 +196,16 @@ exec \"$DIR/lib/bb\" --jar \"$DIR/lib/kimun.jar\" -- \"$@\"
       (binding [*out* *err*]
         (println "release: no tree-sitter pod for" (clojure.core/name platform)
                  "— bundled without it (bb pod / target/pods)")))
+    (normalize-tree! dir epoch)
     (let [archive (if (windows? platform)
                     (let [z (fs/path out (str name ".zip"))]
                       (fs/delete-if-exists z)
                       (fs/zip z [(str dir)] {:root (str out)})
                       z)
                     (let [t (fs/path out (str name ".tar.gz"))]
-                      (shell "tar" "-czf" (str t) "-C" (str out) name)
+                      (shell "tar" "--sort=name" "--owner=0" "--group=0" "--numeric-owner"
+                             (str "--mtime=@" epoch) "--use-compress-program=gzip -n -9"
+                             "-cf" (str t) "-C" (str out) name)
                       t))]
       {:platform platform :dir (str dir) :archive (str archive) :sha256 (sha256-file archive)})))
 

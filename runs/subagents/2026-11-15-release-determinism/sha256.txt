@@ -1,0 +1,13 @@
+ANTES (HEAD, antes del cambio): dos jars y dos releases
+f1037a66cdb7188566d8729b9fa10e86fd8e1d6fa9ff85a922f658274b4e2852  jar1.jar
+e5f241a31cd6b3a2a57a4b96d9eb22e971cd0f9e509033d81edfe33b71b906e3  jar2.jar
+b43fd105b6acc1ff4a807d856f59e8f8e82aea0dd08c9dbb88ee5065ba1b801a  out1/kimun-2.0.0-alpha.1-linux-amd64.tar.gz
+e6358f378c565af82e9eca3329fe85a16515e9884047c90660a86f594811a4cc  out2/kimun-2.0.0-alpha.1-linux-amd64.tar.gz
+9615644b7a6ce39e43dd7ba8f9abd9de6d4cf3d90fbfc69cb4d3ca2d206760b5  out1/SHA256SUMS
+2e3671196f4ea56a2f8ea84c310e94b279ea0fb81c443b04e40c079462860f98  out2/SHA256SUMS
+
+DESPUES (con el cambio, jar1 y jar2 distintos)
+082fd0fd4ecb247d7587933b23e278f1b02df13292d4f6293e2e7300ea584ea4  n1/kimun-2.0.0-alpha.1-linux-amd64.tar.gz
+082fd0fd4ecb247d7587933b23e278f1b02df13292d4f6293e2e7300ea584ea4  n2/kimun-2.0.0-alpha.1-linux-amd64.tar.gz
+ce033a4e9b2dd685c24363bad60cbfbe0618afe9cce365e12916a6ce3e2f401d  n1/SHA256SUMS
+ce033a4e9b2dd685c24363bad60cbfbe0618afe9cce365e12916a6ce3e2f401d  n2/SHA256SUMS
