@@ -218,3 +218,64 @@
       (is (true? (:ok (run p "validate" "SLDBGuide" "--input" input))))
       (let [bad (run p "models" "define" "--from-python" "no.such:Thing")]
         (is (= [3 "models/python-export"] [(:exit bad) (get-in bad [:error :type])]))))))
+
+;; ---- M1f: spec 16 descriptors in the store (docs/v2/16 §3.4, §4) ----
+
+(def ^:private spec16-fixture
+  (:models (edn/read-string (slurp "test/fixtures/models/spec16_examples.edn"))))
+
+(defn- spec16 [nm] (first (filter #(= nm (:model/name %)) spec16-fixture)))
+
+(defn- define16! [p d]
+  (run p "models" "define" "-f" (write! p (str (:model/name d) ".edn") (pr-str d))))
+
+(deftest spec16-hierarchy-is-queryable
+  ;; docs/v2/16 §4.1: `:base` is a derive/isa? hierarchy; `--isa BASE` is BASE plus its transitive subclasses
+  (let [p (project)]
+    (doseq [nm ["PrimitiveDoc" "ResumenDoc" "ResumenTecnicoDoc"]] (is (true? (:ok (define16! p (spec16 nm)))) nm))
+    (run p "models" "define" "-f" ticket)
+    (is (= ["PrimitiveDoc" "ResumenDoc" "ResumenTecnicoDoc"] (mapv :name (:data (run p "models" "list" "--isa" "PrimitiveDoc")))))
+    (is (= ["ResumenDoc" "ResumenTecnicoDoc"] (mapv :name (:data (run p "models" "list" "--isa" "ResumenDoc")))))
+    (is (= ["TicketDoc"] (mapv :name (:data (run p "models" "list" "--isa" "TicketDoc")))) "a v1 model is its own class")
+    (is (= [1 "models/missing"] ((juxt :exit #(get-in % [:error :type])) (run p "models" "list" "--isa" "Ghost"))))))
+
+(deftest spec16-redefine-is-a-new-version-only-when-the-selector-changes
+  ;; docs/v2/16 §4.3: a changed class is another class; the previous one stays as an immutable object
+  (let [p (project) d (spec16 "PrimitiveDoc")
+        v1 (define16! p d)
+        same (define16! p (assoc d :model/version 9 :contract/digest "sha256:ignored"))
+        other (define16! p (assoc-in d [:anchoring :selector 1 :regex] "^# (.*)$"))
+        hist (:data (run p "models" "history" "PrimitiveDoc"))]
+    (is (= [1 false] [(get-in v1 [:data :version]) (get-in v1 [:data :unchanged?])]))
+    (is (= [1 true] [(get-in same [:data :version]) (get-in same [:data :unchanged?])]) "same contract, any version/digest: unchanged")
+    (is (= [2 false] [(get-in other [:data :version]) (get-in other [:data :unchanged?])]))
+    (is (= [2 1] (mapv :version hist)) "supersedes chain keeps v1")
+    (is (= (get-in v1 [:data :id]) (:id (second hist))))
+    (is (not= (get-in v1 [:data :id]) (get-in other [:data :id])))))
+
+(deftest spec16-check-reports-missing-base-and-cycles
+  (let [p (project)
+        orphan (assoc (spec16 "ResumenDoc") :base ["Nowhere"])
+        _ (define16! p orphan)
+        e1 (run p "models" "check")
+        _ (define16! p (assoc (spec16 "PrimitiveDoc") :base ["ResumenDoc"] :model/name "PrimitiveDoc"))
+        _ (define16! p (assoc (spec16 "ResumenDoc") :base ["PrimitiveDoc"]))
+        e2 (run p "models" "check")]
+    (is (= [3 "models/invalid"] ((juxt :exit #(get-in % [:error :type])) e1)))
+    (is (re-find #"base `Nowhere`" (get-in e1 [:error :message])) (pr-str e1))
+    (is (= 3 (:exit e2)))
+    (is (re-find #"cycle in :base" (get-in e2 [:error :message])) (pr-str e2))
+    (is (= [3 "models/invalid"] ((juxt :exit #(get-in % [:error :type])) (run p "models" "list" "--isa" "PrimitiveDoc")))
+        "list --isa reports a cycle instead of looping")))
+
+(deftest spec16-generated-role-is-blocked-by-f10
+  (let [p (project) e (define16! p (assoc (spec16 "PrimitiveDoc") :document-role :generated))]
+    (is (= [3 "models/invalid"] ((juxt :exit #(get-in % [:error :type])) e)))
+    (is (re-find #"F10" (get-in e [:error :message])) (pr-str e))
+    (is (empty? (:data (run p "models" "list"))) "nothing was written")))
+
+(deftest descriptor-with-template-and-anchoring-is-rejected
+  (let [p (project) e (define16! p (assoc (spec16 "PrimitiveDoc") :template "# ⸢rev•title⸥\n"))]
+    (is (= [3 "models/invalid"] ((juxt :exit #(get-in % [:error :type])) e)))
+    (is (re-find #"mutually exclusive" (get-in e [:error :message])) (pr-str e))
+    (is (empty? (:data (run p "models" "list"))))))

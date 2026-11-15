@@ -94,3 +94,10 @@
             (is (= [] (edit/undeclared-fields d)) "the template names only declared fields")))
         (is (= (set (map :model/name ds)) (set (map :name (mstore/models store)))))
         (is (every? #(= 1 (:version %)) (mstore/models store)))))))
+
+(deftest v1-descriptor-keeps-its-address-byte-for-byte
+  ;; M1f guard: spec 16 support must not add a key to, or reorder, a stored v1 descriptor. The id below
+  ;; was computed on 876ba5a8 (before M1f) for ticket.edn at version 1; `bb oracle` guards the kernel.
+  (let [d (assoc (edn/read-string (slurp "test/fixtures/models/ticket.edn")) :model/version 1)]
+    (is (= "838f817f1f48014f7106d7b97ce67dd82317709b36ab61875655eb7037e5e4d4" (mstore/node-id host/host d)))
+    (is (= d (edn/read-string (mstore/serialize d))) "serialize adds nothing")))

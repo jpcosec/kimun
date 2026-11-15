@@ -364,11 +364,11 @@ Validación del descriptor (tipos, bases, `:state`, template, `py•` rechazado)
 
 | subcomando | opciones | notas |
 |---|---|---|
-| `models define` | `-f X.edn` \| `--from-python MOD:CLASS` `[--pythonpath P]`, `--dry-run`, `--backfill` | nombre nuevo ⇒ `:add-node`; existente ⇒ versión+1 y `supersedes` |
+| `models define` | `-f X.edn` \| `--from-python MOD:CLASS` `[--pythonpath P]`, `--dry-run`, `--backfill` | nombre nuevo ⇒ `:add-node`; existente ⇒ versión+1 y `supersedes`; el descriptor es v1 (`:template`) o spec 16 (`:anchoring`), nunca ambos; `:document-role :generated` se rechaza (F10) |
 | `models field-add` | `NAME --field F --type T --description TEXT [--default D] [--required]` | nueva versión del descriptor |
 | `models field-remove` | `NAME --field F` | nueva versión del descriptor |
 | `models template` | `NAME [-f FILE]` | sin `-f` muestra el template; con `-f` lo reemplaza (nueva versión) |
-| `models list` | — | `[{:name :version :id :fields :documents :not-intact}]` |
+| `models list` | `[--isa BASE]` | `[{:name :version :id :fields :documents :not-intact}]`; `--isa BASE` filtra a BASE y sus subclases transitivas por `:base` (spec 16 §4.1) |
 | `models show` | `NAME [--format md]` | descriptor, bases, template, historial, documentos que lo referencian |
 | `models history` | `NAME` | versiones (cadena `supersedes`) |
 | `models check` | `[NAME] [-f DRAFT.edn]` | valida descriptores y documentos; `models/*` (3) |

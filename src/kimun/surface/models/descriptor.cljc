@@ -49,7 +49,8 @@
    naming the first problem otherwise: name, version, template, fields (unique
    string names, a valid type, a default of that type, a non-empty
    `:description`), `:base` as a vector of names, `:state` coherent with its
-   enum field. `py•` markers are rejected (07 §8). With `{:known-models #{…}}`
+   enum field; `:template` and `:anchoring` together are rejected (a v1
+   descriptor is never also a spec 16 one). `py•` markers are rejected (07 §8). With `{:known-models #{…}}`
    every `:base` must be one of them."
   ([descriptor] (validate! descriptor {}))
   ([descriptor {:keys [known-models]}]
@@ -58,6 +59,8 @@
      (when-not (map? descriptor) (bad "must be a map"))
      (when-not (and (string? (:model/name descriptor)) (re-matches #"[A-Z_][A-Za-z0-9_]*" (:model/name descriptor))) (bad "`:model/name` must be a capitalised identifier"))
      (when (and (contains? descriptor :model/version) (not (and (integer? (:model/version descriptor)) (pos? (:model/version descriptor))))) (bad "`:model/version` must be an integer ≥ 1"))
+     (when (and (contains? descriptor :template) (contains? descriptor :anchoring))
+       (bad "`:template` (v1) and `:anchoring` (spec 16) are mutually exclusive: a descriptor is one or the other"))
      (when-not (string? (:template descriptor)) (bad "`:template` must be a string"))
      (when-not (and (vector? fields) (every? #(and (map? %) (string? (:name %))) fields)) (bad "`:fields` must be a vector of maps with a string `:name`"))
      (when-let [dup (first (keep (fn [[n c]] (when (> c 1) n)) (frequencies (map :name fields))))] (bad (str "field `" dup "` is declared more than once")))

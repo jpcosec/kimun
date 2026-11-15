@@ -5,11 +5,13 @@
    name is a `:replace` of its position, which records `supersedes`. Pure:
    reads an opened store value and builds plans, never commits."
   (:require [clojure.edn :as edn]
+            [clojure.string :as str]
             [clojure.walk :as walk]
             [kimun.kernel.err :as err]
             [kimun.kernel.node :as node]
             [kimun.kernel.revision :as revision]
-            [kimun.surface.models.descriptor :as descriptor]))
+            [kimun.surface.models.descriptor :as descriptor]
+            [kimun.surface.models.subgraph :as subgraph]))
 
 (def tree-name
   "Name of the taxonomy tree that holds the model descriptors."
@@ -79,7 +81,39 @@
   [store id]
   (when (string? id) (read-node store id)))
 
-(defn- same-contract? [a b] (= (dissoc a :model/version) (dissoc b :model/version)))
+(defn spec16?
+  "True when `descriptor` is a spec 16 descriptor (docs/v2/16 §3.4): it carries
+   `:anchoring` instead of the v1 `:template`."
+  [descriptor]
+  (contains? descriptor :anchoring))
+
+(defn validate-descriptor!
+  "Returns `descriptor` when it is a valid v1 descriptor (`descriptor/validate!`,
+   07 §2) XOR a valid spec 16 one (`subgraph/validate!`); raises `:models/invalid`
+   otherwise. Both `:template` and `:anchoring` is rejected, and a spec 16
+   `:document-role :generated` is rejected naming F10 (docs/v2/16 §2.3, an open
+   decision of the owner). Bases are not resolved here (see `models check`)."
+  ([descriptor] (validate-descriptor! descriptor {}))
+  ([descriptor opts]
+   (if (and (map? descriptor) (spec16? descriptor) (not (contains? descriptor :template)))
+     (let [d (if (contains? descriptor :model/version) descriptor (assoc descriptor :model/version 1))]
+       (when-let [blocked (seq (subgraph/blocked-by d))]
+         (err/raise :models/invalid
+                    (str "model " (pr-str (:model/name d)) ": `:document-role :generated` is blocked by open decision "
+                         (str/join ", " (map name blocked)) " (docs/v2/16 §2.3): not implemented")
+                    {:model (:model/name d) :problem "document-role generated (F10)" :blocked-by (vec blocked)}))
+       (subgraph/validate! d)
+       descriptor)
+     (descriptor/validate! descriptor opts))))
+
+(defn- contract-of
+  "`d` without what is not its contract: the version and, for spec 16, the
+   declared `:contract/digest` (K6 recomputes it; docs/v2/16 §3.3). A v1
+   descriptor keeps every key, so its notion of 'same' is unchanged."
+  [d]
+  (cond-> (dissoc d :model/version) (spec16? d) (dissoc :contract/digest)))
+
+(defn- same-contract? [a b] (= (contract-of a) (contract-of b)))
 
 (defn define-plan
   "The TransactionPlan that defines `descriptor` in `store`, as
@@ -102,7 +136,7 @@
   (let [current (find-model store (:model/name descriptor))
         version (if current (inc (or (:version current) 1)) (or version 1))
         d (assoc descriptor :model/version version)
-        _ (descriptor/validate! d)
+        _ (validate-descriptor! d)
         base {:plan/version 1 :base (:head store) :actor actor :engines {"kimun.surface.models" "1"} :timestamp timestamp}
         out {:name (:model/name d) :version version :id (node-id host d) :created? (nil? current)}]
     (cond

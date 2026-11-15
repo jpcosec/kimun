@@ -20,6 +20,7 @@
             [kimun.surface.models.render :as render]
             [kimun.surface.models.edit :as edit]
             [kimun.surface.models.store :as mstore]
+            [kimun.surface.models.subgraph :as subgraph]
             [kimun.host.default :as host]
             [kimun.kernel.err :as err]
             [kimun.kernel.ports :as ports]
@@ -35,6 +36,7 @@
    :default {:ref "VALUE" :desc "Field default (models field-add)"}
    :description {:ref "TEXT" :desc "Field description (models field-add, required)"}
    :required {:desc "The field is required (models field-add)" :coerce :boolean}
+   :isa {:ref "BASE" :desc "models list: only the models that are BASE or inherit from it (spec 16 `:base`, docs/v2/16 §4.1)"}
    :dry-run {:desc "Report the documents a redefinition would rewrite, without writing" :coerce :boolean}
    :backfill {:desc "Rewrite the model's documents under the new contract" :coerce :boolean}})
 
@@ -127,6 +129,12 @@
           {:store store :revision (:head store) :warnings []}
           todo))
 
+(defn- validate-model!
+  "Validates `descriptor` as v1 (and its template) or spec 16 (`mstore/validate-descriptor!`)."
+  [descriptor]
+  (mstore/validate-descriptor! descriptor)
+  (when-not (mstore/spec16? descriptor) (edit/check-template! descriptor)))
+
 (defn- commit-define!
   "Defines `descriptor` (a new version when the contract moved). Over a model
    that has documents: a document lacking a required field without default
@@ -135,8 +143,13 @@
    without it they stay as they are, reported `:superseded` until updated."
   [descriptor opts ctx command]
   (let [{:keys [backend store] d :descriptor path :path} (open-store opts ctx)
-        _ (edit/check-template! (descriptor/validate! descriptor))
-        todo (filterv #(not= (:text %) (:source %)) (rewrites store descriptor (compose/context store path)))
+        _ (validate-model! descriptor)
+        ;; documents are rewritten only for v1 models: a spec 16 class has no template to render (M1g)
+        v1? (and (not (mstore/spec16? descriptor))
+                 (not (some-> (mstore/find-model store (:model/name descriptor)) :descriptor mstore/spec16?)))
+        todo (if v1?
+               (filterv #(not= (:text %) (:source %)) (rewrites store descriptor (compose/context store path)))
+               [])
         r (mstore/define-plan host/host store descriptor {:actor (:actor opts) :timestamp (docs/timestamp)
                                :tree-id (ports/ulid (:ids host/host))})
         data (-> (dissoc r :plan) (assoc :unchanged? (boolean (:unchanged r)) :backfill (mapv :name todo)) (dissoc :unchanged))]
@@ -161,18 +174,35 @@
                 :else (err/raise :cli/usage "`models define` needs -f X.edn or --from-python module:Class" {:group "models" :subcommand "define"}))]
     (commit-define! d opts ctx "models define")))
 
+(defn- field-count [d] (count (if (mstore/spec16? d) (get-in d [:anchoring :fields]) (:fields d))))
+
+(defn- isa-names
+  "Names of the models of `defined` that are `base` or inherit from it through
+   `:base` (`subgraph/hierarchy`: derive/isa?, docs/v2/16 §4.1). Bases that no
+   model defines are ignored here (`models check` reports them); a cycle raises
+   `:models/invalid`. Raises `:models/missing` when `base` is not defined."
+  [defined base]
+  (let [known (set (map :name defined))
+        _ (when-not (known base) (err/raise :models/missing (str "no model named `" base "`") {:model base :known (vec (sort known))}))
+        h (subgraph/hierarchy (mapv (fn [m] (update (:descriptor m) :base #(filterv known %))) defined))]
+    (set (filter #(subgraph/isa-model? h % base) known))))
+
 (defn list-models
-  "`models list`: `[{:name :version :id :fields n :documents n :not-intact
-   n}]` in definition order (`:not-intact` counts documents not yet extracted
-   under the current contract)."
+  "`models list [--isa BASE]`: `[{:name :version :id :fields n :documents n
+   :not-intact n}]` in definition order (`:not-intact` counts documents not yet
+   extracted under the current contract). `:fields` counts own fields (spec 16:
+   `:anchoring :fields`). With `--isa BASE` only BASE and the models that
+   inherit from it, transitively."
   [_args opts ctx]
-  (let [{:keys [store] d :descriptor path :path} (open-store opts ctx)]
+  (let [{:keys [store] d :descriptor path :path} (open-store opts ctx)
+        all (mstore/models store)
+        keep? (if-let [b (:isa opts)] (isa-names all b) (constantly true))]
     (out/ok "models list" {:store (store-ref d path) :revision (:head store)
                            :data (mapv (fn [m] {:name (:name m) :version (:version m) :id (:id m)
-                                                :fields (count (:fields (:descriptor m)))
+                                                :fields (field-count (:descriptor m))
                                                 :documents (count (tdocs/of-model store (:name m)))
                                                 :not-intact (count (remove #(= :intact (:state %)) (tdocs/of-model store (:name m))))})
-                                       (mstore/models store))})))
+                                       (filter #(keep? (:name %)) all))})))
 
 (defn projection
   "The auditable Markdown projection of a model (07 §7): fields with type and
@@ -184,8 +214,10 @@
                      "## Fields" "" "| field | type | required | default | description |" "| --- | --- | --- | --- | --- |"]
                     (map (fn [f] (str "| " (:name f) " | `" (pr-str (:type f)) "` | " (if (:required f) "yes" "no") " | "
                                       (if (contains? f :default) (str "`" (pr-str (:default f)) "`") "") " | " (or (:description f) "") " |"))
-                         (:fields descriptor))
-                    ["" "## Template" "" "````markdown" (:template descriptor) "````" "" "## History" ""]
+                         (if (mstore/spec16? descriptor) (get-in descriptor [:anchoring :fields]) (:fields descriptor)))
+                    (if (mstore/spec16? descriptor)
+                      ["" "## Selector (spec 16)" "" "```edn" (pr-str (get-in descriptor [:anchoring :selector])) "```" "" "## History" ""]
+                      ["" "## Template" "" "````markdown" (:template descriptor) "````" "" "## History" ""])
                     (map (fn [h] (str "- v" (:version h) " · " (:actor h) " · " (:timestamp h) " · `" (:revision h) "`")) history)
                     [""])))
 
@@ -210,9 +242,21 @@
     (out/ok "models history" {:store (store-ref d path) :revision (:head store)
                               :data (mstore/history store (need-name args "history"))})))
 
-(defn- problems [descriptor known]
-  (try (edit/check-template! (descriptor/validate! descriptor {:known-models known})) []
-       (catch clojure.lang.ExceptionInfo e [(ex-message e)])))
+(defn- problems
+  "Messages of what is wrong with `descriptor` given the `defined` models of the
+   store (entries with `:descriptor`). v1: shape, template, bases defined. Spec 16:
+   shape, F10, bases defined, no cycle through `:base`, no weakened inherited field."
+  [descriptor defined]
+  (let [known (conj (set (map :name defined)) (:model/name descriptor))]
+    (try
+      (if (mstore/spec16? descriptor)
+        (let [_ (mstore/validate-descriptor! descriptor)
+              idx (subgraph/index-models (conj (filterv #(not= (:model/name descriptor) (:model/name %)) (map :descriptor defined))
+                                               (update descriptor :model/version #(or % 1))))]
+          (subgraph/check-composition! idx (:model/name descriptor))
+          [])
+        (do (edit/check-template! (descriptor/validate! descriptor {:known-models known})) []))
+      (catch clojure.lang.ExceptionInfo e [(ex-message e)]))))
 
 (defn check
   "`models check [NAME] [-f DRAFT.edn]`: validates the draft file, the named
@@ -225,17 +269,16 @@
   (let [dir (cli-store/resolve-store opts env cwd)
         opened (when (and dir (cli-store/store? dir)) (open-store opts ctx))
         defined (if opened (mstore/models (:store opened)) [])
-        known (set (map :name defined))
         targets (cond (:file opts) [(read-descriptor-file (:file opts) cwd)]
                       (first args) [(:descriptor (mstore/model (:store (or opened (open-store opts ctx))) (first args)))]
                       :else (mapv :descriptor defined))
         docs-of (fn [d] (if opened (tdocs/of-model (:store opened) (:model/name d)) []))
-        doc-errors (fn [d] (vec (for [doc (docs-of d)
+        doc-errors (fn [d] (vec (for [doc (if (mstore/spec16? d) [] (docs-of d))
                                       :let [why (try (extract/extract d (:source doc)) nil
                                                      (catch clojure.lang.ExceptionInfo e (ex-message e)))]
                                       :when why]
                                   (str "document `" (:name doc) "`: " why))))
-        report (mapv (fn [d] (let [errs (into (vec (problems d (conj known (:model/name d)))) (doc-errors d))]
+        report (mapv (fn [d] (let [errs (into (vec (problems d defined)) (doc-errors d))]
                                (cond-> {:name (:model/name d) :ok (empty? errs) :errors errs}
                                  (seq (docs-of d)) (assoc :documents (count (docs-of d))))))
                      targets)]

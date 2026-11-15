@@ -1,0 +1,22 @@
+
+Testing kimun.cli.models-test
+
+Testing kimun.surface.models.store-test
+
+Testing kimun.surface.models.subgraph-test
+
+Testing kimun.surface.models.compile-test
+
+Testing kimun.cli.model-carry-test
+
+Testing kimun.cli.identity-carry-test
+
+Testing kimun.cli.include-test
+
+Testing kimun.cli.linked-models-test
+
+Testing kimun.cli.migrate-test
+SKIPPED kimun.cli.migrate-test/real-store-sample-extracts-as-in-v1: /home/jp/proyectos/hum-ecosystem/tools/sldb/.sldb is not on this machine
+
+Ran 60 tests containing 525 assertions.
+0 failures, 0 errors.
