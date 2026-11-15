@@ -574,5 +574,5 @@ Retirados, no portados: `explore`, `faq`, `inbox`, `ast show|schema` (→ `docs 
 ## 6. No implementado
 
 - **Evaluador anclado** (S4/S5 de la planificación retirada): un primer token desconocido devuelve `eval/not-available` (6). No existen `eval`, `next`, `check`, `rel`, `anchors`, `anchor add`, ni el grupo `derive`; tampoco hay `.kimun/session.edn` ni outbox. Diseño en `docs/archive/v2/09-evaluador-anclado.md`.
-- **Cliente Python y wheels** (tarea `C2` retirada el 2026-11-15, decisión del dueño; no hay cliente previsto): no existen `python/kimun/client.py`, `python/kimun/errors.py` ni la task `bb wheel`. El único puente Python es `python -m kimun.models export mod:Class` para `models define --from-python`.
+- **Cliente Python y wheels** (tarea `C2` diferida el 2026-11-15, decisión 47 del dueño: el wrapper Python se agrega después de `RS1` y `RS2`, `12 §1`): no existen `python/kimun/client.py`, `python/kimun/errors.py` ni la task `bb wheel`. El único puente Python es `python -m kimun.models export mod:Class` para `models define --from-python`.
 - **Motores de derivados**: las capacidades `kimun/derive` y `kimun/materialize` se registran al crear el store, pero ningún comando las ejercita todavía.

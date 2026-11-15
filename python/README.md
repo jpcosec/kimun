@@ -25,9 +25,11 @@ The protocol is fixed in `docs/v2/11-adaptadores.md`.
 
 ## Client library
 
-There is no Python client library, and none is planned: task `C2` (Python client and graph_ui
-HTTP routes) was withdrawn on 2026-11-15 (`docs/v2/12-ecosistema-y-pendientes.md §1`). No client
-API is specified (`docs/v2/06-superficies-y-cli.md §6`). To drive kimun from Python, call the CLI
+There is no Python client library yet. Task `C2` was withdrawn on 2026-11-15 and deferred the
+same day by the owner (decision 47, `docs/v2/05-estado.md`): a Python wrapper will be added, but
+only after kimun is proven to work against today's sldb (`RS1`) and the stable consumer contract
+is written (`RS2`); see `docs/v2/12-ecosistema-y-pendientes.md §1`. No client API is specified
+yet (`docs/v2/06-superficies-y-cli.md §6`). Until then, to drive kimun from Python, call the CLI
 with `subprocess` and parse the JSON envelope.
 
 ## Tests

@@ -14,7 +14,7 @@
 
 Reglas: `knowledge` no es un nombre de producto en ningún sitio (el kernel se llama
 `kimun.kernel.*` —antes `sldb.*`—, la superficie `kimun.*`); el paquete Python instalable de v1 es `pron`. No hay cliente
-Python `kimun` (`C2` retirada el 2026-11-15, decisión del dueño): `python/kimun/` hoy solo contiene
+Python `kimun` todavía (`C2` diferida el 2026-11-15 hasta que kimun esté probado, decisión 47): `python/kimun/` hoy solo contiene
 `__init__.py`, `models.py` (el exportador de descriptores) y `adapters/`.
 
 Lo que pasó el 2026-09-07: el producto se llamó `knowledge` durante la fase de empaquetado y
@@ -43,7 +43,7 @@ consumidor); la migración se prueba sobre una copia en un directorio temporal, 
 | versión pinada | `bb 1.13.219` (la instalada localmente; `release.edn` la fija) |
 | JVM | **no necesaria** ni para construir ni para ejecutar: `bb uberjar` y `bb --jar` existen en esa versión y están verificados localmente |
 | dependencias externas | ninguna: `babashka.cli`, `cheshire`, `clj-yaml`, `http-kit` vienen embebidos en bb |
-| Python | solo para `scripts/canon_oracle.py` (`bb oracle`); no hay cliente Python (`C2` retirada el 2026-11-15) |
+| Python | solo para `scripts/canon_oracle.py` (`bb oracle`); no hay cliente Python todavía (`C2` diferida el 2026-11-15, decisión 47) |
 
 ## 3. Tareas de `bb.edn`
 
@@ -148,7 +148,7 @@ se revisan en el diff del commit; un asset cuyo digest no coincide aborta el bui
 imagen base y `kimun` en su `manifest.yaml`; este checkout no tiene `docker/` ni
 `manifest.yaml`.
 
-**Retirado (2026-11-15, decisión del dueño; `C2` en `12 §1`), no implementado.** Un cliente Python `kimun` que habría sido: wheels por plataforma con el
+**Diferido (2026-11-15, decisión 47 del dueño; `C2` en `12 §1`), no implementado.** Va después de `RS1` y `RS2`, y su forma la fija `RS2`, no este párrafo. El diseño anterior de un cliente Python `kimun` era: wheels por plataforma con el
 bundle en `kimun/_bin/<plat>/{bb, kimun.jar}`, más un wheel `any` que exige `kimun` en
 PATH; un `_launcher.py` que resuelve `$KIMUN_BIN` > `_bin/<plat>/` > PATH; y
 `client.py`/`errors.py`/`models.py`/`graph/` (contratos de kgdb). El grupo `adapters`

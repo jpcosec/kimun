@@ -37,7 +37,7 @@ De mayor a menor. Ante contradicción gana el número menor.
 | `02-sustrato-computacional.md` | estructuras, invariantes, runtime, roadmap y el contrato de revisión |
 | `03-estandares-de-codigo.md` | anillos de dependencia (`bb lint`), compartimentación, docstrings y tests |
 | `04-superficie-markdown.md` | perfil SLDB-MD: CST, AST neutro, render canónico, mapeo al pool, opacos |
-| `05-estado.md` | estado actual fechado y la tabla de decisiones 1–46 |
+| `05-estado.md` | estado actual fechado y la tabla de decisiones 1–47 |
 | `06-superficies-y-cli.md` | inventario real de la CLI, envelope, códigos de salida y rutas de `serve` |
 | `07-modelos-como-nodos.md` | modelos como descriptores EDN en el árbol `models`; frontmatter y segmentos |
 | `08-distribucion.md` | topología de repos, toolchain, `bb jar`/`bb release`, layout e instalación |
