@@ -34,7 +34,7 @@
 
 **3.2** Un símbolo nace en el contexto de su fuente; extender su alcance o declararlo equivalente a otro es curaduría explícita.
 
-**3.3** La identidad semántica depende del lugar contextual; una huella verifica cambios, no determina significado ni equivalencia. **D0 (ya no abierta, 2026-11-15):** la identidad y continuidad de las unidades en S–M es el contrato de `14 §21`, que el concilio derivó de las premisas del dueño (sus reglas son inferencias del concilio, no palabras del dueño); la huella direcciona objetos y detecta cambios, no identifica unidades. Queda su implementación (`K1`).
+**3.3** El sentido de un símbolo depende de su contexto; una huella verifica cambios, no determina significado ni equivalencia. El lugar contextual de un símbolo es relación y evidencia, no identidad: la identidad de la unidad es propia, acuñada al marcarla, y no es su huella ni su anclaje en la topología (corrección del dueño del 2026-11-14, que sustituye «identidad = lugar»; `14 §21`). **D0 (ya no abierta, 2026-11-15):** la identidad y continuidad de las unidades en S–M es el contrato de `14 §21`, que el concilio derivó de las premisas del dueño (sus reglas son inferencias del concilio, no palabras del dueño; `runs/research/2026-11-15/concilio/d0-contrato-sintesis.md`). Queda su implementación (`K1`). Esto no fija nada de la capa G: cómo se relacionan y evalúan los símbolos entre contextos sigue en `D-G` y `G1`.
 
 **4** El conocimiento se evalúa dentro de su mundo, y su justificación debe poder recorrerse.
 
