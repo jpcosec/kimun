@@ -93,7 +93,7 @@
    store that is not valid (anything beyond `:ok` and `:reformatted`) is the
    failure `store/invalid`, exit 5, carrying the same data plus `:warnings`."
   [_args opts {:keys [env cwd]}]
-  (let [{:keys [descriptor store path] :as opened} (cli-store/open! (cli-store/resolve-store opts env cwd))
+  (let [{:keys [descriptor store path backend] :as opened} (cli-store/open! (cli-store/resolve-store opts env cwd))
         link-report (cli-store/links path)
         report (diagnose opened)
         ;; what the route root does not cover; unreadable when the store is damaged (reported below)
@@ -140,7 +140,16 @@
                                     " — a path that leaves the project cannot be a route, so the route root does not cover them;"
                                     " they are still tracked and sensed")
                       :documents (mapv #(select-keys % [:name :qualified]) (:outside coverage))}])
+          ;; a cache pack this reader ignored: the cache is not the store, so it is
+          ;; a warning, never a failure (docs/v2/10 §11.5)
+          bad-cache-packs (when backend (fs-store/cache-bad-packs backend))
+          cache-warnings (when (seq bad-cache-packs)
+                           [{:type "cache/corrupt-pack"
+                             :message (str (count bad-cache-packs) " cache pack(s) cannot be read and are ignored (cold cache): "
+                                           (str/join ", " bad-cache-packs) " — `kimun stores pack --cache` drops them")
+                             :packs bad-cache-packs}])
           warnings (-> (mapv link-warning (remove #(= :ok (:status %)) link-report))
+                       (into cache-warnings)
                        (into partial)
                        (into shared)
                        (into outside)
@@ -501,31 +510,46 @@
             :else n))))
 
 (defn pack
-  "`stores pack [--max-bytes N]`: moves the loose objects smaller than N bytes
-   (default 4096) into a new pack under `packs/` and removes the loose copies
-   (`kimun.host.fs-store/pack!`; docs/v2/10 §11.4). Explicit and never part of a
-   commit; only a format-4 store. It also repairs the `.idx` of an existing pack
-   that is missing or stale (readers rebuild in memory and never write), so
-   `:indexes-repaired` can be positive with `:packed` 0. The store is verified
-   after packing: a failure is `store/corrupt` (exit 5) and the loose files are
-   already gone (`stores unpack` writes them back). Data: `{:path :packed :pack
-   :bytes :kept-loose :skipped-damaged :packs :checked :indexes-repaired}`."
+  "`stores pack [--max-bytes N] [--cache]`: moves the loose objects smaller than
+   N bytes (default 4096) into a new pack and removes the loose copies
+   (`kimun.host.fs-store/pack!`; docs/v2/10 §11.4 for the store, §11.5 for the
+   cache). Explicit and never part of a commit; only a format-4 store. `--cache`
+   packs the DERIVED cache (`cache/objects` → `cache/packs`), which is not the
+   store: it also drops the cache packs that cannot be loaded, deletes a loose
+   cache object that does not hash to its name and deletes a loose object a
+   cache pack already holds. Both scopes repair a missing or stale `.idx`
+   (readers never write), so `:indexes-repaired` can be positive with `:packed`
+   0. The store is verified after packing a store pack: a failure is
+   `store/corrupt` (exit 5) and the loose files are already gone (`stores unpack`
+   writes them back). Data: `{:path :scope :packed :pack :bytes :kept-loose
+   :skipped-damaged :dropped-damaged :deduplicated :dropped-packs :packs
+   :checked :indexes-repaired}`."
   [_args opts {:keys [env cwd]}]
   (let [path (cli-store/resolve-store opts env cwd)
         {:keys [backend descriptor]} (cli-store/open! path)
         _ (pack-only! descriptor path "stores pack")
         max-bytes (checked-max-bytes opts)
-        r (fs-store/pack! backend (cond-> {} max-bytes (assoc :max-bytes max-bytes)))
+        cache? (:cache opts)
+        r (if cache?
+            (fs-store/pack-cache! backend (cond-> {} max-bytes (assoc :max-bytes max-bytes)))
+            (fs-store/pack! backend (cond-> {} max-bytes (assoc :max-bytes max-bytes))))
         reopened (cli-store/open! path)
-        v (store/verify (:backend reopened) (:store reopened))]
-    (if (:ok? v)
+        v (when-not cache? (store/verify (:backend reopened) (:store reopened)))]
+    (if (or cache? (:ok? v))
       (out/ok "stores pack"
               {:store (store-ref descriptor path)
                :revision (:head (:store reopened))
-               :data {:path path :packed (:packed r) :pack (:pack r) :bytes (:bytes r)
-                      :kept-loose (:kept-loose r) :skipped-damaged (:skipped-damaged r)
-                      :packs (:packs (fs-store/pack-stats (:backend reopened)))
-                      :checked (:checked v) :indexes-repaired (:indexes-repaired r)}})
+               :data (cond-> {:path path :scope (:scope r) :packed (:packed r) :pack (:pack r)
+                              :bytes (:bytes r) :kept-loose (:kept-loose r)
+                              :skipped-damaged (:skipped-damaged r)
+                              :dropped-damaged (:dropped-damaged r)
+                              :deduplicated (:deduplicated r)
+                              :dropped-packs (:dropped-packs r)
+                              :packs (if cache?
+                                       (:packs r)
+                                       (:packs (fs-store/pack-stats (:backend reopened))))
+                              :indexes-repaired (:indexes-repaired r)}
+                       (not cache?) (assoc :checked (:checked v)))})
       (out/failure :store/corrupt
                    (str (count (:bad v)) " problem(s) after packing " path
                         "; the loose copies are already removed: run `stores unpack` to write them back")
@@ -772,6 +796,7 @@
    :once {:desc "Make the single observation explicit (stores sense; no daemon)" :coerce :boolean}
    :ids {:desc "List the id, class and bytes of every object (stores unreachable)" :coerce :boolean}
    :max-bytes {:ref "N" :desc "Largest loose object, in bytes, that `stores pack` moves into a pack (default 4096, at most 16777216)"}
+   :cache {:desc "Pack the derived cache (cache/objects into cache/packs), not the store (stores pack)" :coerce :boolean}
    :interval {:ref "SECONDS" :desc "Seconds between observations, decimals allowed (stores heartbeat; default 30, minimum 0.1)"}
    :beats {:ref "N" :desc "Stop after N observations (stores heartbeat; default: until interrupted)"}})
 

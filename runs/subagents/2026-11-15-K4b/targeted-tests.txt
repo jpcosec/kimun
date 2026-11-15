@@ -1,0 +1,24 @@
+
+Testing kimun.cli.cache-pack-test
+
+Testing kimun.host.pack-test
+
+Testing kimun.cli.pack-test
+
+Testing kimun.cli.cache-verified-test
+
+Testing kimun.cli.stores-test
+
+Testing kimun.cli.heartbeat-test
+
+Testing kimun.cli.sense-test
+
+Testing kimun.cli.unreachable-test
+
+Testing kimun.kernel.unreachable-test
+
+Testing kimun.parity.cache-promises-test
+
+Ran 107 tests containing 880 assertions.
+0 failures, 0 errors.
+exit 0

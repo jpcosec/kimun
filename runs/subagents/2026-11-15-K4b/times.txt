@@ -1,0 +1,15 @@
+render_loose 0.60 s 141128 KB
+show_loose 0.55 s 139180 KB
+render_loose 0.54 s 138720 KB
+show_loose 0.54 s 139224 KB
+render_loose 0.54 s 139152 KB
+show_loose 0.55 s 139252 KB
+docs_list_loose 1.01 s 153708 KB
+pack_cache 1.09 s 157180 KB
+render_packed 0.58 s 139884 KB
+show_packed 0.55 s 139964 KB
+render_packed 0.55 s 139240 KB
+show_packed 0.55 s 139328 KB
+render_packed 0.56 s 138500 KB
+show_packed 0.55 s 139088 KB
+docs_list_packed 1.01 s 154584 KB

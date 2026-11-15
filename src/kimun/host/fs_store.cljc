@@ -181,9 +181,29 @@
                 sort vec))
          []))
 
-     (defn- pack-file [dir nm] (path dir "packs" (str nm ".pack")))
-     (defn- idx-file [dir nm] (path dir "packs" (str nm ".idx")))
-     (defn- pack-names [dir] (file-names (path dir "packs") ".pack"))
+     (defn- in-dir
+       "`name` inside directory `d` (a Path or a String) as a Path."
+       [d name]
+       (.resolve (Paths/get (str d) (make-array String 0)) (str name)))
+
+     (defn- pack-file [home nm] (in-dir (:packs home) (str nm ".pack")))
+     (defn- idx-file [home nm] (in-dir (:packs home) (str nm ".idx")))
+     (defn- pack-names [home] (file-names (:packs home) ".pack"))
+
+     (defn- store-home
+       "The pack home of the STORE at `dir` (a String): `{:packs <Path of
+        packs/> :loose <Path of objects/>}`. The store's packs are the stable
+        store (docs/v2/10 §11.4)."
+       [dir]
+       {:packs (path dir "packs") :loose (path dir "objects")})
+
+     (defn- cache-home
+       "The pack home of the derived CACHE at `dir`: `{:packs <Path of
+        cache/packs> :loose <Path of cache/objects>}` (K4b). Derived, deletable
+        with `cache/`, never part of the store."
+       [dir]
+       {:packs (path dir "cache" "packs")
+        :loose (Paths/get (cache/objects-dir dir) (make-array String 0))})
 
      (defn- read-at
        "Bytes [off, off+len) of channel `ch`, or nil when the file is shorter."
@@ -307,8 +327,8 @@
 
      (defn- write-idx!
        "Writes the canonical index of pack `nm` by temp file + atomic move."
-       [dir nm ^bytes arr]
-       (let [target (idx-file dir nm)
+       [home nm ^bytes arr]
+       (let [target (idx-file home nm)
              tmp (.resolveSibling target (str nm ".idx.tmp-" (System/nanoTime)))]
          (Files/write tmp arr (into-array StandardOpenOption [StandardOpenOption/CREATE StandardOpenOption/TRUNCATE_EXISTING StandardOpenOption/WRITE]))
          (Files/move tmp target (into-array java.nio.file.CopyOption [StandardCopyOption/ATOMIC_MOVE StandardCopyOption/REPLACE_EXISTING]))))
@@ -332,9 +352,9 @@
         exactly count × 44 bytes before a byte of it is read, so a huge or
         sparse file and a forged count never reach memory; then its SHA-256
         must be the footer's."
-       [dir nm pf ^bytes foot]
+       [home nm pf ^bytes foot]
        (let [claimed (.getLong (ByteBuffer/wrap foot 8 8))
-             ip (idx-file dir nm)
+             ip (idx-file home nm)
              fits? (and (<= 0 claimed)
                         (<= claimed (quot (- pf (+ (count pack-magic) footer-bytes)) 4)))
              isz (when (and fits? (exists? ip)) (Files/size ip))
@@ -353,8 +373,8 @@
         :store/corrupt-pack (recovery: `stores unpack`). `stores pack` repairs a
         missing or stale `.idx` on disk. No file is kept open: a backend carries
         no descriptor."
-       [dir nm]
-       (let [p (pack-file dir nm)
+       [home nm]
+       (let [p (pack-file home nm)
              pf (Files/size p)]
          (when (< pf (+ (count pack-magic) footer-bytes))
            (bad-pack p "shorter than the magic and the footer"))
@@ -364,7 +384,7 @@
              (when-not (= idx-magic fmagic) (bad-pack p "no index footer"))
              (let [claimed (.getLong (ByteBuffer/wrap foot 8 8))
                    footer-digest (bytes->hex foot 16 32)
-                   arr (matching-idx dir nm pf foot)]
+                   arr (matching-idx home nm pf foot)]
                (if arr
                  {:name nm :bytes arr :count claimed :start (- pf footer-bytes)}
                  (let [scan (scan-pack p)
@@ -379,14 +399,13 @@
        (reset! (:packs b) [])
        (reset! (:packs-stamp b) nil))
 
-     (defn- packs-stamp
-       "A cheap witness of the packs directory of `dir`: its last-modified time,
-        or nil when there is none. The directory is listed only when this
-        changes (another process packed or unpacked)."
-       [dir]
-       (let [d (path dir "packs")]
-         (when (exists? d)
-           (.toMillis (Files/getLastModifiedTime d (make-array java.nio.file.LinkOption 0))))))
+     (defn- packs-stamp-from
+       "A cheap witness of a packs directory: its last-modified time, or nil when
+        there is none. The directory is listed only when this changes (another
+        process packed or unpacked)."
+       [home]
+       (when (exists? (:packs home))
+         (.toMillis (Files/getLastModifiedTime (:packs home) (make-array java.nio.file.LinkOption 0)))))
 
      (def ^:private stamp-settle-ms
        "How long after its last change the last-modified time of the packs
@@ -396,26 +415,64 @@
        2000)
 
      (defn- packs-of
-       "The loaded packs of backend `b`, `[{:name :bytes :count :start} …]`
-        in name order. The directory is listed again when its last-modified
-        time changed, and also whenever that time is less than
-        `stamp-settle-ms` old: an equal timestamp only proves nothing changed
-        once the clock has moved past its granularity. So a long-lived reader
-        lists the directory per read for two seconds after a pack or an
-        unpack, and with one `stat` per read after that."
-       [b]
-       (let [dir (:dir b)
-             stamp (packs-stamp dir)
-             loaded @(:packs b)
+       "The loaded packs of directory `packs-dir`, `[{:name :bytes :count
+        :start} …]` in name order, memoised in `packs-atom`/`stamp-atom` (the
+        state belongs to the backend instance). The directory is listed again
+        when its last-modified time changed, and also whenever that time is
+        less than `stamp-settle-ms` old: an equal timestamp only proves nothing
+        changed once the clock has moved past its granularity. `load-one` is
+        `load-pack` for the store and `load-cache-pack` for the cache; it
+        answers nil for a pack this instance must ignore."
+       [home packs-atom stamp-atom load-one]
+       (let [stamp (packs-stamp-from home)
+             loaded @packs-atom
              settled? (or (nil? stamp) (> (- (System/currentTimeMillis) stamp) stamp-settle-ms))]
-         (if (and settled? (= stamp @(:packs-stamp b)) (or (some? stamp) (empty? loaded)))
+         (if (and settled? (= stamp @stamp-atom) (or (some? stamp) (empty? loaded)))
            loaded
-           (let [names (pack-names dir)
+           (let [names (pack-names home)
                  by-name (into {} (map (juxt :name identity)) loaded)
-                 fresh (mapv #(or (by-name %) (load-pack dir %)) names)]
-             (reset! (:packs b) fresh)
-             (reset! (:packs-stamp b) (packs-stamp dir))
+                 fresh (vec (keep #(or (by-name %) (load-one home %)) names))]
+             (reset! packs-atom fresh)
+             (reset! stamp-atom (packs-stamp-from home))
              fresh))))
+
+     (defn- store-packs
+       "The loaded packs of the STORE of `b` (the stable store, K4)."
+       [b]
+       (packs-of (store-home (:dir b)) (:packs b) (:packs-stamp b)
+                 (fn [home nm] (load-pack home nm))))
+
+     (defn- load-cache-pack
+       "`{:name :bytes :count :start}` of a CACHE pack when its `.idx` is the
+        index its footer names, else nil and the pack's name is remembered in
+        `(:cache-bad b)`: a cache pack without a matching index, or with records
+        that do not derive its footer, is ignored **in memory** for this
+        backend instance (C3: a reader never scans the pack for the index, never
+        writes and never fails because of the cache)."
+       [b home nm]
+       (let [res (err/rescue-any (fn [_] nil)
+                                 (let [p (pack-file home nm)
+                                       pf (Files/size p)]
+                                   (when (>= pf (+ (count pack-magic) footer-bytes))
+                                     (with-open [ch (FileChannel/open p (into-array StandardOpenOption [StandardOpenOption/READ]))]
+                                       (let [foot (read-at ch (- pf footer-bytes) footer-bytes)
+                                             fmagic (String. ^bytes (java.util.Arrays/copyOfRange ^bytes foot 0 8) StandardCharsets/US_ASCII)]
+                                         (when (= idx-magic fmagic)
+                                           (when-let [arr (matching-idx home nm pf foot)]
+                                             {:name nm :bytes arr
+                                              :count (.getLong (ByteBuffer/wrap foot 8 8))
+                                              :start (- pf footer-bytes)})))))))]
+         (if res
+           res
+           (do (when-not (some #{nm} @(:cache-bad b)) (swap! (:cache-bad b) conj nm))
+               nil))))
+
+     (defn- cache-packs
+       "The loaded packs of the CACHE of `b` (K4b): derived, deletable, never
+        part of the store."
+       [b]
+       (packs-of (cache-home (:dir b)) (:cache-packs b) (:cache-stamp b)
+                 (fn [home nm] (load-cache-pack b home nm))))
 
      (defn- packed-entry
        "[pack offset length] of object `id` in the loaded packs, or nil: one
@@ -429,44 +486,59 @@
                    (when-let [[off len] (index-lookup bytes key)] [bytes off len]))
                  packs))))
 
+     (defn- pack-bytes-of
+       "Bytes [off, off+len) of the loaded `pack` of `packs-dir` (never past its
+        body), or nil; nil when the file vanished (another process unpacked)."
+       [home pack off len]
+       (when (and (<= 0 off) (<= 0 len) (<= (+ off len) (:start pack)))
+         (try
+           (with-open [ch (FileChannel/open (pack-file home (:name pack))
+                                            (into-array StandardOpenOption [StandardOpenOption/READ]))]
+             (read-at ch off len))
+           (catch java.nio.file.NoSuchFileException _ nil))))
+
      (defn- read-packed
-       "UTF-8 content of object `id` from the packs of `b`, or nil. The pack is
-        opened, read and closed here: a backend holds no descriptor, and a
-        command that opens the store once per beat must not leak one per pack.
-        The range is checked against the pack's body (before its footer) before
-        it is allocated; the content is not rehashed (`verify` does that)."
+       "UTF-8 content of object `id` from the STORE packs of `b`, or nil. The
+        pack is opened, read and closed here: a backend holds no descriptor, and
+        a command that opens the store once per beat must not leak one per pack.
+        The content is not rehashed (`verify` does that)."
        [b ^String id]
-       (let [packs (packs-of b)]
+       (let [packs (store-packs b)]
          (when-let [[arr off len] (packed-entry packs id)]
            (let [pack (some #(when (identical? arr (:bytes %)) %) packs)
-                 p (pack-file (:dir b) (:name pack))]
-             ;; `read-at` answers nil when the file is shorter than the range
-             (when (and (<= 0 off) (<= 0 len) (<= (+ off len) (:start pack)))
-               (try
-                 (with-open [ch (FileChannel/open p (into-array StandardOpenOption [StandardOpenOption/READ]))]
-                   (some-> (read-at ch off len)
-                           (String. StandardCharsets/UTF_8)))
-                 ;; another process unpacked between the lookup and the read: the
-                 ;; object is loose again, so forget the packs and read it there
-                 (catch java.nio.file.NoSuchFileException _
-                   (close-packs! b)
-                   (read-text (path (:dir b) "objects" id)))))))))
-
-     (defn- read-cached-verified
-       "Text of the derived-cache object `id` of `dir`, only when the bytes of
-        its file hash to `id`. Unverified bytes are a cache miss (nil): a
-        damaged or foreign copy must never be served as the object."
-       [dir id]
-       (let [f (path (cache/objects-dir dir) id)]
-         (when (exists? f)
-           (when-let [bs (err/rescue-any (fn [_] nil) (Files/readAllBytes f))]
-             (when (= id (sha256-hex bs))
-               (String. ^bytes bs StandardCharsets/UTF_8))))))
+                 bs (pack-bytes-of (store-home (:dir b)) pack off len)]
+             (if bs
+               (String. ^bytes bs StandardCharsets/UTF_8)
+               ;; another process unpacked between the lookup and the read: the
+               ;; object is loose again, so forget the packs and read it there
+               (do (close-packs! b)
+                   (read-text (path (:dir b) "objects" id))))))))
 
      (defn- loose-ids
-       "Ids of the loose object files under objects/ (temporary files excluded)."
-       [dir]
-       (filterv #(not (str/includes? % ".tmp-")) (file-names (path dir "objects") "")))
+       "Ids of the loose object files under `loose-dir` (temporary files excluded)."
+       [home]
+       (filterv #(not (str/includes? % ".tmp-")) (file-names (:loose home) "")))
+
+     (defn- read-cached-verified
+       "Text of the derived-cache object `id` of `b`, or nil. The loose cache
+        file is served only when its bytes hash to `id` (C1); else the CACHE
+        packs are searched and a record is served only when its bytes hash to
+        `id` too (K4b: bytes corrupted with a valid `.idx` are a cache miss, not
+        an object). A damaged copy is never repaired, renamed or deleted here."
+       [b ^String id]
+       (let [dir (:dir b)
+             f (in-dir (:loose (cache-home dir)) id)
+             loose (when (exists? f)
+                     (when-let [bs (err/rescue-any (fn [_] nil) (Files/readAllBytes f))]
+                       (when (= id (sha256-hex bs))
+                         (String. ^bytes bs StandardCharsets/UTF_8))))]
+         (or loose
+             (let [packs (cache-packs b)]
+               (when-let [[arr off len] (packed-entry packs id)]
+                 (let [pack (some #(when (identical? arr (:bytes %)) %) packs)]
+                   (when-let [bs (pack-bytes-of (cache-home (:dir b)) pack off len)]
+                     (when (= id (sha256-hex bs))
+                       (String. ^bytes bs StandardCharsets/UTF_8)))))))))
 
      (defn- write-bytes-atomic!
        "Writes `arr` to `p` by temp file in the same directory, then atomic move."
@@ -476,12 +548,12 @@
          (Files/move tmp p (into-array java.nio.file.CopyOption [StandardCopyOption/ATOMIC_MOVE StandardCopyOption/REPLACE_EXISTING]))))
 
      (defn- pack-candidates
-       "Loose objects under objects/ of fewer than `max-bytes` file bytes, as
+       "Loose objects under `loose-dir` of fewer than `max-bytes` file bytes, as
         `[[id size] …]` sorted by id."
-       [dir max-bytes]
-       (->> (loose-ids dir)
+       [home max-bytes]
+       (->> (loose-ids home)
             (keep (fn [id]
-                    (let [f (path dir "objects" id)]
+                    (let [f (in-dir (:loose home) id)]
                       (when (exists? f)
                         (let [size (Files/size f)]
                           (when (< size max-bytes) [id size]))))))
@@ -495,13 +567,15 @@
        4096)
 
      (defn- repair-indexes!
-       "Writes the `.idx` of every pack of `dir` whose index is missing or does
-        not match its footer, under the caller's lock (`pack!`). A pack whose
-        records do not derive the index its footer names is left alone: readers
-        report it as :store/corrupt-pack. Returns how many indexes it wrote."
-       [dir]
+       "Writes the `.idx` of every pack of `packs-dir` whose index is missing or
+        does not match its footer, under the caller's lock (`stores pack`). A
+        pack whose records do not derive the index its footer names is left
+        alone (readers ignore it for the cache; the store's readers raise). The
+        single writer of an index in the whole backend. Returns how many indexes
+        it wrote."
+       [home]
        (reduce (fn [n nm]
-                 (let [p (pack-file dir nm)
+                 (let [p (pack-file home nm)
                        pf (Files/size p)
                        foot (when (>= pf (+ (count pack-magic) footer-bytes))
                               (with-open [ch (FileChannel/open p (into-array StandardOpenOption [StandardOpenOption/READ]))]
@@ -510,122 +584,202 @@
                    (if-not (and foot (= idx-magic fmagic))
                      n
                      (let [footer-digest (bytes->hex foot 16 32)]
-                       (if (matching-idx dir nm pf foot)
+                       (if (matching-idx home nm pf foot)
                          n
                          (let [scan (err/rescue-any (fn [_] nil) (scan-pack p))]
                            (if (and scan (= footer-digest (:digest scan)))
-                             (do (write-idx! dir nm (entries->idx (:entries scan))) (inc n))
+                             (do (write-idx! home nm (entries->idx (:entries scan))) (inc n))
                              n)))))))
-               0 (pack-names dir)))
+               0 (pack-names home)))
+
+     (defn- pack-new!
+       "Writes the loose objects `cands` (`[[id size] …]`, in this order) of
+        `loose-dir` into a new pack of `packs-dir`, reading, hashing and writing
+        ONE object at a time (never all of them in memory), with its footer and
+        the index derived by the single writer. An object whose bytes do not hash
+        to its id goes to `:damaged` and is not written; an id in `skip` goes to
+        `:skipped` (the cache already holds it in a pack) and is not written
+        either. Returns `{:pack :packed :bytes :packed-ids :damaged :skipped}`."
+       [home nm cands skip]
+       (Files/createDirectories (:packs home) (make-array java.nio.file.attribute.FileAttribute 0))
+       ;; nobody else packs while the lock is held: only an interrupted run can
+       ;; have left these temporaries
+       (when (exists? (:packs home))
+         (with-open [ls (Files/list (:packs home))]
+           (doseq [f (iterator-seq (.iterator ls))
+                   :let [n (str (.getFileName f))]
+                   :when (or (str/includes? n ".pack.tmp-") (str/includes? n ".idx.tmp-"))]
+             (err/rescue-any (fn [_] nil) (Files/deleteIfExists f)))))
+       (let [target (pack-file home nm)
+             tmp (in-dir (:packs home) (str nm ".pack.tmp-" (System/nanoTime)))
+             bytes (volatile! 0)
+             damaged (volatile! [])
+             skipped (volatile! [])
+             magic-len (long (count pack-magic))
+             es (with-open [ch (FileChannel/open tmp (into-array StandardOpenOption [StandardOpenOption/CREATE StandardOpenOption/TRUNCATE_EXISTING StandardOpenOption/WRITE]))]
+                  (write-fully! ch (ByteBuffer/wrap (.getBytes pack-magic StandardCharsets/US_ASCII)))
+                  (let [es (loop [pos magic-len cands cands acc []]
+                             (if-let [[id _] (first cands)]
+                               ;; the hash decides first: a loose copy that does not
+                               ;; hash to its name is damaged even when a pack holds
+                               ;; a sound copy of that id
+                               (let [content (read-bytes (in-dir (:loose home) id))]
+                                 (cond
+                                   (not= id (sha256-hex content))
+                                   (do (vswap! damaged conj id) (recur pos (rest cands) acc))
+                                   (contains? skip id)
+                                   (do (vswap! skipped conj id) (recur pos (rest cands) acc))
+                                   :else
+                                   (do (write-fully! ch (doto (ByteBuffer/allocate 4) (.putInt (alength ^bytes content)) (.flip)))
+                                       (write-fully! ch (ByteBuffer/wrap content))
+                                       (vswap! bytes + (alength ^bytes content))
+                                       (recur (+ pos 4 (alength ^bytes content)) (rest cands)
+                                              (conj acc [id (+ pos 4) (alength ^bytes content)])))))
+                               acc))]
+                    (write-fully! ch (ByteBuffer/wrap (footer (count es) (sha256-hex (entries->idx es)))))
+                    (.force ch true)
+                    es))]
+         (if (empty? es)
+           (do (Files/deleteIfExists tmp)
+               {:pack nil :packed 0 :bytes 0 :packed-ids [] :damaged @damaged :skipped @skipped})
+           (do
+             (Files/move tmp target (into-array java.nio.file.CopyOption [StandardCopyOption/ATOMIC_MOVE StandardCopyOption/REPLACE_EXISTING]))
+             (let [scan (err/rescue-any (fn [e] e) (scan-pack target))
+                   expected (mapv first es)]
+               (if (or (instance? Throwable scan)
+                       (not= expected (mapv first (:entries scan)))
+                       (not= (sha256-hex (entries->idx (:entries scan))) (:footer-digest scan)))
+                 (do (Files/deleteIfExists target)
+                     (Files/deleteIfExists (idx-file home nm))
+                     (err/raise :store/corrupt-pack
+                                (str "store: the pack written in " (:packs home) " did not read back as its objects; nothing was removed")
+                                {:packs-dir (str (:packs home)) :pack nm :expected (count expected)}))
+                 (do (write-idx! home nm (entries->idx (:entries scan)))
+                     ;; the pack and its index are written: make the directory
+                     ;; entry durable before removing the only other copy
+                     (err/rescue-any
+                      (fn [_] nil)
+                      (with-open [dch (FileChannel/open (:packs home) (into-array StandardOpenOption [StandardOpenOption/READ]))]
+                        (.force dch true)))
+                     {:pack nm :packed (count expected) :bytes @bytes
+                      :packed-ids expected :damaged @damaged :skipped @skipped})))))))
 
      (defn pack!
        "Moves the loose objects of `b` smaller than `:max-bytes` (default 4096)
-        bytes into a new pack (docs/v2/10 §11.4). Explicit: never part of a
-        commit. Under the store's exclusive lock: writes `packs/<name>.pack`
-        record by record, one object in memory at a time, keeping only the
-        index entries (not the contents), writes the footer that names the
-        canonical index, derives its `.idx`, reads the final pack back and
-        checks that its records derive exactly the expected index, and only
+        bytes into a new STORE pack (docs/v2/10 §11.4). Explicit: never part of
+        a commit. Under the store's exclusive lock: writes `packs/<name>.pack`
+        record by record, one object in memory at a time, writes the footer that
+        names the canonical index, derives its `.idx`, reads the final pack back
+        and checks that its records derive exactly the expected index, and only
         then removes the loose files. A loose file whose content does not hash
         to its name is left alone and reported in `:skipped-damaged`. Data:
-        `{:pack :packed :bytes :kept-loose :skipped-damaged :indexes-repaired}`.
-        It also writes the `.idx` of an existing pack whose index is missing or
-        stale (readers rebuild in memory and never write), so it does that even
-        when there is nothing to pack: then `:pack` is nil and only the indexes
-        may change."
+        `{:scope store :pack :packed :bytes :kept-loose :skipped-damaged
+        :indexes-repaired}`. It also writes the `.idx` of an existing pack whose
+        index is missing or stale (readers rebuild in memory and never write),
+        so it does that even when there is nothing to pack: then `:pack` is nil
+        and only the indexes may change."
        ([b] (pack! b {}))
        ([b {:keys [max-bytes] :or {max-bytes default-max-bytes}}]
         (with-store-lock (:dir b) true
           (fn []
             (let [kdir (:dir b)
-                  repaired (repair-indexes! kdir)
-                  cands (pack-candidates kdir max-bytes)]
-              (if (empty? cands)
-                {:pack nil :packed 0 :bytes 0 :kept-loose (count (loose-ids kdir))
-                 :skipped-damaged [] :indexes-repaired repaired}
-                (let [packs-dir (path kdir "packs")
-                      _ (Files/createDirectories packs-dir (make-array java.nio.file.attribute.FileAttribute 0))
-                      ;; nobody else packs while the lock is held: only an
-                      ;; interrupted run can have left these
-                      _ (with-open [ls (Files/list packs-dir)]
-                          (doseq [f (iterator-seq (.iterator ls))
-                                  :let [n (str (.getFileName f))]
-                                  :when (or (str/includes? n ".pack.tmp-") (str/includes? n ".idx.tmp-"))]
-                            (err/rescue-any (fn [_] nil) (Files/deleteIfExists f))))
-                      nm (str (System/currentTimeMillis) "-" (System/nanoTime))
-                      target (pack-file kdir nm)
-                      tmp (.resolveSibling target (str nm ".pack.tmp-" (System/nanoTime)))
-                      damaged (volatile! [])
-                      bytes (volatile! 0)
-                      magic-len (long (count pack-magic))
-                      es (with-open [ch (FileChannel/open tmp (into-array StandardOpenOption [StandardOpenOption/CREATE StandardOpenOption/TRUNCATE_EXISTING StandardOpenOption/WRITE]))]
-                           (write-fully! ch (ByteBuffer/wrap (.getBytes pack-magic StandardCharsets/US_ASCII)))
-                           (let [es (loop [pos magic-len cands cands acc []]
-                                      (if-let [[id _] (first cands)]
-                                        (let [content (read-bytes (path kdir "objects" id))]
-                                          (if (= id (sha256-hex content))
-                                            (do (write-fully! ch (doto (ByteBuffer/allocate 4) (.putInt (alength ^bytes content)) (.flip)))
-                                                (write-fully! ch (ByteBuffer/wrap content))
-                                                (vswap! bytes + (alength ^bytes content))
-                                                (recur (+ pos 4 (alength ^bytes content)) (rest cands)
-                                                       (conj acc [id (+ pos 4) (alength ^bytes content)])))
-                                            (do (vswap! damaged conj id) (recur pos (rest cands) acc))))
-                                        acc))]
-                             (write-fully! ch (ByteBuffer/wrap (footer (count es) (sha256-hex (entries->idx es)))))
-                             (.force ch true)
-                             es))]
-                  (if (empty? es)
-                    (do (Files/deleteIfExists tmp)
-                        {:pack nil :packed 0 :bytes 0 :kept-loose (count (loose-ids kdir))
-                         :skipped-damaged @damaged :indexes-repaired repaired})
-                    (do
-                      (Files/move tmp target (into-array java.nio.file.CopyOption [StandardCopyOption/ATOMIC_MOVE StandardCopyOption/REPLACE_EXISTING]))
-                      (let [scan (err/rescue-any (fn [e] e) (scan-pack target))
-                            expected (mapv first es)]
-                        (if (or (instance? Throwable scan)
-                                (not= expected (mapv first (:entries scan)))
-                                (not= (sha256-hex (entries->idx (:entries scan))) (:footer-digest scan)))
-                          (do (Files/deleteIfExists target)
-                              (Files/deleteIfExists (idx-file kdir nm))
-                              (err/raise :store/corrupt-pack
-                                         (str "store: the pack written from " kdir "/objects did not read back as its objects; nothing was removed")
-                                         {:path kdir :pack nm :expected (count expected)}))
-                          (do (write-idx! kdir nm (entries->idx (:entries scan)))
-                              ;; the pack and its index are written: make the
-                              ;; directory entry durable before removing the only
-                              ;; other copy (best effort: some platforms refuse)
-                              (err/rescue-any
-                               (fn [_] nil)
-                               (with-open [dch (FileChannel/open packs-dir
-                                                                 (into-array StandardOpenOption [StandardOpenOption/READ]))]
-                                 (.force dch true)))
-                              (doseq [id expected] (Files/deleteIfExists (path kdir "objects" id)))
-                              (close-packs! b)
-                              {:pack nm :packed (count expected) :bytes @bytes
-                               :kept-loose (count (loose-ids kdir)) :skipped-damaged @damaged
-                               :indexes-repaired repaired}))))))))))))
+                  home (store-home kdir)
+                  repaired (repair-indexes! home)
+                  cands (pack-candidates home max-bytes)
+                  nm (str (System/currentTimeMillis) "-" (System/nanoTime))
+                  r (if (seq cands) (pack-new! home nm cands #{}) nil)]
+              (doseq [id (:packed-ids r)] (Files/deleteIfExists (in-dir (:loose home) id)))
+              (when (seq (:packed-ids r)) (close-packs! b))
+              {:scope "store"
+               :pack (:pack r) :packed (:packed r 0) :bytes (:bytes r 0)
+               :kept-loose (count (loose-ids home))
+               :skipped-damaged (:damaged r []) :indexes-repaired repaired})))))
+
+     (defn- forget-index-cache
+       "Drops what `b` remembered of the cache packs (after `pack-cache!`)."
+       [b]
+       (reset! (:cache-packs b) [])
+       (reset! (:cache-stamp b) nil)
+       (reset! (:cache-bad b) []))
+
+     (defn pack-cache!
+       "Moves the small loose objects of the derived cache of `b` into a CACHE
+        pack (docs/v2/10 §11.5): derived, deletable with `cache/`, never part of
+        the store. Under the store's exclusive lock: drops the cache packs this
+        backend cannot load (`:dropped-packs`), rewrites the `.idx` of the sound
+        ones that lack it (`:indexes-repaired`), deletes a loose cache object
+        whose bytes do not hash to its name (`:dropped-damaged`), deletes a
+        loose object a cache pack already holds (`:deduplicated`) and packs the
+        rest in streaming order, one object in memory at a time. Data:
+        `{:scope cache :pack :packed :bytes :kept-loose :dropped-damaged
+        :deduplicated :dropped-packs :indexes-repaired :packs}`."
+       ([b] (pack-cache! b {}))
+       ([b {:keys [max-bytes] :or {max-bytes default-max-bytes}}]
+        (with-store-lock (:dir b) true
+          (fn []
+            (let [kdir (:dir b)
+                  home (cache-home kdir)
+                  ;; a sound pack whose `.idx` is missing is not "doomed": repair
+                  ;; the indexes first, then load and classify what still fails
+                  repaired (repair-indexes! home)
+                  _ (forget-index-cache b)
+                  loaded (cache-packs b)
+                  good (set (map :name loaded))
+                  doomed (remove good (pack-names home))
+                  dropped-packs (count doomed)
+                  _ (doseq [nm doomed]
+                      (Files/deleteIfExists (pack-file home nm))
+                      (Files/deleteIfExists (idx-file home nm)))
+                  _ (forget-index-cache b)
+                  packed-ids (set (mapcat idx-ids (map :bytes (cache-packs b))))
+                  cands (pack-candidates home max-bytes)
+                  nm (str (System/currentTimeMillis) "-" (System/nanoTime))
+                  r (if (seq cands) (pack-new! home nm cands packed-ids) nil)
+                  damaged (:damaged r [])
+                  dedup (:skipped r [])]
+              (doseq [id (concat damaged dedup (:packed-ids r))]
+                (Files/deleteIfExists (in-dir (:loose home) id)))
+              (forget-index-cache b)
+              {:scope "cache"
+               :pack (:pack r) :packed (:packed r 0) :bytes (:bytes r 0)
+                :kept-loose (count (loose-ids home))
+               :dropped-damaged (count damaged)
+               :deduplicated (count dedup)
+               :dropped-packs dropped-packs
+               :indexes-repaired repaired
+                :packs (count (pack-names home))})))))
+
+     (defn cache-bad-packs
+       "Names of the cache packs this backend instance ignored (missing or
+        mismatched `.idx`, or records that do not derive the footer). Read-only;
+        `stores check` reports them as `cache/corrupt-pack`."
+       [b]
+       ;; loading the cache packs is what discovers an ignored one: force it so
+       ;; the report does not depend on whether this instance read the cache yet
+       (cache-packs b)
+       (vec @(:cache-bad b)))
 
      (defn unpack!
-       "Writes back every packed object of `b` and only then removes the pack and
-        its index (docs/v2/10 §11.4). Read with `scan-pack` only: it ignores the
-        `.idx` and does not require the footer digest to match, being the
-        recovery path. A loose file already there is kept only when its bytes
-        hash to its id; a damaged one is replaced from the pack (atomically),
-        because the pack is the copy being deleted. Under the store's exclusive
-        lock. Data: `{:packs :unpacked}` (`:unpacked` counts the objects written
-        back, replaced ones included)."
+       "Writes back every object of the STORE packs of `b` and only then removes
+        the pack and its index (docs/v2/10 §11.4). Read with `scan-pack` only: it
+        ignores the `.idx` and does not require the footer digest to match, being
+        the recovery path. A loose file already there is kept only when its bytes
+        hash to its id; a damaged one is replaced from the pack (atomically). No
+        `unpack` exists for the cache: it is recovered by deleting `cache/`.
+        Under the store's exclusive lock. Data: `{:packs :unpacked}`."
        [b]
        (with-store-lock (:dir b) true
          (fn []
-           (let [kdir (:dir b)]
-             (loop [remaining (pack-names kdir)
+           (let [kdir (:dir b)
+                 home (store-home kdir)]
+             (loop [remaining (pack-names home)
                     packs 0
                     unpacked 0]
                (if-let [nm (first remaining)]
-                 (let [entries (:entries (scan-pack (pack-file kdir nm)))
-                       written (with-open [ch (FileChannel/open (pack-file kdir nm) (into-array StandardOpenOption [StandardOpenOption/READ]))]
+                 (let [entries (:entries (scan-pack (pack-file home nm)))
+                       written (with-open [ch (FileChannel/open (pack-file home nm) (into-array StandardOpenOption [StandardOpenOption/READ]))]
                                  (reduce (fn [n [id off len]]
-                                           (let [p (path kdir "objects" id)
+                                           (let [p (in-dir (:loose home) id)
                                                  res (when (exists? p) (read-bytes p))
                                                  sound? (and res (= (long len) (alength ^bytes res))
                                                              (= id (sha256-hex res)))]
@@ -635,28 +789,30 @@
                                                    (inc n)))))
                                          0 entries))]
                    (doseq [[id _ len] entries]
-                     (let [p (path kdir "objects" id)]
+                     (let [p (in-dir (:loose home) id)]
                        (when (or (not (exists? p))
                                  (not= (long len) (Files/size p))
                                  (not= id (sha256-hex (read-bytes p))))
                          (err/raise :store/corrupt-pack
                                     (str "store: " id " was not written back from pack " nm "; the pack was kept")
                                     {:path kdir :pack nm :id id}))))
-                   (Files/deleteIfExists (pack-file kdir nm))
-                   (Files/deleteIfExists (idx-file kdir nm))
+                   (Files/deleteIfExists (pack-file home nm))
+                   (Files/deleteIfExists (idx-file home nm))
                    (recur (rest remaining) (inc packs) (+ unpacked written)))
                  (do (close-packs! b)
                      {:packs packs :unpacked unpacked})))))))
 
      (defn pack-stats
-       "`{:packs n :packed n :pack-bytes n :loose n}` for `b`: how many packs,
-        how many objects they hold altogether, their size in bytes, and how many
-        loose objects remain (docs/v2/10 §11.4). Read-only."
+       "`{:packs n :packed n :pack-bytes n :loose n}` for the STORE packs of `b`:
+        how many packs, how many objects they hold altogether, their size in
+        bytes, and how many loose objects remain (docs/v2/10 §11.4). The cache
+        packs are not counted here. Read-only."
        [b]
        (let [kdir (:dir b)
-             names (pack-names kdir)
+             home (store-home kdir)
+             names (pack-names home)
              counts (mapv (fn [nm]
-                            (let [p (pack-file kdir nm)
+                            (let [p (pack-file home nm)
                                   ch (FileChannel/open p (into-array StandardOpenOption [StandardOpenOption/READ]))]
                               (try (let [size (.size ch)
                                          foot (read-at ch (- size footer-bytes) footer-bytes)]
@@ -665,19 +821,19 @@
                           names)]
          {:packs (count names)
           :packed (reduce + 0 counts)
-          :pack-bytes (reduce + 0 (map #(Files/size (pack-file kdir %)) names))
-          :loose (count (loose-ids kdir))}))
+          :pack-bytes (reduce + 0 (map #(Files/size (pack-file home %)) names))
+          :loose (count (loose-ids home))}))
 
      (defn stored-size
-       "Bytes of object `id` as the store holds it: its loose file, else its
-        length in a pack, else nil."
+       "Bytes of object `id` as the STORE holds it: its loose file, else its
+        length in a store pack, else nil. The cache is not consulted."
        [b ^String id]
-       (let [p (path (:dir b) "objects" id)]
+       (let [p (in-dir (:loose (store-home (:dir b))) id)]
          (if (exists? p)
            (Files/size p)
-           (when-let [[_ _ len] (packed-entry (packs-of b) id)] (long len)))))))
+           (when-let [[_ _ len] (packed-entry (store-packs b) id)] (long len)))))))
 
-(defrecord FsBackend [dir cache heads-memo wait? packs packs-stamp]
+(defrecord FsBackend [dir cache heads-memo wait? packs packs-stamp cache-packs cache-stamp cache-bad]
   store/ObjectCache
   (cached-object [_ id] (get @cache id))
   (cache-object! [_ id obj] (swap! cache assoc id obj) obj)
@@ -701,7 +857,7 @@
     ;; object — and the reading path does not repair, rename or delete them.
     #?(:clj (or (read-text (path dir "objects" id))
                 (read-packed this id)
-                (read-cached-verified dir id)
+                (read-cached-verified this id)
                 ;; a resolved plan is not a CAS object: the in-memory object
                 ;; view still exposes it so journal/history read it as before
                 (some-> (cache/read-plan dir id) pr-str))))
@@ -709,13 +865,13 @@
     ;; write-once across the loose files and the packs: packing removes the
     ;; loose file, it does not make the object writable again
     #?(:clj (let [p (path dir "objects" id)]
-              (when-not (or (exists? p) (packed-entry (packs-of this) id))
+              (when-not (or (exists? p) (packed-entry (store-packs this) id))
                 (write-atomic! p content)))))
   (object-ids [this]
     ;; loose and packed; an id present both ways (a pack interrupted before it
     ;; removed the loose files) is one object
-    #?(:clj (let [loose (loose-ids dir)
-                  packed (mapcat (comp idx-ids :bytes) (packs-of this))]
+    #?(:clj (let [loose (loose-ids (store-home dir))
+                  packed (mapcat (comp idx-ids :bytes) (store-packs this))]
               (if (seq packed) (vec (distinct (concat loose packed))) loose))))
   (read-log [_]
     #?(:clj (let [text (or (read-text (path dir "log.edn")) "")
@@ -790,7 +946,7 @@
    waits for it; by default it fails at once with :store/busy (v1's
    `--wait` / fail-fast contract)."
   ([dir] (backend dir {}))
-  ([dir {:keys [wait?]}] (->FsBackend dir (atom {}) (atom nil) (boolean wait?) (atom []) (atom nil))))
+  ([dir {:keys [wait?]}] (->FsBackend dir (atom {}) (atom nil) (boolean wait?) (atom []) (atom nil) (atom []) (atom nil) (atom []))))
 
 (defn cached-ids
   "Ids of the objects this backend instance has parsed so far (diagnostics and tests)."

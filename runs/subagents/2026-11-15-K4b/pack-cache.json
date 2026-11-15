@@ -1,0 +1,24 @@
+{
+  "ok" : true,
+  "command" : "stores pack",
+  "store" : {
+    "name" : "bench",
+    "path" : "/home/jp/.cache/kimun-bench/k4b-copy/.kimun"
+  },
+  "revision" : "5bdefc42178313f9ef6364ab43f081054632da2c8ebce6a89b8107c2be0dce8b",
+  "data" : {
+    "path" : "/home/jp/.cache/kimun-bench/k4b-copy/.kimun",
+    "deduplicated" : 0,
+    "skipped-damaged" : null,
+    "scope" : "cache",
+    "dropped-packs" : 0,
+    "dropped-damaged" : 0,
+    "packs" : 1,
+    "indexes-repaired" : 0,
+    "bytes" : 3075193,
+    "packed" : 11116,
+    "kept-loose" : 0,
+    "pack" : "1794761261199-153695175996210"
+  },
+  "warnings" : [ ]
+}

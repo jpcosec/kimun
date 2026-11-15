@@ -9,6 +9,8 @@
      <dir>/packs/<n>.pack K4: small loose objects moved explicitly by `stores pack`
                           (records + a footer naming the index digest; the pack is
                           store, its .idx is derived, docs/v2/10 §11.4)
+     <dir>/cache/packs/   K4b: the same pack format for the DERIVED cache; not the
+                          store (verify, object-ids and unreachable never see it)
      <dir>/cache/         format 4: derived cache of a document with an external anchor —
                           cache/routes/<root>.<head>.edn mirrors the durable CAS
                           route-map object of route schema 1 (schema 2 keeps the map

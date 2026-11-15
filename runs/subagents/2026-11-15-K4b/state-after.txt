@@ -1,0 +1,11 @@
+== after ==
+store_du_apparent 95785050
+store_du_blocks 101765120
+cache_objects_apparent 0
+cache_objects_blocks 1155072
+cache_packs_apparent 3608817
+cache_packs_blocks 3616768
+files_total 1839
+files_cache 1230
+pack_size 3119713
+idx_size 489104

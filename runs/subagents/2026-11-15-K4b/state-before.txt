@@ -1,0 +1,9 @@
+== before ==
+store_du_apparent 95251426
+store_du_blocks 143675392
+cache_objects_apparent 3075193
+cache_objects_blocks 46686208
+cache_packs_apparent 
+cache_packs_blocks 
+files_total 12953
+files_cache 12344

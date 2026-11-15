@@ -733,3 +733,51 @@ packs solo. No hay reempaquetado ni GC: un objeto empaquetado que
 deja de ser alcanzable sigue en el pack y solo `unpack` + otro `pack` lo
 reordena. La durabilidad es la del punto de arriba y no más: no hay `fsync` de
 `objects/` ni del directorio del store.
+### 11.5 Pack de la caché (K4b)
+
+`cache/objects` es la mayor parte de los ficheros pequeños del formato 4; K4
+empaquetó el store y dejó la caché aparte. `stores pack --cache` empaqueta la
+caché con el **mismo formato** que K4 (magia, registros, pie con cuenta y
+digest), pero bajo `cache/packs/`: `rm -rf cache/` lo borra todo.
+
+**Qué es store y qué es caché.** El pack de `packs/` es store (única copia,
+`verify` lo rehashea). El de `cache/packs` es **caché**: derivado, borrable y
+recalculable desde el archivo. `object-ids`, `read-stored-object`, `verify`,
+`verify-full`, `unreachable`, `stored-size`, `pack-stats` y `unpack!` **no
+conocen** el pack de caché.
+
+**Orden de lectura** de un objeto (`FsBackend/read-object`): suelto de store →
+packs de store → suelto de caché (verificado) → **pack de caché (verificado)** →
+plan. **Toda lectura del pack de caché se verifica por hash**: si el SHA-256 de
+los bytes no es el id pedido, es fallo de caché (`nil`), aunque el pie y el
+`.idx` sean válidos; eso cubre bytes corruptos con índice bueno.
+
+**Un lector no escribe ni falla por la caché.** Un pack de caché cuyo `.idx`
+falte o no coincida con el pie, o cuyos registros no deriven el pie, se **ignora
+en memoria** para esa instancia de backend: no se recorre el pack para
+reconstruir el índice, no se renombra ni se borra, y no hay error. Es caché fría
+y `doc-tree` reconstruye del archivo (C2). `stores check` lo nombra con el
+warning `cache/corrupt-pack` (nunca exit 5). El estado de los packs cargados
+vive en el `FsBackend` (átomos propios, sello del directorio con asentamiento de
+2 s); `kimun.host.store-cache` y `kimun.surface.docs` no cambian.
+
+**El comando.** `stores pack --cache [--max-bytes N]`, bajo el lock del store:
+descarta los packs de caché que no cargan (`:dropped-packs`), reescribe el
+`.idx` de los sanos que lo tienen mal (`:indexes-repaired`), **borra** el suelto
+de caché que no hashea a su nombre (`:dropped-damaged`), borra el suelto que ya
+está en un pack (`:deduplicated`) y empaqueta el resto en streaming, un objeto
+en memoria a la vez. No hay `unpack --cache`: la caché se recupera borrándola.
+
+Medido sobre una copia del store de banco de 600 documentos con el store ya
+empaquetado (`runs/subagents/2026-11-15-K4b/measurement.md`): `.kimun` en
+bloques **143,7 → 101,8 MB (−29,2 %)**; ficheros del store **12.953 → 1.839**;
+`cache/objects` baja de 12.344 ficheros a 0; `stores pack --cache` tarda 1,09 s
+(11.116 objetos, pack 3,1 MB + índice 0,5 MB); `docs render`/`docs show` quedan
+en 0,54–0,58 s y `docs list` en 1,01 s, igual que con la caché suelta.
+
+**Límites.** Un pack de caché sin `.idx` es caché fría hasta el siguiente
+`stores pack --cache` (un lector no lo reconstruye). No hay reempaquetado ni GC:
+un objeto de caché que deja de usarse sigue en el pack hasta que se borre
+`cache/`. Un duplicado suelto convive sin daño hasta la siguiente corrida del
+comando.
+
