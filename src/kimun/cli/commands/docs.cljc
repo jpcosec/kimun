@@ -367,6 +367,79 @@
     (update (done "docs update" descriptor store-path r (:store r) (:tree doc) {:warnings warnings})
             :data assoc :unchanged? (boolean unchanged?))))
 
+(defn- document-at
+  "The tracked document (typed or generic) `token` names, as a map with
+   `:name :tree :path :model :class :generic :doc :qualified`; raises
+   `:docs/missing`."
+  [store token]
+  (or (tdocs/resolve-any store token)
+      (err/raise :docs/missing (str "no document named or identified by `" token "`") {:document token})))
+
+(defn reanchor
+  "`docs reanchor NAME FILE --reason TEXT`: DECLARES that document NAME (typed
+   or generic) is anchored at FILE from now on, keeping its document id, its
+   tree id and its name (docs/v2/14 §21, rules 3 and 6). kimun neither moves
+   nor deletes the file: this command only records the declaration, and the
+   sensor never decides continuity. `--reason` is required; FILE must exist
+   inside the project; an already tracked path, the current path and a
+   document without a file are refused. The declaration travels in the
+   journal (`:declared {:kind reanchor …}`). When the previous file is
+   still there it stays untracked and the answer warns
+   `docs/previous-file-present`. Data: what `docs update` returns for that
+   document, plus `:reanchored {:from :to :previous-file :reason}`."
+  [args opts {:keys [env cwd] :as ctx}]
+  (let [token (require-arg! args 0 "a document NAME" "reanchor")
+        file (require-arg! args 1 "a Markdown FILE" "reanchor")
+        reason (:reason opts)
+        _ (when (or (not (string? reason)) (str/blank? (str/trim reason)))
+            (err/raise :cli/usage "`docs reanchor` needs --reason TEXT: the declaration says what happened"
+                       {:group "docs" :subcommand "reanchor"}))
+        [path text] (read-file! file cwd)
+        {:keys [backend descriptor store] store-path :path} (open opts ctx)
+        root (project-root store-path)
+        d (document-at store token)
+        _ (when-not (:path d)
+            (err/raise :docs/not-anchored
+                       (str "`" (:name d) "` has no file to re-anchor: it was registered without a path")
+                       {:document (:name d) :tree (:tree d)}))
+        anchor (inside-path store-path path)
+        _ (when (nil? anchor)
+            (err/raise :docs/outside-project
+                       (str "`" file "` is outside the project of this store: a registered document needs a file inside it")
+                       {:path path :document (:name d)}))
+        _ (when (= anchor (:path d))
+            (err/raise :cli/usage (str "`" (:name d) "` is already anchored there: " anchor)
+                       {:document (:name d) :path anchor}))
+        _ (tdocs/refuse-anchored! store anchor (:tree d))
+        previous-file (if (fs/regular-file? (fs/path root (:path d))) "present" "missing")
+        declared {:kind "reanchor" :from (:path d) :to anchor
+                  :previous-file previous-file :reason reason}
+        opts* {:path anchor :actor (:actor opts) :timestamp (timestamp)
+               :operation "docs reanchor" :declared declared}
+        res (if (:generic d)
+              (let [{:keys [plan unchanged? blocks]} (tdocs/generic-update-plan host/host store d text opts*)
+                    r (if plan (store/commit! backend store plan) {:store store :revision-id (:head store)})]
+                {:revision-id (:revision-id r) :store (:store r)
+                 :data {:name (:name d) :tree (:tree d) :path path :blocks blocks
+                        :class (:class d) :anchor anchor :unchanged? (boolean unchanged?)}})
+              ;; the same refusal `docs update` makes: nothing is committed for a noisy file
+              (let [_ (refuse-noise! (:model d) (or (:descriptor (mstore/model store (:model d))) {}) (:name d) text)
+                    {:keys [plan unchanged?]} (tdocs/update-plan host/host store (:tree d) text opts*)
+                    r (if plan (store/commit! backend store plan) {:store store :revision-id (:head store)})]
+                {:revision-id (:revision-id r) :store (:store r)
+                 :data (assoc (doc-data (tdocs/document (:store r) (:tree d))) :unchanged? (boolean unchanged?))}))
+        warnings (when (= "present" previous-file)
+                   [{:type "docs/previous-file-present"
+                     :message (str "the previous file " (:path d) " is still there and is no longer tracked:"
+                                   " if it was a copy, it is a different unit — declare it with `docs track`/`docs ingest`")
+                     :path (:path d) :document (:name d)}])]
+    (out/ok "docs reanchor" {:store (store-ref descriptor store-path)
+                             :revision (:revision-id res)
+                             :data (assoc (:data res)
+                                          :reanchored {:from (:path d) :to anchor
+                                                       :previous-file previous-file :reason reason})
+                             :warnings (vec warnings)})))
+
 (defn untrack
   "`docs untrack NAME`: stops tracking the document; its file stays. With
    `delete?` (the `docs delete` command) the file is removed too, and `--yes`
@@ -378,12 +451,22 @@
          _ (when (and delete? (not (:yes opts)))
              (err/raise :docs/confirmation-required "`docs delete` removes the file too: pass --yes to confirm" {:document token}))
          {:keys [backend descriptor store] store-path :path} (open opts ctx)
-         {:keys [plan name path]} (tdocs/untrack-plan store token {:actor (:actor opts) :timestamp (timestamp) :operation (str "docs " sub)})
+         doc (document-at store token)
+         ;; the state of the file BEFORE acting: the closure declaration says what was there
+         file-state (cond (nil? (:path doc)) "none"
+                          (fs/regular-file? (fs/path (project-root store-path) (:path doc))) "present"
+                          :else "missing")
+         {:keys [plan name path]} (tdocs/untrack-plan store token {:actor (:actor opts) :timestamp (timestamp)
+                                                                   :operation (str "docs " sub)
+                                                                   :declared {:kind "closure" :file file-state
+                                                                              :reason (:reason opts)
+                                                                              :file-deleted? (boolean delete?)}})
          r (store/commit! backend store plan)
          f (when path (fs/path (project-root store-path) path))]
      (when (and delete? f (fs/exists? f)) (fs/delete f))
      (out/ok (str "docs " sub) {:store (store-ref descriptor store-path) :revision (:revision-id r)
-                                :data {:name name :path path :file-deleted? (boolean (and delete? f))}}))))
+                                :data {:name name :path path :file-deleted? (boolean (and delete? f))
+                                       :closure {:file file-state :reason (:reason opts)}}}))))
 
 (defn show
   "`docs show NAME [--format md] [--ast]`: the document map with payload, hashes and
@@ -438,12 +521,14 @@
    :model {:ref "NAME" :desc "Only documents of this model (docs list)"}
    :force {:desc "Track a file that does not round-trip under its model (docs track)" :coerce :boolean}
    :ast {:desc "Print the document's SLDB-MD AST instead of its payload (docs show)" :coerce :boolean}
-   :yes {:desc "Confirm a destructive command (docs delete)" :coerce :boolean}})
+   :yes {:desc "Confirm a destructive command (docs delete)" :coerce :boolean}
+   :reason {:ref "TEXT" :desc "What happened (docs reanchor, docs untrack, docs delete)"}})
 
 (def commands
   "Subcommand name → command fn `(fn [args opts ctx] envelope)`."
   {"ingest" ingest "update" update-any "render" render "list" list-docs "create" create "track" track
-   "untrack" untrack "delete" (fn [args opts ctx] (untrack args opts ctx true)) "show" show "status" status})
+   "untrack" untrack "delete" (fn [args opts ctx] (untrack args opts ctx true))
+   "reanchor" reanchor "show" show "status" status})
 
 (defn dispatch
   "Runs subcommand `sub` of the `docs` group with the positional tokens that

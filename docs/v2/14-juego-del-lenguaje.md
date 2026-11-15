@@ -471,7 +471,10 @@ Qué queda **pendiente tras `D0`**, y nada de ello es una pregunta al dueño sob
   bloques y texto se identifican por contenido; formato del id. **Actualización 2026-11-15
   (K1a):** el arrastre de identidad a nivel **documento** al reconstruir un store está hecho
   (`include build --rebuild` reutiliza id de documento e id de árbol por ruta cualificada y
-  declara en `:identities` lo que no puede seguir); siguen pendientes las unidades debajo del
+  declara en `:identities` lo que no puede seguir). **K1b:** el re-anclaje y el cierre a nivel
+  documento son declaraciones (`docs reanchor NAME FILE --reason`, `--reason` en
+  `docs untrack|delete`; la declaración queda en el journal) y kimun no mueve archivos ni detecta
+  movimientos. Siguen pendientes las unidades debajo del
   documento (secciones, bloques, campos), el re-anclaje y cierre declarados, y los ids de
   modelos, que el rebuild acuña de nuevo. `K2b`, `S2` y la implementación de `M1` esperan a
   `K1`.

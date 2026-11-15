@@ -742,7 +742,7 @@
    (the document is re-registered under the current one), as does one whose
    digest does not verify; a document with no recorded parse contract is not
    rewritten for that alone."
-  [host store token text {:keys [path actor timestamp operation inline]}]
+  [host store token text {:keys [path actor timestamp operation inline declared]}]
   (let [doc (document store token)
         m (require-model store (:model doc))
         payload (extract/extract (:descriptor m) text)
@@ -766,8 +766,10 @@
         ;; the payload read is the one under the contract the document was
         ;; written with: the fields the new contract adds are not in it
         before (or (:payload doc) {})
-        engines (meta-engines {:operation (or operation "docs update") :address (str (:model doc) ":" (:name doc))
-                               :fields (changed-fields before payload)})]
+        engines (meta-engines (cond-> {:operation (or operation "docs update")
+                                       :address (str (:model doc) ":" (:name doc))
+                                       :fields (changed-fields before payload)}
+                                declared (assoc :declared declared)))]
     (if cached?
       (let [{:keys [reg ops]} (registry-ops host store {:doc (:doc doc) :tree-id (:tree doc) :name (:name doc)
                                                          :text text :path path :class (:id m) :content-hash ch :actor actor}
@@ -913,7 +915,7 @@
    fingerprint, the path nor the parse contract moved and the document already
    holds its route. Raises `:docs/exists`
    when `path` is already tracked by another document."
-  [host store doc text {:keys [path actor timestamp operation]}]
+  [host store doc text {:keys [path actor timestamp operation declared]}]
   (let [path (or path (:path doc))
         _ (refuse-anchored! store path (:tree doc))
         {:keys [reg ops]} (generic-ops host store {:doc (:doc doc) :tree-id (:tree doc) :name (:name doc)
@@ -931,8 +933,9 @@
      :blocks (count (tree/children-at (:tree reg) []))
      :plan (when-not same?
              {:plan/version 1 :base (:head store) :actor actor :timestamp timestamp
-              :engines (meta-engines {:operation (or operation "docs update")
-                                      :address (str generic-class ":" (:name doc)) :fields {}})
+              :engines (meta-engines (cond-> {:operation (or operation "docs update")
+                                              :address (str generic-class ":" (:name doc)) :fields {}}
+                                       declared (assoc :declared declared)))
               :ops (vec ops)})}))
 
 (defn route-coverage
@@ -965,13 +968,14 @@
    generic class (K3): its anchor edge is removed, so its file is no longer
    watched and its path and name are free again. The route the document holds
    (K2a) is removed in the same plan. Raises `:docs/missing`."
-  [store token {:keys [actor timestamp operation]}]
+  [store token {:keys [actor timestamp operation declared]}]
   (let [doc (or (resolve-any store token)
                 (err/raise :docs/missing (str "no document named or identified by `" token "`") {:document token}))]
     {:name (:name doc) :tree (:tree doc) :path (:path doc)
      :plan {:plan/version 1 :base (:head store) :actor actor :timestamp timestamp
-            :engines (meta-engines {:operation (or operation "docs untrack")
-                                    :address (str (or (:model doc) (:class doc)) ":" (:name doc)) :fields {}})
+            :engines (meta-engines (cond-> {:operation (or operation "docs untrack")
+                                            :address (str (or (:model doc) (:class doc)) ":" (:name doc)) :fields {}}
+                                     declared (assoc :declared declared)))
             ;; the route leaves with the anchor, in the same plan: the path is free for another document
             :ops (into (vec (leave-route-ops store (:tree doc) (:path doc) nil))
                        (for [eid (:edges doc) :when (owned-edge? store (get-in store [:objects eid]))]

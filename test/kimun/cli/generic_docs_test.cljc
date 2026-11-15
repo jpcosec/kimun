@@ -221,7 +221,8 @@
         tree (get-in e [:data :tree])]
     (let [u (run p "docs" "untrack" "plain")]
       (is (true? (:ok u)) (pr-str u))
-      (is (= {:name "plain" :path "notes/plain.md" :file-deleted? false} (:data u))))
+      (is (= {:name "plain" :path "notes/plain.md" :file-deleted? false
+                :closure {:file "present" :reason nil}} (:data u))))
     (is (fs/exists? (file p "notes" "plain.md")) "untrack keeps the file")
     (is (= [] (tdocs/generic-documents (opened p))))
     (is (= [] (:data (run p "docs" "list"))) "the tree stays in history, hidden")

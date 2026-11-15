@@ -66,7 +66,7 @@
         touched (into (set (map :tree ch)) (filter string?) (plan/touched-trees p))]
     (merge
      (when-let [m (some-> (get (:engines rev) "kimun/meta") edn/read-string)]
-       (select-keys m [:operation :address :fields :documents]))
+       (select-keys m [:operation :address :fields :documents :declared]))
      {:revision rev-id
      :parents (vec (:parents rev))
      :actor (:actor rev)

@@ -1,0 +1,108 @@
+
+Testing kimun.cli.reanchor-test
+
+FAIL in (a-generic-document-is-re-anchored-keeping-its-identity) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:78)
+{:ok false, :error {:type "org.babashka/cli", :message "Unknown option: --reason", :data {:msg "Unknown option: --reason", :cause :restrict, :option :reason, :flag "--reason"}}, :exit 6}
+expected: (true? (:ok r))
+  actual: (not (true? false))
+
+FAIL in (a-generic-document-is-re-anchored-keeping-its-identity) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:78)
+expected: (= t0 (get-in r [:data :tree]))
+  actual: (not (= "01M7GE4RXPGZGXKK5W1563660A" nil))
+
+FAIL in (a-generic-document-is-re-anchored-keeping-its-identity) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:78)
+expected: (= "b/plain.md" (:path (gdoc "plain")))
+  actual: (not (= "b/plain.md" "notes/plain.md"))
+
+FAIL in (a-reanchor-composes-with-a-rebuild-that-carries-identities) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:118)
+expected: (true? (:ok (:envelope (binding [kimun.surface.markdown.ast/*parser* "native"] (main/run ["docs" "reanchor" "a" "b.md" "--reason" "moved"] env p)))))
+  actual: (not (true? false))
+moved existing store to /tmp/kimun-adhoc-6273103664890546726/kimun-reanchor-inc-2359170642340060382/.kimun.bak-20261115-172455
+
+FAIL in (a-reanchor-composes-with-a-rebuild-that-carries-identities) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:118)
+expected: (= 1 (:carried ids))
+  actual: (not (= 1 0))
+
+FAIL in (a-reanchor-composes-with-a-rebuild-that-carries-identities) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:118)
+expected: (= [] (:not-carried ids))
+  actual: (not (= [] ["docs/a.md"]))
+
+FAIL in (a-reanchor-composes-with-a-rebuild-that-carries-identities) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:118)
+expected: (= t0 (:tree (first (tdocs/documents (:store (cli-store/open! (file p ".kimun")))))))
+  actual: (not (= "01M7GE4S10P4GXWAV08PHDGGS5" "01M7GE4S2GEQ4Y6WBJDMWFD4PR"))
+
+FAIL in (a-typed-document-is-re-anchored-keeping-its-identity) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:57)
+{:ok false, :error {:type "org.babashka/cli", :message "Unknown option: --reason", :data {:msg "Unknown option: --reason", :cause :restrict, :option :reason, :flag "--reason"}}, :exit 6}
+expected: (true? (:ok r))
+  actual: (not (true? false))
+
+FAIL in (a-typed-document-is-re-anchored-keeping-its-identity) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:57)
+the tree id is kept
+expected: (= t0 (:tree d))
+  actual: (not (= "01M7GE4S3DZN93B5FE9VN498Z6" nil))
+
+FAIL in (a-typed-document-is-re-anchored-keeping-its-identity) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:57)
+expected: (= {:from "docs/a.md", :to "b/c.md", :previous-file "missing", :reason "moved by hand"} (:reanchored d))
+  actual: (not (= {:from "docs/a.md", :to "b/c.md", :previous-file "missing", :reason "moved by hand"} nil))
+
+FAIL in (a-typed-document-is-re-anchored-keeping-its-identity) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:57)
+the new anchor is recorded
+expected: (= "b/c.md" (:path (doc "a")))
+  actual: (not (= "b/c.md" "docs/a.md"))
+
+FAIL in (a-typed-document-is-re-anchored-keeping-its-identity) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:57)
+status sees the new path
+expected: (= ["b/c.md"] (mapv :path (data "docs" "status")))
+  actual: (not (= ["b/c.md"] ["docs/a.md"]))
+
+FAIL in (a-typed-document-is-re-anchored-keeping-its-identity) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:57)
+expected: (= [:ok] (mapv :status (data "docs" "status")))
+  actual: (not (= [:ok] [:missing]))
+
+FAIL in (a-typed-document-is-re-anchored-keeping-its-identity) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:57)
+the old path is free and a new document there gets fresh ids
+expected: (true? (:ok (run "docs" "track" "TicketDoc" "docs/a.md" "--name" "a2")))
+  actual: (not (true? false))
+
+FAIL in (the-declaration-is-in-the-journal) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:104)
+expected: (true? (:ok (run "docs" "reanchor" "a" "b/c.md" "--reason" "moved by hand")))
+  actual: (not (true? false))
+
+FAIL in (the-declaration-is-in-the-journal) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:104)
+expected: (= "docs reanchor" (:operation e))
+  actual: (not (= "docs reanchor" "docs ingest"))
+
+FAIL in (the-declaration-is-in-the-journal) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:104)
+expected: (= {:kind "reanchor", :from "docs/a.md", :to "b/c.md", :previous-file "missing", :reason "moved by hand"} (:declared e))
+  actual: (not (= {:kind "reanchor", :from "docs/a.md", :to "b/c.md", :previous-file "missing", :reason "moved by hand"} nil))
+
+FAIL in (the-declaration-is-in-the-journal) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:104)
+expected: (true? (:ok (run "docs" "untrack" "a" "--reason" "no longer tracked")))
+  actual: (not (true? false))
+
+FAIL in (the-declaration-is-in-the-journal) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:104)
+expected: (= "docs untrack" (:operation e))
+  actual: (not (= "docs untrack" "docs ingest"))
+
+FAIL in (the-declaration-is-in-the-journal) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:104)
+expected: (= {:kind "closure", :file "present", :reason "no longer tracked", :file-deleted? false} (:declared e))
+  actual: (not (= {:kind "closure", :file "present", :reason "no longer tracked", :file-deleted? false} nil))
+
+FAIL in (refusals-do-not-write-a-revision) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:90)
+a file that does not exist
+expected: (= "docs/no-file" (get-in (run "docs" "reanchor" "a" "nope.md" "--reason" "x") [:error :type]))
+  actual: (not (= "docs/no-file" "org.babashka/cli"))
+
+FAIL in (refusals-do-not-write-a-revision) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:90)
+a path another document already holds
+expected: (= "docs/exists" (get-in (run "docs" "reanchor" "a" "notes/plain.md" "--reason" "x") [:error :type]))
+  actual: (not (= "docs/exists" "org.babashka/cli"))
+
+FAIL in (refusals-do-not-write-a-revision) (/tmp/kimun-k1b-wt/test/kimun/cli/reanchor_test.cljc:90)
+the path it already has
+expected: (= "cli/usage" (get-in (run "docs" "reanchor" "a" (:path a) "--reason" "x") [:error :type]))
+  actual: (not (= "cli/usage" "org.babashka/cli"))
+
+Ran 5 tests containing 52 assertions.
+23 failures, 0 errors.
+{:test 5, :pass 29, :fail 23, :error 0, :type :summary}

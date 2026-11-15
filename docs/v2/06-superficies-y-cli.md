@@ -221,7 +221,18 @@ superficie `docs` la mantiene en cada escritura; la entrada es:
   sensoriza K6 (`contract/changed`).
 - **Mover** un documento a otra ruta (`docs update OTRO.md --name N` en un genérico; `:path` en
   `update-plan` para un tipado) retira la ruta anterior y registra la nueva **en el mismo commit**.
-- **`docs untrack|delete`** retira la ruta junto con el anclaje; la ruta queda libre.
+- **`docs untrack|delete`** retira la ruta junto con el anclaje; la ruta queda libre. Son un
+  **cierre declarado**: `--reason TEXT` es opcional y la declaración
+  (`:declared {:kind "closure" :file :reason :file-deleted?}`) queda en el journal; `:file` es el
+  estado del archivo antes de actuar (`present | missing | none`).
+- **`docs reanchor NAME FILE --reason TEXT`** declara que el documento está anclado ahora en FILE:
+  conserva id de documento e id de árbol, libera la ruta vieja y toma la nueva en una sola
+  revisión. La ausencia no termina una unidad y el sensor no decide continuidad: eso lo declara
+  este comando. kimun **no mueve ni borra** el archivo; si el viejo sigue ahí, warning
+  `docs/previous-file-present`. La declaración queda en el journal
+  (`:declared {:kind "reanchor" …}`). Límites: no hay detección de movimientos, `--reason` es
+  opcional solo en el cierre, no existen copiar/dividir/fusionar con linaje declarado, y un
+  `kimun.include.edn` que declara la ruta vieja hay que cambiarlo a mano.
 - **Una ruta, un documento.** Registrar un documento nuevo —tipado o genérico— sobre un archivo cuya
   ruta tiene otro es `docs/exists` (3) y nombra al que la tiene.
 - **Duplicados heredados.** Un store de v1 puede traer dos documentos sobre el mismo archivo. Entran
@@ -311,8 +322,9 @@ archivo esperan al spec 16 (M1). `include` sigue sin admitir documentos sin mode
 | `docs track MODEL FILE` | `--name N`, `--force`, `--inline` | mapa del documento; `--force` para un fichero que no ida-vuelta; `--inline` guarda el texto en el store |
 | `docs show NAME` | `--format md`, `--ast` (equivale a `--format ast`) | mapa con `:markdown`; `--ast` ⇒ `{:name :tree :ast}` |
 | `docs status` | — | `[{:name :path :status}]` con `status` `ok | modified | missing` |
-| `docs untrack NAME` | — | desrastrea |
-| `docs delete NAME` | `--yes` | desrastrea y borra el fichero; sin `--yes` ⇒ `docs/confirmation-required` (3) |
+| `docs reanchor NAME FILE` | `--reason TEXT` (obligatorio) | declara el ancla nueva conservando ids: `:reanchored {:from :to :previous-file :reason}` + warning si el archivo viejo sigue |
+| `docs untrack NAME` | `--reason TEXT` | desrastrea; `:closure {:file :reason}` y `:declared` en el journal |
+| `docs delete NAME` | `--yes`, `--reason TEXT` | desrastrea y borra el fichero; sin `--yes` ⇒ `docs/confirmation-required` (3) |
 | `docs recover DOC` | `--depth N`, `--links-only`, `--include-transclusions` (aceptada e ignorada) | `{:root :path :links [...] :unresolved [...]}`; enlaces sin resolver ⇒ `links/missing` (1) |
 | `docs compose DOC` | `-o FILE\|-` | Markdown con transclusiones expandidas; sin resolver ⇒ `links/missing` (1) |
 

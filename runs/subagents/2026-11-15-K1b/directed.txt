@@ -1,0 +1,21 @@
+
+Testing kimun.cli.reanchor-test
+moved existing store to /tmp/kimun-adhoc-18224939617489289183/kimun-reanchor-inc-4105892947303212938/.kimun.bak-20261115-172639
+
+Testing kimun.cli.docs-test
+
+Testing kimun.cli.typed-docs-test
+
+Testing kimun.cli.generic-docs-test
+
+Testing kimun.cli.journal-test
+
+Testing kimun.cli.identity-carry-test
+moved existing store to /tmp/kimun-adhoc-18224939617489289183/kimun-k1a-2918315434097631454/.kimun.bak-20261115-172641
+moved existing store to /tmp/kimun-adhoc-18224939617489289183/kimun-k1a-2905955168441595574/.kimun.bak-20261115-172641
+moved existing store to /tmp/kimun-adhoc-18224939617489289183/kimun-k1a-2905955168441595574/.kimun.bak-20261115-172641
+moved existing store to /tmp/kimun-adhoc-18224939617489289183/kimun-k1a-1962072656498875014/.kimun.bak-20261115-172641
+moved existing store to /tmp/kimun-adhoc-18224939617489289183/kimun-k1a-10697156605357285800/.kimun.bak-20261115-172641
+
+Ran 51 tests containing 464 assertions.
+0 failures, 0 errors.
