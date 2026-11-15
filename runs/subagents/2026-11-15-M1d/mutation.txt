@@ -1,0 +1,63 @@
+== M1: strict corrects nothing (strict? always false)
+FAIL in (strict-gives-a-present-empty-section-the-empty-string) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:107)
+FAIL in (strict-reports-an-absent-section-as-missing) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:97)
+FAIL in (strict-reports-an-absent-section-as-missing) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:97)
+FAIL in (strict-reports-an-absent-section-as-missing) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:97)
+FAIL in (strict-reports-an-absent-section-as-missing) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:97)
+FAIL in (strict-reports-an-absent-section-as-missing) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:97)
+FAIL in (strict-reports-an-absent-section-as-missing) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:97)
+Ran 9 tests containing 1210 assertions.
+7 failures, 0 errors.
+== M2: strict does not give present-empty the empty string
+FAIL in (strict-gives-a-present-empty-section-the-empty-string) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:107)
+Ran 9 tests containing 1210 assertions.
+1 failures, 0 errors.
+== M3: strict does not report absent section as missing
+FAIL in (strict-reports-an-absent-section-as-missing) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:97)
+FAIL in (strict-reports-an-absent-section-as-missing) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:97)
+FAIL in (strict-reports-an-absent-section-as-missing) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:97)
+FAIL in (strict-reports-an-absent-section-as-missing) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:97)
+FAIL in (strict-reports-an-absent-section-as-missing) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:97)
+FAIL in (strict-reports-an-absent-section-as-missing) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:97)
+Ran 9 tests containing 1210 assertions.
+6 failures, 0 errors.
+== M4: unknown mode accepted
+FAIL in (an-unknown-mode-fails-naming-it) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:123)
+FAIL in (an-unknown-mode-fails-naming-it) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:123)
+ERROR in (an-unknown-mode-fails-naming-it) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:123)
+Ran 9 tests containing 1210 assertions.
+2 failures, 1 errors.
+== M5: strict also changes a quirk-free document (anchored sections dropped)
+FAIL in (strict-gives-a-present-empty-section-the-empty-string) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:107)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+FAIL in (strict-equals-legacy-on-a-document-without-quirks) (/tmp/kimun-m1d-wt/test/kimun/surface/models/selector_test.cljc:114)
+Ran 9 tests containing 1210 assertions.
+31 failures, 0 errors.

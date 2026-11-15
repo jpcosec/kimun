@@ -89,3 +89,40 @@
     (is (= (via-selector atom-doc plain) (via-selector atom-doc styled)))
     (is (= (hash-of plain) (hash-of styled)))
     (is (not= (hash-of plain) (hash-of edited)) "control: a captured edit does move it")))
+
+;; ---------------------------------------------------------------- :strict (M1d)
+
+(defn- raw [d text mode] (selector/extract-selector (steps d) text mode))
+
+(deftest strict-reports-an-absent-section-as-missing
+  (testing "docs/v2/16 §3.5 line 1: AtomDoc without `## Answer` (legacy keeps the v1 quirk)"
+    (doseq [body ["Some body.\n" "One line.\n\nTwo lines.\n" "- a\n- b\n"]
+            :let [text (str atom-head body)]]
+      (is (= (str/trim body) (get (raw atom-doc text :legacy-v1-template) "answer")) "legacy captures it anyway")
+      (is (not (contains? (raw atom-doc text :strict) "answer")) "strict leaves it out")
+      (is (= [:raised :validate/missing]
+             (outcome #(extract/extract atom-doc text :strict))) "so the typed payload fails as missing")
+      (is (= (str/trim body) (get (extract/extract atom-doc text) "answer")) "default mode is still legacy"))))
+
+(deftest strict-gives-a-present-empty-section-the-empty-string
+  (let [notes-steps (recipe/recipes "# ⸢rev•title⸥\n\n## Notes\n\n⸢optrev•notes⸥\n\n## Next\n\n⸢rev•next⸥")
+        text "# T\n\n## Notes\n\n## Next\n\nn\n"]
+    (testing "docs/v2/16 §3.5 line 2: `## Notes` is present and empty"
+      (is (= {"title" "T" "next" "n"} (selector/extract-selector notes-steps text)) "legacy leaves the optional field out")
+      (is (= {"title" "T" "notes" "" "next" "n"} (selector/extract-selector notes-steps text :strict))))))
+
+(deftest strict-equals-legacy-on-a-document-without-quirks
+  (let [text (str atom-head "## Answer\n\nThe answer.\n")]
+    (is (= "The answer." (get (raw atom-doc text :strict) "answer")))
+    (is (= (raw atom-doc text :legacy-v1-template) (raw atom-doc text :strict))))
+  (testing "every golden template on its own text"
+    (doseq [d @golden-descriptors]
+      (is (= (outcome #(raw d (:template d) :legacy-v1-template))
+             (outcome #(raw d (:template d) :strict))) (:model/name d)))))
+
+(deftest an-unknown-mode-fails-naming-it
+  (let [e (try (selector/extract-selector (steps atom-doc) atom-head :lenient) nil
+               (catch clojure.lang.ExceptionInfo e e))]
+    (is (= :models/invalid (:type (ex-data e))))
+    (is (= :lenient (:mode (ex-data e))))
+    (is (str/includes? (ex-message e) ":lenient"))))

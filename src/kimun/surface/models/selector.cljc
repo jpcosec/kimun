@@ -4,8 +4,10 @@
    A step is the plain-data entry of a template's recipe
    (`kimun.surface.models.recipe/recipes`): `{:outer-index :outer-type
    :outer-tag :handler …}`; a vector of steps survives `pr-str` and
-   `edn/read-string` (§3.1). Legacy mode only: the quirks of sldb v1's
-   `DataExtractor` are kept on purpose (R3 §7, docs/v2/16 §3.5). Pure."
+   `edn/read-string` (§3.1). Two modes, named as the descriptor's `:compat`
+   (docs/v2/16 §3.5): `:legacy-v1-template` (default) keeps the quirks of
+   sldb v1's `DataExtractor` on purpose (R3 §7); `:strict` corrects the two
+   the spec names. Pure."
   (:require [clj-yaml.core :as yaml]
             [clojure.string :as str]
             [clojure.walk :as walk]
@@ -151,16 +153,34 @@
             (range (inc i) (count rs)))
       (count bs)))
 
-(defn- section-body [bs rs i lines {:keys [search] :as st}]
+(defn- section-anchor
+  "Index of the step whose match tells that the section of step `i` is present:
+   the nearest heading among the anchors right before `i` (the placeholder
+   paragraph a template puts under a heading is an anchor too, and a document
+   may drop it), else the step right before `i`; nil when that is no anchor."
+  [rs i]
+  (let [chain (take-while #(:anchor (nth rs %)) (range (dec i) -1 -1))]
+    (or (first (filter #(= "heading" (:outer-type (nth rs %))) chain))
+        (first chain))))
+
+(defn- section-body [mode bs rs i lines {:keys [search] :as st}]
   (let [r (nth rs i)
-        boundary (section-boundary bs rs i search)
-        value (if (< search boundary)
-                (str/trim (str/join "\n" (subvec lines (first (:map (nth bs search))) (min (count lines) (second (:map (nth bs (dec boundary))))))))
-                "")]
-    (cond-> (assoc st :curr (dec boundary))
-      (or (seq value) (not (marker/optional? (first (:props-info r))))) (assoc-in [:out (first (:props r))] value))))
+        anchor (section-anchor rs i)
+        strict? (= :strict mode)]
+    (if (and strict? anchor (not (contains? (:hits st) anchor)))
+      ;; docs/v2/16 §3.5 line 1: a field whose section is absent is `:missing`.
+      st
+      (let [boundary (section-boundary bs rs i search)
+            value (if (< search boundary)
+                    (str/trim (str/join "\n" (subvec lines (first (:map (nth bs search))) (min (count lines) (second (:map (nth bs (dec boundary))))))))
+                    "")
+            ;; docs/v2/16 §3.5 line 2: a present, empty section is "".
+            keep? (or (seq value) (not (marker/optional? (first (:props-info r)))) (and strict? anchor))]
+        (cond-> (assoc st :curr (dec boundary))
+          keep? (assoc-in [:out (first (:props r))] value))))))
 
 (defn- regular [bs rs i {:keys [search] :as st}]
+  ;; `:hits` records the anchors that matched; legacy never reads it.
   (let [r (nth rs i)
         end (if (:optional-block r) (min (inc search) (count bs)) (count bs))]
     (loop [b search st st]
@@ -170,7 +190,7 @@
           (cond
             (nil? v) (recur (inc b) st)
             (and (:optional-block r) (some #(and (:anchor %) (matches-position? blk %)) (subvec rs (inc i)))) st
-            (:anchor r) (assoc st :curr b)
+            (:anchor r) (-> st (assoc :curr b) (update :hits (fnil conj #{}) i))
             :else (-> st (update :out merge v) (assoc :curr b))))))))
 
 (defn- check-steps!
@@ -183,17 +203,28 @@
                (str "Selector step " i " has no :outer-type: " (pr-str s))
                {:step i :selector-step s})))
 
+(def modes
+  "The extraction modes, named as the descriptor's `:compat` (docs/v2/16 §3.5)."
+  #{:legacy-v1-template :strict})
+
 (defn extract-selector
   "The untyped values (`{field value}`, string keys) that the selector `steps`
-   capture from Markdown `text`, in legacy v1 mode. `steps` is the vector that
-   `recipe/recipes` returns, or its EDN round trip."
-  [steps text]
-  (check-steps! steps)
-  (let [bs (blocks/parse text) rs (vec steps) lines (vec (str/split-lines text))]
-    (:out (reduce (fn [st i]
-                    (let [r (nth rs i)
-                          st (if (not= (:outer-index r) (:last st))
-                               (assoc st :search (max (:search st) (inc (:curr st))) :last (:outer-index r) :curr -1)
-                               st)]
-                      (if (= :section-body (:capture r)) (section-body bs rs i lines st) (regular bs rs i st))))
-                  {:out {} :search 0 :last -1 :curr -1} (range (count rs))))))
+   capture from Markdown `text`. `steps` is the vector that `recipe/recipes`
+   returns, or its EDN round trip. `mode` is `:legacy-v1-template` (default:
+   v1's behaviour, quirks included) or `:strict`; any other value raises
+   `:models/invalid` naming it."
+  ([steps text] (extract-selector steps text :legacy-v1-template))
+  ([steps text mode]
+   (when-not (contains? modes mode)
+     (err/raise :models/invalid
+                (str "Unknown selector mode " (pr-str mode) "; expected one of " (pr-str (sort modes)))
+                {:mode mode :modes modes}))
+   (check-steps! steps)
+   (let [bs (blocks/parse text) rs (vec steps) lines (vec (str/split-lines text))]
+     (:out (reduce (fn [st i]
+                     (let [r (nth rs i)
+                           st (if (not= (:outer-index r) (:last st))
+                                (assoc st :search (max (:search st) (inc (:curr st))) :last (:outer-index r) :curr -1)
+                                st)]
+                       (if (= :section-body (:capture r)) (section-body mode bs rs i lines st) (regular bs rs i st))))
+                   {:out {} :search 0 :last -1 :curr -1} (range (count rs)))))))

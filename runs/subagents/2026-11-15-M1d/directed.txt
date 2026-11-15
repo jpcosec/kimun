@@ -1,0 +1,42 @@
+
+Testing kimun.surface.models.selector-test
+
+Testing kimun.surface.models.parity-test
+parity engine corpus: {:pass 2384, :fail 0, :excluded 24, :pending 0}
+
+Testing kimun.cli.corpus-test
+
+Testing kimun.surface.index.corpus-test
+
+Testing kimun.cli.typed-docs-test
+
+Testing kimun.cli.docs-parity-test
+docs parity: {:cases 57, :equal 54, :expected-diffs 3}
+
+Testing kimun.surface.models.blocks-parity-test
+pod-blocks-parity: 735/735 identical (divergent 0, no-counterpart 0, error 0)
+
+Testing kimun.cli.golden-test
+
+Testing kimun.surface.models.compile-test
+
+Testing kimun.surface.models.composition-test
+
+Testing kimun.surface.models.engine-test
+
+Testing kimun.surface.models.engine-units-test
+
+Testing kimun.surface.models.noise-test
+
+Testing kimun.surface.models.segments-parity-test
+parity segments corpus: {:pass 1588, :fail 0, :excluded 7, :pending 0}
+parity segments corpus by op: {:build_extraction_segments {:pass 6}, :extract_sections {:pass 16}, :map_fields_to_sections {:pass 9}, :render_with_spans {:pass 1557, :excluded 7}}
+
+Testing kimun.surface.models.segments-test
+
+Testing kimun.surface.models.store-test
+
+Testing kimun.surface.models.subgraph-test
+
+Ran 129 tests containing 1878 assertions.
+0 failures, 0 errors.
