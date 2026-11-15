@@ -1,0 +1,15 @@
+
+Testing kimun.surface.markdown.anchors-test
+
+Testing kimun.cli.docs-anchors-test
+
+Testing kimun.cli.docs-test
+
+Testing kimun.doc14-contract-test
+
+Testing kimun.wittgenstein-manifest-test
+
+Testing kimun.cli.tour-test
+
+Ran 19 tests containing 1095 assertions.
+0 failures, 0 errors.
