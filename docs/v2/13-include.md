@@ -66,7 +66,9 @@ ignore un fichero declarado. Nunca toca líneas fuera del bloque.
 los descriptores en
 orden base-primero y luego cada documento (`docs track`, con `--force` donde la
 declaración lo pida). Se niega a tocar un store existente salvo `--rebuild`,
-que lo mueve a `<store>.bak-<marca>`.
+que lo mueve a `<store>.bak-<marca>-<ulid>`: el nombre es único y un respaldo existente nunca se
+sobrescribe. Dos `--rebuild` concurrentes sobre el mismo store no están coordinados (no hay lock):
+los respaldos quedan a salvo, el resultado del build no está garantizado.
 
 ## 3. Cómo lo usa este repo
 

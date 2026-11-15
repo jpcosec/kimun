@@ -90,13 +90,9 @@
                      :fields [{:type :string :required true :description "Name." :name "name"}]
                      :semantics {"type" ["test"]} :template "# ⸢rev•name⸥
 "}))
-    ;; the backup directory is named with second resolution: two rebuilds in
-    ;; the same second would collide (a limit of `include build`, not of K1d)
-    (Thread/sleep 1100)
     (is (true? (:ok (run-include "include" "build" "--rebuild"))) "the second model enters")
     (is (= #{"TestDoc" "OtherDoc"} (set (keys (model-map)))))
     (fs/delete (fs/path *repo* "models" "OtherDoc.edn"))
-    (Thread/sleep 1100)
     (let [b (run-include "include" "build" "--rebuild")
           ids (get-in b [:data :identities])
           w (first (filter #(= "include/identities-not-carried" (:type %)) (:warnings b)))]

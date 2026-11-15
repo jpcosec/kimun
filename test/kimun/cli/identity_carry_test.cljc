@@ -7,6 +7,7 @@
             [babashka.process :as process]
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing use-fixtures]]
+            [kimun.cli.commands.include]
             [kimun.cli.main :as main]
             [kimun.cli.store :as cli-store]
             [kimun.surface.docs :as tdocs]))
@@ -124,7 +125,7 @@
       (is (= ["docs/a.md" "notes/free.md"] (:not-carried ids))
           "the path that is gone and the document the declaration does not build are declared")
       (is (= [0 1] [(:carried ids) (:minted ids)]))
-      (is (re-find #"^\.kimun\.bak-\d{8}-\d{6}$" (:source ids)) "and it names the store they were read from")
+      (is (re-find #"^\.kimun\.bak-\d{8}-\d{6}-[0-9A-Z]{26}$" (:source ids)) "and it names the store they were read from")
       (is (fs/exists? (fs/path *repo* (:source ids))))
       (is (some #(= "include/identities-not-carried" (:type %)) (:warnings b)))
       (is (not (contains? old-ids (tree "b"))) "the new document gets a fresh id"))))
@@ -141,3 +142,27 @@
     (is (= [] (:not-carried ids)))
     (is (some #(= "include/identities-unavailable" (:type %)) (:warnings b)))
     (is (= 1 (get-in b [:data :documents])) "the store is built with fresh ids")))
+
+(deftest two-rebuilds-in-a-row-keep-two-backups
+  ;; the backup name had second resolution: the second of two rebuilds in the
+  ;; same second failed on the first one's backup. SEQUENCE only: two
+  ;; concurrent rebuilds of one store are not coordinated (no lock is taken).
+  (is (true? (:ok (run-include "include" "build"))))
+  ;; the clock is pinned: both rebuilds see the SAME second, which is the case that failed
+  (with-redefs [kimun.cli.commands.include/backup-stamp (constantly "20260101-000000")]
+  (let [baks (fn [] (sort (filter #(str/starts-with? % ".kimun.bak-") (map #(str (fs/file-name %)) (fs/list-dir *repo*)))))
+        b1 (run-include "include" "build" "--rebuild")
+        after-first (baks)
+        heads1 (slurp (str (fs/path *repo* (first after-first) "heads.edn")))
+        b2 (run-include "include" "build" "--rebuild")
+        after-second (baks)]
+    (is (true? (:ok b1)) (pr-str b1))
+    (is (= 1 (count after-first)))
+    (is (true? (:ok b2)) (pr-str b2))
+    (is (= 2 (count after-second)) "two backups, two names")
+    (is (some #{(first after-first)} after-second) "the first backup is still there")
+    (is (= heads1 (slurp (str (fs/path *repo* (first after-first) "heads.edn"))))
+        "and it was not touched")
+    (is (every? #(str/starts-with? % ".kimun.bak-20260101-000000-") after-second)
+        "both were named within the same second"))))
+

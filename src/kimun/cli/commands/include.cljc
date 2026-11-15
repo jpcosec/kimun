@@ -479,12 +479,19 @@
                   :ambiguous (:ambiguous registry)
                   :without-file (:without-file registry 0)}})))
 
+(defn- backup-stamp
+  "The local time a backup is named with, to the second (`yyyyMMdd-HHmmss`)."
+  []
+  (-> (java.time.LocalDateTime/now)
+      (.format (java.time.format.DateTimeFormatter/ofPattern "yyyyMMdd-HHmmss"))))
+
 (defn build
   "`include build [--rebuild]`: builds the store from the declaration in ONE
    revision (docs/v2/14 §10): `stores init`, then every model descriptor and
    every declared document composed into one TransactionPlan and committed
    once. Refuses to touch an existing store unless `--rebuild`, which moves it
-   to `<store>.bak-<timestamp>`. A failure is `:include/drift` (exit 3)."
+   to `<store>.bak-<timestamp>-<ulid>` (a unique name: an existing backup is
+   never overwritten). A failure is `:include/drift` (exit 3)."
   [args opts {:keys [env cwd] :as ctx}]
   (no-args! args "build")
   (let [{:keys [root cfg plan]} (config-plan ctx)
@@ -493,9 +500,12 @@
         ;; still runs (it is the recovery path), with fresh ids and a warning
         ;; the name the old store is moved to, decided once: the identities are
         ;; reported, and the transaction is labelled, with where they came from
-        bak (str store-dir ".bak-"
-                 (-> (java.time.LocalDateTime/now)
-                     (.format (java.time.format.DateTimeFormatter/ofPattern "yyyyMMdd-HHmmss"))))
+        ;; unique: the timestamp has second resolution, so a fresh ULID follows it
+        ;; and two rebuilds in the same second (or two processes) never choose
+        ;; the same name. The move below does not replace: an existing backup is
+        ;; never overwritten. No lock is taken here, so two CONCURRENT rebuilds
+        ;; of one store are still not coordinated; only the backups are safe.
+        bak (str store-dir ".bak-" (backup-stamp) "-" (ports/ulid (:ids host/host)))
         old-registry (when (and (:rebuild opts) (fs/exists? store-dir))
                        (assoc (identity-registry store-dir) :source (str (fs/file-name bak))))]
     (when (fs/exists? store-dir)

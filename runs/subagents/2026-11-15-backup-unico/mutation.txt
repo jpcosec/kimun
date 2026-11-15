@@ -1,0 +1,27 @@
+
+Testing kimun.cli.identity-carry-test
+moved existing store to /tmp/kimun-adhoc-16598408562004941940/kimun-k1a-13084368841286321339/.kimun.bak-20261115-184444
+moved existing store to /tmp/kimun-adhoc-16598408562004941940/kimun-k1a-6940433412342679403/.kimun.bak-20260101-000000
+moved existing store to /tmp/kimun-adhoc-16598408562004941940/kimun-k1a-6940433412342679403/.kimun.bak-20260101-000000
+
+FAIL in (two-rebuilds-in-a-row-keep-two-backups) (/tmp/kimun-k1d-wt/test/kimun/cli/identity_carry_test.cljc:146)
+two backups, two names
+expected: (= 2 (count after-second))
+  actual: (not (= 2 1))
+
+FAIL in (two-rebuilds-in-a-row-keep-two-backups) (/tmp/kimun-k1d-wt/test/kimun/cli/identity_carry_test.cljc:146)
+both were named within the same second
+expected: (every? (fn* [%1] (str/starts-with? %1 ".kimun.bak-20260101-000000-")) after-second)
+  actual: (not (every? #object[sci.impl.fns$fun$arity_1__1465 0x2af5082c "sci.impl.fns$fun$arity_1__1465@2af5082c"] (".kimun.bak-20260101-000000")))
+moved existing store to /tmp/kimun-adhoc-16598408562004941940/kimun-k1a-11258825650010473693/.kimun.bak-20261115-184445
+moved existing store to /tmp/kimun-adhoc-16598408562004941940/kimun-k1a-11258825650010473693/.kimun.bak-20261115-184445
+moved existing store to /tmp/kimun-adhoc-16598408562004941940/kimun-k1a-11151299631572744795/.kimun.bak-20261115-184445
+moved existing store to /tmp/kimun-adhoc-16598408562004941940/kimun-k1a-13951285876068453134/.kimun.bak-20261115-184445
+
+FAIL in (what-cannot-be-carried-is-declared) (/tmp/kimun-k1d-wt/test/kimun/cli/identity_carry_test.cljc:111)
+and it names the store they were read from
+expected: (re-find #"^\.kimun\.bak-\d{8}-\d{6}-[0-9A-Z]{26}$" (:source ids))
+  actual: (not (re-find #"^\.kimun\.bak-\d{8}-\d{6}-[0-9A-Z]{26}$" ".kimun.bak-20261115-184445"))
+
+Ran 5 tests containing 40 assertions.
+3 failures, 0 errors.
