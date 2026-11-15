@@ -23,7 +23,7 @@ inferencias del equipo a partir de `14 §20–§21`, no palabras del dueño.
 |---|---|---|
 | `bb lint` | `lint.txt` | ok |
 | dirigidas (5 namespaces) | `directed.txt` | 41 tests, 594 aserciones, 0 fallos |
-| mutación (`git stash push -- src/`) | `mutation.txt` | `field_units_test`: 12 fallos en 7 pruebas |
+| mutación (`git stash push -- src/`) | `mutation.txt` | `field_units_test`: 12 fallos en 5 de 7 pruebas. Las otras dos (`two-documents…`, `reanchoring…`) pasaban sin el cambio porque comparaban mapas vacíos; corregido en el commit siguiente, que les exige unidades (`mutation-fix.txt`: fallan las 7) |
 | `bb test` | `full-test.txt`, `full-exit.txt` | 1137 tests, 12590 passes, 0 fallos, 0 errores, 137 namespaces, pod disponible |
 | `bb oracle` | `oracle.txt` | 9 filas, 0 diferencias |
 | `bin/kimun include check` | `include-check.txt` | ok |

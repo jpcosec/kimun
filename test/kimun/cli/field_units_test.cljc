@@ -71,6 +71,7 @@
   (spit (file "docs" "b.md") "# T\n\nStatus: open\n")
   (is (true? (:ok (run "docs" "track" "TicketDoc" "docs/b.md" "--name" "b"))))
   (let [a (units "a") b (units "b")]
+    (is (= #{"title" "status"} (set (keys a))) "there are units to compare")
     (is (= (set (keys a)) (set (keys b))))
     (is (empty? (clojure.set/intersection (set (vals a)) (set (vals b))))
         "two marks are two units")))
@@ -122,6 +123,7 @@
 
 (deftest reanchoring-keeps-the-units
   (let [u0 (units "a")]
+    (is (= 2 (count u0)) "there are units to keep")
     (fs/create-dirs (file "b"))
     (fs/move (file "docs" "a.md") (file "b" "a.md"))
     (is (true? (:ok (run "docs" "reanchor" "a" "b/a.md" "--reason" "moved"))))

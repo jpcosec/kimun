@@ -1,0 +1,6 @@
+
+Testing kimun.cli.field-units-test
+moved existing store to /tmp/kimun-adhoc-16170776752301184273/kimun-units-inc-15608245502327020883/.kimun.bak-20261115-182948
+
+Ran 7 tests containing 72 assertions.
+0 failures, 0 errors.
