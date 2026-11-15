@@ -1,0 +1,30 @@
+copy: /tmp/k5-ev-copy (candidates of 06 removed from the copy only)
+  "ok" : true,
+    "routes-complete?" : true,
+    "objects" : 63,
+        "ok" : 3
+        "category" : "ok",
+        "message" : "ok",
+        "category" : "ok",
+        "message" : "ok",
+        "category" : "ok",
+        "message" : "ok",
+        "category" : "ok",
+        "message" : "ok",
+    "revisions" : 8,
+stores verify:
+  "ok" : true,
+    "checked" : 63,
+    "bad" : [ ],
+journal verify:
+  "ok" : true,
+stores unreachable:
+    "stored" : 63,
+    "unreachable" : 0,
+    "reached" : 63
+docs list: identical
+journal show: identical
+  "ok" : true,
+write after removal: above
+  "ok" : true,
+original objects: 81

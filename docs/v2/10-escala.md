@@ -133,7 +133,7 @@ o sin la clave) sigue abriendo y escribiendo con el motor conservado en
 Objetos sin referencia que pueden quedar en `objects/` (todos de escritura única e
 inofensivos): los de un escritor que perdió la carrera (§7) y los nodos del mmap de
 cabezas que un commit posterior reemplazó (nada guarda una raíz vieja de cabezas).
-Ningún comando los informa hoy; los recogerá el GC del hito 8. `stores check` cuenta
+Los informa `stores unreachable` (`§11.3`, solo lectura); recogerlos es el GC del hito 8, que no existe todavía. `stores check` cuenta
 en `:objects` todo lo que hay en `objects/`, ellos incluidos.
 
 ## 6. Qué confía `open` y qué comprueba cada verificación
@@ -569,3 +569,65 @@ de todos los stores formato 4.
 - Las hojas son entradas por documento; los **campos** trackeados como hojas (`14 §20`) no
   están: dependen de K1/D0.
 - La ruta sigue siendo localizador, no identidad; nada aquí decide qué es un archivo movido.
+
+### 11.3 Inventario de objetos no alcanzables (K5, primer corte)
+
+`§5` y `§7` dicen que en `objects/` quedan objetos sin referencia y que ningún comando los
+informa. Desde este corte los informa `kimun stores unreachable`
+(`kimun.kernel.store/unreachable`). **Es solo un inventario: no escribe, no borra, y no existe
+todavía un comando que borre.**
+
+**Alcance exacto.**
+
+- **Guardado:** todo id bajo `objects/`. El caché derivado (`cache/`) no se mira.
+- **Alcanzado:** `store/reachable`, el mismo recorrido que rehashea `stores verify`: la revisión
+  de cabecera y **toda su historia** (`:parents`), las cabeceras por árbol y el mapa de rutas que
+  nombran las cabeceras. No hay política de retención: nada de la historia se considera
+  prescindible.
+- **No alcanzable** = guardado y no alcanzado. Cada uno se lee del store mismo (nunca del caché),
+  se rehashea y cae en una de tres listas:
+
+| lista | qué es | qué se puede decir |
+|---|---|---|
+| `:held` | un plan resuelto (`:plan`) cuyo id nombra una línea **confirmada** del log (formatos 1–3 guardan los planes en el CAS) | el recorrido no lo sigue, pero sin él el log no se puede reproducir (`verify-full` responde `:replay-unavailable`). **No es candidato** |
+| `:damaged` | no hashea a su nombre, o no se puede leer | su clase no es confiable: solo se informa |
+| `:candidates` | el resto, con su clase por forma y `:root?` | nada conocido lo necesita **en el momento del inventario** |
+
+**Clases** (por forma, `store/object-class`): `revision`, `mmap-leaf`, `mmap-branch`, `route-map`
+(esquema 1), `route-node` (esquema 2), `plan`, `descriptor`, `node`, `edge`, `tree-object`,
+`unknown`. La clase dice qué es el objeto, no por qué quedó ahí.
+
+**Qué se puede leer de los candidatos sin adivinar.**
+
+- `:root?` — ningún otro objeto no alcanzable menciona su id. Son las raíces del mapa de
+  cabeceras o del mapa de rutas que un commit posterior reemplazó o que escribió un escritor
+  perdedor.
+- `:lost-revisions` — candidatos de clase `revision`: commits que no están en la historia de la
+  cabecera. Es la revisión de un escritor que perdió la carrera (`§7`) o la de la cola no
+  confirmada del log (`:uncommitted-tail`, que el inventario nombra). Una revisión perdida no es
+  raíz: la menciona el mapa de cabeceras que se escribió con ella.
+- Un store formato 4 con un solo escritor deja solo `mmap-*` y `route-*` (raíces reemplazadas).
+  Un store de esquema de rutas 1 deja un `route-map` por escritura que tocó rutas.
+
+**Lo que este corte no decide.**
+
+- **Un candidato no es basura comprobada.** Un escritor guarda sus objetos **antes** de mover
+  las cabeceras (`§7`); un inventario tomado durante un commit lista objetos que están por ser
+  alcanzados. Borrar exige el lock de escritura y volver a mirar; nada de eso está hecho.
+  `:stable?` dice si las cabeceras se movieron entre abrir y terminar el inventario; no
+  protege contra un escritor que todavía no las movió.
+- **Retención e historia:** qué revisiones antiguas se pueden soltar (pins, poda) es la
+  política del hito 8 de `02`; aquí toda la historia cuenta como alcanzada.
+- **El índice de nombres** de K5 no está en este corte.
+- **«Menciona»** es toda cadena con forma de id dentro del objeto: un superconjunto de sus
+  referencias. Puede marcar como no-raíz un objeto que nadie referencia de verdad; nunca al
+  revés.
+- No se miran referencias desde fuera del store (otro store enlazado, el índice derivado,
+  `upgrade-format-1.edn`). No se conoce ninguna que apunte a objetos de `objects/`; no está
+  demostrado que no exista.
+
+**Comprobación de solidez** (`kimun.kernel.unreachable-test`): sobre una **copia** de un store,
+borrar todos los candidatos deja un store que abre en la misma cabecera, con las mismas rutas,
+que pasa `verify` y `verify-full` (el log sigue reproduciéndose) y acepta una escritura nueva.
+Borrar un plan `:held` deja `verify` en verde y el replay no disponible: por eso no es
+candidato.

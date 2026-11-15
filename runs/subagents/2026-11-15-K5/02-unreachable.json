@@ -1,0 +1,52 @@
+{
+  "ok" : true,
+  "command" : "stores unreachable",
+  "store" : {
+    "name" : "k5",
+    "path" : "/tmp/k5-ev/.kimun"
+  },
+  "revision" : "a690fa40fc0d37f7a5ddd863d0724c67f3e4841b378b9fb18006f7998cca1f07",
+  "data" : {
+    "path" : "/tmp/k5-ev/.kimun",
+    "stable?" : true,
+    "damaged" : [ ],
+    "stored" : 81,
+    "lost-revisions" : [ ],
+    "candidates" : {
+      "count" : 18,
+      "bytes" : 7424,
+      "by-class" : {
+        "mmap-leaf" : {
+          "count" : 7,
+          "bytes" : 2324
+        },
+        "route-node" : {
+          "count" : 11,
+          "bytes" : 5100
+        }
+      }
+    },
+    "held" : {
+      "count" : 0,
+      "bytes" : 0,
+      "by-class" : { }
+    },
+    "roots" : {
+      "count" : 13,
+      "bytes" : 4514,
+      "by-class" : {
+        "mmap-leaf" : {
+          "count" : 7,
+          "bytes" : 2324
+        },
+        "route-node" : {
+          "count" : 6,
+          "bytes" : 2190
+        }
+      }
+    },
+    "unreachable" : 18,
+    "reached" : 63
+  },
+  "warnings" : [ ]
+}

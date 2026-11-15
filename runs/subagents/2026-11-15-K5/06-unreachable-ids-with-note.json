@@ -1,0 +1,147 @@
+{
+  "ok" : true,
+  "command" : "stores unreachable",
+  "store" : {
+    "name" : "k5",
+    "path" : "/tmp/k5-ev/.kimun"
+  },
+  "revision" : "a690fa40fc0d37f7a5ddd863d0724c67f3e4841b378b9fb18006f7998cca1f07",
+  "data" : {
+    "path" : "/tmp/k5-ev/.kimun",
+    "stable?" : true,
+    "damaged" : [ ],
+    "stored" : 81,
+    "lost-revisions" : [ ],
+    "candidates" : {
+      "count" : 18,
+      "bytes" : 7424,
+      "by-class" : {
+        "mmap-leaf" : {
+          "count" : 7,
+          "bytes" : 2324
+        },
+        "route-node" : {
+          "count" : 11,
+          "bytes" : 5100
+        }
+      }
+    },
+    "held" : {
+      "count" : 0,
+      "bytes" : 0,
+      "by-class" : { }
+    },
+    "ids" : {
+      "candidates" : [ {
+        "id" : "0930ff611c3b41fc29eeadef2f1a70c06df2775f197590098281f284f5aa630c",
+        "class" : "route-node",
+        "root?" : true,
+        "bytes" : 394
+      }, {
+        "id" : "0e2e8d29067abec75d442f4cb9696711ba3a6cc97264889cf81e331e7830ab4b",
+        "class" : "mmap-leaf",
+        "root?" : true,
+        "bytes" : 318
+      }, {
+        "id" : "13afd84866fdb0b5b8a74dc4cd14e52ea423513c38867bca50086ff1cdf04413",
+        "class" : "mmap-leaf",
+        "root?" : true,
+        "bytes" : 416
+      }, {
+        "id" : "1a25e5e64422ada2bbf4125461cdec57609a3f76a9b3d9986a4c0cacbab1d0d2",
+        "class" : "mmap-leaf",
+        "root?" : true,
+        "bytes" : 122
+      }, {
+        "id" : "1e33a373dad50d3613a493664ffe8bcc4bcf400bc2cf00677c39547da007d84b",
+        "class" : "route-node",
+        "root?" : false,
+        "bytes" : 702
+      }, {
+        "id" : "3196affade928bb68015320620a9d05bfb90b5cb1023209ffe15fbab34608445",
+        "class" : "route-node",
+        "root?" : true,
+        "bytes" : 394
+      }, {
+        "id" : "3c09373d369cd30694e758b4c9fa7f5b1b3b01f1eb249b8f2198a349837c5c15",
+        "class" : "mmap-leaf",
+        "root?" : true,
+        "bytes" : 416
+      }, {
+        "id" : "525999edd4833b987c253ad9d2020ee1abb8e95fab18dff45b6978ba7d1ba899",
+        "class" : "route-node",
+        "root?" : false,
+        "bytes" : 702
+      }, {
+        "id" : "591dafa86d2b4328000f593a6f4fdb78c7fd3ea016d0049eb3c79644016e46f4",
+        "class" : "mmap-leaf",
+        "root?" : true,
+        "bytes" : 416
+      }, {
+        "id" : "83bf3621dd5618c854ed89c24ad927ff1fda5e7216c012c3801f150024ef569f",
+        "class" : "mmap-leaf",
+        "root?" : true,
+        "bytes" : 416
+      }, {
+        "id" : "8f8bf639cc4de9590b1e961fe4fe3b800fec0a524005b46af3b6652a8eee09f6",
+        "class" : "route-node",
+        "root?" : true,
+        "bytes" : 394
+      }, {
+        "id" : "9018eedc8202c1ed02609a614a4e7f968a2e4ab196df94716342429da2e3ddca",
+        "class" : "route-node",
+        "root?" : false,
+        "bytes" : 373
+      }, {
+        "id" : "a6b5125d9899f74ab20823b36e18a6b2317eeaaf6664a6c15f3b878413c46737",
+        "class" : "route-node",
+        "root?" : true,
+        "bytes" : 220
+      }, {
+        "id" : "aa9fa56bafc060a6e23306ebe163aee75beeb6f1766d5f99ba80243afb17ef68",
+        "class" : "route-node",
+        "root?" : true,
+        "bytes" : 394
+      }, {
+        "id" : "c325565bec60747daf568c336b94304b268d26b1879666f52bfba36f66778e78",
+        "class" : "route-node",
+        "root?" : false,
+        "bytes" : 431
+      }, {
+        "id" : "c3900fa793831603dacaee7af3212816eb95bbcb8df69109997752e4d71eb58f",
+        "class" : "mmap-leaf",
+        "root?" : true,
+        "bytes" : 220
+      }, {
+        "id" : "e4c75ae172a4f1897c711c9cdee2aac313408eb595af2c7d6bb58667f7328a3e",
+        "class" : "route-node",
+        "root?" : true,
+        "bytes" : 394
+      }, {
+        "id" : "f2b50db45616662a57557525d03e87be95c52add78e4cd6ba43af5f22969b302",
+        "class" : "route-node",
+        "root?" : false,
+        "bytes" : 702
+      } ],
+      "held" : [ ]
+    },
+    "roots" : {
+      "count" : 13,
+      "bytes" : 4514,
+      "by-class" : {
+        "mmap-leaf" : {
+          "count" : 7,
+          "bytes" : 2324
+        },
+        "route-node" : {
+          "count" : 6,
+          "bytes" : 2190
+        }
+      }
+    },
+    "note" : "inventory only: nothing was written or removed. A candidate is an object the heads did not reach when the inventory was taken; it is not known to be safe to remove (a writer stores its objects before it moves the heads).",
+    "unreachable" : 18,
+    "reached" : 63
+  },
+  "warnings" : [ ]
+}

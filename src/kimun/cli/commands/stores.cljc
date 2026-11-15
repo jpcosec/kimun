@@ -1,6 +1,6 @@
 (ns kimun.cli.commands.stores
   "The `kimun stores` group (docs/v2/06 §3): `init`, `check`, `health`,
-   `sense`, `heartbeat`, `update`, `reconcile`, `verify`, `upgrade`, `show`, and the federation commands `link`, `unlink` and `links`. Every
+   `sense`, `heartbeat`, `update`, `reconcile`, `verify`, `unreachable`, `upgrade`, `show`, and the federation commands `link`, `unlink` and `links`. Every
    command is `(fn [args opts ctx] envelope)` where `args` are the positional
    tokens after the subcommand and `ctx` is `{:env env :cwd cwd}`; `dispatch`
    routes a subcommand name."
@@ -397,6 +397,76 @@
                    {:checked checked :bad bad :path path}
                    5))))
 
+(defn- tally
+  "`{:count n :bytes n :by-class {class {:count n :bytes n}}}` of `items`
+   (`{:id :class}`), with the size of each object file under `dir`."
+  [dir items]
+  (let [size (fn [i] (let [f (fs/path dir "objects" (:id i))] (if (fs/exists? f) (fs/size f) 0)))
+        sized (map #(assoc % :bytes (size %)) items)
+        total (fn [xs] {:count (count xs) :bytes (reduce + 0 (map :bytes xs))})]
+    (assoc (total sized)
+           :by-class (into (sorted-map)
+                           (map (fn [[c xs]] [(name c) (total xs)]))
+                           (group-by :class sized)))))
+
+(def unreachable-note
+  "What every `stores unreachable` answer says of itself, so that the report
+   is not read as a list of garbage."
+  "inventory only: nothing was written or removed. A candidate is an object the heads did not reach when the inventory was taken; it is not known to be safe to remove (a writer stores its objects before it moves the heads).")
+
+(defn unreachable
+  "`stores unreachable [--ids]`: the inventory of the objects under objects/
+   that the heads do not reach (`kimun.kernel.store/unreachable`; docs/v2/10
+   §11.3). Read-only: it writes nothing and removes nothing; there is no
+   command that removes them. Data:
+
+   - `:note`: `unreachable-note`, the same sentence in every answer.
+   - `:stored`, `:reached`, `:unreachable`: object counts (`:stored` is what
+     `stores check` reports as `:objects`).
+   - `:candidates` `{:count :bytes :by-class}`: unreachable objects nothing is
+     known to need, by shape; `:roots` the same for those no other unreachable
+     object mentions (roots of the heads map and of the route map that a later
+     commit replaced or that a losing writer wrote).
+   - `:lost-revisions` `[id]`: candidates that are revisions, i.e. commits that
+     are not in the history of the head (a writer that lost the race, or the
+     uncommitted tail).
+   - `:held` `{:count :bytes :by-class}`: resolved plans a committed log line
+     names; without them the log cannot be replayed, they are not candidates.
+   - `:damaged` `[{:id :reason}]`: unreachable objects that do not hash to
+     their name or do not read; only reported.
+   - `:stable?`: false when the heads moved while the inventory was taken.
+   - `:uncommitted-tail` when the log ends with a line the heads do not record.
+   - with `--ids`, `:ids {:candidates [{:id :class :root? :bytes}] :held […]}`.
+
+   Bytes are file sizes, not disk blocks. A candidate is not known to be
+   garbage: a writer stores its objects before it moves the heads, so an
+   inventory taken during a commit lists objects about to be reached. Warning
+   `unreachable/unstable` when `:stable?` is false."
+  [_args opts {:keys [env cwd]}]
+  (let [{:keys [backend descriptor store path]} (cli-store/open! (cli-store/resolve-store opts env cwd))
+        r (store/unreachable backend store)
+        size (fn [i] (let [f (fs/path path "objects" (:id i))] (assoc i :bytes (if (fs/exists? f) (fs/size f) 0))))
+        tail (:uncommitted-tail r)]
+    (out/ok "stores unreachable"
+            {:store (store-ref descriptor path)
+             :revision (:head store)
+             :data (cond-> {:path path
+                            :note unreachable-note
+                            :stored (:stored r) :reached (:reached r) :unreachable (:unreachable r)
+                            :candidates (tally path (:candidates r))
+                            :roots (tally path (filter :root? (:candidates r)))
+                            :lost-revisions (mapv :id (filter #(= :revision (:class %)) (:candidates r)))
+                            :held (tally path (:held r))
+                            :damaged (:damaged r)
+                            :stable? (:stable? r)}
+                     tail (assoc :uncommitted-tail (select-keys tail [:id :revision :torn-line]))
+                     (:ids opts) (assoc :ids {:candidates (mapv size (:candidates r))
+                                              :held (mapv size (:held r))}))
+             :warnings (if (:stable? r)
+                         []
+                         [{:type "unreachable/unstable"
+                           :message "the heads moved while the inventory was taken; run it again"}])})))
+
 (def ^:private layout
   "Entries of a store directory that the upgrade rebuilds, or drops: the
    derived index is keyed by revision ids that the upgrade replaces
@@ -613,6 +683,7 @@
    :content {:ref "MODE" :desc "Content mode of the store: by-reference (default) or inline (stores init)"}
    :apply {:desc "Write what the comparison found (stores reconcile)" :coerce :boolean}
    :once {:desc "Make the single observation explicit (stores sense; no daemon)" :coerce :boolean}
+   :ids {:desc "List the id, class and bytes of every object (stores unreachable)" :coerce :boolean}
    :interval {:ref "SECONDS" :desc "Seconds between observations, decimals allowed (stores heartbeat; default 30, minimum 0.1)"}
    :beats {:ref "N" :desc "Stop after N observations (stores heartbeat; default: until interrupted)"}})
 
@@ -620,7 +691,7 @@
   "Subcommand name → command fn."
   {"init" init "check" check "verify" verify "upgrade" upgrade-store "show" show
    "link" link "unlink" unlink "links" links
-   "health" health "sense" sense "heartbeat" heartbeat "update" update-store "reconcile" reconcile})
+   "unreachable" unreachable "health" health "sense" sense "heartbeat" heartbeat "update" update-store "reconcile" reconcile})
 
 (defn dispatch
   "Runs subcommand `sub` of the `stores` group (`args` are the positional tokens);

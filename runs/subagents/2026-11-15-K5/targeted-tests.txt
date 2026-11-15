@@ -1,0 +1,26 @@
+
+Testing kimun.kernel.unreachable-test
+
+Testing kimun.cli.unreachable-test
+
+Testing kimun.cli.stores-test
+
+Testing kimun.cli.main-test
+
+Testing kimun.cli.golden-test
+
+Testing kimun.kernel.store-test
+
+Testing kimun.kernel.hardening-test
+
+Testing kimun.kernel.route-tree-store-test
+
+Testing kimun.cli.journal-test
+
+Testing kimun.parity.closed-gaps-test
+
+Testing kimun.doc14-contract-test
+
+Ran 150 tests containing 1192 assertions.
+0 failures, 0 errors.
+exit 0

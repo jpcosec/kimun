@@ -757,6 +757,102 @@
                 (nil? o) (recur more (conj seen id))
                 :else (recur (into more (err/rescue-any (fn [_] []) (vec (references o (if (vector? kind) :obj kind))))) (conj seen id))))))))))
 
+;; ---------------------------------------------------------------- unreachable objects (K5, first cut)
+
+(defn object-class
+  "The class of a stored object by its shape: `:revision`, `:mmap-leaf`,
+   `:mmap-branch`, `:route-map` (route schema 1), `:route-node` (schema 2),
+   `:plan` (a resolved plan kept in the CAS by formats 1–3), `:descriptor`,
+   `:node`, `:edge`, `:tree-object`, else `:unknown`. A shape is what the object
+   is, not why it is where it is."
+  [o]
+  (cond
+    (mmap/leaf? o) :mmap-leaf
+    (mmap/branch? o) :mmap-branch
+    (route-tree/node? o) :route-node
+    (flat-route-object? o) :route-map
+    (revision-object? o) :revision
+    (and (map? o) (contains? o :ops) (contains? o :plan/version)) :plan
+    (and (map? o) (:tree o) (:root o)) :descriptor
+    (and (map? o) (:class o) (:kind o) (contains? o :content)) :node
+    (and (map? o) (:type o) (:from o) (:to o)) :edge
+    (and (map? o) (:node o) (contains? o :children)) :tree-object
+    :else :unknown))
+
+(defn- mentioned-ids
+  "Every string inside value `o` that has the form of an object id (64
+   lower-case hex characters). A superset of what `o` refers to: it does not
+   interpret the shape."
+  [o]
+  (into #{} (filter #(and (string? %) (re-matches #"[0-9a-f]{64}" %)))
+        (tree-seq coll? seq o)))
+
+(defn unreachable
+  "The inventory of the objects stored in backend `b` that the heads of
+   `store` do not reach (docs/v2/10 §5, §7, §11.3): read-only, it writes
+   nothing and removes nothing.
+
+   STORED is every id under objects/ (`object-ids`); the derived cache is not
+   looked at. REACHED is `reachable`, the same walk `verify` rehashes: the head
+   revision and its whole history, the per-tree heads, and the route map the
+   heads name. Unreachable = stored and not reached. Each one is read from the
+   store itself (never from a cache) and rehashed, and falls in one of three
+   lists:
+
+   - `:held` — a resolved plan (`:plan`) whose id a COMMITTED log line names.
+     The walk does not follow it, but without it the log cannot be replayed
+     (`verify-full` answers `:replay-unavailable`; formats 1–3 keep plans in
+     the CAS): it is not a candidate for anything.
+   - `:damaged` — `{:id :reason}` with `:hash-mismatch` or `:unreadable`: its
+     class cannot be trusted, so it is only reported.
+   - `:candidates` — the rest: `{:id :class :root?}`. `:root?` is true when no
+     other unreachable object mentions its id: a root of the heads map or of
+     the route map that a later commit replaced or that a losing writer wrote.
+     A candidate of class `:revision` is a commit that is not in the history
+     of the head: the revision of a writer that lost the race, or of the
+     uncommitted tail. It is not a top: the heads map written with it
+     mentions it.
+
+   Returns `{:stored n :reached n :unreachable n :candidates [...] :held [...]
+   :damaged [...] :stable? bool}` plus `:uncommitted-tail` (the log entry the
+   heads do not record) when there is one: what that line wrote is unreachable
+   and is among the candidates. `:reached` counts the reached ids that are
+   stored. `:stable?` is false when the heads on disk are no longer the ones
+   `store` was opened at.
+
+   A candidate is NOT known to be garbage. A writer puts its objects in the
+   store before it moves the heads, so an inventory taken during a commit
+   lists objects that are about to be reached; removing anything needs the
+   writer lock and a second look, which this function does not take."
+  [b store]
+  (let [host (:host store)
+        hasher (ports/hasher host)
+        stored (set (object-ids b))
+        live (reachable store)
+        [committed tail] (split-log b)
+        logged (into #{} (keep :id) committed)
+        read (fn [id]
+               (let [content (stored-content b id)]
+                 (cond
+                   (or (nil? content) (not= id (ports/digest-str hasher content))) {:id id :damage :hash-mismatch}
+                   :else (let [o (err/rescue-any (fn [_] ::unreadable) (deserialize id content))]
+                           (if (= ::unreadable o)
+                             {:id id :damage :unreadable}
+                             {:id id :class (object-class o) :mentions (disj (mentioned-ids o) id)})))))
+        items (mapv read (sort (remove live stored)))
+        sound (remove :damage items)
+        mentioned (into #{} (mapcat :mentions) sound)
+        held? (fn [i] (and (= :plan (:class i)) (contains? logged (:id i))))]
+    (cond-> {:stored (count stored)
+             :reached (count (filter stored live))
+             :unreachable (count items)
+             :candidates (mapv (fn [i] {:id (:id i) :class (:class i) :root? (not (contains? mentioned (:id i)))})
+                               (remove held? sound))
+             :held (mapv #(select-keys % [:id :class]) (filter held? sound))
+             :damaged (mapv (fn [i] {:id (:id i) :reason (:damage i)}) (filter :damage items))
+             :stable? (= (heads-record store) (or (read-heads b) no-heads))}
+      tail (assoc :uncommitted-tail tail))))
+
 (defn- plan-ids
   "The transaction digests named by log entries, ascending. Reading the log
    avoids parsing a damaged older Revision just to decide which plans to check."
