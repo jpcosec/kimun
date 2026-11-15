@@ -11,3 +11,16 @@
   final se corrieron `bb lint` (`lint-final.txt`) y las pruebas documentales
   (`directed-docs.txt`), en verde. La suite completa no se repitió.
 - Este commit añade M1i a la fila `M1` de `12 §1`.
+
+## Rebase sobre `c3b2d150` (decisión 47, integrada por otra sesión)
+
+Mientras corría esta tanda entró en `main` la decisión 47 del dueño (kimun reemplaza el
+núcleo de sldb; `C2` pasa de retirada a **diferida**; filas nuevas `RS1` y `RS2`). La tanda se
+rebasó encima: un conflicto en la fila «Operación y vista» de `12 §1` se resolvió conservando
+el texto de la decisión 47 y añadiendo el avance de la auditoría de `serve`; y la nota de
+`preguntas-abiertas.md` que decía «C2 se retiró» se corrigió a «diferida (decisión 47)».
+
+Sobre el árbol rebasado se corrieron `bb lint` y las pruebas documentales más
+`selector-cst-test` (`lint-final.txt`, `directed-docs.txt`), en verde. **La suite completa de
+M1i corrió sobre la base anterior (`6cf18730`)**; el commit de la decisión 47 solo toca
+documentos y `python/README.md`.

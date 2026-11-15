@@ -1,7 +1,13 @@
 
 Testing kimun.doc14-contract-test
 
+Testing kimun.wittgenstein-manifest-test
+
+Testing kimun.spec16-models-contract-test
+
 Testing kimun.lint-test
 
-Ran 9 tests containing 215 assertions.
+Testing kimun.surface.models.selector-cst-test
+
+Ran 22 tests containing 1250 assertions.
 0 failures, 0 errors.

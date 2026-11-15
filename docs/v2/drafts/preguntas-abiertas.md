@@ -36,7 +36,9 @@
 
 > **Decidido por el dueño el 2026-11-15 (no son preguntas):** (1) «producto funcional» significa
 > terminar todo lo planificado en `docs/v2/12-ecosistema-y-pendientes.md §1`; (2) `C2` (cliente
-> Python y rutas HTTP de `graph_ui`) se retiró (fila `C2` de `12 §1`).
+> Python y rutas HTTP de `graph_ui`) se retiró, y el mismo día quedó **diferida**, no retirada:
+> kimun reemplazará el núcleo de sldb y el wrapper Python se agrega después de que kimun esté
+> probado (decisión 47 de `05-estado.md`; filas `C2`, `RS1` y `RS2` de `12 §1`).
 
 > **No es una pregunta abierta: la identidad de una clase entre revisiones.** El texto vigente ya
 > lo dice: `docs/v2/14-juego-del-lenguaje.md §18` punto 3 (l. 243, «Una clase cambiada es otra
