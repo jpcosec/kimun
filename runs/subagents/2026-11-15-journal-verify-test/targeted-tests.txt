@@ -1,0 +1,4 @@
+
+Ran 12 tests containing 62 assertions.
+0 failures, 0 errors.
+kimun.cli.journal-test repetido 15 veces: 0 corridas con fallo

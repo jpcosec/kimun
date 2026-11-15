@@ -73,16 +73,43 @@
     (is (true? (:ok (jr proj "verify" {}))))))
 
 ;; Tampering: a corrupted object or log line is the typed failure store/corrupt, exit 5.
+(defn- heads
+  "The heads file of the store of `proj`, read."
+  [proj]
+  (edn/read-string (slurp (str (fs/path proj ".kimun" "heads.edn")))))
+
+(defn- tamper!
+  "Appends bytes to the object `id` of the store of `proj`."
+  [proj id]
+  (let [file (str (fs/path proj ".kimun" "objects" id))]
+    (spit file (str (slurp file) " tampered"))))
+
 (deftest verify-detects-corrupt-object
-  (let [proj (project)
-        objs (fs/list-dir (fs/path proj ".kimun" "objects"))
-        victim (first (sort-by str objs))]
-    (spit (str victim) (str (slurp (str victim)) " tampered"))
+  ;; the victim is the head revision: an object the head is guaranteed to reach
+  (let [proj (project)]
+    (tamper! proj (:head (heads proj)))
     (let [e (jr proj "verify" {})]
       (is (false? (:ok e)))
       (is (= "store/corrupt" (get-in e [:error :type])))
       (is (= 5 (:exit e)))
       (is (seq (get-in e [:error :data :bad]))))))
+
+;; The limit of that check, as it is today: it answers for what the head reaches.
+;; A route map a later write replaced is still a file under objects/ and nothing
+;; reaches it, so damage to it is not reported.
+(deftest verify-does-not-answer-for-a-superseded-route-map
+  (let [proj (str (ktu/temp-dir "kimun-cli-journal-"))]
+    (run proj "stores" "init" "--name" "p")
+    (spit (str (fs/path proj "doc.md")) "# T\n\npara one\n")
+    (run proj "docs" "ingest" "doc.md")
+    (let [superseded (:routes-object (heads proj))]
+      (spit (str (fs/path proj "doc.md")) "# T\n\npara two\n")
+      (run proj "docs" "update" "doc.md" "--name" "doc")
+      (is (string? superseded))
+      (is (not= superseded (:routes-object (heads proj))) "the update wrote a new route map")
+      (is (fs/exists? (fs/path proj ".kimun" "objects" superseded)) "the old one is still on disk")
+      (tamper! proj superseded)
+      (is (true? (:ok (jr proj "verify" {})))))))
 
 (deftest verify-detects-corrupt-log
   (let [proj (project)
