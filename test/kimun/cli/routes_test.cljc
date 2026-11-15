@@ -13,6 +13,7 @@
             [kimun.host.default :as host]
             [kimun.host.store-cache :as store-cache]
             [kimun.kernel.route :as route]
+            [kimun.kernel.route-tree :as route-tree]
             [kimun.kernel.store :as kstore]
             [kimun.surface.docs :as tdocs]
             [kimun.surface.markdown.ast :as ast]
@@ -20,6 +21,11 @@
 
 (def env {"USER" "tester"})
 (def h host/host)
+
+(defn- root-of
+  "The route root a store of route schema 2 (every new store) has for `entries`."
+  [entries]
+  (:hash (route-tree/from-entries h entries)))
 
 (defn- run [cwd & argv] (binding [ast/*parser* "native"] (:envelope (main/run argv env cwd))))
 (defn- file [p & parts] (str (apply fs/path p parts)))
@@ -61,7 +67,7 @@
         typed (tdocs/find-document (opened p) "login")
         generic (tdocs/generic-document (opened p) "plain")]
     (is (= ["notes/plain.md" "tickets/login.md"] (sort (keys rs))))
-    (is (= (route/root h (vals rs)) (root p)) "the root is the route root of exactly these entries")
+    (is (= (root-of (vals rs)) (root p)) "the root is the route root of exactly these entries")
     (testing "a typed document: the class is its model, the content hash is its payload's"
       (let [e (rs "tickets/login.md")]
         (is (= {:path "tickets/login.md" :fingerprint (tdocs/fingerprint h ticket-text)
@@ -159,7 +165,7 @@
         (is (= (inc n) (log)) "one commit")
         (is (= ["archive/plain.md" "tickets/login.md"] (sort (keys (routes p)))) "the old route is gone")
         (is (= tree (get-in (routes p) ["archive/plain.md" :tree-id])) "the same document, another locator")
-        (is (= (route/root h (vals (routes p))) (root p)))))
+        (is (= (root-of (vals (routes p))) (root p)))))
     (testing "a typed document moved through the surface"
       (fs/create-dirs (file p "done"))
       (spit (file p "done" "login.md") ticket-text)
@@ -181,7 +187,7 @@
     (testing "typed"
       (is (true? (:ok (run p "docs" "untrack" "login"))))
       (is (= ["notes/plain.md"] (keys (routes p))))
-      (is (= (route/root h (vals (routes p))) (root p)))
+      (is (= (root-of (vals (routes p))) (root p)))
       (is (true? (:ok (run p "docs" "track" "TicketDoc" "tickets/login.md")))
           "the path can be tracked again: no route was left behind"))
     (testing "generic"
@@ -192,7 +198,7 @@
       (is (true? (:ok (run p "docs" "untrack" "login"))))
       (is (true? (:ok (run p "docs" "untrack" "plain"))))
       (is (= {} (routes p)))
-      (is (= (route/root h []) (root p))))
+      (is (= (root-of []) (root p))))
     (is (true? (:ok (run p "stores" "verify"))))))
 
 (deftest one-route-one-document-a-new-track-on-a-held-file-is-refused
@@ -306,7 +312,7 @@
       (spit (file p "new.md") note-edited)
       (is (true? (:ok (run p "docs" "ingest" "new.md"))))
       (is (= [1 false ["old.md" "older.md"]] ((juxt :route-count :routes-complete? :routes-missing) (coverage))))
-      (is (= (route/root h (vals (routes p))) (root p))))
+      (is (= (root-of (vals (routes p))) (root p))))
     (testing "registering an old document again, unchanged, gives it its route"
       (let [u (run p "docs" "update" "old.md" "--name" "old")]
         (is (false? (get-in u [:data :unchanged?])) "without its route it is not unchanged")

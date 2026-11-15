@@ -184,6 +184,19 @@
                         (write-atomic! hp new-text)
                         (reset! heads-memo {:text new-text :value new}))
                       true)))))))
+  store/HeadsSwap
+  (swap-heads! [_ expected new]
+    #?(:clj (with-store-lock dir wait?
+              (fn []
+                (let [hp (path dir "heads.edn")
+                      text (read-text hp)
+                      current (if (nil? text) store/no-heads (edn/read-string text))]
+                  (if (not= current expected)
+                    false
+                    (let [new-text (pr-str new)]
+                      (write-atomic! hp new-text)
+                      (reset! heads-memo {:text new-text :value new})
+                      true)))))))
   store/StoredObjects
   (read-stored-object [_ id]
     ;; verify reads here: a cached copy must never stand in for a stored object

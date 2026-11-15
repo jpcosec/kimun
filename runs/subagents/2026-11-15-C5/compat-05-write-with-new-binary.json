@@ -1,0 +1,19 @@
+{
+  "ok" : true,
+  "command" : "docs update",
+  "store" : {
+    "name" : "compat",
+    "path" : "/tmp/c5-compat/.kimun"
+  },
+  "revision" : "2a9bf976ba083fb513826ae868c955a94babee28a9681153479534a30c4fe8d8",
+  "data" : {
+    "name" : "plain",
+    "tree" : "01M7FWV72SA80JD9SH00TVJRPK",
+    "path" : "/tmp/c5-compat/notes/plain.md",
+    "blocks" : 2,
+    "class" : "generic/md",
+    "anchor" : "notes/plain.md",
+    "unchanged?" : false
+  },
+  "warnings" : [ ]
+}

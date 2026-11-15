@@ -3,11 +3,13 @@
    (docs/v2/02 §8.1, milestone 3).
 
    Layout (files-only backend, see kimun.host.fs-store; docs/v2/10 §11, 14 §10):
-     <dir>/store.edn      {:format-version 4 :hash-alg :sha-256 :capabilities {...}}
+     <dir>/store.edn      {:format-version 4 :hash-alg :sha-256 :capabilities {...} :route-schema 2}
+                          (:route-schema absent = route schema 1, docs/v2/10 §11.2)
      <dir>/objects/<id>   canonical EDN text of the hashed form of the object; H(file) == id
      <dir>/cache/         format 4: derived cache of a document with an external anchor —
                           cache/routes/<root>.<head>.edn mirrors the durable CAS
-                          route-map object; open validates the CAS object first,
+                          route-map object of route schema 1 (schema 2 keeps the map
+                          as tree nodes in objects/ and writes no mirror); open validates the CAS object first,
                           so this is a contract mirror, not a measured accelerator —
                           one entry per document keyed by (fingerprint, class, parser) plus
                           its tree/block/field objects by hash; gitignored, deletable,
@@ -52,7 +54,8 @@
             [kimun.kernel.mmap :as mmap]
             [kimun.kernel.legacy.revision :as legacy]
             [kimun.kernel.revision :as revision]
-            [kimun.kernel.route :as route]))
+            [kimun.kernel.route :as route]
+            [kimun.kernel.route-tree :as route-tree]))
 
 (defprotocol Backend
   "Port implemented by a persistence adapter (ring 1)."
@@ -72,6 +75,17 @@
      log line, then replaces the heads with `new`; returns true. An adapter
      whose lock is held by another process may raise :store/busy instead of
      waiting, having written nothing."))
+
+;; ---------------------------------------------------------------- heads swap (optional port)
+
+(defprotocol HeadsSwap
+  "Optional backend capability: replace the heads without a transaction. Only
+   for a change that names the same head revision and the same per-tree heads
+   under another route root (`upgrade-routes!`): the log does not move."
+  (swap-heads! [b expected new]
+    "Under the same exclusive lock as `commit-tx!`: when the current heads
+     differ from `expected`, writes nothing and returns false; otherwise
+     replaces them with `new` and returns true. Appends nothing to the log."))
 
 ;; ---------------------------------------------------------------- plan cache (optional port)
 
@@ -257,24 +271,41 @@
    object and no block/text node in the CAS)."
   4)
 
+(def route-schema
+  "The route schema new stores are created with (docs/v2/10 §11.2): 2, the
+   route map as a Merkle tree by path. store.edn records it as `:route-schema`;
+   a store.edn without the key is a store of schema 1 (one flat map object),
+   which keeps opening and writing as it did until `upgrade-routes!`."
+  2)
+
+(defn- descriptor-route-schema
+  "The route schema a store.edn map declares: its `:route-schema`, else 1."
+  [descriptor]
+  (or (:route-schema descriptor) 1))
+
 (defn- empty-store
-  "The empty store value of format `fv` (1 = legacy, 2–4 = current)."
-  [host capabilities fv]
+  "The empty store value of format `fv` (1 = legacy, 2–4 = current) and route
+   schema `rs`."
+  [host capabilities fv rs]
   (case fv
     1 (assoc (legacy/empty-store host capabilities) :format-version 1)
-    (2 3 4) (assoc (revision/empty-store host capabilities) :format-version fv)
+    (2 3 4) (assoc (revision/empty-store host capabilities) :format-version fv :routes-schema rs)
     (fail "unsupported store format" {:format-version fv})))
 
 (defn init!
   "Creates a new store in backend `b` with the given capabilities; returns the
    empty in-memory store. `opts` {:format-version 1} creates a legacy format-1
-   store (tests and upgrade); the default is `format-version`."
+   store (tests and upgrade); the default is `format-version`. A format-4 store
+   is created with route schema `route-schema`, recorded in store.edn;
+   `opts` {:route-schema 1} creates one of schema 1 (tests and upgrade)."
   ([b host capabilities] (init! b host capabilities {}))
   ([b host capabilities opts]
    (when (read-descriptor b) (fail "store already initialised" {}))
    (let [fv (or (:format-version opts) format-version)
-         store (empty-store host capabilities fv)]
-     (write-descriptor! b {:format-version fv :hash-alg (ports/algorithm (ports/hasher host)) :capabilities capabilities})
+         rs (if (= 4 fv) (or (:route-schema opts) route-schema) 1)
+         store (empty-store host capabilities fv rs)]
+     (write-descriptor! b (cond-> {:format-version fv :hash-alg (ports/algorithm (ports/hasher host)) :capabilities capabilities}
+                            (not= 1 rs) (assoc :route-schema rs)))
      store)))
 
 (defn- plan-of
@@ -290,7 +321,7 @@
 (defn- replay-log
   "Replays the entries `log` over the empty store of backend `b`."
   [b host log]
-  (let [{:keys [capabilities hash-alg] fv :format-version} (or (read-descriptor b) (fail "no store.edn" {}))
+  (let [{:keys [capabilities hash-alg] fv :format-version :as descriptor} (or (read-descriptor b) (fail "no store.edn" {}))
         alg (ports/algorithm (ports/hasher host))]
     (when (not= hash-alg alg) (fail "hash algorithm mismatch" {:store hash-alg :hasher alg}))
     (reduce (fn [store {:keys [id revision] :as entry}]
@@ -303,7 +334,8 @@
                 (when (not= id (:id (:transaction r))) (fail "replayed transaction id differs from log" {:logged id :got (:id (:transaction r))}))
                 (when (not= revision (:revision-id r)) (fail "replayed revision id differs from log" {:logged revision :got (:revision-id r) :tx id}))
                 (:store r)))
-            (empty-store host capabilities (or fv 1))
+            ;; the route schema of every replayed write is the one store.edn declares
+            (empty-store host capabilities (or fv 1) (descriptor-route-schema descriptor))
             log)))
 
 (defn replay
@@ -372,13 +404,20 @@
                 (if (caching? b) (cache-object! b id o) o)
                 (bad shape))))))
 
-(defn- route-object?
-  "Shape of the durable route-map object: `{:route/version … :entries path→entry}`."
+(defn- flat-route-object?
+  "Shape of the durable route-map object of schema 1: `{:route/version …
+   :entries path→entry}`."
   [o]
   (and (map? o) (= route/schema (:route/version o)) (map? (:entries o))))
 
+(defn- route-object?
+  "Shape of the object `:routes-object` names: the flat map of schema 1 or the
+   root node of the tree of schema 2."
+  [o]
+  (or (flat-route-object? o) (route-tree/node? o)))
+
 (defn- open-from-heads
-  [b host capabilities fv]
+  [b host capabilities fv rs]
   (let [lm (ports/lazy-maps host)
         hd (checked-heads b fv)
         {:keys [head heads-root routes-root routes-object]} hd
@@ -387,8 +426,11 @@
                   heads-root (assoc heads-root (checked-head-object b host heads-root mmap/node? :not-an-mmap-node))
                   routes-object (assoc routes-object
                                        (checked-head-object b host routes-object route-object? :not-a-route-map)))
-        cas-routes (when routes-object (some-> (get checked routes-object) :entries))
-        cached-routes (when (and routes-root (satisfies? RouteCache b))
+        ;; the object itself says which schema it is; store.edn decides only while
+        ;; the store has no route yet
+        tree? (route-tree/node? (get checked routes-object))
+        cas-routes (when (and routes-object (not tree?)) (some-> (get checked routes-object) :entries))
+        cached-routes (when (and routes-root (not tree?) (satisfies? RouteCache b))
                         (read-routes b routes-root head))
         route-ok? (fn [m]
                     (boolean
@@ -404,12 +446,23 @@
         cached-ok? (route-ok? cached-routes)
         cas-ok? (route-ok? cas-routes)
         raw-routes (if cached-ok? cached-routes (when cas-ok? cas-routes))
-        routes (when raw-routes raw-routes)
         objects (ports/lazy-map lm
                                 (fn [id] (when (string? id) (load-object b id)))
                                 #(object-ids b)
                                 checked)
         load #(get objects %)
+        ;; schema 2: the root node was read and rehashed above; here its route hash is
+        ;; checked against the heads, and every other node is read and checked against
+        ;; its parent only when a lookup goes through it
+        tree-ok? (and tree?
+                      (err/rescue-any (fn [_] false)
+                                      (some? (route-tree/root-node host load routes-root routes-object))))
+        routes (cond
+                 tree-ok? (ports/lazy-map lm
+                                          #(route-tree/lookup host load routes-object %)
+                                          #(map :path (route-tree/entries host load routes-object))
+                                          {})
+                 raw-routes raw-routes)
         heads (if heads-root
                 (ports/lazy-map lm #(mmap/lookup host load heads-root % nil) #(mmap/keys load heads-root) {})
                 {})
@@ -427,8 +480,11 @@
     (revision/lazy-store {:host host :capabilities capabilities :format-version fv
                           :objects objects :revisions revisions :head head :heads heads :heads-root heads-root
                           :routes-root routes-root :routes-object routes-object :routes routes
-                          :routes-available? (boolean (or (nil? routes-root) (some? raw-routes)))
-                          :routes-invalid? (boolean (and routes-root cached-routes (not cached-ok?)))})))
+                          :routes-schema (cond tree? 2 routes-object 1 :else rs)
+                          :routes-available? (boolean (or (nil? routes-root) (some? routes)))
+                          :routes-invalid? (boolean (and routes-root
+                                                         (or (and tree? (not tree-ok?))
+                                                             (and cached-routes (not cached-ok?)))))})))
 
 (defn open
   "Opens the store in backend `b`.
@@ -456,11 +512,11 @@
 
    Format 1, or a host without the port: `replay-open` (full replay)."
   [b host]
-  (let [{:keys [capabilities hash-alg] fv :format-version} (or (read-descriptor b) (fail "no store.edn" {}))
+  (let [{:keys [capabilities hash-alg] fv :format-version :as descriptor} (or (read-descriptor b) (fail "no store.edn" {}))
         alg (ports/algorithm (ports/hasher host))]
     (if (and (>= (or fv 1) 2) (ports/lazy-maps? host))
       (do (when (not= hash-alg alg) (fail "hash algorithm mismatch" {:store hash-alg :hasher alg}))
-          (open-from-heads b host capabilities fv))
+          (open-from-heads b host capabilities fv (descriptor-route-schema descriptor)))
       (replay-open b host))))
 
 ;; ---------------------------------------------------------------- commit
@@ -513,6 +569,64 @@
           (update :store update :objects dissoc (:id tx))
           (update :new-objects dissoc (:id tx)))
       r)))
+
+(defn upgrade-routes!
+  "Moves the store of backend `b` from route schema 1 (one flat map object) to
+   schema 2 (the Merkle tree by path, `kimun.kernel.route-tree`), in place and
+   only when asked (docs/v2/10 §11.2). The same entries, tree ids included, are
+   written as tree nodes; the heads then name the root of the tree and
+   store.edn records `:route-schema 2`. No transaction is added and no revision
+   changes: the head, the per-tree heads and every document stay as they were.
+   The route root CHANGES, because schema 2 hashes a tree and schema 1 a list;
+   both are returned.
+
+   Order: node objects (unreferenced until the next step), heads
+   (`swap-heads!`, refused with :store/stale when a writer moved them), then
+   store.edn. Stopped between the last two, the store opens and writes as
+   schema 2 and a second call completes it.
+
+   Returns `{:upgraded bool :route-schema 2 :routes n}` plus, when the heads
+   changed, `:routes-root-before`, `:routes-root`, `:routes-object` and `:nodes`
+   (node objects of the tree). `:upgraded false`: there was nothing to do.
+   Raises :store/error for a format other than 4, a backend without
+   `HeadsSwap`, or a schema-1 route map that cannot be read (rebuild it first:
+   nothing is invented)."
+  [b host]
+  (let [descriptor (or (read-descriptor b) (fail "no store.edn" {}))
+        store (open b host)
+        declared (descriptor-route-schema descriptor)
+        record! #(write-descriptor! b (assoc descriptor :route-schema 2))]
+    (when-not (= 4 (:format-version descriptor))
+      (fail "route schema 2 needs a format-4 store" {:format-version (:format-version descriptor)}))
+    (cond
+      ;; no route yet, or the heads already name a tree: only store.edn may be behind
+      (or (nil? (:routes-object store)) (= 2 (:routes-schema store)))
+      (do (when (not= 2 declared) (record!))
+          {:upgraded (not= 2 declared) :route-schema 2
+           :routes (if (:routes-object store) (count (:routes store)) 0)})
+
+      (not (:routes-available? store))
+      (fail "the route map of schema 1 cannot be read; rebuild the store before upgrading its routes"
+            {:type :store/error :routes-root (:routes-root store)})
+
+      (not (satisfies? HeadsSwap b))
+      (fail "this backend cannot replace its heads in place" {:type :store/error})
+
+      :else
+      (let [entries (vec (vals (:routes store)))
+            tree (route-tree/from-entries host entries)
+            expected (heads-record store)
+            heads' (assoc expected :routes-root (:hash tree) :routes-object (:object tree))]
+        ;; the tree must give back exactly what the flat map held before anything is replaced
+        (when (not= (route/canonical-entries host entries) (route-tree/entries host (:new tree) (:object tree)))
+          (fail "the route tree does not hold the entries of the flat map" {:type :store/error}))
+        (doseq [[id node] (:new tree)] (write-object! b id (serialize host node)))
+        (when-not (swap-heads! b expected heads')
+          (fail "heads moved while the routes were being upgraded; run the upgrade again" {:type :store/stale :expected expected}))
+        (record!)
+        {:upgraded true :route-schema 2 :routes (count entries)
+         :routes-root-before (:routes-root store) :routes-root (:hash tree)
+         :routes-object (:object tree) :nodes (count (:new tree))}))))
 
 (defn route-coverage
   "Verifiable coverage of the durable route map against the documents CURRENTLY
@@ -568,6 +682,8 @@
   [o kind]
   (let [as (fn [k ids] (for [id ids :when (string? id)] [id k]))]
     (cond
+      ;; a node of the route tree (schema 2) names the nodes below it
+      (route-tree/node? o) (as :obj (route-tree/child-ids o))
       (mmap/branch? o) (as (if (#{:trees :heads} kind) kind :obj) (mmap/child-ids o))
       (and (mmap/leaf? o) (= :heads kind)) (as :obj (map second (:entries o)))
       (and (mmap/leaf? o) (= :trees kind))

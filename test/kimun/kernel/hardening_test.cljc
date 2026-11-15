@@ -277,7 +277,16 @@
            b (fs/backend dir)
            s (:store (store/commit! b (store/init! b h caps) (plan nil doc-ops)))]
        (testing "store.edn carries the descriptor fields"
-         (is (= #{:format-version :hash-alg :capabilities} (set (keys (store/read-descriptor b)))))
+         ;; a new format-4 store also declares its route schema (docs/v2/10 §11.2) …
+         (is (= #{:format-version :hash-alg :capabilities :route-schema} (set (keys (store/read-descriptor b)))))
+         (is (= 2 (:route-schema (store/read-descriptor b))))
+         ;; … and a store.edn with the three fields alone, which is every store created
+         ;; before that key existed, still opens: it is a store of route schema 1
+         (let [old-dir (str (ktu/temp-dir "sldb-hard-"))
+               ob (fs/backend old-dir)]
+           (store/commit! ob (store/init! ob h caps {:route-schema 1}) (plan nil doc-ops))
+           (is (= #{:format-version :hash-alg :capabilities} (set (keys (store/read-descriptor ob)))))
+           (is (= (:head (store/open ob h)) (:head (store/replay-open ob h)))))
          (is (= :sha-256 (:hash-alg (store/read-descriptor b)))))
        (testing "a missing object file is reported by verify"
          (let [victim (first (sort (store/reachable s)))]

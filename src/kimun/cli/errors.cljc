@@ -23,7 +23,7 @@
   {"query" 3 "models" 3 "validate" 3 "docs" 3 "fields" 3 "sections" 3 "find" 3
    "graph" 3 "edges" 3 "links" 3 "semantic" 3 "journal" 5 "migrate" 5 "serve" 5 "adapters" 5
    "include" 3
-   "store" 5 "markdown" 5 "index" 5})
+   "store" 5 "route" 5 "markdown" 5 "index" 5})
 
 (def ^:private exit-by-name
   "Exit code by the *name* of an error type, whatever its namespace: the
@@ -38,7 +38,7 @@
    name, in any namespace: `*/missing` and `*/empty` are 1, `*/ambiguous` 2,
    `*/conflict` and `*/stale` 4;
    4 conflict/stale and `:store/busy` (another process holds the write lock); 5 store errors, corruption, missing or duplicate store,
-   markdown and index errors; 6 usage; 70 anything else."
+   a damaged route tree node (`:route/*`), markdown and index errors; 6 usage; 70 anything else."
   ([type] (exit-for type nil))
   ([type data]
    (cond

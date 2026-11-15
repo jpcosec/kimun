@@ -1,0 +1,1 @@
+rings and docstrings ok: 104 files

@@ -1,0 +1,41 @@
+
+Testing kimun.kernel.route-tree-test
+
+Testing kimun.kernel.route-tree-store-test
+
+Testing kimun.kernel.route-test
+
+Testing kimun.kernel.route-store-test
+
+Testing kimun.kernel.store-test
+
+Testing kimun.kernel.heads-test
+
+Testing kimun.kernel.revision-format2-test
+
+Testing kimun.kernel.upgrade-test
+
+Testing kimun.cli.route-schema-test
+
+Testing kimun.cli.routes-test
+
+Testing kimun.cli.stores-test
+
+Testing kimun.cli.diagnostics-test
+
+Testing kimun.cli.journal-test
+
+Testing kimun.cli.generic-docs-test
+
+Testing kimun.cli.include-test
+moved existing store to /tmp/kimun-adhoc-121400613136351753/kimun-include-9306676948274706217/.kimun.bak-20261115-022909
+
+Testing kimun.cli.upgrade-test
+
+Testing kimun.parity.cache-promises-test
+
+Testing kimun.parity.merkle-promises-test
+
+Ran 207 tests containing 2347 assertions.
+0 failures, 0 errors.
+exit 0

@@ -45,7 +45,7 @@ Códigos de salida (`kimun.cli.errors`): 0 ok, 1 `missing`/`empty`, 2 `ambiguous
 | 2 | `*/ambiguous` |
 | 3 | namespaces `query` `models` `validate` `docs` `fields` `sections` `find` `graph` `edges` `semantic` `include` `links`; `:plan/rejected` salvo chequeo de capability |
 | 4 | `*/conflict`, `*/stale`, `plan/conflict`, `store/stale`, `store/busy` |
-| 5 | namespaces `store` `markdown` `index` `journal` `migrate` `serve` `adapters`; `cli/no-store`, `cli/store-exists` |
+| 5 | namespaces `store` `route` `markdown` `index` `journal` `migrate` `serve` `adapters`; `cli/no-store`, `cli/store-exists` |
 | 6 | `cli/usage`, `org.babashka/cli`, `eval/not-available` |
 | 7 | `plan/rejected` con `{:check :capability}` |
 | 70 | cualquier otra cosa |
@@ -68,7 +68,7 @@ Layout de un store formato 4 (`kimun.kernel.store`; detalle en `10`):
   index/<head>.edn   ; índice derivado por cabecera (`rebuild-indexes`), gitignored
 ```
 
-- `stores upgrade` reescribe un store formato 1 como formato 2 (backup `<store>.format-1-<marca>`, mapa `upgrade-format-1.edn`); un store formato 2 pasa a 3 en el sitio; un store formato 3 reporta `:needs-rebuild` y nombra `include build --rebuild` (formato 4).
+- `stores upgrade` reescribe un store formato 1 como formato 2 (backup `<store>.format-1-<marca>`, mapa `upgrade-format-1.edn`); un store formato 2 pasa a 3 en el sitio; un store formato 3 reporta `:needs-rebuild` y nombra `include build --rebuild` (formato 4). Un store formato 4 conserva su formato; si su mapa de rutas es de esquema 1 pasa a esquema 2, el árbol Merkle por ruta (`10 §11.2`), y si ya lo es no hace nada.
 - Los enlaces (`:links`) son `{:name :path}` con `:path` **relativo al store**; un enlace absoluto o duplicado es `store/invalid-links` (exit 5). `stores link NAME PATH` enlaza un `.kimun` o su proyecto; `stores links` informa `ok | missing | not-a-store`.
 - Capacidades por defecto al crear: `{actor :all "kimun/derive" :all "kimun/materialize" :all}`.
 - `index/` es derivado: leer nunca escribe; `rebuild-indexes` lo reconstruye bajo orden.
@@ -82,7 +82,7 @@ Layout de un store formato 4 (`kimun.kernel.store`; detalle en `10`):
 | `stores init` | `--name NAME`, `--content by-reference\|inline` | `{:path :name :actor :capabilities}`; `--content inline` escribe `:content :inline` en `store.edn` (docs/v2/10 §10); falla `cli/store-exists` (5) si ya hay store |
 | `stores check` | — | `{:name :path :hash-alg :revisions :trees :objects :head :links}` + `:routes-root :route-count :routes-complete? :routes-missing :routes-shared :routes-outside` si hay documentos registrados con archivo (abajo, «Rutas») + `:documents` si hay findings; abre por replay; store inválido ⇒ `store/invalid` (5) |
 | `stores verify` | — | `{:checked :bad}`; verify-full (replay + hash); corrupción ⇒ `store/corrupt` (5) |
-| `stores upgrade` | — | `{:upgraded :format-version :path …}`; 1→2 reconstruye en un directorio hermano (`:transactions :backup :map`), 2→3 convierte en el sitio (líneas `{:id :revision}`, `:dropped-plans`), 3→4 reporta `:needs-rebuild true :action "kimun include build --rebuild"` (el registro como caché exige los archivos); carrera de escritura ⇒ `store/stale` (4) |
+| `stores upgrade` | — | `{:upgraded :format-version :path …}`; 1→2 reconstruye en un directorio hermano (`:transactions :backup :map`), 2→3 convierte en el sitio (líneas `{:id :revision}`, `:dropped-plans`), 3→4 reporta `:needs-rebuild true :action "kimun include build --rebuild"` (el registro como caché exige los archivos); formato 4 con rutas de esquema 1 pasa a esquema 2 en el sitio (`:from-route-schema 1 :route-schema 2 :routes :routes-root-before :routes-root :route-nodes :checked`), y con esquema 2 responde `:upgraded false :route-schema 2`; carrera de escritura ⇒ `store/stale` (4) |
 | `stores show` | — | `{:name :path :hash-alg :links :head :capabilities}`; sin replay |
 | `stores health` | — | `{:status :summary :findings :actions :next}`; `ok | degraded | needs-human` |
 | `stores sense` | `[--once]` | una observación read-only: `{:mode :once :observed-at :tracked :valid :signals :counts :summary}`; reusa `kimun.surface.diagnostics`, no escribe y no inicia daemon. `:observed-at` es la hora de esta respuesta, no un evento persistido; las señales cubren las categorías del diagnóstico, no todo cambio topológico. Distingue fuente de contrato (`10 §11.1`, K6): `source/*` frente a `contract/changed`, `contract/parser-unavailable` y `contract/inconsistent`; el `:detail` lleva `content-ok`, `contract-ok` y `contract {:status :changed}` |
@@ -245,7 +245,16 @@ volver a registrarse, aunque su archivo no haya cambiado: `docs update NAME` (ti
 un store existente sin reconstruirlo (por ejemplo dentro de `stores update`), y `stores sense` /
 `heartbeat` no informan la cobertura: solo `stores check`.
 
-El objeto del mapa de rutas es, junto con la revisión de cabecera y la raíz de cabeceras por árbol,
+**Esquema del mapa (K2a, corte C5; `10 §11.2`).** Un store nuevo guarda el mapa como **árbol
+Merkle por ruta** (esquema 2): una escritura reescribe solo los nodos del camino que tocó (cada uno
+entero: un directorio ancho cuesta en proporción a sus hijos, `10 §11.2`), abrir lee solo el nodo
+raíz y dos raíces se comparan bajando por donde difieren. Un store creado antes
+es esquema 1 (un mapa plano) y **sigue así, sin cambios, hasta que se pide**: `stores upgrade` lo
+pasa a esquema 2 con las mismas rutas, documentos e historial, y devuelve la raíz anterior y la
+nueva (la raíz cambia al cambiar de esquema); `include build --rebuild` también. `stores check`
+informa `:routes-schema`. Un nodo dañado del árbol es `route/corrupt` (5) al leer esa rama.
+
+El objeto del mapa de rutas (en esquema 2, su nodo raíz) es, junto con la revisión de cabecera y la raíz de cabeceras por árbol,
 uno de los tres que la apertura misma verifica: dañado o ausente, todo comando falla con
 `store/corrupt-head` (5).
 

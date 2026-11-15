@@ -1,0 +1,4 @@
+round 1 | /tmp/kimun-c5-wt @ 2cc5dad9 | 1724 ms | Ran 7 tests containing 68 assertions. 0 failures, 0 errors. 
+round 1 | /home/jp/proyectos/kimun @ 5def87de | 1695 ms | Ran 7 tests containing 68 assertions. 0 failures, 0 errors. 
+round 2 | /tmp/kimun-c5-wt @ 2cc5dad9 | 1706 ms | Ran 7 tests containing 68 assertions. 0 failures, 0 errors. 
+round 2 | /home/jp/proyectos/kimun @ 5def87de | 1666 ms | Ran 7 tests containing 68 assertions. 0 failures, 0 errors. 

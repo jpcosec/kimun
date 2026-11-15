@@ -1,7 +1,9 @@
 (ns kimun.kernel.route-store-test
   "K2a C2a: a cached tree can carry a full route entry in :register-tree;
    :remove-route removes the tracked route without deleting the tree; the root
-   lives in heads and is rebuilt by replay from :route values. No surface/docs."
+   lives in heads and is rebuilt by replay from :route values. No surface/docs.
+   Every store here is of route schema 1 (the flat map object), created so on
+   purpose: this is the contract an existing store keeps."
   (:require [babashka.fs :as bfs]
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
@@ -46,7 +48,9 @@
 (defn- fresh []
   (let [dir (str (ktu/temp-dir "kimun-route-store-"))
         b (fs/backend dir)
-        s0 (store/init! b h {"jp" :all})]
+        ;; the flat map object and its derived cache are route schema 1; the tree of
+        ;; schema 2 is covered by kimun.kernel.route-tree-store-test
+        s0 (store/init! b h {"jp" :all} {:route-schema 1})]
     [dir b s0]))
 
 (deftest register-route-writes-root-and-cache

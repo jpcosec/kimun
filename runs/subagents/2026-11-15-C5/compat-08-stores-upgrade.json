@@ -1,0 +1,23 @@
+{
+  "ok" : true,
+  "command" : "stores upgrade",
+  "store" : {
+    "name" : "compat",
+    "path" : "/tmp/c5-compat/.kimun"
+  },
+  "revision" : "2a9bf976ba083fb513826ae868c955a94babee28a9681153479534a30c4fe8d8",
+  "data" : {
+    "path" : "/tmp/c5-compat/.kimun",
+    "route-schema" : 2,
+    "routes" : 4,
+    "route-nodes" : 5,
+    "routes-root" : "edaa486bf78c66365944e356eb20ba6f09e6454a82cf9ddde80e970ceabf78f9",
+    "seconds" : 0.02,
+    "from-route-schema" : 1,
+    "upgraded" : true,
+    "routes-root-before" : "fc6de723ac38526549d3a778c182ef751052534c82644dc6cdcaeb9882a369ae",
+    "checked" : 53,
+    "format-version" : 4
+  },
+  "warnings" : [ ]
+}

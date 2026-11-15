@@ -465,3 +465,103 @@ El registro (anchor externo 172 KB + descriptor 186 KB + nodo raíz 62 KB + aris
 el plan (907 KB) fijan el tamaño; el árbol ya no está en el store (tree-object 1,65 MB → 3,9 KB;
 texto 168 KB → 0). `bb store-size [DIR]` reproduce la tabla y mide el caché aparte; detalle por
 clase en `runs/research/2026-10-08/S1c-report.md §2` (medición `store-size-after.txt`).
+
+### 11.2 El mapa de rutas: de mapa plano a árbol Merkle por ruta (K2a, corte C5)
+
+El registro por ruta de lo trackeado (`kimun.kernel.route`, contrato de la superficie en
+`06 §3` «Rutas de lo trackeado») tiene dos esquemas. El formato del store sigue siendo 4 y
+`heads.edn` conserva sus claves (`:routes-root`, `:routes-object`); lo que cambia es el objeto
+que `:routes-object` nombra y cómo se calcula `:routes-root`.
+
+| | esquema 1 (`kimun.route/1`) | esquema 2 (`kimun.route/2`) |
+|---|---|---|
+| objeto | **un** mapa `ruta → entrada` con todas las rutas | un nodo por **directorio** (`kimun.kernel.route-tree`) |
+| `:routes-root` | digest de la lista ordenada de entradas (5 campos) | hash de ruta del nodo raíz |
+| `:routes-object` | digest del mapa completo, con `:tree-id` | id CAS del nodo raíz |
+| escribir una ruta | reescribe el mapa entero | reescribe **enteros** los nodos de su camino: tantos nodos como segmentos, y un trabajo igual a la suma de los hijos directos de esos directorios |
+| abrir | lee y rehashea el mapa entero | lee y comprueba **solo el nodo raíz** (sus hijos directos) |
+| buscar una ruta | en memoria, tras leer todo | un nodo por segmento, cada uno leído y rehasheado entero |
+| comparar dos raíces | diff de las dos listas completas | baja solo por donde los hashes difieren |
+| caché `cache/routes/` | espejo derivado del mapa | no se usa: los nodos son objetos del CAS |
+
+**Nodo del árbol.**
+
+```clojure
+{:route/version "kimun.route/2"
+ :children {"segmento" {:entry {:fingerprint … :class … :projection-hash … :content-hash … :tree-id …}
+                        :dir   {:hash "<hash de ruta>" :object "<id CAS>" :count n}}}}
+```
+
+Un hijo tiene `:entry` (una ruta trackeada termina ahí), `:dir` (hay rutas más abajo) o ambos
+(el esquema 1 admite `a` y `a/b.md` a la vez; el árbol no rechaza lo que aquel aceptaba). Un
+nodo que no es la raíz nunca queda vacío: el árbol es función de sus entradas y no del orden
+de las escrituras que lo construyeron.
+
+**Dos hashes sobre un mismo árbol.** El **hash de ruta** de un nodo cubre los segmentos y los
+cuatro campos sensorizados de cada entrada, y deja fuera `:tree-id`, ids de objeto, revisión y
+tiempo: registrar los mismos archivos con ULID nuevos da la misma raíz (invariante de C2). El
+**id CAS** del nodo cubre todo, incluidos los localizadores. Al bajar, cada nodo se comprueba
+contra lo que su padre registró (hash de ruta y cuenta); si no coincide es `route/corrupt`
+(exit 5) **en esa rama**, y las demás siguen respondiendo. `stores verify` rehashea todos los
+nodos alcanzables como cualquier otro objeto.
+
+**Compatibilidad: ningún store cambia sin que se pida.**
+
+- `store.edn` de un store **nuevo** lleva `:route-schema 2`. Un `store.edn` sin esa clave —todo
+  store creado antes de este corte— es esquema 1.
+- Un store de esquema 1 **abre, responde y escribe como antes**: mapa plano, la misma raíz, su
+  caché derivado. Una escritura no lo convierte y `store.edn` no se toca.
+- Mientras el store no tiene rutas decide `store.edn`; cuando las tiene, decide el objeto que
+  nombran las cabeceras (su `:route/version`).
+- `stores check` informa `:routes-schema` (1 o 2).
+- El **replay** (`replay-open`, `verify-full`) aplica cada escritura con el esquema que declara
+  `store.edn`, y compara las cabeceras resultantes con `heads.edn`.
+
+**Pasar de 1 a 2 es explícito**, por una de dos vías:
+
+1. `kimun stores upgrade` sobre un store formato 4 de esquema 1
+   (`kimun.kernel.store/upgrade-routes!`): escribe los nodos del árbol con **las mismas
+   entradas, `:tree-id` incluidos**, reemplaza las cabeceras bajo el lock de escritura (falla
+   con `store/stale` si otro escritor las movió) y graba `:route-schema 2`. No agrega
+   transacción ni revisión; el log no se mueve; documentos, árboles e historial quedan igual.
+   Después rehashea todo lo alcanzable y, si eso falla, repone las cabeceras y `store.edn`
+   anteriores. Interrumpido entre cabeceras y `store.edn`, el store abre y escribe como
+   esquema 2 y una segunda llamada lo completa.
+2. `kimun include build --rebuild`, que crea un store nuevo (esquema 2 desde el inicio).
+
+**La raíz cambia al pasar de esquema.** Es otro cálculo sobre las mismas entradas, y el comando
+devuelve las dos (`:routes-root-before`, `:routes-root`). Dos raíces de esquemas distintos no
+se comparan entre sí. Un store actualizado y uno nacido en esquema 2 con los mismos archivos
+tienen la misma raíz, porque el árbol no depende de la historia.
+
+**Un mapa plano que no se puede leer no se actualiza.** Si la raíz de un store de esquema 1 no
+corresponde a su mapa, `upgrade-routes!` falla con `store/error` y no escribe nada: se
+reconstruye primero. Nada se inventa.
+
+**Un binario anterior a este corte** no conoce el esquema 2: sobre un store de esquema 2 falla
+al abrir con `store/corrupt-head` (`:not-a-route-map`). Falla cerrado, pero el mensaje habla
+de corrupción y no de versión. No se subió la versión de formato para no forzar la migración
+de todos los stores formato 4.
+
+**Límites.**
+
+- **No hay fan-out dentro de un directorio, y el coste no es independiente del número de
+  rutas.** Lo que el árbol acota es la **cantidad de nodos** leídos y escritos (los del camino).
+  Cada uno de esos nodos se lee, se rehashea y se reescribe **entero**, de modo que el trabajo y
+  los bytes escritos son proporcionales a los hijos directos de los directorios del camino. Un
+  directorio ancho cuesta en proporción a su ancho, y un store con todos sus archivos en **un**
+  directorio (o en la raíz) paga por todas las rutas en cada escritura, igual que el esquema 1.
+  Lo medido: 2000 rutas en 20 directorios de 7 subdirectorios tocan 3 nodos por escritura, y
+  eso prueba **nodos tocados**, no bytes; con las mismas 2000 rutas en un solo directorio se
+  tocan 2 nodos y uno lleva las 2000 entradas (`kimun.kernel.route-tree-test`,
+  `a-wide-directory-is-rewritten-whole`). No está medido en un store real.
+- `14 §20` pide que el cambio suba a la raíz y se pueda bajar solo por la rama que cambió; eso
+  está. **No** está un coste sublineal dentro de un directorio plano. Si K2a lo exige, es un
+  pendiente: un índice con fan-out por directorio sería otra forma de nodo, es decir otro
+  esquema de rutas con su propio paso explícito.
+- Los nodos reemplazados quedan en `objects/` sin referencia, como los demás objetos
+  superados; recolectarlos es K5.
+- Enumerar todas las rutas (`stores check`, la cobertura) sigue leyendo el árbol entero.
+- Las hojas son entradas por documento; los **campos** trackeados como hojas (`14 §20`) no
+  están: dependen de K1/D0.
+- La ruta sigue siendo localizador, no identidad; nada aquí decide qué es un archivo movido.

@@ -1,0 +1,23 @@
+{
+  "ok" : true,
+  "command" : "stores verify",
+  "store" : {
+    "name" : "compat",
+    "path" : "/tmp/c5-compat/.kimun"
+  },
+  "revision" : "2a9bf976ba083fb513826ae868c955a94babee28a9681153479534a30c4fe8d8",
+  "data" : {
+    "checked" : 53,
+    "bad" : [ ],
+    "routes" : {
+      "complete?" : true,
+      "routes-available?" : true,
+      "routes-root" : "edaa486bf78c66365944e356eb20ba6f09e6454a82cf9ddde80e970ceabf78f9",
+      "cached-trees" : 4,
+      "routed-trees" : 4,
+      "missing-trees" : [ ],
+      "orphan-routes" : [ ]
+    }
+  },
+  "warnings" : [ ]
+}

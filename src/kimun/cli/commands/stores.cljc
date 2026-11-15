@@ -69,7 +69,9 @@
 (defn check
   "`stores check`: opens the store (replaying the log) and reports
    `{:name :path :hash-alg :revisions :trees :objects :head :links}` (plus
-   `:routes-root`, `:route-count`, `:routes-complete?`, `:routes-missing`,
+   `:routes-root`, `:routes-schema` (2 = Merkle tree by path, 1 = the flat map
+   of a store written before it, which `stores upgrade` moves to 2),
+   `:route-count`, `:routes-complete?`, `:routes-missing`,
    `:routes-shared` and `:routes-outside` once a document with a file is
    registered: the root of the route Merkle of K2a, the routes under it and
    what it does not cover — documents registered before routes existed
@@ -105,6 +107,7 @@
                  ;; tracked: what it leaves out (unrouted, shared or outside the project) is listed with it
                  (or (:routes-root store) (some #(seq (get coverage %)) [:missing :shared :outside]))
                  (assoc :routes-root (:routes-root store)
+                        :routes-schema (revision/route-schema store)
                         :route-count (err/rescue-any (fn [_] nil) (count (:routes store)))
                         :routes-complete? (every? #(empty? (get coverage %)) [:missing :shared :outside])
                         :routes-missing (mapv :qualified (:missing coverage))
@@ -401,6 +404,34 @@
 
 (defn- stamp [] (str/replace (docs/timestamp) #"[^0-9]" ""))
 
+(defn- upgrade-routes
+  "The data of `stores upgrade` on the format-4 store at `dir` (backend `b`):
+   moves its route map from schema 1 to schema 2
+   (`kimun.kernel.store/upgrade-routes!`), then rehashes every reachable
+   object. When that check fails the previous heads and store.edn are put
+   back and the failure is `store/corrupt`."
+  [b dir]
+  (let [descriptor (store/read-descriptor b)
+        heads (store/read-heads b)
+        t0 (System/nanoTime)
+        r (store/upgrade-routes! b host/host)]
+    (if-not (:upgraded r)
+      {:upgraded false :format-version 4 :route-schema (:route-schema r) :path dir}
+      (let [v (try (store/verify b (store/open b host/host))
+                   (catch Exception e {:ok? false :bad [{:reason :open-failed :message (ex-message e)}]}))]
+        (when-not (:ok? v)
+          (when (:routes-root r) (store/swap-heads! b (store/read-heads b) heads))
+          (store/write-descriptor! b descriptor)
+          (err/raise :store/corrupt "the store did not verify after the route upgrade; the previous heads were restored"
+                     {:path dir :bad (:bad v)}))
+        (cond-> {:upgraded true :format-version 4 :path dir
+                 :from-route-schema 1 :route-schema 2 :routes (:routes r)
+                 :checked (:checked v)
+                 :seconds (/ (Math/round (/ (- (System/nanoTime) t0) 1e7)) 100.0)}
+          (:routes-root r) (assoc :routes-root-before (:routes-root-before r)
+                                  :routes-root (:routes-root r)
+                                  :route-nodes (:nodes r)))))))
+
 (defn upgrade-store
   "`stores upgrade`: moves the store to the current format. A format-1 store is
    rewritten as format 2 (`kimun.kernel.upgrade/upgrade!`: every transaction
@@ -422,7 +453,14 @@
    place: format 4 registers a by-reference document as cache (docs/v2/14
    §18.6), which needs the files, so the upgrade reports
    `:needs-rebuild true` and names `kimun include build --rebuild`. A format-4
-   store is left as is (`:upgraded false`). When a writer commits to the
+   store keeps its format; when its route map is of schema 1 (one flat map
+   object, every store written before the route tree) it is moved to schema 2,
+   the Merkle tree by path (docs/v2/10 §11.2): same entries, same documents,
+   same head revision, no transaction added, and a route root that changes
+   because it is computed over a tree. The data then carries
+   `{:from-route-schema 1 :route-schema 2 :routes :routes-root-before
+   :routes-root :route-nodes :checked :seconds}`. A store already of schema 2
+   is left as is (`:upgraded false :route-schema 2`). When a writer commits to the
    original meanwhile the upgrade is abandoned with `store/stale` (exit 4).
    Data: `{:upgraded
    :format-version :path}` plus, when upgraded, `{:transactions :head-before
@@ -507,7 +545,7 @@
                                          :needs-rebuild true
                                          :action "kimun include build --rebuild"
                                          :message "format 3 → 4 registers documents with a file as cache; run `kimun include build --rebuild` to rebuild from the files"}
-                                        {:upgraded false :format-version 4 :path dir})}))))
+                                        (upgrade-routes b dir))}))))
 
 (defn show
   "`stores show`: descriptor and heads without replaying the log:

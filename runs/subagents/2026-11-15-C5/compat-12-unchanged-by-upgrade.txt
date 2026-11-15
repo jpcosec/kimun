@@ -1,0 +1,3 @@
+docs list: identical before/after upgrade
+journal show: identical before/after upgrade
+log.edn: byte-identical before/after upgrade

@@ -1,0 +1,16 @@
+{
+  "ok" : true,
+  "command" : "journal verify",
+  "store" : {
+    "name" : "compat",
+    "path" : "/tmp/c5-compat/.kimun"
+  },
+  "revision" : "2a9bf976ba083fb513826ae868c955a94babee28a9681153479534a30c4fe8d8",
+  "data" : {
+    "revisions" : 6,
+    "checked" : 6,
+    "objects" : 53,
+    "bad" : [ ]
+  },
+  "warnings" : [ ]
+}

@@ -41,6 +41,7 @@
             [kimun.kernel.tree :as tree]
             [kimun.kernel.plan :as plan]
             [kimun.kernel.route :as route]
+            [kimun.kernel.route-tree :as route-tree]
             [kimun.kernel.mmap :as mmap]
             [kimun.kernel.ports :as ports]
             [kimun.kernel.legacy.revision :as legacy]
@@ -54,6 +55,13 @@
   {:host host :capabilities capabilities :format-version 2
    :objects {} :trees {} :edges #{} :head nil :heads {} :heads-root nil :revisions {}
    :routes {} :routes-root nil :routes-object nil :routes-available? true})
+
+(defn route-schema
+  "The route schema of `store` (docs/v2/10 §11.2): 2 = the route map is a
+   Merkle tree by path (`kimun.kernel.route-tree`), 1 = one flat map object
+   (`kimun.kernel.route`). A store value that does not say is schema 1."
+  [store]
+  (or (:routes-schema store) 1))
 
 (defn legacy?
   "True for a format-1 store value (served by kimun.kernel.legacy.revision)."
@@ -320,6 +328,7 @@
    :touched #{} :superseded []
    :e+ #{} :e- #{}    ; net delta over the active edge set of the base
    :routes (or (:routes store) {}) :routes-touched? false
+   :route-changes {}  ; net route writes of this transaction: path -> entry | route-tree/removal
    :routes-available? (or (nil? (:routes-root store)) (:routes-available? store true))
    :new {}})          ; objects created by this transaction
 
@@ -448,6 +457,7 @@
             (plan/reject :route/ambiguous op (str "path " (:path route-entry) " already belongs to tree " (get-in ws [:routes (:path route-entry) :tree-id]))))
         ws (cond-> (-> ws (assoc-in [:trees tree-id] t) (update :touched conj tree-id) (bind-alias op tree-id))
              route-entry (-> (update :routes assoc (:path route-entry) route-entry)
+                             (update :route-changes assoc (:path route-entry) route-entry)
                              (assoc :routes-touched? true)))]
     ws))
 
@@ -550,7 +560,10 @@
     (let [owner (get-in ws [:routes p :tree-id])]
       (when (not= owner tid)
         (plan/reject :route/ambiguous op (str "path " p " belongs to tree " owner ", not " tid))))
-    (-> ws (update :routes dissoc p) (assoc :routes-touched? true))))
+    (-> ws
+        (update :routes dissoc p)
+        (update :route-changes assoc p route-tree/removal)
+        (assoc :routes-touched? true))))
 
 (defn- apply-op [ws op]
   (case (:op op)
@@ -822,14 +835,24 @@
           tx {:id tx-id :plan resolved-plan :revision rev-id}
           ;; every CAS object satisfies H(canonical-bytes object) == id (invariant 17):
           ;; the transaction is stored as its resolved plan; the Transaction map lives in the log
-          routes-map (when (:routes-touched? ws) (:routes ws))
+          ;; route schema 2 (docs/v2/10 §11.2): the tree is updated along the paths this
+          ;; transaction wrote, reading and writing those nodes only. Schema 1 rewrites
+          ;; the whole flat map, as before.
+          routes-tree (when (and (:routes-touched? ws) (= 2 (route-schema store)))
+                        (let [none (route-tree/empty host)]
+                          (route-tree/update host #(or (get (:new none) %) (get-object store %))
+                                             (or (:routes-object store) (:object none))
+                                             (:route-changes ws))))
+          routes-map (when (and (:routes-touched? ws) (not routes-tree)) (:routes ws))
           routes-object-value (when routes-map (route/map-object host (vals routes-map)))
-          routes-object (when routes-map (route/entries-digest host (vals routes-map)))
+          routes-object (cond routes-tree (:object routes-tree)
+                              routes-map (route/entries-digest host (vals routes-map)))
           new-objects (-> (:new ws)
                           (into (mapcat (fn [[_ [_ objs]]] objs)) committed)
                           (cond-> (some #{(:root empty-map)} [(:root tm) (:root em) (:root im) (:root hm)]) (merge (:new empty-map)))
                           (merge (:new tm) (:new em) (:new im) (:new hm))
-                          (cond-> routes-object (assoc routes-object routes-object-value))
+                          (cond-> routes-map (assoc routes-object routes-object-value))
+                          (merge (:new routes-tree))
                           (assoc rev-id rev tx-id resolved-plan))
           store' (-> store
                      (update :objects merge new-objects)
@@ -839,13 +862,14 @@
                      (assoc :routes (if (or (:routes-touched? ws) (:routes-available? ws))
                                       (:routes ws)
                                       nil))
-                     (assoc :routes-root (if (:routes-touched? ws)
-                                           (route/root host (vals (:routes ws)))
-                                           (:routes-root store)))
+                     (assoc :routes-root (cond routes-tree (:hash routes-tree)
+                                               (:routes-touched? ws) (route/root host (vals (:routes ws)))
+                                               :else (:routes-root store)))
                      (assoc :routes-object (if (:routes-touched? ws)
                                              routes-object
                                              (:routes-object store)))
-                     (assoc :routes-write? (:routes-touched? ws))
+                     ;; the derived route cache mirrors the flat map only; a tree is read from its nodes
+                     (assoc :routes-write? (boolean routes-map))
                      (assoc-in [:revisions rev-id] rev)
                      (head-views trees' (:e+ ws) (:e- ws)))]
       {:store store' :transaction tx :revision rev :revision-id rev-id

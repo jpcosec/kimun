@@ -1,0 +1,130 @@
+{
+  "ok" : true,
+  "command" : "stores check",
+  "store" : {
+    "name" : "compat",
+    "path" : "/tmp/c5-compat/.kimun"
+  },
+  "revision" : "f35c1aeccfa246f11525a23a3d1d67bce0fc129be37e3e240650efc203de3803",
+  "data" : {
+    "path" : "/tmp/c5-compat/.kimun",
+    "routes-missing" : [ ],
+    "routes-complete?" : true,
+    "hash-alg" : "sha-256",
+    "objects" : 51,
+    "route-count" : 4,
+    "name" : "compat",
+    "routes-root" : "55d727f48c7eea87f4cee9d31c338dc650a0321bfa1076962683faf3d990117b",
+    "head" : "f35c1aeccfa246f11525a23a3d1d67bce0fc129be37e3e240650efc203de3803",
+    "documents" : {
+      "valid" : true,
+      "summary" : "PASS: store integrity — 4 documents in 1 models",
+      "checked" : 4,
+      "counts" : {
+        "ok" : 4
+      },
+      "models" : [ {
+        "category" : "ok",
+        "inspect" : "1 documents tracked under TicketDoc",
+        "needs-human" : false,
+        "documents" : 1,
+        "action" : null,
+        "contract-ok" : true,
+        "version" : 1,
+        "message" : "ok",
+        "model" : "TicketDoc"
+      } ],
+      "documents" : [ {
+        "path" : "tickets/login.md",
+        "category" : "ok",
+        "qualified" : "tickets/login.md",
+        "content-ok" : true,
+        "tree" : "01M7FWV6QX6YD4RJV47X469XK5",
+        "contract" : {
+          "status" : "same",
+          "changed" : [ ]
+        },
+        "inspect" : "tickets/login.md",
+        "state" : "intact",
+        "document" : "login",
+        "needs-human" : false,
+        "action" : null,
+        "contract-ok" : true,
+        "fields-ok" : true,
+        "message" : "ok",
+        "model" : "TicketDoc"
+      }, {
+        "path" : "notes/deep/other.md",
+        "category" : "ok",
+        "qualified" : "notes/deep/other.md",
+        "content-ok" : true,
+        "tree" : "01M7FWV7DPAZ9HKSA3V1Q8SV5K",
+        "contract" : {
+          "status" : "same",
+          "changed" : [ ]
+        },
+        "inspect" : "notes/deep/other.md",
+        "state" : "intact",
+        "document" : "other",
+        "needs-human" : false,
+        "generic" : true,
+        "class" : "generic/md",
+        "action" : null,
+        "contract-ok" : true,
+        "fields-ok" : true,
+        "message" : "ok",
+        "model" : null
+      }, {
+        "path" : "notes/plain.md",
+        "category" : "ok",
+        "qualified" : "notes/plain.md",
+        "content-ok" : true,
+        "tree" : "01M7FWV72SA80JD9SH00TVJRPK",
+        "contract" : {
+          "status" : "same",
+          "changed" : [ ]
+        },
+        "inspect" : "notes/plain.md",
+        "state" : "intact",
+        "document" : "plain",
+        "needs-human" : false,
+        "generic" : true,
+        "class" : "generic/md",
+        "action" : null,
+        "contract-ok" : true,
+        "fields-ok" : true,
+        "message" : "ok",
+        "model" : null
+      }, {
+        "path" : "top.md",
+        "category" : "ok",
+        "qualified" : "top.md",
+        "content-ok" : true,
+        "tree" : "01M7FWV7RXB0Q68NRRFZJH44NN",
+        "contract" : {
+          "status" : "same",
+          "changed" : [ ]
+        },
+        "inspect" : "top.md",
+        "state" : "intact",
+        "document" : "top",
+        "needs-human" : false,
+        "generic" : true,
+        "class" : "generic/md",
+        "action" : null,
+        "contract-ok" : true,
+        "fields-ok" : true,
+        "message" : "ok",
+        "model" : null
+      } ],
+      "findings" : [ ],
+      "tracked" : 4
+    },
+    "revisions" : 5,
+    "routes-shared" : [ ],
+    "routes-outside" : [ ],
+    "links" : [ ],
+    "trees" : 5
+  },
+  "warnings" : [ ]
+}

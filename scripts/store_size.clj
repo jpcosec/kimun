@@ -22,6 +22,9 @@
   [o]
   (cond
     (and (map? o) (:mmap o)) (str "mmap/" (name (:mmap o)))
+    ;; the route map: one flat object (route schema 1) or tree nodes (schema 2, docs/v2/10 §11.2)
+    (and (map? o) (:route/version o) (:entries o)) "route/map"
+    (and (map? o) (:route/version o) (:children o)) "route/node"
     (and (map? o) (:tree o) (:root o)) "descriptor"
     (and (map? o) (:class o) (:kind o)) (str "sign/" (name (:class o)) "/" (name (:kind o)))
     (and (map? o) (:type o) (:from o)) (str "edge/" (name (:type o)))

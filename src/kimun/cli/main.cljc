@@ -75,7 +75,7 @@
              "  stores init [--name NAME] [--content by-reference|inline]   create .kimun/ in the working directory (or --store PATH)"
              "  stores check                open the store (replay) and report revisions, trees, objects"
              "  stores verify               recompute the hash of every reachable object"
-             "  stores upgrade              upgrade a store to the current format (1→2, 2→3 in place; 3→4 asks for include build --rebuild)"
+             "  stores upgrade              upgrade a store to the current format (1→2, 2→3 in place; 3→4 asks for include build --rebuild; format 4: route map to the Merkle tree by path)"
              "  stores show                 descriptor and heads without replay"
              "  stores health               verdict: ok | degraded (run: …) | needs-human (inspect: …)"
              "  stores sense [--once]       one read-only observation: structured signals from tracked documents"

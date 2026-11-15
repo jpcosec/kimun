@@ -1,0 +1,12 @@
+{
+  "ok" : false,
+  "error" : {
+    "type" : "store/corrupt-head",
+    "message" : "store: head object 445c8bf8fc04fb92160920c58b48ee8dc43cb66f8bc4676b851958cf1b0f822c: not-a-route-map",
+    "data" : {
+      "id" : "445c8bf8fc04fb92160920c58b48ee8dc43cb66f8bc4676b851958cf1b0f822c",
+      "reason" : "not-a-route-map"
+    }
+  },
+  "exit" : 5
+}
