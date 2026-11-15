@@ -19,10 +19,10 @@ The last design session (2026-10-08/09) changed the direction. Before touching c
 
 1. `docs/v2/00-nucleo.md` — the core of kimun in one page: what kimun is and must not stop being.
    Then `docs/v2/drafts/sesion-2026-10-08-09.md` — what was decided and why, in order.
-2. `docs/v2/drafts/preguntas-abiertas.md` — decisions only the owner can make (today: D-G, the
-   truth axis of the G layer). D0, node identity, is no longer one of them: the owner fixed its
-   premises and the council derived the S–M contract from them (`docs/v2/14 §21`); what remains
-   is its implementation, K1. Do not implement anything that depends on an open decision.
+2. `docs/v2/drafts/preguntas-abiertas.md` — decisions only the owner can make: the table of active
+   questions and the dated notes (what the owner already decided, what is not a question). Read
+   it rather than relying on a list here. Do not implement anything that depends on an open
+   decision; report the ambiguity instead.
 3. `docs/v2/14-juego-del-lenguaje.md` — start with its "cómo leer" box: §18–§21 are the current
    principles (classes and instances, anchoring vs generation, cache / stable store / graph,
    tracked vs trackable, hash ≠ identity).
