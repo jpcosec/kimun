@@ -279,3 +279,18 @@
     (is (= [3 "models/invalid"] ((juxt :exit #(get-in % [:error :type])) e)))
     (is (re-find #"mutually exclusive" (get-in e [:error :message])) (pr-str e))
     (is (empty? (:data (run p "models" "list"))))))
+
+(deftest define-accepts-cst-selector-steps
+  ;; M1a-pasos: a descriptor whose selector uses C3-C5 steps (docs/v2/16 §3.3) is registered.
+  (let [p (project)
+        d {:model/name "CstDoc" :model/version 1 :base [] :document-role :source
+           :substrate {:parser :treesitter :compat :strict}
+           :anchoring {:fields []
+                       :selector [{:key "notes" :want :find :where {:outer-tag "h2" :regex "^\\QNotes\\E$"}}
+                                  {:key "items" :outer-type "list" :preserve-nesting true}
+                                  {:key "matrix" :want :table :outer-type "pipe_table"}]}
+           :generation {:projections {:markdown/default {:format :markdown}}}}
+        f (write! p "cst.edn" (pr-str d))
+        e (run p "models" "define" "-f" f)]
+    (is (true? (:ok e)) (pr-str e))
+    (is (= "CstDoc" (:name (:data e))))))

@@ -1,0 +1,7 @@
+fixture models: 5 with cst steps in selectors: 0
+capability examples cst-step?: [[:C1 false] [:C2 false] [:C3 true] [:C4 true] [:C5 true] [:C6 false]]
+cst-step? [true true true]
+validate! "notes" model "CstDoc": selector step without an integer :outer-index: {:key "notes", :want :find, :where {:outer-tag "h2", :regex "^\\QNotes\\E$"}}
+validate! "items" model "CstDoc": selector step without an integer :outer-index: {:key "items", :outer-type "list", :preserve-nesting true}
+validate! "matrix" model "CstDoc": selector step without an integer :outer-index: {:key "matrix", :want :table, :outer-type "pipe_table"}
+define: {:ok false, :error {:type "models/invalid", :message "model \"CstDoc\": selector step without an integer :outer-index: {:key \"notes\", :want :find, :where {:outer-tag \"h2\", :regex \"^\\\\QNotes\\\\E$\"}}", :data {:model "CstDoc", :problem "selector step without an integer :outer-index: {:key \"notes\", :want :find, :where {:outer-tag \"h2\", :regex \"^\\\\QNotes\\\\E$\"}}"}}}

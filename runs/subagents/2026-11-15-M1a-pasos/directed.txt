@@ -1,0 +1,17 @@
+
+Testing kimun.surface.models.subgraph-test
+
+Testing kimun.cli.models-test
+
+Testing kimun.surface.models.store-test
+
+Testing kimun.surface.models.selector-test
+
+Testing kimun.surface.models.selector-cst-test
+
+Testing kimun.spec16-models-contract-test
+
+Testing kimun.surface.models.compile-test
+
+Ran 57 tests containing 1835 assertions.
+0 failures, 0 errors.

@@ -4,7 +4,8 @@
    (selector, fields) and generation (projections) along it. Pure: no store,
    no files, no extraction."
   (:require [kimun.kernel.err :as err]
-            [kimun.surface.models.descriptor :as descriptor]))
+            [kimun.surface.models.descriptor :as descriptor]
+            [kimun.surface.models.selector-cst :as cst]))
 
 (def ^:private roles #{:source :generated})
 (def ^:private parsers #{:treesitter :sldb-md/blocks})
@@ -30,16 +31,35 @@
   (when (and (contains? f :required) (not (boolean? (:required f))))
     (bad nm (str "field `" (:name f) "` has a non-boolean :required"))))
 
+(def ^:private cst-wants #{:find :table})
+
+(defn- check-cst-step!
+  "Checks one CST step (C3-C5, docs/v2/16 §3.3) of model `nm`: a non-empty
+   string `:key`, the shape `selector-cst` reads. It has no `:outer-index` or
+   `:handler`."
+  [nm s]
+  (when-not (and (string? (:key s)) (seq (:key s)))
+    (bad nm (str "CST selector step without a :key string: " (pr-str s))))
+  (when (and (contains? s :want) (not (contains? cst-wants (:want s))))
+    (bad nm (str "CST selector step with an unknown :want " (pr-str (:want s)) ": " (pr-str s)))))
+
 (defn- check-step!
-  "Checks one `:anchoring :selector` step of model `nm`."
+  "Checks one `:anchoring :selector` step of model `nm`: a CST step
+   (`selector-cst/cst-step?`) against `check-cst-step!`, any other as a block
+   step (`:outer-index`, `:outer-type`, `:handler`)."
   [nm s]
   (when-not (map? s) (bad nm (str ":anchoring :selector step is not a map: " (pr-str s))))
-  (when-not (integer? (:outer-index s))
-    (bad nm (str "selector step without an integer :outer-index: " (pr-str s))))
-  (when-not (and (string? (:outer-type s)) (seq (:outer-type s)))
-    (bad nm (str "selector step without an :outer-type string: " (pr-str s))))
-  (when-not (keyword? (:handler s))
-    (bad nm (str "selector step without a keyword :handler: " (pr-str s)))))
+  (if (cst/cst-step? s)
+    (check-cst-step! nm s)
+    (do
+      (when (and (some? (:want s)) (not (integer? (:outer-index s))))
+        (bad nm (str "selector step with an unknown :want " (pr-str (:want s)) ": " (pr-str s))))
+      (when-not (integer? (:outer-index s))
+        (bad nm (str "selector step without an integer :outer-index: " (pr-str s))))
+      (when-not (and (string? (:outer-type s)) (seq (:outer-type s)))
+        (bad nm (str "selector step without an :outer-type string: " (pr-str s))))
+      (when-not (keyword? (:handler s))
+        (bad nm (str "selector step without a keyword :handler: " (pr-str s)))))))
 
 (defn validate!
   "Returns spec 16 descriptor `d` (docs/v2/16 §3.4) if its shape is valid;
@@ -141,10 +161,14 @@
 
 (defn compose-selector
   "Selector of `nm`: the steps of its ancestors then its own (docs/v2/16 §4.2),
-   with `:outer-index` renumbered 0..n-1."
+   with the `:outer-index` of the block steps renumbered 0..n-1. CST steps
+   (C3-C5) have no index: they keep their key and their declaration order and
+   are not counted (the spec fixes no place for them: §4.2 says only \"union by
+   key when it uses `:want :find`\")."
   [index nm]
-  (vec (map-indexed #(assoc %2 :outer-index %1)
-                    (mapcat #(get-in % [:anchoring :selector]) (chain index nm)))))
+  (let [n (volatile! -1)]
+    (vec (map #(if (cst/cst-step? %) % (assoc % :outer-index (vswap! n inc)))
+              (mapcat #(get-in % [:anchoring :selector]) (chain index nm))))))
 
 (defn compose-fields
   "Fields of `nm` by name, ancestors first; a redeclaration keeps the position

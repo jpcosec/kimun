@@ -89,3 +89,35 @@
 (deftest blocking
   (is (= #{:F10} (sg/blocked-by (index "ResumenDigestView"))))
   (is (= #{} (sg/blocked-by (index "ChecklistDoc")))))
+
+(def ^:private c3 {:key "notes" :want :find :where {:outer-tag "h2" :regex "^\\QNotes\\E$"}})
+(def ^:private c4 {:key "items" :outer-type "list" :preserve-nesting true})
+(def ^:private c5 {:key "matrix" :want :table :outer-type "pipe_table"})
+(defn- with-sel [steps] (assoc-in (m "K" [] []) [:anchoring :selector] steps))
+
+(deftest cst-steps-validate
+  (doseq [s [c3 c4 c5]]
+    (is (= (with-sel [s]) (sg/validate! (with-sel [s]))) (pr-str s)))
+  (is (= (with-sel [c3 {:outer-index 0 :outer-type "heading" :handler :text} c5])
+         (sg/validate! (with-sel [c3 {:outer-index 0 :outer-type "heading" :handler :text} c5])))
+      "CST and block steps mix"))
+
+(deftest cst-steps-malformed
+  (let [msg #(invalid-msg (fn [] (sg/validate! (with-sel [%]))))]
+    (is (str/includes? (or (msg (dissoc c3 :key)) "") ":key"))
+    (is (str/includes? (or (msg (dissoc c4 :key)) "") ":key"))
+    (is (str/includes? (or (msg (assoc c4 :want :bogus)) "") ":bogus"))
+    (is (str/includes? (or (msg (assoc c3 :want :bogus)) "") ":bogus"))
+    (is (str/includes? (or (msg {:key "x" :want :bogus}) "") ":bogus"))
+    (is (str/includes? (or (msg {:outer-type "heading" :handler :text}) "") ":outer-index")
+        "a block step still needs its index")))
+
+(deftest cst-steps-compose
+  (let [idx (sg/index-models
+             [(with-sel [{:outer-index 5 :outer-type "heading" :handler :text} c3])
+              (assoc-in (m "L" ["K"] []) [:anchoring :selector]
+                        [c4 {:outer-index 5 :outer-type "paragraph" :handler :text}])])
+        steps (sg/compose-selector idx "L")]
+    (is (= [c3 c4] (filterv #(not (contains? % :outer-index)) steps)) "CST steps are neither indexed nor lost")
+    (is (= [0 1] (keep :outer-index steps)) "block steps count only block steps")
+    (is (= [0 nil nil 1] (mapv :outer-index steps)))))
