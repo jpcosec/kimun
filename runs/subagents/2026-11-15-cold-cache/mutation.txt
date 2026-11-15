@@ -1,0 +1,24 @@
+## Mutation 1: doc-tree's cold rebuild branch returns nil instead of (rebuild text)
+
+Testing kimun.cli.cold-cache-test
+
+FAIL in (cold-cache-answers-like-hot-cache) (/tmp/kimun-c1-wt/test/kimun/cli/cold_cache_test.cljc:142)
+cache/ deleted: the same answers (gaps are listed in known-cold-cache-gaps)
+new gaps: ("docs render generic" "docs render typed" "docs show --ast generic" "docs show --ast typed") fixed (remove from the list): ()
+expected: (= (:cold known-cold-cache-gaps) gaps)
+  actual: (not (= #{"journal show" "journal verify"} #{"journal show" "journal verify" "docs render typed" "docs show --ast typed" "docs show --ast generic" "docs render generic"}))
+
+FAIL in (cold-cache-answers-like-hot-cache) (/tmp/kimun-c1-wt/test/kimun/cli/cold_cache_test.cljc:142)
+cache/objects and cache/docs deleted, cache/plans kept: isolates the plans
+new gaps: ("docs render generic" "docs render typed" "docs show --ast generic" "docs show --ast typed") fixed (remove from the list): ()
+expected: (= (:cold-no-plans known-cold-cache-gaps) gaps)
+  actual: (not (= #{"journal show"} #{"journal show" "docs render typed" "docs show --ast typed" "docs show --ast generic" "docs render generic"}))
+
+FAIL in (one-corrupted-cache-object-answers-like-hot-cache) (/tmp/kimun-c1-wt/test/kimun/cli/cold_cache_test.cljc:162)
+new gaps: ("docs render generic" "docs render typed" "docs show --ast generic" "docs show --ast typed") fixed (remove from the list): ()
+expected: (= (:corrupt known-cold-cache-gaps) gaps)
+  actual: (not (= #{"journal show"} #{"journal show" "docs render typed" "docs show --ast typed" "docs show --ast generic" "docs render generic"}))
+
+Ran 2 tests containing 17 assertions.
+3 failures, 0 errors.
+exit=1

@@ -1,0 +1,6 @@
+
+Testing kimun.cli.cold-cache-test
+
+Ran 2 tests containing 17 assertions.
+0 failures, 0 errors.
+exit=0

@@ -384,6 +384,8 @@ una parte. Verifica
 (fingerprint != registrado). El caché es gitignored (`include gitignore` lo añade) y
 borrable: todo se recalcula.
 
+La matriz de comandos de lectura con caché fría o con un objeto corrupto es `test/kimun/cli/cold_cache_test.cljc`; sus brechas conocidas (`known-cold-cache-gaps`) son la deuda de esta promesa (evidencia: `runs/subagents/2026-11-15-cold-cache/REPORT.md`).
+
 Coste medido (store de banco de 600 documentos, `docs render`/`docs show` de un documento,
 3 corridas): 0,50–0,54 s antes y 0,50–0,52 s después del SHA-256 por acierto de caché; la
 salida es idéntica. **Límite:** un objeto de caché dañado hace lento ese documento hasta que

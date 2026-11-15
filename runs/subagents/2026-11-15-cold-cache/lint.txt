@@ -1,0 +1,2 @@
+rings and docstrings ok: 104 files
+lint=0
