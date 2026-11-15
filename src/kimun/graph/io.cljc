@@ -1,11 +1,11 @@
-(ns kimun.surface.graph.io
+(ns kimun.graph.io
   "The portable node-link snapshot. Conversions are pure over maps with string
    keys (the JSON shape); `cheshire` is touched only by `read-json` and
    `write-json`. Also converts an sldb semantic export (contract
    `sldb_kgdb_semantic_export` v1) to a native snapshot and to a graph."
   (:require [cheshire.core :as json]
             [kimun.kernel.err :as err]
-            [kimun.surface.graph.model :as m]))
+            [kimun.graph.model :as m]))
 
 (defn to-node-link
   "The node-link map of `g`: `{\"directed\" true \"multigraph\" false \"graph\" {}

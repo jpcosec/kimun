@@ -1,4 +1,4 @@
-(ns kimun.surface.graph.store
+(ns kimun.graph.store
   "Where the graph a `graph` command reads comes from, and the one shape it
    has whatever the source (v1 `store/graph/convert.py` and the promise of
    `tests/api/test_graph_source_parity.py`): the derived view of an opened
@@ -8,8 +8,8 @@
    :metadata}` — so a read answers the same from the live store and from the
    snapshot saved from it. Pure: no I/O."
   (:require [kimun.surface.edges :as edges]
-            [kimun.surface.graph.io :as io]
-            [kimun.surface.graph.model :as m]
+            [kimun.graph.io :as io]
+            [kimun.graph.model :as m]
             [kimun.surface.semantic :as sem]
             [kimun.kernel.err :as err]))
 
@@ -35,7 +35,7 @@
      (canonical (update g :nodes (fn [ns] (into {} (map (fn [[id _]] [id (dissoc (edges/node g id) :id)])) ns)))))))
 
 (defn snapshot
-  "The node-link map of `g` (`kimun.surface.graph.io/to-node-link`): what
+  "The node-link map of `g` (`kimun.graph.io/to-node-link`): what
    `graph export` prints and `graph snapshot save` writes."
   [g]
   (io/to-node-link (canonical g)))

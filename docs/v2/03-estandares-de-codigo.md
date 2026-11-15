@@ -12,8 +12,10 @@ ring 1  kimun.host.*     ← adaptadores: implementan los puertos del kernel; ú
                           reader conditionals (#?), imports de plataforma e I/O; + babashka.*
 ring 2  kimun.surface.markdown.* ← superficie Markdown del núcleo (perfil SLDB-MD):
                           requiere kernel y host; nunca al revés; + babashka.*
-ring 3  kimun.*         ← producto (CLI y demás superficies kimun: models, graph, index…):
+ring 3  kimun.*         ← producto (CLI y demás superficies kimun: models, index…):
                           requiere los anillos 0–2; además cheshire, clj-yaml y org.httpkit
+paquete kimun.graph.*   ← el grafo, sobre la base (`14 §19`, decisión 43): requiere kernel,
+                          kimun.surface.* y a sí mismo, + cheshire; nunca kimun.cli.*
 ring 4  tests           ← requieren cualquier cosa
 ```
 
@@ -21,6 +23,17 @@ ring 4  tests           ← requieren cualquier cosa
   (`kimun.surface.markdown.*` antes que el catch-all `kimun.*`), de modo que los anillos
   del kernel y del host conservan exactamente la misma estrictez que tenían antes del
   rename `sldb.*` → `kimun.*`.
+
+- **La base no depende del grafo** (`14 §19` regla 3): solo `kimun.graph.*` y
+  `kimun.cli.*` pueden requerir `kimun.graph.*`. El paquete se separa por cortes (P1,
+  `12 §1`). Primer corte: `kimun.graph.{model,io,query,traversal,analysis,store}` (antes
+  `kimun.surface.graph.*`). Los cruces que quedan se escriben uno por uno en
+  `pending-graph-crossings` de `scripts/check_rings.clj`; hoy hay uno,
+  `kimun.surface.semantic` → `kimun.graph.io` (el export semántico). Un cruce fuera de
+  esa lista falla, y también una entrada que ya no hace falta: la lista solo se achica.
+  Modelos, aristas semánticas y derivadas (`kimun.surface.{models.*,semantic,edges}`)
+  siguen en la superficie: la superficie de documentos los requiere, y moverlos depende
+  de separar anclaje de generación (spec 16) y de D0.
 
 - **El kernel no importa nada de fuera**: ni `kimun.host.*`, ni `babashka.*`, ni `java.*`
   ni `js/*`. Lo que necesita de la plataforma (hash, normalización de texto, ids,

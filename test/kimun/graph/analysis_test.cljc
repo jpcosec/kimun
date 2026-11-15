@@ -1,12 +1,12 @@
-(ns kimun.surface.graph.analysis-test
+(ns kimun.graph.analysis-test
   "Ports of v1 tests/store/test_graph_analysis.py (16 tests) and the
    engine-level part of tests/api/test_api_graph_analysis.py, plus checks of
    the reimplemented networkx numbers against values computed by v1."
   (:require [clojure.test :refer [deftest is testing]]
             [clojure.java.io :as io]
-            [kimun.surface.graph.analysis :as a]
-            [kimun.surface.graph.io :as gio]
-            [kimun.surface.graph.model :as m]
+            [kimun.graph.analysis :as a]
+            [kimun.graph.io :as gio]
+            [kimun.graph.model :as m]
             [kimun.kernel.err :as err]))
 
 (defn- index-of
@@ -116,7 +116,7 @@
 (deftest analyses-over-a-real-semantic-export
   (testing "v1 test_the_analyses_run_over_a_real_semantic_export"
     (let [g (gio/semantic-export->graph
-             (gio/read-json (slurp (io/resource "kimun/surface/graph/sldb_kgdb_semantic_export.v1.json"))))
+             (gio/read-json (slurp (io/resource "kimun/graph/sldb_kgdb_semantic_export.v1.json"))))
           present (sort (m/present g))]
       (is (some #{"has_document"} present))
       (is (= #{} (m/authored g)))

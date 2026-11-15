@@ -1,10 +1,10 @@
-(ns kimun.surface.graph.store-test
-  "`kimun.surface.graph.store`: one canonical graph whatever the source, so a
+(ns kimun.graph.store-test
+  "`kimun.graph.store`: one canonical graph whatever the source, so a
    snapshot round trip is the identity and readers answer the same."
   (:require [clojure.test :refer [deftest is testing]]
-            [kimun.surface.graph.io :as gio]
-            [kimun.surface.graph.model :as m]
-            [kimun.surface.graph.store :as gs]))
+            [kimun.graph.io :as gio]
+            [kimun.graph.model :as m]
+            [kimun.graph.store :as gs]))
 
 (def g
   (m/graph {"sldb://document/Doc:a" {:type "Doc" :semantics {"name" "a"}}

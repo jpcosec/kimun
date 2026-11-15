@@ -1,4 +1,4 @@
-(ns kimun.surface.graph.query
+(ns kimun.graph.query
   "v1's structured graph query language and its executor. A query is a map
    (typically read from JSON, string keys, snake_case) with three optional
    parts: `scope` (`descendant_of` | `ancestor_of` | `node_id_prefix`),
@@ -9,7 +9,7 @@
    keyword keys; `execute` returns node views sorted by id."
   (:require [clojure.string :as str]
             [kimun.kernel.err :as err]
-            [kimun.surface.graph.model :as m]))
+            [kimun.graph.model :as m]))
 
 (def operators
   "The eight comparison operators of a field condition."

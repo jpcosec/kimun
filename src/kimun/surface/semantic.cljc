@@ -13,7 +13,7 @@
   (:require [clojure.set :as set]
             [clojure.string :as str]
             [kimun.surface.docs :as docs]
-            [kimun.surface.graph.io :as gio]
+            [kimun.graph.io :as gio]
             [kimun.surface.models.store :as mstore]
             [kimun.kernel.err :as err]
             [kimun.kernel.node :as node]))
@@ -291,7 +291,7 @@
                      "equivalences" (into (sorted-map) (map (fn [[k v]] [k (vec v)])) (:equivalences g))}}))
 
 (defn export->snapshot
-  "`kimun.surface.graph.io/semantic-export->snapshot` for a version 1 or
+  "`kimun.graph.io/semantic-export->snapshot` for a version 1 or
    version 2 export: a v2 payload is read through the v1 reader (its semantic
    hash names aliased to v1's letters) and keeps its own contract in the
    snapshot metadata."

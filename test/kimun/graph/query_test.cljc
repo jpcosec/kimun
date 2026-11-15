@@ -1,11 +1,11 @@
-(ns kimun.surface.graph.query-test
+(ns kimun.graph.query-test
   "Ports of v1 tests/store/test_graph_executor.py (6 tests) and
    tests/store/test_graph_language.py (3 tests)."
   (:require [clojure.test :refer [deftest is testing]]
             [clojure.java.io :as io]
-            [kimun.surface.graph.io :as gio]
-            [kimun.surface.graph.model :as m]
-            [kimun.surface.graph.query :as q]
+            [kimun.graph.io :as gio]
+            [kimun.graph.model :as m]
+            [kimun.graph.query :as q]
             [kimun.kernel.err :as err]))
 
 (def model "sldb://model/TaskDoc")
@@ -73,7 +73,7 @@
 (deftest example-queries-parse
   (testing "v1 test_example_queries_parse"
     (doseq [f query-files]
-      (let [parsed (q/parse-query (gio/read-json (slurp (io/resource (str "kimun/surface/graph/queries/" f ".json")))))]
+      (let [parsed (q/parse-query (gio/read-json (slurp (io/resource (str "kimun/graph/queries/" f ".json")))))]
         (is (map? parsed) f)))))
 
 (deftest field-condition-accepts-all-eight-operators

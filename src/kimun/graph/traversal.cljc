@@ -1,10 +1,10 @@
-(ns kimun.surface.graph.traversal
+(ns kimun.graph.traversal
   "Walks over the edge list: one-relation steps (targets, sources, roots,
    descendants, shared-target neighbours) and neighbourhood within a depth,
    with the direction and relation-type filters v1 supports. All results are
    sorted or sets, never in edge-list order."
   (:require [clojure.string :as str]
-            [kimun.surface.graph.model :as m]))
+            [kimun.graph.model :as m]))
 
 (defn targets
   "Sorted distinct targets of `id` along relation `rel`."

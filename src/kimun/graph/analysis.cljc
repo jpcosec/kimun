@@ -1,5 +1,5 @@
-(ns kimun.surface.graph.analysis
-  "Whole-graph questions on the `kimun.surface.graph.model` value: paths,
+(ns kimun.graph.analysis
+  "Whole-graph questions on the `kimun.graph.model` value: paths,
    cycles, dependency order, components, centrality and similarity by shared
    targets. Every function takes the relations to walk and defaults to the
    authored ones (see `model/resolve-relations`). Reimplements, without
@@ -9,7 +9,7 @@
   (:require [clojure.set :as set]
             [clojure.string :as str]
             [kimun.kernel.err :as err]
-            [kimun.surface.graph.model :as m]))
+            [kimun.graph.model :as m]))
 
 ;; ---------------------------------------------------------------- paths
 

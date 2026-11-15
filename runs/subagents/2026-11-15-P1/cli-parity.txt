@@ -1,0 +1,11 @@
+identical | exit 0 | 817 bytes | kimun graph list
+identical | exit 0 | 888 bytes | kimun graph components
+identical | exit 0 | 298 bytes | kimun graph cycles
+identical | exit 0 | 1345 bytes | kimun graph order
+identical | exit 0 | 1459 bytes | kimun graph central
+identical | exit 0 | 821 bytes | kimun graph isolated
+identical | exit 0 | 8870 bytes | kimun graph export
+identical | exit 0 | 21122 bytes | kimun graph ingest-sldb /tmp/kimun-p1-wt/test/kimun/graph/sldb_kgdb_semantic_export.v1.json
+identical | exit 0 | 426 bytes | kimun graph snapshot save /tmp/p1-graph-ev/snap.json
+identical | exit 0 | 817 bytes | kimun graph list --from /tmp/p1-graph-ev/snap.json
+identical | exit 1 | 177 bytes | kimun graph get nope

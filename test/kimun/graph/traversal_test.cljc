@@ -1,9 +1,9 @@
-(ns kimun.surface.graph.traversal-test
+(ns kimun.graph.traversal-test
   "Ports of v1 tests/store/test_graph_neighborhood.py (4 tests) plus checks of
    the one-relation walks of v1 traversal.py and the relation-type filter."
   (:require [clojure.test :refer [deftest is testing]]
-            [kimun.surface.graph.model :as m]
-            [kimun.surface.graph.traversal :as t]))
+            [kimun.graph.model :as m]
+            [kimun.graph.traversal :as t]))
 
 (def a "sldb://document/a")
 (def b "sldb://document/b")

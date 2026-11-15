@@ -2,10 +2,10 @@
   "The `kimun graph` group (v1 `sldb graph`): `get`, `list`, `query`,
    `neighborhood`, `path`, `cycles`, `order`, `components`, `central`,
    `isolated`, `similar`, `snapshot save|load`, `export` and `ingest-sldb`.
-   Every read is the pure engine (`kimun.surface.graph.*`) over one graph: the
+   Every read is the pure engine (`kimun.graph.*`) over one graph: the
    view derived from the opened store (`kimun.surface.edges`, predicate links
    included unless `--no-links`) or, with `--snapshot FILE`, a saved snapshot —
-   same answer either way (`kimun.surface.graph.store`). Nothing is written
+   same answer either way (`kimun.graph.store`). Nothing is written
    but the file `snapshot save`, `export -o` or `ingest-sldb -o` names; paths
    in the output are never absolute. Every command is
    `(fn [args opts ctx] envelope)`."
@@ -13,12 +13,12 @@
             [clojure.string :as str]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
-            [kimun.surface.graph.analysis :as a]
-            [kimun.surface.graph.io :as io]
-            [kimun.surface.graph.model :as m]
-            [kimun.surface.graph.query :as q]
-            [kimun.surface.graph.store :as gs]
-            [kimun.surface.graph.traversal :as t]
+            [kimun.graph.analysis :as a]
+            [kimun.graph.io :as io]
+            [kimun.graph.model :as m]
+            [kimun.graph.query :as q]
+            [kimun.graph.store :as gs]
+            [kimun.graph.traversal :as t]
             [kimun.kernel.err :as err]))
 
 ;; ---------------------------------------------------------------- options
@@ -81,7 +81,7 @@
 
 (defn- linked-of
   "The reachable linked stores of opened store `o` as `[{:name :store}]` for
-   the federated graph (`kimun.surface.graph.store/from-store`): their opened
+   the federated graph (`kimun.graph.store/from-store`): their opened
    kernel stores under the link names `kimun.cli.store/linked-stores` gives
    them, with its cycle guard. Empty with `--local`."
   [o opts]

@@ -2,7 +2,7 @@
   "The graph of a store as a derived view (v1's edge index), pure.
 
    `(index store)` rebuilds, from an opened store value (the `:store` of
-   `kimun.cli.store/open!`), a `kimun.surface.graph.model` graph with v1's
+   `kimun.cli.store/open!`), a `kimun.graph.model` graph with v1's
    node ids (`sldb://document/Model:name` …), node types and relation names;
    nothing is persisted as a side index. Readers (`edges-from`, `edges-to`,
    `node`, `nodes-of-type`) take that graph; `check` takes the index.

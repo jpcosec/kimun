@@ -1,13 +1,13 @@
-(ns kimun.surface.graph.io-test
+(ns kimun.graph.io-test
   "Ports of v1 tests/store/test_graph_io.py (3 tests): the semantic export
    ingest and the node-link round trip, pure over maps and JSON text."
   (:require [clojure.test :refer [deftest is testing]]
             [clojure.java.io :as io]
-            [kimun.surface.graph.io :as gio]))
+            [kimun.graph.io :as gio]))
 
 (def payload
   "The v1 contract fixture, parsed."
-  (gio/read-json (slurp (io/resource "kimun/surface/graph/sldb_kgdb_semantic_export.v1.json"))))
+  (gio/read-json (slurp (io/resource "kimun/graph/sldb_kgdb_semantic_export.v1.json"))))
 
 (def snapshot (gio/semantic-export->snapshot payload))
 (def doc-id "sldb://document/TaskDoc:001-define-kgdb-semantic-export-payload")

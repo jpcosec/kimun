@@ -1,4 +1,4 @@
-(ns kimun.surface.graph.model
+(ns kimun.graph.model
   "The in-memory graph value: a directed, typed multi-graph on plain data.
 
    `{:nodes {id {:type \"Spec\" :semantics {...} :facets {...}}}

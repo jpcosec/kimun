@@ -15,9 +15,9 @@
             [kimun.cli.main :as main]
             [kimun.cli.store :as cli-store]
             [kimun.surface.edges :as edges]
-            [kimun.surface.graph.io :as gio]
-            [kimun.surface.graph.query :as q]
-            [kimun.surface.graph.store :as gs]
+            [kimun.graph.io :as gio]
+            [kimun.graph.query :as q]
+            [kimun.graph.store :as gs]
             [kimun.host.default :as host]
             [kimun.kernel.ports :as ports]
             [kimun.kernel.store :as store]))
@@ -95,12 +95,12 @@
 ;; (the kgdb oracle is not available here: the CLI over the export must answer what the engine does)
 (deftest the-five-example-queries-run-over-a-semantic-export
   (let [p (str (ktu/temp-dir "kimun-graph-"))
-        export (slurp (io/resource "kimun/surface/graph/sldb_kgdb_semantic_export.v1.json"))
+        export (slurp (io/resource "kimun/graph/sldb_kgdb_semantic_export.v1.json"))
         g (gio/semantic-export->graph (gio/read-json export))]
     (spit (str (fs/path p "export.json")) export)
     (doseq [f ["documents_near_domain_workflow_task_tag" "documents_near_taskdoc_model" "documents_tagged_domain_contract"
                "sections_for_taskdoc_document" "semantic_neighborhood_integration_kgdb"]]
-      (let [text (slurp (io/resource (str "kimun/surface/graph/queries/" f ".json")))]
+      (let [text (slurp (io/resource (str "kimun/graph/queries/" f ".json")))]
         (spit (str (fs/path p "q.json")) text)
         (is (= (mapv :id (q/execute g (gio/read-json text)))
                (mapv :id (get-in (graph p "query" [] {:file "q.json" :snapshot "export.json"}) [:data :nodes]))) f)))))

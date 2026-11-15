@@ -13,8 +13,26 @@
   {"kimun.kernel."          #{"clojure." "kimun.kernel."}
    "kimun.host."            #{"clojure." "kimun.kernel." "kimun.host." "babashka."}
    "kimun.surface.markdown." #{"clojure." "kimun.kernel." "kimun.host." "kimun.surface.markdown." "babashka."}
+   ;; the graph package (docs/v2/14 §19, decision 43): over the base, never the CLI
+   "kimun.graph."           #{"clojure." "kimun.kernel." "kimun.surface." "kimun.graph." "cheshire."}
    "kimun."                  #{"clojure." "kimun.kernel." "kimun.host." "kimun.surface.markdown." "kimun."
                                "babashka." "cheshire." "clj-yaml." "org.httpkit."}})
+
+(def graph-package
+  "Prefix of the graph package (docs/v2/14 §19 rule 3): the base does not
+   depend on it."
+  "kimun.graph.")
+
+(def graph-clients
+  "Namespace prefixes that may require the graph package: the package itself
+   and the CLI that composes it over the base."
+  #{"kimun.graph." "kimun.cli."})
+
+(def pending-graph-crossings
+  "namespace → graph namespaces it still requires against the rule: the debt
+   of P1 (docs/v2/12 §1), written down so that it can only shrink. A crossing
+   outside this map fails; so does an entry the namespace no longer needs."
+  {"kimun.surface.semantic" #{"kimun.graph.io"}})
 
 (def mutable-constructors
   "Heads of a `def` value form that create mutable state; forbidden in ring 0
@@ -84,12 +102,21 @@
                        (for [req (requires-of ns-form)
                              :when (not (some #(str/starts-with? req %) (conj (rings ring) ns-name)))]
                          req))
+        reqs (set (requires-of ns-form))
+        pending (get pending-graph-crossings ns-name #{})
+        graph-crossings (when-not (some #(str/starts-with? ns-name %) graph-clients)
+                          (for [req (sort reqs)
+                                :when (and (str/starts-with? req graph-package) (not (pending req)))]
+                            req))
+        stale-crossings (sort (remove reqs pending))
         cond-in-kernel (when (and ring (= ring "kimun.kernel.") (not= ns-name "kimun.kernel.err"))
                          (when (str/includes? (slurp (str file)) "#?") ["reader conditional in kernel"]))
         mutable-in-kernel (when (= ring "kimun.kernel.") (global-mutable-defs forms))]
     (concat
      (when-not ring [(str ns-name ": namespace outside every ring")])
      (map #(str ns-name ": forbidden require " %) bad-requires)
+     (map #(str ns-name ": the base may not require the graph package: " %) graph-crossings)
+     (map #(str ns-name ": pending graph crossing no longer needed, remove it from the lint: " %) stale-crossings)
      (map #(str ns-name ": " %) cond-in-kernel)
      (map #(str ns-name ": " %) mutable-in-kernel)
      (when-not ns-doc? [(str ns-name ": ns without docstring")])
