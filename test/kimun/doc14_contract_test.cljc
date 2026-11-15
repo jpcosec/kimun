@@ -110,12 +110,21 @@
       (is (str/includes? s13 "~3 %"))
       (is (str/includes? s13 "**`S2` fase 3"))
       (is (str/includes? s13 "**bloqueada por `K1` / `D0`**")))
-    (testing "§13 and decision 44 mark K2a as partial (C2a/C2b/C4 flat O(n) digest implemented, C5 incremental Merkle tree pending)"
+    (testing "§13 and decision 44 mark K2a as partial: C2a/C2b/C4/C5 implemented, schema 1 (flat O(n) digest) kept as legacy, schema 2 the tree, the fan-out cost still open"
       (is (not (str/includes? s13 "**`K2a` (cerrada):**")))
-      (doseq [needle ["C2a" "C2b" "C4" "digest plano `O(n)`" "C5" "Merkle incremental" "2c56e680"]]
+      (doseq [needle ["C2a" "C2b" "C4" "C5" "digest plano `O(n)`" "Merkle incremental" "b4931b7c"
+                      "esquema 1" "esquema 2" "stores upgrade" "fan-out"]]
         (is (str/includes? s13 needle) (str "Missing K2a/C5 marker in §13: " needle))
-        (when-not (= needle "2c56e680")
-          (is (str/includes? s12 needle) (str "Missing K2a/C5 marker in §12: " needle)))))
+        (is (str/includes? s12 needle) (str "Missing K2a/C5 marker in §12: " needle)))
+      (is (str/includes? s13 "2c56e680"))
+      (is (not (str/includes? s13 "sigue pendiente `C5`")) "C5 is no longer pending in §13")
+      (is (not (str/includes? s12 "pendiente en `C5`")) "nor in decision 44"))
+    (testing "§20 separates the two route schemas and states the limits of C5 without closing D0"
+      (let [s20 (section-slice doc "## 20. ")]
+        (doseq [needle ["Esquema 1 (legado)" "Esquema 2 (stores nuevos)" "digest plano `O(n)`" "b4931b7c"
+                        "no hay fan-out" "route-coverage" "`K1`/`D0`" "runs/subagents/2026-11-15-C5/EVIDENCE.md"]]
+          (is (str/includes? s20 needle) (str "Missing C5 marker in §20: " needle)))
+        (is (not (str/includes? s20 "Pendiente en `K2a` (`C5`")) "C5 is not listed as pending")))
     (testing "§13 records closed K3/K8/C1, partial K6 with rebuild-mismatch open, and P1 first cut"
       (doseq [needle ["076be35b" "43d9db6d" "bcd85a53" "555b2dbc" "rebuild-mismatch" "**`K6` (parcial):**" "70b8abe9" "971b6b2c"]]
         (is (str/includes? s13 needle) (str "Missing status marker in §13: " needle))))))
