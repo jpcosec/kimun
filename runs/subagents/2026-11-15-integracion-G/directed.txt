@@ -1,0 +1,7 @@
+
+Testing kimun.surface.models.selector-cst-test
+
+Testing kimun.surface.models.selector-test
+
+Ran 14 tests containing 1223 assertions.
+0 failures, 0 errors.

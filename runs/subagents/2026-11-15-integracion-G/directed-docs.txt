@@ -1,0 +1,7 @@
+
+Testing kimun.doc14-contract-test
+
+Testing kimun.lint-test
+
+Ran 9 tests containing 215 assertions.
+0 failures, 0 errors.
