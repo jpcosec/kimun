@@ -1,0 +1,19 @@
+
+Testing kimun.cli.models-test
+
+Testing kimun.surface.models.store-test
+
+Testing kimun.surface.http.security-test
+
+Testing kimun.cli.model-carry-test
+moved existing store to /tmp/kimun-adhoc-10524533738936958310/kimun-model-carry-13875516443846430561/.kimun.bak-20261115-194016-01M7GNWM1WXF48XSY9MGWED2H1
+moved existing store to /tmp/kimun-adhoc-10524533738936958310/kimun-model-carry-13875516443846430561/.kimun.bak-20261115-194017-01M7GNWM464K2DAGVY5V3M21JC
+moved existing store to /tmp/kimun-adhoc-10524533738936958310/kimun-model-carry-13875516443846430561/.kimun.bak-20261115-194017-01M7GNWM5XRKF2E915290C0938
+moved existing store to /tmp/kimun-adhoc-10524533738936958310/kimun-model-carry-10202277655364128470/.kimun.bak-20261115-194017-01M7GNWMAQZYSMBFFCT6Y7K333
+moved existing store to /tmp/kimun-adhoc-10524533738936958310/kimun-model-carry-13701848626584384261/.kimun.bak-20261115-194017-01M7GNWMG6CCMJ0Q8RQTW12RJN
+moved existing store to /tmp/kimun-adhoc-10524533738936958310/kimun-model-carry-11884184579425008025/.kimun.bak-20261115-194017-01M7GNWMNZ43FZYQCD9XHKA179
+
+Testing kimun.surface.models.selector-test
+
+Ran 37 tests containing 1430 assertions.
+0 failures, 0 errors.
