@@ -1,0 +1,25 @@
+docs 100 elapsed_s 5.2 ms_per_commit_last100 52
+docs 200 elapsed_s 14.5 ms_per_commit_last100 93
+docs 300 elapsed_s 27.4 ms_per_commit_last100 129
+docs 400 elapsed_s 44.7 ms_per_commit_last100 173
+docs 500 elapsed_s 59.4 ms_per_commit_last100 147
+docs 600 elapsed_s 77.2 ms_per_commit_last100 179
+docs 700 elapsed_s 98.9 ms_per_commit_last100 217
+docs 800 elapsed_s 123.2 ms_per_commit_last100 243
+docs 900 elapsed_s 144.8 ms_per_commit_last100 216
+docs 1000 elapsed_s 169.5 ms_per_commit_last100 248
+docs 1100 elapsed_s 197.5 ms_per_commit_last100 280
+docs 1200 elapsed_s 229.1 ms_per_commit_last100 315
+docs 1300 elapsed_s 258.8 ms_per_commit_last100 298
+docs 1400 elapsed_s 291.4 ms_per_commit_last100 326
+docs 1500 elapsed_s 327.2 ms_per_commit_last100 359
+docs 1600 elapsed_s 366.5 ms_per_commit_last100 392
+docs 1700 elapsed_s 406.5 ms_per_commit_last100 400
+docs 1800 elapsed_s 451.9 ms_per_commit_last100 454
+docs 1900 elapsed_s 497.1 ms_per_commit_last100 452
+docs 2000 elapsed_s 547.7 ms_per_commit_last100 506
+total_seconds 548.5
+log_lines 2001
+objects 69984
+bytes_kimun 1712319814
+first_doc note-00000 field owner

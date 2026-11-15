@@ -1,0 +1,15 @@
+gen n500-flat-s1 exit=0 wall_incl_lock_wait=64s
+cost n500-flat-s1 exit=0
+gen n500-flat-s2 exit=0 wall_incl_lock_wait=71s
+cost n500-flat-s2 exit=0
+gen n500-dirs20-s1 exit=0 wall_incl_lock_wait=433s
+cost n500-dirs20-s1 exit=0
+gen n500-dirs20-s2 exit=0 wall_incl_lock_wait=53s
+cost n500-dirs20-s2 exit=0
+gen n500-nested-s1 exit=0 wall_incl_lock_wait=100s
+cost n500-nested-s1 exit=0
+gen n500-nested-s2 exit=0 wall_incl_lock_wait=41s
+cost n500-nested-s2 exit=0
+gen n2000-flat-s1 exit=0 wall_incl_lock_wait=549s
+cost n2000-flat-s1 exit=0
+gen n2000-flat-s2 exit=0 (finished after coordinator cut)

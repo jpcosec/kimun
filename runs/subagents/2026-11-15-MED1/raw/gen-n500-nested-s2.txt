@@ -1,0 +1,10 @@
+docs 100 elapsed_s 4.9 ms_per_commit_last100 49
+docs 200 elapsed_s 11.6 ms_per_commit_last100 67
+docs 300 elapsed_s 19.8 ms_per_commit_last100 82
+docs 400 elapsed_s 29.4 ms_per_commit_last100 96
+docs 500 elapsed_s 40.5 ms_per_commit_last100 111
+total_seconds 40.5
+log_lines 501
+objects 16762
+bytes_kimun 18505271
+first_doc note-00000 field owner

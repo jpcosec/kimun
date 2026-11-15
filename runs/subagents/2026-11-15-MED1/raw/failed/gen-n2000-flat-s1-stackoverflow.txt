@@ -1,0 +1,42 @@
+docs 100 elapsed_s 5.5 ms_per_commit_last100 55
+docs 200 elapsed_s 14.3 ms_per_commit_last100 88
+docs 300 elapsed_s 27.0 ms_per_commit_last100 127
+docs 400 elapsed_s 43.4 ms_per_commit_last100 164
+docs 500 elapsed_s 63.2 ms_per_commit_last100 198
+docs 600 elapsed_s 86.7 ms_per_commit_last100 236
+docs 700 elapsed_s 114.3 ms_per_commit_last100 276
+docs 800 elapsed_s 145.4 ms_per_commit_last100 311
+docs 900 elapsed_s 180.1 ms_per_commit_last100 347
+docs 1000 elapsed_s 218.7 ms_per_commit_last100 385
+docs 1100 elapsed_s 260.5 ms_per_commit_last100 419
+docs 1200 elapsed_s 305.4 ms_per_commit_last100 449
+----- Error --------------------------------------------------------------------
+Type:     java.lang.StackOverflowError
+Location: /tmp/kimun-med1-wt/src/kimun/kernel/canon.cljc:54:15
+
+----- Context ------------------------------------------------------------------
+50: 
+51: (defn- print-canon
+52:   "Step 2 over an already-normalized value."
+53:   [v]
+54:   (if-some [s (atomic-str v)]
+                  ^--- 
+55:     s
+56:     (cond
+57:       (map? v)
+58:       (let [entries (->> v
+59:                          (map (fn [[k val]] [(print-canon k) (print-canon val)]))
+
+----- Stack trace --------------------------------------------------------------
+clojure.core/ex-info                   - <built-in>
+kimun.kernel.canon/atomic-str          - /tmp/kimun-med1-wt/src/kimun/kernel/canon.cljc:36:1
+kimun.kernel.canon/print-canon         - /tmp/kimun-med1-wt/src/kimun/kernel/canon.cljc:54:15
+kimun.kernel.canon                     - /tmp/kimun-med1-wt/src/kimun/kernel/canon.cljc:59:46
+clojure.core/sort-by                   - clojure/core.clj:3131:1
+... (run with --debug to see elided elements)
+kimun.kernel.store/commit!             - /tmp/kimun-med1-wt/src/kimun/kernel/store.cljc:547:11
+kimun.kernel.store/commit!             - /tmp/kimun-med1-wt/src/kimun/kernel/store.cljc:536:1
+user                                   - /tmp/kimun-med1-wt/scripts/bench/gen_store.clj:99:17
+user                                   - /tmp/kimun-med1-wt/scripts/bench/gen_store.clj:86:3
+user                                   - /tmp/kimun-med1-wt/scripts/bench/gen_store.clj:64:1
+

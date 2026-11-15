@@ -1,0 +1,10 @@
+update 1 secs=2.304 rc=0 new_objects=27 new_bytes=805805 route_nodes=1 route_bytes=784044 root_bytes=784044 node_bytes=784044 log_growth=151 cache_new=5
+update 2 secs=2.222 rc=0 new_objects=21 new_bytes=803498 route_nodes=1 route_bytes=784044 root_bytes=784044 node_bytes=784044 log_growth=151 cache_new=5
+update 3 secs=2.351 rc=0 new_objects=22 new_bytes=801721 route_nodes=1 route_bytes=784044 root_bytes=784044 node_bytes=784044 log_growth=151 cache_new=5
+sense_cold 1 secs=40.627
+sense_cold 2 secs=38.544
+sense_cold 3 secs=38.652
+sense_warm 1 secs=38.438
+sense_warm 2 secs=40.248
+sense_warm 3 secs=39.948
+route_schema :route-schema 2 objects 70079 bytes_kimun 866804116

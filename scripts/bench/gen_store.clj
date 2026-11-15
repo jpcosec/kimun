@@ -1,5 +1,8 @@
 ;; Synthetic kimun store generator for the kernel scaling benchmark.
-;; Usage (from the worktree root):  bb -cp src:resources scripts/bench/gen_store.clj <dir> <n-docs>
+;; Usage (from the worktree root):  bb -cp src:resources scripts/bench/gen_store.clj <dir> <n-docs> [layout [route-schema]]
+;; layout: flat (default; note-NNNNN.md in the root) | dirs20 (20 directories, round robin)
+;;   | nested (three levels of 10-ary directories d0/d1/d2/note-NNNNN.md, N/1000 files per leaf)
+;; route-schema: 2 (default, Merkle tree by path) | 1 (legacy flat map; init through kimun.kernel.store)
 ;; (plain `bb scripts/bench/gen_store.clj ...` also works: bb.edn :paths carry the classpath.)
 ;; Creates a fresh store at <dir>/.kimun with ONE model (BenchNote) and N typed documents,
 ;; one commit per document, reusing the store value each commit returns (no reopen).
@@ -36,6 +39,13 @@
 (defn- sentence [r] (let [s (w r (+ 8 (.nextInt r 8)))] (str (str/upper-case (subs s 0 1)) (subs s 1) ".")))
 (defn- para [r] (str/join " " (repeatedly (+ 2 (.nextInt r 3)) #(sentence r))))
 (defn- dname [i] (format "note-%05d" i))
+(defn- rel-path
+  "Project-relative path of note `i` under `layout`."
+  [layout i]
+  (case layout
+    "flat" (str (dname i) ".md")
+    "dirs20" (format "dir-%02d/%s.md" (mod i 20) (dname i))
+    "nested" (format "d%d/d%d/d%d/%s.md" (mod i 10) (mod (quot i 10) 10) (mod (quot i 100) 10) (dname i))))
 
 (defn- payload [r i]
   (let [k (if (zero? i) 0 (inc (.nextInt r (min 3 i))))
@@ -51,7 +61,9 @@
 
 (defn- du-sb [dir] (-> (babashka.process/shell {:out :string} "du" "-sb" (str dir)) :out (str/split #"\s+") first))
 
-(let [[dir n-str] *command-line-args*
+(let [[dir n-str layout-arg schema-arg] *command-line-args*
+      layout (or layout-arg "flat")
+      schema (parse-long (or schema-arg "2"))
       n (parse-long (or n-str "0"))
       _ (when-not (and dir (pos? n)) (println "usage: gen_store.clj <dir> <n-docs>") (System/exit 2))
       dir (str (fs/absolutize dir))
@@ -59,7 +71,13 @@
       actor (str "human/" (or (System/getenv "USER") "bench"))
       ts (fn [i] (format "2026-01-01T%02d:%02d:%02d.000Z" (mod (quot i 3600) 24) (mod (quot i 60) 60) (mod i 60)))
       _ (fs/create-dirs dir)
-      _ (cli-store/init! sdir {:name "bench" :actor actor})
+      _ (if (= 1 schema)
+          (let [b (cli-store/backend sdir)
+                caps {actor :all "kimun/derive" :all "kimun/materialize" :all}]
+            (fs/create-dirs sdir)
+            (store/init! b host/host caps {:route-schema 1})
+            (store/write-descriptor! b (assoc (store/read-descriptor b) :name "bench" :links [])))
+          (cli-store/init! sdir {:name "bench" :actor actor}))
       {:keys [backend store]} (cli-store/open! sdir)
       ulid #(ports/ulid (:ids host/host))
       def-r (mstore/define-plan host/host store model {:actor actor :timestamp (ts 0) :tree-id (ulid)})
@@ -77,11 +95,16 @@
         (println "first_doc" (dname 0) "field" "owner"))
       (let [name (dname i)
             {:keys [plan text]} (tdocs/create-plan host/host store "BenchNote" name (payload (java.util.Random. (+ 1000 i)) i)
-                                              {:doc (ulid) :tree-id (ulid) :path (str name ".md") :actor actor :timestamp (ts (inc i))})
+                                              {:doc (ulid) :tree-id (ulid) :path (rel-path layout i) :actor actor :timestamp (ts (inc i))})
             res (store/commit! backend store plan)
-            _ (spit (str (fs/path dir (str name ".md"))) text)
+            _ (do (fs/create-dirs (fs/parent (fs/path dir (rel-path layout i))))
+                  (spit (str (fs/path dir (rel-path layout i))) text))
             done (inc i)
             now (System/nanoTime)]
         (when (zero? (mod done 100))
           (println (format "docs %d elapsed_s %.1f ms_per_commit_last100 %.0f" done (/ (- now t0) 1e9) (/ (- now t-last) 1e6 100))))
-        (recur done (:store res) (if (zero? (mod done 100)) now t-last))))))
+        (recur done
+               ;; every 400 documents reopen the store: a store value chained through thousands of commits
+               ;; overflows the stack in canon/print-canon (found at ~1200 docs, schema 1); the reopen is not timed apart
+               (if (zero? (mod done 400)) (:store (cli-store/open! sdir)) (:store res))
+               (if (zero? (mod done 100)) now t-last))))))
