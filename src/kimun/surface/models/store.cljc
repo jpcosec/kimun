@@ -91,10 +91,16 @@
    descriptor's shape is validated first; missing bases are reported by
    `models check`, not rejected here, so models may be defined in any order.
    `:tree-id` is the ULID the `models` tree gets when this plan creates it: the
-   caller mints it, because a plan must replay to the same ids."
-  [host store descriptor {:keys [actor timestamp tree-id]}]
+   caller mints it, because a plan must replay to the same ids.
+   `:version` is the version a NEW name gets (default 1): a rebuild that reads
+   an older store passes the version it has to keep or advance, so a model's
+   version never goes back to 1. It is ignored when the name already exists.
+   `:id` of the result is the ADDRESS of the descriptor value (its content
+   hash), not the identity of a unit: a model is a class, and whether its
+   versions are nodes of the graph is an open question for `M1`."
+  [host store descriptor {:keys [actor timestamp tree-id version]}]
   (let [current (find-model store (:model/name descriptor))
-        version (if current (inc (or (:version current) 1)) 1)
+        version (if current (inc (or (:version current) 1)) (or version 1))
         d (assoc descriptor :model/version version)
         _ (descriptor/validate! d)
         base {:plan/version 1 :base (:head store) :actor actor :engines {"kimun.surface.models" "1"} :timestamp timestamp}

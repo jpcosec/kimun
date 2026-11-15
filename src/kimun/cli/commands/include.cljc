@@ -315,12 +315,16 @@
    fresh ids and says so)."
   [store-dir]
   (if-not (and store-dir (fs/exists? store-dir))
-    {:available true :by-path {} :ambiguous [] :without-file 0}
+    {:available true :by-path {} :ambiguous [] :without-file 0
+     :models {:tree nil :by-name {}}}
     (try
       (let [store (:store (cli-store/open! store-dir))
             docs (concat (tdocs/documents store) (tdocs/generic-documents store))
             by (group-by :qualified (filter :qualified docs))]
         {:available true
+         :models {:tree (first (mstore/models-tree store))
+                  :by-name (into {} (map (fn [m] [(:name m) {:version (:version m) :descriptor (:descriptor m)}])
+                                         (mstore/models store)))}
          :by-path (into {} (keep (fn [[q ds]]
                                    (when (= 1 (count ds))
                                      (let [d (first ds)]
@@ -329,7 +333,8 @@
                                  by))
          :ambiguous (vec (sort (keep (fn [[q ds]] (when (< 1 (count ds)) q)) by)))
          :without-file (count (remove :qualified docs))})
-      (catch Exception _ {:available false :by-path {} :ambiguous [] :without-file 0}))))
+      (catch Exception _ {:available false :by-path {} :ambiguous [] :without-file 0
+                          :models {:tree nil :by-name {}}}))))
 
 (defn- carried-ids
   "`{:doc id :tree id}` for the declared document at `path` (already relative to
@@ -352,23 +357,50 @@
         actor (:actor opts)
         ts (now-ts)
         ctx (compose/context store store-dir)
-        mres (reduce (fn [{:keys [store plans names failed] :as acc} path]
+        registry (or identities {:available true :by-path {} :ambiguous [] :without-file 0
+                                 :models {:tree nil :by-name {}}})
+        ;; models are CLASSES: a rebuild keeps the version of a model whose
+        ;; contract did not move (so its content-addressed id does not move),
+        ;; advances it when the contract moved, and never versions it back.
+        model-carry (fn [desc]
+                      (let [name (:model/name desc)
+                            prior (get-in registry [:models :by-name name])]
+                        (cond
+                          (nil? prior) {:version 1 :kind :new}
+                          (= (dissoc (:descriptor prior) :model/version)
+                             (dissoc desc :model/version))
+                          {:version (:version prior) :kind :kept}
+                          :else {:version (inc (or (:version prior) 1)) :kind :advanced})))
+        mres (reduce (fn [{:keys [store plans names failed models kept advanced new tree-carried]
+                           :as acc} path]
                        (try
                          (let [desc (descriptor-at root path)
-                               r (mstore/define-plan h store desc {:actor actor :timestamp ts
-                                                                   :tree-id (ports/ulid (:ids h))})]
+                               {:keys [version kind]} (model-carry desc)
+                               old-tree (get-in registry [:models :tree])
+                               r (mstore/define-plan h store desc
+                                                     {:actor actor :timestamp ts
+                                                      ;; the first define creates the tree: it keeps the
+                                                      ;; old id when the old store had one
+                                                      :version version
+                                                      :tree-id (or old-tree (ports/ulid (:ids h)))})]
                            (if (:unchanged r)
-                             (-> acc (update :names conj (:name r)))
+                             (-> acc (update :names conj (:name r))
+                                 (update :models conj [(:name r) [(:version r) (:id r)]])
+                                 (update :kept inc)
+                                 (update :tree-carried #(or % (some? old-tree))))
                              (-> acc (assoc :store (:store (revision/apply-plan store (:plan r))))
-                                      (update :plans conj (:plan r))
-                                      (update :names conj (:name r)))))
+                                 (update :plans conj (:plan r))
+                                 (update :names conj (:name r))
+                                 (update :models conj [(:name r) [(:version r) (:id r)]])
+                                 (update kind inc)
+                                 (update :tree-carried #(or % (some? old-tree))))))
                          (catch Exception e
                            (update acc :failed conj {:path path :error (or (:type (ex-data e)) "include/invalid")
                                                      :message (ex-message e)}))))
-                     {:store store :plans [] :names [] :failed []}
+                     {:store store :plans [] :names [] :failed []
+                      :models [] :kept 0 :advanced 0 :new 0 :tree-carried false}
                      models)
         mstore* (:store mres)
-        registry (or identities {:available true :by-path {} :ambiguous [] :without-file 0})
         dres (reduce (fn [{:keys [plans names failed carried minted paths] :as acc}
                           {:keys [path model name force inline]}]
                        (let [rel (relative-to root (str (fs/path root path)))
@@ -418,6 +450,8 @@
         all (concat (:plans mres) (:plans dres))
         carried (:carried dres 0)
         declared (set (:paths dres))
+        declared-models (set (map first (:models mres)))
+        models-not-carried (vec (sort (remove declared-models (keys (get-in registry [:models :by-name])))))
         not-carried (vec (sort (remove declared (keys (:by-path registry)))))
         operation (if (pos? carried)
                     (str "include build (identities carried from " (:source registry) ")")
@@ -438,6 +472,9 @@
      :identities {:available (:available registry)
                   :carried carried :minted (:minted dres 0)
                   :units-carried (:units-carried dres 0)
+                  :models {:tree-carried (boolean (:tree-carried mres))
+                           :kept (:kept mres 0) :advanced (:advanced mres 0) :new (:new mres 0)}
+                  :models-not-carried models-not-carried
                   :not-carried not-carried
                   :ambiguous (:ambiguous registry)
                   :without-file (:without-file registry 0)}})))
@@ -486,7 +523,11 @@
                        ;; no identity was read: nothing carried, nothing known about
                        ;; the old store; the documents minted are still counted
                        (assoc :available false :carried 0 :not-carried [] :ambiguous []
-                              :units-carried 0 :without-file 0))
+                              :units-carried 0 :without-file 0
+                              :models {:tree-carried false :kept 0 :advanced 0
+                                       ;; every declared model is new when nothing was read
+                                       :new (get-in ids [:models :new] 0)}
+                              :models-not-carried []))
           data {:store store-dir
                 :models (:models r) :models-failed (:models-failed r)
                 :documents (:documents r) :documents-failed (:documents-failed r)
@@ -498,14 +539,20 @@
                             :message (str "the previous store could not be read, so no document identity was carried: the documents were registered with fresh ids")
                             :store (get old-registry :source)})
                      (and (:available identities)
-                          (or (seq (:not-carried identities)) (seq (:ambiguous identities))))
+                          (or (seq (:not-carried identities)) (seq (:ambiguous identities))
+                              (seq (:models-not-carried identities))))
                      (conj {:type "include/identities-not-carried"
                             :message (str (count (:not-carried identities)) " document identit(ies) of the previous store were not carried"
                                           (when (seq (:ambiguous identities))
                                             (str " and " (count (:ambiguous identities)) " path(s) had two documents"))
+                                          (when (seq (:models-not-carried identities))
+                                            (str " and " (count (:models-not-carried identities))
+                                                 " model(s) the declaration no longer defines: "
+                                                 (str/join ", " (:models-not-carried identities))))
                                           ": see :identities")
                             :not-carried (:not-carried identities)
-                            :ambiguous (:ambiguous identities)}))]
+                            :ambiguous (:ambiguous identities)
+                            :models-not-carried (:models-not-carried identities)}))]
       (if (seq (:failed r))
         (out/failure :include/drift (str (count (:failed r)) " declaration(s) failed to build")
                      (assoc data :warnings warnings) 3)

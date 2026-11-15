@@ -86,7 +86,8 @@
     (let [b (run-include "include" "build" "--rebuild")
           ids (get-in b [:data :identities])]
       (is (:ok b) (pr-str b))
-      (is (= {:available true :carried 1 :minted 0 :units-carried 2 :not-carried [] :ambiguous [] :without-file 0}
+      (is (= {:available true :carried 1 :minted 0 :units-carried 2 :not-carried [] :ambiguous [] :without-file 0
+              :models {:tree-carried true :kept 1 :advanced 0 :new 0} :models-not-carried []}
              (dissoc ids :source)))
       (is (= t0 (tree "a")) "the tree id is carried")
       (is (= d0 (doc-id "a")) "the document id is carried")

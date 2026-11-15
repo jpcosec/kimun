@@ -1,0 +1,28 @@
+
+Testing kimun.cli.model-carry-test
+moved existing store to /tmp/kimun-adhoc-12642917211741276676/kimun-model-carry-7200493616575483081/.kimun.bak-20261115-183621
+moved existing store to /tmp/kimun-adhoc-12642917211741276676/kimun-model-carry-7200493616575483081/.kimun.bak-20261115-183622
+moved existing store to /tmp/kimun-adhoc-12642917211741276676/kimun-model-carry-7200493616575483081/.kimun.bak-20261115-183623
+moved existing store to /tmp/kimun-adhoc-12642917211741276676/kimun-model-carry-4474065384804403772/.kimun.bak-20261115-183623
+moved existing store to /tmp/kimun-adhoc-12642917211741276676/kimun-model-carry-224506649374212159/.kimun.bak-20261115-183623
+moved existing store to /tmp/kimun-adhoc-12642917211741276676/kimun-model-carry-7753038725153843912/.kimun.bak-20261115-183623
+
+Testing kimun.cli.identity-carry-test
+moved existing store to /tmp/kimun-adhoc-12642917211741276676/kimun-k1a-15326484547895380814/.kimun.bak-20261115-183623
+moved existing store to /tmp/kimun-adhoc-12642917211741276676/kimun-k1a-7306903961748220340/.kimun.bak-20261115-183624
+moved existing store to /tmp/kimun-adhoc-12642917211741276676/kimun-k1a-7306903961748220340/.kimun.bak-20261115-183624
+moved existing store to /tmp/kimun-adhoc-12642917211741276676/kimun-k1a-7174358685761670142/.kimun.bak-20261115-183624
+moved existing store to /tmp/kimun-adhoc-12642917211741276676/kimun-k1a-13993367726217413397/.kimun.bak-20261115-183624
+
+Testing kimun.cli.field-units-test
+moved existing store to /tmp/kimun-adhoc-12642917211741276676/kimun-units-inc-17449328531809180377/.kimun.bak-20261115-183625
+
+Testing kimun.cli.models-test
+
+Testing kimun.cli.include-test
+moved existing store to /tmp/kimun-adhoc-12642917211741276676/kimun-include-15132918923268128207/.kimun.bak-20261115-183625
+
+Testing kimun.doc14-contract-test
+
+Ran 40 tests containing 443 assertions.
+0 failures, 0 errors.

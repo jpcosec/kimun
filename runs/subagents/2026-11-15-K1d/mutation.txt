@@ -1,0 +1,65 @@
+
+Testing kimun.cli.model-carry-test
+moved existing store to /tmp/kimun-adhoc-17737377142718853570/kimun-model-carry-13108154512795769765/.kimun.bak-20261115-183437
+
+FAIL in (a-rebuild-keeps-the-tree-and-the-versions-when-nothing-changed) (/tmp/kimun-k1d-wt/test/kimun/cli/model_carry_test.cljc:70)
+the models tree keeps its id
+expected: (= t0 (models-tree-id))
+  actual: (not (= "01M7GJ4CT13WWYK18G48GC280K" "01M7GJ4CW8RRF2QW20S3RYFDMH"))
+
+FAIL in (a-rebuild-keeps-the-tree-and-the-versions-when-nothing-changed) (/tmp/kimun-k1d-wt/test/kimun/cli/model_carry_test.cljc:70)
+expected: (= {:tree-carried true, :kept 1, :advanced 0, :new 0} (:models ids))
+  actual: (not (= {:tree-carried true, :kept 1, :advanced 0, :new 0} nil))
+
+FAIL in (a-rebuild-keeps-the-tree-and-the-versions-when-nothing-changed) (/tmp/kimun-k1d-wt/test/kimun/cli/model_carry_test.cljc:70)
+expected: (= [] (:models-not-carried ids))
+  actual: (not (= [] nil))
+moved existing store to /tmp/kimun-adhoc-17737377142718853570/kimun-model-carry-13108154512795769765/.kimun.bak-20261115-183438
+moved existing store to /tmp/kimun-adhoc-17737377142718853570/kimun-model-carry-13108154512795769765/.kimun.bak-20261115-183439
+
+FAIL in (a-rebuild-keeps-the-tree-and-the-versions-when-nothing-changed) (/tmp/kimun-k1d-wt/test/kimun/cli/model_carry_test.cljc:70)
+a model the declaration no longer defines is declared, not dropped silently
+it is named, not forgotten
+expected: (= ["OtherDoc"] (:models-not-carried ids))
+  actual: (not (= ["OtherDoc"] nil))
+
+FAIL in (a-rebuild-keeps-the-tree-and-the-versions-when-nothing-changed) (/tmp/kimun-k1d-wt/test/kimun/cli/model_carry_test.cljc:70)
+a model the declaration no longer defines is declared, not dropped silently
+and the existing warning carries it
+expected: (= ["OtherDoc"] (:models-not-carried w))
+  actual: (not (= ["OtherDoc"] nil))
+
+FAIL in (a-rebuild-keeps-the-tree-and-the-versions-when-nothing-changed) (/tmp/kimun-k1d-wt/test/kimun/cli/model_carry_test.cljc:70)
+a model the declaration no longer defines is declared, not dropped silently
+the declared model still keeps its version
+expected: (= 1 (get-in ids [:models :kept]))
+  actual: (not (= 1 nil))
+moved existing store to /tmp/kimun-adhoc-17737377142718853570/kimun-model-carry-8969211472068480483/.kimun.bak-20261115-183439
+
+FAIL in (a-moved-contract-advances-the-version) (/tmp/kimun-k1d-wt/test/kimun/cli/model_carry_test.cljc:122)
+the version advances, never goes back
+expected: (= (inc (first v1)) (first v2))
+  actual: (not (= 2 1))
+
+FAIL in (a-moved-contract-advances-the-version) (/tmp/kimun-k1d-wt/test/kimun/cli/model_carry_test.cljc:122)
+expected: (= {:tree-carried true, :kept 0, :advanced 1, :new 0} (:models ids))
+  actual: (not (= {:tree-carried true, :kept 0, :advanced 1, :new 0} nil))
+moved existing store to /tmp/kimun-adhoc-17737377142718853570/kimun-model-carry-11826402005023064505/.kimun.bak-20261115-183440
+
+FAIL in (an-unreadable-old-store-falls-back-to-version-one-and-says-so) (/tmp/kimun-k1d-wt/test/kimun/cli/model_carry_test.cljc:136)
+expected: (= {:tree-carried false, :kept 0, :advanced 0, :new 1} (:models ids))
+  actual: (not (= {:tree-carried false, :kept 0, :advanced 0, :new 1} nil))
+moved existing store to /tmp/kimun-adhoc-17737377142718853570/kimun-model-carry-11173238500801877350/.kimun.bak-20261115-183440
+
+FAIL in (a-version-does-not-go-back) (/tmp/kimun-k1d-wt/test/kimun/cli/model_carry_test.cljc:108)
+the rebuild keeps version 2 and its id
+expected: (= v2 (get (model-map) "TestDoc"))
+  actual: (not (= [2 "de5381b50f1bd12ae5fd30ed4c422ced89838b8bee93db1342f810f2f6f73e2b"] [1 "3c5d01c1d304ead80ea37fbefd2a1c36fd4cca86c60d3b60708ddec835753cda"]))
+
+FAIL in (a-version-does-not-go-back) (/tmp/kimun-k1d-wt/test/kimun/cli/model_carry_test.cljc:108)
+expected: (= {:tree-carried true, :kept 1, :advanced 0, :new 0} (:models ids))
+  actual: (not (= {:tree-carried true, :kept 1, :advanced 0, :new 0} nil))
+
+Ran 4 tests containing 35 assertions.
+11 failures, 0 errors.
+{:test 4, :pass 24, :fail 11, :error 0, :type :summary}

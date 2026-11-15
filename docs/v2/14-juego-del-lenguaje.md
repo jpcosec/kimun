@@ -485,8 +485,15 @@ Qué queda **pendiente tras `D0`**, y nada de ello es una pregunta al dueño sob
   modelos, cierre y linaje de unidades de campo, y G. Pendientes reales de `K1`: las unidades de
   **sección y bloque** (esperan la serie `S2a` → `K1e` → `S2b`), los campos anidados e ítems de
   lista, el cierre y el linaje de unidades de campo y copiar/dividir/fusionar con linaje
-  declarado; los ids de modelos los acuña de nuevo el rebuild. `K2b`, esa serie y la
-  implementación de `M1` esperan a `K1`.
+  declarado. **K1d (inferencia del equipo):** un rebuild conserva el **árbol `models`** y la
+  **versión y el contrato** de cada modelo: mismo contrato ⇒ misma versión (y misma dirección
+  del descriptor); contrato distinto ⇒ versión vieja + 1 (la versión no retrocede); nombre
+  nuevo ⇒ versión 1. El hash de un descriptor es la **dirección de un valor** (el contrato de
+  una versión de la clase), **no la identidad de una unidad**: `K1d` no decide si un modelo es
+  unidad del grafo. **Cuestión abierta para `M1`:** `07` llama a los modelos «nodos del
+  árbol»; si en `M1` pasan a ser unidades del grafo deberán recibir **identidad propia** según
+  `D0` (acuñada al marcarlos, no su hash), y la dirección por contenido seguirá siendo solo la
+  del valor de cada versión. `K2b`, esa serie y la implementación de `M1` esperan a `K1`.
 - **Alcance sobre `01 §4` principio 3 y decisiones `1`, `3`, `4` de `05`**: se revisa al
   implementar `K1`, en lo que toca a unidades.
 - **Diseño de G, no de S–M**: la base de la recursión de `(R A B)` (un store finito no puede
