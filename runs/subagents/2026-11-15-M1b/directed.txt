@@ -1,0 +1,8 @@
+
+Testing kimun.surface.models.compile-test
+
+Testing kimun.surface.models.subgraph-test
+
+Ran 12 tests containing 104 assertions.
+0 failures, 0 errors.
+exit 0

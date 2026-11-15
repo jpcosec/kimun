@@ -1,0 +1,61 @@
+=== baseline (no mutation)
+Ran 6 tests containing 81 assertions.
+0 failures, 0 errors.
+=== M1 selector drops its first step
+FAIL in (render-marker-lives-in-the-projection) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:81)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+FAIL in (selector-equals-the-r3-files) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:40)
+Ran 6 tests containing 78 assertions.
+33 failures, 0 errors.
+=== M2 view merged into the stored descriptor (keeps :template)
+FAIL in (the-stored-descriptor-is-not-touched) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:51)
+FAIL in (the-stored-descriptor-is-not-touched) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:51)
+FAIL in (the-stored-descriptor-is-not-touched) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:51)
+Ran 6 tests containing 81 assertions.
+3 failures, 0 errors.
+=== M3 projection without the template text
+ERROR in (render-marker-lives-in-the-projection) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:81)
+Ran 6 tests containing 81 assertions.
+0 failures, 1 errors.
+=== M4 no v1 validation (py markers accepted)
+FAIL in (py-markers-are-still-rejected) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:64)
+FAIL in (py-markers-are-still-rejected) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:64)
+ERROR in (py-markers-are-still-rejected) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:64)
+Ran 6 tests containing 81 assertions.
+2 failures, 1 errors.
+=== M5 compat strict instead of legacy
+FAIL in (output-validates-as-spec16) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:30)
+FAIL in (output-validates-as-spec16) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:30)
+FAIL in (output-validates-as-spec16) (/tmp/kimun-m1b-wt/test/kimun/surface/models/compile_test.cljc:30)
+Ran 6 tests containing 81 assertions.
+3 failures, 0 errors.
