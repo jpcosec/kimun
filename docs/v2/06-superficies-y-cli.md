@@ -509,6 +509,23 @@ Campos de documentos tipados. `DOC` es nombre, tree-id o `Model:doc`; un campo d
 
 `serve [start] [--port N] [--host H] [--token T] [--cors]`. Bloquea hasta interrupción; `--token` o `$KIMUN_SERVE_TOKEN` exige `Authorization: Bearer TOKEN`; def. `127.0.0.1:8787`.
 
+### Recorrido observable de una mutación
+
+`bash scripts/tour_mutation.sh` demuestra con la CLI, en un proyecto temporal,
+que kimun ve una mutación y la lleva hasta quedar reconciliada: reposo →
+archivo editado (`source/mutated`, health `needs-human` con `:next` de
+inspección) → consulta de lo que cambió y **decisión explícita que el guion simula**
+(ninguna persona revisa el cambio; ejecuta una de las `:actions`) → `ok` → la misma fuente bajo otro parser (`contract/changed`, health
+`degraded` con `:next "run: kimun stores update"`: reparación sin decisión) →
+`stores update` → `ok` → archivo movido (`source/missing`; la ausencia no termina
+la unidad) → `docs reanchor` (mismo `:tree`, `:declared` en el journal) → dos
+latidos. Comprueba con sha256 del árbol del store que `stores sense`,
+`stores health` y `stores heartbeat` no escriben. Requiere el pod tree-sitter para
+el tramo K6 (sin él lo omite y lo dice). No promete la vista del circuito más
+allá del nivel documento, ni unidades debajo del documento, ni que kimun detecte
+movimientos: el sensor informa ausencia y el actor declara. Evidencia:
+`runs/subagents/2026-11-15-TV1/` (transcript y prueba `tour-test`).
+
 ## 4. Rutas de `serve`
 
 Tabla de rutas como datos en `src/kimun/surface/http/routes.cljc`; cada ruta delega en un comando de §3. Familias:
