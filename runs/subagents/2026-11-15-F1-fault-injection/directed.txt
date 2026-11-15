@@ -1,0 +1,6 @@
+
+Testing kimun.cli.fault-injection-test
+
+Ran 5 tests containing 39 assertions.
+0 failures, 0 errors.
+exit 0
