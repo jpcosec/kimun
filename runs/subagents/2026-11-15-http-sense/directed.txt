@@ -1,0 +1,11 @@
+
+Testing kimun.surface.http.circuit-test
+
+Testing kimun.surface.http-test
+
+Testing kimun.surface.http.models-fields-test
+
+Testing kimun.cli.heartbeat-test
+
+Ran 43 tests containing 254 assertions.
+0 failures, 0 errors.

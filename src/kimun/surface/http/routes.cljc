@@ -182,6 +182,8 @@
    {:method :get :path "/stores" :handler (command-route ["stores" "show"])}
    {:method :get :path "/stores/check" :handler (command-route ["stores" "check"])}
    {:method :get :path "/stores/links" :handler (command-route ["stores" "links"])}
+   {:method :get :path "/stores/sense" :handler (command-route ["stores" "sense"])}
+   {:method :get :path "/stores/health" :handler (command-route ["stores" "health"])}
    {:method :get :path "/schema" :handler v/schema}
    {:method :get :path "/graph" :handler v/graph}
    {:method :get :path "/lint" :handler v/lint}

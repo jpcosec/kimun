@@ -1,0 +1,66 @@
+
+Testing kimun.surface.http.circuit-test
+
+FAIL in (the-circuit-routes-honor-the-token) (/tmp/kimun-v1-wt/test/kimun/surface/http/circuit_test.cljc:66)
+/stores/sense
+expected: (= 200 (status :get (str base path) "tok"))
+  actual: (not (= 200 404))
+
+FAIL in (the-circuit-routes-honor-the-token) (/tmp/kimun-v1-wt/test/kimun/surface/http/circuit_test.cljc:66)
+/stores/health
+expected: (= 200 (status :get (str base path) "tok"))
+  actual: (not (= 200 404))
+
+FAIL in (the-circuit-routes-are-get-only) (/tmp/kimun-v1-wt/test/kimun/surface/http/circuit_test.cljc:73)
+/stores/sense
+expected: (= 405 (status :post (str base path)))
+  actual: (not (= 405 404))
+
+FAIL in (the-circuit-routes-are-get-only) (/tmp/kimun-v1-wt/test/kimun/surface/http/circuit_test.cljc:73)
+/stores/health
+expected: (= 405 (status :post (str base path)))
+  actual: (not (= 405 404))
+
+FAIL in (health-over-http-reports-degraded-with-its-next-step) (/tmp/kimun-v1-wt/test/kimun/surface/http/circuit_test.cljc:43)
+expected: (= 200 (:status r))
+  actual: (not (= 200 404))
+
+FAIL in (health-over-http-reports-degraded-with-its-next-step) (/tmp/kimun-v1-wt/test/kimun/surface/http/circuit_test.cljc:43)
+expected: (= "degraded" (get-in r [:json :data :status]))
+  actual: (not (= "degraded" nil))
+
+FAIL in (health-over-http-reports-degraded-with-its-next-step) (/tmp/kimun-v1-wt/test/kimun/surface/http/circuit_test.cljc:43)
+expected: (= "run: kimun docs update doc.md --name doc" (get-in r [:json :data :next]))
+  actual: (not (= "run: kimun docs update doc.md --name doc" nil))
+
+FAIL in (health-over-http-reports-degraded-with-its-next-step) (/tmp/kimun-v1-wt/test/kimun/surface/http/circuit_test.cljc:43)
+expected: (= cli (get-in r [:json :data]))
+  actual: (not (= {:status "degraded", :findings [{:category "reformatted", :model nil, :document "doc", :path "doc.md", :action "kimun docs update doc.md --name doc", :needs-human false}], :actions ["kimun docs update doc.md --name doc"], :next "run: kimun docs update doc.md --name doc", :summary "PASS: store integrity — 1 documents in 0 models — 1 reformatted (ok)"} nil))
+
+FAIL in (observing-over-http-writes-nothing) (/tmp/kimun-v1-wt/test/kimun/surface/http/circuit_test.cljc:53)
+expected: (= 200 (:status (s/req :get (str base "/stores/sense"))))
+  actual: (not (= 200 404))
+
+FAIL in (observing-over-http-writes-nothing) (/tmp/kimun-v1-wt/test/kimun/surface/http/circuit_test.cljc:53)
+expected: (= 200 (:status (s/req :get (str base "/stores/health"))))
+  actual: (not (= 200 404))
+
+FAIL in (sense-over-http-is-the-cli-data-and-sees-the-mutation) (/tmp/kimun-v1-wt/test/kimun/surface/http/circuit_test.cljc:33)
+expected: (= 200 (:status r))
+  actual: (not (= 200 404))
+
+FAIL in (sense-over-http-is-the-cli-data-and-sees-the-mutation) (/tmp/kimun-v1-wt/test/kimun/surface/http/circuit_test.cljc:33)
+expected: (= "stores sense" (get-in r [:json :command]))
+  actual: (not (= "stores sense" nil))
+
+FAIL in (sense-over-http-is-the-cli-data-and-sees-the-mutation) (/tmp/kimun-v1-wt/test/kimun/surface/http/circuit_test.cljc:33)
+expected: (= ["source/mutated"] (map :type (get-in r [:json :data :signals])))
+  actual: (not (= ["source/mutated"] ()))
+
+FAIL in (sense-over-http-is-the-cli-data-and-sees-the-mutation) (/tmp/kimun-v1-wt/test/kimun/surface/http/circuit_test.cljc:33)
+expected: (= (dissoc cli :observed-at) (dissoc (get-in r [:json :data]) :observed-at))
+  actual: (not (= {:mode "once", :tracked 1, :valid false, :signals [{:path "doc.md", :category "edited", :type "source/mutated", :document "doc", :needs-human true, :severity "warning", :action "kimun docs update doc.md --name doc", :message "document `doc` (generic/md): doc.md was edited outside the store — decide first: if the edit was intended, kimun docs update doc.md --name doc", :model nil, :detail {:state "intact", :content-ok false, :fields-ok false, :contract-ok true, :contract {:status "same", :changed []}}}], :counts {:total 1, :by-type {:source/mutated 1}, :by-severity {:warning 1}}, :summary "1 signal(s) — 1 warning"} nil))
+
+Ran 5 tests containing 18 assertions.
+14 failures, 0 errors.
+{:test 5, :pass 4, :fail 14, :error 0, :type :summary}

@@ -530,7 +530,8 @@ movimientos: el sensor informa ausencia y el actor declara. Evidencia:
 
 Tabla de rutas como datos en `src/kimun/surface/http/routes.cljc`; cada ruta delega en un comando de §3. Familias:
 
-- `GET /health /schema /stores /stores/check /stores/links /docs /document /document/ir /document/segments /ast /lint /fields /sections /find /extract /models /models/detail /render /graph /edges /edges/node /edges/nodes /journal /journal/verify /corpus/rank`.
+- `GET /health /schema /stores /stores/check /stores/links /stores/sense /stores/health /docs /document /document/ir /document/segments /ast /lint /fields /sections /find /extract /models /models/detail /render /graph /edges /edges/node /edges/nodes /journal /journal/verify /corpus/rank`.
+- `/stores/sense` y `/stores/health` son lecturas puras: devuelven el envelope de `stores sense` / `stores health` sin transformarlo (no escriben en el store ni en `cache/`). `stores heartbeat` no tiene ruta: es un flujo NDJSON, no un envelope.
 - `GET /graph/{cycles,components,central,isolated,neighborhood,path}` y `GET /similar`.
 - `POST /save /docs /docs/create /docs/ingest /docs/track /docs/untrack /extract/segments /models/define /models/fields-add /models/fields-remove /models/template-edit /models/validate`.
 
