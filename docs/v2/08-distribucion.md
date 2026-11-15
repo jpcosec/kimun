@@ -8,13 +8,13 @@
 
 | nombre | qué es | repo | pip / binario |
 |---|---|---|---|
-| **`kimun`** (Mapudungun *kimün*, saber) | este producto: kernel SLDB v2 y modelos, en Clojure/bb | `jpcosec/kimun`, local `~/proyectos/kimun` | binario `kimun`, store `.kimun/`, `$KIMUN_STORE`; un cliente pip `kimun` está previsto, no existe |
+| **`kimun`** (Mapudungun *kimün*, saber) | este producto: kernel SLDB v2 y modelos, en Clojure/bb | `jpcosec/kimun`, local `~/proyectos/kimun` | binario `kimun`, store `.kimun/`, `$KIMUN_STORE`; no hay cliente pip `kimun` (`C2` retirada el 2026-11-15) |
 | **`pron`** (Mapudungun, el cordel anudado de registro) | la base de conocimiento de provenance **y** el evaluador que la opera, en un paquete Python que depende de `sldb` y `kgdb`. **Vivo**: lo importa `kinesis` | `jpcosec/pron`, local `legos/pron` | pip `pron`, binario `pron` |
 | **`knowledge`** | congelado 2026-09-07: solo el CLI de julio sobre archivos (`knowledge_legacy.py`) y la rama `iso-lab/knowledge` | `jpcosec/knowledge` (`master`), local `hum-ecosystem/tools/knowledge` | ninguno |
 
 Reglas: `knowledge` no es un nombre de producto en ningún sitio (el kernel se llama
-`kimun.kernel.*` —antes `sldb.*`—, la superficie `kimun.*`); el paquete Python instalable de v1 es `pron`. Un cliente
-Python `kimun` está previsto, no implementado: `python/kimun/` hoy solo contiene
+`kimun.kernel.*` —antes `sldb.*`—, la superficie `kimun.*`); el paquete Python instalable de v1 es `pron`. No hay cliente
+Python `kimun` (`C2` retirada el 2026-11-15, decisión del dueño): `python/kimun/` hoy solo contiene
 `__init__.py`, `models.py` (el exportador de descriptores) y `adapters/`.
 
 Lo que pasó el 2026-09-07: el producto se llamó `knowledge` durante la fase de empaquetado y
@@ -43,7 +43,7 @@ consumidor); la migración se prueba sobre una copia en un directorio temporal, 
 | versión pinada | `bb 1.13.219` (la instalada localmente; `release.edn` la fija) |
 | JVM | **no necesaria** ni para construir ni para ejecutar: `bb uberjar` y `bb --jar` existen en esa versión y están verificados localmente |
 | dependencias externas | ninguna: `babashka.cli`, `cheshire`, `clj-yaml`, `http-kit` vienen embebidos en bb |
-| Python | solo para `scripts/canon_oracle.py` (`bb oracle`); un cliente Python está previsto, no existe |
+| Python | solo para `scripts/canon_oracle.py` (`bb oracle`); no hay cliente Python (`C2` retirada el 2026-11-15) |
 
 ## 3. Tareas de `bb.edn`
 
@@ -148,7 +148,7 @@ se revisan en el diff del commit; un asset cuyo digest no coincide aborta el bui
 imagen base y `kimun` en su `manifest.yaml`; este checkout no tiene `docker/` ni
 `manifest.yaml`.
 
-**Pendiente (no implementado).** Un cliente Python `kimun`: wheels por plataforma con el
+**Retirado (2026-11-15, decisión del dueño; `C2` en `12 §1`), no implementado.** Un cliente Python `kimun` que habría sido: wheels por plataforma con el
 bundle en `kimun/_bin/<plat>/{bb, kimun.jar}`, más un wheel `any` que exige `kimun` en
 PATH; un `_launcher.py` que resuelve `$KIMUN_BIN` > `_bin/<plat>/` > PATH; y
 `client.py`/`errors.py`/`models.py`/`graph/` (contratos de kgdb). El grupo `adapters`

@@ -25,8 +25,9 @@ The protocol is fixed in `docs/v2/11-adaptadores.md`.
 
 ## Client library
 
-There is no Python client library yet. The `from kimun import Client` snippet in
-`docs/v2/06-superficies-y-cli.md §6` is the planned surface. Until it exists, call the CLI
+There is no Python client library, and none is planned: task `C2` (Python client and graph_ui
+HTTP routes) was withdrawn on 2026-11-15 (`docs/v2/12-ecosistema-y-pendientes.md §1`). No client
+API is specified (`docs/v2/06-superficies-y-cli.md §6`). To drive kimun from Python, call the CLI
 with `subprocess` and parse the JSON envelope.
 
 ## Tests

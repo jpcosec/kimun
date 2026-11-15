@@ -733,7 +733,7 @@ Estado real de ejecución por etapa (el backlog vivo y dependencias residen en
 - **Etapa C — Completar el sistema nervioso y la capa G:** motores (`Matrix`/wittgenstein por
   protocolo, descompositor, embeddings `G3`), Datalog `G2`, evaluación en dos etapas de punta a
   punta, descubrimiento de modelos, `M2` (regeneración de modelos del desk), `C2` (cliente Python y
-  HTTP `graph_ui`) y heartbeat asíncrono completo (`2026-11-14`, por especificar).
+  HTTP `graph_ui`; retirada el 2026-11-15 por decisión del dueño, ver `12 §1`) y heartbeat asíncrono completo (`2026-11-14`, por especificar).
 
 ## 14. Promesas (resumen; la traza viva está en `tests/promises.md`)
 

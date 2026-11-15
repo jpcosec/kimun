@@ -45,14 +45,15 @@ no es identidad — `14 §21`). Cada capacidad tiene un dueño:
 - **`serve`** — API HTTP sobre los comandos, con token opcional. CLI:
   `06-superficies-y-cli.md`.
 - **Empaquetado** — `bb jar`, `bb release` y el launcher. Dueño: `08-distribucion.md`.
-- **No implementado** — el evaluador anclado (S4) y los derivados (S5), el cliente Python y
-  los motores de derivados. `06 §6`, `docs/archive/v2/09-evaluador-anclado.md`.
+- **No implementado** — el evaluador anclado (S4) y los derivados (S5), los motores de derivados
+  (el cliente Python se retiró el 2026-11-15, `C2` en `12 §1`). `06 §6`, `docs/archive/v2/09-evaluador-anclado.md`.
 
 ## 2. Medidas
 
-**Paridad con sldb v1** (2026-10-08, `python3 scripts/parity/coverage.py <v1> .`), sobre las
-590 funciones de test de v1: 518 portadas, 1 mapeada, 14 oráculo, 55 n/a, 0 brechas, 1
-corpus y 1 abierta. Detalle y desviaciones: `tests/parity-v1.md`.
+**Paridad con sldb v1** (marcador cerrado el 2026-11-14, `python3 scripts/parity/coverage.py <v1> .`),
+sobre las 590 funciones de test de v1: 520 portadas, 1 mapeada, 14 oráculo, 55 n/a, 0 brechas,
+0 mencionadas, 0 corpus y 0 abiertas (cifras de `tests/parity-v1.md`; antes, al 2026-10-08:
+518 portadas, 1 corpus y 1 abierta). Detalle y desviaciones: `tests/parity-v1.md`.
 
 **Store real** (1.551 documentos migrados de v1; antes → después, `10-escala.md §9`):
 `docs show` 187,9 s → 0,37 s; `docs list` 180,3 s → 0,77 s; `stores check` 173,2 s → 18,7 s;
