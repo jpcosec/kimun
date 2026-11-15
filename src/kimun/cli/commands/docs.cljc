@@ -20,13 +20,18 @@
             [kimun.surface.models.render :as mrender]
             [kimun.surface.models.store :as mstore]
             [kimun.host.default :as host]
+            [kimun.kernel.canon :as canon]
             [kimun.kernel.err :as err]
             [kimun.kernel.ports :as ports]
             [kimun.kernel.revision :as revision]
             [kimun.kernel.route :as route]
             [kimun.kernel.store :as store]
             [kimun.kernel.tree :as tree]
-            [kimun.surface.markdown.plan :as md]))
+            [kimun.surface.markdown.anchors :as anchors]
+            [kimun.surface.markdown.ast :as ast]
+            [kimun.surface.markdown.plan :as md]
+            [kimun.surface.models.blocks :as blocks]
+            [kimun.surface.parse-contract :as parse-contract]))
 
 (defn- store-ref [descriptor path] {:name (:name descriptor) :path path})
 
@@ -477,6 +482,66 @@
                                 :data {:name name :path path :file-deleted? (boolean (and delete? f))
                                        :closure {:file file-state :reason (:reason opts)}}}))))
 
+(defn- aligned-spans
+  "Line spans `[[start end) …]` of the top-level blocks of `text` when the block
+   layer (`kimun.surface.models.blocks/parse`, the pod when it is there) matches
+   the neutral AST one to one: same count, in order, and each slice parsed
+   alone yields exactly one block with the digest of its AST child. Returns nil
+   when that does not hold, so no range is invented from a misaligned layer."
+  [host text]
+  (let [children (:children (ast/parse host text))]
+    (try
+      (let [blocks (blocks/parse text)
+            spans (mapv :map blocks)
+            lines (vec (clojure.string/split-lines text))
+            slice (fn [[ls le]] (clojure.string/join "\n" (subvec lines (long ls)
+                                                                  (long (min le (count lines))))))
+            ok? (and (every? some? spans) (= (count blocks) (count children))
+                     (every? true? (map (fn [blk b]
+                                          (let [kids (:children (ast/parse host (slice (:map blk))))]
+                                            (and (= 1 (count kids))
+                                                 (= (canon/digest host (first kids))
+                                                    (canon/digest host b)))))
+                                        blocks children)))]
+        (when ok? spans))
+      (catch Exception _ nil))))
+
+(defn anchors
+  "`docs anchors NAME [--sections]`: the structural anchors of a document as
+   EVIDENCE (S2a, docs/v2/12 §1): its sections and blocks with a locator, a
+   hash and, when the block layer aligns with the neutral AST, line and byte
+   ranges, plus the reading contract they were computed under
+   (`kimun.surface.markdown.anchors`). Typed or generic document. Read-only:
+   it writes nothing to the store or to `<store>/cache/`, and it mints no id:
+   a locator is evidence of where something was read, not an identity. `--sections`
+   omits `:blocks`. Data: `{:name :tree :path :parse-contract :sections
+   :blocks}`."
+  [args opts {:keys [cwd] :as ctx}]
+  (let [token (require-arg! args 0 "a document NAME" "anchors")
+        {:keys [descriptor store] store-path :path} (open opts ctx)
+        d (or (tdocs/resolve-any store token)
+              (err/raise :docs/missing (str "no document named or identified by `" token "`") {:document token}))
+        root (project-root store-path)
+        ;; the file as it is now; else the text the store keeps (an inline document)
+        text (or (when-let [rel (:path d)]
+                   (let [f (fs/path root rel)] (when (fs/regular-file? f) (slurp (str f)))))
+                 (:source (or (tdocs/find-document store (:tree d))
+                              (tdocs/generic-document store (:tree d)))))
+        _ (when (or (nil? text) (str/blank? (str text)))
+            (err/raise :docs/no-file
+                       (str "`" (:name d) "` has no readable source: its file is not there and it stores no text")
+                       {:document (:name d) :path (:path d)}))
+        contract (parse-contract/record host/host (parse-contract/environment) (or (:class d) "generic/md"))
+        a (anchors/anchors host/host (str text) {:spans (aligned-spans host/host (str text))
+                                                 :parse-contract contract})]
+    (out/ok "docs anchors"
+            {:store (store-ref descriptor store-path)
+             :revision (:head store)
+             :data (cond-> {:name (:name d) :tree (:tree d) :path (:path d)
+                            :parse-contract (:parse-contract a)
+                            :sections (:sections a)}
+                     (not (:sections opts)) (assoc :blocks (:blocks a)))})))
+
 (defn show
   "`docs show NAME [--format md] [--ast]`: the document map with payload, hashes and
    `:markdown` (its source; `--format md` prints it). With `--ast` (or `--format ast`,
@@ -533,13 +598,14 @@
    :force {:desc "Track a file that does not round-trip under its model (docs track)" :coerce :boolean}
    :ast {:desc "Print the document's SLDB-MD AST instead of its payload (docs show)" :coerce :boolean}
    :yes {:desc "Confirm a destructive command (docs delete)" :coerce :boolean}
-   :reason {:ref "TEXT" :desc "What happened (docs reanchor, docs untrack, docs delete)"}})
+   :reason {:ref "TEXT" :desc "What happened (docs reanchor, docs untrack, docs delete)"}
+   :sections {:desc "Only the sections of the document (docs anchors)" :coerce :boolean}})
 
 (def commands
   "Subcommand name → command fn `(fn [args opts ctx] envelope)`."
   {"ingest" ingest "update" update-any "render" render "list" list-docs "create" create "track" track
    "untrack" untrack "delete" (fn [args opts ctx] (untrack args opts ctx true))
-   "reanchor" reanchor "show" show "status" status})
+   "reanchor" reanchor "anchors" anchors "show" show "status" status})
 
 (defn dispatch
   "Runs subcommand `sub` of the `docs` group with the positional tokens that

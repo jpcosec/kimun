@@ -719,7 +719,11 @@ Estado real de ejecución por etapa (el backlog vivo y dependencias residen en
       necesita un localizador estable para dar identidad a secciones y bloques), se parte en
       `S2a` (anclas CST como evidencia, **sin identidad**; no espera a nada) → `K1e` (unidades de
       sección y bloque) → `S2b` (anclas que referencian ids de unidad): lo que espera a `K1` es
-      `S2b` (`12 §1`; inferencia del equipo, 2026-11-15).
+      `S2b` (`12 §1`; inferencia del equipo, 2026-11-15). **S2a (2026-11-15, inferencia del
+      equipo):** las anclas por nodo estructural están implementadas como **evidencia sin
+      identidad** (`docs anchors`, `kimun.surface.markdown.anchors`): localizador, huella y
+      rangos cuando la capa de bloques concuerda 1:1 con el AST; `K1e` les dará identidad al
+      marcarlas y `S2b` las referenciará.
 - **Etapa A — Arquitectura sostenible:**
   - `M1` redactado y contratado (`ac09b764`, `docs/v2/16-modelos-como-subgrafos.md`; implementación
     espera `P1` y `K1`/`D0`);

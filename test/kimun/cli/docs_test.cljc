@@ -105,7 +105,7 @@
     (testing "unknown subcommand lists the known ones"
       (let [e (run proj "docs" "nope")]
         (is (= 6 (:exit e)))
-        (is (= ["create" "delete" "ingest" "list" "reanchor" "render" "show" "status" "track" "untrack" "update"] (get-in e [:error :data :known])))))
+        (is (= ["anchors" "create" "delete" "ingest" "list" "reanchor" "render" "show" "status" "track" "untrack" "update"] (get-in e [:error :data :known])))))
     (testing "no store"
       (let [e (run (tmp) "docs" "list")]
         (is (= 5 (:exit e)))

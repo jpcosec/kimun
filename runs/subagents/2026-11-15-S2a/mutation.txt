@@ -1,0 +1,24 @@
+----- Error --------------------------------------------------------------------
+Type:     java.io.FileNotFoundException
+Message:  Could not locate kimun/surface/markdown/anchors.bb, kimun/surface/markdown/anchors.clj or kimun/surface/markdown/anchors.cljc on classpath.
+Location: /tmp/kimun-s2a-wt/test/kimun/surface/markdown/anchors_test.cljc:6:3
+
+----- Context ------------------------------------------------------------------
+ 2:   "S2a: structural anchors as evidence, without identity
+ 3:    (docs/v2/12 §1 S2, docs/v2/14 §13). A locator is where something was read
+ 4:    under a reading contract, and its ordinals move when something is inserted;
+ 5:    the hash says whether what is there changed. Nothing here mints an id."
+ 6:   (:require [clojure.string :as str]
+      ^--- Could not locate kimun/surface/markdown/anchors.bb, kimun/surface/markdown/anchors.clj or kimun/surface/markdown/anchors.cljc on classpath.
+ 7:             [clojure.test :refer [deftest is testing]]
+ 8:             [kimun.host.default :as host]
+ 9:             [kimun.host.treesitter :as ts]
+10:             [kimun.kernel.canon :as canon]
+11:             [kimun.surface.markdown.anchors :as anchors]
+
+----- Stack trace --------------------------------------------------------------
+babashka.main/exec/fn--30821/load-fn--30832 - <built-in>
+kimun.surface.markdown.anchors-test         - /tmp/kimun-s2a-wt/test/kimun/surface/markdown/anchors_test.cljc:6:3
+clojure.core/require                        - clojure/core.clj:6070:1
+user                                        - NO_SOURCE_PATH:1:1
+

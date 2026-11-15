@@ -225,6 +225,14 @@ superficie `docs` la mantiene en cada escritura; la entrada es:
   **cierre declarado**: `--reason TEXT` es opcional y la declaración
   (`:declared {:kind "closure" :file :reason :file-deleted?}`) queda en el journal; `:file` es el
   estado del archivo antes de actuar (`present | missing | none`).
+- **`docs anchors NAME`** devuelve las **anclas** de un documento como evidencia: secciones
+  (encabezado y lo que sigue hasta el siguiente de nivel menor o igual, anidadas) y bloques
+  (hijos directos del documento), cada uno con un **localizador** —camino de títulos con ordinal
+  entre hermanas, o `{:section :type :n}`—, la huella de su sub-AST y, cuando la capa de bloques
+  concuerda 1:1 con el AST neutro, línea y bytes. Un localizador **no es identidad**: insertar un
+  bloque desplaza los ordinales de los siguientes del mismo tipo en esa sección (lo que justifica
+  que `K1e` acuñe identidad al marcar). Es solo lectura y no baja dentro de un bloque; los rangos
+  en grafemas son de `S2b`.
 - **`docs reanchor NAME FILE --reason TEXT`** declara que el documento está anclado ahora en FILE:
   conserva id de documento e id de árbol, libera la ruta vieja y toma la nueva en una sola
   revisión. La ausencia no termina una unidad y el sensor no decide continuidad: eso lo declara
@@ -322,6 +330,7 @@ archivo esperan al spec 16 (M1). `include` sigue sin admitir documentos sin mode
 | `docs track MODEL FILE` | `--name N`, `--force`, `--inline` | mapa del documento; `--force` para un fichero que no ida-vuelta; `--inline` guarda el texto en el store |
 | `docs show NAME` | `--format md`, `--ast` (equivale a `--format ast`) | mapa con `:markdown` y, en un documento tipado, `:units [{:field :id :status}]` (`anchored \| missing`, K1c); `--ast` ⇒ `{:name :tree :ast}` |
 | `docs status` | — | `[{:name :path :status}]` con `status` `ok \| modified \| missing` |
+| `docs anchors NAME` | `--sections` | anclas estructurales del documento como **evidencia, sin identidad** (S2a): `{:name :tree :path :parse-contract :sections [{:locator :level :hash :lines :bytes :blocks}] :blocks [{:locator :hash :lines :bytes}]}`; `--sections` omite `:blocks`. Solo lectura: no escribe store ni caché y no acuña ids. Tipado o genérico |
 | `docs reanchor NAME FILE` | `--reason TEXT` (obligatorio) | declara el ancla nueva conservando ids: `:reanchored {:from :to :previous-file :reason}` + warning si el archivo viejo sigue |
 | `docs untrack NAME` | `--reason TEXT` | desrastrea; `:closure {:file :reason}` y `:declared` en el journal |
 | `docs delete NAME` | `--yes`, `--reason TEXT` | desrastrea y borra el fichero; sin `--yes` ⇒ `docs/confirmation-required` (3) |
