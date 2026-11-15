@@ -238,6 +238,12 @@ ruta, no sobre texto no indexado ni sobre planes del build en el CAS).
 
 ## 6. Decisiones abiertas explicitadas (sin especular `D0`)
 
+> **Actualización 2026-11-15.** `D0` dejó de ser una decisión abierta del dueño: el concilio derivó
+> de sus premisas el contrato S–M de identidad y continuidad (`14 §21`, reglas rotuladas como
+> inferencias del concilio). Donde este spec dice «`D0`» como bloqueo, léase «`K1`», su
+> implementación, que hoy solo cubre el nivel documento. Sigue valiendo que Spec 16 no fija ningún
+> esquema de ids. El punto 1 de abajo queda como registro de lo que `K1` y `S2` tienen que aterrizar.
+
 La especificación queda completa a nivel de contrato documental; **la implementación en código queda
 bloqueada** donde depende de las siguientes decisiones abiertas del dueño (`preguntas-abiertas.md` y
 `runs/research/2026-11-14/concilio/ambiguedades.md`):
@@ -245,8 +251,8 @@ bloqueada** donde depende de las siguientes decisiones abiertas del dueño (`pre
 1. **`D0` — Identidad positiva del nodo y continuidad temporal (`14 §21`, `ambiguedades.md A2.1–A2.2`):**
    - El selector de Spec 16 entrega unidades extraídas con `{:value :path :spans :content-hash}`.
    - Qué identificador permanente recibe cada unidad o instancia al crearse, y cuándo una edición/mudanza/
-     `split`/`merge` conserva esa identidad frente a emitir candidato `ambiguous`, **espera resolución de
-     `D0` y su aterrizaje en `K1` y `S2`**. Spec 16 no fija ni infiere ningún esquema de IDs para `D0`.
+     `split`/`merge` conserva esa identidad frente a emitir candidato `ambiguous`, **espera el aterrizaje del
+     contrato `D0` en `K1` y `S2`**. Spec 16 no fija ni infiere ningún esquema de IDs para `D0`.
 2. **Correspondencia sensor `S` ↔ unidad `M` (`ambiguedades.md A1.1`):**
    - Está abierto si un elemento capturado por el selector (por ejemplo, una sección Markdown o función de
      código) y su sensor topológico en `S` comparten un único nodo con facetas de anclaje o son dos

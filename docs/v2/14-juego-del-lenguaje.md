@@ -226,7 +226,7 @@ del anchor en la etapa 1 (**anchoring**); no fija por sí sola la verdad del hec
 
 Principio del dueño (decisiones 41–42); gobierna los modelos (actualiza `§9`) y el registro del store
 (actualiza `§10`). Detalle de diseño en `docs/v2/16-modelos-como-subgrafos.md` (**Spec 16 / `M1`**,
-redactado en Etapa A; implementación dependiente de `P1` y `D0`/`K1`):
+redactado en Etapa A; implementación dependiente de `P1` y `K1`):
 
 1. **Todo documento es instancia de una clase.** No hay documentos sin clase.
    - **Documento genérico:** su clase es la estructura que da tree-sitter, cortada a una granularidad

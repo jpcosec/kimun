@@ -3,13 +3,13 @@
  :spec "docs/v2/16-modelos-como-subgrafos.md"
  :status :spec-draft
  :implementation {:status :blocked
-                  :blocked-by [:P1 :K1 :D0]
+                  :blocked-by [:P1 :K1]
                   :code-changes false}
 
  :open-decisions
- {:D0 {:ref "docs/v2/drafts/preguntas-abiertas.md"
-       :summary "Identidad positiva del nodo y continuidad temporal (move/split/merge vs ambiguous)"
-       :status :open
+ {:D0 {:ref "docs/v2/14-juego-del-lenguaje.md §21"
+       :summary "Identidad positiva del nodo y continuidad temporal: contrato S-M derivado por el concilio (2026-11-15); implementacion K1"
+       :status :derived
        :spec-prescribes-id-scheme false}
   :A1.1 {:ref "runs/research/2026-11-14/concilio/ambiguedades.md"
          :summary "Correspondencia entre sensor topologico S y unidad estructural M (nodo compartido vs par vinculado)"

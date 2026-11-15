@@ -182,8 +182,8 @@ Un documento tipado tiene tres formas de nombrarse; ninguna de las dos primeras 
   `:path`, y añade `:qualified` y `:tree` al finding. Si el alias es compartido, `:action` y el mensaje
   nombran el documento por su nombre cualificado. `stores update` repara por id de árbol.
 - La ruta **no es identidad**: un archivo movido es una fuente ausente (`source/missing`), no se
-  reapunta solo. Qué pasa con un documento cuando su archivo se mueve es la regla de continuidad de
-  D0, abierta.
+  reapunta solo. Cuando su archivo se mueve, la continuidad se **declara** (contrato D0, `14 §21`):
+  `docs reanchor NAME FILE --reason TEXT` conserva la unidad; sin declaración sigue ausente.
 
 Fuera de este corte:
 

@@ -105,7 +105,9 @@
     (is (str/includes? (:required-companion d01 "") "12 §1"))
     (is (str/includes? md "vista mínima del circuito"))
     (is (str/includes? readme "not yet implemented"))
-    (is (str/includes? readme "Positive node identity and continuity remain open under"))
+    ;; D0 is the derived S–M contract (2026-11-15), no longer an open decision; D-G is
+    (is (str/includes? readme "`D0` is no\n> longer an open decision"))
+    (is (not (str/includes? readme "remain open under")))
     (is (str/includes? faq "not yet implemented"))
     (is (str/includes? faq "minimal view of the circuit"))
     (doseq [cap (:capabilities m)]

@@ -4,13 +4,18 @@
 `sldb` (v1, Python) and `kgdb`, merged into one product. The name is Mapudungun (*kimün*,
 knowledge).
 
-> **Open decision (`D0`, `docs/v2/14-juego-del-lenguaje.md §21`, `docs/v2/drafts/preguntas-abiertas.md`):**
-> the hash detects mutations and addresses objects in the current CAS storage implementation, but
-> **hash ≠ identity**. Positive node identity and continuity remain open under decision `D0`.
+> **Identity (`D0`, `docs/v2/14-juego-del-lenguaje.md §21`):** the hash detects mutations and
+> addresses objects in the current CAS storage implementation, but **hash ≠ identity**. `D0` is no
+> longer an open decision: its S–M contract (a unit is a detected fact with its own identity; the
+> anchor is its current reference) was derived by the council from the owner's premises on
+> 2026-11-15, and its rules are labelled as council inferences. What is pending is its
+> implementation (`K1`; first cuts `K1a`, `K1b` at document level). The only open owner decision
+> is `D-G` (`docs/v2/drafts/preguntas-abiertas.md`).
 
 The current implementation is pure Clojure (`.cljc`) running on Babashka: a CAS store of
-immutable objects (S/M/G data records keyed by the hash of their canonical content bytes — while
-positive node identity and continuity remain open under `D0`), trees of positions as indexes,
+immutable objects (S/M/G data records keyed by the hash of their canonical content bytes — the
+positive identity and continuity of units is the `D0` contract, implemented so far only at
+document level, `K1`), trees of positions as indexes,
 typed edges with evidence, succession by `supersedes`, derived anchor states, and reconciliation
 of external edits. Markdown documents are projections of it. At the product horizon, `kimun`
 targets a contextual knowledge superset combining this durable document base with the

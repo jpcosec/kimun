@@ -33,7 +33,7 @@ ring 4  tests           ← requieren cualquier cosa
   esa lista falla, y también una entrada que ya no hace falta: la lista solo se achica.
   Modelos, aristas semánticas y derivadas (`kimun.surface.{models.*,semantic,edges}`)
   siguen en la superficie: la superficie de documentos los requiere, y moverlos depende
-  de separar anclaje de generación (spec 16) y de D0.
+  de separar anclaje de generación (spec 16) y de K1 (implementación del contrato D0).
 
 - **El kernel no importa nada de fuera**: ni `kimun.host.*`, ni `babashka.*`, ni `java.*`
   ni `js/*`. Lo que necesita de la plataforma (hash, normalización de texto, ids,

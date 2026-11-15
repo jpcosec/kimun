@@ -582,7 +582,7 @@ de todos los stores formato 4.
   superados; recolectarlos es K5.
 - Enumerar todas las rutas (`stores check`, la cobertura) sigue leyendo el árbol entero.
 - Las hojas son entradas por documento; los **campos** trackeados como hojas (`14 §20`) no
-  están: dependen de K1/D0.
+  están: dependen de K1.
 - La ruta sigue siendo localizador, no identidad; nada aquí decide qué es un archivo movido.
 
 ### 11.3 Inventario de objetos no alcanzables (K5, primer corte)

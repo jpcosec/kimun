@@ -90,11 +90,13 @@
     (is (= :spec-draft (:status fx)))
     (is (= :blocked (get-in fx [:implementation :status])))
     (is (false? (get-in fx [:implementation :code-changes])))
-    (is (= #{:P1 :K1 :D0} (set (get-in fx [:implementation :blocked-by]))))
+    (is (= #{:P1 :K1} (set (get-in fx [:implementation :blocked-by]))))
 
     (testing "Open decisions are declared explicitly and D0 prescribes no ID scheme"
-      (doseq [k [:D0 :A1.1 :F10 :R3-quirks]]
+      (doseq [k [:A1.1 :F10 :R3-quirks]]
         (is (= :open (get-in open-decs [k :status])) (str "Decision " k " must remain :open")))
+      ;; D0 is no longer the owner's to answer: the council derived its S–M contract (14 §21)
+      (is (= :derived (get-in open-decs [:D0 :status])))
       (is (false? (get-in open-decs [:D0 :spec-prescribes-id-scheme]))))
 
     (testing "All R3 selector capabilities C1-C6 are represented"

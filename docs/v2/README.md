@@ -8,7 +8,7 @@ pendientes. La historia está en `docs/archive/`.
 
 `00-nucleo.md` — el núcleo de kimun en una página (proposiciones numeradas al modo del *Tractatus*):
 lo que, si cambia, hace que kimun deje de ser kimun. Resume y ordena lo que el dueño fijó; no agrega
-decisiones ni corrige a los documentos de abajo, y nombra como abiertas D0 y D-G.
+decisiones ni corrige a los documentos de abajo, y nombra como abierta D-G (D0 dejó de serlo el 2026-11-15: contrato S–M derivado por el concilio, `14 §21`; pendiente su implementación, `K1`).
 
 ## Autoridad
 
@@ -45,8 +45,8 @@ De mayor a menor. Ante contradicción gana el número menor.
 | `11-adaptadores.md` | protocolo 1 de adaptadores (código → documentos) y el grupo `adapters` |
 | `12-ecosistema-y-pendientes.md` | pendientes de kimun, consumidores de v1 y la capa G (`wittgenstein`) |
 | `13-include.md` | `kimun.include.edn`: qué versiona un repo en git y el grupo `include` |
-| `14-juego-del-lenguaje.md` | **reordenado por tema (`DOC1` / `F18`)**: separa contrato objetivo, estado implementado, decisiones abiertas (`D0`, `D-G`) e historia; integra `P1–P15`, tres capas (`§19`), clases/anclaje vs. generación (`§18`), trackeable vs. trackeado (`§20`), identidad vs. huella Merkle (`§21`, `D0` abierto) y decisiones `21–46` |
-| `16-modelos-como-subgrafos.md` | **spec M1 (Etapa A, diseño objetivo)**: modelos de anclaje vs. generación, selectores EDN sobre substrato tree-sitter (`R3`), herencia de clases e inmutabilidad de contrato (`14 §18`, pendiente de `P1` y `D0`/`K1` para implementar) |
+| `14-juego-del-lenguaje.md` | **reordenado por tema (`DOC1` / `F18`)**: separa contrato objetivo, estado implementado, decisiones abiertas (`D-G`; `D0` es desde el 2026-11-15 contrato S–M derivado) e historia; integra `P1–P15`, tres capas (`§19`), clases/anclaje vs. generación (`§18`), trackeable vs. trackeado (`§20`), identidad vs. huella Merkle (`§21`, contrato `D0` derivado por el concilio; implementación `K1`) y decisiones `21–46` |
+| `16-modelos-como-subgrafos.md` | **spec M1 (Etapa A, diseño objetivo)**: modelos de anclaje vs. generación, selectores EDN sobre substrato tree-sitter (`R3`), herencia de clases e inmutabilidad de contrato (`14 §18`, pendiente de `P1` y `K1` para implementar) |
 | `tests/promises.md` | promesa normativa de `02`/`04` → test que la prueba |
 | `tests/parity-v1.md` | marcador de paridad con sldb v1, DAG y desviaciones deliberadas |
 | `drafts/` | **no autoritativo**: registro de la sesión 2026-10-08/09, **preguntas abiertas al dueño**, análisis previo del 14, dudas de la capa G, IDs a partir de Matrix |
