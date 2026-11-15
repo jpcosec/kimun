@@ -260,30 +260,49 @@
         orig (deref v)]
     [(with-redefs-fn {v (fn [p] (swap! calls inc) (orig p))} f) @calls]))
 
-(deftest a-derived-index-is-rebuilt-once-and-only-when-it-does-not-match-the-footer
+(defn- idx-state
+  "Bytes and last-modified time of the `.idx` of pack `nm`, or `:absent`."
+  [dir nm]
+  (let [p (idx-of dir nm)]
+    (if (bfs/exists? p)
+      [(seq (bytes p)) (str (bfs/last-modified-time p))]
+      :absent)))
+
+(deftest a-derived-index-is-rebuilt-in-memory-and-never-written-by-reading
   (let [dir (fresh)
         _ (fs/pack! (fs/backend dir))
         nm (first (pack-names dir))
         rs (records (pack-of dir nm))
         texts (fn []
-                (into {} (map (fn [r] [(:id r) (store/read-object (fs/backend dir) (:id r))]) rs)))
+                (let [b (fs/backend dir)]
+                  (into {} (map (fn [r] [(:id r) (store/read-object b (:id r))]) rs))))
         original (texts)
-        canonical (bytes (idx-of dir nm))]
+        canonical (idx-state dir nm)]
     (testing "an index that matches the footer is used without scanning the pack"
       (let [[_ scans] (counting-scan-pack #(texts))]
         (is (zero? scans)) (is (= original (texts))))
-      (is (= (seq canonical) (seq (bytes (idx-of dir nm)))) "and it is not rewritten"))
-    (testing "a missing index is rebuilt once from the pack"
+      (is (= canonical (idx-state dir nm)) "and it is not rewritten"))
+    (testing "a missing index is rebuilt once in memory; the file stays absent"
       (bfs/delete (idx-of dir nm))
       (let [[_ scans] (counting-scan-pack #(texts))]
         (is (= 1 scans)) (is (= original (texts))))
-      (is (= (seq canonical) (seq (bytes (idx-of dir nm)))) "and written again canonical"))
-    (testing "an index of garbage is detected at load and rebuilt once"
+      (is (= :absent (idx-state dir nm)) "a reader never writes"))
+    (testing "an index of garbage is detected at load, rebuilt in memory, file untouched"
       (write-bytes! (idx-of dir nm) (byte-array 88))
-      (let [[_ scans] (counting-scan-pack #(texts))]
-        (is (= 1 scans)) (is (= original (texts))))
-      (is (= (seq canonical) (seq (bytes (idx-of dir nm))))))
-    (testing "an index with the ids exchanged is detected and rebuilt once"
+      (let [before (idx-state dir nm)
+            [_ scans] (counting-scan-pack #(texts))]
+        (is (= 1 scans)) (is (= original (texts)))
+        (is (= before (idx-state dir nm)) "bytes and mtime unchanged"))
+      (testing "and reads unrelated commands (verify, unreachable) leave it alone too"
+        (let [before (idx-state dir nm)]
+          (is (:ok? (verify dir)))
+          (let [[b s] (opened dir)]
+            (is (map? (store/unreachable b s))))
+          (is (= before (idx-state dir nm))))))
+    (testing "an index with the ids exchanged is detected at load and rebuilt once, file untouched"
+      (bfs/delete (idx-of dir nm))
+      (is (:ok? (verify dir)))
+      (fs/pack! (fs/backend dir))
       (let [es (idx-entries (idx-of dir nm))
             [a b] (->> (group-by #(nth % 2) es) (filter (fn [[_ v]] (>= (count v) 2))) first second)
             swapped (mapv (fn [[id off len]]
@@ -292,17 +311,36 @@
                                   :else [id off len]))
                           es)]
         (write-idx-entries! (idx-of dir nm) swapped)
-        (let [[_ scans] (counting-scan-pack #(texts))]
-          (is (= 1 scans)) (is (= original (texts))))
-        (is (= (seq canonical) (seq (bytes (idx-of dir nm)))))))
-    (testing "an index with an arbitrary id and one entry omitted is detected and rebuilt once"
-      (let [es (idx-entries (idx-of dir nm))
-            lying (mapv (fn [[id off len]] [(apply str (repeat 64 "0")) off len]) (butlast es))]
-        (write-idx-entries! (idx-of dir nm) lying)
-        (let [[_ scans] (counting-scan-pack #(texts))]
-          (is (= 1 scans)) (is (= original (texts))))
-        (is (= (seq canonical) (seq (bytes (idx-of dir nm)))))))
+        (let [before (idx-state dir nm)
+              [_ scans] (counting-scan-pack #(texts))]
+          (is (= 1 scans)) (is (= original (texts)))
+          (is (= before (idx-state dir nm))))))
     (is (:ok? (verify dir)))))
+
+(deftest pack-repairs-a-missing-or-stale-index-even-with-nothing-to-pack
+  (let [dir (fresh)
+        _ (fs/pack! (fs/backend dir))
+        nm (first (pack-names dir))
+        canonical (first (idx-state dir nm))]
+    (testing "a missing index"
+      (bfs/delete (idx-of dir nm))
+      (let [r (fs/pack! (fs/backend dir))]
+        (is (= 1 (:indexes-repaired r)))
+        (is (zero? (:packed r)) "nothing was loose")
+        (is (= canonical (first (idx-state dir nm))) "the index is the canonical one"))
+      (testing "and a second run has nothing to repair"
+        (is (zero? (:indexes-repaired (fs/pack! (fs/backend dir)))))))
+    (testing "a stale index"
+      (write-bytes! (idx-of dir nm) (byte-array 88))
+      (let [r (fs/pack! (fs/backend dir))]
+        (is (= 1 (:indexes-repaired r)))
+        (is (= canonical (first (idx-state dir nm))))))
+    (testing "a corrupted pack is left alone and reported by readers"
+      (let [arr (bytes (pack-of dir nm))]
+        (aset-byte arr (+ (- (alength arr) foot) 20) (unchecked-byte 0))
+        (write-bytes! (pack-of dir nm) arr))
+      (is (zero? (:indexes-repaired (fs/pack! (fs/backend dir)))))
+      (is (thrown? Exception (store/read-object (fs/backend dir) (first (map :id (records (pack-of dir nm))))))))))
 
 (deftest a-damaged-footer-is-corrupt-pack-and-unpack-recovers
   (let [dir (fresh)
@@ -486,7 +524,9 @@
         (is (= text (into {} (map (fn [r] [(:id r) (store/read-object (fs/backend dir) (:id r))])) rs))
             "each id reads its own content")
         (is (:ok? (verify dir)))
-        (is (= (mapv :id rs) (mapv first (idx-entries (idx-of dir nm)))) "the index was rewritten correct")))
+        (is (= swapped (idx-entries (idx-of dir nm))) "a reader leaves the file as it was")
+        (is (= 1 (:indexes-repaired (fs/pack! (fs/backend dir)))))
+        (is (= (mapv :id rs) (mapv first (idx-entries (idx-of dir nm)))) "stores pack rewrote it canonical")))
     (testing "a real id replaced by an arbitrary one"
       (let [es (idx-entries (idx-of dir nm))
             bogus (apply str (repeat 64 "0"))
@@ -494,6 +534,8 @@
         (write-idx-entries! (idx-of dir nm) lying)
         (is (= text (into {} (map (fn [r] [(:id r) (store/read-object (fs/backend dir) (:id r))])) rs)))
         (is (:ok? (verify dir)))
+        (is (= lying (idx-entries (idx-of dir nm))) "a reader leaves the file as it was")
+        (is (= 1 (:indexes-repaired (fs/pack! (fs/backend dir)))))
         (is (= (mapv :id rs) (mapv first (idx-entries (idx-of dir nm)))))))
     (testing "no read ever answers with content whose hash is not the id asked"
       (doseq [r rs]
@@ -548,6 +590,8 @@
       (.setLength raf (* 1024 1024 1024)))
     (is (= 1073741824 (bfs/size ip)) "a 1 GiB sparse file")
     (is (= (texts) (texts)) "everything still reads")
+    (let [r (fs/pack! (fs/backend dir))]
+      (is (= 1 (:indexes-repaired r)) "a reader never writes; `stores pack` repairs it"))
     (is (= (* 44 (count rs)) (bfs/size ip)) "and the index was rebuilt canonical")
     (is (:ok? (verify dir)))))
 

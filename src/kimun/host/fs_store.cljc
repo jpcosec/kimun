@@ -323,14 +323,36 @@
          (System/arraycopy (hex->bytes digest) 0 arr 16 32)
          arr))
 
+     (defn- matching-idx
+       "The bytes of the `.idx` of pack `nm` of `dir` when that file is the index
+        the footer `foot` of the pack (of `pf` bytes) names, else nil. The ONE
+        place that decides whether an index file is read, for readers and for
+        the repair alike: the footer's record count must fit the body of the
+        pack (a record is at least its 4 length bytes) and the file must be
+        exactly count × 44 bytes before a byte of it is read, so a huge or
+        sparse file and a forged count never reach memory; then its SHA-256
+        must be the footer's."
+       [dir nm pf ^bytes foot]
+       (let [claimed (.getLong (ByteBuffer/wrap foot 8 8))
+             ip (idx-file dir nm)
+             fits? (and (<= 0 claimed)
+                        (<= claimed (quot (- pf (+ (count pack-magic) footer-bytes)) 4)))
+             isz (when (and fits? (exists? ip)) (Files/size ip))
+             arr (when (and isz (= (long isz) (* idx-entry claimed)))
+                   (Files/readAllBytes ip))]
+         (when (and arr (= (bytes->hex foot 16 32) (sha256-hex arr))) arr)))
+
      (defn- load-pack
        "`{:name nm :bytes <canonical index bytes> :count n :start footer-start}` of
         pack `nm` of `dir`. The `.idx` is read only when the footer's record
         count fits the pack and the file's size is exactly count × 44 (so a huge
         or sparse file is never read) and its SHA-256 matches; else the pack is
-        scanned once: a scan whose index matches the footer rewrites the `.idx`,
-        and one that does not is :store/corrupt-pack (recovery: `stores unpack`).
-        No file is kept open: a backend carries no descriptor."
+        scanned once and the index is rebuilt **in memory only**: a reading
+        command never writes (`stores sense` and `stores heartbeat` promise to
+        write nothing). A scan whose index does not derive the footer is
+        :store/corrupt-pack (recovery: `stores unpack`). `stores pack` repairs a
+        missing or stale `.idx` on disk. No file is kept open: a backend carries
+        no descriptor."
        [dir nm]
        (let [p (pack-file dir nm)
              pf (Files/size p)]
@@ -342,21 +364,13 @@
              (when-not (= idx-magic fmagic) (bad-pack p "no index footer"))
              (let [claimed (.getLong (ByteBuffer/wrap foot 8 8))
                    footer-digest (bytes->hex foot 16 32)
-                   ip (idx-file dir nm)
-                   ;; a record is at least its 4 length bytes: more records than
-                   ;; that cannot be in the body, whatever the footer says
-                   fits? (and (<= 0 claimed)
-                              (<= claimed (quot (- pf (+ (count pack-magic) footer-bytes)) 4)))
-                   isz (when (exists? ip) (Files/size ip))
-                   arr (when (and fits? isz (= (long isz) (* idx-entry claimed)))
-                         (Files/readAllBytes ip))]
-               (if (and arr (= footer-digest (sha256-hex arr)))
+                   arr (matching-idx dir nm pf foot)]
+               (if arr
                  {:name nm :bytes arr :count claimed :start (- pf footer-bytes)}
                  (let [scan (scan-pack p)
                        arr (entries->idx (:entries scan))]
                    (when-not (= footer-digest (:digest scan))
                      (bad-pack p "the records do not derive the index its footer names"))
-                   (err/rescue-any (fn [_] nil) (write-idx! dir nm arr))
                    {:name nm :bytes arr :count (:count scan) :start (:start scan)})))))))
 
      (defn- close-packs!
@@ -469,6 +483,30 @@
         usually 4 KB, so a smaller file costs a whole one."
        4096)
 
+     (defn- repair-indexes!
+       "Writes the `.idx` of every pack of `dir` whose index is missing or does
+        not match its footer, under the caller's lock (`pack!`). A pack whose
+        records do not derive the index its footer names is left alone: readers
+        report it as :store/corrupt-pack. Returns how many indexes it wrote."
+       [dir]
+       (reduce (fn [n nm]
+                 (let [p (pack-file dir nm)
+                       pf (Files/size p)
+                       foot (when (>= pf (+ (count pack-magic) footer-bytes))
+                              (with-open [ch (FileChannel/open p (into-array StandardOpenOption [StandardOpenOption/READ]))]
+                                (read-at ch (- pf footer-bytes) footer-bytes)))
+                       fmagic (when foot (String. ^bytes (java.util.Arrays/copyOfRange ^bytes foot 0 8) StandardCharsets/US_ASCII))]
+                   (if-not (and foot (= idx-magic fmagic))
+                     n
+                     (let [footer-digest (bytes->hex foot 16 32)]
+                       (if (matching-idx dir nm pf foot)
+                         n
+                         (let [scan (err/rescue-any (fn [_] nil) (scan-pack p))]
+                           (if (and scan (= footer-digest (:digest scan)))
+                             (do (write-idx! dir nm (entries->idx (:entries scan))) (inc n))
+                             n)))))))
+               0 (pack-names dir)))
+
      (defn pack!
        "Moves the loose objects of `b` smaller than `:max-bytes` (default 4096)
         bytes into a new pack (docs/v2/10 §11.4). Explicit: never part of a
@@ -479,17 +517,21 @@
         checks that its records derive exactly the expected index, and only
         then removes the loose files. A loose file whose content does not hash
         to its name is left alone and reported in `:skipped-damaged`. Data:
-        `{:pack :packed :bytes :kept-loose :skipped-damaged}`; with nothing to
-        pack it writes nothing and `:pack` is nil."
+        `{:pack :packed :bytes :kept-loose :skipped-damaged :indexes-repaired}`.
+        It also writes the `.idx` of an existing pack whose index is missing or
+        stale (readers rebuild in memory and never write), so it does that even
+        when there is nothing to pack: then `:pack` is nil and only the indexes
+        may change."
        ([b] (pack! b {}))
        ([b {:keys [max-bytes] :or {max-bytes default-max-bytes}}]
         (with-store-lock (:dir b) true
           (fn []
             (let [kdir (:dir b)
+                  repaired (repair-indexes! kdir)
                   cands (pack-candidates kdir max-bytes)]
               (if (empty? cands)
                 {:pack nil :packed 0 :bytes 0 :kept-loose (count (loose-ids kdir))
-                 :skipped-damaged []}
+                 :skipped-damaged [] :indexes-repaired repaired}
                 (let [packs-dir (path kdir "packs")
                       _ (Files/createDirectories packs-dir (make-array java.nio.file.attribute.FileAttribute 0))
                       ;; nobody else packs while the lock is held: only an
@@ -524,7 +566,7 @@
                   (if (empty? es)
                     (do (Files/deleteIfExists tmp)
                         {:pack nil :packed 0 :bytes 0 :kept-loose (count (loose-ids kdir))
-                         :skipped-damaged @damaged})
+                         :skipped-damaged @damaged :indexes-repaired repaired})
                     (do
                       (Files/move tmp target (into-array java.nio.file.CopyOption [StandardCopyOption/ATOMIC_MOVE StandardCopyOption/REPLACE_EXISTING]))
                       (let [scan (err/rescue-any (fn [e] e) (scan-pack target))
@@ -549,7 +591,8 @@
                               (doseq [id expected] (Files/deleteIfExists (path kdir "objects" id)))
                               (close-packs! b)
                               {:pack nm :packed (count expected) :bytes @bytes
-                               :kept-loose (count (loose-ids kdir)) :skipped-damaged @damaged}))))))))))))
+                               :kept-loose (count (loose-ids kdir)) :skipped-damaged @damaged
+                               :indexes-repaired repaired}))))))))))))
 
      (defn unpack!
        "Writes back every packed object of `b` and only then removes the pack and

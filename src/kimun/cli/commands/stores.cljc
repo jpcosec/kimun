@@ -504,10 +504,12 @@
   "`stores pack [--max-bytes N]`: moves the loose objects smaller than N bytes
    (default 4096) into a new pack under `packs/` and removes the loose copies
    (`kimun.host.fs-store/pack!`; docs/v2/10 §11.4). Explicit and never part of a
-   commit; only a format-4 store. The store is verified after packing: a failure
-   is `store/corrupt` (exit 5) and the loose files are already gone (`stores
-   unpack` writes them back). Data: `{:path :packed :pack :bytes :kept-loose
-   :skipped-damaged :packs :checked}`."
+   commit; only a format-4 store. It also repairs the `.idx` of an existing pack
+   that is missing or stale (readers rebuild in memory and never write), so
+   `:indexes-repaired` can be positive with `:packed` 0. The store is verified
+   after packing: a failure is `store/corrupt` (exit 5) and the loose files are
+   already gone (`stores unpack` writes them back). Data: `{:path :packed :pack
+   :bytes :kept-loose :skipped-damaged :packs :checked :indexes-repaired}`."
   [_args opts {:keys [env cwd]}]
   (let [path (cli-store/resolve-store opts env cwd)
         {:keys [backend descriptor]} (cli-store/open! path)
@@ -523,7 +525,7 @@
                :data {:path path :packed (:packed r) :pack (:pack r) :bytes (:bytes r)
                       :kept-loose (:kept-loose r) :skipped-damaged (:skipped-damaged r)
                       :packs (:packs (fs-store/pack-stats (:backend reopened)))
-                      :checked (:checked v)}})
+                      :checked (:checked v) :indexes-repaired (:indexes-repaired r)}})
       (out/failure :store/corrupt
                    (str (count (:bad v)) " problem(s) after packing " path
                         "; the loose copies are already removed: run `stores unpack` to write them back")

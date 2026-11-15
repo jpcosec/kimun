@@ -83,6 +83,33 @@
       (is (pos? (:packed d)))
       (is (:ok (run p "stores" "verify"))))))
 
+(defn- store-snapshot
+  "Every file under the store with its bytes and last-modified time."
+  [p]
+  (into (sorted-map)
+        (map (fn [f] [(str (fs/relativize (file p ".kimun") f))
+                      [(str (fs/last-modified-time f)) (count (slurp (str f)))]])
+             (filter fs/regular-file? (fs/glob (file p ".kimun") "**" {:hidden true})))))
+
+(deftest reading-commands-never-write-the-index
+  (let [p (project)
+        _ (is (true? (:ok (run p "stores" "pack"))))
+        idx (first (fs/glob (file p ".kimun" "packs") "*.idx"))]
+    (is (some? idx))
+    (fs/delete idx)
+    (let [before (store-snapshot p)
+          sense (run p "stores" "sense" "--once")
+          unreach (run p "stores" "unreachable")]
+      (is (true? (:ok sense)) (pr-str sense))
+      (is (true? (:ok unreach)) (pr-str unreach))
+      (is (empty? (fs/glob (file p ".kimun" "packs") "*.idx")) "no index was written")
+      (is (= before (store-snapshot p)) "`.kimun/` is byte-for-byte the same")
+      (testing "the explicit repair is `stores pack`"
+        (let [d (data p "stores" "pack")]
+          (is (= 1 (:indexes-repaired d)))
+          (is (zero? (:packed d)))
+          (is (= 1 (count (fs/glob (file p ".kimun" "packs") "*.idx")))))))))
+
 (deftest packs-are-a-format-4-layout
   (let [p (project)
         store-edn (file p ".kimun" "store.edn")

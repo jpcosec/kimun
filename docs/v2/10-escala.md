@@ -656,10 +656,15 @@ objetos pequeños a un pack; `stores unpack` los devuelve.
   4096, tope 16 MiB). Un suelto cuyo contenido no hashea a su nombre **no** se
   empaqueta: queda suelto y se informa (`:skipped-damaged`).
 - **Carga**: se usa el `.idx` cuando su tamaño y su SHA-256 coinciden con el
-  pie (sin rehashear contenidos); si no, se reconstruye **una vez** con el pack.
-  Si el índice reconstruido tampoco coincide con el pie, el pack o el pie están
-  dañados: `:store/corrupt-pack`. La recuperación es `stores unpack`, que lee
-  solo el pack e ignora el índice y el pie.
+  pie (sin rehashear contenidos); si no, se reconstruye **una vez por instancia
+  de backend, en memoria, y no se escribe nada**: un lector no modifica el store
+  (`stores sense` y `stores heartbeat` prometen no escribir). Si el índice
+  reconstruido tampoco coincide con el pie, el pack o el pie están dañados:
+  `:store/corrupt-pack`; la recuperación es `stores unpack`, que lee solo el pack
+  e ignora el índice y el pie. Mientras nadie repare el `.idx`, **cada comando
+  vuelve a recorrer el pack**: 2,66 s para un pack de 14,8 MB en el store de
+  banco. La reparación es explícita: `stores pack` reescribe el `.idx` que falte
+  o no coincida (`:indexes-repaired`), aunque no haya nada que empaquetar.
 - **Lectura**: búsqueda binaria sobre los bytes del índice (los ids están
   ordenados); el rango se valida contra el cuerpo del pack antes de reservar
   memoria; **no hay hash por lectura** y un fallo no se reintenta. Un registro
