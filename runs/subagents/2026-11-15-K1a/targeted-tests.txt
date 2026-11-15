@@ -1,0 +1,24 @@
+
+Testing kimun.cli.identity-carry-test
+moved existing store to /tmp/kimun-adhoc-16363458038154982005/kimun-k1a-8406642239442765973/.kimun.bak-20261115-145051
+moved existing store to /tmp/kimun-adhoc-16363458038154982005/kimun-k1a-2133205048715075656/.kimun.bak-20261115-145051
+moved existing store to /tmp/kimun-adhoc-16363458038154982005/kimun-k1a-2133205048715075656/.kimun.bak-20261115-145051
+moved existing store to /tmp/kimun-adhoc-16363458038154982005/kimun-k1a-5939149098613365841/.kimun.bak-20261115-145051
+moved existing store to /tmp/kimun-adhoc-16363458038154982005/kimun-k1a-11653525067177477761/.kimun.bak-20261115-145051
+
+Testing kimun.cli.include-test
+moved existing store to /tmp/kimun-adhoc-16363458038154982005/kimun-include-11998346507039582294/.kimun.bak-20261115-145051
+
+Testing kimun.surface.include-test
+
+Testing kimun.cli.routes-test
+
+Testing kimun.cli.docs-test
+
+Testing kimun.cli.generic-docs-test
+
+Testing kimun.doc14-contract-test
+
+Ran 48 tests containing 609 assertions.
+0 failures, 0 errors.
+exit 0

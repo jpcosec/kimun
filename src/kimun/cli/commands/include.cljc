@@ -303,6 +303,35 @@
                    (java.time.ZonedDateTime/now java.time.ZoneOffset/UTC))
      :cljs (.toISOString (js/Date.))))
 
+(defn- identity-registry
+  "Identities a rebuild can carry, read from the store at `store-dir` BEFORE it
+   is moved: `{:available bool :by-path {qualified-path {:doc id :tree id}}
+   :ambiguous [qualified-path] :without-file n}`. Every document with a file is
+   in it, typed or of a generic class: the ones the declaration does not build
+   again must show up as not carried, not vanish. A path the old store holds
+   twice (a legacy duplicate) is ambiguous and is not carried; a document
+   without a file has no path to be found by and is only counted; anything that
+   prevents reading the store is `:available false` (the rebuild continues with
+   fresh ids and says so)."
+  [store-dir]
+  (if-not (and store-dir (fs/exists? store-dir))
+    {:available true :by-path {} :ambiguous [] :without-file 0}
+    (try
+      (let [store (:store (cli-store/open! store-dir))
+            docs (concat (tdocs/documents store) (tdocs/generic-documents store))
+            by (group-by :qualified (filter :qualified docs))]
+        {:available true
+         :by-path (into {} (keep (fn [[q ds]] (when (= 1 (count ds)) [q (select-keys (first ds) [:doc :tree])])) by))
+         :ambiguous (vec (sort (keep (fn [[q ds]] (when (< 1 (count ds)) q)) by)))
+         :without-file (count (remove :qualified docs))})
+      (catch Exception _ {:available false :by-path {} :ambiguous [] :without-file 0}))))
+
+(defn- carried-ids
+  "`{:doc id :tree id}` for the declared document at `path` (already relative to
+   the project) when the registry carries it, else nil."
+  [registry path]
+  (get-in registry [:by-path path]))
+
 (defn- build-plan!
   "The whole declaration as ONE revision (docs/v2/14 §10): every model
    descriptor applied in memory first (so the documents can bind to them), then
@@ -311,7 +340,8 @@
    committed when there is any failure. Returns
    `{:revision-id id|nil :models n :models-failed n :documents n
      :documents-failed n :failed [..]}`."
-  [root store-dir {:keys [models documents]} opts]
+  ([root store-dir plan opts] (build-plan! root store-dir plan opts nil))
+  ([root store-dir {:keys [models documents]} opts identities]
   (let [{:keys [backend store]} (cli-store/open! store-dir)
         h (:host store)
         actor (:actor opts)
@@ -333,8 +363,12 @@
                      {:store store :plans [] :names [] :failed []}
                      models)
         mstore* (:store mres)
-        dres (reduce (fn [{:keys [plans names failed] :as acc} {:keys [path model name force inline]}]
-                       (let [text (try (slurp (str (fs/path root path))) (catch Exception _ nil))]
+        registry (or identities {:available true :by-path {} :ambiguous [] :without-file 0})
+        dres (reduce (fn [{:keys [plans names failed carried minted paths] :as acc}
+                          {:keys [path model name force inline]}]
+                       (let [rel (relative-to root (str (fs/path root path)))
+                             carried-ids (carried-ids registry rel)
+                             text (try (slurp (str (fs/path root path))) (catch Exception _ nil))]
                          (cond
                            (nil? text)
                            (-> acc (update :failed conj {:path path :name name :model model :error "docs/no-file"
@@ -358,23 +392,32 @@
                                                 (str "`" path "` does not round-trip under " model)
                                                 {:document name :model model}))))
                                (let [{:keys [plan]} (tdocs/track-plan h mstore* model name text
-                                                                      {:doc (ports/ulid (:ids h)) :tree-id (ports/ulid (:ids h))
-                                                                       :path (relative-to root (str (fs/path root path)))
+                                                                      {:doc (or (:doc carried-ids) (ports/ulid (:ids h)))
+                                                                       :tree-id (or (:tree carried-ids) (ports/ulid (:ids h)))
+                                                                       :path rel
                                                                        :actor actor :timestamp ts :operation "include build"
                                                                        :inline inline})]
-                                 (-> acc (update :plans conj plan) (update :names conj name))))
+                                 (-> acc (update :plans conj plan) (update :names conj name)
+                                     (update :paths conj rel)
+                                     (update (if carried-ids :carried :minted) inc))))
                              (catch Exception e
                                (-> acc (update :failed conj {:path path :name name :model model
                                                              :error (or (:type (ex-data e)) "docs/failed")
                                                              :message (ex-message e)})
                                        (update :names conj name)))))))
-                     {:plans [] :names [] :failed []}
+                     {:plans [] :names [] :failed [] :carried 0 :minted 0 :paths []}
                      documents)
         all (concat (:plans mres) (:plans dres))
+        carried (:carried dres 0)
+        declared (set (:paths dres))
+        not-carried (vec (sort (remove declared (keys (:by-path registry)))))
+        operation (if (pos? carried)
+                    (str "include build (identities carried from " (:source registry) ")")
+                    "include build")
         merged (when (seq all)
                  (plan/compose-plans all {:base (:head store) :actor actor :timestamp ts
                                           :engines {"kimun.surface.docs" "1"
-                                                    tdocs/meta-key (pr-str {:operation "include build"
+                                                    tdocs/meta-key (pr-str {:operation operation
                                                                             :address (str (count (:names dres)) " documents")
                                                                             :fields {}})}}))
         r (when merged (store/commit! backend store merged))]
@@ -383,7 +426,12 @@
      :models-failed (count (:failed mres))
      :documents (- (count documents) (count (:failed dres)))
      :documents-failed (count (:failed dres))
-     :failed (vec (concat (:failed mres) (:failed dres)))}))
+     :failed (vec (concat (:failed mres) (:failed dres)))
+     :identities {:available (:available registry)
+                  :carried carried :minted (:minted dres 0)
+                  :not-carried not-carried
+                  :ambiguous (:ambiguous registry)
+                  :without-file (:without-file registry 0)}})))
 
 (defn build
   "`include build [--rebuild]`: builds the store from the declaration in ONE
@@ -394,14 +442,20 @@
   [args opts {:keys [env cwd] :as ctx}]
   (no-args! args "build")
   (let [{:keys [root cfg plan]} (config-plan ctx)
-        store-dir (str (fs/path root (get-in cfg [:store :path])))]
+        store-dir (str (fs/path root (get-in cfg [:store :path])))
+        ;; the old store is read BEFORE it is moved: a rebuild that cannot read it
+        ;; still runs (it is the recovery path), with fresh ids and a warning
+        ;; the name the old store is moved to, decided once: the identities are
+        ;; reported, and the transaction is labelled, with where they came from
+        bak (str store-dir ".bak-"
+                 (-> (java.time.LocalDateTime/now)
+                     (.format (java.time.format.DateTimeFormatter/ofPattern "yyyyMMdd-HHmmss"))))
+        old-registry (when (and (:rebuild opts) (fs/exists? store-dir))
+                       (assoc (identity-registry store-dir) :source (str (fs/file-name bak))))]
     (when (fs/exists? store-dir)
       (if (:rebuild opts)
-        (let [stamp (-> (java.time.LocalDateTime/now)
-                        (.format (java.time.format.DateTimeFormatter/ofPattern "yyyyMMdd-HHmmss")))
-              bak (str store-dir ".bak-" stamp)]
-          (fs/move store-dir bak)
-          (binding [*out* *err*] (println (str "moved existing store to " bak))))
+        (do (fs/move store-dir bak)
+            (binding [*out* *err*] (println (str "moved existing store to " bak))))
         (err/raise :include/exists
                    (str store-dir " already exists; pass --rebuild to move it aside and build it again")
                    {:path store-dir})))
@@ -411,14 +465,40 @@
           _ (when-not (:ok init)
               (err/raise :include/drift (str "stores init failed: " (get-in init [:error :type]))
                          {:phase "stores init" :error (get-in init [:error :type]) :message (get-in init [:error :message])}))
-          r (build-plan! root store-dir plan opts)
+          registry (if (and old-registry (:available old-registry))
+                     (assoc old-registry :source (:source old-registry))
+                     old-registry)
+          identities (when-not (:rebuild opts) {:available true :by-path {} :ambiguous [] :without-file 0})
+          r (build-plan! root store-dir plan opts
+                         (or registry identities))
+          ids (:identities r)
+          identities (cond-> ids
+                       (and old-registry (not (:available old-registry)))
+                       (assoc :available false :carried 0 :not-carried [] :ambiguous [] :without-file 0))
           data {:store store-dir
                 :models (:models r) :models-failed (:models-failed r)
                 :documents (:documents r) :documents-failed (:documents-failed r)
-                :failed (:failed r)}]
+                :failed (:failed r)
+                :identities (assoc identities :source (get old-registry :source))}
+          warnings (cond-> []
+                     (and old-registry (not (:available old-registry)))
+                     (conj {:type "include/identities-unavailable"
+                            :message (str "the previous store could not be read, so no document identity was carried: the documents were registered with fresh ids")
+                            :store (get old-registry :source)})
+                     (and (:available identities)
+                          (or (seq (:not-carried identities)) (seq (:ambiguous identities))))
+                     (conj {:type "include/identities-not-carried"
+                            :message (str (count (:not-carried identities)) " document identit(ies) of the previous store were not carried"
+                                          (when (seq (:ambiguous identities))
+                                            (str " and " (count (:ambiguous identities)) " path(s) had two documents"))
+                                          ": see :identities")
+                            :not-carried (:not-carried identities)
+                            :ambiguous (:ambiguous identities)}))]
       (if (seq (:failed r))
-        (out/failure :include/drift (str (count (:failed r)) " declaration(s) failed to build") data 3)
-        (out/ok "include build" {:store {:path store-dir} :revision (:revision-id r) :data data})))))
+        (out/failure :include/drift (str (count (:failed r)) " declaration(s) failed to build")
+                     (assoc data :warnings warnings) 3)
+        (out/ok "include build" {:store {:path store-dir} :revision (:revision-id r)
+                                 :data data :warnings warnings})))))
 
 (defn status
   "`include status`: counts of the declaration and a summary of the findings —

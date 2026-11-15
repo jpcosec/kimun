@@ -334,7 +334,7 @@ Declaración en `kimun.include.edn`; detalle en `13`.
 | `include check` | `--staged` | deriva entre declaración, git y store; `include/drift` (3) |
 | `include gitignore` | `--write` | sin `--write` imprime el bloque gestionado en vez de escribirlo |
 | `include hook` | `--install` \| `--uninstall` | hook pre-commit; encadena uno ajeno |
-| `include build` | `--rebuild` | construye el store; `--rebuild` mueve el existente a `<store>.bak-<marca>` |
+| `include build` | `--rebuild` | construye el store; `--rebuild` mueve el existente a `<store>.bak-<marca>` y **arrastra la identidad de los documentos** (id de documento e id de árbol, leídos del store viejo por ruta cualificada antes de moverlo): `:identities {:source :available :carried :minted :not-carried :ambiguous :without-file}` (`:source` es el `.bak` del que se leyeron; `:without-file` cuenta los documentos sin archivo, que no tienen ruta por la que seguirlos). Lo que no se puede seguir se declara: warning `include/identities-not-carried` (rutas que ya no están, documentos que la declaración no construye —también los de clase genérica ingeridos a mano— o duplicadas) y `include/identities-unavailable` si el store viejo no se pudo abrir (el rebuild sigue con ids nuevos). Límite: los modelos reciben ids nuevos y el historial no se arrastra (`14 §21`, K1a) |
 | `include status` | — | recuentos de la declaración |
 
 ### models

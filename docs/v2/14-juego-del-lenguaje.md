@@ -468,9 +468,13 @@ dueño. Resumen (reglas `I1–I13`, casos y contraste de lecturas en
 Qué queda **pendiente tras `D0`**, y nada de ello es una pregunta al dueño sobre identidad:
 
 - **Implementación (`K1`)**: llevar el contrato al kernel debajo del nivel documento, donde hoy
-  bloques y texto se identifican por contenido; formato del id; regla de arrastre de
-  identidades al reconstruir un store (la identidad no se puede recomputar). `K2b`, `S2` y la
-  implementación de `M1` esperan a `K1`.
+  bloques y texto se identifican por contenido; formato del id. **Actualización 2026-11-15
+  (K1a):** el arrastre de identidad a nivel **documento** al reconstruir un store está hecho
+  (`include build --rebuild` reutiliza id de documento e id de árbol por ruta cualificada y
+  declara en `:identities` lo que no puede seguir); siguen pendientes las unidades debajo del
+  documento (secciones, bloques, campos), el re-anclaje y cierre declarados, y los ids de
+  modelos, que el rebuild acuña de nuevo. `K2b`, `S2` y la implementación de `M1` esperan a
+  `K1`.
 - **Alcance sobre `01 §4` principio 3 y decisiones `1`, `3`, `4` de `05`**: se revisa al
   implementar `K1`, en lo que toca a unidades.
 - **Diseño de G, no de S–M**: la base de la recursión de `(R A B)` (un store finito no puede
