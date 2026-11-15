@@ -1,0 +1,14 @@
+
+Testing kimun.surface.models.subgraph-test
+
+Testing kimun.spec16-models-contract-test
+
+Testing kimun.surface.http.circuit-test
+
+Testing kimun.cli.release-test
+release_test: bundle --version in 610 ms
+
+Testing kimun.doc14-contract-test
+
+Ran 23 tests containing 556 assertions.
+0 failures, 0 errors.
