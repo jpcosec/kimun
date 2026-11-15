@@ -65,10 +65,12 @@
    `:class` and `:content-hash`), `:root` the root node id, `:merkle-root` the
    hash of the indexed structure, `:objects` `{tree-hash tree-object}` and
    `:nodes` `{node-id node}`. `opts`: `:tree-id`, `:name`, `:class`,
-   `:content-hash`, `:cached?` (default true). The caller writes `:objects` and
+   `:content-hash`, `:cached?` (default true), `:units` (the document's field
+   units, `{field id}`, written into the descriptor when present: they are
+   store, not a fingerprint, and never enter the merkle root). The caller writes `:objects` and
    `:nodes` to the document cache and registers the descriptor+root hash with
    `{:op :register-tree}`."
-  [host ast {:keys [tree-id name class content-hash cached?] :or {cached? true}}]
+  [host ast {:keys [tree-id name class content-hash cached? units] :or {cached? true}}]
   (let [nodes (atom {})
         reg! (fn [n]
                (let [id (:id (node/make host (:class n) (:kind n) (:content n)))]
@@ -87,9 +89,11 @@
                                     kids)}))
         committed (tree/commit host {:root (pos-of ast)})
         root (get-in committed [:root :node])
+        ;; a descriptor without `:units` stays byte for byte as before
         descriptor (cond-> {:tree tree-id :kind :document :name name :root root :cached? cached?}
                      class (assoc :class class)
-                     content-hash (assoc :content-hash content-hash))]
+                     content-hash (assoc :content-hash content-hash)
+                     (seq units) (assoc :units units))]
     {:tree (assoc committed :tree tree-id :descriptor descriptor)
      :descriptor descriptor
      :root root

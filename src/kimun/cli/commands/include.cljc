@@ -321,7 +321,12 @@
             docs (concat (tdocs/documents store) (tdocs/generic-documents store))
             by (group-by :qualified (filter :qualified docs))]
         {:available true
-         :by-path (into {} (keep (fn [[q ds]] (when (= 1 (count ds)) [q (select-keys (first ds) [:doc :tree])])) by))
+         :by-path (into {} (keep (fn [[q ds]]
+                                   (when (= 1 (count ds))
+                                     (let [d (first ds)]
+                                       [q (cond-> (select-keys d [:doc :tree])
+                                            (seq (:units d)) (assoc :units (:units d)))])))
+                                 by))
          :ambiguous (vec (sort (keep (fn [[q ds]] (when (< 1 (count ds)) q)) by)))
          :without-file (count (remove :qualified docs))})
       (catch Exception _ {:available false :by-path {} :ambiguous [] :without-file 0}))))
@@ -392,20 +397,23 @@
                                                 (str "`" path "` does not round-trip under " model)
                                                 {:document name :model model}))))
                                (let [{:keys [plan]} (tdocs/track-plan h mstore* model name text
-                                                                      {:doc (or (:doc carried-ids) (ports/ulid (:ids h)))
+                                                                      {:mint (fn [] (ports/ulid (:ids h)))
+                                                                       :units (:units carried-ids)
+                                                                       :doc (or (:doc carried-ids) (ports/ulid (:ids h)))
                                                                        :tree-id (or (:tree carried-ids) (ports/ulid (:ids h)))
                                                                        :path rel
                                                                        :actor actor :timestamp ts :operation "include build"
                                                                        :inline inline})]
                                  (-> acc (update :plans conj plan) (update :names conj name)
                                      (update :paths conj rel)
-                                     (update (if carried-ids :carried :minted) inc))))
+                                     (update (if carried-ids :carried :minted) inc)
+                                     (update :units-carried + (count (:units carried-ids))))))
                              (catch Exception e
                                (-> acc (update :failed conj {:path path :name name :model model
                                                              :error (or (:type (ex-data e)) "docs/failed")
                                                              :message (ex-message e)})
                                        (update :names conj name)))))))
-                     {:plans [] :names [] :failed [] :carried 0 :minted 0 :paths []}
+                     {:plans [] :names [] :failed [] :carried 0 :minted 0 :paths [] :units-carried 0}
                      documents)
         all (concat (:plans mres) (:plans dres))
         carried (:carried dres 0)
@@ -429,6 +437,7 @@
      :failed (vec (concat (:failed mres) (:failed dres)))
      :identities {:available (:available registry)
                   :carried carried :minted (:minted dres 0)
+                  :units-carried (:units-carried dres 0)
                   :not-carried not-carried
                   :ambiguous (:ambiguous registry)
                   :without-file (:without-file registry 0)}})))
@@ -474,7 +483,10 @@
           ids (:identities r)
           identities (cond-> ids
                        (and old-registry (not (:available old-registry)))
-                       (assoc :available false :carried 0 :not-carried [] :ambiguous [] :without-file 0))
+                       ;; no identity was read: nothing carried, nothing known about
+                       ;; the old store; the documents minted are still counted
+                       (assoc :available false :carried 0 :not-carried [] :ambiguous []
+                              :units-carried 0 :without-file 0))
           data {:store store-dir
                 :models (:models r) :models-failed (:models-failed r)
                 :documents (:documents r) :documents-failed (:documents-failed r)

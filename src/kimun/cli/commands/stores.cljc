@@ -22,6 +22,7 @@
             [kimun.host.default :as host]
             [kimun.host.fs-store :as fs-store]
             [kimun.kernel.err :as err]
+            [kimun.kernel.ports :as ports]
             [kimun.kernel.plan :as plan]
             [kimun.kernel.revision :as revision]
             [kimun.kernel.store :as store]
@@ -326,7 +327,8 @@
                                (tdocs/move-text final doc nil (compose/context final path))
                                (or (some-> (:path doc) read-file) (:source doc)))
                         {:keys [plan]} (tdocs/update-plan host/host final (or (:tree f) (:document f)) text
-                                                          {:actor (:actor opts) :timestamp ts :operation "stores update"})
+                                                          {:mint (fn [] (ports/ulid (:ids host/host)))
+                                                           :actor (:actor opts) :timestamp ts :operation "stores update"})
                         st (if plan (:store (revision/apply-plan final plan)) final)
                         meta (when plan (edn/read-string (get-in plan [:engines tdocs/meta-key])))
                         w (if (and plan moved? (:path doc))

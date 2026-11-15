@@ -347,6 +347,9 @@ cambian otra vez (el plan resuelto tiene otra forma).
   un documento sin modelo (`14 §18.1`); vive en `:class` del descriptor del árbol;
 - el **hash raíz** de su estructura indexada (el `merkle-root` del árbol), que ya registra el
   mmap `:trees` de la revisión (`tree-id → [descriptor-id merkle-root]`);
+  el descriptor puede llevar además `:units {"<campo>" "<id>"}`, las unidades de campo del
+  documento tipado (K1c): **son store, no caché**, y **no entran** en `merkle-root`,
+  `projection-hash` ni `content-hash`;
 - el **hash de contenido** del payload extraído, `:content-hash` del descriptor del árbol.
 
 La evidencia de las aristas deja de llevar `:field-hashes` (se recomputan del payload cuando

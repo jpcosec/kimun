@@ -474,10 +474,19 @@ Qué queda **pendiente tras `D0`**, y nada de ello es una pregunta al dueño sob
   declara en `:identities` lo que no puede seguir). **K1b:** el re-anclaje y el cierre a nivel
   documento son declaraciones (`docs reanchor NAME FILE --reason`, `--reason` en
   `docs untrack|delete`; la declaración queda en el journal) y kimun no mueve archivos ni detecta
-  movimientos. Siguen pendientes las unidades debajo del
-  documento (secciones, bloques, campos), el re-anclaje y cierre declarados, y los ids de
-  modelos, que el rebuild acuña de nuevo. `K2b`, `S2` y la implementación de `M1` esperan a
-  `K1`.
+  movimientos. **K1c:** cada campo de primer nivel que el modelo de un documento tipado
+  selecciona es una unidad con id propio (ULID acuñado la primera vez que el campo se registra,
+  persistido en el descriptor del árbol como `:units {campo id}`: es store, no caché) y estado
+  `anchored|missing`; la ausencia no la termina (sigue con su id) y renombrar un campo es una
+  unidad `:missing` más otra nueva, sin linaje declarable todavía. *(Las decisiones de K1c
+  —qué es una unidad, su anclaje, su identidad, la continuidad, la ausencia y el renombrado— son
+  **inferencias del concilio/equipo**, no palabras del dueño.)* Quedan fuera: documentos
+  genéricos, campos anidados e ítems de lista, documentos `:inline` o de formato < 4, ids de
+  modelos, cierre y linaje de unidades de campo, y G. Pendientes reales de `K1`: las unidades de
+  **sección y bloque** (esperan la serie `S2a` → `K1e` → `S2b`), los campos anidados e ítems de
+  lista, el cierre y el linaje de unidades de campo y copiar/dividir/fusionar con linaje
+  declarado; los ids de modelos los acuña de nuevo el rebuild. `K2b`, esa serie y la
+  implementación de `M1` esperan a `K1`.
 - **Alcance sobre `01 §4` principio 3 y decisiones `1`, `3`, `4` de `05`**: se revisa al
   implementar `K1`, en lo que toca a unidades.
 - **Diseño de G, no de S–M**: la base de la recursión de `(R A B)` (un store finito no puede
@@ -699,7 +708,11 @@ Estado real de ejecución por etapa (el backlog vivo y dependencias residen en
   - **Fase 3 del parser M (espera a `K1`):**
     - **`S2` fase 3 del parser M (`12 §1` — anclas por rangos de bytes / nodos del CST):**
       **espera a `K1`**, la implementación del contrato `D0` (`runs/research/2026-10-08/R2-report.md §5`; distinta de la
-      `etapa S.2` de octubre que empaquetó el pod de bloques).
+      `etapa S.2` de octubre que empaquetó el pod de bloques). Para que no haya ciclo con `K1` (que
+      necesita un localizador estable para dar identidad a secciones y bloques), se parte en
+      `S2a` (anclas CST como evidencia, **sin identidad**; no espera a nada) → `K1e` (unidades de
+      sección y bloque) → `S2b` (anclas que referencian ids de unidad): lo que espera a `K1` es
+      `S2b` (`12 §1`; inferencia del equipo, 2026-11-15).
 - **Etapa A — Arquitectura sostenible:**
   - `M1` redactado y contratado (`ac09b764`, `docs/v2/16-modelos-como-subgrafos.md`; implementación
     espera `P1` y `K1`/`D0`);

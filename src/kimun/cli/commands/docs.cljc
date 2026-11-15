@@ -79,6 +79,12 @@
   (or (get args i)
       (err/raise :cli/usage (str "`docs " sub "` needs " what) {:group "docs" :subcommand sub})))
 
+(defn- mint-unit
+  "A fresh id for a field unit: a ULID from the host's minter (identity is
+   minted when the field is marked, never recomputed)."
+  []
+  (ports/ulid (:ids host/host)))
+
 (defn- read-file! [path cwd]
   (let [p (fs/absolutize (fs/path cwd path))]
     (when-not (fs/regular-file? p)
@@ -301,7 +307,8 @@
             (err/raise :docs/conflict (str "the file " path " already exists; choose another --path") {:path path}))
         store (bind-model! backend store m opts)
         {:keys [plan tree]} (tdocs/track-plan host/host store model name text
-                                         {:doc (ports/ulid (:ids host/host)) :tree-id (ports/ulid (:ids host/host))
+                                         {:mint mint-unit
+                                          :doc (ports/ulid (:ids host/host)) :tree-id (ports/ulid (:ids host/host))
                                           :path path :actor (:actor opts) :timestamp (timestamp) :operation "docs create"
                                           :inline (:inline opts)})
         r (store/commit! backend store plan)]
@@ -331,7 +338,8 @@
                            {:document name :model model}))))
         store (bind-model! backend store m opts)
         {:keys [plan tree]} (tdocs/track-plan host/host store model name text
-                                         {:doc (ports/ulid (:ids host/host)) :tree-id (ports/ulid (:ids host/host))
+                                         {:mint mint-unit
+                                          :doc (ports/ulid (:ids host/host)) :tree-id (ports/ulid (:ids host/host))
                                           :path (relative-path (project-root store-path) p) :actor (:actor opts) :timestamp (timestamp)
                                           :inline (:inline opts)})
         r (store/commit! backend store plan)]
@@ -361,7 +369,8 @@
                    stored stored
                    :else (err/raise :cli/usage "`docs update` needs a FILE, --data or --set for a document without a file" {}))
         _ (refuse-noise! (:model doc) (or current {}) (:name doc) text)
-        {:keys [plan unchanged?]} (tdocs/update-plan host/host store (:tree doc) text {:actor (:actor opts) :timestamp (timestamp)})
+        {:keys [plan unchanged?]} (tdocs/update-plan host/host store (:tree doc) text
+                                                     {:mint mint-unit :actor (:actor opts) :timestamp (timestamp)})
         r (if plan (store/commit! backend store plan) {:store store :revision-id (:head store)})
         warnings (if (and (or payload? migrate?) (:path doc)) (write-file! root (:path doc) text) [])]
     (update (done "docs update" descriptor store-path r (:store r) (:tree doc) {:warnings warnings})
@@ -414,7 +423,7 @@
         previous-file (if (fs/regular-file? (fs/path root (:path d))) "present" "missing")
         declared {:kind "reanchor" :from (:path d) :to anchor
                   :previous-file previous-file :reason reason}
-        opts* {:path anchor :actor (:actor opts) :timestamp (timestamp)
+        opts* {:path anchor :mint mint-unit :actor (:actor opts) :timestamp (timestamp)
                :operation "docs reanchor" :declared declared}
         res (if (:generic d)
               (let [{:keys [plan unchanged? blocks]} (tdocs/generic-update-plan host/host store d text opts*)
@@ -485,7 +494,9 @@
                                     :ast (or (tdocs/document-ast store (or (tdocs/find-document store token)
                                                                            (tdocs/generic-document store tree) tree))
                                              (md/store->ast store tree))})
-                                 (let [d (tdocs/document store token)] (assoc (doc-data d) :markdown (:source d))))})))
+                                 (let [d (tdocs/document store token)]
+                                   (assoc (doc-data d) :markdown (:source d)
+                                          :units (tdocs/unit-states store (tdocs/find-document store token)))))})))
 
 (defn status
   "`docs status`: `[{:name :path :status}]` comparing each tracked file with

@@ -1,0 +1,60 @@
+
+Testing kimun.cli.field-units-test
+
+FAIL in (an-absent-field-keeps-its-unit) (/tmp/kimun-k1c-wt/test/kimun/cli/field_units_test.cljc:78)
+expected: (= #{"note" "title"} (set (keys u0)))
+  actual: (not (= #{"note" "title"} #{}))
+
+FAIL in (an-absent-field-keeps-its-unit) (/tmp/kimun-k1c-wt/test/kimun/cli/field_units_test.cljc:78)
+the absence does not end the unit
+expected: (= :missing (second (get shown "note")))
+  actual: (not (= :missing nil))
+
+FAIL in (an-absent-field-keeps-its-unit) (/tmp/kimun-k1c-wt/test/kimun/cli/field_units_test.cljc:78)
+expected: (= :anchored (second (get shown "title")))
+  actual: (not (= :anchored nil))
+
+FAIL in (an-absent-field-keeps-its-unit) (/tmp/kimun-k1c-wt/test/kimun/cli/field_units_test.cljc:78)
+expected: (= :anchored (second (get back "note")))
+  actual: (not (= :anchored nil))
+
+FAIL in (units-are-minted-when-tracking-and-survive-an-edit) (/tmp/kimun-k1c-wt/test/kimun/cli/field_units_test.cljc:59)
+expected: (= #{"status" "title"} (set (keys u0)))
+  actual: (not (= #{"status" "title"} #{}))
+
+FAIL in (units-are-minted-when-tracking-and-survive-an-edit) (/tmp/kimun-k1c-wt/test/kimun/cli/field_units_test.cljc:59)
+one id per field
+expected: (not= (get u0 "title") (get u0 "status"))
+  actual: (not (not= nil nil))
+
+FAIL in (units-are-minted-when-tracking-and-survive-an-edit) (/tmp/kimun-k1c-wt/test/kimun/cli/field_units_test.cljc:59)
+expected: (= {"title" :anchored, "status" :anchored} (statuses "a"))
+  actual: (not (= {"title" :anchored, "status" :anchored} {}))
+
+FAIL in (units-are-minted-when-tracking-and-survive-an-edit) (/tmp/kimun-k1c-wt/test/kimun/cli/field_units_test.cljc:59)
+expected: (= {"title" :anchored, "status" :anchored} (statuses "a"))
+  actual: (not (= {"title" :anchored, "status" :anchored} {}))
+
+FAIL in (an-inline-document-has-no-units-and-is-not-rewritten-for-it) (/tmp/kimun-k1c-wt/test/kimun/cli/field_units_test.cljc:115)
+expected: (= [] (:units (shown "i")))
+  actual: (not (= [] nil))
+
+FAIL in (units-add-no-identity-to-any-hash) (/tmp/kimun-k1c-wt/test/kimun/cli/field_units_test.cljc:164)
+surface: the same AST and ids, different :units, the same hashes
+expected: (= (:units (:descriptor b)) (merge (:units (:descriptor a)) {"note" "01M7GHDVQ380BMKM0T25V42K70"}))
+  actual: (not (= nil {"note" "01M7GHDVQ380BMKM0T25V42K70"}))
+
+FAIL in (units-add-no-identity-to-any-hash) (/tmp/kimun-k1c-wt/test/kimun/cli/field_units_test.cljc:164)
+CLI: two stores, different unit ids, the same route hashes and the same status
+different identities
+expected: (not= (:units t0) (:units other-doc))
+  actual: (not (not= nil nil))
+moved existing store to /tmp/kimun-adhoc-2187841843344960212/kimun-units-inc-4433073820978904238/.kimun.bak-20261115-182643
+
+FAIL in (a-rebuild-carries-the-field-units) (/tmp/kimun-k1c-wt/test/kimun/cli/field_units_test.cljc:130)
+expected: (= 2 (get-in b [:data :identities :units-carried]))
+  actual: (not (= 2 nil))
+
+Ran 7 tests containing 70 assertions.
+12 failures, 0 errors.
+{:test 7, :pass 58, :fail 12, :error 0, :type :summary}

@@ -201,6 +201,7 @@
          :recorded-field-hashes (get-in (anchor-edge store es) [:evidence :field-hashes])
          :class (or (get-in d [:class]) (get-in (anchor-edge store es) [:evidence :contract]))
          :cached? (true? (get-in d [:cached?]))
+         :units (get-in d [:units])
          :merkle-root (second (revision/tree-entry store tid))
          :state (cond (nil? entry) :orphan (contains? extracted (:id entry)) :intact :else :superseded)
          :path path :qualified (or (qualified-path (:host store) path) (get-in t [:descriptor :name]))
@@ -337,6 +338,19 @@
       {:error (str "model `" (:model doc) "` is not defined")}
       (try {:payload (extract/extract d (:source doc))}
            (catch #?(:clj clojure.lang.ExceptionInfo :cljs ExceptionInfo) e {:error (ex-message e)})))))
+
+(defn unit-states
+  "The field units of a typed document `doc` (a map of `documents`):
+   `[{:field :id :status}]` sorted by field, `:status` `:anchored` when the
+   field is a key of the payload extracted now and `:missing` when it is not
+   (the absence does not end the unit: it keeps its id). Present means the KEY
+   is there, even with an empty value. Every unit is `:missing` when the
+   payload cannot be extracted. Empty when the document has no units."
+  [store doc]
+  (let [payload (or (:payload (payload-of store doc)) {})
+        units (:units doc)]
+    (vec (for [[f id] (sort units)]
+           {:field f :id id :status (if (contains? payload f) :anchored :missing)}))))
 
 (defn document
   "The tracked document `token` (name or tree id) with `:payload` (or
@@ -577,6 +591,21 @@
         (err/raise :docs/exists (str "the file " q " is already tracked as document `" holder "`")
                    {:path q :document holder :tree owner})))))
 
+(defn- units-for
+  "The field units of a document written with `payload`: the `prior` units
+   (`{field id}`, nil when tracking) plus one freshly minted id for every
+   top-level payload key that has none. Ids are never removed: a field the
+   payload no longer extracts keeps its unit (`:missing`, see `unit-states`).
+   Nothing is minted without `:mint` (existing callers of this surface see no
+   change). Nil when there are no units, so the descriptor stays as it was."
+  [prior payload mint]
+  (let [prior (or prior {})
+        units (if mint
+                (reduce (fn [m k] (if (contains? m k) m (assoc m k (mint))))
+                        prior (sort (keys payload)))
+                prior)]
+    (when (seq units) units)))
+
 (defn- registry
   "The registry of a by-reference document (docs/v2/14 §18.6): builds its tree
    in memory, writes the derived objects to the cache and returns `{:reg :ops}`
@@ -585,9 +614,10 @@
    `:register-tree` op, which carries the document's `:route` entry when it
    has a file. No ownership edge and no block/text node enters the
    plan: that structure is recomputable from `archivo + clase`."
-  [host store {:keys [doc tree-id name text path class content-hash actor]}]
+  [host store {:keys [doc tree-id name text path class content-hash actor units]}]
   (let [a (assoc-in (ast/parse host text) [:attrs :doc] doc)
-        reg (assoc (md/ast->tree host a {:tree-id tree-id :name name :class class :content-hash content-hash})
+        reg (assoc (md/ast->tree host a {:tree-id tree-id :name name :class class :content-hash content-hash
+                                        :units units})
                    :tree-id tree-id)
         root (:root reg)
         ext (when path (external-node host path text))
@@ -699,7 +729,7 @@
    unless `:shared-path :allow` is given, the explicit legacy mode for stores
    that already hold two documents on one file (a v1 migration): the document
    is then tracked without a route and reported as `:shared`."
-  [host store model name text {:keys [doc tree-id path actor timestamp operation inline shared-path]}]
+  [host store model name text {:keys [doc tree-id path actor timestamp operation inline shared-path units mint]}]
   (refuse-collision! store name path)
   (when (and path (not= :allow shared-path)) (refuse-routed! store path nil))
   (let [m (require-model store model)
@@ -709,9 +739,12 @@
         cached? (and path (not inline?) (not (revision/legacy? store)))
         engines (meta-engines {:operation (or operation "docs track") :address (str model ":" name)
                                :fields (changed-fields {} payload)})
+        ;; units live in the descriptor a `:register-tree` writes: only a by-reference document has one
+        field-units (when cached? (units-for units payload mint))
         ops (if cached?
               (let [{:keys [reg ops]} (registry-ops host store {:doc doc :tree-id tree-id :name name :text text
-                                                                 :path path :class (:id m) :content-hash ch :actor actor} nil)]
+                                                                 :path path :class (:id m) :content-hash ch :actor actor
+                                                                 :units field-units} nil)]
                 (cache-write! store reg {:fingerprint (fingerprint host text) :class (:id m)})
                 ops)
               (let [a (assoc-in (ast/parse host text) [:attrs :doc] doc)
@@ -742,7 +775,7 @@
    (the document is re-registered under the current one), as does one whose
    digest does not verify; a document with no recorded parse contract is not
    rewritten for that alone."
-  [host store token text {:keys [path actor timestamp operation inline declared]}]
+  [host store token text {:keys [path actor timestamp operation inline declared mint]}]
   (let [doc (document store token)
         m (require-model store (:model doc))
         payload (extract/extract (:descriptor m) text)
@@ -750,11 +783,15 @@
         ch (content-hash host payload)
         inline? (or inline (:inline doc))
         cached? (and path (not inline?) (not (revision/legacy? store)))
+        ;; only a by-reference document persists units (in its registry descriptor); an inline or
+        ;; legacy one has none, and must not look "moved" for lacking them
+        field-units (if cached? (units-for (:units doc) payload mint) (:units doc))
         ;; with by-reference content the tracked text is the file: "unchanged" is the fingerprint
         ;; matching what the doc was written with, not the text read back from the file
         ;; a registered document without its route (written before routes existed) is not "unchanged":
         ;; writing it again is what gives it one
         base-same? (and (= path (:path doc)) (= :intact (:state doc))
+                        (= field-units (:units doc))
                         (or (not cached?) (not= :unrouted (route-state store (:tree doc) path)))
                         (or (nil? (:recorded-content-hash doc)) (= (:recorded-content-hash doc) ch))
                         (contains? #{:same :unrecorded}
@@ -772,7 +809,8 @@
                                 declared (assoc :declared declared)))]
     (if cached?
       (let [{:keys [reg ops]} (registry-ops host store {:doc (:doc doc) :tree-id (:tree doc) :name (:name doc)
-                                                         :text text :path path :class (:id m) :content-hash ch :actor actor}
+                                                         :text text :path path :class (:id m) :content-hash ch :actor actor
+                                                         :units field-units}
                                              doc)
             same? (and base-same?
                        (or (nil? (:merkle-root doc))

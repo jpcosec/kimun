@@ -12,6 +12,7 @@
             [kimun.cli.store :as cli-store]
             [kimun.host.default :as host]
             [kimun.host.store-cache :as store-cache]
+            [kimun.kernel.ports :as ports]
             [kimun.kernel.route :as route]
             [kimun.kernel.route-tree :as route-tree]
             [kimun.kernel.store :as kstore]
@@ -228,7 +229,10 @@
         {:keys [backend store]} (cli-store/open! (file p ".kimun"))
         {:keys [plan tree]} (binding [ast/*parser* "native"]
                               (tdocs/track-plan h store "TicketDoc" "again" ticket-text
-                                                {:doc "01EEEEEEEEEEEEEEEEEEEEEEEE" :tree-id "01FFFFFFFFFFFFFFFFFFFFFFFF"
+                                                {;; the legacy document gets its field units when it is
+                                                 ;; written, exactly as the CLI does (K1c)
+                                                 :mint (fn [] (ports/ulid (:ids h)))
+                                                 :doc "01EEEEEEEEEEEEEEEEEEEEEEEE" :tree-id "01FFFFFFFFFFFFFFFFFFFFFFFF"
                                                  :path "tickets/login.md" :actor "human/tester"
                                                  :timestamp "2026-01-01T00:00:00.000Z" :shared-path :allow}))]
     (is (nil? (:route (first (filter #(= :register-tree (:op %)) (:ops plan))))) "the legacy plan carries no route")

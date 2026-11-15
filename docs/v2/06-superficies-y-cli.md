@@ -320,8 +320,8 @@ archivo esperan al spec 16 (M1). `include` sigue sin admitir documentos sin mode
 | `docs list` | `--model M` | untyped `{:name :tree :root}`; typed añade `:model :model-version :state :path` |
 | `docs create MODEL NAME` | `--data F` \| `--set k=v…`, `--path P`, `--inline` | mapa del documento (con payload, hashes, path); `--inline` guarda el texto en el store |
 | `docs track MODEL FILE` | `--name N`, `--force`, `--inline` | mapa del documento; `--force` para un fichero que no ida-vuelta; `--inline` guarda el texto en el store |
-| `docs show NAME` | `--format md`, `--ast` (equivale a `--format ast`) | mapa con `:markdown`; `--ast` ⇒ `{:name :tree :ast}` |
-| `docs status` | — | `[{:name :path :status}]` con `status` `ok | modified | missing` |
+| `docs show NAME` | `--format md`, `--ast` (equivale a `--format ast`) | mapa con `:markdown` y, en un documento tipado, `:units [{:field :id :status}]` (`anchored \| missing`, K1c); `--ast` ⇒ `{:name :tree :ast}` |
+| `docs status` | — | `[{:name :path :status}]` con `status` `ok \| modified \| missing` |
 | `docs reanchor NAME FILE` | `--reason TEXT` (obligatorio) | declara el ancla nueva conservando ids: `:reanchored {:from :to :previous-file :reason}` + warning si el archivo viejo sigue |
 | `docs untrack NAME` | `--reason TEXT` | desrastrea; `:closure {:file :reason}` y `:declared` en el journal |
 | `docs delete NAME` | `--yes`, `--reason TEXT` | desrastrea y borra el fichero; sin `--yes` ⇒ `docs/confirmation-required` (3) |
