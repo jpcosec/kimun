@@ -1,0 +1,22 @@
+== V2b/V8b read-back of an outside file through track (content that fits the model)
+  track abs outside file                               -> 200 (38 ms) {"ok":true,"command":"docs track","store":{"name":"p","path":"/tmp/kimun-adhoc-9289842931215649202/s1probe-proj-9717831120670251434/.kimun"},"revision":"e80dc7b
+  /render body contains outside text? true
+  /document body contains outside text? true
+  track path=link.md (symlink to outside)              -> 200 (29 ms) {"ok":true,"command":"docs track","store":{"name":"p","path":"/tmp/kimun-adhoc-9289842931215649202/s1probe-proj-9717831120670251434/.kimun"},"revision":"1004a7b
+  /render viasym contains outside text? true
+  CLI docs ingest link2.md (symlink) ok? true nil
+  CLI docs render symingest contains outside text? true
+== V7b CSRF-style write: did the text/plain cross-origin POST land?
+  POST text/plain Origin evil.example                  -> 200 (7 ms) {"ok":true,"command":"docs ingest","store":{"name":"p","path":"/tmp/kimun-adhoc-9289842931215649202/s1probe-proj-1572897171671620088/.kimun"},"revision":"f1d719
+  docs list has csrf? true
+== V1c ingest cost vs size (60 s client timeout), and write lock held
+  single-line 50 KB                                    -> 200 (680 ms) {"ok":true,"command":"docs ingest","store":{"name":"p","path":"/tmp/kimun-adhoc-9289842931215649202/s1probe-proj-5127991453555756548/.kimun"},"revision":"8b9d9a
+  single-line 100 KB                                   -> 200 (2495 ms) {"ok":true,"command":"docs ingest","store":{"name":"p","path":"/tmp/kimun-adhoc-9289842931215649202/s1probe-proj-5127991453555756548/.kimun"},"revision":"ab6a2b
+  single-line 200 KB                                   -> 200 (16009 ms) {"ok":true,"command":"docs ingest","store":{"name":"p","path":"/tmp/kimun-adhoc-9289842931215649202/s1probe-proj-5127991453555756548/.kimun"},"revision":"4e89cd
+  single-line 400 KB                                   -> 200 (82265 ms) {"ok":true,"command":"docs ingest","store":{"name":"p","path":"/tmp/kimun-adhoc-9289842931215649202/s1probe-proj-5127991453555756548/.kimun"},"revision":"fd140a
+== V3b/V4b CLI banners (child process killed after the banner line)
+  {} ["serve" "--port" "0" "--host" "0.0.0.0"] -> kimun serve on http://0.0.0.0:43911 (store=auto, auth=off)
+  {} ["serve" "--port" "0" "--token" ""] -> kimun serve on http://127.0.0.1:35697 (store=auto, auth=off)
+  {"KIMUN_SERVE_TOKEN" "realtok"} ["serve" "--port" "0"] -> kimun serve on http://127.0.0.1:39431 (store=auto, auth=on (bearer token required))
+  {"KIMUN_SERVE_TOKEN" "realtok"} ["serve" "--port" "0" "--token" ""] -> kimun serve on http://127.0.0.1:36569 (store=auto, auth=off)
+  {} ["serve" "--port" "0" "--host" "not a host"] -> {

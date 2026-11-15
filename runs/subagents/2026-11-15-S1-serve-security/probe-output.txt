@@ -1,0 +1,54 @@
+== V1 huge body (no token), /docs/ingest
+  ingest markdown ~100 KB                              -> 200 (2990 ms) {"ok":true,"command":"docs ingest","store":{"name":"p","path":"/tmp/kimun-adhoc-10604958725921618221/s1probe-proj-11947644428702194396/.kimun"},"revision":"ba0b
+  ingest markdown ~1000 KB                             -> EXC HttpTimeoutException: request timed out (60004 ms) 
+  ingest markdown ~7000 KB                             -> EXC HttpTimeoutException: request timed out (60011 ms) 
+  ingest markdown ~9000 KB                             -> 413 (12 ms) request body 9216041; max request body 8388608
+== V1b huge body WITHOUT auth against a token server (is it read before the 401?)
+  7 MB no auth                                         -> 401 (60 ms) {"ok":false,"error":{"type":"serve/unauthorized","message":"unauthorized","data":{}},"exit":6}
+  9 MB no auth                                         -> 413 (14 ms) request body 9437244; max request body 8388608
+== V2 hostile path in write routes (outside dir = fresh temp dir)
+  outside: /tmp/kimun-adhoc-10604958725921618221/s1probe-outside-11431296210702318556 project: /tmp/kimun-adhoc-10604958725921618221/s1probe-proj-17895839872386348647
+  create path=<outside>/created-abs.md                 -> 200 (75 ms) {"ok":true,"command":"docs create","store":{"name":"p","path":"/tmp/kimun-adhoc-10604958725921618221/s1probe-proj-17895839872386348647/.kimun"},"revision":"2360
+    exists outside? true
+  create path=../s1probe-outside-11431296210702318556/created-dots.md -> 200 (28 ms) {"ok":true,"command":"docs create","store":{"name":"p","path":"/tmp/kimun-adhoc-10604958725921618221/s1probe-proj-17895839872386348647/.kimun"},"revision":"2862
+    exists outside? true
+  track path=<outside>/secret.md (abs)                 -> 200 (31 ms) {"ok":true,"command":"docs track","store":{"name":"p","path":"/tmp/kimun-adhoc-10604958725921618221/s1probe-proj-17895839872386348647/.kimun"},"revision":"01ad4
+  GET /render?doc=stolen (read-back of outside file)   -> 200 (10 ms) {"ok":true,"command":"docs render","store":{"name":"p","path":"/tmp/kimun-adhoc-10604958725921618221/s1probe-proj-17895839872386348647/.kimun"},"revision":"01ad
+  GET /document?id=stolen                              -> 200 (21 ms) {"ok":true,"command":"docs show","store":{"name":"p","path":"/tmp/kimun-adhoc-10604958725921618221/s1probe-proj-17895839872386348647/.kimun"},"revision":"01ad4b
+  track path=../s1probe-outside-11431296210702318556/secret.md -> 200 (17 ms) {"ok":true,"command":"docs track","store":{"name":"p","path":"/tmp/kimun-adhoc-10604958725921618221/s1probe-proj-17895839872386348647/.kimun"},"revision":"acce4
+  save create id=../../x (name traversal)              -> 200 (37 ms) {"ok":true,"command":"save","store":{"name":"p","path":"/tmp/kimun-adhoc-10604958725921618221/s1probe-proj-17895839872386348647/.kimun"},"revision":"171aed4a2fb
+    files in outside: (created-abs.md created-dots.md secret.md viasave.md)
+    files in project: (.kimun model.edn)
+== V8 symlink leaving the project: CLI docs ingest / docs track and HTTP track
+  CLI docs ingest link.md -> true nil /tmp/kimun-adhoc-10604958725921618221/s1probe-proj-5252583408592550620/link.md (:name :tree :path :blocks :class :anchor)
+  docs show viaingest content-contains-outside-text? false
+  HTTP track path=link.md (symlink)                    -> 422 (5 ms) {"ok":false,"error":{"type":"docs/not-idempotent","message":"`link.md` does not round-trip under SimpleBook: rendering what was extracted gives a different text
+  GET /render?doc=viatrack                             -> 404 (9 ms) {"ok":false,"error":{"type":"docs/missing","message":"no document named or identified by `viatrack`","data":{"document":"viatrack"}},"exit":1}
+  getLocalHost = 127.0.1.1
+== V3 --host 0.0.0.0 without token (in-process)
+  server host: 0.0.0.0  local address: 127.0.1.1
+  GET http://127.0.1.1:port/health, no token           -> 200 (8 ms) {"ok":true,"command":"health","store":{"name":"p","path":"/tmp/kimun-adhoc-10604958725921618221/s1probe-proj-9076267505664913828/.kimun"},"revision":"6ac17688b3
+  POST ingest via non-loopback address, no token       -> 200 (19 ms) {"ok":true,"command":"docs ingest","store":{"name":"p","path":"/tmp/kimun-adhoc-10604958725921618221/s1probe-proj-9076267505664913828/.kimun"},"revision":"817ae
+== V4 empty token
+  resolve-token "" {}                      = nil
+  resolve-token "" {KIMUN_SERVE_TOKEN tok}  = nil (flag "" beats env)
+  resolve-token nil {KIMUN_SERVE_TOKEN ""}  = nil
+  resolve-token "  " {}                    = "  " (whitespace-only is a token)
+== V5 malformed Authorization (token = tok)
+  Authorization: "Bearer tok"                          -> 200 (7 ms) {"ok":true,"command":"health","store":{"name":"p","path":"/tmp/kimun-adhoc-10604958725921618221/s1probe-proj-12654900081145535840/.kimun"},"revision":"436ba813e
+  Authorization: "bearer tok"                          -> 401 (0 ms) {"ok":false,"error":{"type":"serve/unauthorized","message":"unauthorized","data":{}},"exit":6}
+  Authorization: "BEARER tok"                          -> 401 (0 ms) {"ok":false,"error":{"type":"serve/unauthorized","message":"unauthorized","data":{}},"exit":6}
+  Authorization: "Bearer  tok"                         -> 401 (0 ms) {"ok":false,"error":{"type":"serve/unauthorized","message":"unauthorized","data":{}},"exit":6}
+  Authorization: "Bearer tok "                         -> 200 (8 ms) {"ok":true,"command":"health","store":{"name":"p","path":"/tmp/kimun-adhoc-10604958725921618221/s1probe-proj-12654900081145535840/.kimun"},"revision":"436ba813e
+  Authorization: "Bearer"                              -> 401 (0 ms) {"ok":false,"error":{"type":"serve/unauthorized","message":"unauthorized","data":{}},"exit":6}
+  Authorization: "Bearer "                             -> 401 (0 ms) {"ok":false,"error":{"type":"serve/unauthorized","message":"unauthorized","data":{}},"exit":6}
+  Authorization: "Basic tok"                           -> 401 (0 ms) {"ok":false,"error":{"type":"serve/unauthorized","message":"unauthorized","data":{}},"exit":6}
+  Authorization: "tok"                                 -> 401 (0 ms) {"ok":false,"error":{"type":"serve/unauthorized","message":"unauthorized","data":{}},"exit":6}
+  Authorization: "Bearer tok,Bearer x"                 -> 401 (0 ms) {"ok":false,"error":{"type":"serve/unauthorized","message":"unauthorized","data":{}},"exit":6}
+  Authorization: "Bearer tök"                          -> 401 (7 ms) {"ok":false,"error":{"type":"serve/unauthorized","message":"unauthorized","data":{}},"exit":6}
+  Authorization: Bearer <70000 x a>                    -> 414 (1 ms) exceed max line 8192
+== V7 CORS off: cross-origin 'simple' requests and Host header
+  OPTIONS preflight, no --cors                         -> 404 (0 ms) {"ok":false,"error":{"type":"serve/cors-disabled","message":"CORS disabled","data":{}},"exit":1}
+  POST text/plain from Origin evil.example (no preflight) -> 200 (14 ms) {"ok":true,"command":"docs ingest","store":{"name":"p","path":"/tmp/kimun-adhoc-10604958725921618221/s1probe-proj-3377392659379334668/.kimun"},"revision":"01346
+    document written? true false
+  raw GET /health with Host: evil.example (DNS rebinding) -> HTTP/1.1 200 OK

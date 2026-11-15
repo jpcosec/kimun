@@ -1,0 +1,17 @@
+## Mutation A: authorized? accepts the raw token when the scheme is not Bearer
+ src/kimun/surface/http.cljc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+-            presented (if (str/starts-with? h "Bearer ") (subs h 7) "")]
++            presented (if (str/starts-with? h "Bearer ") (subs h 7) h)]
+FAIL in (only-the-bearer-scheme-with-the-exact-token-passes) (/tmp/kimun-s1sec-wt/test/kimun/surface/http/security_test.cljc:40)
+Ran 5 tests containing 25 assertions.
+1 failures, 0 errors.
+
+## Mutation B: default host 0.0.0.0 instead of 127.0.0.1
+-   #?(:clj (let [host (or (:host config) "127.0.0.1")
++   #?(:clj (let [host (or (:host config) "0.0.0.0")
+FAIL in (the-default-bind-is-loopback-only) (/tmp/kimun-s1sec-wt/test/kimun/surface/http/security_test.cljc:76)
+Ran 5 tests containing 25 assertions.
+1 failures, 0 errors.
+
+## Restored:
