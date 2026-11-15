@@ -382,6 +382,18 @@
   [host doc text]
   (:merkle-root (rebuild-tree host doc text)))
 
+(defn- tree-complete?
+  "True when every object the committed tree `t` needs is readable: each tree
+   object (by hash) and each node its positions name. A cached tree is a hit
+   only when the whole tree is there: a missing or unverifiable object is cold
+   cache and the caller rebuilds from the file (C2)."
+  [store t]
+  (let [pos (tree-seq map? :children (:root t))
+        hashes (keep :hash pos)
+        nodes (keep :node pos)]
+    (and (every? #(some? (revision/get-object store %)) hashes)
+         (every? #(some? (revision/get-object store %)) nodes))))
+
 (defn doc-tree
   "The committed tree of document `doc` through the ONE resolver (docs/v2/14
    §19): from the store when the tree is persisted (a document without file or
@@ -401,7 +413,7 @@
       (let [[_ merkle] (revision/tree-entry store tid)
             d (revision/tree-descriptor store tid)
             t (err/rescue-any (fn [_] nil) (revision/load-tree store tid (:head store)))
-            ok? (and t (some? (tree/node-at t [])))
+            ok? (and t (tree-complete? store t))
             rebuild (fn [text]
                       (let [reg (rebuild-tree host (assoc doc :class (:class d)
                                                           :recorded-content-hash (:content-hash d)

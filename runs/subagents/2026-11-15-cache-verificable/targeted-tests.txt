@@ -1,0 +1,22 @@
+
+Testing kimun.cli.cache-verified-test
+
+Testing kimun.cli.generic-docs-test
+
+Testing kimun.cli.typed-docs-test
+
+Testing kimun.cli.docs-test
+
+Testing kimun.cli.contract-test
+
+Testing kimun.host.pack-test
+
+Testing kimun.cli.sense-test
+
+Testing kimun.cli.heartbeat-test
+
+Testing kimun.parity.cache-promises-test
+
+Ran 92 tests containing 827 assertions.
+0 failures, 0 errors.
+exit 0

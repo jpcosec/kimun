@@ -366,11 +366,26 @@ como hoy**: son la excepción en que el store ES la fuente del texto.
 **Caché por hash.** `cache/objects/<id>` es content-addressed (el mismo id que tendría en el
 CAS); `cache/docs/<key>.edn` es un índice con `key = sha256(fingerprint, clase, versión del
 parser)`. El backend de ficheros lee `objects/` y cae al caché si falta, así que un lector no
-cambia. Un `kimun.surface.docs/doc-tree` (el resolver de superficie) devuelve el árbol de un
-documento: del store si está persistido, del caché si es derivado, y **recalculado del
-archivo** (y reescrito al caché) si el caché no está. Verifica `merkle-root == hash raíz
-registrado`; si no coincide, el documento está desactualizado (fingerprint != registrado). El
-caché es gitignored (`include gitignore` lo añade) y borrable: todo se recalcula.
+cambia. **La lectura de caché se verifica contra su id**: si los bytes de
+`cache/objects/<id>` no hashean a `<id>`, es un fallo de caché y `read-object` devuelve nil
+(C1); la lectura **no** borra, renombra ni sobrescribe el objeto dañado. Un
+`kimun.surface.docs/doc-tree` (el resolver de superficie) devuelve el árbol de un documento:
+del store si está persistido, del caché si es derivado, y **recalculado del archivo** (y
+reescrito al caché) si el caché no está. Un acierto de caché exige **todos** los objetos del
+árbol —los tree objects y los nodos que nombran sus posiciones—, no solo la raíz: si falta o
+no verifica cualquiera, es caché fría y el árbol se reconstruye del archivo (C2), y el árbol
+reconstruido se entrega a los lectores de la misma operación. Comprobar que el árbol está
+completo lee todos sus objetos en cada resolución, también cuando el lector iba a usar solo
+una parte. Verifica
+`merkle-root == hash raíz registrado`; si no coincide, el documento está desactualizado
+(fingerprint != registrado). El caché es gitignored (`include gitignore` lo añade) y
+borrable: todo se recalcula.
+
+Coste medido (store de banco de 600 documentos, `docs render`/`docs show` de un documento,
+3 corridas): 0,50–0,54 s antes y 0,50–0,52 s después del SHA-256 por acierto de caché; la
+salida es idéntica. **Límite:** un objeto de caché dañado hace lento ese documento hasta que
+alguien borre `cache/` o reconstruya el store — cada lectura lo rechaza y reconstruye en
+memoria, y este corte no añade señal ni comando de reparación.
 
 **Detección y reconciliación.** `fingerprint(archivo) != registrado` ⇒ `:edited`/`:reformatted`
 según el contenido (`stores check|health`); archivo ausente ⇒ `:missing`; clase sucedida ⇒

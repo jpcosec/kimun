@@ -452,6 +452,17 @@
                    (close-packs! b)
                    (read-text (path (:dir b) "objects" id)))))))))
 
+     (defn- read-cached-verified
+       "Text of the derived-cache object `id` of `dir`, only when the bytes of
+        its file hash to `id`. Unverified bytes are a cache miss (nil): a
+        damaged or foreign copy must never be served as the object."
+       [dir id]
+       (let [f (path (cache/objects-dir dir) id)]
+         (when (exists? f)
+           (when-let [bs (err/rescue-any (fn [_] nil) (Files/readAllBytes f))]
+             (when (= id (sha256-hex bs))
+               (String. ^bytes bs StandardCharsets/UTF_8))))))
+
      (defn- loose-ids
        "Ids of the loose object files under objects/ (temporary files excluded)."
        [dir]
@@ -685,10 +696,12 @@
   (read-object [this id]
     ;; the cache of derived objects (tree objects, block/text/opaque nodes of a
     ;; by-reference document) is read as a fallback: derived, deletable and
-    ;; recomputable from the file (docs/v2/14 §18.6, §19)
+    ;; recomputable from the file (docs/v2/14 §18.6, §19). A cache hit is
+    ;; verified: bytes that do not hash to `id` are a cache miss (C1), never an
+    ;; object — and the reading path does not repair, rename or delete them.
     #?(:clj (or (read-text (path dir "objects" id))
                 (read-packed this id)
-                (cache/read-object dir id)
+                (read-cached-verified dir id)
                 ;; a resolved plan is not a CAS object: the in-memory object
                 ;; view still exposes it so journal/history read it as before
                 (some-> (cache/read-plan dir id) pr-str))))
