@@ -1,0 +1,35 @@
+----- Error --------------------------------------------------------------------
+Type:     java.io.FileNotFoundException
+Message:  Could not locate kimun/surface/models/subgraph.bb, kimun/surface/models/subgraph.clj or kimun/surface/models/subgraph.cljc on classpath.
+Location: /tmp/kimun-m1a-wt/test/kimun/surface/models/subgraph_test.cljc:3:3
+
+----- Context ------------------------------------------------------------------
+1: (ns kimun.surface.models.subgraph-test
+2:   "Spec 16 descriptors (docs/v2/16 §3.4, §4): shape, hierarchy, composition."
+3:   (:require [babashka.fs :as fs]
+     ^--- Could not locate kimun/surface/models/subgraph.bb, kimun/surface/models/subgraph.clj or kimun/surface/models/subgraph.cljc on classpath.
+4:             [clojure.edn :as edn]
+5:             [clojure.string :as str]
+6:             [clojure.test :refer [deftest is testing]]
+7:             [kimun.surface.models.subgraph :as sg]))
+8: 
+
+----- Stack trace --------------------------------------------------------------
+babashka.main/exec/fn--30821/load-fn--30832 - <built-in>
+kimun.surface.models.subgraph-test          - /tmp/kimun-m1a-wt/test/kimun/surface/models/subgraph_test.cljc:3:3
+clojure.core/apply                          - clojure/core.clj:662:1
+user                                        - NO_SOURCE_PATH:1:73
+
+1
+
+FAIL in (selector-composition) (/tmp/kimun-m1a-wt/test/kimun/surface/models/subgraph_test.cljc:55)
+expected: (= ["a" "b" "c" "d"] (map :outer-type (sg/compose-selector dm "D")))
+  actual: (not (= ["a" "b" "c" "d"] ("a" "b" "a" "c" "d")))
+
+FAIL in (selector-composition) (/tmp/kimun-m1a-wt/test/kimun/surface/models/subgraph_test.cljc:55)
+expected: (= [0 1 2 3] (map :outer-index (sg/compose-selector dm "D")))
+  actual: (not (= [0 1 2 3] (0 1 2 3 4)))
+
+Ran 6 tests containing 29 assertions.
+3 failures, 0 errors.
+{:test 6, :pass 26, :fail 3, :error 0, :type :summary}

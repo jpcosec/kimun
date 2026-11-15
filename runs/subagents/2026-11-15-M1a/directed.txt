@@ -1,0 +1,13 @@
+
+Testing kimun.surface.models.subgraph-test
+
+Testing kimun.spec16-models-contract-test
+
+Testing kimun.surface.models.store-test
+
+Testing kimun.surface.semantic-test
+
+Testing kimun.doc14-contract-test
+
+Ran 30 tests containing 725 assertions.
+0 failures, 0 errors.

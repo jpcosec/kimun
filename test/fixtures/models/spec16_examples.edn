@@ -2,9 +2,10 @@
  :task "M1"
  :spec "docs/v2/16-modelos-como-subgrafos.md"
  :status :spec-draft
- :implementation {:status :blocked
-                  :blocked-by [:P1 :K1]
-                  :code-changes false}
+ :implementation {:status :in-progress
+                  :slices [:M1a]
+                  :blocked-by [:K1e]
+                  :code-changes true}
 
  :open-decisions
  {:D0 {:ref "docs/v2/14-juego-del-lenguaje.md §21"

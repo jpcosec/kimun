@@ -6,7 +6,8 @@
   (:require [babashka.fs :as fs]
             [clojure.edn :as edn]
             [clojure.string :as str]
-            [clojure.test :refer [deftest is testing]]))
+            [clojure.test :refer [deftest is testing]]
+            [kimun.surface.models.subgraph :as sg]))
 
 (defn- repo-path
   "Resolve a repository-relative path inside the active working directory."
@@ -17,60 +18,6 @@
   "Load and parse an EDN file relative to the active repository root."
   [& parts]
   (edn/read-string (slurp (apply repo-path parts))))
-
-(defn- model-tag
-  "Convert a model descriptor name into a namespace-qualified hierarchy keyword."
-  [model-name]
-  (keyword "kimun.spec16.model" model-name))
-
-(defn- ancestors-of
-  "Return transitive parent names for model-name within models-by-name, checking for cycles."
-  [models-by-name model-name]
-  (loop [stack (:base (get models-by-name model-name))
-         visited []
-         seen #{}]
-    (if (empty? stack)
-      visited
-      (let [p (first stack)]
-        (when (contains? seen p)
-          (throw (ex-info (str "Cycle detected in model :base DAG at " p) {:model model-name :parent p})))
-        (let [parent-bases (:base (get models-by-name p))]
-          (recur (into (subvec (vec stack) 1) parent-bases)
-                 (conj visited p)
-                 (conj seen p)))))))
-
-(defn- build-hierarchy
-  "Build a Clojure hierarchy from :base edges declared across Spec 16 models."
-  [models]
-  (reduce (fn [h {:keys [model/name base]}]
-            (reduce (fn [h* parent-name]
-                      (derive h* (model-tag name) (model-tag parent-name)))
-                    h
-                    base))
-          (make-hierarchy)
-          models))
-
-(defn- compose-selector
-  "Compose inherited selector steps for model-name in ancestor-first order and reindex :outer-index."
-  [models-by-name model-name]
-  (let [chain (letfn [(lineage [n]
-                        (let [m (get models-by-name n)
-                              parents (:base m)]
-                          (conj (vec (mapcat lineage parents)) m)))]
-                (lineage model-name))
-        raw-steps (vec (mapcat #(get-in % [:anchoring :selector]) chain))]
-    (vec (map-indexed (fn [idx step]
-                        (assoc step :outer-index idx))
-                      raw-steps))))
-
-(defn- compose-projections
-  "Merge inherited generation :projections maps in ancestor-first order without touching anchoring."
-  [models-by-name model-name]
-  (letfn [(collect [n]
-            (let [m (get models-by-name n)
-                  parent-proj (apply merge (map collect (:base m)))]
-              (merge parent-proj (get-in m [:generation :projections]))))]
-    (collect model-name)))
 
 (def ^:private expected-capabilities
   "The six R3 selector capabilities C1 through C6 required by Spec 16 §3.3."
@@ -88,9 +35,10 @@
     (is (= 1 (:schema-version fx)))
     (is (= "M1" (:task fx)))
     (is (= :spec-draft (:status fx)))
-    (is (= :blocked (get-in fx [:implementation :status])))
-    (is (false? (get-in fx [:implementation :code-changes])))
-    (is (= #{:P1 :K1} (set (get-in fx [:implementation :blocked-by]))))
+    (is (= :in-progress (get-in fx [:implementation :status])))
+    (is (= [:M1a] (get-in fx [:implementation :slices])))
+    (is (true? (get-in fx [:implementation :code-changes])))
+    (is (= #{:K1e} (set (get-in fx [:implementation :blocked-by]))))
 
     (testing "Open decisions are declared explicitly and D0 prescribes no ID scheme"
       (doseq [k [:A1.1 :F10 :R3-quirks]]
@@ -136,23 +84,23 @@
 (deftest spec16-hierarchy-derive-isa-and-selector-composition
   (let [fx (read-edn-rel "test" "fixtures" "models" "spec16_examples.edn")
         models (:models fx)
-        by-name (into {} (map (juxt :model/name identity) models))
-        h (build-hierarchy models)]
+        by-name (sg/index-models models)
+        h (sg/hierarchy models)]
     (testing "Base DAG is acyclic and every :base reference resolves"
       (doseq [{:keys [model/name base]} models]
         (doseq [p base]
           (is (contains? by-name p) (str name " references missing base " p)))
-        (is (vector? (ancestors-of by-name name)))))
+        (is (vector? (sg/ancestors-of by-name name)))))
     (testing "Clojure derive/isa? inheritance works for transitive subclasses"
-      (is (isa? h (model-tag "ResumenTecnicoDoc") (model-tag "ResumenDoc")))
-      (is (isa? h (model-tag "ResumenTecnicoDoc") (model-tag "PrimitiveDoc")))
-      (is (isa? h (model-tag "ChecklistDoc") (model-tag "PrimitiveDoc")))
-      (is (isa? h (model-tag "ResumenDigestView") (model-tag "ResumenDoc")))
-      (is (not (isa? h (model-tag "ResumenDoc") (model-tag "ResumenTecnicoDoc")))))
+      (is (sg/isa-model? h "ResumenTecnicoDoc" "ResumenDoc"))
+      (is (sg/isa-model? h "ResumenTecnicoDoc" "PrimitiveDoc"))
+      (is (sg/isa-model? h "ChecklistDoc" "PrimitiveDoc"))
+      (is (sg/isa-model? h "ResumenDigestView" "ResumenDoc"))
+      (is (not (sg/isa-model? h "ResumenDoc" "ResumenTecnicoDoc"))))
     (testing "Anchoring selector composition appends parent steps and reindexes :outer-index deterministically"
-      (let [checklist-steps (compose-selector by-name "ChecklistDoc")
-            resumen-steps (compose-selector by-name "ResumenDoc")
-            resumen-tec-steps (compose-selector by-name "ResumenTecnicoDoc")]
+      (let [checklist-steps (sg/compose-selector by-name "ChecklistDoc")
+            resumen-steps (sg/compose-selector by-name "ResumenDoc")
+            resumen-tec-steps (sg/compose-selector by-name "ResumenTecnicoDoc")]
         (is (= [0 1 2 3 4] (mapv :outer-index checklist-steps)))
         (is (= ["front_matter" "heading" "heading" "paragraph" "bullet_list"]
                (mapv :outer-type checklist-steps)))
@@ -163,7 +111,7 @@
         (is (= "^\\QComplexity\\E$" (get-in resumen-tec-steps [4 :regex])))
         (is (= "^\\QTradeoffs\\E$" (get-in resumen-tec-steps [6 :regex])))))
     (testing "Generation projections compose independently from anchoring selectors"
-      (let [projs (compose-projections by-name "ResumenTecnicoDoc")]
+      (let [projs (sg/compose-projections by-name "ResumenTecnicoDoc")]
         (is (= #{:markdown/default :summary/technical} (set (keys projs))))
         (is (= ["id" "title" "summary" "complexity" "tradeoffs"]
                (get-in projs [:summary/technical :fields])))))))

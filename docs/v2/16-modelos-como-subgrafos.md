@@ -5,6 +5,8 @@
 > describiendo lo implementado hoy para compatibilidad de v1 hasta la ejecución de `P1`, `K1`/`D0` e
 > implementación de `M1`.
 >
+> **Implementación:** M1a implementada (forma, jerarquía y composición del descriptor, `kimun.surface.models.subgraph`); resto de M1 pendiente.
+>
 > **Autoridad:** subordinado a [`01-orden-filosofico.md`](01-orden-filosofico.md) y
 > [`14-juego-del-lenguaje.md`](14-juego-del-lenguaje.md) (`§9`, `§13`, `§18–§21`), decisiones
 > `28`, `29`, `39`, `40–44` de [`05-estado.md`](05-estado.md), y evidencia medida en
@@ -208,6 +210,8 @@ se rompe la clase base**: se deriva una subclase mediante `:base`.
 - **En generación:** la subclase hereda las proyecciones nombradas de la base y puede añadir nuevas
   proyecciones o sobreescribir una proyección específica sin afectar el modelo de anclaje ni el selector
   heredado.
+- **Diamante (inferencia del equipo, no del spec):** si un ancestro es alcanzable por varios caminos, entra
+  una sola vez, en la posición de su primer alcance (ancestro primero).
 
 ### 4.3 Inmutabilidad de clase y lectura bajo contrato (`14 §18.3`, decisión 40)
 
