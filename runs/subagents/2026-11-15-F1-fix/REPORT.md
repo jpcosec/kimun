@@ -1,0 +1,24 @@
+# F1-fix: H2 (arreglado) y H3 (análisis, sin implementar)
+
+## H2: `fields set` repetido no converge — REPRODUCIDO y arreglado
+Reproducción ejecutada (misma inyección `failing-spit` de `fault_injection_test.cljc`): `fields set a status "done"` con la escritura de `docs/a.md` fallando, luego el mismo comando con el archivo escribible. Antes del cambio: `unchanged? true`, sin warnings, archivo sigue en `Status: open`, `stores health` sigue `needs-human`.
+
+Cambio (único en `src/`): `src/kimun/cli/commands/fields.cljc`, rama `(:unchanged? m)` de `mutation`. Si el documento tiene `:path` y el contenido del archivo difiere de `(:source full)` (o no se puede leer), reescribe el archivo con `write-file!` (mismos warnings `docs/file-not-written` si vuelve a fallar). No toca el store: sin revisión nueva, `:unchanged? true` se conserva. Si el archivo ya coincide no escribe nada.
+Desvío menor respecto de `docs update`: éste reescribe siempre; aquí solo si difiere (evita tocar mtime en un no-op). Límite: un `fields set` sin cambio sobre un archivo editado a mano también lo sobrescribe con el store (igual que `docs update` con payload); no lo distinguí ni lo probé.
+
+Pruebas nuevas en `test/kimun/cli/fault_injection_test.cljc`:
+- `repeating-fields-set-converges-once-the-file-is-writable`: repetido => ok, sin warnings, `unchanged? true`, head igual, archivo con `done`, health `ok`.
+- `repeating-fields-set-reports-a-second-write-failure`: si la reescritura vuelve a fallar, warning `docs/file-not-written` y archivo viejo.
+Sin el cambio (`git stash push -- src/`): 3 fallos (los 2 de la primera, 1 de la segunda) — `mutation.txt`. Con el cambio: 7 tests, 48 aserciones, 0 fallos. `directed.txt` (fault_injection, fields, typed_docs, tour): 32 tests, 340 aserciones, 0 fallos. `lint.txt`: ok, 106 archivos. No toqué `surface/docs.cljc`, `include.cljc`, `cli/commands/docs.cljc`, kernel ni docs/v2 (la descripción de `fields set` no cambia). No commiteado.
+
+## H3: dirección engañosa (`:edited` cuando el store va por delante)
+Reproducción exacta: test `fields-set-whose-file-write-fails-is-named-the-same-way` / `docs-update-whose-file-write-fails-...`: tras el fallo, `stores health` = `needs-human`, finding `{:category :edited :document "a" :path "docs/a.md"}`, mensaje «a: docs/a.md was edited outside the store — decide first: if the edit was intended, kimun docs update a» (`surface/diagnostics.cljc:244`), `:actions ["kimun docs update a"]`, `:next "inspect: docs/a.md"`. Nota: ese `docs update a` sin payload leería el archivo viejo y revertiría el cambio (afirmado en el brief; no lo ejecuté).
+
+Qué distingue hoy el sensor: `classify` (diagnostics.cljc:127-161) solo compara la huella del archivo con `(:fingerprint doc)` registrado; si difiere y la estructura cambió => `:edited`; solo texto => `:reformatted`. No mira de qué lado está la divergencia. Hay material en el store que podría distinguirlo, NO verificado en código: el journal registra `:operation` (`fields set`/`docs update`), `:address` y `:fields` de cada escritura (docstring de `mutation`, fields.cljc), y la sucesión del documento conserva la revisión anterior. La idea sería: huella del archivo == huella de la revisión anterior (o de la anterior a la última escritura del store) => el store va por delante. No comprobé que la huella de la revisión previa sea accesible desde `classify`.
+
+Qué dice el spec: no distingue este caso. `10-escala.md` §11 (l. ~397): «`fingerprint(archivo) != registrado` ⇒ `:edited`/`:reformatted`… La acción de reparación sigue siendo `docs update NAME` / `stores update`… Ningún cambio silencioso». `06-superficies-y-cli.md` l. 516: archivo editado => `source/mutated`. `14 §21` punto 5 (l. 460): «el sensor no distingue editar de reemplazar», y punto 6: «el sensor propone; … se declaran». Nada sobre «archivo atrasado respecto del store».
+
+Opciones para el dueño:
+1. Solo texto: nueva categoría (p. ej. `:file-behind`, `source/file-behind`) cuando la huella del archivo coincide con la revisión previa del documento; acción sugerida «reescribir el archivo desde el store» (hoy solo hay `fields set`/`docs update --set` repetido). Coste: lee la sucesión en `classify`, nueva señal en `signals.cljc`, nueva acción/comando de reparación y decisión sobre `stores update` (¿escribe solo, dado que no hay edición humana que perder?). Es lo más correcto y lo más grande.
+2. Mantener `:edited` pero corregir el mensaje y la acción: decir «el archivo difiere del store; compara antes» y sugerir `kimun docs show a` / `docs render` en vez de `docs update a` a secas. Coste bajo (diagnostics.cljc), sin nueva categoría, sigue sin saber quién va por delante.
+3. No cambiar el sensor; que el comando que falló lo avise y deje un rastro: el warning `docs/file-not-written` ya existe; añadir al journal una marca de «archivo pendiente» que health lea. Coste medio y es un protocolo parecido a un outbox, que el F1 dejó explícitamente fuera.

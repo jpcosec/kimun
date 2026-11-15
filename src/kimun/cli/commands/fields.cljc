@@ -173,8 +173,15 @@
           result (fn [text] (merge base (select-keys m [:operation :field :path :before :after])
                                    {:owning_section (fields/owning-section (fields/owning-sections d text) path)}))]
       (if (:unchanged? m)
-        (out/ok command {:store (store-ref descriptor store-path) :revision (:head store)
-                         :data (assoc (result (:source full)) :unchanged? true)})
+        (let [root (str (fs/parent (fs/absolutize store-path)))
+              text (:source full)
+              ;; The store may already hold the value while the file does not (a
+              ;; previous write failed after the commit): repair it as `docs update`.
+              stale? (and (:path full)
+                          (not= text (try (slurp (str (fs/path root (:path full)))) (catch Exception _ nil))))]
+          (out/ok command {:store (store-ref descriptor store-path) :revision (:head store)
+                           :data (assoc (result text) :unchanged? true)
+                           :warnings (if stale? (write-file! root (:path full) text) [])}))
         (let [current (or (:descriptor (mstore/model store (:model full))) d)
               {:keys [text]} (fields/render-checked current (:payload m) (compose/context opened) (:field m))
               _ (refuse-noise! current full text)

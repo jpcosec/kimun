@@ -1,0 +1,18 @@
+
+Testing kimun.cli.fault-injection-test
+
+FAIL in (repeating-fields-set-converges-once-the-file-is-writable) (/tmp/kimun-h2-wt/test/kimun/cli/fault_injection_test.cljc:152)
+the file is written by the repeat
+expected: (= new-text (slurp (file "docs" "a.md")))
+  actual: (not (= "# T\n\nStatus: done\n" "# T\n\nStatus: open\n"))
+
+FAIL in (repeating-fields-set-converges-once-the-file-is-writable) (/tmp/kimun-h2-wt/test/kimun/cli/fault_injection_test.cljc:152)
+expected: (= :ok (:status (health)))
+  actual: (not (= :ok :needs-human))
+
+FAIL in (repeating-fields-set-reports-a-second-write-failure) (/tmp/kimun-h2-wt/test/kimun/cli/fault_injection_test.cljc:166)
+expected: (= ["docs/file-not-written"] (mapv :type (:warnings r)))
+  actual: (not (= ["docs/file-not-written"] []))
+
+Ran 7 tests containing 48 assertions.
+3 failures, 0 errors.

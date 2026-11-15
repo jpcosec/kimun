@@ -148,3 +148,23 @@
   (is (true? (:ok (run "journal" "verify"))))
   (is (= [] (tmp-names)))
   (is (seq (fs/glob (file ".kimun" "objects") "**")) "objects/ exists and is not empty"))
+
+(deftest repeating-fields-set-converges-once-the-file-is-writable
+  ;; H2 of F1: same repair as `docs update`; the store already holds the value,
+  ;; so the repeat creates no revision but must rewrite the file.
+  (failing-spit "docs/a.md" (run "fields" "set" "a" "status" "\"done\""))
+  (is (= :needs-human (:status (health))))
+  (let [h1 (head)
+        r (run "fields" "set" "a" "status" "\"done\"")]
+    (is (true? (:ok r)))
+    (is (= [] (:warnings r)))
+    (is (true? (get-in r [:data :unchanged?])) "no second revision")
+    (is (= h1 (head)))
+    (is (= new-text (slurp (file "docs" "a.md"))) "the file is written by the repeat")
+    (is (= :ok (:status (health))))))
+
+(deftest repeating-fields-set-reports-a-second-write-failure
+  (failing-spit "docs/a.md" (run "fields" "set" "a" "status" "\"done\""))
+  (let [r (failing-spit "docs/a.md" (run "fields" "set" "a" "status" "\"done\""))]
+    (is (= ["docs/file-not-written"] (mapv :type (:warnings r))))
+    (is (= old-text (slurp (file "docs" "a.md"))))))

@@ -1,0 +1,11 @@
+
+Testing kimun.cli.fault-injection-test
+
+Testing kimun.cli.fields-test
+
+Testing kimun.cli.typed-docs-test
+
+Testing kimun.cli.tour-test
+
+Ran 32 tests containing 340 assertions.
+0 failures, 0 errors.
