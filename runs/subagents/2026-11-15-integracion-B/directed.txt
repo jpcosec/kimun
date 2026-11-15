@@ -1,0 +1,11 @@
+
+Testing kimun.cli.cold-cache-test
+
+Testing kimun.cli.fault-injection-test
+
+Testing kimun.surface.models.compile-test
+
+Testing kimun.surface.models.subgraph-test
+
+Ran 19 tests containing 166 assertions.
+0 failures, 0 errors.
