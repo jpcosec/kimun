@@ -1,0 +1,45 @@
+== M0: without src change (stash src; selector_cst.cljc untracked is moved aside)
+FAIL in (a-cst-step-without-the-pod-fails-typed) (/tmp/kimun-m1i-wt/test/kimun/surface/models/selector_cst_test.cljc:59)
+items
+expected: (= :docs/parser-unavailable (try (sel/extract-selector [step] doc-a) :returned (catch clojure.lang.ExceptionInfo e (:type (ex-data e)))))
+  actual: (not (= :docs/parser-unavailable :returned))
+
+FAIL in (a-cst-step-without-the-pod-fails-typed) (/tmp/kimun-m1i-wt/test/kimun/surface/models/selector_cst_test.cljc:59)
+matrix
+expected: (= :docs/parser-unavailable (try (sel/extract-selector [step] doc-a) :returned (catch clojure.lang.ExceptionInfo e (:type (ex-data e)))))
+  actual: (not (= :docs/parser-unavailable :returned))
+
+FAIL in (a-section-is-found-wherever-it-sits) (/tmp/kimun-m1i-wt/test/kimun/surface/models/selector_cst_test.cljc:45)
+expected: (= "first note\n\nsecond line" (get (sel/extract-selector [notes-step] doc-a) "notes"))
+  actual: (not (= "first note\n\nsecond line" nil))
+
+FAIL in (the-same-steps-agree-on-both-substrates) (/tmp/kimun-m1i-wt/test/kimun/surface/models/selector_cst_test.cljc:75)
+C3-C5 steps add their fields and leave the others unchanged
+expected: (= (assoc plain "matrix" [["k" "v"] ["x" "1"] ["y" "2 | 3"]]) mixed)
+  actual: (not (= {"title" "T", "notes_first" "first note", "matrix" [["k" "v"] ["x" "1"] ["y" "2 | 3"]]} {"title" "T", "notes_first" "first note"}))
+
+FAIL in (a-two-level-list-keeps-its-hierarchy) (/tmp/kimun-m1i-wt/test/kimun/surface/models/selector_cst_test.cljc:34)
+expected: (= [{:text "a", :depth 0} {:text "a1", :depth 1} {:text "a11", :depth 2} {:text "b", :depth 0}] (get (sel/extract-selector [items-step] doc-a) "items"))
+  actual: (not (= [{:text "a", :depth 0} {:text "a1", :depth 1} {:text "a11", :depth 2} {:text "b", :depth 0}] nil))
+
+Ran 5 tests containing 13 assertions.
+8 failures, 0 errors.
+== M1: C4 flattened (list-items drops depth)
+FAIL in (a-two-level-list-keeps-its-hierarchy) (/tmp/kimun-m1i-wt/test/kimun/surface/models/selector_cst_test.cljc:34)
+1 failures, 0 errors.
+== M2: C3 takes only the next sibling section end (body ends at heading end)
+FAIL in (a-section-is-found-wherever-it-sits) (/tmp/kimun-m1i-wt/test/kimun/surface/models/selector_cst_test.cljc:45)
+1 failures, 0 errors.
+== M3: C5 keeps the delimiter row too
+FAIL in (a-pipe-table-gives-rows-and-cells) (/tmp/kimun-m1i-wt/test/kimun/surface/models/selector_cst_test.cljc:53)
+FAIL in (a-pipe-table-gives-rows-and-cells) (/tmp/kimun-m1i-wt/test/kimun/surface/models/selector_cst_test.cljc:53)
+FAIL in (the-same-steps-agree-on-both-substrates) (/tmp/kimun-m1i-wt/test/kimun/surface/models/selector_cst_test.cljc:75)
+3 failures, 0 errors.
+== M4: no pod check (silent)
+FAIL in (a-cst-step-without-the-pod-fails-typed) (/tmp/kimun-m1i-wt/test/kimun/surface/models/selector_cst_test.cljc:59)
+FAIL in (a-cst-step-without-the-pod-fails-typed) (/tmp/kimun-m1i-wt/test/kimun/surface/models/selector_cst_test.cljc:59)
+FAIL in (a-cst-step-without-the-pod-fails-typed) (/tmp/kimun-m1i-wt/test/kimun/surface/models/selector_cst_test.cljc:59)
+3 failures, 0 errors.
+== M5: dispatch hands CST steps to the block view as well
+0 failures, 0 errors.
+(M5: 0 failures. No discrimina: la vista de bloques ignora un paso que no puede acertar. Queda registrada tal cual; el despacho lo discrimina M0.)

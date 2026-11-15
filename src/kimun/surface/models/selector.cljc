@@ -13,6 +13,7 @@
             [clojure.walk :as walk]
             [kimun.surface.models.blocks :as blocks]
             [kimun.surface.models.marker :as marker]
+            [kimun.surface.models.selector-cst :as cst]
             [kimun.kernel.err :as err]))
 
 ;; SnakeYAML resolves a date (`2026-06-14`) and a datetime to the same
@@ -207,24 +208,36 @@
   "The extraction modes, named as the descriptor's `:compat` (docs/v2/16 §3.5)."
   #{:legacy-v1-template :strict})
 
+(defn- extract-blocks
+  "The values the block-view `steps` capture from `text` in `mode`."
+  [steps text mode]
+  (check-steps! steps)
+  (let [bs (blocks/parse text) rs (vec steps) lines (vec (str/split-lines text))]
+    (:out (reduce (fn [st i]
+                    (let [r (nth rs i)
+                          st (if (not= (:outer-index r) (:last st))
+                               (assoc st :search (max (:search st) (inc (:curr st))) :last (:outer-index r) :curr -1)
+                               st)]
+                      (if (= :section-body (:capture r)) (section-body mode bs rs i lines st) (regular bs rs i st))))
+                  {:out {} :search 0 :last -1 :curr -1} (range (count rs))))))
+
 (defn extract-selector
   "The untyped values (`{field value}`, string keys) that the selector `steps`
    capture from Markdown `text`. `steps` is the vector that `recipe/recipes`
    returns, or its EDN round trip. `mode` is `:legacy-v1-template` (default:
    v1's behaviour, quirks included) or `:strict`; any other value raises
-   `:models/invalid` naming it."
+   `:models/invalid` naming it. The substrate follows the step: a step with
+   `:want :find`/`:table` or `:preserve-nesting` (C3-C5, docs/v2/16 §3.3) is
+   served by the tree-sitter CST (`selector-cst`) and raises
+   `:docs/parser-unavailable` without the pod; every other step runs on the
+   block view, as always."
   ([steps text] (extract-selector steps text :legacy-v1-template))
   ([steps text mode]
    (when-not (contains? modes mode)
      (err/raise :models/invalid
                 (str "Unknown selector mode " (pr-str mode) "; expected one of " (pr-str (sort modes)))
                 {:mode mode :modes modes}))
-   (check-steps! steps)
-   (let [bs (blocks/parse text) rs (vec steps) lines (vec (str/split-lines text))]
-     (:out (reduce (fn [st i]
-                     (let [r (nth rs i)
-                           st (if (not= (:outer-index r) (:last st))
-                                (assoc st :search (max (:search st) (inc (:curr st))) :last (:outer-index r) :curr -1)
-                                st)]
-                       (if (= :section-body (:capture r)) (section-body mode bs rs i lines st) (regular bs rs i st))))
-                   {:out {} :search 0 :last -1 :curr -1} (range (count rs)))))))
+   (if (some cst/cst-step? steps)
+     (merge (extract-blocks (vec (remove cst/cst-step? steps)) text mode)
+            (cst/extract (filterv cst/cst-step? steps) text))
+     (extract-blocks steps text mode))))
