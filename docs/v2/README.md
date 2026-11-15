@@ -45,7 +45,7 @@ De mayor a menor. Ante contradicción gana el número menor.
 | `11-adaptadores.md` | protocolo 1 de adaptadores (código → documentos) y el grupo `adapters` |
 | `12-ecosistema-y-pendientes.md` | pendientes de kimun, consumidores de v1 y la capa G (`wittgenstein`) |
 | `13-include.md` | `kimun.include.edn`: qué versiona un repo en git y el grupo `include` |
-| `14-juego-del-lenguaje.md` | principios del dueño P1–P15, autoridad por clase, contextos, verdad y sentido, formato del store, **clases e instancias, anclaje vs generación (§18), caché/store estable/grafo (§19), trackeable vs trackeado (§20), hash ≠ identidad (§21, pendiente)**, etapas y decisiones 21–39; ver su recuadro "cómo leer" |
+| `14-juego-del-lenguaje.md` | **reordenado por tema (`DOC1` / `F18`)**: separa contrato objetivo, estado implementado, decisiones abiertas (`D0`, `D-G`) e historia; integra `P1–P15`, tres capas (`§19`), clases/anclaje vs. generación (`§18`), trackeable vs. trackeado (`§20`), identidad vs. huella Merkle (`§21`, `D0` abierto) y decisiones `21–46` |
 | `16-modelos-como-subgrafos.md` | **spec M1 (Etapa A, diseño objetivo)**: modelos de anclaje vs. generación, selectores EDN sobre substrato tree-sitter (`R3`), herencia de clases e inmutabilidad de contrato (`14 §18`, pendiente de `P1` y `D0`/`K1` para implementar) |
 | `tests/promises.md` | promesa normativa de `02`/`04` → test que la prueba |
 | `tests/parity-v1.md` | marcador de paridad con sldb v1, DAG y desviaciones deliberadas |

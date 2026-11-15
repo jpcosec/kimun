@@ -1,0 +1,3 @@
+findings: {:declared-missing 0, :declared-not-in-store 0, :declared-not-tracked 0, :store-tracked 0, :store-undeclared 0, :tracked-undeclared 0}
+ok: true
+staged?: false

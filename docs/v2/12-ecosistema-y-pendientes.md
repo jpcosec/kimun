@@ -24,7 +24,7 @@ Este complemento no fija prioridades ni decide la identidad por inferencia.
 | frente | tareas para cerrarlo | depende de | evidencia de cierre |
 |---|---|---|---|
 | Autoridad y contratos | integrar la dirección 2026-11-14 en `01`, `02`, `05`, `12`, `14`; cerrar D0 en positivo y casos de continuidad; distinguir nodo, observación y ancla | corrección del dueño; mapa de ambigüedades | contrato único S–M con casos de editar, mover, copiar, dividir, fusionar, borrar y cambio de contrato |
-| Sensor y store | K2a/K2b, K6, K8, K3, anclas CST, caché verificable, origen de señales, coste incremental | contrato S–M; K2b y anclas dependen de D0 | Merkle por ruta sobre lo trackeado; mutación local visible y reconciliable sin pérdida silenciosa |
+| Sensor y store | K2a/K2b (cortes C2a/C2b/C4 y árbol Merkle C5), K6, K8, K3, anclas CST, caché verificable, origen de señales, coste incremental | contrato S–M; K2b y anclas dependen de D0 | árbol Merkle incremental por ruta (`C5`) sobre lo trackeado; mutación local visible y reconciliable sin pérdida silenciosa |
 | Modelos y código | P1, M1/spec 16, M2, S1, superficie de código; separar anclaje de generación | contrato S–M; implementación de M1 depende de P1 y D0 | documento y función de código clasificados, anclados, consultables y regenerables |
 | Relaciones y continuo | tipar relaciones jerárquicas, horizontales, métricas y recursivas; consulta por unidad; embeddings por unidad y actualización asíncrona | D0 y contrato de relaciones | relaciones declaradas recorribles; vecindad continua visible con modelo y vigencia identificables |
 | Heartbeat y respuestas | estabilizar señal, daemon de recálculo, cursores/épocas y consumo asíncrono, causalidad sin bucles | `stores sense` es primer corte; contrato del heartbeat y sensor S–M | cambios externos y resultados internos se observan sin ejecutar acciones en el daemon; reinicio y repetición cubiertos |
@@ -60,31 +60,30 @@ paridad v1 sin brechas (`scripts/parity/coverage.py … --strict --allow-open-pr
 |---|---|---|---|
 | D0 | **decisión del dueño**: identidad = lugar (estructural para S, semántico para M/G); hash = verificación de mutación | — | `docs/v2/drafts/fuentes-identidad.md`, `14 §21`, decisión 46 |
 | K1 | kernel: ids por lugar, hash como atributo de verificación; borrado de un ID estructural se **declara** (transparencia) | D0 | `14 §21`, `docs/v2/drafts/ids-desde-matrix.md` |
-| K2a | store estable: registro por ruta (Merkle **por ruta** sobre lo trackeado) y plan del build fuera del CAS | — | `14 §19–§20`, decisiones 43–44, `10 §11` |
+| K2a | **parcial (cortes `C2a`, `C2b` y `C4` implementados; árbol Merkle incremental `C5` pendiente)**: planes fuera del CAS (`f837069d`), mapa durable de rutas (`3b2d6d5d`..`790007e2`) con `route-root` como digest plano `O(n)` de entradas ordenadas, mantenimiento desde `surface.docs` (`ff9d44c3`, `b776ae42`) y cobertura (`2c56e680`); **sigue pendiente `C5` (árbol Merkle incremental con descenso local y coste)** | — | `14 §19–§20`, decisiones 43–44, `10 §11`, `runs/subagents/2026-11-14-k2a-*`, `2026-11-14-C2b/` |
 | K2b | store estable: sin índice mmap por ids internos ni las tres aristas redundantes por documento | K1, K2a | `14 §20` (diagnóstico del formato 4) |
-| K3 | documentos sin modelo registrados con la clase genérica del perfil (hoy persisten su árbol) | — | `14 §18`, decisión 41 |
+| K3 | **cerrada (2026-11-14)**: documentos sin modelo registrados bajo la clase genérica `generic/md`, `untrack|delete` y resolución conjunta con tipados (`076be35b`, `43d9db6d`) | — | `14 §18`, decisión 41, `06 §3`, `runs/subagents/2026-11-14-K3/`, `2026-11-14-K3-untrack/` |
 | K4 | packfiles (bloque de 4 KB por objeto pequeño en disco y caché) | K2a | `runs/research/2026-10-08/A4-packfiles.patch`, `A4-report.md` |
 | K5 | índice de nombres y GC | K2a | `10 §4` |
-| P1 | separar el grafo en un paquete aparte (`kimun.graph.*`: modelos, aristas semánticas, grafo, capa G) con regla de anillo en `bb lint` | — (archivos disjuntos de K2a/K3 salvo `kimun.surface.docs`: coordinar) | `14 §19`, decisión 43 |
+| P1 | **parcial (primer corte `70b8abe9`, `runs/subagents/2026-11-15-P1/` + fix `971b6b2c`)**: `kimun.graph.*` en paquete aparte con regla de anillo en `bb lint` y cruce declarado `kimun.surface.semantic` → `kimun.graph.io`; mover `models.*`, `semantic` y `edges` espera `M1`/`D0` | — (corte restante ← `M1`/`D0`) | `14 §19`, decisión 43, `03 §1` |
 | M1 | **spec 16 redactado** (`16-modelos-como-subgrafos.md`): modelos de anclaje y de generación, selector EDN sobre tree-sitter, herencia de clases; features de v1 sí, bugs no | — (spec redactado); implementación ← P1, K1/D0 | `16-modelos-como-subgrafos.md`, `14 §18`, decisiones 41–42, `runs/research/2026-10-08/R3-report.md`, `test/fixtures/models/spec16_examples.edn` |
 | M2 | regenerar los modelos del desk (borrados el 2026-10-09 para dejar una versión estable) | M1 | `desk/`, `kimun.include.edn` |
-| S1 | parser M fase 2: cerrar el ~3 % de divergencia del CST en Markdown libre | — | `04 §11.2` |
-| S2 | parser M fase 3: anclas por rangos de bytes / nodos del CST | K1 | `runs/research/2026-10-08/R2-report.md §5` |
+| S1 | **parcial (`65ca4b5f`, `6930afa8`, `runs/subagents/2026-11-14-s1-cst-ast/`)**: base del parser M fase 2 cerrada en SLDB-MD (`735/735` idénticos); sigue abierto cerrar el ~3 % de divergencia del CST en Markdown libre | — | `04 §11.2`, `14 §13` |
+| S2 | parser M fase 3: anclas por rangos de bytes / nodos del CST | K1 | `runs/research/2026-10-08/R2-report.md §5`, `14 §13` |
 | G1 | capa G: leer fuentes (paper, wittgenstein, Tractatus) y reescribir el spec sobre sentido × verdad | D0, D-G, M1, T01 (cerrada) | `docs/v2/drafts/capa-g-dudas.md`, `runs/research/2026-10-08/spec15/` (borrador previo, solo referencia) |
 | G2 | consulta Datalog (Datalevin pod + respaldo in-process) | G1 | `runs/research/2026-10-08/R1-report.md` |
 | G3 | embeddings sobre anchors (modelo multilingüe) | G1, K2a | decisión 38 |
 | C1 | **cerrada (2026-11-14)**: selfdoc: guarda de before-image al escribir (`C1/F25`) y chequeo de actualidad de nodos fuente (`source-graph-check` / `python-check` sin KGDB externo) | — | `tests/parity-v1.md`, `11-adaptadores.md`, `kimun.cli.adapters-test`, `kimun.parity.adapters-parity-test` |
 | C2 | cliente Python y rutas HTTP de graph_ui (`/kgdb/snapshot`, `/models/promote`) | K2a, P1 | `python/README.md`, `06` |
 | T01 | **cerrada (2026-11-14)**: manifest de inclusión `C01–C28` (Wittgenstein `W1` + `W2`) con `required`/`deferred`/`excluded`, fixture Curie/Franklin y controles negativos | — (documentación) | `docs/v2/tests/wittgenstein-manifest.md`, `test/fixtures/wittgenstein/manifest.edn` (`test/kimun/wittgenstein_manifest_test.cljc`) |
-| K6 | contrato de parse/selector registrado como digest (gramática, perfil, normalización, selector, clase); distinguir `source-changed` / `contract-changed` / `parser-unavailable` / `rebuild-mismatch` | — | `docs/reviews/wittgenstein-superset/reviews/02-findings.md` F08, `proposals/03-store-and-authority.md` |
+| K6 | **parcial (`555b2dbc`, `runs/subagents/2026-11-14-K6/`)**: digest y comparación de contrato de parse implementados (`10 §11.1`, `source/mutated` vs `contract/changed`); **sigue abierto `rebuild-mismatch`** (y selectores de código con `M1`) | — | `10-escala.md §11.1`, `docs/reviews/wittgenstein-superset/reviews/02-findings.md` F08, `proposals/03-store-and-authority.md` |
 | K7 | licencia de inferencia/ruteo separada del alcance de búsqueda (stores enlazados y tags globales no autorizan cruces de contexto) | G1 | F22 |
-| K8 | nombres cualificados por ruta; el nombre corto es alias (hoy `a/README.md` y `b/README.md` chocan) | — (alinear con K2a) | F23 |
-| DOC1 | reescribir `14` por tema (integrar adendas §16–§21; separar contrato objetivo, implementado e histórico) | — | F18 |
+| K8 | **cerrada (2026-11-14)**: nombres cualificados por ruta; el nombre corto es alias (`docs/ambiguous` ante colisión; `bcd85a53`, rutas en `ff9d44c3`) | — | F23, `06 §3`, `runs/subagents/2026-11-14-K8/` |
+| DOC1 | **cerrada (2026-11-15)**: `14-juego-del-lenguaje.md` reordenado por tema (`Tema I–VI`, adendas `§16–§21` integradas, separación por estratos e histórico) | — | F18 (`14-juego-del-lenguaje.md`, `test/kimun/doc14_contract_test.cljc`, `runs/subagents/2026-11-15-doc1-spec14-por-tema/`) |
 
 Insumo de G1: la revisión `docs/reviews/wittgenstein-superset/` (propuestas P4 grafo contextual y P5 T02–T13), `tests/wittgenstein-manifest.md` (`T01`) y la respuesta `respuesta-claude.md`.
 
-En paralelo hoy, sin esperar al dueño: K2a, K3, K6, K8, P1 (coordinando `kimun.surface.docs`), (`T01` y `C1` ya cerradas),
-M1 (spec ya cerrada), S1, DOC1. Esperan a D0: K1, K2b, S2, G1 y lo que cuelga de ellos.
+En paralelo hoy, sin esperar al dueño: `K2a` (cortes `C2a`/`C2b`/`C4` en `main`; pendiente árbol Merkle incremental `C5` y coste), `K6` (pendiente `rebuild-mismatch`), `S1` (pendiente ~3 % Markdown libre). Ya cerradas: `K3`, `K8`, `C1`, `T01`, `DOC1`, `M1` (spec) y primer corte de `P1` (`70b8abe9`). Esperan a D0: `K1`, `K2b`, resto de `P1`, `S2` (fase 3), `G1` y lo que cuelga de ellos.
 
 ### Deuda de diseño y experimentos
 
