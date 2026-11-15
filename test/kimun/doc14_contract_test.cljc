@@ -125,6 +125,6 @@
                         "no hay fan-out" "route-coverage" "`K1`/`D0`" "runs/subagents/2026-11-15-C5/EVIDENCE.md"]]
           (is (str/includes? s20 needle) (str "Missing C5 marker in §20: " needle)))
         (is (not (str/includes? s20 "Pendiente en `K2a` (`C5`")) "C5 is not listed as pending")))
-    (testing "§13 records closed K3/K8/C1, partial K6 with rebuild-mismatch open, and P1 first cut"
-      (doseq [needle ["076be35b" "43d9db6d" "bcd85a53" "555b2dbc" "rebuild-mismatch" "**`K6` (parcial):**" "70b8abe9" "971b6b2c"]]
+    (testing "§13 records closed K3/K8/C1, K6 Markdown with rebuild-mismatch implemented, and P1 first cut"
+      (doseq [needle ["076be35b" "43d9db6d" "bcd85a53" "555b2dbc" "rebuild-mismatch" "contract/rebuild-mismatch" "70b8abe9" "971b6b2c"]]
         (is (str/includes? s13 needle) (str "Missing status marker in §13: " needle))))))

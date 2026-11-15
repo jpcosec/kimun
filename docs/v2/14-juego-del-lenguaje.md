@@ -180,7 +180,7 @@ store en un zapato chino:
 | capa | contiene | regla | estado actual en kimun |
 |---|---|---|---|
 | **caché** | árboles concretos, bloques, campos extraídos, índices (`Datalog`, vectores, búsqueda) | **derivado**: se recalcula desde fuente + contrato y se puede borrar sin perder conocimiento (ver cautela `K6` abajo) | **Implementado en parte**: `<store>/cache/` en Formato 4 (`10 §11`, `docs.cljc`, `store_cache.cljc`) guarda árboles por hash; índices Datalog/vectores son Etapa C |
-| **store estable** (base de kimun) | hashes y anchors del ambiente (texto, código y, a futuro, datos) + el registro mínimo de qué se trackea | **no guarda el contenido**: detecta cualquier modificación del ambiente por huella y permite **reconciliar** | **Implementado en parte**: anchors/hashes por documento en Formato 4, cortes `C2a`/`C2b`/`C4`/`C5` de `K2a` (`3b2d6d5d`..`b4931b7c`: `kimun.kernel.route`, planes fuera del CAS, mantenimiento desde `surface.docs`, `route-coverage` en `stores check\|verify` y el mapa de rutas como árbol Merkle por directorio en los stores nuevos, esquema 2; los stores anteriores siguen en esquema 1, con `route-root` como digest plano `O(n)` de entradas ordenadas, hasta `stores upgrade`), nombres por ruta (`K8`: `bcd85a53`), clase genérica (`K3`: `076be35b`, `43d9db6d`) y primer corte de digest de contrato (`K6` parcial: `555b2dbc`); **sigue pendiente en `K2a` el coste dentro de un directorio ancho (sin fan-out) y su medición en un store real**, `rebuild-mismatch` (`K6`) y `K2b` (`K1`/`D0`) |
+| **store estable** (base de kimun) | hashes y anchors del ambiente (texto, código y, a futuro, datos) + el registro mínimo de qué se trackea | **no guarda el contenido**: detecta cualquier modificación del ambiente por huella y permite **reconciliar** | **Implementado en parte**: anchors/hashes por documento en Formato 4, cortes `C2a`/`C2b`/`C4`/`C5` de `K2a` (`3b2d6d5d`..`b4931b7c`: `kimun.kernel.route`, planes fuera del CAS, mantenimiento desde `surface.docs`, `route-coverage` en `stores check\|verify` y el mapa de rutas como árbol Merkle por directorio en los stores nuevos, esquema 2; los stores anteriores siguen en esquema 1, con `route-root` como digest plano `O(n)` de entradas ordenadas, hasta `stores upgrade`), nombres por ruta (`K8`: `bcd85a53`), clase genérica (`K3`: `076be35b`, `43d9db6d`) y `K6` en Markdown (`555b2dbc` digest de contrato + `rebuild-mismatch` puro en memoria); **sigue pendiente en `K2a` el coste dentro de un directorio ancho (sin fan-out) y su medición en un store real**, la extensión de `K6` a selectores de código (`M1`) y `K2b` (`K1`/`D0`) |
 | **grafo** (paquete aparte, sobre la base) | modelos (anclaje y generación), clases y herencia, capa G (hechos, contextos) y todo lo que vive **solo** en el grafo | **es el conocimiento**; se ancla al ambiente a través de las huellas del store estable | **Parcialmente separado (primer corte `P1` en `70b8abe9`) / Contrato objetivo**: `kimun.graph.{model,io,query,traversal,analysis,store}` vive en su paquete con anillo en `bb lint` (cruce residual declarado `kimun.surface.semantic` → `kimun.graph.io`); mover `kimun.surface.models.*`, `semantic` y `edges` espera separar anclaje de generación (`M1` / `D0`) y la capa G completa espera `D0` y `D-G` |
 
 Reglas normativas:
@@ -570,7 +570,7 @@ Reúne las decisiones `21–46` (numeradas a continuación de `05 §3`), señala
 | 24 | Afirmación en arista `projection` + `V`/`S` por `(hecho, W_i)` + promoción explícita a `TRUE` | **EN REVISIÓN (`D-G`)** | `14 §5`, `drafts/capa-g-dudas.md` | — (bloqueado hasta cierre `D-G`) |
 | 25 | Conflicto lógico vive fuera del pool; se resuelve por transacción (separar contextos, retractar, fuente equivocada); nunca en silencio | **Contrato objetivo** (`G1`, Etapa C) | `14 §6`, `05 §3` | `manifest.edn` `C11` |
 | 26 | Evaluación booleana por matrices `W_i`, índices derivados, nunca `p×p` global | **Contrato objetivo** (`G1`, Etapa C) | `14 §8`, `05 §3` | — |
-| 27 | Formato 4 del store: registro por documento + caché de árbol/bloques en `<store>/cache/`; `:content :inline` opcional; log bajo `:git :ignore` | **Implementado** (`S1c`, Formato 4; K2b/K6 pendientes) | `10-escala.md §11`, `14 §19`, `05 §3` | `revision_format2_test`, `durability_test`, `store_size.clj` |
+| 27 | Formato 4 del store: registro por documento + caché de árbol/bloques en `<store>/cache/`; `:content :inline` opcional; log bajo `:git :ignore` | **Implementado** (`S1c`, Formato 4; `K6` en Markdown implementado; `K2b` pendiente de `D0`) | `10-escala.md §11`, `14 §19`, `05 §3` | `revision_format2_test`, `durability_test`, `store_size.clj` |
 | 28 | Modelo = símbolo-tipo + selector + proyecciones; template v1 como caso especial (regresión `parity-v1`) | **Especificado (`M1`) / Parcial** (v1 implementado; selector EDN en diseño objetivo) | `16-modelos-como-subgrafos.md`, `07-modelos-como-nodos.md`, `14 §9` | `spec16_models_contract_test`, `adapters_parity_test` |
 | 29 | Tree-sitter como pod es el parser de la capa M, por fases; SLDB-MD perfil cerrado; `blocks.cljc` como oráculo | **Implementado** (fase 1 `blocks` `1099/1099`; fase 2 `cst_ast` en `S1`) | `04-superficie-markdown.md`, `14 §11` | `blocks_parity_test`, `segments_parity_test` |
 | 30 | Datalog para consulta de G; Datalevin (pod) candidato con respaldo in-process; índice G derivado | **Spike `R1` cerrado / Contrato objetivo (`G2`)** | `14 §8`, `12 §1` | `runs/research/2026-10-08/R1-report.md` |
@@ -625,10 +625,15 @@ Estado real de ejecución por etapa (el backlog vivo y dependencias residen en
       (`10 §11.2`).
       **Sigue pendiente:** el coste dentro de un directorio ancho (no hay fan-out: un directorio plano
       cuesta en proporción a sus hijos) y medirlo en un store real; las hojas por campo son de `K1`/`D0`.
-    - **`K6` (parcial):** el digest y comparación del contrato de parse están implementados en
-      `555b2dbc` (`10-escala.md §11.1`, evidencia `runs/subagents/2026-11-14-K6/`): `stores
-      check|health|sense|heartbeat` distinguen `source/mutated` de `contract/changed`; **sigue
-      abierto `rebuild-mismatch`** (y la extensión a documentos de código con `M1`).
+    - **`K6` (implementada para Markdown; selectores de código con `M1`):** el digest y comparación
+      del contrato de parse están implementados en `555b2dbc` (`10-escala.md §11.1`, evidencia
+      `runs/subagents/2026-11-14-K6/`), y el corte de `rebuild-mismatch` añade el recálculo puro
+      en memoria (`rebuild-tree`/`rebuilt-root`, sin escribir en `<store>/cache/`): `stores
+      check|health|sense|heartbeat` distinguen fuente mutada (`source/*`), contrato cambiado
+      (`contract/changed`) y reconstrucción divergente bajo la misma fuente y contrato
+      (`contract/rebuild-mismatch`), reparable tras decisión con `docs update` (evidencia en
+      `runs/subagents/2026-11-15-k6-rebuild-mismatch/`); resta únicamente la extensión a documentos
+      de código al implementar `M1`.
     - **`S1` fase 2 del parser M (`cst_ast.cljc`, `KIMUN_PARSER=treesitter`, parcial):** base
       reconciliada en `65ca4b5f`, `03a9f552`, `6930afa8` (evidencia `runs/subagents/2026-11-14-s1-cst-ast/`,
       paridad `735/735` documentos reales en corpus + desk); **sigue abierto cerrar el ~3 % de

@@ -4,12 +4,18 @@
    pure `report` is fed the files as a map. Each test names the v1 function
    (`tests/store/test_diagnostics.py`, `test_contract_in_model_node.py`) whose
    promise it carries."
-  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is]]
+  (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is testing]]
             [clojure.string :as str]
             [babashka.fs :as fs]
             [kimun.cli.main :as main]
             [kimun.cli.store :as cli-store]
-            [kimun.surface.diagnostics :as diag]))
+            [kimun.host.store-cache :as store-cache]
+            [kimun.kernel.revision :as revision]
+            [kimun.kernel.store :as kstore]
+            [kimun.surface.diagnostics :as diag]
+            [kimun.surface.docs :as tdocs]
+            [kimun.surface.markdown.ast :as ast]
+            [kimun.surface.parse-contract :as pc]))
 
 (def env {"USER" "tester"})
 (defn- run [cwd & argv] (:envelope (main/run argv env cwd)))
@@ -162,3 +168,99 @@
     (is (= ["owner"] (get-in d [:noise :frontmatter])))
     (is (true? (:needs-human d)))
     (is (not (:valid r)))))
+
+(defn- register-divergent-root!
+  "Commits a `:register-tree` for `doc-map` with a different `:merkle-root`, leaving
+   its source file, fingerprint and `:parse-contract` untouched."
+  [p doc-map bad-root]
+  (let [{:keys [backend store]} (cli-store/open! (str (fs/path p ".kimun")))
+        tid (:tree doc-map)
+        desc (dissoc (revision/tree-descriptor store tid) :tree)]
+    (kstore/commit! backend store
+                    {:plan/version 1 :base (:head store) :actor "human/tester" :engines {}
+                     :timestamp "2026-01-01T00:00:00.000Z"
+                     :ops [{:op :register-tree :id tid :tree desc :root (:root doc-map) :merkle-root bad-root}]})))
+
+(defn- cache-snapshot
+  "Map of relative path -> file contents under `<store>/cache/`."
+  [p]
+  (let [cdir (fs/path p ".kimun" store-cache/dirname)]
+    (if (fs/exists? cdir)
+      (into (sorted-map)
+            (comp (filter fs/regular-file?)
+                  (map (fn [f] [(str (fs/relativize cdir f)) (slurp (str f))])))
+            (file-seq (fs/file cdir)))
+      {})))
+
+(deftest distinguishes-source-contract-and-rebuild-mismatch-without-writing-cache
+  (testing "typed document: ok -> rebuild-mismatch -> contract-moved -> edited"
+    (let [p (project)
+          store (:store (cli-store/open! (str (fs/path p ".kimun"))))
+          dmap (tdocs/find-document store "login")
+          expected-root (:merkle-root dmap)
+          bad-root "sha-256:0000000000000000000000000000000000000000000000000000000000000000"]
+      (is (= :ok (:category (doc (report p {"login.md" source})))))
+      (register-divergent-root! p dmap bad-root)
+      ;; drop derived objects/docs cache too so observation has no cached tree on disk
+      (fs/delete-tree (fs/path p ".kimun" store-cache/dirname "objects"))
+      (fs/delete-tree (fs/path p ".kimun" store-cache/dirname "docs"))
+      (let [before-cache (cache-snapshot p)
+            r (report p {"login.md" source})
+            d (doc r)
+            h (diag/health r)]
+        (is (= before-cache (cache-snapshot p))
+            "detecting rebuild-mismatch must recalculate in memory and never write to <store>/cache/")
+        (is (not (:valid r)))
+        (is (= :rebuild-mismatch (:category d)))
+        (is (true? (:content-ok d)))
+        (is (true? (:contract-ok d)))
+        (is (true? (:needs-human d)))
+        (is (= [bad-root expected-root] [(:registered-root d) (:rebuilt-root d)]))
+        (is (= "kimun docs update login" (:action d)))
+        (is (str/includes? (:summary r) "1 rebuild mismatch"))
+        (is (= :needs-human (:status h)))
+        (is (= "inspect: login.md" (:next h))))
+      (testing "doc-tree also refuses to write to <store>/cache/ when rebuilt root diverges"
+        (let [before-cache (cache-snapshot p)
+              {:keys [store]} (cli-store/open! (str (fs/path p ".kimun")))
+              dmap2 (tdocs/find-document store "login")
+              res (tdocs/doc-tree store dmap2)]
+          (is (true? (:stale? res)))
+          (is (= before-cache (cache-snapshot p)))))
+      (testing "if the contract changed too, contract-moved wins over rebuild-mismatch"
+        (with-redefs [pc/extractor ["kimun.surface.models" "2"]]
+          (let [d (doc (report p {"login.md" source}))]
+            (is (= :contract-moved (:category d)))
+            (is (true? (:content-ok d)))
+            (is (false? (:contract-ok d))))))
+      (testing "if the source mutated on disk, source category wins"
+        (let [d (doc (report p {"login.md" "# T\n\nStatus: closed\n"}))]
+          (is (= :edited (:category d)))
+          (is (false? (:content-ok d)))))))
+  (testing "generic document: rebuild-mismatch under identical file and contract"
+    (let [p (str (ktu/temp-dir "kimun-gen-mismatch-"))
+          raw "# Note\n\nBody.\n"
+          bad-root "sha-256:1111111111111111111111111111111111111111111111111111111111111111"]
+      (is (true? (:ok (run p "stores" "init" "--name" "p"))))
+      (spit (str (fs/path p "note.md")) raw)
+      (is (true? (:ok (run p "docs" "ingest" "note.md" "--name" "note"))))
+      (let [store (:store (cli-store/open! (str (fs/path p ".kimun"))))
+            gdoc (tdocs/generic-document store "note")
+            expected-root (:merkle-root gdoc)]
+        (register-divergent-root! p gdoc bad-root)
+        (let [r (report p {"note.md" raw})
+              d (doc r)]
+          (is (= :rebuild-mismatch (:category d)))
+          (is (true? (:generic d)))
+          (is (true? (:content-ok d)))
+          (is (true? (:contract-ok d)))
+          (is (false? (:fields-ok d)))
+          (is (true? (:needs-human d)))
+          (is (= [bad-root expected-root] [(:registered-root d) (:rebuilt-root d)])))
+        (testing "a silent parser divergence under same text & same contract is also caught"
+          (register-divergent-root! p gdoc expected-root)
+          (with-redefs [ast/parse (fn [_ _] {:type :document :attrs {} :children [{:type :paragraph :text "diverged" :children []}]})]
+            (let [d (doc (report p {"note.md" raw}))]
+              (is (= :rebuild-mismatch (:category d)))
+              (is (= expected-root (:registered-root d)))
+              (is (not= expected-root (:rebuilt-root d))))))))))

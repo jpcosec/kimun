@@ -409,10 +409,16 @@ Qué distingue la sensorización (`stores check|health|sense|heartbeat`):
 | cambió el contrato (parser, gramática, extractor o clase), fuente intacta | `:contract-moved` | `contract/changed` | true | false | segura: `docs update` / `stores update`; no reescribe el archivo si la clase no cambió |
 | el parser registrado no se puede usar aquí, o el pod no responde | `:parser-unavailable` | `contract/parser-unavailable` | true | false | decide una persona |
 | el digest no corresponde a sus componentes | `:contract-inconsistent` | `contract/inconsistent` | true | false | decide una persona |
+| fuente y contrato iguales, pero reconstruir en memoria da una raíz (o hash de contenido) distinta | `:rebuild-mismatch` | `contract/rebuild-mismatch` | true | true | decide una persona (`docs update`) |
 
 `:contract {:status :changed}` del finding (y del `:detail` de la señal) nombra los componentes que
 difieren; `:parser` aparece solo si cambió el parser, nunca por un cambio de extractor o de clase.
 Si cambian fuente y contrato a la vez, la categoría es la de la fuente y `contract-ok` es false.
+El recálculo de observación para detectar `:rebuild-mismatch` (`kimun.surface.docs/rebuild-tree` y
+`rebuilt-root`) corre **solo en memoria** y nunca escribe en `<store>/cache/`; `doc-tree` solo
+repone la caché cuando la raíz recomputada coincide con la registrada (nunca sobrescribe caché ante
+archivo desactualizado o `:rebuild-mismatch`), y `docs update` re-registra el árbol cuando detecta
+divergencia de raíz o hash de contenido incluso si huella y contrato no cambiaron.
 
 **Compatibilidad y migración.** No cambia la versión de formato: es una clave de evidencia adicional
 (`02 §3.2`). Un documento escrito antes de K6 no tiene `:parse-contract`: se lee igual, su estado es
@@ -422,10 +428,8 @@ migración forzada. Un kimun anterior ignora la clave.
 
 **Fuera de este corte.**
 
-- `rebuild-mismatch` (fuente y contrato iguales, raíz recalculada distinta): exige recalcular el árbol
-  en cada observación, y hoy el único camino de recálculo escribe en la caché.
 - Gramática y perfil de documentos de código, y selector EDN sobre tree-sitter: dependen del spec 16
-  (M1), que no está escrito.
+  (M1), que no está escrito como implementación.
 - Descriptores de los modelos base: el descriptor los nombra, no los resuelve.
 - Versión por componente del parser nativo: gramática y normalización son código y comparten
   `store-cache/parser-version`, que se sube a mano.

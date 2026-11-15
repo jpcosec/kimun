@@ -12,9 +12,11 @@
   "Diagnostic category → signal type. The vocabulary is derived from the
    categories of `kimun.surface.diagnostics`; it does not invent a truth value.
    K6's `source-changed` is the `:source/*` family, its `contract-changed` is
-   `:contract/changed` and its `parser-unavailable` is
-   `:contract/parser-unavailable`; `:detail` carries `:content-ok` and `:contract-ok`
-   so a consumer sees which of the two moved, or both."
+   `:contract/changed`, its `parser-unavailable` is
+   `:contract/parser-unavailable` and its `rebuild-mismatch` is
+   `:contract/rebuild-mismatch`; `:detail` carries `:content-ok` and
+   `:contract-ok` (and `:registered-root` / `:rebuilt-root` on mismatch) so a
+   consumer sees which of the two moved, or whether rebuilding itself diverged."
   {:corrupt :store/corrupt
    :edited :source/mutated
    :reformatted :source/reformatted
@@ -22,6 +24,7 @@
    :contract-moved :contract/changed
    :parser-unavailable :contract/parser-unavailable
    :contract-inconsistent :contract/inconsistent
+   :rebuild-mismatch :contract/rebuild-mismatch
    :unextractable :source/unreadable
    :noise :source/noise
    :orphan :model/missing})
@@ -50,7 +53,9 @@
   [finding]
   (not-empty (select-keys finding [:fields :error :undeclared :bad :state
                                    :content-ok :fields-ok :path-exists
-                                   :contract-ok :contract])))
+                                   :contract-ok :contract
+                                   :registered-root :rebuilt-root
+                                   :registered-content-hash :rebuilt-content-hash])))
 
 (defn from-finding
   "One structured signal from one diagnostic finding. It keeps the category,

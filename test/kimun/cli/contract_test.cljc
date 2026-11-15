@@ -1,7 +1,10 @@
 (ns kimun.cli.contract-test
   "K6 end to end: `stores sense` tells a changed source from a changed parse
-   contract. The same file read by another parser is `contract/changed`, never
-   an outside edit; a document recorded before K6 keeps working.
+   contract and from a divergent rebuild (`rebuild-mismatch`). The same file
+   read by another parser is `contract/changed`; the same file under the same
+   recorded contract yielding a different rebuilt root is
+   `contract/rebuild-mismatch`, recalculated purely in memory without writing
+   to `<store>/cache/` (`docs/v2/10-escala.md §11.1`).
 
    Coverage: the alternate parser is simulated (`ast/*parser*` plus a stubbed
    pod), which is exact for sensing because sensing compares contracts and
@@ -14,6 +17,7 @@
             [kimun.cli.store :as cli-store]
             [kimun.host.store-cache :as store-cache]
             [kimun.host.treesitter :as ts]
+            [kimun.kernel.revision :as revision]
             [kimun.kernel.store :as kstore]
             [kimun.surface.docs :as tdocs]
             [kimun.surface.markdown.ast :as ast]
@@ -215,3 +219,73 @@
       (binding [ast/*parser* "treesitter"]
         (is (= 2 (count (signals p))))
         (is (= 1 @calls) "two documents, one question to the pod")))))
+
+(defn- register-bad-root!
+  [p doc-map bad-root]
+  (let [{:keys [backend store]} (cli-store/open! (file p ".kimun"))
+        tid (:tree doc-map)
+        desc (dissoc (revision/tree-descriptor store tid) :tree)]
+    (kstore/commit! backend store
+                    {:plan/version 1 :base (:head store) :actor "human/tester" :engines {}
+                     :timestamp "2026-01-01T00:00:00.000Z"
+                     :ops [{:op :register-tree :id tid :tree desc :root (:root doc-map) :merkle-root bad-root}]})))
+
+(defn- cache-files
+  [p]
+  (let [cdir (fs/path p ".kimun" store-cache/dirname)]
+    (if (fs/exists? cdir)
+      (into (sorted-map)
+            (comp (filter fs/regular-file?)
+                  (map (fn [f] [(str (fs/relativize cdir f)) (slurp (str f))])))
+            (file-seq (fs/file cdir)))
+      {})))
+
+(deftest rebuild-mismatch-is-sensed-never-writes-cache-and-repairs-with-docs-update
+  (binding [ast/*parser* "native"]
+    (let [p (project)
+          store (:store (cli-store/open! (file p ".kimun")))
+          typed-doc (tdocs/find-document store "login")
+          typed-root (:merkle-root typed-doc)
+          bad-root-1 "sha-256:0000000000000000000000000000000000000000000000000000000000000000"
+          bad-root-2 "sha-256:2222222222222222222222222222222222222222222222222222222222222222"]
+      (spit (file p "note.md") "# Note\n\nBody.\n")
+      (is (true? (:ok (run p "docs" "ingest" "note.md" "--name" "note"))))
+      (let [gen-doc (tdocs/generic-document (:store (cli-store/open! (file p ".kimun"))) "note")
+            gen-root (:merkle-root gen-doc)]
+        (register-bad-root! p typed-doc bad-root-1)
+        (register-bad-root! p gen-doc bad-root-2)
+        (fs/delete-tree (fs/path p ".kimun" store-cache/dirname "objects"))
+        (fs/delete-tree (fs/path p ".kimun" store-cache/dirname "docs"))
+        (let [before (cache-files p)
+              sense-res (run p "stores" "sense")
+              sigs (sort-by :document (get-in sense-res [:data :signals]))
+              check-res (run p "stores" "check")
+              upd-res (run p "stores" "update")]
+          (is (= before (cache-files p))
+              "stores sense/check/update (skipping needs-human) never write to <store>/cache/")
+          (is (= [[:contract/rebuild-mismatch :rebuild-mismatch :warning true true true bad-root-1 typed-root]
+                  [:contract/rebuild-mismatch :rebuild-mismatch :warning true true true bad-root-2 gen-root]]
+                 (mapv (fn [s]
+                         [(:type s) (:category s) (:severity s) (:needs-human s)
+                          (get-in s [:detail :content-ok])
+                          (get-in s [:detail :contract-ok])
+                          (get-in s [:detail :registered-root])
+                          (get-in s [:detail :rebuilt-root])])
+                       sigs)))
+          (is (false? (:ok check-res)))
+          (is (= "store/invalid" (get-in check-res [:error :type])))
+          (is (= #{"docs/rebuild-mismatch"}
+                 (set (map :type (get-in check-res [:error :data :warnings])))))
+          (is (= [] (get-in upd-res [:data :updated])))
+          (is (= #{{:document "login" :category :rebuild-mismatch :action "kimun docs update login"}
+                   {:document "note" :category :rebuild-mismatch :action "kimun docs update note.md --name note"}}
+                 (set (get-in upd-res [:data :skipped])))))
+        (testing "once a human decides, docs update repairs both typed and generic rebuild-mismatch"
+          (let [r1 (run p "docs" "update" "login")
+                r2 (run p "docs" "update" "note.md" "--name" "note")]
+            (is (true? (:ok r1)))
+            (is (false? (get-in r1 [:data :unchanged?])))
+            (is (true? (:ok r2)))
+            (is (false? (get-in r2 [:data :unchanged?])))
+            (is (= [] (signals p)))
+            (is (true? (get-in (run p "stores" "sense") [:data :valid])))))))))

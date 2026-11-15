@@ -1,0 +1,11 @@
+
+Testing kimun.surface.signals-test
+
+Testing kimun.surface.diagnostics-test
+
+Testing kimun.cli.contract-test
+
+Testing kimun.doc14-contract-test
+
+Ran 32 tests containing 396 assertions.
+0 failures, 0 errors.

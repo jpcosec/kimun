@@ -201,6 +201,7 @@
          :recorded-field-hashes (get-in (anchor-edge store es) [:evidence :field-hashes])
          :class (or (get-in d [:class]) (get-in (anchor-edge store es) [:evidence :contract]))
          :cached? (true? (get-in d [:cached?]))
+         :merkle-root (second (revision/tree-entry store tid))
          :state (cond (nil? entry) :orphan (contains? extracted (:id entry)) :intact :else :superseded)
          :path path :qualified (or (qualified-path (:host store) path) (get-in t [:descriptor :name]))
          :fingerprint (get-in ext [:content :fingerprint])
@@ -360,15 +361,37 @@
   [store tid]
   (true? (:cached? (revision/tree-descriptor store tid))))
 
+(defn rebuild-tree
+  "Builds in memory the `:document` tree `doc` (typed or generic) would be
+   registered with from Markdown `text`, without writing anything to the store
+   or `<store>/cache/` (`docs/v2/10-escala.md §11.1`). Returns `{:tree
+   :descriptor :root :merkle-root :objects :nodes :tree-id}`."
+  [host doc text]
+  (let [a (assoc-in (ast/parse host text) [:attrs :doc] (:doc doc))
+        cached? (if (contains? doc :cached?) (boolean (:cached? doc)) true)]
+    (assoc (md/ast->tree host a {:tree-id (:tree doc) :name (:name doc) :class (:class doc)
+                                 :content-hash (:recorded-content-hash doc) :cached? cached?})
+           :tree-id (:tree doc))))
+
+(defn rebuilt-root
+  "The `:merkle-root` the Markdown `text` produces in memory for document `doc`
+   (typed or generic) under the parser in force: nothing is written to the
+   store or `<store>/cache/`. Used by sensing to detect `rebuild-mismatch` (same
+   source fingerprint and same recorded contract, different recomputed root;
+   `docs/v2/10-escala.md §11.1`)."
+  [host doc text]
+  (:merkle-root (rebuild-tree host doc text)))
+
 (defn doc-tree
   "The committed tree of document `doc` through the ONE resolver (docs/v2/14
    §19): from the store when the tree is persisted (a document without file or
-   `:inline`), from the cache otherwise, and rebuilt from the file (and written
-   back to the cache) when the cache is absent. Returns `{:tree :stale?}`;
-   `:stale?` is true when the file no longer matches the registered fingerprint,
-   so the recomputed root may differ from the registered one (the document is
-   out of date: `docs update NAME`). Nil when the tree cannot be obtained (no
-   cache hit and no readable file)."
+   `:inline`), from the cache otherwise, and rebuilt in memory from the file
+   when the cache is absent (written back to `<store>/cache/` only when its
+   recomputed merkle root matches the registered root, so a stale file or a
+   `rebuild-mismatch` never overwrites `<store>/cache/`). Returns `{:tree
+   :stale?}`; `:stale?` is true when the recomputed root differs from the
+   registered one. Nil when the tree cannot be obtained (no cache hit and no
+   readable file)."
   [store doc]
   (let [host (:host store) tid (:tree doc)]
     (if-not (cached-tree? store tid)
@@ -380,13 +403,15 @@
             t (err/rescue-any (fn [_] nil) (revision/load-tree store tid (:head store)))
             ok? (and t (some? (tree/node-at t [])))
             rebuild (fn [text]
-                      (let [a (assoc-in (ast/parse host text) [:attrs :doc] (:doc doc))
-                            reg (assoc (md/ast->tree host a {:tree-id tid :name (:name doc) :class (:class d)
-                                                             :content-hash (:content-hash d) :cached? true})
-                                       :tree-id tid)]
-                        (cache-write! store reg {:fingerprint (fingerprint host text) :class (:class d)})
+                      (let [reg (rebuild-tree host (assoc doc :class (:class d)
+                                                          :recorded-content-hash (:content-hash d)
+                                                          :cached? true)
+                                              text)
+                            stale? (not= merkle (:merkle-root reg))]
+                        (when-not stale?
+                          (cache-write! store reg {:fingerprint (fingerprint host text) :class (:class d)}))
                         {:tree (:tree reg) :objects (:objects reg) :nodes (:nodes reg)
-                         :stale? (not= merkle (:merkle-root reg))}))]
+                         :stale? stale?}))]
         (if ok?
           {:tree t :objects (tree/objects t) :stale? false}
           (when-let [text (and (:path doc) (:read-file store) ((:read-file store) (:path doc)))]
@@ -717,14 +742,15 @@
         ;; matching what the doc was written with, not the text read back from the file
         ;; a registered document without its route (written before routes existed) is not "unchanged":
         ;; writing it again is what gives it one
-        same? (and (= path (:path doc)) (= :intact (:state doc))
-                   (or (not cached?) (not= :unrouted (route-state store (:tree doc) path)))
-                   (contains? #{:same :unrecorded}
-                              (:status (parse-contract/compare-recorded host (parse-contract/environment)
-                                                                        (:parse-contract doc) (:id m))))
-                   (if (:path doc)
-                     (and (some? (:fingerprint doc)) (= (:fingerprint doc) (fingerprint host text)))
-                     (= text (:source doc))))
+        base-same? (and (= path (:path doc)) (= :intact (:state doc))
+                        (or (not cached?) (not= :unrouted (route-state store (:tree doc) path)))
+                        (or (nil? (:recorded-content-hash doc)) (= (:recorded-content-hash doc) ch))
+                        (contains? #{:same :unrecorded}
+                                   (:status (parse-contract/compare-recorded host (parse-contract/environment)
+                                                                             (:parse-contract doc) (:id m))))
+                        (if (:path doc)
+                          (and (some? (:fingerprint doc)) (= (:fingerprint doc) (fingerprint host text)))
+                          (= text (:source doc))))
         ;; the payload read is the one under the contract the document was
         ;; written with: the fields the new contract adds are not in it
         before (or (:payload doc) {})
@@ -733,12 +759,19 @@
     (if cached?
       (let [{:keys [reg ops]} (registry-ops host store {:doc (:doc doc) :tree-id (:tree doc) :name (:name doc)
                                                          :text text :path path :class (:id m) :content-hash ch :actor actor}
-                                             doc)]
+                                             doc)
+            same? (and base-same?
+                       (or (nil? (:merkle-root doc))
+                           (= (:merkle-root doc) (:merkle-root reg))))]
         (when-not same? (cache-write! store reg {:fingerprint (fingerprint host text) :class (:id m)}))
         {:name (:name doc) :tree (:tree doc) :payload payload :before (:payload doc) :unchanged? same?
          :plan (when-not same?
                  {:plan/version 1 :base (:head store) :actor actor :timestamp timestamp :engines engines :ops (vec ops)})})
-      (let [a (assoc-in (ast/parse host text) [:attrs :doc] (:doc doc))
+      (let [same? (and base-same?
+                       (or (nil? (:merkle-root doc))
+                           (= (:merkle-root doc)
+                              (rebuilt-root host (assoc doc :class (:id m) :recorded-content-hash ch) text))))
+            a (assoc-in (ast/parse host text) [:attrs :doc] (:doc doc))
             base (when-not same? (md/ast->update-plan host store (:tree doc) a {:actor actor :timestamp timestamp :base (:head store)}))]
         {:name (:name doc) :tree (:tree doc) :payload payload :before (:payload doc) :unchanged? same?
          :plan (when base
@@ -839,11 +872,11 @@
 
 (defn generic-root
   "The merkle root the Markdown `text` would be registered with as generic
-   document `doc`: computed in memory, nothing is written. Sensing compares it
-   with the registered root to tell a reformatting from an edit."
+   document `doc`: computed in memory, nothing is written (`rebuilt-root`).
+   Sensing compares it with the registered root to tell a reformatting from an
+   edit and to detect `rebuild-mismatch`."
   [host doc text]
-  (:merkle-root (md/ast->tree host (assoc-in (ast/parse host text) [:attrs :doc] (:doc doc))
-                              {:tree-id (:tree doc) :name (:name doc) :class (:class doc)})))
+  (rebuilt-root host doc text))
 
 (defn generic-plan
   "Plan that registers the file `path` (relative to the project) with text
@@ -871,15 +904,16 @@
   [host store doc text {:keys [path actor timestamp operation]}]
   (let [path (or path (:path doc))
         _ (refuse-anchored! store path (:tree doc))
+        {:keys [reg ops]} (generic-ops host store {:doc (:doc doc) :tree-id (:tree doc) :name (:name doc)
+                                                   :text text :path path :actor actor :old-path (:path doc)}
+                                       (:edges doc))
         same? (and (= (qualified-path host path) (:qualified doc))
                    (not= :unrouted (route-state store (:tree doc) path))
                    (= (:fingerprint doc) (fingerprint host text))
+                   (= (:merkle-root doc) (:merkle-root reg))
                    (contains? #{:same :unrecorded}
                               (:status (parse-contract/compare-recorded host (parse-contract/environment)
-                                                                        (:parse-contract doc) generic-class))))
-        {:keys [reg ops]} (generic-ops host store {:doc (:doc doc) :tree-id (:tree doc) :name (:name doc)
-                                                   :text text :path path :actor actor :old-path (:path doc)}
-                                       (:edges doc))]
+                                                                        (:parse-contract doc) generic-class))))]
     (when-not same? (cache-write! store reg {:fingerprint (fingerprint host text) :class generic-class}))
     {:name (:name doc) :tree (:tree doc) :unchanged? same?
      :blocks (count (tree/children-at (:tree reg) []))

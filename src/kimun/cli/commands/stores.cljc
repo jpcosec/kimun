@@ -59,7 +59,8 @@
 (def ^:private warning-type
   {:reformatted "docs/file-modified" :edited "docs/file-modified" :missing "docs/file-missing"
    :contract-moved "docs/superseded" :parser-unavailable "docs/parser-unavailable"
-   :contract-inconsistent "docs/contract-inconsistent" :unextractable "docs/unextractable" :noise "docs/structural-noise"
+   :contract-inconsistent "docs/contract-inconsistent" :rebuild-mismatch "docs/rebuild-mismatch"
+   :unextractable "docs/unextractable" :noise "docs/structural-noise"
    :orphan "docs/orphan" :corrupt "store/corrupt"})
 
 (defn- finding-warning [f]

@@ -27,6 +27,12 @@
    - `:contract-inconsistent` the recorded parse-contract digest is not the
                        digest of its recorded components: the evidence is not
                        trusted — a human checks, then `docs update NAME`;
+   - `:rebuild-mismatch` the source fingerprint and recorded parse contract match
+                       what is in force, yet rebuilding the document in memory
+                       produces a merkle root (or extracted content hash)
+                       different from the registered one (`docs/v2/10-escala.md
+                       §11.1`) — `:content-ok` and `:contract-ok` are both true;
+                       a human decides before `kimun docs update NAME`;
    - `:unextractable`  the text no longer extracts under the model's contract;
    - `:noise`          the text (the file's when it was edited, else the
                        recorded source) carries headings or frontmatter keys
@@ -67,17 +73,19 @@
        (catch #?(:clj clojure.lang.ExceptionInfo :cljs ExceptionInfo) e {:error (ex-message e)})))
 
 (defn- action-of
-  "The command that repairs `category`; `doc-name` is the token that names the
-   document without ambiguity (its qualified name when the short one is shared)."
-  [category doc-name]
-  (case category
-    :ok nil
-    (:reformatted :edited :contract-moved :parser-unavailable :contract-inconsistent) (str "kimun docs update " doc-name)
-    :missing (str "kimun docs untrack " doc-name)
-    :corrupt "kimun stores verify"
-    nil))
+   "The command that repairs `category`; `doc-name` is the token that names the
+    document without ambiguity (its qualified name when the short one is shared)."
+   [category doc-name]
+   (case category
+     :ok nil
+     (:reformatted :edited :contract-moved :parser-unavailable :contract-inconsistent :rebuild-mismatch)
+     (str "kimun docs update " doc-name)
+     :missing (str "kimun docs untrack " doc-name)
+     :corrupt "kimun stores verify"
+     nil))
 
-(defn- message-of [{:keys [category model path fields error noise contract] shown :document token :token}]
+(defn- message-of [{:keys [category model path fields error noise contract registered-root rebuilt-root]
+                    shown :document token :token}]
   (let [who (str "document `" shown "` (" model ")")
         ;; the commands a message names take the unambiguous token
         document (or token shown)]
@@ -101,6 +109,13 @@
                                document)
       :contract-inconsistent (str who ": its recorded parse-contract digest does not match its recorded components; the evidence is not trusted"
                                   " — inspect it, then kimun docs update " document " records the contract in force")
+      :rebuild-mismatch (str who ": rebuilding " (or path "the document")
+                             " under its recorded contract produced "
+                             (if (and registered-root rebuilt-root (not= registered-root rebuilt-root))
+                               (str "root " rebuilt-root ", not the registered root " registered-root)
+                               "a different content hash")
+                             " (its text and contract are unchanged) — decide first: inspect the parser/extractor or re-register with kimun docs update "
+                             document)
       :unextractable (str who ": its text no longer extracts under the contract of `" model "` (" error
                           ") — fix " (or path "the document") " or the model's template, then kimun docs update " document)
       :noise (str who ": structural noise — " (noise/describe noise) " — remove it from " (or path "the document")
@@ -113,13 +128,15 @@
   [store env doc descriptor text]
   (let [host (:host store)
         content-ok (or (nil? (:path doc)) (and (some? text) (= (:fingerprint doc) (tdocs/fingerprint host text))))
-        recorded (when (and descriptor (:source doc)) (try-extract descriptor (:source doc)))
+        verified-text (if (and (:path doc) content-ok) (or text (:source doc)) (:source doc))
+        recorded (when (and descriptor verified-text) (try-extract descriptor verified-text))
         on-disk (when (and descriptor text (not content-ok)) (try-extract descriptor text))
         ;; the recorded payload's hashes live in the anchor edge (format 3): the text is not stored,
         ;; so an edit is told apart from a reformatting by comparing hashes, not payloads
         on-disk-hash (when-let [p (:payload on-disk)] (tdocs/content-hash host p))
         recorded-hash (or (:recorded-content-hash doc)
                           (when-let [p (:payload recorded)] (tdocs/content-hash host p)))
+        now-hash (when-let [p (:payload recorded)] (tdocs/content-hash host p))
         changed (if (seq (:recorded-field-hashes doc))
                   (let [rh (:recorded-field-hashes doc) now (tdocs/field-hashes host (:payload on-disk))]
                     (vec (sort (keep (fn [k] (when (not= (get rh k) (get now k)) k)) (distinct (concat (keys rh) (keys now)))))))
@@ -146,7 +163,22 @@
       (= :inconsistent (:status pc)) [:contract-inconsistent base]
       (= :parser-unavailable (:status pc)) [:parser-unavailable base]
       contract-moved? [:contract-moved base]
-      :else (if-let [n (noise-of (:source doc))] (noisy base n) [:ok base]))))
+      :else
+      (let [rebuilt (when verified-text
+                      (err/rescue-any (fn [_] nil) (tdocs/rebuilt-root host doc verified-text)))
+            root-mismatch? (and (some? (:merkle-root doc)) (some? rebuilt)
+                                (not= (:merkle-root doc) rebuilt))
+            hash-mismatch? (and (some? (:recorded-content-hash doc)) (some? now-hash)
+                                (not= (:recorded-content-hash doc) now-hash))]
+        (if (or root-mismatch? hash-mismatch?)
+          [:rebuild-mismatch
+           (cond-> (assoc base
+                          :fields-ok (and (some? recorded-hash) (= recorded-hash now-hash))
+                          :registered-root (:merkle-root doc)
+                          :rebuilt-root rebuilt)
+             hash-mismatch? (assoc :registered-content-hash (:recorded-content-hash doc)
+                                   :rebuilt-content-hash now-hash))]
+          (if-let [n (noise-of verified-text)] (noisy base n) [:ok base]))))))
 
 (defn- diagnose [store env shared read-file doc]
   (let [descriptor (or (tdocs/contract-descriptor store doc)
@@ -167,43 +199,58 @@
 (defn- diagnose-generic
   "The finding of generic document `doc` (K3): its file against the recorded
    fingerprint, its structure against the registered root when the text
-   changed, and its parse contract against the one in force."
+   changed or to detect `rebuild-mismatch` (`10 §11.1`), and its parse contract
+   against the one in force."
   [store env shared read-file doc]
   (let [host (:host store)
         text (when (:path doc) (read-file (:path doc)))
         content-ok (and (some? text) (= (:fingerprint doc) (tdocs/fingerprint host text)))
         pc (parse-contract/compare-recorded host env (:parse-contract doc) (:class doc))
+        rebuilt (when (and (some? text)
+                           (or (not content-ok) (contains? #{:same :unrecorded} (:status pc))))
+                  (err/rescue-any (fn [_] nil) (tdocs/generic-root host doc text)))
+        root-mismatch? (and content-ok
+                            (contains? #{:same :unrecorded} (:status pc))
+                            (some? (:merkle-root doc))
+                            (some? rebuilt)
+                            (not= (:merkle-root doc) rebuilt))
         category (cond
                    (nil? text) :missing
-                   (not content-ok) (if (= (:merkle-root doc)
-                                           (err/rescue-any (fn [_] nil) (tdocs/generic-root host doc text)))
+                   (not content-ok) (if (= (:merkle-root doc) rebuilt)
                                       :reformatted
                                       :edited)
                    (= :inconsistent (:status pc)) :contract-inconsistent
                    (= :parser-unavailable (:status pc)) :parser-unavailable
                    (= :changed (:status pc)) :contract-moved
+                   root-mismatch? :rebuild-mismatch
                    :else :ok)
         who (str "document `" (:name doc) "` (" (:class doc) ")")
         ;; a shared short name is an ambiguous alias (K8): the command then names the tree
         update (str "kimun docs update " (:path doc) " --name "
                     (if (contains? shared (:name doc)) (:tree doc) (:name doc)))]
-    {:category category :model nil :class (:class doc) :generic true
-     :document (:name doc) :qualified (:qualified doc) :tree (:tree doc) :path (:path doc) :state :intact
-     :needs-human (not (or (clean category) (safe category)))
-     :inspect (:path doc)
-     :action (when-not (= :ok category) (if (= :missing category) nil update))
-     :content-ok (boolean content-ok) :fields-ok (boolean content-ok)
-     :contract-ok (contains? #{:same :unrecorded} (:status pc))
-     :contract (select-keys pc [:status :changed])
-     :message (case category
-                :ok "ok"
-                :missing (str who ": registered at " (:path doc) ", not on disk — restore the file if it was moved by accident")
-                :reformatted (str who ": the text of " (:path doc) " changed, its structure is identical (reformatting) — safe to run: " update)
-                :edited (str who ": " (:path doc) " was edited outside the store — decide first: if the edit was intended, " update)
-                :contract-moved (str who ": the contract it is read under is not the one it was recorded under ["
-                                     (str/join ", " (map name (:changed pc))) "], not the document — safe to run: " update)
-                :parser-unavailable (str who ": it was recorded under a parser that cannot be used here; nothing says the document changed — build the pod (bb pod), or accept the parser in force with " update)
-                :contract-inconsistent (str who ": its recorded parse-contract digest does not match its recorded components — inspect it, then " update))}))
+    (cond-> {:category category :model nil :class (:class doc) :generic true
+             :document (:name doc) :qualified (:qualified doc) :tree (:tree doc) :path (:path doc) :state :intact
+             :needs-human (not (or (clean category) (safe category)))
+             :inspect (:path doc)
+             :action (when-not (= :ok category) (if (= :missing category) nil update))
+             :content-ok (boolean content-ok)
+             :fields-ok (and (boolean content-ok) (not= :rebuild-mismatch category))
+             :contract-ok (contains? #{:same :unrecorded} (:status pc))
+             :contract (select-keys pc [:status :changed])
+             :message (case category
+                        :ok "ok"
+                        :missing (str who ": registered at " (:path doc) ", not on disk — restore the file if it was moved by accident")
+                        :reformatted (str who ": the text of " (:path doc) " changed, its structure is identical (reformatting) — safe to run: " update)
+                        :edited (str who ": " (:path doc) " was edited outside the store — decide first: if the edit was intended, " update)
+                        :contract-moved (str who ": the contract it is read under is not the one it was recorded under ["
+                                             (str/join ", " (map name (:changed pc))) "], not the document — safe to run: " update)
+                        :parser-unavailable (str who ": it was recorded under a parser that cannot be used here; nothing says the document changed — build the pod (bb pod), or accept the parser in force with " update)
+                        :contract-inconsistent (str who ": its recorded parse-contract digest does not match its recorded components — inspect it, then " update)
+                        :rebuild-mismatch (str who ": rebuilding " (:path doc) " under its recorded contract produced root "
+                                               rebuilt ", not the registered root " (:merkle-root doc)
+                                               " (its text and contract are unchanged) — decide first: inspect the parser or re-register with " update))}
+      (= :rebuild-mismatch category)
+      (assoc :registered-root (:merkle-root doc) :rebuilt-root rebuilt))))
 
 (defn- model-finding [docs {:keys [name version]}]
   (let [mine (filter #(= name (:model %)) docs)
@@ -221,7 +268,8 @@
 (defn- summary [valid? docs models counts corrupt]
   (str/join " — " (concat [(str (if valid? "PASS" "FAIL") ": store integrity") (str (count docs) " documents in " (count models) " models")]
                           (for [[c label] [[:edited "edited"] [:missing "missing"] [:unextractable "unextractable"] [:noise "noisy"] [:orphan "orphan"]
-                                           [:reformatted "reformatted (ok)"] [:contract-moved "contract moved"]]
+                                           [:reformatted "reformatted (ok)"] [:contract-moved "contract moved"]
+                                           [:rebuild-mismatch "rebuild mismatch"]]
                                 :when (pos? (get counts c 0))]
                             (str (get counts c) " " label))
                           (when corrupt [(str (count (:bad corrupt)) " corrupt objects")]))))

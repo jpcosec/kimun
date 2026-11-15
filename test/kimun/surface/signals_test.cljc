@@ -23,11 +23,25 @@
           :contract-moved :contract/changed
           :parser-unavailable :contract/parser-unavailable
           :contract-inconsistent :contract/inconsistent
+          :rebuild-mismatch :contract/rebuild-mismatch
           :unextractable :source/unreadable
           :noise :source/noise
           :orphan :model/missing}
          signals/category->type))
   (is (= :diagnostic/unknown (:type (signals/from-finding (finding :something-new))))))
+
+(deftest rebuild-mismatch-maps-to-contract-signal-with-roots-detail
+  (let [s (signals/from-finding (finding :rebuild-mismatch
+                                         :content-ok true
+                                         :contract-ok true
+                                         :registered-root "sha-256:aaa"
+                                         :rebuilt-root "sha-256:bbb"))]
+    (is (= :contract/rebuild-mismatch (:type s)))
+    (is (= :warning (:severity s)))
+    (is (true? (:needs-human s)))
+    (is (= {:content-ok true :contract-ok true
+            :registered-root "sha-256:aaa" :rebuilt-root "sha-256:bbb"}
+           (:detail s)))))
 
 (deftest keeps-the-repair-and-human-decision-fields
   (let [s (signals/from-finding (finding :edited :fields ["status"]))]
