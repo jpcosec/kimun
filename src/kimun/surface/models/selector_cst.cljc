@@ -114,24 +114,28 @@
 (defn- section-body [lines {:keys [from to]}]
   (str/trim (str/join "\n" (subvec lines (min from (count lines)) (min to (count lines))))))
 
-(defn- capture [root lines step]
+(defn- capture
+  "`[value [start end)]` of one CST step: the value and the line range of the
+   node it was read from (the body of a section, the list or the table), or
+   nil when the step finds nothing."
+  [root lines step]
   (cond
     (= :find (:want step))
-    (when-let [s (find-section root (:where step))] (section-body lines s))
-
-    (= :table (:want step))
-    (let [sc (scope root step)]
-      (when-not (= ::absent sc) (some-> (descend sc "pipe_table") table-rows)))
+    (when-let [s (find-section root (:where step))]
+      [(section-body lines s) [(:from s) (:to s)]])
 
     :else
-    (let [sc (scope root step)]
-      (when-not (= ::absent sc) (some-> (descend sc "list") (list-items 0))))))
+    (let [sc (scope root step)
+          table? (= :table (:want step))]
+      (when-not (= ::absent sc)
+        (when-let [node (descend sc (if table? "pipe_table" "list"))]
+          [(if table? (table-rows node) (list-items node 0))
+           [(row-of node) (rows-end node)]])))))
 
-(defn extract
-  "`{field value}` (string keys, the step's `:key`) captured by the CST `steps`
-   from Markdown `text`. A step whose section, list or table is not found
-   leaves its field out. Raises `:docs/parser-unavailable` when the
-   tree-sitter pod is not available, `:models/invalid` for a step with no `:key`."
+(defn extract-located
+  "Like `extract`, but each field is `{:value v :lines [start end)}`: the line
+   range (0-based, end exclusive) of the CST node the value was read from. The
+   ranges are what `kimun.surface.models.capture` turns into coordinates."
   [steps text]
   (doseq [s steps]
     (when-not (string? (:key s))
@@ -143,4 +147,12 @@
   (let [text (if (str/ends-with? text "\n") text (str text "\n"))
         root (first (ts/parse-block text))
         lines (vec (str/split text #"\n" -1))]
-    (into {} (keep (fn [s] (when-some [v (capture root lines s)] [(:key s) v]))) steps)))
+    (into {} (keep (fn [s] (when-some [[v ls] (capture root lines s)] [(:key s) {:value v :lines ls}]))) steps)))
+
+(defn extract
+  "`{field value}` (string keys, the step's `:key`) captured by the CST `steps`
+   from Markdown `text`. A step whose section, list or table is not found
+   leaves its field out. Raises `:docs/parser-unavailable` when the
+   tree-sitter pod is not available, `:models/invalid` for a step with no `:key`."
+  [steps text]
+  (update-vals (extract-located steps text) :value))

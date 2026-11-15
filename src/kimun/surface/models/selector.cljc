@@ -178,7 +178,11 @@
             ;; docs/v2/16 §3.5 line 2: a present, empty section is "".
             keep? (or (seq value) (not (marker/optional? (first (:props-info r)))) (and strict? anchor))]
         (cond-> (assoc st :curr (dec boundary))
-          keep? (assoc-in [:out (first (:props r))] value))))))
+          keep? (assoc-in [:out (first (:props r))] value)
+          ;; the blocks the value was read from, for `extract-located`
+          (and keep? (< search boundary))
+          (assoc-in [:src (first (:props r))]
+                    [(first (:map (nth bs search))) (second (:map (nth bs (dec boundary))))]))))))
 
 (defn- regular [bs rs i {:keys [search] :as st}]
   ;; `:hits` records the anchors that matched; legacy never reads it.
@@ -192,7 +196,9 @@
             (nil? v) (recur (inc b) st)
             (and (:optional-block r) (some #(and (:anchor %) (matches-position? blk %)) (subvec rs (inc i)))) st
             (:anchor r) (-> st (assoc :curr b) (update :hits (fnil conj #{}) i))
-            :else (-> st (update :out merge v) (assoc :curr b))))))))
+            :else (-> st (update :out merge v)
+                      (update :src merge (zipmap (keys v) (repeat (:map blk))))
+                      (assoc :curr b))))))))
 
 (defn- check-steps!
   "Raises `:models/invalid` naming the first step that lacks `:outer-type`:
@@ -209,17 +215,38 @@
   #{:legacy-v1-template :strict})
 
 (defn- extract-blocks
-  "The values the block-view `steps` capture from `text` in `mode`."
+  "The final state of the block-view `steps` over `text` in `mode`: `:out` holds
+   the captured values and `:src` the line range of the blocks each came from."
   [steps text mode]
   (check-steps! steps)
   (let [bs (blocks/parse text) rs (vec steps) lines (vec (str/split-lines text))]
-    (:out (reduce (fn [st i]
+    (select-keys (reduce (fn [st i]
                     (let [r (nth rs i)
                           st (if (not= (:outer-index r) (:last st))
                                (assoc st :search (max (:search st) (inc (:curr st))) :last (:outer-index r) :curr -1)
                                st)]
                       (if (= :section-body (:capture r)) (section-body mode bs rs i lines st) (regular bs rs i st))))
-                  {:out {} :search 0 :last -1 :curr -1} (range (count rs))))))
+                  {:out {} :src {} :search 0 :last -1 :curr -1} (range (count rs)))
+                 [:out :src])))
+
+(defn- check-mode!
+  "Raises `:models/invalid` naming `mode` when it is not one of `modes`."
+  [mode]
+  (when-not (contains? modes mode)
+    (err/raise :models/invalid
+               (str "Unknown selector mode " (pr-str mode) "; expected one of " (pr-str (sort modes)))
+               {:mode mode :modes modes})))
+
+(defn- extract-located*
+  "`{:out {field value} :src {field [start end)}}`: the values `extract-selector`
+   returns and the line range of the source of each one."
+  [steps text mode]
+  (if (some cst/cst-step? steps)
+    (let [b (extract-blocks (vec (remove cst/cst-step? steps)) text mode)
+          c (cst/extract-located (filterv cst/cst-step? steps) text)]
+      {:out (merge (:out b) (update-vals c :value))
+       :src (merge (:src b) (update-vals c :lines))})
+    (extract-blocks steps text mode)))
 
 (defn extract-selector
   "The untyped values (`{field value}`, string keys) that the selector `steps`
@@ -230,14 +257,20 @@
    `:want :find`/`:table` or `:preserve-nesting` (C3-C5, docs/v2/16 §3.3) is
    served by the tree-sitter CST (`selector-cst`) and raises
    `:docs/parser-unavailable` without the pod; every other step runs on the
-   block view, as always."
+   block view, as always. `extract-located` gives the same values with the
+   line range each was read from."
   ([steps text] (extract-selector steps text :legacy-v1-template))
   ([steps text mode]
-   (when-not (contains? modes mode)
-     (err/raise :models/invalid
-                (str "Unknown selector mode " (pr-str mode) "; expected one of " (pr-str (sort modes)))
-                {:mode mode :modes modes}))
-   (if (some cst/cst-step? steps)
-     (merge (extract-blocks (vec (remove cst/cst-step? steps)) text mode)
-            (cst/extract (filterv cst/cst-step? steps) text))
-     (extract-blocks steps text mode))))
+   (check-mode! mode)
+   (:out (extract-located* steps text mode))))
+
+(defn extract-located
+  "Like `extract-selector`, but `{field {:value v :lines [start end)}}`: the
+   0-based line range (end exclusive) of the text each value was read from. A
+   field with no source range (an empty section body) carries no `:lines`.
+   The values are exactly those of `extract-selector`."
+  ([steps text] (extract-located steps text :legacy-v1-template))
+  ([steps text mode]
+   (check-mode! mode)
+   (let [{:keys [out src]} (extract-located* steps text mode)]
+     (into {} (map (fn [[k v]] [k (cond-> {:value v} (get src k) (assoc :lines (get src k)))])) out))))

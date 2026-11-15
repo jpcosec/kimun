@@ -1,0 +1,13 @@
+== mutation 1: capture.cljc absent (src stashed): FileNotFoundException, tests cannot load
+----- Error --------------------------------------------------------------------
+Type:     java.io.FileNotFoundException
+Message:  Could not locate kimun/surface/models/capture.bb, kimun/surface/models/capture.clj or kimun/surface/models/capture.cljc on classpath.
+Location: /tmp/kimun-m1j-wt/test/kimun/surface/models/capture_test.cljc:5:3
+
+== mutation 2: every leaf-hash = first leaf's hash
+FAIL in (an-edit-inside-the-capture-changes-only-the-leaf-it-touches) (/tmp/kimun-m1j-wt/test/kimun/surface/models/capture_test.cljc:37)
+FAIL in (an-edit-outside-the-capture-keeps-its-leaf-hashes) (/tmp/kimun-m1j-wt/test/kimun/surface/models/capture_test.cljc:28)
+FAIL in (the-leaves-move-as-the-s2a-blocks-do) (/tmp/kimun-m1j-wt/test/kimun/surface/models/capture_test.cljc:72)
+FAIL in (the-leaves-move-as-the-s2a-blocks-do) (/tmp/kimun-m1j-wt/test/kimun/surface/models/capture_test.cljc:72)
+Ran 6 tests containing 22 assertions.
+4 failures, 0 errors.
