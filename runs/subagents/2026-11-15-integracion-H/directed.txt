@@ -1,0 +1,11 @@
+
+Testing kimun.surface.models.capture-test
+
+Testing kimun.surface.models.subgraph-test
+
+Testing kimun.cli.models-test
+
+Testing kimun.surface.models.selector-cst-test
+
+Ran 40 tests containing 186 assertions.
+0 failures, 0 errors.
