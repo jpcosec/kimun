@@ -1,0 +1,37 @@
+
+Testing kimun.surface.reading-test
+
+Testing kimun.cli.reading-test
+
+Testing kimun.cli.declare-test
+
+Testing kimun.cli.declare-project-test
+
+Testing kimun.cli.mcp-test
+
+Testing kimun.cli.declare-anchors-test
+
+Testing kimun.cli.declare-ask-test
+
+Testing kimun.cli.declare-fixes-test
+
+Testing kimun.cli.declare-root-test
+
+Testing kimun.cli.stores-test
+
+Testing kimun.surface.declare-test
+
+Testing kimun.surface.declare-fixes-test
+
+Testing kimun.surface.declare-project-test
+
+Testing kimun.surface.generate-test
+
+Testing kimun.surface.propositions-test
+
+Testing kimun.surface.declared-anchors-test
+
+Testing kimun.cli.generate-test
+
+Ran 140 tests containing 1103 assertions.
+0 failures, 0 errors.

@@ -1,0 +1,54 @@
+
+Testing kimun.surface.reading-test
+
+Testing kimun.cli.reading-test
+
+Testing kimun.surface.declare-test
+
+Testing kimun.surface.declare-fixes-test
+
+Testing kimun.surface.declare-project-test
+
+Testing kimun.surface.generate-test
+
+Testing kimun.cli.declare-test
+
+FAIL in (read-two-files-without-touching-the-disk) (/tmp/kimun-read-wt/test/kimun/cli/declare_test.cljc:16)
+expected: (= {:files 2, :relations 2, :propositions 3} (get-in e [:data :summary]))
+  actual: (not (= {:files 2, :relations 2, :propositions 3} {:files 2, :relations 2, :propositions 3, :readings 0, :read-propositions 0, :reading-errors 0}))
+
+Testing kimun.cli.declare-fixes-test
+
+Testing kimun.cli.declare-root-test
+
+Testing kimun.cli.declare-ask-test
+
+Testing kimun.cli.declare-anchors-test
+
+Testing kimun.cli.declare-project-test
+
+FAIL in (read-without-files-reads-the-project-folder) (/tmp/kimun-read-wt/test/kimun/cli/declare_project_test.cljc:29)
+expected: (= {:files 2, :relations 2, :propositions 2} (get-in e [:data :summary]))
+  actual: (not (= {:files 2, :relations 2, :propositions 2} {:files 2, :relations 2, :propositions 2, :readings 0, :read-propositions 0, :reading-errors 0}))
+
+Testing kimun.cli.generate-test
+
+Testing kimun.surface.propositions-test
+
+Testing kimun.surface.declared-anchors-test
+
+Testing kimun.cli.mcp-test
+
+FAIL in (the-process-speaks-json-rpc-over-stdio) (/tmp/kimun-read-wt/test/kimun/cli/mcp_test.cljc:141)
+expected: (= {"files" 1, "relations" 1, "propositions" 1} (-> (get-in resp [2 "result" "content" 0 "text"]) json/parse-string (get-in ["data" "summary"])))
+  actual: (not (= {"files" 1, "relations" 1, "propositions" 1} {"files" 1, "relations" 1, "propositions" 1, "readings" 0, "read-propositions" 0, "reading-errors" 0}))
+
+Testing kimun.cli.main-test
+
+Testing kimun.cli.golden-test
+
+Testing kimun.lint-test
+
+Ran 127 tests containing 984 assertions.
+3 failures, 0 errors.
+exit 1
