@@ -1,15 +1,15 @@
 name: task-finish-wip-leer-readers-by-class
 path: desk/tasks/task-finish-wip-leer-readers-by-class.md
-source_hash: 671baefc65a5db3baa5ef18111ed76556a7e640d7afab57d6a101cd2c7f988e1
-content_hash: 8356d458fc836b08cc84dff882699f2ea1af35e3c331355b73fcfd5a30d5b345
+source_hash: 3edceafc2d3f491c4d63b6534a5d95d9d5ba9d3834cb41c7f81def4f305c0ac5
+content_hash: 8dbdc49e149f72b45436d1e408d2f20c8f3732b1930855fc9cb2b3d5083ee964
 field_hashes:
   title: 20fd83037a6d90e7dcd58aaf4b492461abc974daa867a07b3a33e37f8b8b9c80
   id: 0cdcbb2c14961d306b5fde76d0336630f29735dc1f6cf1c09867b40a19114cb3
-  status: 6ae048f08fcab44bfbc8463f074bfdb40f94c6bdf56d3aad9a7e1c05e5d5b5c1
+  status: db0fb2bf5ebc424454c3e11b5ee8bfb43af24a52e561aa49e94143831dc6fd93
   summary: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
   tags: 9e7e8be2998f87dfcbb538781d827f202722ef7dad630b93bca343e20f247db8
-  current_node: ff5161892aac34735bf10c411f7230b62b7b56446e230a5d26fb75afde4704b6
-  history: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  current_node: d10f5286503cbf750af0584acaec732741c2d9cfbae2a6d5b8ce45b8bf83b79d
+  history: f89b8fd2ac9e43a24ba505d162381268ed901d0695f62c6ad8ec2c62718dfa1c
   why: df8fc268c36434135b0624cb9af4847b504404db74a7ec4379b024c181b75404
   goal: 18b24f6ddd3531ffa1a03c15544463bd61535d9a199ddfdb62b36b06f0d54bef
   scope: 69b4381581dd2fde6ac96de398c6120db455b1f1a38f905d16e93d2e9e68eb8d
@@ -33,6 +33,6 @@ semantic_tags:
 - workspace:desk
 provenance:
   by: agent
-  at: '2026-11-16T19:08:06Z'
+  at: '2026-11-16T23:16:38Z'
   authority: generated
   via: save_document_payload

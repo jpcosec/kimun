@@ -1,17 +1,18 @@
 ---
 sldb:
   by: agent
-  at: '2026-11-16T19:08:06Z'
+  at: '2026-11-16T23:16:38Z'
   authority: generated
   via: save_document_payload
 id: task-finish-wip-leer-readers-by-class
-status: draft
+status: active
 summary: ''
 tags:
 - workspace:desk
 - artifact:task
-current_node: ritual-execution
-history: []
+current_node: ritual-testing
+history:
+- task_activates
 references:
 - docs/v2/drafts/diseno-leer.md
 - docs/v2/drafts/diseno-evaluar.md
