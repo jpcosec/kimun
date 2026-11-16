@@ -236,9 +236,6 @@ include:
   paths:
   - desk/tasks/task-open-owner-decisions-that-hold-work.md
   - desk/tasks/task-owner-decides-what-new-core-of-sldb-means.md
-- model: TaskExternalDoc
-  paths:
-  - desk/tasks/task-toolchain-on-robocop2-and-suite-reproduced.md
 - model: ReviewDoc
   paths:
   - path: desk/reviews/task-toolchain-on-robocop2-and-suite-reproduced/bundle-1.md
@@ -265,6 +262,10 @@ include:
     name: review-task-open-owner-decisions-that-hold-work-preflight-4
   - path: desk/reviews/task-open-owner-decisions-that-hold-work/bundle-2.md
     name: review-task-open-owner-decisions-that-hold-work-bundle-2
+  - path: desk/reviews/task-toolchain-on-robocop2-and-suite-reproduced/evidence-external-1.md
+    name: review-task-toolchain-on-robocop2-and-suite-reproduced-evidence-external-1
+  - path: desk/reviews/task-toolchain-on-robocop2-and-suite-reproduced/evidence-external-2.md
+    name: review-task-toolchain-on-robocop2-and-suite-reproduced-evidence-external-2
 graph_backend: networkx
 policy: {}
 tag_models:
