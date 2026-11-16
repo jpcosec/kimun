@@ -1,0 +1,34 @@
+
+Testing kimun.cli.model-carry-test
+moved existing store to /tmp/kimun-adhoc-8985866124783499048/kimun-model-carry-10620282713592414460/.kimun.bak-20261115-211154-01M7GV4CJP1HBA1YKJSN3889GK
+moved existing store to /tmp/kimun-adhoc-8985866124783499048/kimun-model-carry-11146889452891329299/.kimun.bak-20261115-211154-01M7GV4CQGX675DMNCNSFG4VR4
+moved existing store to /tmp/kimun-adhoc-8985866124783499048/kimun-model-carry-11146889452891329299/.kimun.bak-20261115-211154-01M7GV4CRPEP3RPQJYBG5Y9BRD
+moved existing store to /tmp/kimun-adhoc-8985866124783499048/kimun-model-carry-11146889452891329299/.kimun.bak-20261115-211154-01M7GV4CSS2GJ24SP3ZE09E1HM
+moved existing store to /tmp/kimun-adhoc-8985866124783499048/kimun-model-carry-14748607311192202648/.kimun.bak-20261115-211154-01M7GV4CX5RCJS3VPXEJ9KR9XX
+moved existing store to /tmp/kimun-adhoc-8985866124783499048/kimun-model-carry-5870462885531182904/.kimun.bak-20261115-211154-01M7GV4D0EZCPV451GME27XHSK
+moved existing store to /tmp/kimun-adhoc-8985866124783499048/kimun-model-carry-2430216740716297766/.kimun.bak-20261115-211154-01M7GV4D401W8G8748CKGR5NH6
+
+Testing kimun.cli.identity-carry-test
+moved existing store to /tmp/kimun-adhoc-8985866124783499048/kimun-k1a-7440201031281295341/.kimun.bak-20261115-211154-01M7GV4D6YRHYT8RB5NKSFPPWD
+moved existing store to /tmp/kimun-adhoc-8985866124783499048/kimun-k1a-17904518765582921215/.kimun.bak-20260101-000000-01M7GV4DA273NQGMCRZX6FN05V
+moved existing store to /tmp/kimun-adhoc-8985866124783499048/kimun-k1a-17904518765582921215/.kimun.bak-20260101-000000-01M7GV4DAZH1YCWP31H0891X9V
+moved existing store to /tmp/kimun-adhoc-8985866124783499048/kimun-k1a-13554748458966473977/.kimun.bak-20261115-211155-01M7GV4DE980HFZDW5GQS296GG
+moved existing store to /tmp/kimun-adhoc-8985866124783499048/kimun-k1a-13554748458966473977/.kimun.bak-20261115-211155-01M7GV4DFE3XN0VHY6YMFKYD3E
+moved existing store to /tmp/kimun-adhoc-8985866124783499048/kimun-k1a-5314251045685956389/.kimun.bak-20261115-211155-01M7GV4DK56ST2BJ02YT4F38XM
+moved existing store to /tmp/kimun-adhoc-8985866124783499048/kimun-k1a-14293330141853530577/.kimun.bak-20261115-211155-01M7GV4DQYTAYB7HN5S61EX640
+
+Testing kimun.cli.cold-cache-test
+
+Testing kimun.cli.docs-anchors-test
+
+Testing kimun.surface.models.capture-test
+
+Testing kimun.cli.fields-test
+
+Testing kimun.cli.typed-docs-test
+
+Testing kimun.cli.marks-test
+moved existing store to /tmp/kimun-adhoc-8985866124783499048/kimun-marks-inc-15345338629243872780/.kimun.bak-20261115-211207-01M7GV4S9FDPBZ59HDYN3WFS5K
+
+Ran 50 tests containing 552 assertions.
+0 failures, 0 errors.
