@@ -1,7 +1,7 @@
 ---
 sldb:
   by: agent
-  at: '2026-11-16T23:15:46Z'
+  at: '2026-11-16T23:31:36Z'
   authority: generated
   via: save_document_payload
 # board-xxx
@@ -13,6 +13,7 @@ tasks:
 - desk/tasks/task-finish-wip-leer-readers-by-class.md
 - desk/tasks/task-open-owner-decisions-that-hold-work.md
 - desk/tasks/task-owner-decides-what-new-core-of-sldb-means.md
+- desk/tasks/task-readers-for-every-class-of-the-deskops-desk.md
 # List of pill-xxx paths
 pills: []
 # List of ritual-xxx paths
@@ -48,6 +49,7 @@ _Add short operational notes about the current routed set._
 
 _Generated from the task references above._
 
-- Finish wip-leer readers by class [draft] - Branch wip/leer is rebased on origin/main, its tests and the whole suite pass, the readers have been run over a copy of the real deskops desk with the numbers recorded, and main is fast-forwarded to it and pushed.
+- Finish wip-leer readers by class [ready_for_testing] - Branch wip/leer is rebased on origin/main, its tests and the whole suite pass, the readers have been run over a copy of the real deskops desk with the numbers recorded, and main is fast-forwarded to it and pushed.
 - Open owner decisions that hold work [draft] - Each of the four rows of docs/v2/drafts/preguntas-abiertas.md carries the owner's answer, verbatim and dated, at the start of its second cell, prefixed by **Respondida (dueño, YYYY-MM-DD):** as the answered rows of that table already do; a question he declines is prefixed by **Sin decidir (dueño, YYYY-MM-DD):**.
 - Owner decides what new core of sldb means [draft] - The owner's answer, in his own words, is appended as a dated section to docs/v2/drafts/sesion-2026-11-15.md (the file that holds his verbatim words), and the paragraph of docs/v2/drafts/diseno-leer.md §6 that starts «Mi lectura, sin confirmar por el dueño» is replaced by what he said.
+- Readers for every class of the deskops desk [draft] - A set of reader declarations under runs/subagents/YYYY-MM-DD-lectores-desk/readers/ (YYYY-MM-DD = the day of the run) such that, run over a copy of the desk /home/robocop/proyectos/SLDB_1/deskops/desk, every Markdown file of the desk that has YAML frontmatter is the source of at least one proposition, with the numbers measured and written in a REPORT.md.

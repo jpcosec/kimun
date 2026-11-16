@@ -1,0 +1,39 @@
+name: task-readers-for-every-class-of-the-deskops-desk
+path: desk/tasks/task-readers-for-every-class-of-the-deskops-desk.md
+source_hash: 2df8f7cd90551a81a1fd03f37be1612b141d86c5cf4672f69a1129951c964f64
+content_hash: 5e250180c8ebe6f2886c5b4811c1c6d89e7edfd6300d50022671720af9cce7a5
+field_hashes:
+  title: 356db6df08b594b4fa57f825e8a64f44230b4eba0594c959b80e8d62fcfedc69
+  id: 1f2fb58455207b508e9f09800266f15f40ab315331d42b98fcfbc0e6cccd3d35
+  status: db0fb2bf5ebc424454c3e11b5ee8bfb43af24a52e561aa49e94143831dc6fd93
+  summary: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+  tags: 9e7e8be2998f87dfcbb538781d827f202722ef7dad630b93bca343e20f247db8
+  current_node: d10f5286503cbf750af0584acaec732741c2d9cfbae2a6d5b8ce45b8bf83b79d
+  history: f89b8fd2ac9e43a24ba505d162381268ed901d0695f62c6ad8ec2c62718dfa1c
+  why: 8bb20b1216a9c0d28babef7bf6dbf4ec62c91ffe173b0ccf7aacebb63dfd2195
+  goal: 4561ec785de6958d6b6bf068ae69d8f81d74ac8fe7431039997f824aeba29969
+  scope: 9f711276b7227756d576cd9d5feb7a424a489af733d73039db825fa46e5f4a6c
+  references: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  depends_on: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  pills: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  files: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  implementation_path: 0cce3e09009e106206e33ed649ef4913ad7e10846ef79c1be7bcb8b928215778
+  validation: 740a0c8b692f9d9fa1cfd681907fd075287570f33b8af304c465e84db8731a7d
+  done_when: 94e75a4a1a7f27300a00e807162cde3a1a4b5ae5ee3e60abebb0ec3eba3469d5
+  task_type: 8dbc7ea3fc2d737a841f8f9a89de6dd4bd2ca7fdc77434a53400db8767ba695d
+  inherits_from: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  inherit_acceptance_context: fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa
+  atoms: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  from_drawer: 165ef199105511b4886518dc36cc66346713d0d7a6bb620982f9df15322f88db
+semantic_tags:
+- artifact:task
+- representation.markdown
+- source.document.markdown
+- type.workflow.task
+- workspace.desk
+- workspace:desk
+provenance:
+  by: agent
+  at: '2026-11-16T23:33:43Z'
+  authority: generated
+  via: save_document_payload

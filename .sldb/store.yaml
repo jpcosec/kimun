@@ -272,9 +272,18 @@ include:
     name: review-task-finish-wip-leer-readers-by-class-evidence-commit-1
   - path: desk/reviews/task-finish-wip-leer-readers-by-class/evidence-atom-1.md
     name: review-task-finish-wip-leer-readers-by-class-evidence-atom-1
+  - path: desk/reviews/task-readers-for-every-class-of-the-deskops-desk/preflight-2.md
+    name: review-task-readers-for-every-class-of-the-deskops-desk-preflight-2
+  - path: desk/reviews/task-readers-for-every-class-of-the-deskops-desk/bundle-1.md
+    name: review-task-readers-for-every-class-of-the-deskops-desk-bundle-1
+  - path: desk/reviews/task-readers-for-every-class-of-the-deskops-desk/preflight-3.md
+    name: review-task-readers-for-every-class-of-the-deskops-desk-preflight-3
 - model: InboxNoteDoc
   paths:
   - desk/inbox/20261116-202851-unclear-deskops-closeout-the-tests-gate-only-accepts-a-py-file-under-tests-k.md
+- model: TaskDocsDoc
+  paths:
+  - desk/tasks/task-readers-for-every-class-of-the-deskops-desk.md
 graph_backend: networkx
 policy: {}
 tag_models:
