@@ -1,0 +1,51 @@
+### kimun.cli.seen-test kimun.cli.changed-test
+
+Testing kimun.cli.seen-test
+moved existing store to /tmp/kimun-adhoc-9736803413259674560/kimun-seen-inc-4906218153179429086/.kimun.bak-20261116-005017-01M7H7M89SSHZC915FKVFWSBR4
+
+Testing kimun.cli.changed-test
+
+Ran 13 tests containing 134 assertions.
+0 failures, 0 errors.
+exit 0
+### kimun.cli.stores-test kimun.cli.sense-test kimun.cli.main-test kimun.lint-test
+
+Testing kimun.cli.stores-test
+
+FAIL in (unknown-subcommand-lists-the-known-ones) (/tmp/kimun-pointer-wt/test/kimun/cli/stores_test.cljc:278)
+expected: (= ["changed" "check" "health" "heartbeat" "init" "link" "links" "pack" "reconcile" "sense" "show" "unlink" "unpack" "unreachable" "update" "verify"] (get-in e [:error :data :known]))
+  actual: (not (= ["changed" "check" "health" "heartbeat" "init" "link" "links" "pack" "reconcile" "sense" "show" "unlink" "unpack" "unreachable" "update" "verify"] ["changed" "check" "health" "heartbeat" "init" "link" "links" "pack" "reconcile" "seen" "sense" "show" "unlink" "unpack" "unreachable" "update" "verify"]))
+
+Testing kimun.cli.sense-test
+
+Testing kimun.cli.main-test
+
+Testing kimun.lint-test
+
+Ran 43 tests containing 293 assertions.
+1 failures, 0 errors.
+exit 1
+### kimun.cli.include-test kimun.cli.identity-carry-test
+
+Testing kimun.cli.include-test
+moved existing store to /tmp/kimun-adhoc-6920435267588348376/kimun-include-9132991739634441731/.kimun.bak-20261116-005021-01M7H7MC7MM1FCGE0JF6QK4SZN
+
+Testing kimun.cli.identity-carry-test
+moved existing store to /tmp/kimun-adhoc-6920435267588348376/kimun-k1a-3697497399711578187/.kimun.bak-20261116-005021-01M7H7MCTRS2MRR2WVH5J2WSSA
+moved existing store to /tmp/kimun-adhoc-6920435267588348376/kimun-k1a-736369011277826705/.kimun.bak-20260101-000000-01M7H7MCY5KGFE2D45TZ1JX6W0
+moved existing store to /tmp/kimun-adhoc-6920435267588348376/kimun-k1a-736369011277826705/.kimun.bak-20260101-000000-01M7H7MCZAD1BBKAEDQZZ21XGX
+moved existing store to /tmp/kimun-adhoc-6920435267588348376/kimun-k1a-14426467011581965656/.kimun.bak-20261116-005022-01M7H7MD3MWCWH5F9MN94RRPD6
+moved existing store to /tmp/kimun-adhoc-6920435267588348376/kimun-k1a-14426467011581965656/.kimun.bak-20261116-005022-01M7H7MD4ZG7FCN1AQWM0S9RWK
+moved existing store to /tmp/kimun-adhoc-6920435267588348376/kimun-k1a-6796581842709648511/.kimun.bak-20261116-005022-01M7H7MD93MSBAKXND6N1BD51Y
+moved existing store to /tmp/kimun-adhoc-6920435267588348376/kimun-k1a-431341512771878536/.kimun.bak-20261116-005022-01M7H7MDDXWBQ8QKK6E4GDECVT
+
+Ran 12 tests containing 77 assertions.
+0 failures, 0 errors.
+exit 0
+### stores-test (rerun after adding seen to the known list)
+
+Testing kimun.cli.stores-test
+
+Ran 26 tests containing 185 assertions.
+0 failures, 0 errors.
+exit 0

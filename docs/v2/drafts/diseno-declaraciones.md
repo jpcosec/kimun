@@ -52,7 +52,7 @@ camino de ahora.
 persiste muy poco:
 
 - las **declaraciones que importan**, compactas (§5);
-- un puntero: **«miré hasta este commit»**.
+- un puntero: **«miré hasta este commit»**. Es un dato del índice derivado, no una declaración: vive en `<store>/seen.edn` (`{:commit sha}`), fuera del log, los planes y el journal, porque no es una transacción y ese registro propio está diferido.
 
 Para saber si cambió algo anclado no hace falta haber guardado su huella: git conserva la versión
 anterior, y se compara la región de antes con la de ahora. Tras un clon no se pierde nada.
@@ -98,7 +98,7 @@ indexado pasa a ser parte de la "topología" que estamos controlando.»
 ## 8. Lo que todavía no está pensado
 
 - Cómo se escribe el porqué, el quién y el cuándo de una declaración (el «docstring tipado»).
-- Cambios sin commitear: git los ve en el árbol de trabajo, pero el puntero es a un commit.
+- Cambios sin commitear: decidido, el puntero siempre es a un commit y el diff es contra el árbol de trabajo, así que lo sin commitear se ve siempre y sigue viéndose hasta que se commitea; avanzar el puntero a HEAD con el árbol sucio es válido y no lo esconde.
 - Lo que hoy existe y deja de usarse: se borra cuando el camino por git lo reemplace, no antes.
 - Fichas y su materialización; relaciones entre lo anclado; la capa G y `D-G`.
 

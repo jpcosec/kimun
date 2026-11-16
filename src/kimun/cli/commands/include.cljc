@@ -19,6 +19,7 @@
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
             [kimun.host.default :as host]
+            [kimun.host.seen :as seen]
             [kimun.kernel.plan :as plan]
             [kimun.kernel.ports :as ports]
             [kimun.kernel.revision :as revision]
@@ -567,8 +568,9 @@
       (if (seq (:failed r))
         (out/failure :include/drift (str (count (:failed r)) " declaration(s) failed to build")
                      (assoc data :warnings warnings) 3)
-        (out/ok "include build" {:store {:path store-dir} :revision (:revision-id r)
-                                 :data data :warnings warnings})))))
+        (let [pointer (seen/point-at-head! store-dir root)]
+         (out/ok "include build" {:store {:path store-dir} :revision (:revision-id r)
+                                 :data (cond-> data pointer (assoc :seen pointer)) :warnings warnings}))))))
 
 (defn status
   "`include status`: counts of the declaration and a summary of the findings —
