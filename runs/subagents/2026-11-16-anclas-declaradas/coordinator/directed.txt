@@ -1,0 +1,9 @@
+
+Testing kimun.surface.declared-anchors-test
+
+Testing kimun.cli.declare-anchors-test
+
+Testing kimun.cli.declare-test
+
+Ran 15 tests containing 137 assertions.
+0 failures, 0 errors.
