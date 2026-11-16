@@ -1,4 +1,9 @@
 ---
+sldb:
+  by: agent
+  at: '2026-11-16T19:08:12Z'
+  authority: generated
+  via: save_document_payload
 id: task-owner-decides-what-new-core-of-sldb-means
 status: draft
 summary: ''
@@ -33,7 +38,7 @@ The owner (JP) said on 2026-11-16: «esto no está listo hasta que no sea capaz 
 
 _Describe the concrete result this task must produce._
 
-The owner's answer, in his own words, is appended as a dated section to docs/v2/drafts/sesion-2026-11-15.md (the file that holds his verbatim words), and docs/v2/drafts/diseno-leer.md §6 is rewritten from 'Mi lectura, sin confirmar' to what he said.
+The owner's answer, in his own words, is appended as a dated section to docs/v2/drafts/sesion-2026-11-15.md (the file that holds his verbatim words), and the paragraph of docs/v2/drafts/diseno-leer.md §6 that starts «Mi lectura, sin confirmar por el dueño» is replaced by what he said.
 
 ## Scope
 
@@ -45,7 +50,7 @@ One question, asked to the owner (JP) by whoever is coordinating the work on kim
 
 _Outline the expected implementation route or affected surface._
 
-Ask the question alone: one message, prose, not inside a list of other questions and not through a multiple-choice dialog (that went wrong twice). If 'deskops show task task-finish-wip-leer-readers-by-class' says it is closed, give with the question the four numbers of runs/subagents/<its date>-leer/REPORT.md (files matched, propositions read, reading errors, seconds); if it is not closed, ask anyway. Record the answer verbatim between «», with the date; do not paraphrase it into the design.
+Ask the question alone: one message, prose, not inside a list of other questions and not through a multiple-choice dialog (that went wrong twice). If 'deskops show task task-finish-wip-leer-readers-by-class' says it is closed, give with the question the numbers measured on the desk (files matched, propositions read, reading errors, seconds) from the REPORT.md of the newest folder runs/subagents/*-leer/; if it is not closed, ask anyway. Record the answer verbatim between «», with the date; do not paraphrase it into the design.
 
 ## Validation
 

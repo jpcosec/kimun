@@ -1,0 +1,36 @@
+name: review-task-finish-wip-leer-readers-by-class-bundle-1
+path: desk/reviews/task-finish-wip-leer-readers-by-class/bundle-1.md
+source_hash: 14b5d3ade655ff037be32354d1ad7ca6b9af846c0b4cadcb1bc1b7153ac6d27d
+content_hash: 90bca889a3bc38d2863c9b7a45da7f127605f1ed68bd8cbfcf5408fe7baf9ed5
+field_hashes:
+  id: c5e279a58b62b8c72f71aa4081b4b4cfcce08e1759d9e95a3a0074fe858e4f15
+  title: abcf4b2dddb006ab854f906be1ea6657e04be1c140245641ff07b17dc8ac1034
+  kind: 4c522949265daa3973b2389b594a235b5c6e47c70d2af6e23bd14f8173f56280
+  fact: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+  value: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+  subject: 35b6c0acaf05f7ff563f6d60e6fda7ddf19c9ca65cb6a54f752a46b9bcc99645
+  subject_ref: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+  engine: 6874c40de9971944b9706ccc769074b7f77cb595ed78bafba748db5266461238
+  actor: 35d53354ac301d8fb5ae94f2c3b19cc261a42cc09f6ee6b7a60b5c686b776d77
+  run_dir: d946f4f6b27eeaf79a8fae749a060d7ddc803b7a36653648e4746bbb2d1b767d
+  input_sha256: 02772bfedacc7e0935d4173e22ebc8a3310b74ba23aca3c08eea362535de016c
+  output_sha256: 088eda75237f333c13a59f891eed256b15f529c27ffe1f77dae18a85bfc2b82e
+  verdict: d5a7606c75f86f5046e5c8312a9819e4778be8ab33a7e8950d62f7ba620684fe
+  reason: 85b01cd6f0b397fd935daa62195d1ce64e28241eaaf49d3dda5b75d5e81dd2ee
+  created_at: 2ad391db0e299f6b2026bbb7011567df2b3af99e33d4db8b0a6142ede73a875f
+  disposed_at: 3c8bbca2f03a408e7470fd562f3edb1d75fc8f3a38289895e17492a33ff363b3
+  disposed_by: 35d53354ac301d8fb5ae94f2c3b19cc261a42cc09f6ee6b7a60b5c686b776d77
+  summary: 617c8e95a9addb2f56095d6681fe529fc065127aabc1c8ab3bbc99f1108dd553
+  disposition: 93bf8937f88e84f5da1649ebac27ba0522db4eb353bdaa79edc91c6c271e02fc
+  tags: 26f66ebae91f717518f0d0c6585e99f1cbd539bcb3504598ddeb732dec3a0af9
+semantic_tags:
+- representation.markdown
+- source.document.markdown
+- type.workflow.review
+- workspace.desk.runs
+- workspace:desk
+provenance:
+  by: agent
+  at: '2026-11-16T19:11:04Z'
+  authority: generated
+  via: save_document_payload

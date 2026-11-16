@@ -239,6 +239,32 @@ include:
 - model: TaskExternalDoc
   paths:
   - desk/tasks/task-toolchain-on-robocop2-and-suite-reproduced.md
+- model: ReviewDoc
+  paths:
+  - path: desk/reviews/task-toolchain-on-robocop2-and-suite-reproduced/bundle-1.md
+    name: review-task-toolchain-on-robocop2-and-suite-reproduced-bundle-1
+  - path: desk/reviews/task-finish-wip-leer-readers-by-class/bundle-1.md
+    name: review-task-finish-wip-leer-readers-by-class-bundle-1
+  - path: desk/reviews/task-owner-decides-what-new-core-of-sldb-means/bundle-1.md
+    name: review-task-owner-decides-what-new-core-of-sldb-means-bundle-1
+  - path: desk/reviews/task-open-owner-decisions-that-hold-work/bundle-1.md
+    name: review-task-open-owner-decisions-that-hold-work-bundle-1
+  - path: desk/reviews/task-toolchain-on-robocop2-and-suite-reproduced/preflight-4.md
+    name: review-task-toolchain-on-robocop2-and-suite-reproduced-preflight-4
+  - path: desk/reviews/task-toolchain-on-robocop2-and-suite-reproduced/bundle-2.md
+    name: review-task-toolchain-on-robocop2-and-suite-reproduced-bundle-2
+  - path: desk/reviews/task-finish-wip-leer-readers-by-class/preflight-4.md
+    name: review-task-finish-wip-leer-readers-by-class-preflight-4
+  - path: desk/reviews/task-finish-wip-leer-readers-by-class/bundle-2.md
+    name: review-task-finish-wip-leer-readers-by-class-bundle-2
+  - path: desk/reviews/task-owner-decides-what-new-core-of-sldb-means/preflight-4.md
+    name: review-task-owner-decides-what-new-core-of-sldb-means-preflight-4
+  - path: desk/reviews/task-owner-decides-what-new-core-of-sldb-means/bundle-2.md
+    name: review-task-owner-decides-what-new-core-of-sldb-means-bundle-2
+  - path: desk/reviews/task-open-owner-decisions-that-hold-work/preflight-4.md
+    name: review-task-open-owner-decisions-that-hold-work-preflight-4
+  - path: desk/reviews/task-open-owner-decisions-that-hold-work/bundle-2.md
+    name: review-task-open-owner-decisions-that-hold-work-bundle-2
 graph_backend: networkx
 policy: {}
 tag_models:

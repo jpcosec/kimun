@@ -1,0 +1,42 @@
+{
+  "key": "task-toolchain-on-robocop2-and-suite-reproduced/bundle",
+  "input_sha256": "1aebe5c524cecbb34cb7429b1dc118fbb8c78daebd64c1f5567d8d04e0a9bb3a",
+  "argv": [
+    "pi",
+    "--provider",
+    "deepseek",
+    "--model",
+    "deepseek-flash",
+    "--thinking",
+    "low",
+    "--offline",
+    "--no-session",
+    "--no-context-files",
+    "--no-skills",
+    "--no-extensions",
+    "--no-prompt-templates",
+    "--no-tools",
+    "--print",
+    "--system-prompt",
+    "Revisor barato aislado de un encargo de planificación. Trabajas solo con el input explícito: sin herramientas, historial ni otras fuentes. No ejecutas nada. Responde en español con estas secciones exactas: REFORMULACION (propósito, resultado, repo, límites), AMBIGUEDADES (numeradas, cada una con cita textual del input y qué obligaría a inventar; escribe \"ninguna\" si no hay), DRY-RUN (lecturas, cambios previstos, dependencias y validaciones futuras, sin ejecutar), FUTURO (lo que produce otro nodo o decide un humano, no ambigüedad). REFORMULACION describe el encargo del nodo, no esta revisión. DRY-RUN describe cómo lo ejecutaría un ejecutor futuro, hipotéticamente y sin ejecutar nada. Si el nodo es un agregado o paquete no ejecutable, dilo y además recorre cómo lo cumplen sus hijos, qué transfiere cada uno al siguiente y cómo se valida el resultado conjunto. Máximo 350 palabras.",
+    "@/home/jp/proyectos/kimun/runs/subagents/2026-11-16-bundle/context-review/task-toolchain-on-robocop2-and-suite-reproduced/bundle/1aebe5c524cecbb34cb7429b1dc118fbb8c78daebd64c1f5567d8d04e0a9bb3a/attempt-1/input.md"
+  ],
+  "model": "deepseek/deepseek-flash",
+  "profile": "runtime-pi-deepseek-flash",
+  "selection_reason": "deepseek-flash: perfil barato verificado en esta máquina por ritual-context-review (D4)",
+  "sources": [
+    {
+      "path": "desk/tasks/task-toolchain-on-robocop2-and-suite-reproduced.md",
+      "sha256": "366383e1c963c9cdc48352fcf036acf24283541526529e42ade637a91dfc9032",
+      "projection": "whole_file"
+    }
+  ],
+  "omitted_sources": [
+    {
+      "path": "desk/tasks/Board.md rituals",
+      "reason": "missing"
+    }
+  ],
+  "started": "2026-11-16T19:06:18.420364+00:00",
+  "finished": "2026-11-16T19:06:37.399302+00:00"
+}

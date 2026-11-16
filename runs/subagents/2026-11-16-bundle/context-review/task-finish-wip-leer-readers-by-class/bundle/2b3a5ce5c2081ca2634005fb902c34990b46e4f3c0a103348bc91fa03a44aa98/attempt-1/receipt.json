@@ -1,0 +1,9 @@
+{
+  "key": "task-finish-wip-leer-readers-by-class/bundle",
+  "technical_ok": true,
+  "returncode": 0,
+  "input_sha256": "2b3a5ce5c2081ca2634005fb902c34990b46e4f3c0a103348bc91fa03a44aa98",
+  "output_sha256": "22c9bcffb2d5184691d6db91be390b60d5b222f4b0cbc51983a76370e3a686e2",
+  "start": "2026-11-16T19:06:39.726045+00:00",
+  "end": "2026-11-16T19:06:54.621118+00:00"
+}

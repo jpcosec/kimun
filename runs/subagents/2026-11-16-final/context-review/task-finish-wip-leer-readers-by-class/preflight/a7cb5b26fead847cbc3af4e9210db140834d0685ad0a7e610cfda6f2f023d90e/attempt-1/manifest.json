@@ -1,0 +1,38 @@
+{
+  "key": "task-finish-wip-leer-readers-by-class/preflight",
+  "input_sha256": "a7cb5b26fead847cbc3af4e9210db140834d0685ad0a7e610cfda6f2f023d90e",
+  "argv": [
+    "pi",
+    "--provider",
+    "deepseek",
+    "--model",
+    "deepseek-flash",
+    "--thinking",
+    "low",
+    "--offline",
+    "--no-session",
+    "--no-context-files",
+    "--no-skills",
+    "--no-extensions",
+    "--no-prompt-templates",
+    "--no-tools",
+    "--print",
+    "--system-prompt",
+    "Revisor barato aislado de un encargo de planificación. Trabajas solo con el input explícito: sin herramientas, historial ni otras fuentes. No ejecutas nada. Responde en español con estas secciones exactas: REFORMULACION (propósito, resultado, repo, límites), AMBIGUEDADES (numeradas, cada una con cita textual del input y qué obligaría a inventar; escribe \"ninguna\" si no hay), DRY-RUN (lecturas, cambios previstos, dependencias y validaciones futuras, sin ejecutar), FUTURO (lo que produce otro nodo o decide un humano, no ambigüedad). REFORMULACION describe el encargo del nodo, no esta revisión. DRY-RUN describe cómo lo ejecutaría un ejecutor futuro, hipotéticamente y sin ejecutar nada. Si el nodo es un agregado o paquete no ejecutable, dilo y además recorre cómo lo cumplen sus hijos, qué transfiere cada uno al siguiente y cómo se valida el resultado conjunto. Máximo 350 palabras.",
+    "@/home/jp/proyectos/kimun/runs/subagents/2026-11-16-final/context-review/task-finish-wip-leer-readers-by-class/preflight/a7cb5b26fead847cbc3af4e9210db140834d0685ad0a7e610cfda6f2f023d90e/attempt-1/input.md"
+  ],
+  "model": "deepseek/deepseek-flash",
+  "profile": "runtime-pi-deepseek-flash",
+  "selection_reason": "deepseek-flash: perfil barato verificado en esta máquina por ritual-context-review (D4)",
+  "sources": [
+    {
+      "path": "desk/tasks/task-finish-wip-leer-readers-by-class.md",
+      "sha256": "671baefc65a5db3baa5ef18111ed76556a7e640d7afab57d6a101cd2c7f988e1",
+      "projection": "whole_file"
+    }
+  ],
+  "omitted_sources": [],
+  "started": "2026-11-16T19:08:57.985298+00:00",
+  "finished": "2026-11-16T19:09:14.644964+00:00",
+  "retry_reason": "Task edited after the bundle review; earlier preflight receipts predate the .sldb store and the activation rule does not see them"
+}

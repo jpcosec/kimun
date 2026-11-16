@@ -1,0 +1,36 @@
+name: review-task-toolchain-on-robocop2-and-suite-reproduced-preflight-4
+path: desk/reviews/task-toolchain-on-robocop2-and-suite-reproduced/preflight-4.md
+source_hash: f64416c52aee2dd11ddf6dcf26825adf9e00c70980ba1a0188d4cef9220be64b
+content_hash: 56bb206ac78323eac89e1174d8f953da40e6fba4122d989f7e1eb38834aace70
+field_hashes:
+  id: 951f338a91867bae681866c1dc24f7e91b87969235038e190b864de432a216b1
+  title: 351eb27d9f042d6b1829f08991fcefde58c1fdd9c0e0f064b955af64d7849c58
+  kind: b7aa467a101908787d614f7bfc1dadd75a976b85a3bf6022dd451c30158bbff2
+  fact: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+  value: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+  subject: c427c3f27d73146ae6c6b4879b32bf21d31dc1a2a507ff42fa0b74d316dd5926
+  subject_ref: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+  engine: 6874c40de9971944b9706ccc769074b7f77cb595ed78bafba748db5266461238
+  actor: 35d53354ac301d8fb5ae94f2c3b19cc261a42cc09f6ee6b7a60b5c686b776d77
+  run_dir: 06fb4fc1ace6d2a2169a16af5608b7f5782d8e8e4646a4688d8d3358155d5cae
+  input_sha256: c69562b3be6cbf9e6e3c2f56bd5d341a4751cb786851f76eee9baecef804a92f
+  output_sha256: 75f698e3029589c811bcd182945557bc37eb525004a868a31fc399caf4846003
+  verdict: d288c584af270151f7b7cd7977b94160ce1d7b501dee2d6308f2ac84ebaacc99
+  reason: 46dda154d7f44d97ecfd8ecb74125583faa531cace961dd9a50264179909f443
+  created_at: f1c7ac32155309bdcce8783f1e8f477125f5d41fdf84120439af0469c4bf2fc6
+  disposed_at: 9b09858bbd19a43146fbe9b2c925e69582f7df7cdf10d6595012fa6c2ab82ce7
+  disposed_by: 35d53354ac301d8fb5ae94f2c3b19cc261a42cc09f6ee6b7a60b5c686b776d77
+  summary: 9560a306c9ecfbfb95ecfce924f69f0da5ce4fe2fbce0940c18e8e0ef3a98b39
+  disposition: 15247cf169e80cb69a52ee75932bca3611cc3f5d2f0c2e757d9218df479170ab
+  tags: 26f66ebae91f717518f0d0c6585e99f1cbd539bcb3504598ddeb732dec3a0af9
+semantic_tags:
+- representation.markdown
+- source.document.markdown
+- type.workflow.review
+- workspace.desk.runs
+- workspace:desk
+provenance:
+  by: agent
+  at: '2026-11-16T19:10:57Z'
+  authority: generated
+  via: save_document_payload

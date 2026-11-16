@@ -1,0 +1,36 @@
+name: review-task-open-owner-decisions-that-hold-work-bundle-2
+path: desk/reviews/task-open-owner-decisions-that-hold-work/bundle-2.md
+source_hash: ce7051a1e8ffbd0b1934065e5c8e434d427da7c1072ed077f43b2912bba5b66e
+content_hash: e5448f597267837185ceca50f6b102512b7717e643289134e40ca9c57bbec733
+field_hashes:
+  id: 93ac0cc4d582895aab34cf32ac0aaf805f960615bc523d03b283910d8e8fa070
+  title: e0e372fa8aeea2fe666bc0d06a4b0e7b39fa44273646fd673053c950073f6813
+  kind: 4c522949265daa3973b2389b594a235b5c6e47c70d2af6e23bd14f8173f56280
+  fact: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+  value: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+  subject: d31f4aac2f9a0a9142974f03526fcc3e815f50259233ce3efb9b7d3d2f29b86c
+  subject_ref: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+  engine: 6874c40de9971944b9706ccc769074b7f77cb595ed78bafba748db5266461238
+  actor: 35d53354ac301d8fb5ae94f2c3b19cc261a42cc09f6ee6b7a60b5c686b776d77
+  run_dir: 56e3f01b169878e17ad08c9d7aeee794d634acb29f191abaf6147ed52310fce7
+  input_sha256: a2922be459810f78d777a3264d1f7fcee370f521b26228a228b572440da322a9
+  output_sha256: 3c8e762598cbf548c9b962be6f3ac4c4cbb5800372992eca27e3da7aa506de6d
+  verdict: d288c584af270151f7b7cd7977b94160ce1d7b501dee2d6308f2ac84ebaacc99
+  reason: 5cddea6f6f65b932c462f6289d3d8dc8309773497cf8e16103bfc44a08d0aefa
+  created_at: 99aa5781d91dcb3c30dfcd6c0884559a9c2f714e9f893d9a7705705ce0f91c14
+  disposed_at: 8fd2d8920a2f42326172b34282137210e0c963b9b1b876d9ee8107c192ee8ef1
+  disposed_by: 35d53354ac301d8fb5ae94f2c3b19cc261a42cc09f6ee6b7a60b5c686b776d77
+  summary: 8935c6c9828d95395e9dd30241e8a74338e1ed3578c11fe19eb98904d07327dd
+  disposition: f4a88ae1e06f9fc6846781fa8b93f05652824e6f3ba15efec273ed77d1364828
+  tags: 26f66ebae91f717518f0d0c6585e99f1cbd539bcb3504598ddeb732dec3a0af9
+semantic_tags:
+- representation.markdown
+- source.document.markdown
+- type.workflow.review
+- workspace.desk.runs
+- workspace:desk
+provenance:
+  by: agent
+  at: '2026-11-16T19:11:25Z'
+  authority: generated
+  via: save_document_payload

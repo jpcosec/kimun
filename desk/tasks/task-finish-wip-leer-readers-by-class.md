@@ -1,4 +1,9 @@
 ---
+sldb:
+  by: agent
+  at: '2026-11-16T19:08:06Z'
+  authority: generated
+  via: save_document_payload
 id: task-finish-wip-leer-readers-by-class
 status: draft
 summary: ''
@@ -71,4 +76,4 @@ _List the checks required before this task can close._
 
 _Name the observable condition that makes the task complete._
 
-origin/main contains the feature commit and the evidence commit, the validation outputs are under runs/subagents/YYYY-MM-DD-leer/coordinator/, and REPORT.md states the four measured numbers. If declare read on the desk takes more than 10 s, say so in REPORT.md: that number decides the task task-cache-of-readings-by-git-blob-hash.
+origin/main contains the feature commit and the evidence commit, REPORT.md is at runs/subagents/YYYY-MM-DD-leer/REPORT.md with the measured numbers that Validation lists, and the outputs of validate.sh are in the subfolder coordinator/ next to it. Start only when task-toolchain-on-robocop2-and-suite-reproduced is closed (bb and the pod must exist on the machine)./ If declare read on the desk takes more than 10 s, say so in REPORT.md: that number decides the task task-cache-of-readings-by-git-blob-hash.

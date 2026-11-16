@@ -1,7 +1,7 @@
 name: task-owner-decides-what-new-core-of-sldb-means
 path: desk/tasks/task-owner-decides-what-new-core-of-sldb-means.md
-source_hash: 27cec9d84a00b8992794b9e5015d86ee6b706d34f2ffb27321f3ecd7ed14d015
-content_hash: 3f805af1bc2b36e81400269805d4f7189e6e421b1e449cb01dd22100972816c0
+source_hash: 1a1bc35273aface5a23e2a9978d1fc0f170da4e0b074f7a6d42d3c35f7ec2050
+content_hash: b974dc8a1419af84916d65856239f382b27fc71e6b6f30337ea8dcfde7d152f6
 field_hashes:
   title: d9ac6520421765dfe1638e43c92eb113e88d331b356185039aa984bdbd1e99e3
   id: 54de065ae3f38c7c9beb515a6657650a50d99ea9d3b2ff5402629c982bd48111
@@ -11,13 +11,13 @@ field_hashes:
   current_node: ff5161892aac34735bf10c411f7230b62b7b56446e230a5d26fb75afde4704b6
   history: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
   why: ae9fa2c7789888912d14b9f52ac6f2ab80c650927b639291c03dbedcb26b89de
-  goal: 851929505f183641e12bb9b055102e1412adada00c96d82e176576550ab7de81
+  goal: 5a07be0a266c06ec651b512a421a738ed28c79de19e53b8471667888e4c4e140
   scope: fc953c8160746816509d7f3657a727178e6a9224a33929fcab54b61ba2c7ae8e
   references: 424d6f3bd569e6a462d9c4b3bcb113f3e12a8b454d0a3968ffa231ca16a33cc4
   depends_on: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
   pills: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
   files: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
-  implementation_path: 04d7b0f7d09bdffa4609676da6bf4169c0cedb5e78df823208275a53d996c1a3
+  implementation_path: 8f27ceaad2792eee1f2b4f53cbe29229e107f7341ed1711667f78363fc41ca00
   validation: 2d78467cf32c854430984ec8d940e2378531de36f7bd7bff41d948293c3a6b30
   done_when: 12c3e8e4160b7071e98bd3faff59637e43d5862576ff5d8c7e169652d230d008
   task_type: a4df8849de4c7c42dff3bfe95bbeb8759b5ca37238136b51e418b9d2f5ef311c
@@ -31,4 +31,8 @@ semantic_tags:
 - type.workflow.task
 - workspace.desk
 - workspace:desk
-provenance: null
+provenance:
+  by: agent
+  at: '2026-11-16T19:08:12Z'
+  authority: generated
+  via: save_document_payload

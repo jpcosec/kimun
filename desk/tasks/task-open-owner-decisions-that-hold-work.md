@@ -1,4 +1,9 @@
 ---
+sldb:
+  by: agent
+  at: '2026-11-16T19:08:20Z'
+  authority: generated
+  via: save_document_payload
 id: task-open-owner-decisions-that-hold-work
 status: draft
 summary: ''
@@ -28,7 +33,7 @@ atoms: []
 
 _Explain why this task exists or the business driver behind it._
 
-Four questions for the owner (JP) came out of the cuts of 2026-11-16 and have no answer. They are rows SERVE-4, GRAMATICA-CLJ, RAZON and PRUEBAS-ALMACEN of the table in docs/v2/drafts/preguntas-abiertas.md; each row gives the facts, the evidence file and what it blocks.
+Four questions for the owner (JP) came out of the cuts of 2026-11-16 and have no answer. They are rows GRAMATICA-CLJ, SERVE-4, RAZON and PRUEBAS-ALMACEN of the table in docs/v2/drafts/preguntas-abiertas.md; each row gives the facts, the evidence file and what it blocks.
 
 ## Goal
 
@@ -46,7 +51,7 @@ The four questions, as they are asked: (GRAMATICA-CLJ) «El pod de tree-sitter t
 
 _Outline the expected implementation route or affected surface._
 
-Whoever coordinates the work on kimun (the agent session the owner, JP, is talking to) asks one question per message in that conversation, with the wording of Scope (it restates the table rows in plain words; the table keeps the evidence), in the order given (the first blocks code nodes; the others block nothing), whenever the owner is present. Write each answer into its row as soon as it is given, one commit per answer: 'docs(open-questions): owner answers <ROW-ID>'.
+Whoever coordinates the work on kimun (the agent session the owner, JP, is talking to) asks one question per message in that conversation, with the wording of Scope (it restates the table rows in plain words; the table keeps the evidence), in the order given (the first blocks code nodes; the others block nothing), whenever the owner is present. Write each answer into its row as soon as it is given, one commit per row: 'docs(open-questions): owner answers <ROW-ID>', or 'docs(open-questions): owner leaves <ROW-ID> undecided'.
 
 ## Validation
 
@@ -59,4 +64,4 @@ _List the checks required before this task can close._
 
 _Name the observable condition that makes the task complete._
 
-The four rows are answered or explicitly declined by the owner, in a commit on main.
+The four rows are answered or explicitly declined by the owner, each in its own commit on main.

@@ -1,0 +1,9 @@
+{
+  "key": "task-open-owner-decisions-that-hold-work/bundle",
+  "technical_ok": true,
+  "returncode": 0,
+  "input_sha256": "ccd33f74b684ace8e8b8d66cf8e09e1a7aaea3eebeb25e97a3a061f968f9536f",
+  "output_sha256": "06de777a45188c165281c30286a5d28a1fb29f2dd334035919890a1ca5133f08",
+  "start": "2026-11-16T19:10:18.552290+00:00",
+  "end": "2026-11-16T19:10:34.001775+00:00"
+}

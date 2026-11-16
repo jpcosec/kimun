@@ -1,7 +1,7 @@
 name: task-open-owner-decisions-that-hold-work
 path: desk/tasks/task-open-owner-decisions-that-hold-work.md
-source_hash: d0a2e0cec38dec0cd2020b93a9f9732f11e020edd2449b4d6974c765a8f0750d
-content_hash: cf6d1d62155ead8f0d46dc43a77a45674503c54c2f65674e3f81ed33f9ca8a93
+source_hash: c6cde4c12599d754e9313fe8f50837807061edbe6e907ad2d7bf77ea13b099f2
+content_hash: daf6d2213cf67d7a550a33b447ab2fc46cbcd0d8bfea585345f5b83cdd2d51aa
 field_hashes:
   title: 416ba83003aa491aa571d8c8d9cd75cd05f05a2c382b259855e2b7963090d778
   id: 914d3da9eee05651d361f5450a08a0ad8718cce6886fa837ab0d928db0af8dc0
@@ -10,16 +10,16 @@ field_hashes:
   tags: 9e7e8be2998f87dfcbb538781d827f202722ef7dad630b93bca343e20f247db8
   current_node: ff5161892aac34735bf10c411f7230b62b7b56446e230a5d26fb75afde4704b6
   history: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
-  why: 8c589fae241bd9b54f40af2306a46ba33568a24a5c22d9dcb86404a4bac35e20
+  why: c534f8ad1526390c0d0048e335429d031042e25134b3d5210bc5ef827755360d
   goal: 3c2995ad0494370f3a04ede8b73917e4243a5b4161d9a76a71c3a14d88880cc0
   scope: db3bfb7c92605932989ae2977d62d8d76886275c18a0e85f0fd1677f72f77c68
   references: f9cd91a312a22c47d71607c808aa31b81d61f916f7c5b220eb0d39de9de48030
   depends_on: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
   pills: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
   files: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
-  implementation_path: ff26862be4824f1b6d2d6f9e99665db71223fcb1d3eb641709a835a0469e126c
+  implementation_path: daefa57937fd55fdae6cd5349d80692d5ed84235122c3300a1a34a4cdc88fabb
   validation: bdd4de564460ad8ef23265531748af80d38b87a6c5018f18784cd34448085d13
-  done_when: 82222e298c5b1bc4476e783b93e3970958f35486a7ef4a356558a0d45da88b21
+  done_when: 700039a953864d1e122da78cdfe4c9045734abf30955fd3c15ace50583e7d4e0
   task_type: a4df8849de4c7c42dff3bfe95bbeb8759b5ca37238136b51e418b9d2f5ef311c
   inherits_from: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
   inherit_acceptance_context: fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa
@@ -31,4 +31,8 @@ semantic_tags:
 - type.workflow.task
 - workspace.desk
 - workspace:desk
-provenance: null
+provenance:
+  by: agent
+  at: '2026-11-16T19:08:20Z'
+  authority: generated
+  via: save_document_payload

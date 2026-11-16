@@ -1,7 +1,7 @@
 name: task-finish-wip-leer-readers-by-class
 path: desk/tasks/task-finish-wip-leer-readers-by-class.md
-source_hash: ef1e16c6e780b161139e59238a87c2b95b0b7efdebbe9e6f22b898b4d422b0c8
-content_hash: c447041ba995c2ed61d0e51e6a45633ab3cfe17cc5b8297d4ae945ac36f96eae
+source_hash: 671baefc65a5db3baa5ef18111ed76556a7e640d7afab57d6a101cd2c7f988e1
+content_hash: 8356d458fc836b08cc84dff882699f2ea1af35e3c331355b73fcfd5a30d5b345
 field_hashes:
   title: 20fd83037a6d90e7dcd58aaf4b492461abc974daa867a07b3a33e37f8b8b9c80
   id: 0cdcbb2c14961d306b5fde76d0336630f29735dc1f6cf1c09867b40a19114cb3
@@ -19,7 +19,7 @@ field_hashes:
   files: 5d3df743f090c4c81990871e8d40855f393ddd65fdeb1933ad08887b74baa7b8
   implementation_path: 97f96277d4e1869cf78789123421e69eded85cad7e2f55ad6e55549686d50eef
   validation: eebd8cc0605cf25d896a1b7df4342c188357f4e8bd8cace1b3b7506b2a737a84
-  done_when: dd1359c3f5fc3f5bb00112ecf4da3d6998edfcfb8d393aa3ba32a73c4e6dfdce
+  done_when: f45470b69bfd9c36ef31c2cc5529742dbc81974ec36239bd04126e1f7361ec7d
   task_type: 430e281fc3506e5a61bf187bc4220dab834ca38806ca4f603f817cc82f9791bb
   inherits_from: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
   inherit_acceptance_context: fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa
@@ -31,4 +31,8 @@ semantic_tags:
 - type.workflow.task
 - workspace.desk
 - workspace:desk
-provenance: null
+provenance:
+  by: agent
+  at: '2026-11-16T19:08:06Z'
+  authority: generated
+  via: save_document_payload

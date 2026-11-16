@@ -1,0 +1,70 @@
+{
+  "key": "task-finish-wip-leer-readers-by-class/bundle",
+  "input_sha256": "9edcafeebd29b4dac6dfa67979742bc639ca3fe67d9d24c012071e0a5906967c",
+  "argv": [
+    "pi",
+    "--provider",
+    "deepseek",
+    "--model",
+    "deepseek-flash",
+    "--thinking",
+    "low",
+    "--offline",
+    "--no-session",
+    "--no-context-files",
+    "--no-skills",
+    "--no-extensions",
+    "--no-prompt-templates",
+    "--no-tools",
+    "--print",
+    "--system-prompt",
+    "Revisor barato aislado de un encargo de planificación. Trabajas solo con el input explícito: sin herramientas, historial ni otras fuentes. No ejecutas nada. Responde en español con estas secciones exactas: REFORMULACION (propósito, resultado, repo, límites), AMBIGUEDADES (numeradas, cada una con cita textual del input y qué obligaría a inventar; escribe \"ninguna\" si no hay), DRY-RUN (lecturas, cambios previstos, dependencias y validaciones futuras, sin ejecutar), FUTURO (lo que produce otro nodo o decide un humano, no ambigüedad). REFORMULACION describe el encargo del nodo, no esta revisión. DRY-RUN describe cómo lo ejecutaría un ejecutor futuro, hipotéticamente y sin ejecutar nada. Si el nodo es un agregado o paquete no ejecutable, dilo y además recorre cómo lo cumplen sus hijos, qué transfiere cada uno al siguiente y cómo se valida el resultado conjunto. Máximo 350 palabras.",
+    "@/home/jp/proyectos/kimun/runs/subagents/2026-11-16-final/context-review/task-finish-wip-leer-readers-by-class/bundle/9edcafeebd29b4dac6dfa67979742bc639ca3fe67d9d24c012071e0a5906967c/attempt-1/input.md"
+  ],
+  "model": "deepseek/deepseek-flash",
+  "profile": "runtime-pi-deepseek-flash",
+  "selection_reason": "deepseek-flash: perfil barato verificado en esta máquina por ritual-context-review (D4)",
+  "sources": [
+    {
+      "path": "desk/tasks/task-finish-wip-leer-readers-by-class.md",
+      "sha256": "671baefc65a5db3baa5ef18111ed76556a7e640d7afab57d6a101cd2c7f988e1",
+      "projection": "whole_file"
+    },
+    {
+      "path": "test/kimun/cli/declare_test.cljc",
+      "sha256": "0fe3cc5ce74ff100161638204267e6bd7b88a0c32fd2e5b8d9f9b073afe771f1",
+      "projection": "whole_file"
+    },
+    {
+      "path": "test/kimun/cli/declare_project_test.cljc",
+      "sha256": "e0d39bfbf73a850d1a5d4e488341ab41ebe82aa31fc30fd63422b4adfa84758d",
+      "projection": "whole_file"
+    },
+    {
+      "path": "test/kimun/cli/mcp_test.cljc",
+      "sha256": "7c6fcbf6ac42fdb5529cf6d92edc529b34468e50b658101e68a73f7cde8f8792",
+      "projection": "whole_file"
+    }
+  ],
+  "omitted_sources": [
+    {
+      "path": "desk/tasks/Board.md rituals",
+      "reason": "missing"
+    },
+    {
+      "path": "src/kimun/surface/reading.cljc",
+      "reason": "missing"
+    },
+    {
+      "path": "test/kimun/surface/reading_test.cljc",
+      "reason": "missing"
+    },
+    {
+      "path": "test/kimun/cli/reading_test.cljc",
+      "reason": "missing"
+    }
+  ],
+  "started": "2026-11-16T19:09:17.085608+00:00",
+  "finished": "2026-11-16T19:09:31.144740+00:00",
+  "retry_reason": "Task edited after the bundle review; earlier preflight receipts predate the .sldb store and the activation rule does not see them"
+}

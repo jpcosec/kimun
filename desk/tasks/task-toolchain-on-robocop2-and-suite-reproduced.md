@@ -1,4 +1,9 @@
 ---
+sldb:
+  by: agent
+  at: '2026-11-16T19:08:03Z'
+  authority: generated
+  via: save_document_payload
 id: task-toolchain-on-robocop2-and-suite-reproduced
 status: draft
 summary: ''
@@ -46,7 +51,7 @@ In scope, all on robocop2 as user robocop, no sudo needed: (1) Babashka 1.13.219
 
 _Outline the expected implementation route or affected surface._
 
-cd ~/proyectos/kimun && git pull --ff-only (install the bb version that release.edn names AFTER the pull; main only moves forward, so more tests than the baseline is expected and fine). Install the three tools; rustup adds cargo to PATH through ~/.cargo/env, which ~/.profile and ~/.bashrc must source. Run 'bb pod' (it runs 'cargo build --release' in pods/treesitter; the first build downloads crates and takes minutes). Then four commands, each output to its own file: 'bb lint > lint.txt', '~/bin/memcap 3 bb test > full-test.txt' (about 5 minutes), 'bb oracle > oracle.txt' (needs python3, already there), 'bin/kimun include check > include-check.txt'. Put the four files in runs/subagents/YYYY-MM-DD-toolchain-robocop2/ (the day of the run) in the repo and commit them with the message 'chore(evidence): suite reproduced on robocop2' and the trailer 'Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>'; push to origin main.
+cd ~/proyectos/kimun && git pull --ff-only (install the bb version that release.edn names AFTER the pull; main only moves forward, so more tests than the baseline is expected and fine). Install bb, rustup and memcap as Scope describes; the rustup installer itself appends the line that sources ~/.cargo/env to ~/.profile and ~/.bashrc (check with a new login shell that cargo --version answers; add the line . \"\$HOME\/.cargo\/env\" by hand only if it does not). If ~/proyectos/kimun is missing, clone it from the URL in Goal; if it has local changes, stop and report. Run 'bb pod' (it runs 'cargo build --release' in pods/treesitter; the first build downloads crates and takes minutes). Then four commands, each output to its own file: 'bb lint > lint.txt', '~/bin/memcap 3 bb test > full-test.txt' (about 5 minutes), 'bb oracle > oracle.txt' (needs python3, already there), 'bin/kimun include check > include-check.txt'. Put the four files in runs/subagents/YYYY-MM-DD-toolchain-robocop2/ (the day of the run) in the repo and commit them with the message 'chore(evidence): suite reproduced on robocop2' and the trailer 'Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>'; push to origin main.
 
 ## Validation
 

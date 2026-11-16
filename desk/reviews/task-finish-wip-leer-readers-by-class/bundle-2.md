@@ -1,0 +1,52 @@
+---
+sldb:
+  by: agent
+  at: '2026-11-16T19:11:10Z'
+  authority: generated
+  via: save_document_payload
+# review-<task>-<kind>-<n>
+id: review-task-finish-wip-leer-readers-by-class-bundle-2
+# preflight | bundle | reproduction | goldens | owner | node | evidence
+kind: bundle
+# kind evidence only: tests | commit | atom | materialization | document | external
+fact: ''
+# kind evidence only: what the producer verified, one item per line
+value: ''
+# doc:<Model>:<id> or empty for reviews of plan nodes
+subject: doc:TaskCodeDoc:task-finish-wip-leer-readers-by-class@sha256:64999d3a583a8fe1935f622e4334393b1fc3f58b795e0c72a874cf3b1000fe4f
+# <plan>/dag.yaml#node:<ID>; empty when subject names a document
+subject_ref: ''
+# RuntimeProfileDoc name or "human"
+engine: runtime-pi-deepseek-flash
+actor: kimun
+# Run evidence directory under runs/, relative to the project root
+run_dir: runs/subagents/2026-11-16-final/context-review/task-finish-wip-leer-readers-by-class/bundle/9edcafeebd29b4dac6dfa67979742bc639ca3fe67d9d24c012071e0a5906967c/attempt-1
+input_sha256: 9edcafeebd29b4dac6dfa67979742bc639ca3fe67d9d24c012071e0a5906967c
+output_sha256: aa5bba400096169160c920cc54b12bf61eeb5e6e7967c40a4ecc6d19909bd903
+# pending | accepted | rejected | incomplete
+verdict: accepted
+reason: 'Same judgement as the preflight of this input: nothing left that forces inventing
+  scope, commands or the acceptance check.'
+# ISO 8601 timestamp
+created_at: '2026-11-16T19:09:31.145505+00:00'
+# ISO 8601 timestamp, empty while pending
+disposed_at: '2026-11-16T19:11:09.727772+00:00'
+disposed_by: kimun
+# e.g. workspace:desk
+tags:
+- workspace:desk
+---
+
+# Bundle review of task-finish-wip-leer-readers-by-class
+
+## Summary
+
+_Summarize what was reviewed and the evidence this receipt records._
+
+bundle review; engine runtime-pi-deepseek-flash; evidence under runs/subagents/2026-11-16-final/context-review/task-finish-wip-leer-readers-by-class/bundle/9edcafeebd29b4dac6dfa67979742bc639ca3fe67d9d24c012071e0a5906967c/attempt-1.
+
+## Disposition
+
+_Record the verdict rationale and who disposed of the review._
+
+Verdict accepted: Same judgement as the preflight of this input: nothing left that forces inventing scope, commands or the acceptance check.
