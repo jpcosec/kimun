@@ -1,0 +1,15 @@
+
+Testing kimun.kernel.hardening-test
+
+Testing kimun.cli.route-schema-test
+
+Testing kimun.cli.stores-test
+
+Testing kimun.cli.main-test
+
+Testing kimun.doc14-contract-test
+
+Testing kimun.lint-test
+
+Ran 67 tests containing 559 assertions.
+0 failures, 0 errors.
