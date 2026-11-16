@@ -1,0 +1,33 @@
+
+Testing kimun.cli.model-carry-test
+
+FAIL in (one-model-declared-twice-counts-once) (/tmp/kimun-k1dfix-wt/test/kimun/cli/model_carry_test.cljc:71)
+the new model is counted once, as new
+expected: (= {:tree-carried false, :kept 0, :advanced 0, :new 1} ids)
+  actual: (not (= {:tree-carried false, :kept 0, :advanced 0, :new 1} {:tree-carried false, :kept 1, :advanced 0, :new 1}))
+
+FAIL in (one-model-declared-twice-counts-once) (/tmp/kimun-k1dfix-wt/test/kimun/cli/model_carry_test.cljc:71)
+one name, one count
+expected: (= 1 (+ (:kept ids) (:advanced ids) (:new ids)))
+  actual: (not (= 1 2))
+moved existing store to /tmp/kimun-adhoc-260581917448618478/kimun-model-carry-16269792429623350856/.kimun.bak-20261115-211117-01M7GV391NS87SC976TX2GCGKM
+
+FAIL in (one-model-declared-twice-counts-once) (/tmp/kimun-k1dfix-wt/test/kimun/cli/model_carry_test.cljc:71)
+the conserved model is counted once, as kept
+expected: (= {:tree-carried true, :kept 1, :advanced 0, :new 0} ids)
+  actual: (not (= {:tree-carried true, :kept 1, :advanced 0, :new 0} {:tree-carried true, :kept 2, :advanced 0, :new 0}))
+
+FAIL in (one-model-declared-twice-counts-once) (/tmp/kimun-k1dfix-wt/test/kimun/cli/model_carry_test.cljc:71)
+one name, one count
+expected: (= 1 (+ (:kept ids) (:advanced ids) (:new ids)))
+  actual: (not (= 1 2))
+moved existing store to /tmp/kimun-adhoc-260581917448618478/kimun-model-carry-5397103620803472695/.kimun.bak-20261115-211118-01M7GV395G748RYKATY6T1MAVM
+moved existing store to /tmp/kimun-adhoc-260581917448618478/kimun-model-carry-5397103620803472695/.kimun.bak-20261115-211118-01M7GV396Q2X75EFJ7A9MV3KJX
+moved existing store to /tmp/kimun-adhoc-260581917448618478/kimun-model-carry-5397103620803472695/.kimun.bak-20261115-211118-01M7GV3981833RYD1V3G0V4XKV
+moved existing store to /tmp/kimun-adhoc-260581917448618478/kimun-model-carry-6052284386174037735/.kimun.bak-20261115-211118-01M7GV39BS7JQX8RB3BND1KYPG
+moved existing store to /tmp/kimun-adhoc-260581917448618478/kimun-model-carry-11935172873969875171/.kimun.bak-20261115-211118-01M7GV39FA8J6FWNKFWT7V3R4H
+moved existing store to /tmp/kimun-adhoc-260581917448618478/kimun-model-carry-4323567944125542538/.kimun.bak-20261115-211118-01M7GV39KZMMXR334KKC25XFNQ
+
+Ran 5 tests containing 45 assertions.
+4 failures, 0 errors.
+{:test 5, :pass 41, :fail 4, :error 0, :type :summary}

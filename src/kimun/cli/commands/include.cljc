@@ -372,7 +372,7 @@
                              (dissoc desc :model/version))
                           {:version (:version prior) :kind :kept}
                           :else {:version (inc (or (:version prior) 1)) :kind :advanced})))
-        mres (reduce (fn [{:keys [store plans names failed models kept advanced new tree-carried]
+        mres (reduce (fn [{:keys [store plans names failed models kept advanced new tree-carried counted]
                            :as acc} path]
                        (try
                          (let [desc (descriptor-at root path)
@@ -384,22 +384,25 @@
                                                       ;; old id when the old store had one
                                                       :version version
                                                       :tree-id (or old-tree (ports/ulid (:ids h)))})]
-                           (if (:unchanged r)
-                             (-> acc (update :names conj (:name r))
-                                 (update :models conj [(:name r) [(:version r) (:id r)]])
-                                 (update :kept inc)
-                                 (update :tree-carried #(or % (some? old-tree))))
-                             (-> acc (assoc :store (:store (revision/apply-plan store (:plan r))))
-                                 (update :plans conj (:plan r))
-                                 (update :names conj (:name r))
-                                 (update :models conj [(:name r) [(:version r) (:id r)]])
-                                 (update kind inc)
-                                 (update :tree-carried #(or % (some? old-tree))))))
+                           ;; one NAME counts once, in the category of its first
+                           ;; definition: the same model declared by two files is
+                           ;; one model (its second define comes back :unchanged)
+                           (let [nm (:name r)
+                                 fresh? (not (contains? counted nm))
+                                 base (-> acc (update :names conj nm)
+                                          (update :models conj [nm [(:version r) (:id r)]])
+                                          (update :counted conj nm)
+                                          (update :tree-carried #(or % (some? old-tree))))]
+                             (if (:unchanged r)
+                               (cond-> base fresh? (update :kept inc))
+                               (-> base (assoc :store (:store (revision/apply-plan store (:plan r))))
+                                   (update :plans conj (:plan r))
+                                   (cond-> fresh? (update kind inc))))))
                          (catch Exception e
                            (update acc :failed conj {:path path :error (or (:type (ex-data e)) "include/invalid")
                                                      :message (ex-message e)}))))
                      {:store store :plans [] :names [] :failed []
-                      :models [] :kept 0 :advanced 0 :new 0 :tree-carried false}
+                      :models [] :kept 0 :advanced 0 :new 0 :tree-carried false :counted #{}}
                      models)
         mstore* (:store mres)
         dres (reduce (fn [{:keys [plans names failed carried minted paths] :as acc}

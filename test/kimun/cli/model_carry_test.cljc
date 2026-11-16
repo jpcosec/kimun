@@ -5,6 +5,7 @@
    whether a model is a unit of the graph (open for `M1`). No id is minted for
    a model and its version never goes back (docs/v2/14 §21, 12 §1 K1)."
   (:require [babashka.fs :as fs]
+            [clojure.edn :as edn]
             [babashka.process :as process]
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing use-fixtures]]
@@ -66,6 +67,30 @@
         (git! d "add" "-A") (git! d "commit" "-qm" "init")
         (binding [*repo* d] (f))
         (finally (fs/delete-tree d))))))
+
+(deftest one-model-declared-twice-counts-once
+  ;; the same descriptor in two files is ONE model: the second define comes
+  ;; back :unchanged inside the same build, and it must not inflate a counter
+  (let [dup (fs/path *repo* "models" "TestDoc-copia.edn")]
+    (fs/copy (fs/path *repo* "models" "TestDoc.edn") dup)
+    (is (fs/exists? dup) "there are two files")
+    (is (= 2 (count (fs/glob (fs/path *repo* "models") "*.edn"))) "two descriptors")
+    (is (= 1 (count (distinct (map #(-> (slurp (str %)) edn/read-string :model/name)
+                                   (fs/glob (fs/path *repo* "models") "*.edn")))))
+        "and one model name")
+    (let [b (run-include "include" "build")
+          ids (get-in b [:data :identities :models])]
+      (is (true? (:ok b)) (pr-str b))
+      (is (= {:tree-carried false :kept 0 :advanced 0 :new 1} ids)
+          "the new model is counted once, as new")
+      (is (= 1 (+ (:kept ids) (:advanced ids) (:new ids))) "one name, one count")
+      (is (= 1 (count (mstore/models (store)))) "the store holds one model"))
+    (let [b (run-include "include" "build" "--rebuild")
+          ids (get-in b [:data :identities :models])]
+      (is (true? (:ok b)) (pr-str b))
+      (is (= {:tree-carried true :kept 1 :advanced 0 :new 0} ids)
+          "the conserved model is counted once, as kept")
+      (is (= 1 (+ (:kept ids) (:advanced ids) (:new ids))) "one name, one count"))))
 
 (deftest a-rebuild-keeps-the-tree-and-the-versions-when-nothing-changed
   (is (true? (:ok (run-include "include" "build"))))

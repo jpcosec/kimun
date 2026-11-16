@@ -1,0 +1,31 @@
+
+Testing kimun.cli.model-carry-test
+moved existing store to /tmp/kimun-adhoc-954415599320043435/kimun-model-carry-10076762308070666921/.kimun.bak-20261115-211006-01M7GV13H2XDMYF7ANJ8FVN3Z6
+moved existing store to /tmp/kimun-adhoc-954415599320043435/kimun-model-carry-5976679224750990737/.kimun.bak-20261115-211006-01M7GV13MKVHG6ZKE6GC8MWEV5
+moved existing store to /tmp/kimun-adhoc-954415599320043435/kimun-model-carry-5976679224750990737/.kimun.bak-20261115-211006-01M7GV13PKBGWNKJX6WA3EPA68
+moved existing store to /tmp/kimun-adhoc-954415599320043435/kimun-model-carry-5976679224750990737/.kimun.bak-20261115-211006-01M7GV13QTC2ADVEWJMNRFTACJ
+moved existing store to /tmp/kimun-adhoc-954415599320043435/kimun-model-carry-13845172955205319471/.kimun.bak-20261115-211007-01M7GV13VF22KR62FXGB5NNE5T
+moved existing store to /tmp/kimun-adhoc-954415599320043435/kimun-model-carry-2482620319871870514/.kimun.bak-20261115-211007-01M7GV13YV5Q62CK9XMAKYBB6J
+moved existing store to /tmp/kimun-adhoc-954415599320043435/kimun-model-carry-13833628287597123971/.kimun.bak-20261115-211007-01M7GV142HDWPXH2Z37SDT6EAX
+
+Testing kimun.cli.identity-carry-test
+moved existing store to /tmp/kimun-adhoc-954415599320043435/kimun-k1a-8688124483482480101/.kimun.bak-20261115-211007-01M7GV1463KVQ51XWCSP1YPHVN
+moved existing store to /tmp/kimun-adhoc-954415599320043435/kimun-k1a-15545700993160205185/.kimun.bak-20260101-000000-01M7GV149NJXWMW2KB2CQGTVZE
+moved existing store to /tmp/kimun-adhoc-954415599320043435/kimun-k1a-15545700993160205185/.kimun.bak-20260101-000000-01M7GV14AKCAVQ4063ZF8E8HNK
+moved existing store to /tmp/kimun-adhoc-954415599320043435/kimun-k1a-7722400987089871021/.kimun.bak-20261115-211007-01M7GV14E8CW10VDCNB2SEHV4F
+moved existing store to /tmp/kimun-adhoc-954415599320043435/kimun-k1a-7722400987089871021/.kimun.bak-20261115-211007-01M7GV14FE4B0X58WRMQGCE8S7
+moved existing store to /tmp/kimun-adhoc-954415599320043435/kimun-k1a-7279664942331194785/.kimun.bak-20261115-211007-01M7GV14KNMVAGY0Q5J13N3QN4
+moved existing store to /tmp/kimun-adhoc-954415599320043435/kimun-k1a-11904402117074202319/.kimun.bak-20261115-211008-01M7GV14RV8MBJ23XXTVYYE557
+
+Testing kimun.cli.include-test
+moved existing store to /tmp/kimun-adhoc-954415599320043435/kimun-include-4434491934734398687/.kimun.bak-20261115-211008-01M7GV14WV694JS0YGEGVB7WYY
+
+Testing kimun.cli.field-units-test
+moved existing store to /tmp/kimun-adhoc-954415599320043435/kimun-units-inc-13189942833822767984/.kimun.bak-20261115-211009-01M7GV162CSAA92PJTQ5PTHVNR
+
+Testing kimun.cli.marks-test
+moved existing store to /tmp/kimun-adhoc-954415599320043435/kimun-marks-inc-3930061592762851646/.kimun.bak-20261115-211009-01M7GV16B9SQRJAETQ51MG2ARA
+
+Ran 29 tests containing 274 assertions.
+0 failures, 0 errors.
+{:test 29, :pass 274, :fail 0, :error 0, :type :summary}
