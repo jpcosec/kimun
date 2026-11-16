@@ -1,0 +1,21 @@
+
+Testing kimun.surface.declare-project-test
+
+Testing kimun.cli.declare-project-test
+
+Testing kimun.surface.declare-test
+
+Testing kimun.surface.declared-anchors-test
+
+Testing kimun.cli.declare-test
+
+Testing kimun.cli.declare-anchors-test
+
+Testing kimun.cli.main-test
+
+Testing kimun.cli.golden-test
+
+Testing kimun.lint-test
+
+Ran 54 tests containing 367 assertions.
+0 failures, 0 errors.

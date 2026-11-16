@@ -42,6 +42,5 @@
     (testing "a missing file is exit 1"
       (let [e (run dir "declare" "read" "nope.clj")]
         (is (= ["declare/missing" 1] [(get-in e [:error :type]) (:exit e)]))))
-    (testing "no FILE, or an unknown subcommand, is usage (6)"
-      (is (= 6 (:exit (run dir "declare" "read"))))
+    (testing "an unknown subcommand is usage (6)"
       (is (= 6 (:exit (run dir "declare" "write" "x")))))))

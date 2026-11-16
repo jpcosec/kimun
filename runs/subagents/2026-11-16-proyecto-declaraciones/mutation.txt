@@ -1,0 +1,17 @@
+Mutaciones sobre src/ (copia en /tmp, sin stash; restaurado y verificado con diff -r). Pruebas: kimun.surface.declare-project-test + kimun.cli.declare-project-test.
+prelude relation not qualified (r = bare name): DETECTED (9 failures, 0 errors.)
+own relations not qualified: DETECTED (2 failures, 0 errors.)
+no dependency order (input order): DETECTED (10 failures, 7 errors.)
+a required context evaluated once per requirer (no seen check): DETECTED (2 failures, 0 errors.)
+evaluation not pinned to the context ns: SURVIVED (0 failures, 0 errors.)
+no cycle detection: DETECTED (0 failures, 1 errors.)
+duplicate contexts silently merged: DETECTED (1 failures, 0 errors.)
+unknown relation not checked: DETECTED (3 failures, 0 errors.)
+project not recursive: DETECTED (5 failures, 0 errors.)
+project not sorted: DETECTED (2 failures, 0 errors.)
+add writes even if nothing new: DETECTED (1 failures, 0 errors.)
+add evaluates only the file, not the project: DETECTED (7 failures, 0 errors.)
+add never creates (--context ignored): DETECTED (2 failures, 1 errors.)
+
+La mutación 'evaluation not pinned' sobrevive y es equivalente: como el primer form del archivo es (ns ctx), sci cambia solo al namespace del contexto; el :ns fijado sigue siendo defensivo (la prueba evaluation-stays-pinned-to-its-own-namespace pasa con y sin él).
+diff -r src /tmp/projdecl-src-backup: idéntico

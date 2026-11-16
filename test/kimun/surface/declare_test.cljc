@@ -34,24 +34,24 @@
 (deftest the-complete-example-gives-the-expected-propositions
   (let [ctx 'proyecto.decisiones
         anchor {:anchor {:path "docs/spec.md" :locator [["Caché"] {:type :paragraph :n 1}]}}
-        id1 (id-of 'isa {:files "src/ui/**/*.py"} (t 'UI.component) ctx)
-        id2 (id-of 'anchors (t 'cache-decision) anchor ctx)
-        id3 (id-of 'summarizes (t 'cache-is-not-a-source) (t 'cache-decision) ctx)
-        id4 (id-of 'supports {:proposition id3} (t 'owner-2026-11-15) ctx)
+        id1 (id-of 'proyecto.decisiones/isa {:files "src/ui/**/*.py"} (t 'UI.component) ctx)
+        id2 (id-of 'proyecto.decisiones/anchors (t 'cache-decision) anchor ctx)
+        id3 (id-of 'proyecto.decisiones/summarizes (t 'cache-is-not-a-source) (t 'cache-decision) ctx)
+        id4 (id-of 'proyecto.decisiones/supports {:proposition id3} (t 'owner-2026-11-15) ctx)
         at (fn [n] {:file "d.clj" :line n})
         r (ev example)]
     (is (= "proyecto.decisiones" (:context r)))
     (is (= {"anchors" {:doc "A está en B."} "isa" {:doc "A es de la clase B."}
             "summarizes" {:doc "A resume B."} "supports" {:doc "A respalda B."}}
            (:relations r)))
-    (is (= [{:r "isa" :a {:files "src/ui/**/*.py"} :b (t 'UI.component) :context "proyecto.decisiones" :at (at 6) :id id1}
-            {:r "anchors" :a (t 'cache-decision) :b anchor :context "proyecto.decisiones" :at (at 7) :id id2}
-            {:r "summarizes" :a (t 'cache-is-not-a-source) :b (t 'cache-decision) :context "proyecto.decisiones" :at (at 8) :id id3
+    (is (= [{:r "proyecto.decisiones/isa" :a {:files "src/ui/**/*.py"} :b (t 'UI.component) :context "proyecto.decisiones" :at (at 6) :id id1}
+            {:r "proyecto.decisiones/anchors" :a (t 'cache-decision) :b anchor :context "proyecto.decisiones" :at (at 7) :id id2}
+            {:r "proyecto.decisiones/summarizes" :a (t 'cache-is-not-a-source) :b (t 'cache-decision) :context "proyecto.decisiones" :at (at 8) :id id3
              ;; the nested use at line 9 is the same proposition written again
              :also-at [(at 9)]}
-            {:r "supports" :a {:proposition id3} :b (t 'owner-2026-11-15) :context "proyecto.decisiones" :at (at 9) :id id4}]
+            {:r "proyecto.decisiones/supports" :a {:proposition id3} :b (t 'owner-2026-11-15) :context "proyecto.decisiones" :at (at 9) :id id4}]
            (:propositions r)))
-    (is (= "3ac18f3e5825f4f8a60d7e6a2d52614a4bba6a9db67990592e94c7edb515672a" id1) "the id is frozen: stable across runs and machines")))
+    (is (= "44d0eb639f107ca71587f6a896dbb4973003721f9b67743a83ccf50e5064bbce" id1) "the id is frozen: stable across runs and machines")))
 
 (deftest bare-symbol-is-a-term-and-bound-symbol-is-its-value
   (let [props (:propositions
@@ -114,8 +114,11 @@
     (is (= [:declare/no-context 1] ((juxt :type :line) (failure "(relation r \"d\")"))))
     (is (= [:declare/no-context 1] ((juxt :type :line) (failure "(def a 1)\n(ns t)"))) "ns must be the first form")
     (is (= :declare/no-context (:type (failure "")))))
-  (testing "ns clauses are not part of a declaration file"
-    (is (= :declare/ns-clauses (:type (failure "(ns t (:require [clojure.string :as s]))")))))
+  (testing "ns clauses other than a requirement of a context are not part of a declaration file"
+    (is (= :declare/ns-clauses (:type (failure "(ns t (:import java.io.File))"))))
+    (is (= :declare/ns-clauses (:type (failure "(ns t (:use a))")))))
+  (testing "a file that requires another context needs the set that defines it"
+    (is (= [:declare/unknown-context 1] ((juxt :type :line) (failure "(ns t (:require [clojure.string :as s]))")))))
   (testing "a syntax error"
     (let [f (failure "(ns t)\n(relation r \"d\")\n(r a")]
       (is (= [:declare/syntax "d.clj"] ((juxt :type :file) f)))

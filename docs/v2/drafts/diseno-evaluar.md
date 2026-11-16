@@ -125,3 +125,16 @@ Elecciones mías, 2026-11-16.
   nunca se guarda expandido.
 - Todavía sin caché: evaluar es rápido. La caché explícita se agrega cuando una medición la pida.
 
+
+## 10. Decidido al implementar el corte 3a
+
+2026-11-16. Hechos, no diseño nuevo (`kimun.surface.declare/read-project`, `declare read|anchors` sin archivos, `declare add`).
+
+- **Varios contextos con sci.** Cada archivo se evalúa en su propio contexto sci, fijado a su namespace. Antes de evaluarlo, para cada contexto que requiere se definen en el namespace sci de ese contexto un `defmacro` por relación suya (que emiten con `:r` `"contexto/nombre"`); el `(ns b (:require …))` del archivo lo resuelve el propio `ns` de sci contra esos namespaces ya existentes (`:refer` y `:as` son los de sci). Solo se pasan relaciones: los `def`/`defn` de otro contexto no existen en el sci del que requiere.
+- Orden: recorrido en profundidad por los requires, empates por orden de entrada; cada contexto se evalúa una vez. Los resultados salen en el orden de entrada. Se comprueba, en este orden y antes de evaluar nada: sintaxis de cada archivo, `duplicate-context`, `unknown-context`, `require-cycle`; `unknown-relation` al llegar al archivo que la pide.
+- `:r` es `"contexto-que-define/nombre"`, también para las relaciones del propio archivo; `:context` sigue siendo el que escribe la proposición. Cambian los `:id` (incluyen `:r`). Las claves de `:relations` siguen siendo los nombres sin calificar. Solo se importa una relación definida por ese contexto, no una que él mismo importó.
+- La línea de un error de `:require` es la del libspec: el lector no da línea a símbolos ni vectores, se busca el nombre del contexto como ficha entera desde la línea del `ns`; si se repite el mismo contexto en dos libspecs, ambos dan la primera aparición.
+- Cualquier otro `ns` (cadenas, `:refer :all`, `:rename`, prefijos, `:use`, `:import`, `:refer-clojure`) sigue siendo `declare/ns-clauses`.
+- Una relación propia con el nombre de una importada con `:refer` es `declare/eval` (sci: «isa already refers to #'a/isa»), con archivo y línea; no tiene tipo propio.
+- El proyecto es `kimun/` (una sola definición, `kimun.cli.commands.declare/project-dir`), `*.clj` recursivo ordenado por ruta; con archivos, solo esos forman el conjunto (un archivo que requiere otro no nombrado es `declare/unknown-context`).
+- `declare add`: añade el texto recortado de la forma más `\n`; no comprueba que sea una sola forma (si trae varias se evalúan todas). «Nueva» = id de proposición ausente antes, o nombre de relación ausente antes; un archivo que ya no evalúa antes de agregar da su error. `--to` es la opción compartida con `edges`.

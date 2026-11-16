@@ -5,14 +5,20 @@
    `files`; evaluating it produces propositions `(R A B)` in a context and
    writes nothing anywhere: this namespace touches no disk, network or store.
 
-   Entry point: `read-declarations`. Its result is
-   `{:context s :relations {s {:doc s}} :propositions [p …]}` where a
+   Entry points: `read-declarations` (one file without requires) and
+   `read-project` (a set of files whose contexts require each other). The result
+   is `{:context s :relations {s {:doc s}} :propositions [p …]}` where a
    proposition is `{:r s :a node :b node :context s :at {:file :line} :id s}`
-   (plus `:also-at` when the same proposition is written again).
+   (plus `:also-at` when the same proposition is written again). `:r` is
+   `\"defining-context/name\"`: a relation belongs to the context that defines it,
+   so `:context` is the context that WRITES the proposition and `:r` the one
+   that defined the relation (they differ when it was required).
 
    The language of a file
-   - `(ns x.y)` must be the first form; it fixes the context. Any other clause
-     of `ns` is rejected.
+   - `(ns x.y)` must be the first form; it fixes the context. Its only clause
+     is `(:require c [c :as o] [c :refer [relation …]])`, with contexts of other
+     files of the same set; anything else is `:declare/ns-clauses`. Only
+     relations are imported, never the `def`s of the other context.
    - `(relation name \"doc\")` defines a relation; afterwards `(name A B)`
      records a proposition. Exactly two arguments; the docstring is mandatory.
    - `(at path & locator)` is `{:anchor {:path path :locator [..]}}` and
@@ -47,7 +53,8 @@
 
    Errors are `kimun.kernel.err/raise` with `:declare/*` types, always carrying
    `:file` and `:line`: `syntax`, `relation-redefined`, `no-context`, `ns-clauses`, `unresolved`,
-   `arity`, `bad-relation`, `bad-node`, `bad-arg`, `eval`."
+   `arity`, `bad-relation`, `bad-node`, `bad-arg`, `eval`; of a set:
+   `duplicate-context`, `unknown-context`, `require-cycle`, `unknown-relation`."
   (:require [clojure.string :as str]
             [sci.core :as sci]
             [kimun.host.default :as host-default]
@@ -136,7 +143,7 @@
         (list 'do
               (list 'kimun.declare.impl/define (list 'quote r) doc line st)
               (list 'defmacro r '[& args]
-                    (list 'kimun.declare.impl/expand st (list 'quote r) '&form '&env 'args 'resolve)))))
+                    (list 'kimun.declare.impl/expand st (list 'quote (symbol (str (:context @st)) (str r))) '&form '&env 'args 'resolve)))))
     {:sci/macro true}))
 
 (defn- at-fn
@@ -163,7 +170,8 @@
    {:namespaces {context {'relation (relation-macro st) 'at at-fn 'files files-fn}
                  'kimun.declare.impl {'emit (fn [r line args st'] (emit! st' r line (first args) (second args)))
                                       'define (fn [r doc line st'] (define! st' r doc line))
-                                      'expand expand}}
+                                      'expand expand
+                                      'expand-as (fn [r form env args resolver] (expand st r form env args resolver))}}
     :deny '[slurp spit load-file load-string require use import]}))
 
 (defn- declared-in
@@ -191,60 +199,176 @@
                    (str file ":" line ": " (ex-message e) (when unresolved? " (not a relation defined with `relation` in this file, nor part of the vocabulary)"))
                    {:file file :line line})))))
 
-(defn- ns-name-of
-  "The context symbol of the `(ns …)` form, or a declared error."
-  [file form]
+(defn- line-of
+  "The line, from `ns-line` on, where the symbol `sym` first appears as a whole
+   token in `lines` (the reader gives no line to vectors and symbols); `ns-line`
+   when it is not found."
+  [lines ns-line sym]
+  (let [re (re-pattern (str "(?<![\\w.\\-/*+!?<>=$%&])" (java.util.regex.Pattern/quote (str sym)) "(?![\\w.\\-/*+!?<>=$%&])"))]
+    (or (some (fn [i] (when (re-find re (nth lines (dec i))) i)) (range ns-line (inc (count lines))))
+        ns-line)))
+
+(defn- libspec
+  "The import `{:context :as :refer :line}` of one `:require` libspec of the
+   `ns` form of `file` (`lines` are the lines of the file), or a
+   declared `ns-clauses` error: only a context name, or `[context :as alias]` /
+   `[context :refer [relation …]]`, are accepted."
+  [file lines ns-line spec]
+  (let [line (line-of lines ns-line (if (vector? spec) (first spec) spec))
+        bad (fn [why] (fail :declare/ns-clauses (str "`:require` accepts only a context, `[context :as alias]` or `[context :refer [relation …]]`: " why)
+                            line {:file file}))
+        plain? (fn [x] (and (symbol? x) (nil? (namespace x))))]
+    (cond
+      (plain? spec) {:context spec :line line}
+      (and (vector? spec) (plain? (first spec)))
+      (let [opts (rest spec)]
+        (when (odd? (count opts)) (bad (pr-str spec)))
+        (reduce (fn [m [k v]]
+                  (case k
+                    :as (if (plain? v) (assoc m :as v) (bad (str ":as needs a plain symbol in " (pr-str spec))))
+                    :refer (if (and (vector? v) (every? plain? v)) (assoc m :refer v) (bad (str ":refer needs a vector of relation names in " (pr-str spec))))
+                    (bad (str "unsupported option " (pr-str k) " in " (pr-str spec)))))
+                {:context (first spec) :line line}
+                (partition 2 opts)))
+      :else (bad (pr-str spec)))))
+
+(defn- ns-info
+  "`{:context sym :requires [import…] :line n}` of the `(ns …)` form, or a
+   declared error."
+  [file lines form]
   (let [line (or (:line (meta form)) 1)
-        [_ nm & more] form]
+        [_ nm & more] form
+        require? (fn [c] (and (seq? c) (= :require (first c))))]
     (when-not (and (symbol? nm) (nil? (namespace nm)))
       (fail :declare/ns-clauses "`ns` needs a plain symbol name" line {:file file}))
-    (when (some #(not (or (string? %) (map? %))) more)
-      (fail :declare/ns-clauses "`ns` accepts only a name, a docstring and an attribute map in a declaration file" line {:file file}))
-    nm))
+    (when (some #(not (or (string? %) (map? %) (require? %))) more)
+      (fail :declare/ns-clauses "`ns` accepts only a name, a docstring, an attribute map and `(:require …)` of other contexts in a declaration file" line {:file file}))
+    {:context nm :line line
+     :requires (vec (mapcat (fn [c] (map #(libspec file lines line %) (rest c))) (filter require? more)))}))
+
+(defn- scan
+  "First pass over `text` (file `file`): syntax, and the `ns` form, which must
+   be the first and only one. Returns `ns-info`."
+  [text file]
+  (let [scan-ctx (sci/init {})
+        rdr (sci/reader (str text))
+        eof (Object.)
+        next-form (fn []
+                    (try (sci/parse-next scan-ctx rdr {:eof eof})
+                         (catch Exception e
+                           (let [line (or (:line (ex-data e)) 1)]
+                             (err/raise :declare/syntax (str file ":" line ": " (ex-message e)) {:file file :line line})))))]
+    (loop [first? true info nil]
+      (let [form (next-form)]
+        (if (identical? form eof)
+          (or info (err/raise :declare/no-context (str file ":1: the file has no (ns context.name)") {:file file :line 1}))
+          (let [line (or (:line (meta form)) 1)
+                ns-form? (and (seq? form) (= 'ns (first form)))]
+            (cond
+              (and first? (not ns-form?))
+              (err/raise :declare/no-context
+                         (str file ":" line ": the first form must be (ns context.name): a proposition without a context is not a proposition")
+                         {:file file :line line})
+
+              (and ns-form? (not first?))
+              (err/raise :declare/no-context (str file ":" line ": a second `ns`: one context per file") {:file file :line line})
+
+              :else
+              (recur false (if ns-form? (try (ns-info file (vec (str/split-lines (str text))) form) (catch clojure.lang.ExceptionInfo e (rethrow e file line))) info)))))))))
+
+(defn- prelude
+  "Source that defines, in the sci namespace of the required context `ctx-sym`,
+   one macro per relation name in `names`; each stores its propositions under
+   the qualified relation `ctx/name`."
+  [ctx-sym names]
+  (str/join "\n" (map (fn [n] (str "(defmacro " n " [& args] (kimun.declare.impl/expand-as '" ctx-sym "/" n " &form &env args resolve))")) names)))
+
+(defn- evaluate-file
+  "Evaluates one file whose `info` (from `scan`) is known; `imports` are the
+   already evaluated required contexts `[{:context sym :names [relation-name…]}]`."
+  [host text file info imports]
+  (let [st (atom {:file file :host host :context (:context info) :relations {} :props [] :index {}})
+        context (:context info)
+        ctx (make-ctx st context)]
+    (try
+      (doseq [{c :context names :names} imports]
+        (sci/eval-string+ ctx (prelude c names) {:ns (sci/create-ns c nil)}))
+      ;; the whole text, ns form included, pinned to the context namespace; sci
+      ;; resolves the `:require`s against the macros the prelude just defined
+      (sci/eval-string+ ctx (str text) {:ns (sci/create-ns context nil)})
+      (catch Throwable e (rethrow e file 1)))
+    (let [{:keys [relations props]} @st]
+      {:context (str context)
+       :relations relations
+       :propositions (mapv #(vary-meta % dissoc ::proposition) props)})))
+
+(defn- order
+  "The files of `scanned` (`[{:file :text :info}]`) in dependency order (each
+   context after the ones it requires, ties in input order), or a declared
+   `duplicate-context`, `unknown-context` or `require-cycle` error."
+  [scanned]
+  (let [by-ctx (reduce (fn [m {:keys [file info] :as f}]
+                         (if-let [other (get m (:context info))]
+                           (fail :declare/duplicate-context
+                                 (str file ":" (:line info) ": context `" (:context info) "` is also defined in " (:file other))
+                                 (:line info) {:file file :other (:file other) :context (str (:context info))})
+                           (assoc m (:context info) f)))
+                       {} scanned)]
+    (doseq [{:keys [file info]} scanned, {:keys [context line]} (:requires info)]
+      (when-not (contains? by-ctx context)
+        (fail :declare/unknown-context
+              (str file ":" line ": required context `" context "` is not defined by any declaration file of this set")
+              line {:file file :context (str context)})))
+    (letfn [(visit [{:keys [seen] :as acc} path {:keys [file info] :as f}]
+              (let [c (:context info)]
+                (cond
+                  (contains? seen c) acc
+                  (some #{c} path)
+                  (let [cyc (conj (vec (drop-while #(not= % c) path)) c)]
+                    (fail :declare/require-cycle
+                          (str file ":" (:line info) ": contexts require each other: " (str/join " -> " cyc))
+                          (:line info) {:file file :cycle (mapv str cyc)}))
+                  :else
+                  (let [acc' (reduce (fn [a {:keys [context]}] (visit a (conj path c) (get by-ctx context)))
+                                     acc (:requires info))]
+                    (-> acc' (update :seen conj c) (update :out conj f))))))]
+      (:out (reduce #(visit %1 [] %2) {:seen #{} :out []} scanned)))))
+
+(defn read-project
+  "Evaluates a set of declaration files `[{:file name :text text} …]` as one
+   project: a file may `(:require [other :refer [relation …]])` or
+   `[other :as o]` (`o/relation`) contexts defined by other files of the SAME
+   set; they are evaluated in dependency order, each once. Only RELATIONS are
+   imported (never the `def`s of another context), and a use of an imported
+   relation stores `:r` as `\"defining-context/name\"`. Returns, in input order,
+   `[{:file :context :relations :propositions}]`. Declared errors (all with
+   `:file` and `:line`): those of `read-declarations` and
+   `declare/duplicate-context`, `declare/unknown-context`,
+   `declare/require-cycle`, `declare/unknown-relation`. `host` defaults to the
+   standard host."
+  ([files] (read-project host-default/host files))
+  ([host files]
+   (let [scanned (mapv (fn [{:keys [file text]}] {:file file :text text :info (scan text file)}) files)
+         results (reduce
+                  (fn [acc {:keys [file text info]}]
+                    (let [imports (mapv (fn [{:keys [context refer line]}]
+                                          (let [names (vec (keys (:relations (get acc context))))]
+                                            (doseq [r refer]
+                                              (when-not (some #{(str r)} names)
+                                                (fail :declare/unknown-relation
+                                                      (str file ":" line ": context `" context "` does not define a relation `" r "`")
+                                                      line {:file file :context (str context) :relation (str r)})))
+                                            {:context context :names names}))
+                                        (:requires info))]
+                      (assoc acc (:context info) (assoc (evaluate-file host text file info imports) :file file))))
+                  {} (order scanned))]
+     (mapv #(get results (get-in % [:info :context])) scanned))))
 
 (defn read-declarations
   "Evaluates the declaration file whose text is `text` (named `file` in
    positions) and returns `{:context :relations :propositions}`; raises a
-   `:declare/*` error carrying `:file` and `:line` otherwise. `host` defaults
-   to the standard host (it only supplies the hasher of the `:id`s)."
+   `:declare/*` error carrying `:file` and `:line` otherwise. A file that
+   requires other contexts needs `read-project`. `host` defaults to the
+   standard host (it only supplies the hasher of the `:id`s)."
   ([text file] (read-declarations host-default/host text file))
-  ([host text file]
-   (let [st (atom {:file file :host host :context nil :relations {} :props [] :index {}})
-         scan-ctx (sci/init {})
-         rdr (sci/reader (str text))
-         eof (Object.)
-         next-form (fn []
-                     (try (sci/parse-next scan-ctx rdr {:eof eof})
-                          (catch Exception e
-                            (let [line (or (:line (ex-data e)) 1)]
-                              (err/raise :declare/syntax (str file ":" line ": " (ex-message e)) {:file file :line line})))))]
-     ;; first pass: syntax, and the context (the `ns` must be the only and first form)
-     (loop [first? true]
-       (let [form (next-form)]
-         (when-not (identical? form eof)
-           (let [line (or (:line (meta form)) 1)
-                 ns-form? (and (seq? form) (= 'ns (first form)))]
-             (cond
-               (and first? (not ns-form?))
-               (err/raise :declare/no-context
-                          (str file ":" line ": the first form must be (ns context.name): a proposition without a context is not a proposition")
-                          {:file file :line line})
-
-               (and ns-form? (not first?))
-               (err/raise :declare/no-context (str file ":" line ": a second `ns`: one context per file") {:file file :line line})
-
-               ns-form?
-               (swap! st assoc :context (try (ns-name-of file form)
-                                             (catch clojure.lang.ExceptionInfo e (rethrow e file line)))))
-             (recur false)))))
-     (when-not (:context @st)
-       (err/raise :declare/no-context (str file ":1: the file has no (ns context.name)") {:file file :line 1}))
-     ;; second pass: evaluate the whole text pinned to the context namespace
-     (let [context (:context @st)
-           ctx (make-ctx st context)]
-       (try (sci/eval-string+ ctx (str text) {:ns (sci/create-ns context nil)})
-            (catch Throwable e (rethrow e file 1))))
-     (let [{:keys [context relations props]} @st]
-       {:context (str context)
-        :relations relations
-        :propositions (mapv #(vary-meta % dissoc ::proposition) props)}))))
+  ([host text file] (dissoc (first (read-project host [{:file file :text text}])) :file)))

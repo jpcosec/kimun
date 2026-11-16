@@ -151,7 +151,7 @@
     (is (= 3 (:exit r)))
     (is (= "declare/bad-locator" (get-in r [:error :type])))
     (is (= ["bad.clj" 4] [(get-in r [:error :data :file]) (get-in r [:error :data :line])]))
-    (is (= 6 (:exit (run "declare" "anchors"))) "no FILE is usage")))
+    (is (= 6 (:exit (run "declare" "anchors" "--since"))) "--since without a value is usage")))
 
 (defn- tree-digest [dir]
   (into (sorted-map)
