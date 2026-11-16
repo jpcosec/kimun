@@ -29,8 +29,11 @@
 
 (defn aligned-spans
   "Line spans `[[start end) …]` of the top-level blocks of `text` when the block
-   layer matches the neutral AST one to one (same count, each slice parsed
-   alone yields one block with the digest of its AST child); nil otherwise."
+   layer (`kimun.surface.models.blocks/parse`, the pod when it is there) matches
+   the neutral AST one to one: same count, in order, and each slice parsed
+   alone yields exactly one block with the digest of its AST child. Nil when
+   that does not hold, so no range is invented from a misaligned layer. The
+   one check of that alignment: `docs anchors` and the captures share it."
   [text]
   (let [children (:children (ast/parse host/host text))]
     (try

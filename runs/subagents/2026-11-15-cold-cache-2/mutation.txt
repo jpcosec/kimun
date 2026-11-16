@@ -1,0 +1,138 @@
+
+Testing kimun.cli.cold-cache-test
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+docs show typed
+{:type "cli/unexpected", :message "class java.lang.NullPointerException", :data {}}
+expected: (= "docs/file-missing" (get-in r [:error :type]))
+  actual: (not (= "docs/file-missing" "cli/unexpected"))
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+docs show typed
+expected: (= path (get-in r [:error :data :path]))
+  actual: (not (= "docs/a.md" nil))
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+docs show typed
+expected: (= doc (get-in r [:error :data :document]))
+  actual: (not (= "a" nil))
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+docs show typed
+the message names the document
+expected: (.contains (str (get-in r [:error :message])) (str "`" doc "`"))
+  actual: false
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+docs show --ast typed
+{:type "markdown/not-a-document", :message "store->ast: missing node", :data {:id nil}}
+expected: (= "docs/file-missing" (get-in r [:error :type]))
+  actual: (not (= "docs/file-missing" "markdown/not-a-document"))
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+docs show --ast typed
+expected: (= path (get-in r [:error :data :path]))
+  actual: (not (= "docs/a.md" nil))
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+docs show --ast typed
+expected: (= doc (get-in r [:error :data :document]))
+  actual: (not (= "a" nil))
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+docs show --ast typed
+the message names the document
+expected: (.contains (str (get-in r [:error :message])) (str "`" doc "`"))
+  actual: false
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+docs render typed
+{:type "markdown/not-a-document", :message "store->ast: missing node", :data {:id nil}}
+expected: (= "docs/file-missing" (get-in r [:error :type]))
+  actual: (not (= "docs/file-missing" "markdown/not-a-document"))
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+docs render typed
+expected: (= path (get-in r [:error :data :path]))
+  actual: (not (= "docs/a.md" nil))
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+docs render typed
+expected: (= doc (get-in r [:error :data :document]))
+  actual: (not (= "a" nil))
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+docs render typed
+the message names the document
+expected: (.contains (str (get-in r [:error :message])) (str "`" doc "`"))
+  actual: false
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+fields get
+{:type "cli/unexpected", :message "class java.lang.NullPointerException", :data {}}
+expected: (= "docs/file-missing" (get-in r [:error :type]))
+  actual: (not (= "docs/file-missing" "cli/unexpected"))
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+fields get
+expected: (= path (get-in r [:error :data :path]))
+  actual: (not (= "docs/a.md" nil))
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+fields get
+expected: (= doc (get-in r [:error :data :document]))
+  actual: (not (= "a" nil))
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+fields get
+the message names the document
+expected: (.contains (str (get-in r [:error :message])) (str "`" doc "`"))
+  actual: false
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+docs show --ast generic
+{:type "markdown/not-a-document", :message "store->ast: missing node", :data {:id nil}}
+expected: (= "docs/file-missing" (get-in r [:error :type]))
+  actual: (not (= "docs/file-missing" "markdown/not-a-document"))
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+docs show --ast generic
+expected: (= path (get-in r [:error :data :path]))
+  actual: (not (= "notes/plain.md" nil))
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+docs show --ast generic
+expected: (= doc (get-in r [:error :data :document]))
+  actual: (not (= "plain" nil))
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+docs show --ast generic
+the message names the document
+expected: (.contains (str (get-in r [:error :message])) (str "`" doc "`"))
+  actual: false
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+docs render generic
+{:type "markdown/not-a-document", :message "store->ast: missing node", :data {:id nil}}
+expected: (= "docs/file-missing" (get-in r [:error :type]))
+  actual: (not (= "docs/file-missing" "markdown/not-a-document"))
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+docs render generic
+expected: (= path (get-in r [:error :data :path]))
+  actual: (not (= "notes/plain.md" nil))
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+docs render generic
+expected: (= doc (get-in r [:error :data :document]))
+  actual: (not (= "plain" nil))
+
+FAIL in (absent-file-and-cold-cache-is-a-declared-error) (/tmp/kimun-docsui-wt/test/kimun/cli/cold_cache_test.cljc:186)
+docs render generic
+the message names the document
+expected: (.contains (str (get-in r [:error :message])) (str "`" doc "`"))
+  actual: false
+
+Ran 4 tests containing 69 assertions.
+24 failures, 0 errors.
+{:test 4, :pass 45, :fail 24, :error 0, :type :summary}

@@ -1,0 +1,16 @@
+## both
+[docs show a --ast] => {:ok false, :error {:type "markdown/not-a-document", :message "store->ast: missing node", :data {:id nil}}} nil
+[docs render a] => {:ok false, :error {:type "markdown/not-a-document", :message "store->ast: missing node", :data {:id nil}}} nil
+[docs show a] => {:ok false, :error {:type "cli/unexpected", :message "class java.lang.NullPointerException", :data {}}} nil
+[fields get a title] => {:ok false, :error {:type "cli/unexpected", :message "class java.lang.NullPointerException", :data {}}} nil
+[docs show plain --ast] => {:ok false, :error {:type "markdown/not-a-document", :message "store->ast: missing node", :data {:id nil}}} nil
+[docs render plain] => {:ok false, :error {:type "markdown/not-a-document", :message "store->ast: missing node", :data {:id nil}}} nil
+[docs status] => {:ok true} [{:name "a", :path "docs/a.md", :status :missing}]
+## hot-missing
+[docs show a --ast] => {:ok true} {:name "a", :tree "01M7GTY9DSNM11ZF7VB2CX1JY2", :ast {:type :document, :attrs {:
+[docs render a] => {:ok true} "# T\n\nStatus: open\n"
+[docs show a] => {:ok true} {:path "docs/a.md", :markdown "# T\n\nStatus: open\n", :qualified "docs/a.md", :
+[fields get a title] => {:ok true} {:doc "a", :model "TicketDoc", :address "TicketDoc:a", :field "title", :path "ti
+[docs show plain --ast] => {:ok true} {:name "plain", :tree "01M7GTY9ESS14GMQ0RAK3Z786P", :ast {:type :document, :attr
+[docs render plain] => {:ok true} "# Note\n\nPara.\n"
+[docs status] => {:ok true} [{:name "a", :path "docs/a.md", :status :missing}]

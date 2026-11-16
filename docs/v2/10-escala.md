@@ -387,6 +387,8 @@ borrable: todo se recalcula.
 
 La matriz de comandos de lectura con caché fría o con un objeto corrupto es `test/kimun/cli/cold_cache_test.cljc`; sus brechas conocidas (`known-cold-cache-gaps`) son la deuda de esta promesa (evidencia: `runs/subagents/2026-11-15-cold-cache/REPORT.md`).
 
+Con la caché borrada **y** el archivo del documento ausente, nada puede reconstruir el texto: `docs show`, `docs show --ast`, `docs render` y `fields get` fallan con `docs/file-missing` (exit 1; nombra el documento y su ruta), no con `markdown/not-a-document` ni con una excepción interna. Con la caché caliente y el archivo ausente siguen respondiendo desde la caché (`docs status` lo marca `:missing`).
+
 Coste medido (store de banco de 600 documentos, `docs render`/`docs show` de un documento,
 3 corridas): 0,50–0,54 s antes y 0,50–0,52 s después del SHA-256 por acierto de caché; la
 salida es idéntica. **Límite:** un objeto de caché dañado hace lento ese documento hasta que

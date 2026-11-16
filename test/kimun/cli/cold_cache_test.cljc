@@ -172,3 +172,34 @@
       (is (= (:corrupt known-cold-cache-gaps) gaps)
           (str "new gaps: " (sort (remove (:corrupt known-cold-cache-gaps) gaps))
                " fixed (remove from the list): " (sort (remove gaps (:corrupt known-cold-cache-gaps))))))))
+
+;; Cold cache AND absent file: nothing can supply the text. The answer is the
+;; declared `docs/file-missing` naming the document and its path (docs/v2/10 §11).
+(def ^:private missing-file-commands
+  [["docs show typed"         ["docs" "show" "a"]                  "docs/a.md"]
+   ["docs show --ast typed"   ["docs" "show" "a" "--ast"]          "docs/a.md"]
+   ["docs render typed"       ["docs" "render" "a"]                "docs/a.md"]
+   ["fields get"              ["fields" "get" "a" "title"]         "docs/a.md"]
+   ["docs show --ast generic" ["docs" "show" "plain" "--ast"]      "notes/plain.md"]
+   ["docs render generic"     ["docs" "render" "plain"]            "notes/plain.md"]])
+
+(deftest absent-file-and-cold-cache-is-a-declared-error
+  (fs/delete-tree (cache-dir))
+  (fs/delete (file "docs" "a.md"))
+  (fs/delete (file "notes" "plain.md"))
+  (doseq [[label argv path] missing-file-commands
+          :let [r (apply run argv) doc (if (= path "docs/a.md") "a" "plain")]]
+    (testing label
+      (is (false? (:ok r)))
+      (is (= "docs/file-missing" (get-in r [:error :type])) (pr-str (:error r)))
+      (is (= path (get-in r [:error :data :path])))
+      (is (= doc (get-in r [:error :data :document])))
+      (is (.contains (str (get-in r [:error :message])) (str "`" doc "`")) "the message names the document"))))
+
+(deftest present-file-and-cold-cache-is-rebuilt
+  (let [hot (into {} (for [[label argv _] missing-file-commands] [label (answer argv)]))]
+    (fs/delete-tree (cache-dir))
+    (doseq [[label argv _] missing-file-commands]
+      (testing label
+        (is (true? (:ok (get hot label))))
+        (is (= (get hot label) (answer argv)))))))

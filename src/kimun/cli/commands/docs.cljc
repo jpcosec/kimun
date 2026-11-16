@@ -21,7 +21,6 @@
             [kimun.surface.models.render :as mrender]
             [kimun.surface.models.store :as mstore]
             [kimun.host.default :as host]
-            [kimun.kernel.canon :as canon]
             [kimun.kernel.err :as err]
             [kimun.kernel.ports :as ports]
             [kimun.kernel.revision :as revision]
@@ -29,9 +28,8 @@
             [kimun.kernel.store :as store]
             [kimun.kernel.tree :as tree]
             [kimun.surface.markdown.anchors :as anchors]
-            [kimun.surface.markdown.ast :as ast]
             [kimun.surface.markdown.plan :as md]
-            [kimun.surface.models.blocks :as blocks]
+            [kimun.surface.models.capture :as capture]
             [kimun.surface.parse-contract :as parse-contract]))
 
 (defn- store-ref [descriptor path] {:name (:name descriptor) :path path})
@@ -198,6 +196,8 @@
                            :revision (:head store)
                            :data (or (tdocs/document-markdown store (or (tdocs/find-document store token)
                                                                         (tdocs/generic-document store tree) tree))
+                                     (some-> (or (tdocs/find-document store token) (tdocs/generic-document store tree))
+                                             tdocs/file-missing!)
                                      (md/store->markdown host/host store tree))})))
 
 (defn list-docs
@@ -523,30 +523,6 @@
         (and (map? loc) (contains? loc :section)) :block
         :else :section))
 
-(defn- aligned-spans
-  "Line spans `[[start end) …]` of the top-level blocks of `text` when the block
-   layer (`kimun.surface.models.blocks/parse`, the pod when it is there) matches
-   the neutral AST one to one: same count, in order, and each slice parsed
-   alone yields exactly one block with the digest of its AST child. Returns nil
-   when that does not hold, so no range is invented from a misaligned layer."
-  [host text]
-  (let [children (:children (ast/parse host text))]
-    (try
-      (let [blocks (blocks/parse text)
-            spans (mapv :map blocks)
-            lines (vec (clojure.string/split-lines text))
-            slice (fn [[ls le]] (clojure.string/join "\n" (subvec lines (long ls)
-                                                                  (long (min le (count lines))))))
-            ok? (and (every? some? spans) (= (count blocks) (count children))
-                     (every? true? (map (fn [blk b]
-                                          (let [kids (:children (ast/parse host (slice (:map blk))))]
-                                            (and (= 1 (count kids))
-                                                 (= (canon/digest host (first kids))
-                                                    (canon/digest host b)))))
-                                        blocks children)))]
-        (when ok? spans))
-      (catch Exception _ nil))))
-
 (defn anchors
   "`docs anchors NAME [--sections]`: the structural anchors of a document as
    EVIDENCE (S2a, docs/v2/12 §1): its sections and blocks with a locator, a
@@ -573,7 +549,7 @@
                        (str "`" (:name d) "` has no readable source: its file is not there and it stores no text")
                        {:document (:name d) :path (:path d)}))
         contract (parse-contract/record host/host (parse-contract/environment) (or (:class d) "generic/md"))
-        a (anchors/anchors host/host (str text) {:spans (aligned-spans host/host (str text))
+        a (anchors/anchors host/host (str text) {:spans (capture/aligned-spans (str text))
                                                  :parse-contract contract})]
     (out/ok "docs anchors"
             {:store (store-ref descriptor store-path)
@@ -736,6 +712,8 @@
                                    {:name name :tree tree
                                     :ast (or (tdocs/document-ast store (or (tdocs/find-document store token)
                                                                            (tdocs/generic-document store tree) tree))
+                                             (some-> (or (tdocs/find-document store token) (tdocs/generic-document store tree))
+                                                     tdocs/file-missing!)
                                              (md/store->ast store tree))})
                                  (let [d (tdocs/document store token)
                                        found (tdocs/find-document store token)]

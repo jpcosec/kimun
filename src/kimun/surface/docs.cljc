@@ -355,13 +355,24 @@
     (vec (for [[f id] (sort units)]
            {:field f :id id :status (if (contains? payload f) :anchored :missing)}))))
 
+(defn file-missing!
+  "Raises `:docs/file-missing` (exit 1) for document `doc` (a document map):
+   its file is not on disk and the cache cannot supply the text (docs/v2/10
+   §11). Names the document and its path."
+  [doc]
+  (err/raise :docs/file-missing
+             (str "the file of `" (:name doc) "` (" (:path doc) ") is missing and the cache cannot rebuild it")
+             {:document (:name doc) :path (:path doc)}))
+
 (defn document
   "The tracked document `token` (name or tree id) with `:payload` (or
    `:error`), `:source-hash`, `:content-hash` and `:field-hashes`. Raises
-   `:docs/missing` (exit 1)."
+   `:docs/missing` (exit 1), and `:docs/file-missing` (exit 1) when its file is
+   gone and no cache supplies the text."
   [store token]
   (let [doc (or (find-document store token)
                 (err/raise :docs/missing (str "no document named or identified by `" token "`") {:document token}))
+        _ (when (and (nil? (:source doc)) (:path doc)) (file-missing! doc))
         host (:host store) {:keys [payload] :as r} (payload-of store doc)]
     (cond-> (merge doc r {:source-hash (text-hash host (or (:source doc) ""))})
       payload (assoc :content-hash (content-hash host payload) :field-hashes (field-hashes host payload)))))

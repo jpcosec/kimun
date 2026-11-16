@@ -1,0 +1,29 @@
+
+Testing kimun.cli.cold-cache-test
+
+Testing kimun.cli.docs-test
+
+Testing kimun.cli.typed-docs-test
+
+Testing kimun.cli.generic-docs-test
+
+Testing kimun.cli.fields-test
+
+Testing kimun.cli.docs-anchors-test
+
+Testing kimun.surface.markdown.anchors-test
+
+Testing kimun.surface.models.capture-test
+
+Testing kimun.cli.marks-test
+moved existing store to /tmp/kimun-adhoc-6410534703714163541/kimun-marks-inc-8128803729883704685/.kimun.bak-20261115-211004-01M7GV10YJDK61Z98FXV0VAKFE
+
+Testing kimun.cli.field-units-test
+moved existing store to /tmp/kimun-adhoc-6410534703714163541/kimun-units-inc-18015600145961697894/.kimun.bak-20261115-211004-01M7GV11Q0B2YAKCW9D94WTX6H
+
+Testing kimun.cli.tour-test
+
+Testing kimun.cli.fault-injection-test
+
+Ran 75 tests containing 843 assertions.
+0 failures, 0 errors.
