@@ -1,0 +1,15 @@
+
+Testing kimun.surface.markdown.offsets-test
+
+Testing kimun.lint-test
+
+Testing kimun.graph.edges-test
+
+Testing kimun.graph.export-test
+
+Testing kimun.cli.semantic-test
+
+Testing kimun.cli.edges-test
+
+Ran 49 tests containing 886 assertions.
+0 failures, 0 errors.
