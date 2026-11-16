@@ -1,0 +1,9 @@
+{
+  "key": "task-fichas-and-graph-queries-over-propositions/preflight",
+  "technical_ok": true,
+  "returncode": 0,
+  "input_sha256": "c54be4ec827cbe741778e3fb306ca2ae362034035d4ed1e32a92419bd24c469a",
+  "output_sha256": "174c9709ecf2f20a6ae5f850d1a8475cf6272f8780745d55482a4749136a1109",
+  "start": "2026-11-16T15:02:09.439813+00:00",
+  "end": "2026-11-16T15:02:20.175862+00:00"
+}

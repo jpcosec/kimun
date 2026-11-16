@@ -1,0 +1,9 @@
+{
+  "key": "task-tags-on-any-node-code-nodes-and-kimun-indexing-itself/preflight",
+  "technical_ok": true,
+  "returncode": 0,
+  "input_sha256": "21d68ff23cd8ad365181ac565102de0a3a4dadd5e71a00718382e4175802c787",
+  "output_sha256": "f9fe1e7b07546a47e4778dbdc83739433aeca43b802490f3ac4121d661e54bd4",
+  "start": "2026-11-16T15:03:29.494851+00:00",
+  "end": "2026-11-16T15:03:42.302488+00:00"
+}

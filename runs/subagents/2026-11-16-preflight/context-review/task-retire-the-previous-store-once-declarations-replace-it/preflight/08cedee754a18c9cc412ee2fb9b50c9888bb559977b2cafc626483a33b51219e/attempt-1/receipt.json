@@ -1,0 +1,9 @@
+{
+  "key": "task-retire-the-previous-store-once-declarations-replace-it/preflight",
+  "technical_ok": true,
+  "returncode": 0,
+  "input_sha256": "08cedee754a18c9cc412ee2fb9b50c9888bb559977b2cafc626483a33b51219e",
+  "output_sha256": "5b344f803fc7911f258018fae8f417f7990b8d437c11f86b5a5d164eb63bed9e",
+  "start": "2026-11-16T15:03:18.842243+00:00",
+  "end": "2026-11-16T15:03:28.549051+00:00"
+}

@@ -1,0 +1,37 @@
+{
+  "key": "task-finish-wip-leer-readers-by-class/preflight",
+  "input_sha256": "cafb5731b8b90f7d21c8b428031f9673970406d2ab8cbd44b236affaaf9d5564",
+  "argv": [
+    "pi",
+    "--provider",
+    "deepseek",
+    "--model",
+    "deepseek-flash",
+    "--thinking",
+    "low",
+    "--offline",
+    "--no-session",
+    "--no-context-files",
+    "--no-skills",
+    "--no-extensions",
+    "--no-prompt-templates",
+    "--no-tools",
+    "--print",
+    "--system-prompt",
+    "Revisor barato aislado de un encargo de planificación. Trabajas solo con el input explícito: sin herramientas, historial ni otras fuentes. No ejecutas nada. Responde en español con estas secciones exactas: REFORMULACION (propósito, resultado, repo, límites), AMBIGUEDADES (numeradas, cada una con cita textual del input y qué obligaría a inventar; escribe \"ninguna\" si no hay), DRY-RUN (lecturas, cambios previstos, dependencias y validaciones futuras, sin ejecutar), FUTURO (lo que produce otro nodo o decide un humano, no ambigüedad). REFORMULACION describe el encargo del nodo, no esta revisión. DRY-RUN describe cómo lo ejecutaría un ejecutor futuro, hipotéticamente y sin ejecutar nada. Si el nodo es un agregado o paquete no ejecutable, dilo y además recorre cómo lo cumplen sus hijos, qué transfiere cada uno al siguiente y cómo se valida el resultado conjunto. Máximo 350 palabras.",
+    "@/home/jp/proyectos/kimun/runs/subagents/2026-11-16-preflight-2/context-review/task-finish-wip-leer-readers-by-class/preflight/cafb5731b8b90f7d21c8b428031f9673970406d2ab8cbd44b236affaaf9d5564/attempt-2/input.md"
+  ],
+  "model": "deepseek/deepseek-flash",
+  "profile": "runtime-pi-deepseek-flash",
+  "selection_reason": "deepseek-flash: perfil barato verificado en esta máquina por ritual-context-review (D4)",
+  "sources": [
+    {
+      "path": "desk/tasks/task-finish-wip-leer-readers-by-class.md",
+      "sha256": "f84f61b1999f95e9a93cc61de23b80a580695e4eedbba5b4faf6b9c5e4bfcc33",
+      "projection": "whole_file"
+    }
+  ],
+  "omitted_sources": [],
+  "started": "2026-11-16T15:47:22.507050+00:00",
+  "finished": "2026-11-16T15:47:38.136485+00:00"
+}

@@ -1,0 +1,9 @@
+{
+  "key": "task-open-owner-decisions-that-hold-work/preflight",
+  "technical_ok": true,
+  "returncode": 0,
+  "input_sha256": "db886f7badb48e77add65cda471ef72b0216739e9a73237f3744793e49c81914",
+  "output_sha256": "71ee9536d86f54641ab1142687e01c4d27708b07e7ccc813b8eed874ff0432d0",
+  "start": "2026-11-16T15:02:44.333530+00:00",
+  "end": "2026-11-16T15:02:55.090497+00:00"
+}

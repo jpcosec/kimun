@@ -1,0 +1,67 @@
+FILE:desk/tasks/task-open-owner-decisions-that-hold-work.md
+---
+id: task-open-owner-decisions-that-hold-work
+status: draft
+summary: ''
+tags:
+- workspace:desk
+- artifact:task
+current_node: ritual-execution
+history: []
+references:
+- docs/v2/drafts/preguntas-abiertas.md
+- runs/subagents/2026-11-16-serve-seguro/REPORT.md
+- runs/subagents/2026-11-16-sin-rehacer-git-1/REPORT.md
+- runs/subagents/2026-11-16-sin-paridad/REPORT.md
+- pods/treesitter/Cargo.toml
+depends_on: []
+pills: []
+files: []
+task_type: task.decision
+inherits_from: []
+inherit_acceptance_context: false
+atoms: []
+---
+
+# Open owner decisions that hold work
+
+## Rationale
+
+_Explain why this task exists or the business driver behind it._
+
+Four questions for the owner (JP) came out of the cuts of 2026-11-16 and have no answer. They are rows SERVE-4, GRAMATICA-CLJ, RAZON and PRUEBAS-ALMACEN of the table in docs/v2/drafts/preguntas-abiertas.md; each row gives the facts, the evidence file and what it blocks.
+
+## Goal
+
+_Describe the concrete result this task must produce._
+
+Each of the four rows of docs/v2/drafts/preguntas-abiertas.md carries the owner's answer, verbatim and dated, in its first column cell, prefixed by **Respondida (dueño, <date>):** as the answered rows of that table already do.
+
+## Scope
+
+_State what is in scope and what is out of scope._
+
+The four questions, as they are asked: (GRAMATICA-CLJ) «El pod de tree-sitter trae las gramáticas de Markdown y Python. Para leer código Clojure —incluido el de kimun— hay que descargar una crate de Rust con esa gramática. ¿La descargo, o leo Clojure con el lector de Babashka, que no sirve para otros lenguajes?» (SERVE-4) «kimun serve acepta en POST /docs/ingest cuerpos de hasta 8 MB y el costo de parsearlos no tiene tope. ¿Pongo un tope de tamaño, y de cuánto?» (RAZON) «Al borrar el journal, el --reason de docs reanchor|untrack|delete|mark|unmark ya no queda registrado en ningún sitio. ¿Dónde debe quedar el porqué: en el mensaje de un commit de git, en una declaración, o en ningún lado?» (PRUEBAS-ALMACEN) «Con la carpeta de paridad se borraron pruebas de promesas del store (durabilidad, merkle, shards, caché, escritores concurrentes). ¿Quieres alguna de vuelta, sabiendo que ese store se va a retirar?» Out of scope: implementing any of the answers; each answer becomes its own task.
+
+## Implementation Path
+
+_Outline the expected implementation route or affected surface._
+
+Ask one question per message, in conversation, in the order above (the first blocks code nodes; the others block nothing). Write each answer into its row as soon as it is given; a question the owner declines to decide is recorded as «sin decidir» with the date and stays open.
+
+## Validation
+
+_List the checks required before this task can close._
+
+- grep -c "Respondida (dueño" docs/v2/drafts/preguntas-abiertas.md increased by the number of questions answered
+- Each answered row quotes the owner between «»
+
+## Done When
+
+_Name the observable condition that makes the task complete._
+
+The four rows are answered or explicitly declined by the owner, in a commit on main.
+
+FILE:instruccion
+Preflight solo-TaskDoc de la tarea task-open-owner-decisions-that-hold-work: reformula el encargo tal como lo leería un ejecutor sin ningún otro contexto, lista ambigüedades con cita textual del input y da el DRY-RUN sin ejecutar nada. No ejecutes nada.
+

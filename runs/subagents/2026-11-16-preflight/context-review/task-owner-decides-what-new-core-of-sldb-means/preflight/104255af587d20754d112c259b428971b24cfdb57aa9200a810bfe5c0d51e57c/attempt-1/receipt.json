@@ -1,0 +1,9 @@
+{
+  "key": "task-owner-decides-what-new-core-of-sldb-means/preflight",
+  "technical_ok": true,
+  "returncode": 0,
+  "input_sha256": "104255af587d20754d112c259b428971b24cfdb57aa9200a810bfe5c0d51e57c",
+  "output_sha256": "199537c6540b0e46d6c5e98d8108b127d86a602566e6b2aeb48688fd02284368",
+  "start": "2026-11-16T15:02:56.833952+00:00",
+  "end": "2026-11-16T15:03:04.588687+00:00"
+}

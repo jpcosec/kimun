@@ -1,0 +1,9 @@
+{
+  "key": "task-deskops-views-as-declare-generate-recipes/preflight",
+  "technical_ok": true,
+  "returncode": 0,
+  "input_sha256": "28acbcbe935f732984f230492c46dc4fe581456192ef2917bd6ffb3656efd291",
+  "output_sha256": "e1e15601e4278d88bc5a1da48575329b3f67083c17de8ee6ff6a71d774cbce63",
+  "start": "2026-11-16T15:02:01.416121+00:00",
+  "end": "2026-11-16T15:02:07.778584+00:00"
+}

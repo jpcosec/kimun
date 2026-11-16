@@ -85,7 +85,9 @@ after copying anything worth keeping to `runs/`. Evidence of past sessions is in
   generate become materializations from models (`docs/v2/drafts/sesion-2026-11-15.md §4`), and
   the desk's source documents are ordinary documents, as in any project that does not use kimun.
 - Tasks are created, advanced and closed with the `deskops` CLI (2026-11-16; before that date
-  this file said not to use it). To read the desk, kimun commands (`docs`, `fields`, `find`) also work.
+  this file said not to use it). A task is dispatchable only with an accepted cold-context review
+  (`deskops review preflight <task>`, then `deskops review dispose`; `deskops review status <task>`
+  shows it). On 2026-11-16 four of the fifteen tasks had one; the other eleven are rejected drafts. To read the desk, kimun commands (`docs`, `fields`, `find`) also work.
 - Work is executed by herdr pi workers.
 
 ## Validation

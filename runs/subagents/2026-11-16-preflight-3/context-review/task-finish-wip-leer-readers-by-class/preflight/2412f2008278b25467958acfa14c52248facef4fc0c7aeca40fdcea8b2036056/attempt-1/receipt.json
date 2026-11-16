@@ -1,0 +1,9 @@
+{
+  "key": "task-finish-wip-leer-readers-by-class/preflight",
+  "technical_ok": true,
+  "returncode": 0,
+  "input_sha256": "2412f2008278b25467958acfa14c52248facef4fc0c7aeca40fdcea8b2036056",
+  "output_sha256": "c8c3c81e036a8865442ac13c938d43e71e329daae3344f00a0505fcbece0b3e9",
+  "start": "2026-11-16T15:49:23.079354+00:00",
+  "end": "2026-11-16T15:49:30.969423+00:00"
+}
