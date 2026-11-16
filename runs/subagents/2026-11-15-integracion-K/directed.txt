@@ -1,0 +1,16 @@
+
+Testing kimun.cli.spec16-contract-test
+
+Testing kimun.cli.spec16-readers-test
+moved existing store to /tmp/kimun-adhoc-3738590898669157686/kimun-s16-include-5686583903924098165/.kimun.bak-20261115-213715-01M7GWJT704E5P42SDRX8XJY02
+
+Testing kimun.cli.spec16-docs-test
+
+Testing kimun.cli.contract-test
+
+Testing kimun.cli.stores-test
+
+Testing kimun.cli.sense-test
+
+Ran 63 tests containing 584 assertions.
+0 failures, 0 errors.
