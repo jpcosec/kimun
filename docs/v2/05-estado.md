@@ -38,10 +38,8 @@ no es identidad — `14 §21`). Cada capacidad tiene un dueño:
   acción. CLI: `06-superficies-y-cli.md`.
 - **Inclusión en git** — `kimun.include.edn` declara qué versiona un repo. Dueño:
   `13-include.md`.
-- **Adaptadores** — protocolo 1 fuera de proceso (incluido tree-sitter), que convierte
-  código en documentos. Dueño: `11-adaptadores.md`.
-- **Migración desde v1** — `migrate --from-v1` trae un store sldb v1 de forma idempotente.
-  CLI: `06-superficies-y-cli.md`.
+- **Descomposición de código** — la hace el pod de tree-sitter (`pods/treesitter`,
+  `kimun.host.treesitter`), único mecanismo; no hay adaptadores ni código Python (borrados el 2026-11-15).
 - **`serve`** — API HTTP sobre los comandos, con token opcional. CLI:
   `06-superficies-y-cli.md`.
 - **Empaquetado** — `bb jar`, `bb release` y el launcher. Dueño: `08-distribucion.md`.

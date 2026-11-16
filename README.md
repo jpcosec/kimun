@@ -63,7 +63,6 @@ bb desk                           # build this repo's desk store (.kimun) from k
 - `docs/v2/06-superficies-y-cli.md` — the CLI inventory and the envelope/exit-code contract
 - `docs/v2/tests/wittgenstein-manifest.md` — inclusion manifest (`C01–C28`, Wittgenstein `W1`/`W2`) and current status
 - `docs/faq.md` — scope and how to read "desk" here
-- `python/README.md` — the Python side (model exporter and adapters)
 
 ## Layout
 

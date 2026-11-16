@@ -142,7 +142,7 @@ nodos a través de ediciones.
 - "Rust como lenguaje del kernel": el kernel es Clojure `.cljc`. Se admiten **pods y
   plugins nativos** (Rust, C, Zig, Go…) o en cualquier lenguaje si son fácilmente
   portables y empaquetables, con una frontera de proceso documentada y sin lógica de
-  dominio repartida entre lenguajes (decisión 19; `05-estado.md`, `11-adaptadores.md`).
+  dominio repartida entre lenguajes (decisión 19; `05-estado.md`).
   tree-sitter (C) es el primer candidato.
 - "Identidad y reconciliación" como problema abierto: se descompone en identidad
   (semántica; el hash solo verifica — PENDIENTE, `14 §21`) y sucesión (arista registrada

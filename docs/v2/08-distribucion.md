@@ -14,8 +14,8 @@
 
 Reglas: `knowledge` no es un nombre de producto en ningún sitio (el kernel se llama
 `kimun.kernel.*` —antes `sldb.*`—, la superficie `kimun.*`); el paquete Python instalable de v1 es `pron`. No hay cliente
-Python `kimun` todavía (`C2` diferida el 2026-11-15 hasta que kimun esté probado, decisión 47): `python/kimun/` hoy solo contiene
-`__init__.py`, `models.py` (el exportador de descriptores) y `adapters/`.
+Python `kimun` todavía (`C2` diferida el 2026-11-15 hasta que kimun esté probado, decisión 47): el repositorio no contiene código Python
+(salvo el oráculo `scripts/canon_oracle.py`).
 
 Lo que pasó el 2026-09-07: el producto se llamó `knowledge` durante la fase de empaquetado y
 se pusheó a `jpcosec/knowledge`, que ya era el remoto de v1 (rama `master`). Se deshizo el
@@ -28,8 +28,8 @@ mismo día: tags y environment eliminados, rama por defecto de vuelta a `master`
 |---|---|---|
 | A1 | Un humano crea `github.com/jpcosec/kimun` vacío (gate de publicación, §6). `git clone -b refactor-target git@github.com:jpcosec/sldb.git tools/kimun && git branch -m main && git remote set-url origin git@github.com:jpcosec/kimun.git && git push -u origin main --tags`. La rama era un worktree del mismo repo: clonarla **preserva los 140 commits** sin `filter-repo`. Tras el push: environment `release` con *required reviewer* humano | hecho (S0) |
 | A2 | En `tools/sldb`: tags `v1-frozen` (sobre `main`) y `v2-seed-2026-09` (sobre `refactor-target`); banner en su README: *frozen, superseded by kimun*; `git worktree remove tools/sldb-refactor-worktree` tras confirmar que `tools/kimun` tiene todo. `iso-lab/worktrees/sldb` se mantiene (pina v1). No se borra ninguna rama | hecho (S0) |
-| A3 | kgdb: tag `v1-frozen`, CLI deprecado. Previsto: copiar los contratos pydantic (`contracts/{base,node,io}.py`, `query/language.py`) a `python/kimun/graph/` y reimplementar `graph.py` sin networkx. Hoy no existe `python/kimun/graph/`. Lo muerto no se copia | pendiente (S6) |
-| A4 | Previsto: copiar los 13 anchors de `pron` a `resources/grammar/` como gramática por defecto y correr `kimun migrate --from-v1` sobre `pron/.sldb`. Hoy `resources/` no tiene `grammar/`. **No se borra código de `pron`**: sigue vivo | pendiente (S7) |
+| A3 | kgdb: tag `v1-frozen`, CLI deprecado. Previsto: copiar los contratos pydantic (`contracts/{base,node,io}.py`, `query/language.py`) a `python/kimun/graph/` y reimplementar `graph.py` sin networkx. Hoy no existe `python/`. Lo muerto no se copia | pendiente (S6) |
+| A4 | Previsto: copiar los 13 anchors de `pron` a `resources/grammar/` como gramática por defecto y traer `pron/.sldb` (el comando `migrate --from-v1` se borró el 2026-11-15). Hoy `resources/` no tiene `grammar/`. **No se borra código de `pron`**: sigue vivo | pendiente (S7) |
 
 Regla: `pron` **no se toca desde aquí** (se desarrolla en paralelo, con `kinesis` como
 consumidor); la migración se prueba sobre una copia en un directorio temporal, nunca in place.
@@ -151,6 +151,6 @@ imagen base y `kimun` en su `manifest.yaml`; este checkout no tiene `docker/` ni
 **Diferido (2026-11-15, decisión 47 del dueño; `C2` en `12 §1`), no implementado.** Va después de `RS1` y `RS2`, y su forma la fija `RS2`, no este párrafo. El diseño anterior de un cliente Python `kimun` era: wheels por plataforma con el
 bundle en `kimun/_bin/<plat>/{bb, kimun.jar}`, más un wheel `any` que exige `kimun` en
 PATH; un `_launcher.py` que resuelve `$KIMUN_BIN` > `_bin/<plat>/` > PATH; y
-`client.py`/`errors.py`/`models.py`/`graph/` (contratos de kgdb). El grupo `adapters`
-(`11`) y `python/kimun/models.py` ya existen; el resto no. Hasta entonces el contrato es
+`client.py`/`errors.py`/`models.py`/`graph/` (contratos de kgdb). Nada de eso existe
+(el directorio `python/` se borró el 2026-11-15). Hasta entonces el contrato es
 `subprocess` + envelope (`06`).

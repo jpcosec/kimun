@@ -1,7 +1,0 @@
-name: ticket-loose
-path: tickets/loose.md
-source_hash: 4c742ba42afef7e0fec48fae192342013fc8b9f97bda608b5e6f0381133e87f2
-content_hash: 0000
-field_hashes: {}
-semantic_tags:
-- type.fixture

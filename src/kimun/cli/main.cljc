@@ -7,7 +7,6 @@
             [clojure.string :as str]
             [kimun.cli.args :as args]
             [kimun.cli.commands.direct :as direct]
-            [kimun.cli.commands.adapters :as adapters]
             [kimun.cli.commands.corpus :as corpus]
             [kimun.cli.commands.docs :as docs]
             [kimun.cli.commands.edges :as edges]
@@ -16,7 +15,6 @@
             [kimun.cli.commands.graph :as graph]
             [kimun.cli.commands.include :as include]
             [kimun.cli.commands.index :as index]
-            [kimun.cli.commands.migrate :as migrate]
             [kimun.cli.commands.models :as models]
             [kimun.cli.commands.predicates :as predicates]
             [kimun.cli.commands.sections :as sections]
@@ -38,8 +36,6 @@
             (if-let [f (get links/commands sub)]
               (f args opts ctx)
               (docs/dispatch sub args opts ctx)))
-   "adapters" adapters/dispatch
-   "migrate" migrate/dispatch
    "edges" edges/dispatch
    "graph" graph/dispatch
    "predicates" predicates/dispatch
@@ -61,7 +57,7 @@
   "The option spec of every group, merged: a group declares its own options
    in its `spec` var, so adding a group never edits `kimun.cli.args`. Two
    groups may share an option name only with the same meaning."
-  (merge stores/spec docs/spec journal/spec serve/spec models/spec include/spec direct/spec links/spec semantic/spec fields/spec sections/spec find/spec corpus/spec index/spec predicates/spec edges/spec graph/spec adapters/spec migrate/spec))
+  (merge stores/spec docs/spec journal/spec serve/spec models/spec include/spec direct/spec links/spec semantic/spec fields/spec sections/spec find/spec corpus/spec index/spec predicates/spec edges/spec graph/spec))
 
 (def usage
   "Usage text shown by `kimun`, `kimun help` and `--help`."
@@ -99,14 +95,14 @@
              "  include check [--staged] · gitignore [--write] · hook --install|--uninstall · build [--rebuild] · status"
              "                              what this repo versions in git, from kimun.include.edn"
              "  models define|field-add … [--dry-run | --backfill]   documents of a redefined model: list or rewrite them"
-             "  models define -f X.edn | --from-python MOD:CLASS [--pythonpath P]   define a model or its next version"
+             "  models define -f X.edn   define a model or its next version"
              "  models list | show NAME [--format md] | history NAME | check [NAME] [-f DRAFT.edn]"
              "  models field-add NAME --field F --type T --description TEXT [--default D] [--required] | field-remove NAME --field F"
              "  models template NAME [-f FILE]   show the template, or replace it (new version)"
              "  extract [MODEL] --input DOC.md [-o FILE] [--allow-empty]   typed payload of a document (no store needed)"
              "  render [MODEL] --data PAYLOAD.json|yaml [-o FILE]   Markdown of a payload"
              "  validate [MODEL] --input DOC.md | --data FILE [--mode render-validity|strict-roundtrip]"
-             "                              MODEL (or --model): X.edn | model NAME in the store | module:Class"
+             "                              MODEL (or --model): X.edn | model NAME in the store"
              "  docs recover DOC [--depth N] [--links-only] [--include-transclusions]   the [[links]] of a document and where they resolve"
              "  docs compose DOC [-o FILE|-]                  expand ![[transclusions]] into composed Markdown"
              "  find TERM [--in physical|semantic|all] [--type KIND,…] [--global] [--regex] [--fuzzy] [--where EXPR] [--select K,…] [--limit N]"
@@ -119,11 +115,6 @@
              "  graph get ID · list [--type T] · query -f FILE.json · neighborhood ID [--depth N] [--direction D]"
              "  graph path FROM TO · cycles · order · components · central [--metric K] · isolated · similar ID"
              "  graph snapshot save|load FILE · export [-o FILE] · ingest-sldb FILE [-o OUT]"
-             "  adapters list · scan|sync|check ADAPTER PATH --system S [--factory M:A] [--language L] [-- adapter options]"
-             "                              code → documents through an out-of-process adapter: python-symbols, argparse-cli,"
-             "                              click-cli, or the path of any executable (docs/v2/11)"
-             "  migrate --from-v1 [PATH] [--pythonpath P] [--dry-run] [--only MODEL] [--limit N] [--force]"
-             "                              bring a sldb v1 store (.sldb) into this kimun store; idempotent"
              "  fields get DOC PATH · schema MODEL [FIELD] · query FIELD [--where EXPR] [--model M]"
              "  fields set|append DOC PATH VALUE · unset|clear DOC PATH · clean DOC PATH [--dedupe] [--drop-empty]"
              "  sections list DOC · fields DOC SECTION · find [TERM] [--in physical|semantic|both] [--regex] [--fuzzy] [--where EXPR]"

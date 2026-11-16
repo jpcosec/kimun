@@ -1,9 +1,0 @@
-{:model/name "TicketDoc"
- :base []
- :semantics ["ticket"]
- :fields [{:name "title" :type :string :required true :description "Ticket title."}
-          {:name "status" :type [:enum "open" "closed"] :required true :default "open" :description "Lifecycle state."}
-          {:name "tags" :type [:list :string] :required false :default [] :description "Free tags."}
-          {:name "body" :type :string :required true :description "What happened."}]
- :template "# ⸢rev•title⸥\n\nStatus: ⸢rev•status⸥\n\n## Tags\n\n- ⸢rev,list•tags⸥\n\n## Body\n\n⸢rev•body⸥\n"
- :state {:field "status" :order ["open" "closed"] :terminal ["closed"]}}

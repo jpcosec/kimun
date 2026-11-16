@@ -805,7 +805,7 @@ AST estructural neutro              invariante: parse_f(render_f(A)) == A  para 
 | Hashing | **SHA-256** a través del protocolo `Hasher` | BLAKE3 cuando exista en ambos hosts; el algoritmo se registra en el descriptor |
 | Persistencia | **log de transacciones + CAS de archivos** (formato 4; 2/3 legados) | reconstruible; el backend SQLite es una vía abierta, no implementada |
 | Índice de consulta | **mapa EAV derivado** y reconstruible (`kimun.surface.index`), cacheado por head | "el log es inmutable; los índices no"; sin Datascript |
-| Python | **adaptadores fuera de proceso** (`python/kimun/adapters`) y exportador de modelos | no hay FFI; no es centro arquitectónico |
+| Python | solo el oráculo `scripts/canon_oracle.py` (`bb oracle`); no hay adaptadores ni cliente | no hay FFI; no es centro arquitectónico |
 | Host UI / editor | **ClojureScript sobre Node** (drawer de paridad) | ProseMirror y `web-tree-sitter` cuando se construya la UI |
 | Clojure → WASM | **no todavía** | GraalVM native-image WASM es experimental; jank es temprano |
 

@@ -21,7 +21,7 @@ De mayor a menor. Ante contradicción gana el número menor.
 4. `03-estandares-de-codigo.md`
 5. `04-superficie-markdown.md`
 6. `06-superficies-y-cli.md`, `07-modelos-como-nodos.md`, `08-distribucion.md`,
-   `10-escala.md`, `11-adaptadores.md`, `13-include.md` (cada uno dueño de su tema)
+   `10-escala.md`, `13-include.md` (cada uno dueño de su tema)
 7. `05-estado.md` (estado y decisiones vigentes)
 8. `tests/promises.md` y `tests/parity-v1.md` (evidencia)
 9. `desk/atoms/` (`epoch:v2` prevalece sobre los atoms anteriores)
@@ -42,7 +42,6 @@ De mayor a menor. Ante contradicción gana el número menor.
 | `07-modelos-como-nodos.md` | modelos como descriptores EDN en el árbol `models`; frontmatter y segmentos |
 | `08-distribucion.md` | topología de repos, toolchain, `bb jar`/`bb release`, layout e instalación |
 | `10-escala.md` | formatos 2 a 4 del store, coste de abrir/leer/escribir, `stores upgrade` |
-| `11-adaptadores.md` | protocolo 1 de adaptadores (código → documentos) y el grupo `adapters` |
 | `12-ecosistema-y-pendientes.md` | pendientes de kimun, consumidores de v1 y la capa G (`wittgenstein`) |
 | `13-include.md` | `kimun.include.edn`: qué versiona un repo en git y el grupo `include` |
 | `14-juego-del-lenguaje.md` | **reordenado por tema (`DOC1` / `F18`)**: separa contrato objetivo, estado implementado, decisiones abiertas (`D-G`; `D0` es desde el 2026-11-15 contrato S–M derivado) e historia; integra `P1–P15`, tres capas (`§19`), clases/anclaje vs. generación (`§18`), trackeable vs. trackeado (`§20`), identidad vs. huella Merkle (`§21`, contrato `D0` derivado por el concilio; implementación `K1`) y decisiones `21–46` |
@@ -64,7 +63,7 @@ Newcomer:
 1. `01` (por qué) → `02` (qué) → `04` (la superficie Markdown).
 2. `05` (estado y decisiones).
 3. `06` (la CLI), `07` (modelos) y `10` (el store en disco).
-4. `13` si vas a versionar un repo con kimun; `11` si vas a escribir un adaptador.
+4. `13` si vas a versionar un repo con kimun.
 5. `tests/promises.md` y `tests/parity-v1.md` para la evidencia.
 6. `12` para lo que falta; `docs/archive/` para la historia.
 

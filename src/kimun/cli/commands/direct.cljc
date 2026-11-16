@@ -1,9 +1,8 @@
 (ns kimun.cli.commands.direct
   "The direct-mode commands `extract`, `render` and `validate` (docs/v2/06
    §5, 07 §6): model-first operations that need no store. The model is
-   `--model X.edn`, the name of a model of the discoverable store, or a v1
-   `module:Class` (Python exporter); it may also be the first positional
-   token, as in v1 (`kimun extract module:Class --input doc.md`). An absent
+   `--model X.edn`, the name of a model of the discoverable store;
+   it may also be the first positional token. An absent
    `rev` field is the typed error `validate/missing`, never a silent empty."
   (:require [babashka.fs :as fs]
             [cheshire.core :as json]
@@ -21,7 +20,7 @@
 
 (def spec
   "Options of the direct commands (babashka.cli spec, merged by `kimun.cli.main`)."
-  {:model {:alias :m :ref "MODEL" :desc "X.edn | model NAME in the store | module:Class"}
+  {:model {:alias :m :ref "MODEL" :desc "X.edn | model NAME in the store"}
    :input {:alias :i :ref "FILE" :desc "Markdown file to extract or validate"}
    :data {:alias :d :ref "FILE" :desc "Payload file (.json, .yaml, .yml) to render or validate"}
    :output {:alias :o :ref "FILE" :desc "Write the result to FILE (`-` = the envelope only)"}

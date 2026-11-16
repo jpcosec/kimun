@@ -889,14 +889,6 @@
     {:name name :tree tree-id :payload payload
      :plan {:plan/version 1 :base (:head store) :actor actor :timestamp timestamp :engines engines :ops (vec ops)}}))
 
-(defn create-plan
-  "Plan that creates document `name` of `model` from `payload` (rendered with
-   the model's template, then tracked). Returns `track-plan`'s map plus `:text`."
-  [host store model name payload opts]
-  (let [m (require-model store model)
-        text (str (render/render (:descriptor m) payload) "\n")]
-    (assoc (track-plan host store model name text (assoc opts :operation (or (:operation opts) "docs create"))) :text text)))
-
 (defn update-plan
   "Plan that replaces the source of tracked document `token` with `text`
    (re-extracted under the model's current contract, which makes it `:intact`

@@ -1,0 +1,84 @@
+
+Testing kimun.cli.main-test
+
+Testing kimun.cli.release-test
+release_test: bundle --version in 406 ms
+
+Testing kimun.lint-test
+
+Testing kimun.doc14-contract-test
+
+Testing kimun.wittgenstein-manifest-test
+
+Testing kimun.spec16-models-contract-test
+
+Testing kimun.cli.stores-test
+
+Testing kimun.cli.docs-test
+
+Testing kimun.cli.include-test
+moved existing store to /tmp/kimun-adhoc-4964532534761999161/kimun-include-11529869112794153683/.kimun.bak-20261115-232805-01M7H2XQVVSJ2K5JCMPEK37MNY
+
+Testing kimun.surface.include-test
+
+Testing kimun.surface.http-test
+
+Testing kimun.cli.models-test
+
+Testing kimun.parity.cli-store-test
+
+Testing kimun.cli.contract-test
+
+Testing kimun.cli.golden-test
+
+Testing kimun.cli.tour-test
+
+Ran 142 tests containing 2007 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.http.analysis-test
+
+Testing kimun.surface.http.circuit-test
+
+Testing kimun.surface.http.documents-test
+
+Testing kimun.surface.http.models-fields-test
+
+Testing kimun.surface.http.save-schema-test
+
+Testing kimun.surface.http.security-test
+
+Testing kimun.cli.typed-docs-test
+
+Testing kimun.cli.linked-models-test
+
+Testing kimun.cli.compose-test
+
+Testing kimun.cli.spec16-contract-test
+
+Testing kimun.cli.spec16-docs-test
+
+Testing kimun.cli.docs-parity-test
+docs parity: {:cases 57, :equal 54, :expected-diffs 3}
+
+Testing kimun.parity.known-gaps-test
+
+Testing kimun.parity.closed-gaps-test
+
+Ran 118 tests containing 1002 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.docs-test
+
+Testing kimun.cli.typed-docs-test
+
+Testing kimun.cli.main-test
+
+Testing kimun.cli.models-test
+
+Testing kimun.cli.tour-test
+
+Testing kimun.cli.golden-test
+
+Ran 48 tests containing 380 assertions.
+0 failures, 0 errors.

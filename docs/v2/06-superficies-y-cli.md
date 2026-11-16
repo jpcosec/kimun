@@ -4,7 +4,7 @@
 > códigos de salida. Cada afirmación de aquí corresponde a `src/kimun/cli/**`
 > (`main.cljc`, `args.cljc`, `out.cljc`, `errors.cljc`, `store.cljc`, `commands/*`).
 > Autoridad según `docs/v2/README.md`. El kernel es `docs/v2/02`; los modelos, `07`; la
-> distribución, `08`; los formatos del store y la escala, `10`; los adaptadores, `11`; la inclusión en
+> distribución, `08`; los formatos del store y la escala, `10`; la inclusión en
 > git, `13`. Los anillos y reglas de dependencia son `03`. La paridad medida con sldb v1 es
 > `docs/v2/tests/parity-v1.md`.
 
@@ -36,7 +36,7 @@ Opciones globales (`kimun.cli.args`):
 
 Un primer token que no sea grupo conocido devuelve `eval/not-available` (exit 6) nombrando los grupos; el evaluador anclado no existe todavía (ver §6).
 
-Códigos de salida (`kimun.cli.errors`): 0 ok, 1 `missing`/`empty`, 2 `ambiguous`, 3 rechazo de entrada, 4 `conflict`/`stale`, 5 store/journal/migrate/serve/adapters (runtime), 6 uso, 70 inesperado. La tabla explícita:
+Códigos de salida (`kimun.cli.errors`): 0 ok, 1 `missing`/`empty`, 2 `ambiguous`, 3 rechazo de entrada, 4 `conflict`/`stale`, 5 store/journal/serve (runtime), 6 uso, 70 inesperado. La tabla explícita:
 
 | exit | cuándo |
 |---|---|
@@ -45,7 +45,7 @@ Códigos de salida (`kimun.cli.errors`): 0 ok, 1 `missing`/`empty`, 2 `ambiguous
 | 2 | `*/ambiguous` |
 | 3 | namespaces `query` `models` `validate` `docs` `fields` `sections` `find` `graph` `edges` `semantic` `include` `links`; `:plan/rejected` salvo chequeo de capability |
 | 4 | `*/conflict`, `*/stale`, `plan/conflict`, `store/stale`, `store/busy` |
-| 5 | namespaces `store` `route` `markdown` `index` `journal` `migrate` `serve` `adapters`; `cli/no-store`, `cli/store-exists` |
+| 5 | namespaces `store` `route` `markdown` `index` `journal` `serve`; `cli/no-store`, `cli/store-exists` |
 | 6 | `cli/usage`, `org.babashka/cli`, `eval/not-available` |
 | 7 | `plan/rejected` con `{:check :capability}` |
 | 70 | cualquier otra cosa |
@@ -254,8 +254,8 @@ superficie `docs` la mantiene en cada escritura; la entrada es:
   `kimun.include.edn` que declara la ruta vieja hay que cambiarlo a mano.
 - **Una ruta, un documento.** Registrar un documento nuevo —tipado o genérico— sobre un archivo cuya
   ruta tiene otro es `docs/exists` (3) y nombra al que la tiene.
-- **Duplicados heredados.** Un store de v1 puede traer dos documentos sobre el mismo archivo. Entran
-  solo por el modo explícito que usa `migrate --from-v1` (`track-plan` con `:shared-path :allow`): el
+- **Duplicados heredados.** Un store heredado puede traer dos documentos sobre el mismo archivo. Entran
+  solo por el modo explícito `track-plan` con `:shared-path :allow`: el
   segundo queda trackeado y sensorizado pero **sin ruta**, la ruta sigue con el primero, y
   `stores check` lo declara (`:routes-shared`, warning `routes/shared-path`).
 - **Archivo fuera del proyecto.** La API admite `--store` desde otro directorio y guarda una ruta
@@ -379,7 +379,7 @@ Validación del descriptor (tipos, bases, `:state`, template, `py•` rechazado)
 
 | subcomando | opciones | notas |
 |---|---|---|
-| `models define` | `-f X.edn` \| `--from-python MOD:CLASS` `[--pythonpath P]`, `--dry-run`, `--backfill` | nombre nuevo ⇒ `:add-node`; existente ⇒ versión+1 y `supersedes`; el descriptor es v1 (`:template`) o spec 16 (`:anchoring`), nunca ambos; `:document-role :generated` se rechaza (F10) |
+| `models define` | `-f X.edn`, `--dry-run`, `--backfill` | nombre nuevo ⇒ `:add-node`; existente ⇒ versión+1 y `supersedes`; el descriptor es v1 (`:template`) o spec 16 (`:anchoring`), nunca ambos; `:document-role :generated` se rechaza (F10) |
 | `models field-add` | `NAME --field F --type T --description TEXT [--default D] [--required]` | nueva versión del descriptor |
 | `models field-remove` | `NAME --field F` | nueva versión del descriptor |
 | `models template` | `NAME [-f FILE]` | sin `-f` muestra el template; con `-f` lo reemplaza (nueva versión) |
@@ -468,25 +468,6 @@ Lecturas puras sobre el grafo (`--snapshot FILE` lee un snapshot en vez del stor
 | `graph snapshot load FILE` | — | igual (no abre store) |
 | `graph export` | `-o FILE [--local]` | node-link (`{"directed" "multigraph" "graph" "nodes" "links"}`) o resumen |
 | `graph ingest-sldb FILE` | `-o OUT` | convierte un export semántico (contrato `sldb_kgdb_semantic_export` v2) |
-
-### adaptadores
-
-Diseño, protocolo JSON y adaptadores incluidos en `11`.
-
-| subcomando | opciones | notas |
-|---|---|---|
-| `adapters list` | — | `[{:name :file :available? :profile :languages :options :missing}]` |
-| `adapters scan` | `ADAPTER PATH --system S [--factory M:A] [--language L] [--output DIR] [--architecture-spec FILE] [-- opciones]` | planes, sin escribir ni store |
-| `adapters sync` | idem | define modelos ausentes y aplica create/update/untrack |
-| `adapters check` | idem | como `sync` sin escribir; deriva ⇒ `adapters/missing` (1) |
-| `adapters python-scan\|python-sync\|python-check` | `--source-root DIR` (`src`), `--package P`, `--system sldb` | alias v1; adaptador `python-symbols` |
-| `adapters selfdoc-scan\|selfdoc-sync\|selfdoc-check` | `--factory M:A` (obligatoria), `--pythonpath P`, `--include-hidden` | alias v1; adaptador `argparse-cli` sobre la raíz |
-
-Errores: `adapters/missing` (1, con `:reason "drift"` para `check`), `adapters/conflict` (4), `adapters/runtime|failed|invalid-output` (5), `cli/usage` (6). Las opciones del adaptador no declaradas van tras `--`.
-
-### migrate
-
-`migrate --from-v1 [PATH] [--pythonpath P] [--dry-run] [--only MODEL] [--limit N] [--force]`. Trae un store sldb v1 (`.sldb`) al store kimun en un proceso y un open; idempotente, cada ítem en un bucket. `PATH` por defecto es el `.sldb` junto al store. Fallos: `migrate/not-v1-store` (5), `cli/usage` (6), `migrate/nothing-migrated` (5).
 
 ### fields
 
@@ -581,7 +562,6 @@ Tabla de rutas como datos en `src/kimun/surface/http/routes.cljc`; cada ruta del
 | `edges …` | `edges …` | grafo como vista derivada |
 | `graph …` | `graph …` | |
 | `journal`/log | `journal show\|verify` | |
-| `selfdoc scan\|sync\|check`, `selfdoc python-*` | `adapters scan\|sync\|check`, `adapters python-*` y alias `selfdoc-*` | adaptador fuera de proceso, protocolo 1 |
 | `find`, `serve` | `find`, `serve` | |
 
 Retirados, no portados: `explore`, `faq`, `inbox`, `ast show|schema` (→ `docs show --ast`), `lint`, `legacy ls|get|glob|raw-find`, textos de `help` hardcodeados (→ `--help` genérico), `project init|example`, la materialización de kgdb (`project`), y las banderas `--kgdb-output`/`--kgdb-command`.
@@ -589,5 +569,5 @@ Retirados, no portados: `explore`, `faq`, `inbox`, `ast show|schema` (→ `docs 
 ## 6. No implementado
 
 - **Evaluador anclado** (S4/S5 de la planificación retirada): un primer token desconocido devuelve `eval/not-available` (6). No existen `eval`, `next`, `check`, `rel`, `anchors`, `anchor add`, ni el grupo `derive`; tampoco hay `.kimun/session.edn` ni outbox. Diseño en `docs/archive/v2/09-evaluador-anclado.md`.
-- **Cliente Python y wheels** (tarea `C2` diferida el 2026-11-15, decisión 47 del dueño: el wrapper Python se agrega después de `RS1` y `RS2`, `12 §1`): no existen `python/kimun/client.py`, `python/kimun/errors.py` ni la task `bb wheel`. El único puente Python es `python -m kimun.models export mod:Class` para `models define --from-python`.
+- **Cliente Python y wheels** (tarea `C2` diferida el 2026-11-15, decisión 47 del dueño: el wrapper Python se agrega después de `RS1` y `RS2`, `12 §1`): no existe código Python en el repositorio (`python/` se borró el 2026-11-15) ni la task `bb wheel`.
 - **Motores de derivados**: las capacidades `kimun/derive` y `kimun/materialize` se registran al crear el store, pero ningún comando las ejercita todavía.

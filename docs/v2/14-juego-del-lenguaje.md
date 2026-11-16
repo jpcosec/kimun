@@ -265,7 +265,7 @@ redactado en Etapa A; implementación dependiente de `P1` y `K1`):
      grafo. Un documento puede tener un modelo de anclaje y varios de generación (carta formal,
      resumen, JSON…), y no tienen por qué coincidir. La herencia aplica a cada uno por separado.
    - El round-trip estricto de v1 (extraer y renderizar idéntico) deja de ser obligación: era
-     consecuencia de usar un solo template para las dos direcciones. *(Contrato objetivo en Spec 16; los modelos EDN vigentes de `07` y adaptadores `11` conservan compatibilidad legacy hasta `M2`.)*
+     consecuencia de usar un solo template para las dos direcciones. *(Contrato objetivo en Spec 16; los modelos EDN vigentes de `07` conservan compatibilidad legacy hasta `M2`.)*
 8. **El azúcar se observa en el nodo, no se declara.** Un nodo es azúcar:
    - **en anclaje**, porque no hay nada anclado a él;
    - **en generación**, porque es una fórmula sobre el AST desde el que se genera, o un string fijo.
@@ -656,9 +656,8 @@ pregunta (EDN)
 
 ## 11. Motores y protocolo
 
-El protocolo 1 de adaptadores (`11-adaptadores.md`, **implementado** para perfiles `symbols` y `cli`
-y aliases `python-*`/`selfdoc-*` incluido chequeo de actualidad de nodos fuente `C1`) se generaliza
-en el contrato objetivo a perfil **`propositions`** (`(R A B) @ ctx` con procedencia `{path
+El protocolo 1 de adaptadores (borrado el 2026-11-15 junto con el grupo `adapters`) se sustituye
+en el contrato objetivo por el perfil **`propositions`** (`(R A B) @ ctx` con procedencia `{path
 source_hash span extractor confidence}`). Un motor es cualquier proceso que cumpla el contrato; kimun
 coordina la sensorización, persistencia, indexación y consulta:
 
@@ -724,9 +723,9 @@ Estado real de ejecución por etapa (el backlog vivo y dependencias residen en
     - **`K8` (cerrada):** la ruta relativa es el nombre cualificado y el nombre corto es un alias
       que falla con `docs/ambiguous` ante colisión (`bcd85a53`, integrado con rutas en `ff9d44c3`;
       evidencia en `runs/subagents/2026-11-14-K8/`).
-    - **`C1` (cerrada):** guarda `before-image` en `adapters sync` (`cdce1cb9`) y chequeo de
-      actualidad de nodos fuente `source-graph-check` en `adapters check` (`3902731d`; marcador
-      `parity-v1` en `520/1/14/55/0/0/0/0`; evidencias en `runs/subagents/2026-11-14-c1-*`).
+    - **`C1` (cerrada y luego borrada el 2026-11-15):** la guarda `before-image` y el chequeo
+      `source-graph-check` vivían en el grupo `adapters`, que ya no existe (historial git:
+      `cdce1cb9`, `3902731d`).
     - **Sensorización (`stores sense` y `stores heartbeat`):** observación read-only de señales
       (`c07c0e0c`, `runs/subagents/2026-11-14-sense/`) y daemon NDJSON de sensorización (`86a0ba42`,
       `08e2bbb4`, `f0619f7a`, `runs/subagents/2026-11-14-heartbeat*`).

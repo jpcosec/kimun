@@ -78,10 +78,7 @@
     (is (not (:ok e)))
     (is (= "models/missing" (get-in e [:error :type])))
     (is (str/includes? (get-in e [:error :message]) "FooBar"))
-    (is (= ["TicketDoc"] (get-in e [:error :data :known])) "the available models are listed")
-    (let [py (run p "models" "define" "--from-python" "no.such:FooBar")]
-      (is (= [3 "models/python-export"] [(:exit py) (get-in py [:error :type])]))
-      (is (str/includes? (get-in py [:error :message]) "no.such:FooBar")))))
+    (is (= ["TicketDoc"] (get-in e [:error :data :known])) "the available models are listed")))
 
 ;; v1: store/test_cli_store.py::test_model_add_missing_store_reports_tried_path
 (deftest missing-store-reports-the-tried-path

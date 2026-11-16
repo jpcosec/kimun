@@ -1,7 +1,0 @@
-name: ticket-bad
-path: tickets/bad.md
-source_hash: f996e53dbb9e264b1e87376c7d364d4b4cd8cbf2687192c31a59be197de481b0
-content_hash: 0000
-field_hashes: {}
-semantic_tags:
-- type.fixture

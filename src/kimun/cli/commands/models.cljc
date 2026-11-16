@@ -4,11 +4,9 @@
    descriptor stored as a node of the `models` tree — so editing a model is
    transforming its descriptor and defining it again; a draft is simply a
    descriptor file that has not been defined. Also the helpers the direct
-   commands share: reading a descriptor from a file, a Python class or the store."
+   commands share: reading a descriptor from a file or the store."
   (:require [babashka.fs :as fs]
-            [babashka.process :as process]
             [clojure.edn :as edn]
-            [clojure.java.io :as io]
             [clojure.string :as str]
             [kimun.cli.commands.docs :as docs]
             [kimun.cli.compose :as compose]
@@ -29,8 +27,6 @@
 (def spec
   "Options of the `models` group (babashka.cli spec, merged by `kimun.cli.main`)."
   {:file {:alias :f :ref "FILE" :desc "Descriptor (.edn) or template file"}
-   :from-python {:ref "MOD:CLASS" :desc "Export a v1 StructuredNLDoc class as the descriptor"}
-   :pythonpath {:ref "PATH" :desc "Extra PYTHONPATH for --from-python"}
    :field {:ref "NAME" :desc "Field name (models field-add)"}
    :type {:ref "TYPE" :desc "Field type: string|int|bool|text|yaml or EDN such as [:list :string]"}
    :default {:ref "VALUE" :desc "Field default (models field-add)"}
@@ -51,41 +47,20 @@
     (try (edn/read-string (slurp (str p)))
          (catch Exception e (err/raise :models/invalid (str "descriptor file is not EDN: " (ex-message e)) {:path (str p)})))))
 
-(defn- python-dir [env]
-  (or (get env "KIMUN_PYTHON")
-      (when-let [r (io/resource "VERSION")]
-        (when (= "file" (.getProtocol r))
-          (str (fs/path (fs/parent (fs/parent (fs/path (.getPath r)))) "python"))))))
-
-(defn from-python
-  "The descriptor of v1 class `ref` (`module:Class`), exported by
-   `python3 -m kimun.models export` (docs/v2/06 §6) with `pythonpath` and the
-   exporter's directory (`$KIMUN_PYTHON`, else `python/` beside `resources/`)
-   on PYTHONPATH. Raises `:models/python-export` (exit 3) with stderr."
-  [ref {:keys [pythonpath env cwd]}]
-  (let [path (str/join ":" (remove str/blank? [(python-dir env) pythonpath (get env "PYTHONPATH")]))
-        r (process/shell {:out :string :err :string :continue true :dir (str cwd) :extra-env {"PYTHONPATH" path}}
-                         "python3" "-m" "kimun.models" "export" ref)]
-    (when-not (zero? (:exit r))
-      (err/raise :models/python-export (str "could not export " ref ": " (last (str/split-lines (str/trim (:err r))))) {:ref ref}))
-    (edn/read-string (:out r))))
-
 (defn- open-store [opts {:keys [env cwd]}]
   (cli-store/open! (cli-store/resolve-store opts env cwd)))
 
 (defn resolve-model
-  "The descriptor named by `token`: an existing `.edn` file, a `module:Class`
-   reference (Python exporter), or the name of a model in the discoverable
+  "The descriptor named by `token`: an existing `.edn` file or the name of a model in the discoverable
    store. Raises `:models/missing` (exit 1) when it is none of them."
   [token opts {:keys [env cwd] :as ctx}]
   (cond
-    (nil? token) (err/raise :cli/usage "a model is required: --model X.edn | NAME | module:Class" {})
+    (nil? token) (err/raise :cli/usage "a model is required: --model X.edn | NAME" {})
     (str/ends-with? token ".edn") (read-descriptor-file token cwd)
-    (str/includes? token ":") (from-python token {:pythonpath (:pythonpath opts) :env env :cwd cwd})
     :else (let [dir (cli-store/resolve-store opts env cwd)]
             (if (and dir (cli-store/store? dir))
               (:descriptor (mstore/model (:store (open-store opts ctx)) token))
-              (err/raise :models/missing (str "no model `" token "`: not an .edn file, not module:Class, and no store to look it up in") {:model token})))))
+              (err/raise :models/missing (str "no model `" token "`: not an .edn file and no store to look it up in") {:model token})))))
 
 (defn- rewrites
   "For each document of the model `descriptor` redefines: `{:name :path :text
@@ -164,14 +139,13 @@
                          :data (assoc data :backfilled (if (:backfill opts) (mapv :name todo) []))})))))
 
 (defn define
-  "`models define -f X.edn | --from-python mod:Class [--pythonpath P]`: a new
+  "`models define -f X.edn`: a new
    name is version 1; an existing name becomes version + 1 by `:replace`
    (`supersedes`); the same contract again changes nothing. Data:
    `{:name :version :id :created? :unchanged?}`."
   [_args opts {:keys [env cwd] :as ctx}]
   (let [d (cond (:file opts) (read-descriptor-file (:file opts) cwd)
-                (:from-python opts) (from-python (:from-python opts) {:pythonpath (:pythonpath opts) :env env :cwd cwd})
-                :else (err/raise :cli/usage "`models define` needs -f X.edn or --from-python module:Class" {:group "models" :subcommand "define"}))]
+                :else (err/raise :cli/usage "`models define` needs -f X.edn" {:group "models" :subcommand "define"}))]
     (commit-define! d opts ctx "models define")))
 
 (defn- field-count [d] (count (if (mstore/spec16? d) (get-in d [:anchoring :fields]) (:fields d))))

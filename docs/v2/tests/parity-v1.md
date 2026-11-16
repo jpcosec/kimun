@@ -21,8 +21,8 @@ Estado al 2026-10-09, sobre las 590 funciones de test de sldb v1 (marcador 518/1
 | n/a | 55 | probaba un mecanismo que v2 no tiene por diseño; cada una con su razón y lo que sostiene la promesa hoy (`parity-na.edn`) |
 | brecha | 0 | promesa de v1 que kimun **no** cumple todavía (`parity-gaps.edn`, fijadas en `test/kimun/parity/known_gaps_test.cljc`) |
 | mencionada | 0 | nombrada solo en comentarios negativos (n/a, diferida…); no ejerce la promesa |
-| corpus | 0 | cerró en 2026-11-14 al portar `selfdoc/test_preflight.py::test_before_image_guard_prevents_clobbering_concurrent_edits` (`kimun.cli.adapters-test/before-image-guard-prevents-clobbering-concurrent-edits`) |
-| abierta | 0 | cerró en 2026-11-14 al portar `selfdoc/test_python_scanner.py::test_kgdb_graph_check_rejects_missing_or_stale_source_nodes` (`kimun.surface.adapters/source-graph-check`, `kimun.cli.adapters-test/kgdb-graph-check-rejects-missing-or-stale-source-nodes`, `kimun.parity.adapters-parity-test/kgdb-graph-check-rejects-missing-or-stale-source-nodes`) |
+| corpus | 0 | cerró en 2026-11-14 al portar `selfdoc/test_preflight.py::test_before_image_guard_prevents_clobbering_concurrent_edits`; la prueba y el código se borraron el 2026-11-15 con el grupo `adapters` |
+| abierta | 0 | cerró en 2026-11-14 al portar `selfdoc/test_python_scanner.py::test_kgdb_graph_check_rejects_missing_or_stale_source_nodes`; la prueba y el código se borraron el 2026-11-15 con el grupo `adapters` |
 
 Brechas abiertas (`parity-gaps.edn`): ninguna. Cerradas el 2026-10-08: A1 (un documento
 `superseded` se lee bajo el contrato con el que se escribió; `models field-add` de un campo
@@ -39,7 +39,7 @@ en `test/kimun/parity/closed_gaps_test.cljc`.
    tiene que reproducir cada caso. Son literalmente los mismos tests, en la frontera del motor.
 2. **Tests portados**: para store, CLI, grafo, consultas y serve, cada test de v1 se
    reescribe contra la CLI/API de kimun con el vocabulario de `06-superficies-y-cli.md`.
-3. **Corpus real**: `migrate --from-v1` sobre el `.sldb` de sldb (1.551 documentos) y
+3. **Corpus real**: `migrate --from-v1` (borrado el 2026-11-15) sobre el `.sldb` de sldb (1.551 documentos) y
    comparación payload a payload.
 
 ## DAG y estado (histórico)
@@ -71,7 +71,7 @@ Todo lo demás que estaba diferido quedó portado o declarado n/a; lo mide
 ## Desviaciones deliberadas respecto de v1 (acumuladas)
 
 - `--where` no reconocido es `query/bad-where` con posición, no `False` silencioso (`06-superficies-y-cli.md`). Regex inválida se rechaza al parsear. `>=`/`<=` entre tipos distintos da falso en vez de `TypeError`. Dialecto de regex: Java.
-- Adaptadores: `sync` deja de rastrear los documentos huérfanos que el adaptador posee (v1 solo los informaba); el drift de `check` es `adapters/missing` con `:reason "drift"` (exit 1, como v1); no se portó la heurística de renombres; la guarda de before-image se porta en `adapters sync` (`:adapters/conflict`, exit 4) y el chequeo de actualidad de nodos fuente se porta con `source-graph-check` / `source-graph-current?` y `:source-graph` en `check` sin archivo KGDB externo. v1 ya no puede sincronizar sus propios símbolos: cinco pares getter/setter chocan en un mismo id; kimun lo informa como `adapters/collision`.
+- Adaptadores: el grupo `adapters` y `python/` se borraron el 2026-11-15 (la paridad con v1 está suspendida); las filas de arriba que los citan quedan como historia.
 - Rutas HTTP: `/models/promote` y los borradores `.py.temp` se retiran (`POST /models/define {edn}`); `/lint` sirve los hallazgos de `stores check`; `/ast` es el documento con payload y secciones; `/models/detail` de un modelo desconocido es 404 (v1: 200 con `ok false`); las listas `unavailable` de `/schema` y `/graph` existen pero ningún estado del store las llena, porque un modelo es un nodo y no un módulo que pueda fallar al importarse. Claves que cambian de nombre: `id`→`name`, resultados bajo `data`.
 - Índice y búsqueda: la búsqueda física también mira el texto del documento y el valor de los campos (v1: solo nombres y rutas); `--fuzzy` y el ranking por defecto usan Dice, no `difflib`; no se persisten vectores (`:score-fn` reemplaza al `Embedder`); una dirección que rompe la gramática es `query/bad-address` (exit 3), una bien formada que no nombra nada da vacío; `rebuild-indexes` con documentos que no extraen sale con 0 y `:complete false`.
 - Aristas: `edges init|rebuild` son no-ops informados (el grafo se deriva de `(store, head)`); los 14 tipos builtin existen siempre; `edges check` y `predicates validate` salen con 3 (v1: 1); v1 inventaba secciones dentro del frontmatter YAML y kimun no (74 `has_section` y sus 421 `tagged_as` en la muestra real).

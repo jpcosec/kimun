@@ -1,7 +1,0 @@
-name: note-missing
-path: notes/missing.md
-source_hash: 0000
-content_hash: 0000
-field_hashes: {}
-semantic_tags:
-- type.fixture

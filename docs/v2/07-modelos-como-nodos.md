@@ -51,8 +51,7 @@ clase de arista nueva ni una regla nueva de validación: el kernel de `02` ya lo
  :state         {:field "status" :order ["open" "doing" "done"] :terminal ["done"]}}
 ```
 
-Las claves `:py/*` las escribe el exportador de v1 (`python -m kimun.models export module:Class`,
-§7); el kernel y las superficies las leen como metadatos de procedencia. Un descriptor escrito a
+Las claves `:py/*` las escribió el exportador de v1 (ya borrado); el kernel y las superficies las leen como metadatos de procedencia. Un descriptor escrito a
 mano puede omitirlas.
 
 | clave | tipo | obligatoria | nota |
@@ -174,8 +173,7 @@ La sintaxis y las opciones exactas de cada subcomando las posee `06`; aquí va e
 
 | comando | efecto |
 |---|---|
-| `models define -f X.edn [--from-python MOD:CLASS] [--dry-run \| --backfill]` | valida el descriptor; si el nombre no existe: `:add-node` + posición en `models` + ingesta de `model/<Name>/template`; si existe: `:model/version`+1 y `:replace` de la posición ⇒ `supersedes` ⇒ los docs se re-anclan (`02 §6.1`). `--dry-run` lista los documentos de un modelo redefinido sin escribir; `--backfill` los reescribe bajo el contrato nuevo |
-| `models define --from-python mod:Class` | invoca `python -m kimun.models export mod:Class` (`06`) y sigue como `-f`; la MRO de la clase se exporta como `:base` |
+| `models define -f X.edn [--dry-run \| --backfill]` | valida el descriptor; si el nombre no existe: `:add-node` + posición en `models` + ingesta de `model/<Name>/template`; si existe: `:model/version`+1 y `:replace` de la posición ⇒ `supersedes` ⇒ los docs se re-anclan (`02 §6.1`). `--dry-run` lista los documentos de un modelo redefinido sin escribir; `--backfill` los reescribe bajo el contrato nuevo |
 | `models show NAME [--format md\|json\|edn]` | `md` = proyección auditable: campos con tipo y default, template con marcadores resaltados, bases resueltas, versión e historial, docs que lo referencian y el estado de anclaje de cada `reference` (`intact`/`superseded`/`orphan`) |
 | `models list` | nombre, versión, nº de docs, nº de docs con anclaje no `intact` |
 | `models check [NAME] [-f DRAFT.edn]` | valida descriptores (tipos, bases existentes, `:state` coherente, template parseable) y todos los docs de cada modelo con `validate` |
@@ -199,7 +197,7 @@ implementado**: ver `docs/archive/v2/09-evaluador-anclado.md`.
   EdgeDoc FAQDoc HookDoc InboxNoteDoc MaterializationContractDoc OperatorDoc PillDoc
   ProtoAtomDoc RepositoryDoc RitualDoc RoleDoc RoutineDoc RunDoc RuntimeProfileDoc StepDoc
   TaskDoc` más las dos intermedias (`PrimitiveDoc`, `OperationalArtifactDoc`). Cada una se
-  exporta como descriptor con `--from-python`;
+  se exportó como descriptor con el exportador de v1 (ya borrado);
   las clases intermedias también se definen (son `:base` de otras); las composiciones pasan a
   `:py/compositions` por índice. Goldens: los 23 descriptores congelados en
   `test/fixtures/models/deskops/*.edn`.

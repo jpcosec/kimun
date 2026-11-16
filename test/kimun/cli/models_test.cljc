@@ -20,7 +20,6 @@
 (def ticket (str (fs/absolutize "test/fixtures/models/ticket.edn")))
 (def ticket-d (edn/read-string (slurp ticket)))
 (def doc "# Login roto\n\nStatus: open\n\n## Tags\n\n- auth\n- urgente\n\n## Body\n\nNo deja entrar.\n")
-(def v1-src "/home/jp/proyectos/hum-ecosystem/tools/sldb/src")
 
 (defn- tmp [] (str (ktu/temp-dir "kimun-models-")))
 (defn- run [cwd & argv] (:envelope (main/run argv env cwd)))
@@ -205,19 +204,6 @@
     (is (= 6 (:exit (run p "validate" ticket "--input" "bad.md" "--mode" "nope"))))
     (is (= [1 "models/missing"] ((juxt :exit #(get-in % [:error :type])) (run p "extract" "GhostDoc" "--input" "bad.md"))))
     (is (= 3 (:exit (run p "render" ticket "--data" (write! p "l.json" "[1,2]")))))))
-
-(deftest define-from-python
-  ;; v1: `models add module:Class` — 06 §5 `models define --from-python`
-  (when (fs/exists? (fs/path v1-src "sldb" "examples" "reference_bundle" "guide_model.py"))
-    (let [p (project)
-          e (run p "models" "define" "--from-python" "sldb.examples.reference_bundle.guide_model:SLDBGuide" "--pythonpath" v1-src)
-          input (str (fs/path v1-src "sldb" "examples" "reference_bundle" "guide.input.md"))]
-      (is (true? (:ok e)) (pr-str e))
-      (is (= "SLDBGuide" (get-in e [:data :name])))
-      (is (= "SLDB Example Guide" (get-in (run p "extract" "SLDBGuide" "--input" input) [:data :payload "title"])))
-      (is (true? (:ok (run p "validate" "SLDBGuide" "--input" input))))
-      (let [bad (run p "models" "define" "--from-python" "no.such:Thing")]
-        (is (= [3 "models/python-export"] [(:exit bad) (get-in bad [:error :type])]))))))
 
 ;; ---- M1f: spec 16 descriptors in the store (docs/v2/16 §3.4, §4) ----
 

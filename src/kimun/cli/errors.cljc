@@ -21,7 +21,7 @@
 
 (def ^:private exit-by-namespace
   {"query" 3 "models" 3 "validate" 3 "docs" 3 "fields" 3 "sections" 3 "find" 3
-   "graph" 3 "edges" 3 "links" 3 "semantic" 3 "journal" 5 "migrate" 5 "serve" 5 "adapters" 5
+   "graph" 3 "edges" 3 "links" 3 "semantic" 3 "journal" 5 "serve" 5
    "include" 3
    "store" 5 "route" 5 "markdown" 5 "index" 5})
 

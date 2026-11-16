@@ -69,7 +69,7 @@ No hay prioridades: todo lo de esta lista se hace. El grafo dice qué depende de
 paralelo sin romper invariantes. Registro de la sesión: `docs/v2/drafts/sesion-2026-10-08-09.md`.
 
 **Invariantes que ningún trabajo puede romper:** `bb lint` (anillos de `03 §1`) y `bb test` en verde;
-paridad v1 sin brechas (`scripts/parity/coverage.py … --strict --allow-open-prefix selfdoc/`);
+paridad v1 suspendida durante la rearquitectura (`docs/v2/drafts/sesion-2026-11-15.md`);
 `bin/kimun include check` limpio; todo `bb`/script pesado bajo `memcap` (`AGENTS.md`). `bb oracle`
 (ids canónicos) solo puede cambiar dentro de K1, y a propósito.
 
@@ -97,7 +97,7 @@ paridad v1 sin brechas (`scripts/parity/coverage.py … --strict --allow-open-pr
 | G1 | capa G: leer fuentes (paper, wittgenstein, Tractatus) y reescribir el spec sobre sentido × verdad | K1 (contrato D0 ya derivado), D-G, M1, T01 (cerrada) | `docs/v2/drafts/capa-g-dudas.md`, `runs/research/2026-10-08/spec15/` (borrador previo, solo referencia) |
 | G2 | consulta Datalog (Datalevin pod + respaldo in-process) | G1 | `runs/research/2026-10-08/R1-report.md` |
 | G3 | embeddings sobre anchors (modelo multilingüe) | G1, K2a | decisión 38 |
-| C1 | **cerrada (2026-11-14)**: selfdoc: guarda de before-image al escribir (`C1/F25`) y chequeo de actualidad de nodos fuente (`source-graph-check` / `python-check` sin KGDB externo) | — | `tests/parity-v1.md`, `11-adaptadores.md`, `kimun.cli.adapters-test`, `kimun.parity.adapters-parity-test` |
+| C1 | **cerrada (2026-11-14) y borrada (2026-11-15)**: selfdoc, la guarda de before-image y el chequeo de actualidad `source-graph-check` / `python-check` vivían en el grupo `adapters`, que se borró junto con `python/` (decisión del dueño, 2026-11-15; historial git). Ya no existen ni sus pruebas | — | `docs/v2/drafts/sesion-2026-11-15.md` |
 | RS1 | **prueba sobre el sldb actual (2026-11-15, sin empezar)**: mostrar que kimun funciona sobre un store real de hoy antes de exponerle nada a los consumidores. **Criterio propuesto por el equipo, pendiente del dueño** (no es decisión): (a) `migrate --from-v1` corre contra el `.sldb` actual de sldb y de un desk de deskops, con cada documento no migrado explicado; (b) conformidad contra la suite actual de sldb, no la línea base v1 de septiembre, con las desviaciones deliberadas listadas como en `tests/parity-v1.md`; (c) formato 4 con esquema de rutas 2 medido en ese store: reconstrucción completa, actualización sin cambios, actualización con un documento cambiado y arranque del CLI, comparados con las medidas de sldb; (d) lo que el store real use y kimun no tenga (`stores build --check`, documentos índice, documentos YAML, `mcp`, `views`) queda portado o descartado por escrito; (e) lecturas con caché fría y fallos inyectados sin hallazgos abiertos | `M1` (motor de modelos), `K1`; (c) además `K2a` | decisión 47, `runs/research/2026-11-15/reemplazo-sldb/preparacion.md`, `sldb-rendimiento.md` |
 | RS2 | **contrato estable de superficie para consumidores (2026-11-15, sin empezar)**: qué operaciones, tipos, errores y garantías de compatibilidad ofrece kimun a quien hoy importa sldb en proceso, escrito contra el uso real y no contra la API interna de sldb. Insumo listo: el inventario de módulos, nombres, firmas, llamadas por subprocess y lecturas directas de `.sldb/` de cada consumidor. Es documento de contrato (su lugar en la tabla de autoridad se decide al redactarlo); el código es `C2` | `RS1` | decisión 47, `runs/research/2026-11-15/reemplazo-sldb/superficie-consumidores.md`, `06 §5` |
 | C2 | **diferida (2026-11-15, decisión 47 del dueño)**: wrapper Python para los consumidores, que implementa el contrato de `RS2`. Se agrega solo después de que kimun esté probadamente funcionando. Historia: la fila se retiró el 2026-11-15 por decisión del dueño; era «cliente Python y rutas HTTP de graph_ui (`/kgdb/snapshot`, `/models/promote`)». Motivo: las rutas están retiradas (`docs/v2/tests/parity-v1.md`, `06 §5`), el cliente no existe ni está especificado (`06 §6`) y kimun no tiene consumidores en código; `graph_ui` queda como consumidor de v1. Ese motivo sigue valiendo para las rutas de `graph_ui`, que no vuelven con esta fila | `RS2` | decisión 47, `python/README.md`, `06 §5–§6`, `08`, `docs/v2/tests/parity-v1.md` |
@@ -130,8 +130,8 @@ En paralelo hoy, sin esperar al dueño: `K2a` (cortes `C2a`/`C2b`/`C4`/`C5` en `
 - **Board legado**: `desk/tasks/Board.md` no es editable por CLI.
 - **Tree-sitter como pod**: el pod existe y es el parser de la capa M
   (`kimun.host.treesitter`, `pods/treesitter`, decisión 29). Falta el parseo de **código**
-  como superficie de modelos (el adaptador Python `treesitter-symbols` se retiró el 2026-11-15,
-  `11 §9.4`: hoy no hay lector de símbolos sobre el pod) y la fase 3 (ids de nodo del CST como anclas).
+  como superficie de modelos (no hay adaptadores: el subsistema se borró el 2026-11-15, hoy no hay
+  lector de símbolos sobre el pod) y la fase 3 (ids de nodo del CST como anclas).
 
 ## 2. Consumidores y superficies
 

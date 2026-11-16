@@ -1,4 +1,0 @@
-{:model/name "NoteDoc" :base [] :semantics ["note"]
- :fields [{:name "title" :type :string :required true :description "Note title."}
-          {:name "body" :type :string :required true :description "Note text."}]
- :template "# ⸢rev•title⸥\n\n⸢rev•body⸥\n"}
