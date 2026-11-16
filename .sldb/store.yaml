@@ -231,7 +231,6 @@ include:
   - desk/lifecycle/rule-closeout-task-refactor.md
 - model: TaskCodeDoc
   paths:
-  - desk/tasks/task-cache-of-readings-by-git-blob-hash.md
   - desk/tasks/task-compare-declare-about-with-the-sldb-edge-index-on-the-desk.md
   - desk/tasks/task-declared-debt-of-the-new-path.md
   - desk/tasks/task-deskops-views-as-declare-generate-recipes.md
