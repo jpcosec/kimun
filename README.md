@@ -111,6 +111,7 @@ kimun stores init --name my-kb          # create .kimun/
 kimun docs ingest notes.md --name notes # parse Markdown and commit it as a document
 kimun docs list --format text           # name, tree id, class
 kimun docs render notes                 # canonical Markdown of a document
+kimun find cache --format text          # a word of the text: the section that holds it, and its line
 kimun stores seen --set HEAD            # the pointer "looked up to this commit"
 kimun stores health --format text       # verdict: ok | degraded | needs-human (:scope :git)
 ```

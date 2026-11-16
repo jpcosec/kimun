@@ -44,7 +44,7 @@
     (is (= "rebuild-indexes" (:command e)))
     (is (= "p" (get-in e [:store :name])))
     (is (= head (:revision e)))
-    (is (= {:head head :cache (str (fs/path "index" (str head ".edn"))) :documents 1 :models 1
+    (is (= {:head head :cache (str (fs/path "index" (str head ".edn"))) :documents 1 :generic-documents 0 :models 1
             :skipped [] :complete true :pruned 0}
            (dissoc (:data e) :bytes :tags)))
     (is (pos? (get-in e [:data :tags])))

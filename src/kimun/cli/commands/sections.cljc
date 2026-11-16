@@ -38,19 +38,33 @@
   [store]
   (into {} (map (juxt :name :tags)) (sem/document-tags store)))
 
+(defn- generic-entries
+  "`[document entries]` of the generic document (no model, K3) `d`: its sections,
+   read from the canonical Markdown of its tree (cache, else the file), and no tags."
+  [store d]
+  (let [md (tdocs/document-markdown store d)]
+    (when-not (string? md)
+      (err/raise :sections/unreadable (str "the text of `" (:path d) "` cannot be read (file missing and no cached tree)")
+                 {:document (:name d) :path (:path d)}))
+    [d (sections/entries md [])]))
+
 (defn- doc-entries
-  "`[document entries]` of the tracked document `token`."
+  "`[document entries]` of the tracked document `token`, typed or generic (a
+   generic one has `:generic true`, no `:model`)."
   [store token]
-  (let [d (tdocs/find-document store token)
-        _ (when-not d (err/raise :docs/missing (str "no document named or identified by `" token "`") {:document token}))]
-    [d (sections/entries (:source d) (get (tags-index store) (:name d) []))]))
+  (if-let [d (tdocs/find-document store token)]
+    [d (sections/entries (:source d) (get (tags-index store) (:name d) []))]
+    (if-let [g (tdocs/generic-document store token)]
+      (generic-entries store g)
+      (err/raise :docs/missing (str "no document named or identified by `" token "`") {:document token}))))
 
 (defn- non-empty! [what rows data]
   (if (seq rows) rows (err/raise :sections/empty (str "no " what) data)))
 
 (defn list-sections
   "`sections list DOC` (alias `show`): the sections of the tracked document
-   DOC in order. Data: `{:document :model :path :sections [{:path :title
+   DOC in order (a document without model, K3, lists its sections too, with
+   `:model nil` and `:class`). Data: `{:document :model :path :sections [{:path :title
    :breadcrumbs :about :slug :semantic_tags :level :line_start :line_end}]}`.
    A document without headings raises `:sections/empty` (exit 1, as v1)."
   [args opts ctx]
@@ -59,7 +73,8 @@
         [d es] (doc-entries (:store o) token)]
     (non-empty! "sections" es {:document (:name d)})
     (out/ok "sections list" {:store (cli-store/store-ref o) :revision (:head (:store o))
-                             :data {:document (:name d) :model (:model d) :path (:path d) :sections es}})))
+                             :data (cond-> {:document (:name d) :model (:model d) :path (:path d) :sections es}
+                                     (:generic d) (assoc :class (:class d)))})))
 
 (defn find-cmd
   "`sections find TERM [--in physical|semantic|both] [--regex] [--fuzzy]
@@ -73,11 +88,20 @@
         o (cli-store/open-for opts ctx)
         store (:store o)
         tags (tags-index store)
-        recs (vec (mapcat (fn [d]
-                            (sections/records {:store (:name (:descriptor o)) :name (:name d) :model (:model d) :path (:path d)
-                                               :tags (get tags (:name d) [])}
-                                              (sections/entries (:source d) (get tags (:name d) []))))
-                          (filter #(or (nil? (:model opts)) (= (:model opts) (:model %))) (tdocs/documents store))))
+        sname (:name (:descriptor o))
+        typed (mapcat (fn [d]
+                        (sections/records {:store sname :name (:name d) :model (:model d) :path (:path d)
+                                           :tags (get tags (:name d) [])}
+                                          (sections/entries (:source d) (get tags (:name d) []))))
+                      (filter #(or (nil? (:model opts)) (= (:model opts) (:model %))) (tdocs/documents store)))
+        ;; documents without model have no model to filter by: `--model` leaves them out
+        generic (when (nil? (:model opts))
+                  (mapcat (fn [g]
+                            (when-let [md (tdocs/document-markdown store g)]
+                              (sections/records {:store sname :name (:name g) :model nil :class (:class g) :path (:path g) :tags []}
+                                                (sections/entries md []))))
+                          (tdocs/generic-documents store)))
+        recs (vec (concat typed generic))
         found (sections/find-sections recs term {:in in :regex regex :fuzzy fuzzy :where (:where opts)})]
     (non-empty! "matching sections" found {:term term})
     (out/ok "sections find" {:store (cli-store/store-ref o) :revision (:head store)
@@ -94,6 +118,9 @@
         o (cli-store/open-for opts ctx)
         store (:store o)
         [d es] (doc-entries store token)
+        _ (when (:generic d)
+            (err/raise :cli/usage (str "`" (:name d) "` has no fields: it is a document without model (" (:class d) "), and `sections fields` reads the fields a model gives a section")
+                       {:group "sections" :subcommand "fields" :document (:name d) :class (:class d)}))
         sec (sections/resolve-section es wanted)
         model (mstore/find-model store (:model d))
         doc (tdocs/document store (:tree d))]

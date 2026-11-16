@@ -1,0 +1,49 @@
+
+Testing kimun.surface.index.build-test
+
+Testing kimun.surface.index.corpus-test
+
+Testing kimun.surface.index.where-test
+
+Testing kimun.surface.index.search-test
+
+Testing kimun.surface.index.cache-test
+
+Testing kimun.surface.index.address-test
+
+Testing kimun.cli.find-generic-test
+
+Testing kimun.cli.find-test
+
+Testing kimun.cli.sections-test
+
+Testing kimun.cli.fields-test
+
+Testing kimun.cli.generic-docs-test
+
+Testing kimun.cli.index-test
+
+Testing kimun.cli.corpus-test
+
+Ran 116 tests containing 1075 assertions.
+0 failures, 0 errors.
+=== second batch
+
+Testing kimun.cli.docs-test
+
+Testing kimun.cli.typed-docs-test
+
+Testing kimun.cli.golden-test
+
+Testing kimun.cli.cold-cache-test
+
+Testing kimun.cli.linked-models-test
+
+Testing kimun.surface.http.models-fields-test
+
+Testing kimun.surface.http.documents-test
+
+Testing kimun.lint-test
+
+Ran 65 tests containing 545 assertions.
+0 failures, 0 errors.

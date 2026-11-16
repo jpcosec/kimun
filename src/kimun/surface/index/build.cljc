@@ -9,7 +9,8 @@
    `(clojure.edn/read-string (pr-str idx))` unchanged (strings, keywords,
    numbers, vectors, maps and sets only). `kimun.surface.index.cache` is the
    only place that reads or writes it on disk."
-  (:require [kimun.surface.docs :as tdocs]
+  (:require [clojure.string :as str]
+            [kimun.surface.docs :as tdocs]
             [kimun.surface.models.segments :as segments]
             [kimun.surface.models.store :as mstore]
             [kimun.surface.semantic :as sem]))
@@ -17,11 +18,11 @@
 (def version
   "Format version of the index map (its `:version`). A cached index of another
    version is discarded and rebuilt."
-  1)
+  2)
 
 (def contract-keys
   "The keys every index map carries (docs/v2/06 §3), plus `:version`."
-  [:version :head :models :docs :by-model :by-name :tags :tag-dag :equivalences :sections :links :anchors])
+  [:version :head :models :docs :by-model :by-name :tags :tag-dag :equivalences :sections :links :anchors :generics])
 
 (defn- lineage
   "Names of every base of `descriptor`, nearest first (as
@@ -85,6 +86,36 @@
   (let [ss (vec (segments/sections (or (:template descriptor) "")))]
     {:sections ss :owners (into (sorted-map) (segments/field-owners (update descriptor :template #(or % "")) ss))}))
 
+(defn- own-text
+  "The text of section `s` itself: the lines after its heading line down to the
+   line before the next heading of any level (`next-start`, nil for the last
+   section); `lines` is the Markdown split in lines."
+  [lines s next-start]
+  (let [from (or (:line_start s) 0)
+        to (if next-start (dec next-start) (count lines))]
+    (str/join "\n" (subvec lines (max 0 from) (max (max 0 from) (min (count lines) to))))))
+
+(defn- generic-entry
+  "The index entry of the generic document `d` (a `tdocs/generic-documents`
+   map): `{:tree :doc :name :class :path :preamble text-before-the-first-heading
+   :sections [{:path :slug :title :level :line_start :line_end :text}]}` read
+   through the one resolver (`tdocs/document-markdown`: the tree cache, else the
+   file), or `{… :error \"message\"}` without `:sections` when the text cannot be read."
+  [store d]
+  (let [base {:tree (:tree d) :doc (:doc d) :name (:name d) :class (:class d) :path (:path d)}
+        md (try (tdocs/document-markdown store d)
+                (catch #?(:clj Exception :cljs :default) _ nil))]
+    (if-not (string? md)
+      (assoc base :error (str "the text of `" (:path d) "` cannot be read (file missing and no cached tree)"))
+      (let [lines (str/split md #"\r\n|\n|\r" -1)
+            secs (segments/sections md)
+            starts (concat (map :line_start (rest secs)) [nil])]
+        (assoc base
+               :preamble (if-let [f (:line_start (first secs))] (str/trim (own-text lines {:line_start 0} f)) (str/trim md))
+               :sections (mapv (fn [s nxt] (assoc (select-keys s [:path :slug :title :level :line_start :line_end])
+                                                  :text (own-text lines s nxt)))
+                               secs starts))))))
+
 (defn build
   "The index of the opened kernel `store` (what `kimun.kernel.store/open`
    returns, i.e. the `:store` of `kimun.cli.store/open!`). Pure, deterministic,
@@ -110,6 +141,13 @@
      directions, sorted;
    - `:sections {model {:sections [segments/sections of the template]
      :owners {field section-path}}}`;
+   - `:generics {tree-id entry}` — the documents without model (class
+     `generic/md`, K3) that `:docs` does not list: `{:tree :doc :name :class
+     :path :preamble :sections [{:path :slug :title :level :line_start
+     :line_end :text}]}`, `:text` being the section's own text (the lines under its
+     heading down to the next heading of any level), or `:error \"message\"` instead
+     of `:preamble`/`:sections` when neither the cached tree nor the file can
+     be read. They carry no model, payload or tags, and no address names them;
    - `:links {}` and `:anchors {}` — reserved, filled by another surface."
   [store]
   (let [host (:host store)
@@ -129,13 +167,15 @@
      :equivalences (symmetric (:equivalences dag))
      :sections (into (sorted-map) (map (fn [m] [(:name m) (model-sections (:descriptor m))])) entries)
      :links {}
-     :anchors {}}))
+     :anchors {}
+     :generics (into (sorted-map) (map (fn [d] [(:tree d) (generic-entry store d)])) (tdocs/generic-documents store))}))
 
 (defn skipped
   "Sorted names of the documents of index `idx` that carry `:error` (indexed
-   by name, model and source only: no payload, no content hash)."
+   by name, model and source only: no payload, no content hash) and of the
+   generic documents whose text cannot be read (`:generics`)."
   [idx]
-  (vec (sort (keep #(when (:error %) (:name %)) (vals (:docs idx))))))
+  (vec (sort (keep #(when (:error %) (:name %)) (concat (vals (:docs idx)) (vals (:generics idx)))))))
 
 (defn fingerprint
   "The store as one value (v1 `store_fingerprint`), read from index `idx`:

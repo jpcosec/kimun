@@ -37,7 +37,7 @@
        (= build/version (:version idx))
        (= head (:head idx))
        (every? #(contains? idx %) build/contract-keys)
-       (every? #(map? (get idx %)) [:models :docs :by-model :by-name :tags :tag-dag :equivalences :sections :links :anchors])
+       (every? #(map? (get idx %)) [:models :docs :by-model :by-name :tags :tag-dag :equivalences :sections :links :anchors :generics])
        (= (set (keys (:docs idx))) (set (vals (:by-name idx))))))
 
 (defn- read-cache
@@ -124,5 +124,5 @@
       {:index idx :head (:head store)
        :cache (when path (str (fs/path dirname (str (:head store) ".edn"))))
        :bytes (if path (count (.getBytes ^String text "UTF-8")) 0)
-       :documents (count (:docs idx)) :models (count (:models idx)) :tags (count (get-in idx [:tag-dag :nodes]))
+       :documents (count (:docs idx)) :generic-documents (count (:generics idx)) :models (count (:models idx)) :tags (count (get-in idx [:tag-dag :nodes]))
        :skipped skipped :complete (empty? skipped) :pruned (count stale)})))

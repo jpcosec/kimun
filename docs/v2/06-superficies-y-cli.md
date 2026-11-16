@@ -300,7 +300,8 @@ persistía el árbol entero y el archivo no quedaba anclado.
   reanclar sobre él, es `docs/exists` (3). Es unicidad del localizador, no identidad; coincide con el
   rechazo de rutas duplicadas del registro de rutas de K2a.
 - `docs list` lo muestra entre los no tipados con `:class "generic/md"`. No es un documento tipado:
-  `docs show NAME` (sin `--ast`), `fields`, `sections` y `find` siguen sin verlo, igual que antes.
+  `docs show NAME` (sin `--ast`) y `fields` siguen sin verlo (no tiene modelo ni campos; `sections fields`
+  da `cli/usage`). `find` y `sections list|find` sí lo ven (ver `find` y `sections` abajo).
 - El nombre sigue siendo único entre documentos sin modelo.
 - `docs untrack NAME` y `docs delete NAME --yes` valen también para estos documentos (por nombre,
   ruta o id de árbol): se retira el anclaje, el archivo deja de sensorizarse y su ruta y su nombre
@@ -395,7 +396,17 @@ Un campo `rev` ausente es `validate/missing` (3), nunca vacío silencioso.
 
 Formas de `--where`: `[:has f]`, `[:in x f]`, `[:re f pat]`, `[:model<= Base]`, `[:cmp op f v]` con `op ∈ = != >= <=`, combinadas con `:and`/`:or`/`:not`. `--global` recorre los `:links` y cada resultado lleva su `(store, tree-id)`.
 
-Direcciones de `TERM`: `st.{Store}.{Model}.doc.field`, `st.{Base+}`, `se.<tag>`, `gse.<tag>`.
+Direcciones de `TERM`: `st.{Store}.{Model}.doc.field`, `st.{Base+}`, `se.<tag>`, `gse.<tag>`. Un documento sin modelo (genérico, K3) no tiene dirección: ninguna `st.…`/`se.…`/`gse.…` lo nombra.
+
+**Documentos genéricos.** `find` ve también los documentos de clase `generic/md`: un resultado `:kind :doc` por documento (por nombre, ruta y `generic/md/NAME`; el texto anterior al primer encabezado también es buscable) y uno `:kind :section` por encabezado. Ambos llevan `:model nil` y `:class "generic/md"`. Un genérico no tiene campos, así que no da `:field`. El texto de cada sección (sus líneas propias, desde debajo del encabezado hasta el siguiente encabezado de cualquier nivel) es buscable en la capa física; el encabezado calza como título, no como texto. Forma de un calce de texto: `{:in :physical :value "<primera línea que calzó, ≤120 car.>" :line N}` con `:line` la línea (1-based) del Markdown canónico del documento. Ejemplo real (`notes.md` = `# Notas`, párrafo «Algo sobre el cache derivado.», `## Otra`):
+
+```
+kimun find cache  →  [{:kind :section :doc "notes" :section "notas" :path "notes.md#notas" :title "Notas"
+                       :level 1 :line 1 :class "generic/md" :model nil :breadcrumbs ["Notas"]
+                       :matches [{:in :physical :value "Algo sobre el cache derivado." :line 3}] …}]
+```
+
+`--type doc|section`, `--regex`, `--fuzzy`, `--where` (sobre `title`, `slug`, `path`, `level`, `about`, `breadcrumbs`, igual que un tipado), `--select`, `--limit` y `--global` valen igual. `--where` sobre `model` ve `nil`; `st.{Model}` no los incluye. El texto sale del mismo camino que `docs render` (caché de árboles, si no el archivo). Si no se puede leer ni uno ni otro, ese documento queda fuera del texto buscable (su nombre y ruta siguen buscables) y `find` lo dice en `:warnings` (`find/unreadable-document`; con `find/empty` también en `:error :data :unreadable`); no falla la búsqueda. El índice en caché (`index/<head>.edn`, versión 2) guarda la clave `:generics` con las secciones y su texto; `rebuild-indexes` informa `:generic-documents` y nombra en `:skipped` los que no pudo leer. Costo: construir el índice en memoria (sin caché en disco) lee el árbol de cada genérico, del orden de 2–3 ms por documento; un store sin genéricos no cambia.
 
 ### corpus
 
@@ -475,9 +486,9 @@ Campos de documentos tipados. `DOC` es nombre, tree-id o `Model:doc`; un campo d
 
 | subcomando | opciones | `:data` |
 |---|---|---|
-| `sections list DOC` (alias `show`) | — | `{:document :model :path :sections [{:path :title …}]}` |
-| `sections find [TERM]` | `--in physical\|semantic\|both` (both), `--regex`, `--fuzzy`, `--where EXPR` | `{:term :results [{:kind :store :name …}]}` |
-| `sections fields DOC SECTION` | — | `{:document :section :fields [{:field_path :value …}]}` |
+| `sections list DOC` (alias `show`) | — | `{:document :model :path :sections [{:path :title …}]}`; un documento genérico (sin modelo) también: `:model nil`, `:class`, sin tags; si no se puede leer ⇒ `sections/unreadable` |
+| `sections find [TERM]` | `--in physical\|semantic\|both` (both), `--regex`, `--fuzzy`, `--where EXPR` | `{:term :results [{:kind :store :name …}]}`; incluye las secciones de los genéricos (`:model nil`, `:class`), que `--model M` deja fuera; busca por título, no por texto (el texto es de `find`) |
+| `sections fields DOC SECTION` | — | `{:document :section :fields [{:field_path :value …}]}`; sobre un genérico ⇒ `cli/usage` (6): no tiene campos |
 
 ### semantic
 

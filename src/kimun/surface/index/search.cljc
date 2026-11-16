@@ -40,14 +40,18 @@
   (let [up (sem/reach (:tag-dag idx) tags)]
     (vec (sort (into up (mapcat #(get (:equivalences idx) %)) up)))))
 
-(defn- doc-sections
-  "The rendered sections of `doc` with `:breadcrumbs` (titles from the outermost heading down to its own)."
-  [doc]
-  (let [secs (if (string? (:source doc)) (segments/sections (:source doc)) [])
-        title (into {} (map (juxt :path :title)) secs)]
+(defn- with-breadcrumbs
+  "`secs` (`segments/sections` maps) with `:breadcrumbs`: the titles from the outermost heading down to its own."
+  [secs]
+  (let [title (into {} (map (juxt :path :title)) secs)]
     (mapv (fn [s] (let [parts (str/split (:path s) #"/")]
                     (assoc s :breadcrumbs (mapv #(get title (str/join "/" (take % parts)) (:title s)) (range 1 (inc (count parts)))))))
           secs)))
+
+(defn- doc-sections
+  "The rendered sections of `doc` with `:breadcrumbs`."
+  [doc]
+  (with-breadcrumbs (if (string? (:source doc)) (segments/sections (:source doc)) [])))
 
 (defn- owners
   "`{field section-path}` for `doc`: over its rendered sections, else the model's template sections."
@@ -73,18 +77,39 @@
        (assoc base :kind :field :name f :field f :value v :path (str (:path doc) ":" f) :owning-section (get own f (get own (top f)))
               :physical [f (:name doc) (:path doc) (:model doc) (when (string? v) v)] :semantic sem-tags :entry doc)))))
 
+(defn- generic-records
+  "The records of the generic document `g` (a `:generics` entry of the index,
+   no model): a `:doc` (its name, path and the text before the first heading)
+   and a `:section` per heading carrying the section's own text as `:body`
+   (what `matches-of` reads for the text of a document without fields)."
+  [store g]
+  (let [base {:store store :tree (:tree g) :model nil :class (:class g) :doc (:name g)}
+        entry {:tree (:tree g) :doc (:doc g) :name (:name g) :model nil :bases [] :tags [] :path (:path g) :class (:class g)}
+        secs (with-breadcrumbs (:sections g))]
+    (cons (assoc base :kind :doc :name (:name g) :path (:path g) :tags []
+                 :physical [(:name g) (:path g) (str (:class g) "/" (:name g))] :semantic [] :entry entry
+                 :body (:preamble g) :body-line 1)
+          (for [s secs]
+            (assoc base :kind :section :name (:slug s) :title (:title s) :path (str (:path g) "#" (:path s)) :section (:path s)
+                   :level (:level s) :line (:line_start s) :breadcrumbs (:breadcrumbs s) :about (:breadcrumbs s)
+                   :physical [(:title s) (:slug s) (:path s) (:path g)] :semantic (:breadcrumbs s) :entry entry
+                   :body (:text s) :body-line (inc (:line_start s)))))))
+
 (defn records
   "The search records of `view` (v1 `iter_search_records`), unordered: per
    store one `:store` record, one `:model` per model and, per document, one
    `:doc`, one `:section` per heading of its text and one `:field` per payload
-   leaf. Besides the result keys each carries `:physical` and `:semantic`
+   leaf. A document without model (`:generics` of the index, K3) gives a `:doc`
+   and its `:section`s with `:model nil`, `:class` and, in `:body`, the text of
+   the section (of the `:doc`: the text before its first heading). Besides the result keys each carries `:physical` and `:semantic`
    (the strings TERM is matched against) and `:entry` (its index document)."
   [view]
   (vec (mapcat (fn [{:keys [store index]}]
                  (concat [{:kind :store :store store :tree nil :name store :model nil :path nil :physical [store] :semantic []}]
                          (for [[n m] (:models index)]
                            {:kind :model :store store :tree nil :name n :model n :path nil :physical [n] :semantic (reach index (:tags m))})
-                         (mapcat #(doc-records store index %) (vals (:docs index)))))
+                         (mapcat #(doc-records store index %) (vals (:docs index)))
+                         (mapcat #(generic-records store %) (vals (:generics index)))))
                view)))
 
 ;; ---------------------------------------------------------------- matching
@@ -102,11 +127,22 @@
                                         (some #(>= (corpus/dice host/host t %) fuzzy-threshold) (cons v (str/split v #"\s+"))))))))
         :else #(str/includes? % term)))
 
+(defn- clip [v] (if (> (count v) 120) (str (subs v 0 120) "…") v))
+
+(defn- body-match
+  "`{:in :physical :value line :line n}` for the first line of `record`'s `:body` that `match?` accepts, or nil."
+  [record match?]
+  (when-let [body (:body record)]
+    (some (fn [[i l]] (when (and (not= "" l) (match? l)) {:in :physical :value (clip (str/trim l)) :line (+ i (:body-line record 1))}))
+          (map-indexed vector (str/split body #"\r\n|\n|\r")))))
+
 (defn- matches-of [record match? in]
-  (vec (for [[layer k] [[:physical :physical] [:semantic :semantic]]
-             :when (or (= in :all) (= in layer))
-             v (distinct (get record k)) :when (and (string? v) (not= "" v) (match? v))]
-         {:in layer :value (if (> (count v) 120) (str (subs v 0 120) "…") v)})))
+  (vec (concat
+        (for [[layer k] [[:physical :physical] [:semantic :semantic]]
+              :when (or (= in :all) (= in layer))
+              v (distinct (get record k)) :when (and (string? v) (not= "" v) (match? v))]
+          {:in layer :value (clip v)})
+        (when (#{:all :physical} in) (some-> (body-match record match?) vector)))))
 
 (defn- where-doc
   "What `--where` sees for `record` (v1 `RecordFilters`): the document itself
@@ -124,12 +160,22 @@
 (defn- passes? [ast record]
   (or (nil? ast) (let [d (where-doc record)] (or (nil? d) (boolean (where/matches? ast d))))))
 
-(defn- public [record] (dissoc record :physical :semantic :entry))
+(defn- public [record] (dissoc record :physical :semantic :entry :body :body-line))
 
 (defn- order [results]
   (vec (sort-by (juxt #(str (:store %)) #(str (:tree %)) #(kind-rank (:kind %) 9) #(:line % 0) #(str (:name %))) results)))
 
 ;; ---------------------------------------------------------------- addresses
+
+(defn warnings
+  "The warnings `search` implies for `view` (as `search` reads it: only its
+   first store unless `global?`): one `find/unreadable-document` per generic
+   document whose text could not be read, which is therefore not searchable
+   by text. `[{:type :store :document :path :message}]`."
+  [view global?]
+  (vec (for [{:keys [store index]} (if global? view (take 1 view))
+             g (sort-by :tree (vals (:generics index))) :when (:error g)]
+         {:type "find/unreadable-document" :store store :document (:name g) :path (:path g) :message (:error g)})))
 
 (defn address-term?
   "Whether TERM is searched as an address: `address/address?` says so and it
@@ -165,7 +211,8 @@
    empty TERM matches every record. Each result is `{:store :tree :name :model
    :path :kind :matches [{:in layer :value s}] …}` plus, by kind, `:doc`,
    `:field :value :owning-section`, `:title :section :level :line :breadcrumbs
-   :about`, `:tags`, or the keys of the address resolver (`:address`)."
+   :about`, `:tags`, `:class` (documents and sections without model: `:model`
+   is nil; a match in their text is `{:in :physical :value line :line n}`), or the keys of the address resolver (`:address`)."
   [view term {:keys [in kinds where global?] :as opts}]
   (let [in (or in :all)
         kind-ok? #(or (empty? kinds) (contains? kinds (:kind %)))

@@ -1,0 +1,354 @@
+######## orig
+$ kimun stores init --name t
+exit 0
+{:ok true,
+ :data
+ {:path "/tmp/kfind/rzUF9/.kimun",
+  :name "t",
+  :actor "human/repro",
+  :capabilities
+  {"human/repro" :all, "kimun/derive" :all, "kimun/materialize" :all}},
+ :warnings []}
+$ kimun docs ingest notes.md --name notes
+exit 0
+{:ok true,
+ :data
+ {:name "notes",
+  :tree "01M7HD6MKCJ93TCQEXPPXDAASG",
+  :path "/tmp/kfind/rzUF9/notes.md",
+  :blocks 4,
+  :class "generic/md",
+  :anchor "notes.md"},
+ :warnings []}
+$ kimun find cache
+exit ?
+{:ok false,
+ :error
+ {:type "find/empty",
+  :message "nothing found for \"cache\"",
+  :data {:term "cache", :in "all", :global false}}}
+$ kimun find cache --in physical
+exit ?
+{:ok false,
+ :error
+ {:type "find/empty",
+  :message "nothing found for \"cache\"",
+  :data {:term "cache", :in "physical", :global false}}}
+$ kimun find cache --in semantic
+exit ?
+{:ok false,
+ :error
+ {:type "find/empty",
+  :message "nothing found for \"cache\"",
+  :data {:term "cache", :in "semantic", :global false}}}
+$ kimun find Otra --type section
+exit ?
+{:ok false,
+ :error
+ {:type "find/empty",
+  :message "nothing found for \"Otra\"",
+  :data {:term "Otra", :in "all", :global false}}}
+$ kimun find  --select kind,name,class,path
+exit 0
+{:ok true, :data [{:kind :store, :name "t", :path nil}], :warnings []}
+$ kimun find chche --fuzzy
+exit ?
+{:ok false,
+ :error
+ {:type "find/empty",
+  :message "nothing found for \"chche\"",
+  :data {:term "chche", :in "all", :global false}}}
+$ kimun find ca.he --regex --type section --limit 1
+exit ?
+{:ok false,
+ :error
+ {:type "find/empty",
+  :message "nothing found for \"ca.he\"",
+  :data {:term "ca.he", :in "all", :global false}}}
+$ kimun sections list notes
+exit ?
+{:ok false,
+ :error
+ {:type "docs/missing",
+  :message "no document named or identified by `notes`",
+  :data {:document "notes"}}}
+$ kimun sections find Otra
+exit ?
+{:ok false,
+ :error
+ {:type "sections/empty",
+  :message "no matching sections",
+  :data {:term "Otra"}}}
+$ kimun fields list notes
+exit ?
+{:ok false,
+ :error
+ {:type "cli/usage",
+  :message
+  "unknown subcommand `fields list`; expected one of: append, clean, clear, create, get, query, remove, schema, set, show, unset, update",
+  :data
+  {:group "fields",
+   :subcommand "list",
+   :known
+   ["append"
+    "clean"
+    "clear"
+    "create"
+    "get"
+    "query"
+    "remove"
+    "schema"
+    "set"
+    "show"
+    "unset"
+    "update"]}}}
+$ kimun rebuild-indexes
+exit 0
+{:ok true,
+ :data
+ {:pruned 0,
+  :tags 0,
+  :skipped [],
+  :head
+  "f66b247523b252d0b9d02a295827978a40ed3e2e63dba0c4c0cc8a30bd362213",
+  :documents 0,
+  :models 0,
+  :cache
+  "index/f66b247523b252d0b9d02a295827978a40ed3e2e63dba0c4c0cc8a30bd362213.edn",
+  :bytes 241,
+  :complete true},
+ :warnings []}
+######## new
+$ kimun stores init --name t
+exit 0
+{:ok true,
+ :data
+ {:path "/tmp/kfind/r0tgF/.kimun",
+  :name "t",
+  :actor "human/repro",
+  :capabilities
+  {"human/repro" :all, "kimun/derive" :all, "kimun/materialize" :all}},
+ :warnings []}
+$ kimun docs ingest notes.md --name notes
+exit 0
+{:ok true,
+ :data
+ {:name "notes",
+  :tree "01M7HD6N00VRWCJQ55Q7G0AMHK",
+  :path "/tmp/kfind/r0tgF/notes.md",
+  :blocks 4,
+  :class "generic/md",
+  :anchor "notes.md"},
+ :warnings []}
+$ kimun find cache
+exit 0
+{:ok true,
+ :data
+ [{:path "notes.md#notas",
+   :tree "01M7HD6N00VRWCJQ55Q7G0AMHK",
+   :store "t",
+   :name "notas",
+   :section "notas",
+   :matches
+   [{:in :physical, :value "Algo sobre el cache derivado.", :line 3}],
+   :title "Notas",
+   :level 1,
+   :line 1,
+   :class "generic/md",
+   :kind :section,
+   :doc "notes",
+   :breadcrumbs ["Notas"],
+   :about ["Notas"],
+   :model nil}],
+ :warnings []}
+$ kimun find cache --in physical
+exit 0
+{:ok true,
+ :data
+ [{:path "notes.md#notas",
+   :tree "01M7HD6N00VRWCJQ55Q7G0AMHK",
+   :store "t",
+   :name "notas",
+   :section "notas",
+   :matches
+   [{:in :physical, :value "Algo sobre el cache derivado.", :line 3}],
+   :title "Notas",
+   :level 1,
+   :line 1,
+   :class "generic/md",
+   :kind :section,
+   :doc "notes",
+   :breadcrumbs ["Notas"],
+   :about ["Notas"],
+   :model nil}],
+ :warnings []}
+$ kimun find cache --in semantic
+exit ?
+{:ok false,
+ :error
+ {:type "find/empty",
+  :message "nothing found for \"cache\"",
+  :data {:term "cache", :in "semantic", :global false}}}
+$ kimun find Otra --type section
+exit 0
+{:ok true,
+ :data
+ [{:path "notes.md#notas/otra",
+   :tree "01M7HD6N00VRWCJQ55Q7G0AMHK",
+   :store "t",
+   :name "otra",
+   :section "notas/otra",
+   :matches
+   [{:in :physical, :value "Otra"} {:in :semantic, :value "Otra"}],
+   :title "Otra",
+   :level 2,
+   :line 5,
+   :class "generic/md",
+   :kind :section,
+   :doc "notes",
+   :breadcrumbs ["Notas" "Otra"],
+   :about ["Notas" "Otra"],
+   :model nil}],
+ :warnings []}
+$ kimun find  --select kind,name,class,path
+exit 0
+{:ok true,
+ :data
+ [{:kind :store, :name "t", :path nil}
+  {:kind :doc, :name "notes", :class "generic/md", :path "notes.md"}
+  {:kind :section,
+   :name "notas",
+   :class "generic/md",
+   :path "notes.md#notas"}
+  {:kind :section,
+   :name "otra",
+   :class "generic/md",
+   :path "notes.md#notas/otra"}],
+ :warnings []}
+$ kimun find chche --fuzzy
+exit ?
+{:ok false,
+ :error
+ {:type "find/empty",
+  :message "nothing found for \"chche\"",
+  :data {:term "chche", :in "all", :global false}}}
+$ kimun find ca.he --regex --type section --limit 1
+exit 0
+{:ok true,
+ :data
+ [{:path "notes.md#notas",
+   :tree "01M7HD6N00VRWCJQ55Q7G0AMHK",
+   :store "t",
+   :name "notas",
+   :section "notas",
+   :matches
+   [{:in :physical, :value "Algo sobre el cache derivado.", :line 3}],
+   :title "Notas",
+   :level 1,
+   :line 1,
+   :class "generic/md",
+   :kind :section,
+   :doc "notes",
+   :breadcrumbs ["Notas"],
+   :about ["Notas"],
+   :model nil}],
+ :warnings []}
+$ kimun sections list notes
+exit 0
+{:ok true,
+ :data
+ {:document "notes",
+  :model nil,
+  :path "notes.md",
+  :sections
+  [{:path "notas",
+    :slug "notas",
+    :line_end 7,
+    :title "Notas",
+    :level 1,
+    :line_start 1,
+    :semantic_tags [],
+    :breadcrumbs ["Notas"],
+    :about ["Notas" "notas"]}
+   {:path "notas/otra",
+    :slug "otra",
+    :line_end 7,
+    :title "Otra",
+    :level 2,
+    :line_start 5,
+    :semantic_tags [],
+    :breadcrumbs ["Notas" "Otra"],
+    :about ["Notas" "notas" "Otra" "otra"]}],
+  :class "generic/md"},
+ :warnings []}
+$ kimun sections find Otra
+exit 0
+{:ok true,
+ :data
+ {:term "Otra",
+  :results
+  [{:path "notes.md#notas/otra",
+    :semantic [],
+    :store "t",
+    :name "otra",
+    :value nil,
+    :field nil,
+    :title "Otra",
+    :class "generic/md",
+    :kind "section",
+    :doc "notes",
+    :breadcrumbs ["Notas" "Otra"],
+    :about ["Notas" "notas" "Otra" "otra"],
+    :model nil}]},
+ :warnings []}
+$ kimun fields list notes
+exit ?
+{:ok false,
+ :error
+ {:type "cli/usage",
+  :message
+  "unknown subcommand `fields list`; expected one of: append, clean, clear, create, get, query, remove, schema, set, show, unset, update",
+  :data
+  {:group "fields",
+   :subcommand "list",
+   :known
+   ["append"
+    "clean"
+    "clear"
+    "create"
+    "get"
+    "query"
+    "remove"
+    "schema"
+    "set"
+    "show"
+    "unset"
+    "update"]}}}
+$ kimun rebuild-indexes
+exit 0
+{:ok true,
+ :data
+ {:pruned 0,
+  :tags 0,
+  :generic-documents 1,
+  :skipped [],
+  :head
+  "3bc53cf30b64a18816af37f69cceb994758e23fc83d352ccf7909853b61fd111",
+  :documents 0,
+  :models 0,
+  :cache
+  "index/3bc53cf30b64a18816af37f69cceb994758e23fc83d352ccf7909853b61fd111.edn",
+  :bytes 681,
+  :complete true},
+ :warnings []}
+anchor: notes.md
+blocks: 4
+class: generic/md
+name: notes
+path: /tmp/kfind/r939n/notes.md
+tree: 01M7HD6X3VYMY19A3A7TCGHHPH
+revision: d956b7a32813f05c46590cff333eb42813943e2c8c7c8c6fd0a2937f3868ba6f
+$ kimun find cache --format text
+{:path "notes.md#notas", :tree "01M7HD6X3VYMY19A3A7TCGHHPH", :store "my-kb", :name "notas", :section "notas", :matches [{:in :physical, :value "Algo sobre el cache derivado.", :line 3}], :title "Notas", :level 1, :line 1, :class "generic/md", :kind :section, :doc "notes", :breadcrumbs ["Notas"], :about ["Notas"], :model nil}
+revision: d956b7a32813f05c46590cff333eb42813943e2c8c7c8c6fd0a2937f3868ba6f
+exit 0

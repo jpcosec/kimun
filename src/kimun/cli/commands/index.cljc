@@ -31,7 +31,8 @@
               {:store {:name (:name descriptor) :path path}
                :revision (:head report)
                :data (dissoc report :index)
-               :warnings (mapv (fn [n] (let [d (get-in idx [:docs (get-in idx [:by-name n])])]
+               :warnings (mapv (fn [n] (let [d (or (get-in idx [:docs (get-in idx [:by-name n])])
+                                         (first (filter #(= n (:name %)) (vals (:generics idx)))))]
                                          {:type "index/skipped-document" :document n :model (:model d) :message (:error d)}))
                                (:skipped report))}))))
 

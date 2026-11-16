@@ -79,16 +79,17 @@
    what `--where` sees (`level`, `line_start`, `line_end`, `breadcrumbs`,
    `about`, `title`, `slug`, `section` (the section path), `path` (`file#section`),
    `semantic`, `semantic_tags`)."
-  [{:keys [store name model path tags]} entries]
+  [{:keys [store name model path tags class]} entries]
   (mapv (fn [e]
-          {:kind "section" :store store :name (:slug e) :model model :doc name :field nil
+          (cond-> {:kind "section" :store store :name (:slug e) :model model :doc name :field nil
            :path (str path "#" (:path e)) :title (:title e) :value nil
            :semantic (vec tags) :about (:about e) :breadcrumbs (:breadcrumbs e)
            :physical (vec (remove nil? [(:title e) (:slug e) (:path e) path]))
            :payload {"level" (:level e) "line_start" (:line_start e) "line_end" (:line_end e)
                      "breadcrumbs" (:breadcrumbs e) "about" (:about e) "title" (:title e)
                      "slug" (:slug e) "section" (:path e) "path" (str path "#" (:path e))
-                     "semantic" (vec tags) "semantic_tags" (vec tags)}})
+                     "semantic" (vec tags) "semantic_tags" (vec tags)}}
+            class (assoc :class class)))
         entries))
 
 (defn- ratio
@@ -146,4 +147,4 @@
 (defn result
   "The wire form of a search record (v1 `SearchRecord.as_dict`)."
   [r]
-  (select-keys r [:kind :store :name :model :doc :field :path :title :value :semantic :about :breadcrumbs]))
+  (select-keys r [:kind :store :name :model :class :doc :field :path :title :value :semantic :about :breadcrumbs]))

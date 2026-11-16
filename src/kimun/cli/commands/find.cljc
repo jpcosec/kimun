@@ -75,15 +75,18 @@
         regex? (flag? (:regex opts)) fuzzy? (flag? (:fuzzy opts))
         _ (when (and regex? fuzzy?) (cli-args/usage! "find" "`--regex` and `--fuzzy` exclude each other" {:option "regex"}))
         o (cli-store/open! (cli-store/resolve-store opts env cwd))
-        found (search/search (cache/federated! o) term
+        view (cache/federated! o)
+        found (search/search view term
                              {:in in :kinds kinds :regex? regex? :fuzzy? fuzzy? :where ast :global? (flag? (:global opts))})]
     (when (empty? found)
       (err/raise :find/empty (str "nothing found for " (pr-str term))
                  (cond-> {:term term :in (name in) :global (flag? (:global opts))}
+                   (seq (search/warnings view (flag? (:global opts)))) (assoc :unreadable (mapv :document (search/warnings view (flag? (:global opts)))))
                    (:where opts) (assoc :where (str (:where opts)))
                    kinds (assoc :type (vec (sort (map name kinds)))))))
     (out/ok "find" {:store {:name (get-in o [:descriptor :name]) :path (:path o)}
                     :revision (get-in o [:store :head])
+                    :warnings (search/warnings view (flag? (:global opts)))
                     :data (cond->> found
                             limit (take limit)
                             select (map #(select-keys % select))
