@@ -1,0 +1,10 @@
+
+Testing kimun.surface.semantic-test
+
+Testing kimun.cli.include-test
+moved existing store to /tmp/kimun-adhoc-9321713677671536804/kimun-include-10199639805788696571/.kimun.bak-20261116-003037-01M7H6G7VBWZYYT8A7BEW0YRB1
+
+Testing kimun.cli.changed-test
+
+Ran 25 tests containing 161 assertions.
+0 failures, 0 errors.
