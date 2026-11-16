@@ -1,0 +1,11 @@
+
+Testing kimun.cli.stores-test
+
+Testing kimun.cli.cold-cache-test
+
+Testing kimun.cli.beat-git-test
+
+Testing kimun.cli.declare-anchors-test
+
+Ran 50 tests containing 523 assertions.
+0 failures, 0 errors.
