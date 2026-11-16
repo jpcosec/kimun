@@ -1,0 +1,11 @@
+
+Testing kimun.cli.main-test
+
+Testing kimun.cli.models-test
+
+Testing kimun.lint-test
+
+Testing kimun.doc14-contract-test
+
+Ran 36 tests containing 370 assertions.
+0 failures, 0 errors.
