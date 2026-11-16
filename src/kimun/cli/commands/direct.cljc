@@ -13,6 +13,7 @@
             [kimun.cli.commands.models :as models]
             [kimun.cli.out :as out]
             [kimun.surface.models.extract :as extract]
+            [kimun.surface.models.store :as mstore]
             [kimun.surface.models.edit :as edit]
             [kimun.surface.models.render :as render]
             [kimun.surface.models.validate :as validate]
@@ -51,8 +52,16 @@
                  {:model (:model/name d) :fields empty}))
     payload))
 
-(defn- model-of [sub opts ctx]
-  (models/resolve-model (or (:model opts) sub) opts ctx))
+(defn- model-of
+  "The descriptor of the command. A spec 16 class is refused (`:cli/usage`): these
+   commands extract and render by the v1 template, which a class does not have."
+  [sub opts ctx]
+  (let [d (models/resolve-model (or (:model opts) sub) opts ctx)]
+    (when (mstore/spec16? d)
+      (err/raise :cli/usage (str "`extract`, `render` and `validate` work through the v1 template, and `" (:model/name d)
+                                 "` is a spec 16 class (no template, no renderer yet: M2): track the file with `docs track` and read it with `docs show`")
+                 {:model (:model/name d)}))
+    d))
 
 (defn- write-out [opts cwd text]
   (let [o (:output opts)]

@@ -1,0 +1,9 @@
+Mutation: src/ a HEAD (git checkout -- src/), solo la prueba nueva; restaurado con git apply, diff -r vacio.
+      1 47 failures, 0 errors.
+      4 FAIL in (fields-schema-reads-the-composed-fields-of-a-class) (/tmp/kimun-s16chk-wt/test/kimun/cli/spec16_readers_test.cljc:58)
+     14 FAIL in (http-reads-a-spec16-class-and-refuses-the-segments) (/tmp/kimun-s16chk-wt/test/kimun/cli/spec16_readers_test.cljc:84)
+     25 FAIL in (no-reader-breaks-or-stays-silent-on-a-spec16-store) (/tmp/kimun-s16chk-wt/test/kimun/cli/spec16_readers_test.cljc:44)
+      4 FAIL in (stores-update-skips-a-superseded-spec16-document-and-says-so) (/tmp/kimun-s16chk-wt/test/kimun/cli/spec16_readers_test.cljc:67)
+      1 Ran 4 tests containing 124 assertions.
+
+Mutacion 2: solo include.cljc a HEAD, solo la prueba de include: 10 fallos. Restaurado (diff -r vacio).

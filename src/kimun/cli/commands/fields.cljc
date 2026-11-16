@@ -108,7 +108,7 @@
   [args opts ctx]
   (let [{:keys [descriptor store] store-path :path} (open opts ctx)
         model (or (get args 0) (usage! "schema" "needs a MODEL"))
-        d (:descriptor (mstore/model store model))]
+        d (fields/with-schema-fields store (:descriptor (mstore/model store model)))]
     (out/ok "fields schema" {:store (store-ref descriptor store-path) :revision (:head store)
                              :data (if-let [f (get args 1)] (fields/schema d (str/replace f "/" ".")) (fields/schema d))})))
 

@@ -9,6 +9,7 @@
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
             [kimun.surface.docs :as docs]
+            [kimun.surface.fields :as fields]
             [kimun.surface.models.segments :as segments]
             [kimun.surface.models.store :as mstore]
             [kimun.surface.semantic :as semantic]
@@ -109,7 +110,7 @@
   [_request ctx]
   (let [{:keys [store descriptor] p :path} (open-store ctx)
         views (for [m (mstore/models store)]
-                (try (let [d (:descriptor m)]
+                (try (let [d (fields/with-schema-fields store (:descriptor m))]
                        {:ok {:id (:name m) :model (:name m) :model_ref (:name m) :version (:version m)
                              :fields (mapv field-view (:fields d)) :base (:base d)
                              :containment (or (:containment d) (:py/containment d) {}) :references (or (:references d) (:py/references d) [])
@@ -223,6 +224,14 @@
     (fail (or (some-> (ex-data e) :type) :serve/segments) (ex-message e) (dissoc (ex-data e) :type)
           (cond (nil? t) 70 :else 3))))
 
+(defn- refuse-spec16-segments
+  "The `fail` for a spec 16 class: segments map fields onto the canonical render
+   of the v1 template, which a class does not have (M2 brings the renderer)."
+  [model]
+  (fail :cli/usage (str "segments are built over the render of the v1 template, and `" (:model/name model)
+                        "` is a spec 16 class (no template, no renderer yet: M2)")
+        {:model (:model/name model)} 6))
+
 (defn document-segments
   "`GET /document/segments?id=`: `segments/document-segments` over the
    document's file text and model."
@@ -232,10 +241,12 @@
           d (docs/document store id)
           model (:descriptor (mstore/model store (:model d)))
           text (or (:source d) "")]
-      (try (out/ok "document segments"
-                   {:store {:name (:name descriptor) :path p} :revision (:head store)
-                    :data (segments/document-segments model text {:id id :doc (:name d) :path (:path d)})})
-           (catch #?(:clj clojure.lang.ExceptionInfo :cljs :default) e (segment-failure e))))
+      (if (and model (mstore/spec16? model))
+        (refuse-spec16-segments model)
+        (try (out/ok "document segments"
+                     {:store {:name (:name descriptor) :path p} :revision (:head store)
+                      :data (segments/document-segments model text {:id id :doc (:name d) :path (:path d)})})
+             (catch #?(:clj clojure.lang.ExceptionInfo :cljs :default) e (segment-failure e)))))
     (missing-parameter :id)))
 
 (defn extract-segments
@@ -246,7 +257,9 @@
       (fail :serve/bad-body "Expected {model: str, markdown: str}." {} 6)
       (let [{:keys [store descriptor] p :path} (open-store ctx)
             m (mstore/model store model)]
-        (try (out/ok "extract segments"
-                     {:store {:name (:name descriptor) :path p} :revision (:head store)
-                      :data (segments/extract-segments (:descriptor m) markdown)})
-             (catch #?(:clj clojure.lang.ExceptionInfo :cljs :default) e (segment-failure e)))))))
+        (if (mstore/spec16? (:descriptor m))
+          (refuse-spec16-segments (:descriptor m))
+          (try (out/ok "extract segments"
+                       {:store {:name (:name descriptor) :path p} :revision (:head store)
+                        :data (segments/extract-segments (:descriptor m) markdown)})
+               (catch #?(:clj clojure.lang.ExceptionInfo :cljs :default) e (segment-failure e))))))))

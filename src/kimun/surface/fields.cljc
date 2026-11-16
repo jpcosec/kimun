@@ -14,6 +14,7 @@
             [kimun.surface.models.render :as render]
             [kimun.surface.models.segments :as segments]
             [kimun.surface.models.store :as mstore]
+            [kimun.surface.models.subgraph :as subgraph]
             [kimun.kernel.err :as err]))
 
 (def operations
@@ -111,6 +112,16 @@
 (defn- field-row [f]
   (cond-> {:name (:name f) :description (or (:description f) "") :type (type-name (:type f)) :required (boolean (:required f))}
     (contains? f :default) (assoc :default (:default f))))
+
+(defn with-schema-fields
+  "`d` ready for `schema`: a v1 descriptor as it is; a spec 16 class with the
+   fields of its whole lineage (own + inherited, ancestor-first) under `:fields`,
+   because it declares them in `:anchoring`, not at the top. Raises
+   `:models/invalid` when a base is missing or the lineage cycles."
+  [store d]
+  (if (and d (mstore/spec16? d))
+    (assoc d :fields (subgraph/compose-fields (subgraph/index-models (map :descriptor (mstore/models store))) (:model/name d)))
+    d))
 
 (defn schema
   "The field schema of model descriptor `d` (v1 `fields show models/M[/F]`):

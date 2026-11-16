@@ -130,7 +130,11 @@
           (if (:ok r) (assoc r :data {:doc (param request :doc) :markdown (get-in r [:data :markdown] (:data r))}) r))
         (param request :model)
         (let [m (run-command ctx ["models" "show" (param request :model)])]
-          (if (:ok m) (assoc m :data {:model (param request :model) :template (get-in m [:data :descriptor :template])}) m))
+          (cond (not (:ok m)) m
+                (contains? (get-in m [:data :descriptor]) :anchoring)
+                (fail :cli/usage (str "`" (param request :model) "` is a spec 16 class: it has no template to render (M2)")
+                      {:model (param request :model)} 6)
+                :else (assoc m :data {:model (param request :model) :template (get-in m [:data :descriptor :template])})))
         :else (v/missing-parameter :doc)))
 
 (defn- models-edit

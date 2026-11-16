@@ -298,6 +298,17 @@
         (and (vector? type) (= :enum (first type))) v
         :else (edn/read-string v)))
 
+(defn- refuse-spec16!
+  "Raises `:cli/usage` when `d` is a spec 16 class: it has no `:template` and its
+   fields live in `:anchoring`, so the v1 editors of the template do not apply
+   (the class is redefined whole with `models define -f`)."
+  [d command]
+  (when (and d (mstore/spec16? d))
+    (err/raise :cli/usage
+               (str "`" command "` edits the v1 template of a model, and `" (:model/name d)
+                    "` is a spec 16 class (no template; fields and selector live in :anchoring): redefine it with `models define -f`")
+               {:group "models" :subcommand command :model (:model/name d)})))
+
 (defn field-add
   "`models field-add NAME --field F --type T --description TEXT [--default D]
    [--required]`: appends a field and its template section (`optrev` with a
@@ -309,6 +320,7 @@
         _ (when-not (and (:field opts) (:type opts) (not (str/blank? (str (:description opts)))))
             (err/raise :cli/usage "`models field-add` needs --field NAME, --type TYPE and --description TEXT" {:group "models" :subcommand "field-add"}))
         d (:descriptor (mstore/model (:store (open-store opts ctx)) name))
+        _ (refuse-spec16! d "field-add")
         type (parse-type (:type opts))
         field (cond-> {:name (:field opts) :type type :required (boolean (:required opts)) :description (:description opts)}
                 (contains? opts :default) (assoc :default (parse-default type (:default opts))))]
@@ -320,7 +332,8 @@
   [args opts ctx]
   (let [name (need-name args "field-remove")
         _ (when-not (:field opts) (err/raise :cli/usage "`models field-remove` needs --field NAME" {:group "models" :subcommand "field-remove"}))
-        d (:descriptor (mstore/model (:store (open-store opts ctx)) name))]
+        d (:descriptor (mstore/model (:store (open-store opts ctx)) name))
+        _ (refuse-spec16! d "field-remove")]
     (commit-define! (edit/remove-field d (:field opts)) opts ctx "models field-remove")))
 
 (defn template
@@ -329,7 +342,8 @@
   [args opts {:keys [cwd] :as ctx}]
   (let [name (need-name args "template")
         {:keys [store] sd :descriptor path :path} (open-store opts ctx)
-        d (:descriptor (mstore/model store name))]
+        d (:descriptor (mstore/model store name))
+        _ (refuse-spec16! d "template")]
     (if-let [f (:file opts)]
       (let [p (fs/absolutize (fs/path cwd f))]
         (when-not (fs/regular-file? p) (err/raise :models/no-file (str "no such file: " p) {:path (str p)}))

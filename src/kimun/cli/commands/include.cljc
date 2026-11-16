@@ -421,7 +421,8 @@
                            (try
                              (let [m (or (mstore/find-model mstore* model)
                                          (err/raise :models/missing (str "no model `" model "` in the store") {:model model}))]
-                               (when-not force
+                               ;; the noise and round-trip checks read the v1 template: a spec 16 class has none (M1g)
+                               (when-not (or force (mstore/spec16? (:descriptor m)))
                                  (let [n (noise/structural-noise (:descriptor m) text)]
                                    (when (noise/noisy? n)
                                      (err/raise :docs/structural-noise
