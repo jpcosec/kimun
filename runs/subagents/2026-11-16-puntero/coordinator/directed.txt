@@ -1,0 +1,13 @@
+
+Testing kimun.cli.seen-test
+moved existing store to /tmp/kimun-adhoc-646078493941619631/kimun-seen-inc-9823441799374608695/.kimun.bak-20261116-005135-01M7H7PN69Z88GV5ZQTK4P7BKG
+
+Testing kimun.cli.changed-test
+
+Testing kimun.cli.stores-test
+
+Testing kimun.cli.include-test
+moved existing store to /tmp/kimun-adhoc-646078493941619631/kimun-include-3364617814782792083/.kimun.bak-20261116-005138-01M7H7PR2HANZH94QAR4QPA10A
+
+Ran 46 tests containing 356 assertions.
+0 failures, 0 errors.
