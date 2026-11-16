@@ -60,7 +60,7 @@
    :fixture :F-W02
    :negative-control :N-F06
    :expected-outcome "Adaptador declarativo determinista offline con source, contexto, signos y soporte verificable."
-   :current-evidence ["docs/v2/11-adaptadores.md" "docs/v2/14-juego-del-lenguaje.md §7"]
+   :current-evidence ["docs/v2/14-juego-del-lenguaje.md §7"]
    :intentional-deviation "Rechaza F06: la salida heurística o LLM entra como :proposed, jamás como :confirmed automático."}
   {:id "C04"
    :line :W1
@@ -242,7 +242,7 @@
    :fixture :F-W07
    :negative-control :N-F06
    :expected-outcome "Invocación tras protocolo fuera de proceso o vista derivada bajo presupuesto."
-   :current-evidence ["docs/v2/11-adaptadores.md (frontera declarada; motor semántico ausente)"]
+   :current-evidence ["docs/v2/14-juego-del-lenguaje.md §13 (motor semántico ausente)"]
    :intentional-deviation "Métricas estadísticas jamás se presentan como prueba deductiva (14 §13, F20)."}
   {:id "C17"
    :line :W1
@@ -410,7 +410,7 @@
    :fixture :F-W09
    :negative-control :N-F16
    :expected-outcome "Formatos inventariados; importador futuro sujeto a contrato y fixtures dedicados."
-   :current-evidence ["Solo migrate --from-v1 implementado"]
+   :current-evidence ["Nada implementado (migrate --from-v1 se borró el 2026-11-15)"]
    :intentional-deviation "Diferido sin promesa de cobertura total hasta definición explícita de consumidor."}]
  :exclusions
  [{:id "X01"

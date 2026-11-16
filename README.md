@@ -1,37 +1,42 @@
 # kimun
 
-**A knowledge store with a CLI and a content-addressed kernel.** kimun is the successor of
-`sldb` (v1, Python) and `kgdb`, merged into one product. The name is Mapudungun (*kimün*,
-knowledge).
+**kimun sees, synthesizes and generates.** The name is Mapudungun (*kimün*, knowledge).
 
-> **Identity (`D0`, `docs/v2/14-juego-del-lenguaje.md §21`):** the hash detects mutations and
-> addresses objects in the current CAS storage implementation, but **hash ≠ identity**. `D0` is no
-> longer an open decision: its S–M contract (a unit is a detected fact with its own identity; the
-> anchor is its current reference) was derived by the council from the owner's premises on
-> 2026-11-15, and its rules are labelled as council inferences. What is pending is its
-> implementation (`K1`; first cuts `K1a`, `K1b` at document level). The only open owner decision
-> is `D-G` (`docs/v2/drafts/preguntas-abiertas.md`).
+- Knowledge is propositions `(R A B)` in context, written as Clojure that runs
+  (`docs/v2/00-nucleo.md`). Things mean by their relations.
+- Reality lives in the sources (documents, code), not in kimun. kimun asks nothing of them:
+  it **sees** them (up to the file level it uses **git**; inside a file it watches only what is
+  anchored), **synthesizes** a graph of propositions, and **generates** (materializes) documents
+  and answers from that graph.
+- Redoing git (file-level monitoring of its own) is explicitly deferred; kimun uses git for it.
 
-The current implementation is pure Clojure (`.cljc`) running on Babashka: a CAS store of
-immutable objects (S/M/G data records keyed by the hash of their canonical content bytes — the
-positive identity and continuity of units is the `D0` contract, implemented so far only at
-document level, `K1`), trees of positions as indexes,
-typed edges with evidence, succession by `supersedes`, derived anchor states, and reconciliation
-of external edits. Markdown documents are projections of it. At the product horizon, `kimun`
-targets a contextual knowledge superset combining this durable document base with the
-capabilities inventoried in `docs/v2/tests/wittgenstein-manifest.md` (status: base S/M
-surfaces only; contextual `G` capabilities are not yet implemented).
+Owner's words, from `docs/v2/drafts/sesion-2026-11-15.md`: «Kimun solo ve, sintetiza y genera, no
+debería exigir nada al resto.»
+
+## Status
+
+**kimun is being re-architected; there is no published release.** What exists today is the
+previous design's implementation, pure Clojure (`.cljc`) on Babashka, in the middle of being cut
+back toward the direction above (the deletion cuts are in progress):
+
+- A content-addressed store `.kimun/`, with Markdown documents parsed (tree-sitter pod),
+  anchored and rendered; typed documents, fields and sections, marks on units, an index,
+  `find`, edges and a graph view, semantic tags, and an HTTP `serve`.
+- Not there yet: declarations as Clojure that runs, relations as nodes, several classes per
+  node, code nodes, a git-based sensor as the default, materialization from the graph, MCP.
+  Parity with sldb v1 is suspended. The contextual `G` layer waits for owner decision `D-G`:
+  its capabilities (`docs/v2/tests/wittgenstein-manifest.md`) are not yet implemented.
+
+The plan, in stages, is `docs/v2/drafts/plan-producto.md` (approved by the owner on 2026-11-16);
+the session that changed the frame is `docs/v2/drafts/sesion-2026-11-15.md`; its design is
+`docs/v2/drafts/diseno-declaraciones.md`. Those are drafts, and they are the current direction.
 
 ## Install
 
-A release bundle needs nothing on the target machine: `bin/kimun` runs the bundled `bb`
-on `lib/kimun.jar`.
-
-```bash
-bb release --local-bb --platforms linux-amd64   # dist/kimun-<ver>-<plat>.tar.gz
-```
-
-From a checkout, `bin/kimun` is a development launcher (needs `bb` ≥ 1.13 on PATH).
+There is no published release. From a checkout, `bin/kimun` is a development launcher (needs
+`bb` ≥ 1.13 on PATH, and the tree-sitter pod built with `bb pod` for anything that parses
+Markdown). `bb release --local-bb --platforms linux-amd64` builds a local bundle
+(`dist/kimun-<ver>-<plat>.tar.gz`); it is not a distribution channel.
 
 ## Five-minute tour
 
@@ -41,7 +46,6 @@ bin/kimun docs ingest notes.md --name notes # parse Markdown and commit it as a 
 bin/kimun docs list --format text           # name, tree id, and for typed ones model/state/path
 bin/kimun docs render notes                 # canonical Markdown of a document
 bin/kimun find "some term"                  # physical, semantic and address search
-bin/kimun journal show --limit 5            # the write history, newest first
 bin/kimun stores health                     # verdict: ok | degraded | needs-human
 ```
 
@@ -51,14 +55,15 @@ code. `bin/kimun --help` lists every group.
 ## Build and test
 
 ```bash
-bb lint && bb test && bb oracle   # rings/docstrings, suite, canonical-bytes oracle
+bb lint && bb test && bb oracle   # rings/docstrings, suite, canonical-bytes oracle (needs Python 3)
 bb jar                            # target/kimun.jar (built-in `bb uberjar`)
 bb desk                           # build this repo's desk store (.kimun) from kimun.include.edn
 ```
 
 ## Read next
 
-- `docs/v2/README.md` — authority table and reading order for the direction docs; **start here**
+- `docs/v2/drafts/plan-producto.md` — the approved plan, by stages; `docs/v2/drafts/sesion-2026-11-15.md` — the owner's words
+- `docs/v2/README.md` — authority table and reading order for the direction docs
 - `docs/v2/05-estado.md` — current status and decisions
 - `docs/v2/06-superficies-y-cli.md` — the CLI inventory and the envelope/exit-code contract
 - `docs/v2/tests/wittgenstein-manifest.md` — inclusion manifest (`C01–C28`, Wittgenstein `W1`/`W2`) and current status
@@ -69,11 +74,11 @@ bb desk                           # build this repo's desk store (.kimun) from k
 - `src/kimun/{kernel,host,surface/markdown}/` — rings 0/1/2 of the kernel (`bb lint` enforces the rings)
 - `src/kimun/cli/` — the CLI (ring 3, `kimun.*` may require the kernel rings, never the reverse)
 - `test/`, `test/fixtures/cli/` — suite and golden envelopes
-- `scripts/` — `check_rings.clj` (lint), `canon_oracle.py` (oracle), `release.clj` (bundles)
+- `scripts/` — `check_rings.clj` (lint), `canon_oracle.py` (oracle, Python 3), `release.clj` (bundles)
 - `release.edn` — pinned Babashka version, platform matrix and asset digests
 - `kimun.include.edn` — what this repo versions in git; the store itself is built, not committed
 - `docs/v2/` — direction (highest authority); `docs/archive/` — historical material
-- `desk/` — tracked desk sources (atoms, tasks, models, rituals); `.kimun/` — the built store
+- `desk/` — tracked desk sources; `.kimun/` — the built store (the include declares no models or documents today)
 - `docs/archive/raw/source/` — frozen source material; `runs/` — execution evidence
 
 ## Lineage
@@ -83,7 +88,7 @@ the word "knowledge" around here; they are distinct (`docs/v2/08 §0`):
 
 | name | what | repo |
 |---|---|---|
-| `kimun` | this product: SLDB v2 kernel + models + CLI, binary `kimun` | `jpcosec/kimun` |
+| `kimun` | this product, binary `kimun`; successor of `sldb` v1 and `kgdb` | `jpcosec/kimun` |
 | `pron` | the provenance knowledge base and the Python evaluator over `.sldb` v1 + kgdb, in one package (pip `pron`); alive, imported by `kinesis` | `jpcosec/pron` |
 | `knowledge` | frozen: the July 2026 file-based CLI only | `jpcosec/knowledge` |
 

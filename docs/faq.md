@@ -24,9 +24,19 @@ Notice that only the **base S/M surfaces** are implemented today: the contextual
 - Legacy global uncontextualized kernels, abandoned code and experimental causality (`appendix_causality`) where co-occurrence is treated as intervention (`X01`, `X02`).
 - Ad-hoc YAML layouts, random IDs as authority, and literal REPL prompt equivalence (`X03`, `X04`).
 - Upstream bugs from W1/W2 (`X05`: auto-confirming LLM claims, ignoring `Si = unsinnig` in `ask`, losing explicit `FALSE` under qualification, anchorless facts, lossy snapshots, and unsafe retraction).
-- v1 parity as a 1:1 port. Parity with sldb v1 is closed and measured in
-  `docs/v2/tests/parity-v1.md`; decision 18 keeps v1 in v1 and lets the stores be
-  regenerated (`docs/v2/05-estado.md §3`).
+- v1 parity as a 1:1 port. Parity with sldb v1 is **suspended** (owner, 2026-11-15: «olvidémonos de
+  la paridad con v1 hasta que terminemos esta "rearquitecturización"»), not closed; decision 18
+  keeps v1 in v1 and lets the stores be regenerated (`docs/v2/05-estado.md §3`).
+
+### Deferred by the owner (2026-11-15/16)
+
+- Redoing git (file-level monitoring of kimun's own): kimun uses git for it
+  (`docs/v2/drafts/sesion-2026-11-15.md §11`).
+- The `G` layer, until owner decision `D-G`.
+- Replacing sldb for its consumers (`RS1`, `RS2`, `C2`), after kimun is proven working
+  (decision 47).
+
+The working order is `docs/v2/drafts/plan-producto.md`.
 
 ## How does an agent work and close a task?
 
@@ -37,5 +47,7 @@ a commit.
 
 - `kimun` is the data/document layer; `sldb` v1 and `kgdb` are frozen and superseded by it.
 - The desk is a kimun store at `.kimun/`, built by `bin/kimun include build` (alias
-  `bb desk`) from `kimun.include.edn` and `desk/models/*.edn`, and managed with kimun
-  commands. The deskops CLI is not used in this repository.
+  `bb desk`) from `kimun.include.edn`, which declares no models or documents today
+  (`desk/models/*.edn` were retired on 2026-10-09). It is managed with kimun commands; the
+  deskops CLI is not used in this repository. What SLDB used to generate becomes
+  materializations from models (`docs/v2/drafts/sesion-2026-11-15.md §4`).
