@@ -85,3 +85,28 @@
   [dir sha rel]
   (let [r (git dir "show" (str sha ":./" rel))]
     (when (zero? (:exit r)) (:out r))))
+
+(defn list-files
+  "The files of the project in `dir` as git knows them: tracked plus untracked that git does
+   not ignore (`ls-files -z --cached --others --exclude-standard`), relative to `dir`, sorted,
+   without repeats; paths under `exclude` (e.g. `[\".kimun\"]`) are left out. Nil when `dir`
+   is not inside a git work tree (or git is absent): the caller decides what else to do.
+   Raises `:git/error` when git fails inside a repository."
+  [dir exclude]
+  (let [inside (git dir "rev-parse" "--is-inside-work-tree")]
+    (when (and (zero? (:exit inside)) (= "true" (str/trim (:out inside))))
+      (let [r (git dir "ls-files" "-z" "--cached" "--others" "--exclude-standard" "--" ".")
+            px (rel-prefix exclude)]
+        (when-not (zero? (:exit r))
+          (err/raise :git/error (str "git failed: " (str/trim (:err r))) {:dir (str dir)}))
+        (->> (str/split (:out r) #"\u0000")
+             (remove str/blank?)
+             (remove #(excluded? px %))
+             distinct sort vec)))))
+
+(defn repo-root
+  "The top directory of the git work tree that holds `dir` (absolute, as git prints it), or
+   nil when `dir` is not inside one (or git is absent)."
+  [dir]
+  (let [r (git dir "rev-parse" "--show-toplevel")]
+    (when (zero? (:exit r)) (let [s (str/trim (:out r))] (when (seq s) s)))))

@@ -1,0 +1,62 @@
+
+Testing kimun.surface.propositions-test
+
+Testing kimun.cli.declare-ask-test
+
+Testing kimun.cli.declare-root-test
+
+Testing kimun.cli.declare-project-test
+
+Testing kimun.cli.c4-route-rebuild-test
+moved existing store to /tmp/kimun-adhoc-13623076129160023122/kimun-c4-route-11123060452930546283/.kimun.bak-20261116-012917-01M7H9VNQTJM1FSQ96KAPK65ME
+
+Testing kimun.cli.changed-test
+
+Testing kimun.cli.compose-test
+
+Testing kimun.cli.contract-test
+
+Testing kimun.cli.corpus-test
+
+Testing kimun.cli.diagnostics-test
+
+Testing kimun.cli.docs-anchors-test
+
+Testing kimun.cli.docs-test
+
+Testing kimun.cli.edges-test
+
+Testing kimun.cli.fields-test
+
+Testing kimun.cli.field-units-test
+moved existing store to /tmp/kimun-adhoc-13623076129160023122/kimun-units-inc-1129556526657541158/.kimun.bak-20261116-012941-01M7H9WD8KPQQXFCAM27HC9C7V
+
+Testing kimun.cli.find-test
+
+Testing kimun.cli.generic-docs-test
+
+Testing kimun.cli.graph-test
+
+Testing kimun.cli.identity-carry-test
+moved existing store to /tmp/kimun-adhoc-13623076129160023122/kimun-k1a-9538086276417821864/.kimun.bak-20261116-012944-01M7H9WGG3P9Z7DJ6YXDX269AY
+moved existing store to /tmp/kimun-adhoc-13623076129160023122/kimun-k1a-8500982047136664611/.kimun.bak-20260101-000000-01M7H9WGKHFKZYS26S2P1G5TS1
+moved existing store to /tmp/kimun-adhoc-13623076129160023122/kimun-k1a-8500982047136664611/.kimun.bak-20260101-000000-01M7H9WGMKY5Y7ME5HAM93SVB6
+moved existing store to /tmp/kimun-adhoc-13623076129160023122/kimun-k1a-14809278197034162417/.kimun.bak-20261116-012945-01M7H9WGQG3P08E1A4M034BBV2
+moved existing store to /tmp/kimun-adhoc-13623076129160023122/kimun-k1a-14809278197034162417/.kimun.bak-20261116-012945-01M7H9WGRMZKKMAD688S8177XA
+moved existing store to /tmp/kimun-adhoc-13623076129160023122/kimun-k1a-3446780420019984181/.kimun.bak-20261116-012945-01M7H9WGVPKJDD2J4B63Q6BXP3
+moved existing store to /tmp/kimun-adhoc-13623076129160023122/kimun-k1a-17001264584003175126/.kimun.bak-20261116-012945-01M7H9WGZJ14V74JAMV6XF1958
+
+Testing kimun.cli.include-test
+moved existing store to /tmp/kimun-adhoc-13623076129160023122/kimun-include-366290422694209929/.kimun.bak-20261116-012945-01M7H9WH2PBY5QHD9DKA743W3B
+
+Testing kimun.cli.index-test
+
+Testing kimun.cli.journal-test
+
+Testing kimun.cli.linked-models-test
+
+Testing kimun.cli.links-test
+
+Ran 168 tests containing 2163 assertions.
+0 failures, 0 errors.
+done 0

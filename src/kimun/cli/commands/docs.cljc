@@ -875,7 +875,7 @@
   {:name {:ref "NAME" :desc "Document name (docs ingest, docs update, docs track)"}
    :data {:ref "FILE" :desc "Payload file, JSON or YAML (docs create, docs update)"}
    :set {:ref "FIELD=VALUE" :desc "One payload field (repeatable)" :coerce [:string]}
-   :path {:ref "PATH" :desc "File of the new document (docs create)"}
+   :path {:ref "PATH" :desc "A project file, relative to the working directory: the new document (docs create) or the file to ask about (declare about)"}
    :inline {:desc "Store the source text in the store instead of reading it from the file (docs create, docs track)" :coerce :boolean}
    :model {:ref "NAME" :desc "Only documents of this model (docs list)"}
    :force {:desc "Track a file that does not round-trip under its model (docs track)" :coerce :boolean}

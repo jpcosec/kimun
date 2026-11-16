@@ -1,0 +1,32 @@
+== mutation 1
+FAIL in (dotted-hierarchy-and-implicit-ancestors) (/tmp/kimun-about-wt/test/kimun/surface/propositions_test.cljc:24)
+FAIL in (terms-lists-implicit-ancestors) (/tmp/kimun-about-wt/test/kimun/cli/declare_ask_test.cljc:55)
+FAIL in (terms-lists-implicit-ancestors) (/tmp/kimun-about-wt/test/kimun/cli/declare_ask_test.cljc:55)
+3 failures, 0 errors.
+== mutation 2
+FAIL in (proposition-on-proposition-one-level) (/tmp/kimun-about-wt/test/kimun/surface/propositions_test.cljc:52)
+FAIL in (about-with-and-without-exact) (/tmp/kimun-about-wt/test/kimun/surface/propositions_test.cljc:38)
+FAIL in (about-with-and-without-exact) (/tmp/kimun-about-wt/test/kimun/surface/propositions_test.cljc:38)
+FAIL in (about-term-and-exact) (/tmp/kimun-about-wt/test/kimun/cli/declare_ask_test.cljc:64)
+4 failures, 0 errors.
+== mutation 3
+FAIL in (about-path-by-anchor-and-by-pattern) (/tmp/kimun-about-wt/test/kimun/surface/propositions_test.cljc:65)
+FAIL in (about-path-by-anchor-and-by-pattern) (/tmp/kimun-about-wt/test/kimun/surface/propositions_test.cljc:65)
+FAIL in (about-path-by-anchor-and-by-pattern) (/tmp/kimun-about-wt/test/kimun/surface/propositions_test.cljc:65)
+FAIL in (about-path-by-anchor-and-by-pattern) (/tmp/kimun-about-wt/test/kimun/surface/propositions_test.cljc:65)
+FAIL in (about-path-by-anchor-and-by-pattern) (/tmp/kimun-about-wt/test/kimun/surface/propositions_test.cljc:65)
+FAIL in (about-path-by-anchor-and-patterns-in-git-and-outside) (/tmp/kimun-about-wt/test/kimun/cli/declare_ask_test.cljc:71)
+FAIL in (about-path-by-anchor-and-patterns-in-git-and-outside) (/tmp/kimun-about-wt/test/kimun/cli/declare_ask_test.cljc:71)
+7 failures, 0 errors.
+== mutation 4
+FAIL in (proposition-on-proposition-one-level) (/tmp/kimun-about-wt/test/kimun/surface/propositions_test.cljc:52)
+1 failures, 0 errors.
+== junta (raiz y proyecto)
+-- mutation 1 (root ignored: always the cwd)
+      1 22 failures, 0 errors.
+      4 FAIL in (about-path-by-anchor-and-patterns-in-git-and-outside) (/tmp/kimun-about-wt/test/kimun/cli/declare_ask_test.cljc:71)
+      3 FAIL in (root-without-kimun-is-the-git-top-and-without-git-the-cwd) (/tmp/kimun-about-wt/test/kimun/cli/declare_root_test.cljc:62)
+     15 FAIL in (six-commands-from-a-subdirectory-equal-those-from-the-root) (/tmp/kimun-about-wt/test/kimun/cli/declare_root_test.cljc:29)
+-- mutation 2 (no project without FILE)
+      1 4 failures, 0 errors.
+      4 FAIL in (terms-and-about-without-file-read-the-project) (/tmp/kimun-about-wt/test/kimun/cli/declare_root_test.cljc:51)
