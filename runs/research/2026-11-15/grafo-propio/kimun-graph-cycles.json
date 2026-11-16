@@ -1,0 +1,11 @@
+{
+  "ok" : true,
+  "command" : "graph cycles",
+  "store" : null,
+  "revision" : null,
+  "data" : {
+    "count" : 0,
+    "cycles" : [ ]
+  },
+  "warnings" : [ ]
+}

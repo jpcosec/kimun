@@ -1,0 +1,3064 @@
+{
+  "directed" : true,
+  "multigraph" : false,
+  "graph" : { },
+  "nodes" : [ {
+    "id" : "sldb://ns/kimun.cli.args",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.commands.adapters",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.commands.corpus",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.commands.direct",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.commands.docs",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.commands.edges",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.commands.fields",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.commands.find",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.commands.graph",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.commands.include",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.commands.index",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.commands.journal",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.commands.links",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.commands.migrate",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.commands.models",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.commands.predicates",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.commands.sections",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.commands.semantic",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.commands.serve",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.commands.stores",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.compose",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.errors",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.linked",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.main",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.out",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.cli.store",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.graph.analysis",
+    "type" : "graph",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.graph.edges",
+    "type" : "graph",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.graph.export",
+    "type" : "graph",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.graph.io",
+    "type" : "graph",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.graph.model",
+    "type" : "graph",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.graph.query",
+    "type" : "graph",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.graph.store",
+    "type" : "graph",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.graph.traversal",
+    "type" : "graph",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.host.default",
+    "type" : "host",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.host.fs-store",
+    "type" : "host",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.host.hash",
+    "type" : "host",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.host.lazy",
+    "type" : "host",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.host.store-cache",
+    "type" : "host",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.host.text",
+    "type" : "host",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.host.treesitter",
+    "type" : "host",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.host.ulid",
+    "type" : "host",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.kernel.anchor",
+    "type" : "kernel",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.kernel.canon",
+    "type" : "kernel",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.kernel.edge",
+    "type" : "kernel",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.kernel.err",
+    "type" : "kernel",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.kernel.heads",
+    "type" : "kernel",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.kernel.legacy.revision",
+    "type" : "kernel",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.kernel.mmap",
+    "type" : "kernel",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.kernel.node",
+    "type" : "kernel",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.kernel.plan",
+    "type" : "kernel",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.kernel.pool",
+    "type" : "kernel",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.kernel.ports",
+    "type" : "kernel",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.kernel.reconcile",
+    "type" : "kernel",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.kernel.revision",
+    "type" : "kernel",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.kernel.route",
+    "type" : "kernel",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.kernel.route-tree",
+    "type" : "kernel",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.kernel.standoff",
+    "type" : "kernel",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.kernel.store",
+    "type" : "kernel",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.kernel.tree",
+    "type" : "kernel",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.kernel.upgrade",
+    "type" : "kernel",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.adapters",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.diagnostics",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.docs",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.fields",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.heartbeat",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.http",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.http.routes",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.http.views",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.include",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.index.address",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.index.build",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.index.cache",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.index.corpus",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.index.search",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.index.where",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.journal",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.links",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.links.composer",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.links.parser",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.links.recovery",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.links.resolver",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.markdown.anchors",
+    "type" : "surface.markdown",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.markdown.ast",
+    "type" : "surface.markdown",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.markdown.cst",
+    "type" : "surface.markdown",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.markdown.cst-ast",
+    "type" : "surface.markdown",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.markdown.inline",
+    "type" : "surface.markdown",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.markdown.offsets",
+    "type" : "surface.markdown",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.markdown.plan",
+    "type" : "surface.markdown",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.markdown.render",
+    "type" : "surface.markdown",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.markdown.report",
+    "type" : "surface.markdown",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.migrate",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.models.blocks",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.models.capture",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.models.compile",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.models.descriptor",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.models.edit",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.models.extract",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.models.marker",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.models.noise",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.models.recipe",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.models.render",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.models.segments",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.models.selector",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.models.selector-cst",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.models.store",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.models.subgraph",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.models.validate",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.parse-contract",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.sections",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.semantic",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  }, {
+    "id" : "sldb://ns/kimun.surface.signals",
+    "type" : "kimun.*",
+    "status" : "unknown",
+    "semantics" : { },
+    "facets" : { }
+  } ],
+  "links" : [ {
+    "source" : "sldb://ns/kimun.cli.args",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.adapters",
+    "target" : "sldb://ns/kimun.cli.commands.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.adapters",
+    "target" : "sldb://ns/kimun.cli.commands.models",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.adapters",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.adapters",
+    "target" : "sldb://ns/kimun.cli.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.adapters",
+    "target" : "sldb://ns/kimun.host.default",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.adapters",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.adapters",
+    "target" : "sldb://ns/kimun.surface.adapters",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.adapters",
+    "target" : "sldb://ns/kimun.surface.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.adapters",
+    "target" : "sldb://ns/kimun.surface.models.extract",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.adapters",
+    "target" : "sldb://ns/kimun.surface.models.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.corpus",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.corpus",
+    "target" : "sldb://ns/kimun.cli.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.corpus",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.corpus",
+    "target" : "sldb://ns/kimun.surface.index.cache",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.corpus",
+    "target" : "sldb://ns/kimun.surface.index.corpus",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.direct",
+    "target" : "sldb://ns/kimun.cli.commands.models",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.direct",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.direct",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.direct",
+    "target" : "sldb://ns/kimun.surface.models.edit",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.direct",
+    "target" : "sldb://ns/kimun.surface.models.extract",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.direct",
+    "target" : "sldb://ns/kimun.surface.models.render",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.direct",
+    "target" : "sldb://ns/kimun.surface.models.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.direct",
+    "target" : "sldb://ns/kimun.surface.models.validate",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.docs",
+    "target" : "sldb://ns/kimun.cli.compose",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.docs",
+    "target" : "sldb://ns/kimun.cli.linked",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.docs",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.docs",
+    "target" : "sldb://ns/kimun.cli.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.docs",
+    "target" : "sldb://ns/kimun.host.default",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.docs",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.docs",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.docs",
+    "target" : "sldb://ns/kimun.kernel.revision",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.docs",
+    "target" : "sldb://ns/kimun.kernel.route",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.docs",
+    "target" : "sldb://ns/kimun.kernel.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.docs",
+    "target" : "sldb://ns/kimun.kernel.tree",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.docs",
+    "target" : "sldb://ns/kimun.surface.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.docs",
+    "target" : "sldb://ns/kimun.surface.markdown.anchors",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.docs",
+    "target" : "sldb://ns/kimun.surface.markdown.plan",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.docs",
+    "target" : "sldb://ns/kimun.surface.models.capture",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.docs",
+    "target" : "sldb://ns/kimun.surface.models.extract",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.docs",
+    "target" : "sldb://ns/kimun.surface.models.noise",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.docs",
+    "target" : "sldb://ns/kimun.surface.models.render",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.docs",
+    "target" : "sldb://ns/kimun.surface.models.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.docs",
+    "target" : "sldb://ns/kimun.surface.parse-contract",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.edges",
+    "target" : "sldb://ns/kimun.cli.commands.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.edges",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.edges",
+    "target" : "sldb://ns/kimun.cli.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.edges",
+    "target" : "sldb://ns/kimun.graph.edges",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.edges",
+    "target" : "sldb://ns/kimun.host.default",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.edges",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.edges",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.edges",
+    "target" : "sldb://ns/kimun.kernel.revision",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.edges",
+    "target" : "sldb://ns/kimun.kernel.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.fields",
+    "target" : "sldb://ns/kimun.cli.commands.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.fields",
+    "target" : "sldb://ns/kimun.cli.compose",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.fields",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.fields",
+    "target" : "sldb://ns/kimun.cli.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.fields",
+    "target" : "sldb://ns/kimun.host.default",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.fields",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.fields",
+    "target" : "sldb://ns/kimun.kernel.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.fields",
+    "target" : "sldb://ns/kimun.surface.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.fields",
+    "target" : "sldb://ns/kimun.surface.fields",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.fields",
+    "target" : "sldb://ns/kimun.surface.index.where",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.fields",
+    "target" : "sldb://ns/kimun.surface.models.noise",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.fields",
+    "target" : "sldb://ns/kimun.surface.models.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.find",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.find",
+    "target" : "sldb://ns/kimun.cli.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.find",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.find",
+    "target" : "sldb://ns/kimun.surface.index.cache",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.find",
+    "target" : "sldb://ns/kimun.surface.index.search",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.find",
+    "target" : "sldb://ns/kimun.surface.index.where",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.graph",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.graph",
+    "target" : "sldb://ns/kimun.cli.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.graph",
+    "target" : "sldb://ns/kimun.graph.analysis",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.graph",
+    "target" : "sldb://ns/kimun.graph.io",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.graph",
+    "target" : "sldb://ns/kimun.graph.model",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.graph",
+    "target" : "sldb://ns/kimun.graph.query",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.graph",
+    "target" : "sldb://ns/kimun.graph.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.graph",
+    "target" : "sldb://ns/kimun.graph.traversal",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.graph",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.include",
+    "target" : "sldb://ns/kimun.cli.compose",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.include",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.include",
+    "target" : "sldb://ns/kimun.cli.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.include",
+    "target" : "sldb://ns/kimun.host.default",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.include",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.include",
+    "target" : "sldb://ns/kimun.kernel.plan",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.include",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.include",
+    "target" : "sldb://ns/kimun.kernel.revision",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.include",
+    "target" : "sldb://ns/kimun.kernel.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.include",
+    "target" : "sldb://ns/kimun.surface.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.include",
+    "target" : "sldb://ns/kimun.surface.include",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.include",
+    "target" : "sldb://ns/kimun.surface.models.extract",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.include",
+    "target" : "sldb://ns/kimun.surface.models.noise",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.include",
+    "target" : "sldb://ns/kimun.surface.models.render",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.include",
+    "target" : "sldb://ns/kimun.surface.models.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.index",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.index",
+    "target" : "sldb://ns/kimun.cli.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.index",
+    "target" : "sldb://ns/kimun.surface.index.cache",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.journal",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.journal",
+    "target" : "sldb://ns/kimun.cli.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.journal",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.journal",
+    "target" : "sldb://ns/kimun.kernel.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.journal",
+    "target" : "sldb://ns/kimun.surface.journal",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.links",
+    "target" : "sldb://ns/kimun.cli.commands.direct",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.links",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.links",
+    "target" : "sldb://ns/kimun.cli.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.links",
+    "target" : "sldb://ns/kimun.graph.edges",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.links",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.links",
+    "target" : "sldb://ns/kimun.surface.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.links",
+    "target" : "sldb://ns/kimun.surface.links",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.migrate",
+    "target" : "sldb://ns/kimun.cli.commands.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.migrate",
+    "target" : "sldb://ns/kimun.cli.commands.models",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.migrate",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.migrate",
+    "target" : "sldb://ns/kimun.cli.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.migrate",
+    "target" : "sldb://ns/kimun.host.default",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.migrate",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.migrate",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.migrate",
+    "target" : "sldb://ns/kimun.kernel.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.migrate",
+    "target" : "sldb://ns/kimun.surface.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.migrate",
+    "target" : "sldb://ns/kimun.surface.migrate",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.migrate",
+    "target" : "sldb://ns/kimun.surface.models.descriptor",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.migrate",
+    "target" : "sldb://ns/kimun.surface.models.edit",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.migrate",
+    "target" : "sldb://ns/kimun.surface.models.extract",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.migrate",
+    "target" : "sldb://ns/kimun.surface.models.render",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.migrate",
+    "target" : "sldb://ns/kimun.surface.models.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.models",
+    "target" : "sldb://ns/kimun.cli.commands.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.models",
+    "target" : "sldb://ns/kimun.cli.compose",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.models",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.models",
+    "target" : "sldb://ns/kimun.cli.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.models",
+    "target" : "sldb://ns/kimun.host.default",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.models",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.models",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.models",
+    "target" : "sldb://ns/kimun.kernel.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.models",
+    "target" : "sldb://ns/kimun.surface.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.models",
+    "target" : "sldb://ns/kimun.surface.models.descriptor",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.models",
+    "target" : "sldb://ns/kimun.surface.models.edit",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.models",
+    "target" : "sldb://ns/kimun.surface.models.extract",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.models",
+    "target" : "sldb://ns/kimun.surface.models.render",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.models",
+    "target" : "sldb://ns/kimun.surface.models.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.models",
+    "target" : "sldb://ns/kimun.surface.models.subgraph",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.predicates",
+    "target" : "sldb://ns/kimun.cli.commands.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.predicates",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.predicates",
+    "target" : "sldb://ns/kimun.cli.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.predicates",
+    "target" : "sldb://ns/kimun.graph.edges",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.predicates",
+    "target" : "sldb://ns/kimun.host.default",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.predicates",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.predicates",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.predicates",
+    "target" : "sldb://ns/kimun.kernel.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.sections",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.sections",
+    "target" : "sldb://ns/kimun.cli.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.sections",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.sections",
+    "target" : "sldb://ns/kimun.surface.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.sections",
+    "target" : "sldb://ns/kimun.surface.models.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.sections",
+    "target" : "sldb://ns/kimun.surface.sections",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.sections",
+    "target" : "sldb://ns/kimun.surface.semantic",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.semantic",
+    "target" : "sldb://ns/kimun.cli.commands.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.semantic",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.semantic",
+    "target" : "sldb://ns/kimun.cli.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.semantic",
+    "target" : "sldb://ns/kimun.graph.export",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.semantic",
+    "target" : "sldb://ns/kimun.host.default",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.semantic",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.semantic",
+    "target" : "sldb://ns/kimun.kernel.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.semantic",
+    "target" : "sldb://ns/kimun.surface.semantic",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.serve",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.serve",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.serve",
+    "target" : "sldb://ns/kimun.surface.http",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.stores",
+    "target" : "sldb://ns/kimun.cli.commands.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.stores",
+    "target" : "sldb://ns/kimun.cli.compose",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.stores",
+    "target" : "sldb://ns/kimun.cli.errors",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.stores",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.stores",
+    "target" : "sldb://ns/kimun.cli.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.stores",
+    "target" : "sldb://ns/kimun.host.default",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.stores",
+    "target" : "sldb://ns/kimun.host.fs-store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.stores",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.stores",
+    "target" : "sldb://ns/kimun.kernel.plan",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.stores",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.stores",
+    "target" : "sldb://ns/kimun.kernel.revision",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.stores",
+    "target" : "sldb://ns/kimun.kernel.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.stores",
+    "target" : "sldb://ns/kimun.kernel.upgrade",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.stores",
+    "target" : "sldb://ns/kimun.surface.diagnostics",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.stores",
+    "target" : "sldb://ns/kimun.surface.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.stores",
+    "target" : "sldb://ns/kimun.surface.heartbeat",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.commands.stores",
+    "target" : "sldb://ns/kimun.surface.signals",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.compose",
+    "target" : "sldb://ns/kimun.surface.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.compose",
+    "target" : "sldb://ns/kimun.surface.models.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.errors",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.linked",
+    "target" : "sldb://ns/kimun.cli.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.linked",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.linked",
+    "target" : "sldb://ns/kimun.surface.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.linked",
+    "target" : "sldb://ns/kimun.surface.models.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.args",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.commands.adapters",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.commands.corpus",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.commands.direct",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.commands.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.commands.edges",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.commands.fields",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.commands.find",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.commands.graph",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.commands.include",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.commands.index",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.commands.journal",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.commands.links",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.commands.migrate",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.commands.models",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.commands.predicates",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.commands.sections",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.commands.semantic",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.commands.serve",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.commands.stores",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.errors",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.main",
+    "target" : "sldb://ns/kimun.cli.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.store",
+    "target" : "sldb://ns/kimun.host.default",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.store",
+    "target" : "sldb://ns/kimun.host.fs-store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.store",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.cli.store",
+    "target" : "sldb://ns/kimun.kernel.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.analysis",
+    "target" : "sldb://ns/kimun.graph.model",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.analysis",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.edges",
+    "target" : "sldb://ns/kimun.kernel.anchor",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.edges",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.edges",
+    "target" : "sldb://ns/kimun.kernel.node",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.edges",
+    "target" : "sldb://ns/kimun.kernel.revision",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.edges",
+    "target" : "sldb://ns/kimun.surface.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.edges",
+    "target" : "sldb://ns/kimun.surface.links",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.edges",
+    "target" : "sldb://ns/kimun.surface.models.segments",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.edges",
+    "target" : "sldb://ns/kimun.surface.models.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.edges",
+    "target" : "sldb://ns/kimun.surface.semantic",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.export",
+    "target" : "sldb://ns/kimun.graph.io",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.export",
+    "target" : "sldb://ns/kimun.surface.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.export",
+    "target" : "sldb://ns/kimun.surface.models.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.export",
+    "target" : "sldb://ns/kimun.surface.semantic",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.io",
+    "target" : "sldb://ns/kimun.graph.model",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.io",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.query",
+    "target" : "sldb://ns/kimun.graph.model",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.query",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.store",
+    "target" : "sldb://ns/kimun.graph.edges",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.store",
+    "target" : "sldb://ns/kimun.graph.export",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.store",
+    "target" : "sldb://ns/kimun.graph.io",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.store",
+    "target" : "sldb://ns/kimun.graph.model",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.store",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.graph.traversal",
+    "target" : "sldb://ns/kimun.graph.model",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.host.default",
+    "target" : "sldb://ns/kimun.host.hash",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.host.default",
+    "target" : "sldb://ns/kimun.host.lazy",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.host.default",
+    "target" : "sldb://ns/kimun.host.text",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.host.default",
+    "target" : "sldb://ns/kimun.host.ulid",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.host.fs-store",
+    "target" : "sldb://ns/kimun.host.store-cache",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.host.fs-store",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.host.fs-store",
+    "target" : "sldb://ns/kimun.kernel.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.host.hash",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.host.lazy",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.host.text",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.host.ulid",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.anchor",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.anchor",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.anchor",
+    "target" : "sldb://ns/kimun.kernel.revision",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.anchor",
+    "target" : "sldb://ns/kimun.kernel.tree",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.canon",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.canon",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.edge",
+    "target" : "sldb://ns/kimun.kernel.canon",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.edge",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.heads",
+    "target" : "sldb://ns/kimun.kernel.revision",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.legacy.revision",
+    "target" : "sldb://ns/kimun.kernel.canon",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.legacy.revision",
+    "target" : "sldb://ns/kimun.kernel.edge",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.legacy.revision",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.legacy.revision",
+    "target" : "sldb://ns/kimun.kernel.node",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.legacy.revision",
+    "target" : "sldb://ns/kimun.kernel.plan",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.legacy.revision",
+    "target" : "sldb://ns/kimun.kernel.tree",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.mmap",
+    "target" : "sldb://ns/kimun.kernel.canon",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.mmap",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.node",
+    "target" : "sldb://ns/kimun.kernel.canon",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.node",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.node",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.plan",
+    "target" : "sldb://ns/kimun.kernel.canon",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.pool",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.pool",
+    "target" : "sldb://ns/kimun.kernel.node",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.reconcile",
+    "target" : "sldb://ns/kimun.kernel.anchor",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.reconcile",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.reconcile",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.reconcile",
+    "target" : "sldb://ns/kimun.kernel.revision",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.reconcile",
+    "target" : "sldb://ns/kimun.kernel.tree",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.revision",
+    "target" : "sldb://ns/kimun.kernel.canon",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.revision",
+    "target" : "sldb://ns/kimun.kernel.edge",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.revision",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.revision",
+    "target" : "sldb://ns/kimun.kernel.legacy.revision",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.revision",
+    "target" : "sldb://ns/kimun.kernel.mmap",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.revision",
+    "target" : "sldb://ns/kimun.kernel.node",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.revision",
+    "target" : "sldb://ns/kimun.kernel.plan",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.revision",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.revision",
+    "target" : "sldb://ns/kimun.kernel.route",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.revision",
+    "target" : "sldb://ns/kimun.kernel.route-tree",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.revision",
+    "target" : "sldb://ns/kimun.kernel.tree",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.route",
+    "target" : "sldb://ns/kimun.kernel.canon",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.route",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.route-tree",
+    "target" : "sldb://ns/kimun.kernel.canon",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.route-tree",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.route-tree",
+    "target" : "sldb://ns/kimun.kernel.route",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.standoff",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.standoff",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.standoff",
+    "target" : "sldb://ns/kimun.kernel.revision",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.store",
+    "target" : "sldb://ns/kimun.kernel.canon",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.store",
+    "target" : "sldb://ns/kimun.kernel.edge",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.store",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.store",
+    "target" : "sldb://ns/kimun.kernel.legacy.revision",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.store",
+    "target" : "sldb://ns/kimun.kernel.mmap",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.store",
+    "target" : "sldb://ns/kimun.kernel.node",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.store",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.store",
+    "target" : "sldb://ns/kimun.kernel.revision",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.store",
+    "target" : "sldb://ns/kimun.kernel.route",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.store",
+    "target" : "sldb://ns/kimun.kernel.route-tree",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.tree",
+    "target" : "sldb://ns/kimun.kernel.canon",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.tree",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.tree",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.upgrade",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.upgrade",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.upgrade",
+    "target" : "sldb://ns/kimun.kernel.revision",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.kernel.upgrade",
+    "target" : "sldb://ns/kimun.kernel.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.diagnostics",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.diagnostics",
+    "target" : "sldb://ns/kimun.surface.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.diagnostics",
+    "target" : "sldb://ns/kimun.surface.models.noise",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.diagnostics",
+    "target" : "sldb://ns/kimun.surface.models.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.diagnostics",
+    "target" : "sldb://ns/kimun.surface.parse-contract",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.docs",
+    "target" : "sldb://ns/kimun.host.store-cache",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.docs",
+    "target" : "sldb://ns/kimun.kernel.canon",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.docs",
+    "target" : "sldb://ns/kimun.kernel.edge",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.docs",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.docs",
+    "target" : "sldb://ns/kimun.kernel.node",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.docs",
+    "target" : "sldb://ns/kimun.kernel.plan",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.docs",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.docs",
+    "target" : "sldb://ns/kimun.kernel.revision",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.docs",
+    "target" : "sldb://ns/kimun.kernel.route",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.docs",
+    "target" : "sldb://ns/kimun.kernel.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.docs",
+    "target" : "sldb://ns/kimun.kernel.tree",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.docs",
+    "target" : "sldb://ns/kimun.surface.markdown.anchors",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.docs",
+    "target" : "sldb://ns/kimun.surface.markdown.ast",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.docs",
+    "target" : "sldb://ns/kimun.surface.markdown.plan",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.docs",
+    "target" : "sldb://ns/kimun.surface.models.descriptor",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.docs",
+    "target" : "sldb://ns/kimun.surface.models.extract",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.docs",
+    "target" : "sldb://ns/kimun.surface.models.render",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.docs",
+    "target" : "sldb://ns/kimun.surface.models.selector",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.docs",
+    "target" : "sldb://ns/kimun.surface.models.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.docs",
+    "target" : "sldb://ns/kimun.surface.models.subgraph",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.docs",
+    "target" : "sldb://ns/kimun.surface.parse-contract",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.fields",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.fields",
+    "target" : "sldb://ns/kimun.surface.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.fields",
+    "target" : "sldb://ns/kimun.surface.index.where",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.fields",
+    "target" : "sldb://ns/kimun.surface.models.descriptor",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.fields",
+    "target" : "sldb://ns/kimun.surface.models.extract",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.fields",
+    "target" : "sldb://ns/kimun.surface.models.render",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.fields",
+    "target" : "sldb://ns/kimun.surface.models.segments",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.fields",
+    "target" : "sldb://ns/kimun.surface.models.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.fields",
+    "target" : "sldb://ns/kimun.surface.models.subgraph",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.http",
+    "target" : "sldb://ns/kimun.cli.errors",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.http",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.http",
+    "target" : "sldb://ns/kimun.surface.http.routes",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.http",
+    "target" : "sldb://ns/kimun.surface.http.views",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.http.routes",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.http.routes",
+    "target" : "sldb://ns/kimun.surface.http.views",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.http.views",
+    "target" : "sldb://ns/kimun.cli.out",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.http.views",
+    "target" : "sldb://ns/kimun.cli.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.http.views",
+    "target" : "sldb://ns/kimun.host.default",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.http.views",
+    "target" : "sldb://ns/kimun.surface.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.http.views",
+    "target" : "sldb://ns/kimun.surface.fields",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.http.views",
+    "target" : "sldb://ns/kimun.surface.models.segments",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.http.views",
+    "target" : "sldb://ns/kimun.surface.models.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.http.views",
+    "target" : "sldb://ns/kimun.surface.semantic",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.include",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.index.address",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.index.address",
+    "target" : "sldb://ns/kimun.surface.semantic",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.index.build",
+    "target" : "sldb://ns/kimun.surface.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.index.build",
+    "target" : "sldb://ns/kimun.surface.models.segments",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.index.build",
+    "target" : "sldb://ns/kimun.surface.models.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.index.build",
+    "target" : "sldb://ns/kimun.surface.semantic",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.index.cache",
+    "target" : "sldb://ns/kimun.cli.store",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.index.cache",
+    "target" : "sldb://ns/kimun.surface.index.build",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.index.corpus",
+    "target" : "sldb://ns/kimun.host.default",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.index.corpus",
+    "target" : "sldb://ns/kimun.kernel.reconcile",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.index.corpus",
+    "target" : "sldb://ns/kimun.surface.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.index.search",
+    "target" : "sldb://ns/kimun.host.default",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.index.search",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.index.search",
+    "target" : "sldb://ns/kimun.kernel.reconcile",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.index.search",
+    "target" : "sldb://ns/kimun.surface.index.address",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.index.search",
+    "target" : "sldb://ns/kimun.surface.index.where",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.index.search",
+    "target" : "sldb://ns/kimun.surface.models.segments",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.index.search",
+    "target" : "sldb://ns/kimun.surface.semantic",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.index.where",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.journal",
+    "target" : "sldb://ns/kimun.kernel.canon",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.journal",
+    "target" : "sldb://ns/kimun.kernel.plan",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.journal",
+    "target" : "sldb://ns/kimun.kernel.revision",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.links",
+    "target" : "sldb://ns/kimun.surface.links.composer",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.links",
+    "target" : "sldb://ns/kimun.surface.links.parser",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.links",
+    "target" : "sldb://ns/kimun.surface.links.recovery",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.links",
+    "target" : "sldb://ns/kimun.surface.links.resolver",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.links.composer",
+    "target" : "sldb://ns/kimun.surface.links.parser",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.links.composer",
+    "target" : "sldb://ns/kimun.surface.links.recovery",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.links.composer",
+    "target" : "sldb://ns/kimun.surface.links.resolver",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.links.recovery",
+    "target" : "sldb://ns/kimun.surface.links.parser",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.links.recovery",
+    "target" : "sldb://ns/kimun.surface.links.resolver",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.markdown.anchors",
+    "target" : "sldb://ns/kimun.kernel.canon",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.markdown.anchors",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.markdown.anchors",
+    "target" : "sldb://ns/kimun.surface.markdown.ast",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.markdown.ast",
+    "target" : "sldb://ns/kimun.host.treesitter",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.markdown.ast",
+    "target" : "sldb://ns/kimun.surface.markdown.cst",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.markdown.ast",
+    "target" : "sldb://ns/kimun.surface.markdown.inline",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.markdown.cst-ast",
+    "target" : "sldb://ns/kimun.host.treesitter",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.markdown.cst-ast",
+    "target" : "sldb://ns/kimun.surface.markdown.ast",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.markdown.cst-ast",
+    "target" : "sldb://ns/kimun.surface.markdown.cst",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.markdown.inline",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.markdown.offsets",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.markdown.plan",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.markdown.plan",
+    "target" : "sldb://ns/kimun.kernel.node",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.markdown.plan",
+    "target" : "sldb://ns/kimun.kernel.revision",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.markdown.plan",
+    "target" : "sldb://ns/kimun.kernel.tree",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.markdown.plan",
+    "target" : "sldb://ns/kimun.surface.markdown.ast",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.markdown.plan",
+    "target" : "sldb://ns/kimun.surface.markdown.render",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.markdown.render",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.markdown.render",
+    "target" : "sldb://ns/kimun.surface.markdown.cst",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.markdown.render",
+    "target" : "sldb://ns/kimun.surface.markdown.inline",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.markdown.report",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.migrate",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.blocks",
+    "target" : "sldb://ns/kimun.host.treesitter",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.capture",
+    "target" : "sldb://ns/kimun.host.default",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.capture",
+    "target" : "sldb://ns/kimun.kernel.canon",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.capture",
+    "target" : "sldb://ns/kimun.surface.markdown.anchors",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.capture",
+    "target" : "sldb://ns/kimun.surface.markdown.ast",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.capture",
+    "target" : "sldb://ns/kimun.surface.models.blocks",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.capture",
+    "target" : "sldb://ns/kimun.surface.models.selector",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.compile",
+    "target" : "sldb://ns/kimun.surface.models.descriptor",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.compile",
+    "target" : "sldb://ns/kimun.surface.models.recipe",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.descriptor",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.edit",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.extract",
+    "target" : "sldb://ns/kimun.surface.models.descriptor",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.extract",
+    "target" : "sldb://ns/kimun.surface.models.recipe",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.extract",
+    "target" : "sldb://ns/kimun.surface.models.selector",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.noise",
+    "target" : "sldb://ns/kimun.surface.models.blocks",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.noise",
+    "target" : "sldb://ns/kimun.surface.models.marker",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.recipe",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.recipe",
+    "target" : "sldb://ns/kimun.surface.models.blocks",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.recipe",
+    "target" : "sldb://ns/kimun.surface.models.marker",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.render",
+    "target" : "sldb://ns/kimun.surface.models.blocks",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.render",
+    "target" : "sldb://ns/kimun.surface.models.descriptor",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.render",
+    "target" : "sldb://ns/kimun.surface.models.extract",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.render",
+    "target" : "sldb://ns/kimun.surface.models.marker",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.segments",
+    "target" : "sldb://ns/kimun.surface.models.blocks",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.segments",
+    "target" : "sldb://ns/kimun.surface.models.extract",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.segments",
+    "target" : "sldb://ns/kimun.surface.models.marker",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.segments",
+    "target" : "sldb://ns/kimun.surface.models.render",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.selector",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.selector",
+    "target" : "sldb://ns/kimun.surface.models.blocks",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.selector",
+    "target" : "sldb://ns/kimun.surface.models.marker",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.selector",
+    "target" : "sldb://ns/kimun.surface.models.selector-cst",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.selector-cst",
+    "target" : "sldb://ns/kimun.host.treesitter",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.selector-cst",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.store",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.store",
+    "target" : "sldb://ns/kimun.kernel.node",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.store",
+    "target" : "sldb://ns/kimun.kernel.revision",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.store",
+    "target" : "sldb://ns/kimun.surface.models.descriptor",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.store",
+    "target" : "sldb://ns/kimun.surface.models.subgraph",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.subgraph",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.subgraph",
+    "target" : "sldb://ns/kimun.surface.models.descriptor",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.subgraph",
+    "target" : "sldb://ns/kimun.surface.models.selector-cst",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.validate",
+    "target" : "sldb://ns/kimun.surface.models.descriptor",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.validate",
+    "target" : "sldb://ns/kimun.surface.models.extract",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.validate",
+    "target" : "sldb://ns/kimun.surface.models.recipe",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.models.validate",
+    "target" : "sldb://ns/kimun.surface.models.render",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.parse-contract",
+    "target" : "sldb://ns/kimun.host.store-cache",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.parse-contract",
+    "target" : "sldb://ns/kimun.host.treesitter",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.parse-contract",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.parse-contract",
+    "target" : "sldb://ns/kimun.kernel.ports",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.parse-contract",
+    "target" : "sldb://ns/kimun.surface.markdown.ast",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.sections",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.sections",
+    "target" : "sldb://ns/kimun.surface.index.where",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.sections",
+    "target" : "sldb://ns/kimun.surface.models.segments",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.semantic",
+    "target" : "sldb://ns/kimun.kernel.err",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.semantic",
+    "target" : "sldb://ns/kimun.kernel.node",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.semantic",
+    "target" : "sldb://ns/kimun.surface.docs",
+    "relation" : "requires",
+    "metadata" : { }
+  }, {
+    "source" : "sldb://ns/kimun.surface.semantic",
+    "target" : "sldb://ns/kimun.surface.models.store",
+    "relation" : "requires",
+    "metadata" : { }
+  } ]
+}

@@ -1,0 +1,245 @@
+## /home/jp/proyectos/kimun/src/kimun/surface/docs.cljc
+74 source-format | Format of the opaque sign holding a document's source text.
+75 meta-key | Key of a plan's `:engines` under which a command records its journal metadata (an EDN string).
+83 py-json | `v` serialised exactly as Python's `json.dumps(v, sort_keys=True, ensure_ascii=False)` does — t
+94 text-hash | Hex digest of `text` (v1 `source_hash`).
+95 content-hash | Hex digest of the payload's canonical JSON (v1 `content_hash` / `version`).
+96 field-hashes | `{field hash}`: one content hash per payload field.
+97 fingerprint | `<alg>:<hex>` of `text` (02 §6.4).
+156 qualified-path | `p` as a qualified name: `\` as `/`, leading `./` removed, NFC. Nil for nil.
+161 generic-class | Class of a document without a model (docs/v2/14 §18.1, 10 §11): the structure the Markdown prof
+167 generic-class? | True when `class` (the `:class` of a tree descriptor) is a generic class.
+217 extract-under | The typed payload of Markdown `text` under class descriptor `d`. A v1 descriptor (`:template`) 
+246 current-reading | The reading in force NOW (`parse-contract/reading`) for the class whose descriptor id is `model
+304 documents | Every tracked typed document of `store`, by name: `{:name :qualified :tree :root :doc :model :m
+318 hidden-trees | Ids of `:document` trees that are document roots no longer tracked (untracked documents stay in
+330 candidates | The tracked documents `token` may mean as a tree id or a short name, typed or of a generic clas
+366 resolve-any | The tracked document identified by `token`, typed or of a generic class (`:generic true`), or n
+389 find-document | The tracked **typed** document identified by `token` (see `resolve-any`), or nil — also when `t
+398 refuse-collision! | Raises `:docs/exists` when a new document `name` with file `path` (nil for none) cannot live be
+414 contract-descriptor | The descriptor node the document was last written with — the `:contract` recorded in the eviden
+432 extract-doc | The typed payload of `text` under descriptor `d` read as document `doc` reads it: a spec 16 cla
+441 payload-of | `{:payload p}` of document `doc` extracted under the contract it was last written with (`contra
+454 unit-states | The field units of a typed document `doc` (a map of `documents`): `[{:field :id :status}]` sort
+467 file-missing! | Raises `:docs/file-missing` (exit 1) for document `doc` (a document map): its file is not on di
+476 document | The tracked document `token` (name or tree id) with `:payload` (or `:error`), `:source-hash`, `
+490 of-model | Tracked documents bound to model `name`.
+496 cached-tree? | True when tree `tid` was registered as cache (its tree objects and nodes are derived, docs/v2/1
+502 rebuild-tree | Builds in memory the `:document` tree `doc` (typed or generic) would be registered with from Ma
+514 rebuilt-root | The `:merkle-root` the Markdown `text` produces in memory for document `doc` (typed or generic)
+535 doc-tree | The committed tree of document `doc` through the ONE resolver (docs/v2/14 §19): from the store 
+579 document-markdown | Canonical Markdown of `doc` (a document map) or of the document named or identified by `token`,
+588 document-ast | SLDB-MD AST of `doc` (a document map) or of the document named or identified by `token`, throug
+599 changed-fields | `{path {:before v :after v}}` between two payloads; nested maps give dotted paths.
+634 projection-hash | Hash of the structure read from `text`: the canonical digest of the neutral AST of `ast/parse`,
+643 route-entry | The route entry of a registered document (K2a, `kimun.kernel.route`): `{:path :fingerprint :cla
+659 route-owner | The tree id that holds the route of `path` in `store`, or nil (also when the store records no r
+665 route-state | How the document with tree `tree-id` and file `path` stands in the route map of `store`: - `:ro
+689 routed? | True when document `doc` (a typed or generic document map with a file) holds the route of its o
+832 move-text | The Markdown that moves `doc` to its model's current contract: `payload` (default: the document
+847 track-plan | Plan that tracks source `text` as document `name` of model `model`. `opts`: `:doc` and `:tree-i
+892 create-plan | Plan that creates document `name` of `model` from `payload` (rendered with the model's template
+900 update-plan | Plan that replaces the source of tracked document `token` with `text` (re-extracted under the m
+988 generic-registrable? | True when a document without a model is registered by reference in `store` (class `generic-clas
+1048 generic-documents | Every document of `store` registered under a generic class (K3), by name then tree id.
+1057 generic-document | The document of a generic class identified by `token` (a tree id, a name or the path of its fil
+1065 refuse-anchored! | Raises `:docs/exists` when the file `path` is already the anchor of a tracked document, typed o
+1080 generic-root | The merkle root the Markdown `text` would be registered with as generic document `doc`: compute
+1088 generic-plan | Plan that registers the file `path` (relative to the project) with text `text` as a new documen
+1104 generic-update-plan | Plan that registers again the generic document `doc` (a map of `generic-documents`) from `text`
+1140 route-coverage | How much of what is registered the route map covers: `{:registered n :routed n :missing [doc] :
+1162 untrack-plan | Plan that stops tracking document `token`: the edges this surface owns (to its model, source an
+1183 sync-report | `[{:name :path :status}]` for tracked documents with a file, where `read-file` is `(fn [relativ
+1196 marks-of | The structural marks of document `doc` (a map of `documents` or `generic-documents`), read agai
+1208 mark-anchors | The anchors a mark of document `doc` (typed or generic) can point at, read from `text`: the str
+1224 mark-plan | Plan that DECLARES structural mark `id` on document `token` (`mark`) or removes it (`unmark?`),
+1252 unit-field | The field of typed document `doc` (a map of `documents`) whose unit is `id`, or nil.
+1258 close-unit-plan | Plan that DECLARES the closure of the FIELD unit `id` of typed document `doc` (a map of `docume
+1276 move-unit-plan | Plan that DECLARES the move of unit `unit` from document `from` to document `to` (maps of `docu
+## /home/jp/proyectos/kimun/src/kimun/cli/commands/docs.cljc
+37 timestamp | The current UTC instant in the plan's shape, `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+44 documents | `[{:name :tree :root}]` of every untyped `:document` tree in `store` (plus `:class` for one reg
+62 resolve-document | The document named or identified by `token`: a tree id (ULID) present in the store, a tracked d
+113 ingest | `docs ingest FILE [--name NAME]`: registers the Markdown file as a new document without a model
+152 update-doc | `docs update FILE --name NAME|TREE`: re-ingests the file into the existing document, as an edit
+188 render | `docs render NAME|TREE`: the canonical Markdown of the document, as the envelope's data (a stri
+203 list-docs | `docs list [--model M]`: every document of the store by name. An untyped document is `{:name :t
+307 create | `docs create MODEL NAME --data FILE | --set field=value… [--path P]`: renders the payload with 
+341 track | `docs track MODEL FILE [--name N]`: tracks an existing Markdown file as a document of MODEL (th
+373 update-typed | `docs update NAME [FILE] [--data F | --set k=v]`: re-reads the document's file (or FILE), or re
+414 reanchor | `docs reanchor NAME FILE --reason TEXT`: DECLARES that document NAME (typed or generic) is anch
+480 untrack | `docs untrack NAME`: stops tracking the document; its file stays. With `delete?` (the `docs del
+554 anchors | `docs anchors NAME [--sections]`: the structural anchors of a document as EVIDENCE (S2a, docs/v
+778 mark | `docs mark`: declares a structural unit (`mark-here`) or, with `--from NAME`, MOVES unit `--uni
+796 unmark | `docs unmark NAME ID [--reason TEXT]`: DECLARES the closure of unit `ID` of a document. A struc
+833 marks | `docs marks NAME`: the structural marks of a document and their state against the text read now
+853 show | `docs show NAME [--format md] [--ast]`: the document map with payload, hashes and `:markdown` (
+879 status | `docs status`: `[{:name :path :status}]` comparing each tracked file with the fingerprint recor
+888 update-any | `docs update`: for a tracked typed document, `docs update NAME [FILE]` (`update-typed`); otherw
+903 spec | Options of the `docs` group (babashka.cli spec, merged by `kimun.cli.main`).
+922 commands | Subcommand name → command fn `(fn [args opts ctx] envelope)`.
+929 dispatch | Runs subcommand `sub` of the `docs` group with the positional tokens that follow it; an unknown
+## /home/jp/proyectos/kimun/src/kimun/host/fs_store.cljc
+940 backend | A files backend rooted at `dir`, with its own empty object cache and heads memo (the parsed hea
+951 cached-ids | Ids of the objects this backend instance has parsed so far (diagnostics and tests).
+## /home/jp/proyectos/kimun/src/kimun/kernel/store.cljc
+140 hashed-form | The value whose canonical bytes hash to the object's id (nodes and edges are stored without the
+149 serialize | Canonical text written to objects/<id>.
+153 deserialize | Inverse of `serialize`: the in-memory object of `id` from the text of objects/<id>. Nodes get b
+167 load-object | The parsed object `id` of backend `b`, or nil when absent: from the backend's `ObjectCache` whe
+201 no-heads | The heads of a store without heads.edn (nothing committed), both formats.
+205 heads-record | The heads.edn value of `store`, the commit point `commit-tx!` compares and replaces: `no-heads`
+218 transaction? | True for a well-formed log entry: `{:id :plan :revision}` in format 2, `{:id :revision}` in for
+225 log-tail | Pure rule relating the recorded `heads` ({:head :heads} or nil) to `tail`, the last two entries
+261 committed-log | The log of `b` without an uncommitted tail (see `log-tail`): what readers of the history must u
+266 uncommitted-tail | The trailing log entry the recorded heads do not reflect (see `log-tail`): a Transaction, or {:
+273 format-version | The format new stores are created with (docs/v2/14 §10, §18.6): format 4 registers a document w
+279 route-schema | The route schema new stores are created with (docs/v2/10 §11.2): 2, the route map as a Merkle t
+300 init! | Creates a new store in backend `b` with the given capabilities; returns the empty in-memory sto
+346 replay | Rebuilds the in-memory store from log.edn alone (through the apply-plan of the store's :format-
+353 replay-open | Full verification by replay, for both formats: `replay` plus consistency of heads.edn with the 
+494 open | Opens the store in backend `b`. Formats 2–4 on a host with the LazyMaps port: NO replay, the lo
+536 commit! | Applies `plan` to the in-memory `store` (loaded from backend `b`), then persists: the objects t
+578 upgrade-routes! | Moves the store of backend `b` from route schema 1 (one flat map object) to schema 2 (the Merkl
+636 route-coverage | Verifiable coverage of the durable route map against the documents CURRENTLY anchored to a file
+712 reachable | Ids of every object reachable from the heads of `store` (docs/v2/02 §3.1): the transitive closu
+767 object-class | The class of a stored object by its shape: `:revision`, `:mmap-leaf`, `:mmap-branch`, `:route-m
+795 unreachable | The inventory of the objects stored in backend `b` that the heads of `store` do not reach (docs
+872 verify | The cheap-ish check: recomputes H(file) for every object reachable from the heads of `store` (d
+942 verify-full | The full verification. Replays the log only when every transaction plan is available from the C
+## /home/jp/proyectos/kimun/src/kimun/kernel/revision.cljc
+52 empty-store | A format-2 store with no objects, trees, edges or revisions.
+59 route-schema | The route schema of `store` (docs/v2/10 §11.2): 2 = the route map is a Merkle tree by path (`ki
+66 legacy? | True for a format-1 store value (served by kimun.kernel.legacy.revision).
+70 get-object | The CAS object with `id`, or nil. The one loader every accessor goes through.
+74 revision | The Revision map with `rev-id`, or nil.
+78 ancestors | Revision ids reachable from `rev-id` through :parents (including itself).
+105 active-edges | Lazy seq of the active edge ids, ascending, at the head or at `rev-id`.
+113 edge-active? | True when `edge-id` is in the active edge set at the head or at `rev-id` (one mmap lookup).
+123 hub-threshold | Largest number of edges a node's :incidence entry holds inline. Measured (gen_store, 200 docs; 
+130 hub-value? | True when an :incidence value is the nested form `{:set <mmap root id>}` (a node with more than
+136 edges-touching | Sorted vector of the active edge ids having `node-id` as :from or :to, at the head or at `rev-i
+149 edge-count | Number of active edges at the head or at `rev-id` (reads one mmap node).
+157 tree-ids | Ids of the trees at the head or at `rev-id`, ascending.
+165 tree-count | Number of trees at the head or at `rev-id` (reads one mmap node).
+173 tree-entry | [descriptor-id merkle-root] of tree `tid` at the head or at `rev-id`, without loading any of it
+184 tree-descriptor | Descriptor {:tree :kind :name :root} of tree `tid` at the head or at `rev-id` (loads one object
+191 tree-descriptors | `[[tree-id descriptor] …]` of every tree at the head, ascending by tree id: one walk of the :tr
+201 load-tree | Committed tree {:tree :descriptor :root} of `tid` at `rev-id`, rebuilt from the CAS (loads the 
+210 committed-tree | Committed tree of `tid` at the head (a lookup in the :trees view, which for a tree whose struct
+218 lazy-store | The store value over `base`, a map with :host :capabilities :format-version :objects :revisions
+263 trees-named | Ascending ids of the trees of the head whose descriptor :name is `name`. On a lazy store (`lazy
+273 refresh-views | The EAGER views of the head, for hosts without the LazyMaps port, in O(plan): `trees'` {tree-id
+582 tree-at | Committed tree :root Position of `tid` at `rev-id`, rebuilt from the CAS; nil when the revision
+604 diff | Difference between two revisions (docs/v2/02 §5.2): {:trees {tree-id {:added [node …] :removed 
+730 incidence-value | The canonical :incidence value of a node whose current value is `cur` (nil, an inline vector or
+777 apply-plan | Validates and applies `plan` to `store` (§5.1). Returns {:store store' :transaction tx :revisio
+## /home/jp/proyectos/kimun/src/kimun/cli/commands/stores.cljc
+38 init | `stores init`: creates the store at `--store` (if given) or `<cwd>/.kimun` with `--name` and `-
+74 check | `stores check`: opens the store (replaying the log) and reports `{:name :path :hash-alg :revisi
+186 sense | `stores sense [--once]`: one read-only observation of tracked documents. Reuses the existing di
+211 heartbeat | `stores heartbeat [--interval SECONDS] [--beats N]`: the heartbeat daemon. Every interval it re
+267 health | `stores health`: the verdict of the store (`kimun.surface.diagnostics/health`): `{:status :summ
+290 update-store | `stores update`: applies every repair that needs no decision — re-reads the documents whose fil
+362 reconcile | `stores reconcile [ROOT] [--apply]`: compares the stores found under ROOT (default: this store'
+388 verify | `stores verify`: the full verification (`kimun.kernel.store/verify-full`): replays the whole lo
+427 unreachable-note | What every `stores unreachable` answer says of itself, so that the report is not read as a list
+432 unreachable | `stores unreachable [--ids]`: the inventory of the objects under objects/ that the heads do not
+514 pack | `stores pack [--max-bytes N] [--cache]`: moves the loose objects smaller than N bytes (default 
+561 unpack | `stores unpack`: writes every packed object back to `objects/` and removes the pack (`kimun.hos
+619 upgrade-store | `stores upgrade`: moves the store to the current format. A format-1 store is rewritten as forma
+734 show | `stores show`: descriptor and heads without replaying the log: `{:name :path :hash-alg :links :
+759 link | `stores link NAME PATH`: links the current store to the store at PATH (a `.kimun` or a project 
+773 unlink | `stores unlink NAME`: removes the link NAME. Data: `{:unlinked {:name :path}}`.
+782 links | `stores links`: lists the links with their status. Data: `{:links [{:name :path :resolved :stat
+793 spec | Options of the `stores` group (babashka.cli spec, merged by `kimun.cli.main`).
+805 commands | Subcommand name → command fn.
+811 dispatch | Runs subcommand `sub` of the `stores` group (`args` are the positional tokens); an unknown or m
+## /home/jp/proyectos/kimun/src/kimun/cli/commands/include.cljc
+30 spec | Options of the `include` group (babashka.cli spec, merged by `kimun.cli.main`).
+151 check | `include check [--staged]`: diffs the declaration against git and the store. Without `--staged`
+206 gitignore | `include gitignore [--write]`: the managed block for `.gitignore` as data (`--format text` prin
+269 hook | `include hook --install|--uninstall`: installs a pre-commit hook that runs `bin/kimun include c
+497 build | `include build [--rebuild]`: builds the store from the declaration in ONE revision (docs/v2/14 
+581 status | `include status`: counts of the declaration and a summary of the findings — models, documents (
+600 commands | Subcommand name → command fn `(fn [args opts ctx] envelope)`.
+604 dispatch | Runs subcommand `sub` of the `include` group; an unknown or missing subcommand is the failure `
+## /home/jp/proyectos/kimun/src/kimun/graph/edges.cljc
+31 tree-name | Name of the taxonomy tree holding predicates and relation types.
+32 predicate-format | Blob format of a predicate definition node.
+33 relation-type-format | Blob format of a relation type node.
+34 relation-context | Prefix of the evidence context naming an authored relation.
+35 anchor-tag | The semantic tag that makes a document an anchor (v1).
+37 store-id | Node id of the store.
+38 model-id | Node id of model `m`.
+39 field-id | Node id of field `f` of model `m`.
+40 doc-id | Node id of the document with export id `Model:name`.
+41 section-id | Node id of section `path` of document `export-id`.
+42 tag-id | Node id of semantic tag `t`.
+43 relation-type-id | Node id of relation type `n`.
+44 anchor-id | Node id of the anchor named `symbol`.
+45 as-node-id | v1's `as_node_id`: an `sldb://` id is used as is, anything else is a document export id.
+53 default-predicates | v1's predicates seeded on store creation: `[{:name :axis :description}]`.
+67 builtin-relation-types | v1's builtin relation types by name (string-keyed, `RelationTypeDoc` shape).
+103 predicates | Predicate definitions of `store`, `[{:name :axis :description}]` sorted by name: the stored one
+111 predicate | The predicate called `n`; raises `:edges/missing` otherwise.
+117 predicate-registry | `{name axis}` of the predicates of `store` (what `parse-links` takes).
+122 stored-relation-types | Relation types defined in the kernel of `store`, by name.
+127 validate-predicate | Problems (v1's sentences) of a predicate `{:name :axis}`; empty when valid.
+164 add-predicate-plan | Plan adding predicate `{:name :axis :description}`. `opts` is `{:actor :timestamp :tree-id}` (`
+174 remove-predicate-plan | Plan removing predicate `n`; raises `:edges/missing` when unregistered.
+183 define-relation-type-plan | Plan defining (or redefining) a relation type. `t` takes `:name` and optionally `:direction` (`
+212 authored | Authored relations of `store` with their anchor state: `[{:edge :relation :actor :state :from {
+235 relate-plan | Plan authoring relation `:relation` from document `:from` to document `:to` (`Model:name` or a 
+249 unrelate-plan | Plan removing the authored relation `{:from :to :relation}`; an endpoint may also be given as t
+276 anchor-targets | v1's `anchor_targets`: the node ids an anchor payload (`{"ref" …}`, plus `"steps"` for `compose
+493 index | The derived edge index of an opened `store`: `{:graph {:nodes {id {:type :semantics}} :edges [{
+513 graph | The derived graph of `store` (`(:graph (index store opts))`).
+520 edges-from | Edges of graph `g` leaving node `id` (an `sldb://` id or a `Model:name`), optionally only those
+526 edges-to | Edges of graph `g` arriving at node `id`, optionally only of `relation`.
+531 node | Node `id` of `g` with its facets: `{:id :type :semantics :facets}`, or nil. The only facet is `
+539 nodes-of-type | Nodes of `g` whose type is `t` (`node` shape), sorted by id.
+557 check | v1's `edges check` over an `index`: `{:ok bool :errors [string] :violations [{:kind :message …}
+## /home/jp/proyectos/kimun/src/kimun/cli/commands/adapters.cljc
+31 usage | Usage lines of the group, for the CLI help.
+40 spec | Options of the `adapters` group (babashka.cli spec, merged by `kimun.cli.main`). `--output DIR`
+53 default-output | Default of `--output`, as v1 `selfdoc`: `knowledge`, relative to the project root.
+55 drift-type | Error type of `adapters check` on drift. v1 `selfdoc check` exits 1 on drift (`return 0 if repo
+74 builtins | `{name file}` of the built-in adapters: `python/kimun/adapters/*.py`, file name underscores → d
+84 resolve-adapter | `{:name :command [argv…] :builtin?}` for token `adapter`: a built-in name (run with `$KIMUN_ADA
+114 run-adapter | Runs the resolved adapter `a` as `<adapter> ROOT [--system S] argv…` and returns its output par
+149 architecture-spec | v1 `_architecture_spec`: `Not declared.` without `file`, else `<path relative to root>; sha256=
+273 inspect | Plan against the store: `{:plan :report :restore :adopt :before-images :source-graph}`; `:resto
+325 check-before-images! | Verifies that none of `paths` (default: all paths in `:before-images` of `inspected`) changed o
+358 apply-plan! | Applies a sync plan through `docs create`, `docs update` and `docs untrack`, re-verifying the b
+389 scan | `adapters scan ADAPTER PATH --system S […] [-- adapter options]`: runs the adapter and returns 
+402 check | `adapters check ADAPTER PATH …`: the drift between the code and the tracked documents, without 
+423 sync | `adapters sync ADAPTER PATH …`: defines the profile's models when absent, then creates, updates
+455 list-adapters | `adapters list`: `[{:name :file :available? :profile :languages :options :missing :error}]` for
+469 aliases | v1 `selfdoc` subcommand → `[command adapter]`: `selfdoc-*` is v1 `selfdoc scan|sync|check` (arg
+492 commands | Subcommand name → command fn `(fn [args opts ctx] envelope)`.
+497 dispatch | Runs subcommand `sub` of the `adapters` group with the positional tokens that follow it; an unk
+## /home/jp/proyectos/kimun/src/kimun/surface/adapters.cljc
+9 protocol | Adapter protocol version this planner understands.
+11 profile-models | Profile → names of the frozen models (resources/kimun/adapters/models) it writes.
+15 model-dirs | Model name → sub-directory of the output dir holding its documents.
+19 authored-defaults | Model name → authored fields of a NEW document (v1 `_defaults` plus the model default `tags: []
+26 fact-keys | Keys every fact must carry (CONTRACT.md: always present, null/[] when n/a).
+45 py-json | `v` as Python `json.dumps` writes it. opts: `:ascii?` (ensure_ascii, escapes non-ASCII as lower
+99 validate | Contract violations of a parsed adapter `output`, `[]` when conformant: `[{:code kw :message st
+118 provenance-prefix | Provenance tag of a symbols adapter: v1's `python-ast` for `python-symbols`, the adapter name i
+134 v1-symbol-record | The v1 `PythonSymbol` record of a symbol `fact` and its `module` fact (v1 field names). imports
+152 v1-provenance | v1 `python_materialize._fields` provenance, byte-exact: `<prefix>:<record id>; contract-sha256:
+192 argument-keys | v1 `ArgumentRecord` fields, in declaration order (the order `arguments` JSON prints).
+198 v1-command-record | The v1 `CommandRecord` of a command/group `fact` (string keys). Arguments come from `attrs.argu
+211 cli-provenance | v1 `projection.provenance`: `parser:<factory>#<path>; contract-sha256:<sha256 of json.dumps(rec
+261 plan-documents | Plans the documents of a parsed adapter `output`: `{:documents [PLANNED] :problems [..]}`; a no
+289 merge-payload | Full payload of `planned` over `existing` (a tracked payload or nil): v1 `{**existing, **fields
+296 owned? | True when `tracked` (`{:name :model :path :payload}`) was generated by the adapter+system of `s
+315 sync-plan | Partitions `planned` against the `tracked` documents this adapter owns: `{:create :update :unch
+334 drift-report | What `check` reports for a sync `plan`: `{:drift? bool :documents [{:name :path :model :status 
+345 v1-report | v1 `DocumentationReport` view of a sync `plan` (string keys, paths as values): documents, missi
+354 cites | v1 `citations.cites`: the sorted distinct spec numbers a docstring cites (`spec 07`, `Spec 12a`
+370 source-node | Canonical `{:id str :source map :ast map}` view of a source node (planned or tracked `PythonSym
+443 source-graph-check | Verifies that recorded `actual` source nodes match scanned `expected` nodes without missing, st
+477 source-graph-current? | True iff `actual` source nodes match `expected` with no missing, stale, or extra nodes (v1 `kgd

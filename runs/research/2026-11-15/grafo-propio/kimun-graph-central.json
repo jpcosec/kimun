@@ -1,0 +1,71 @@
+{
+  "ok" : true,
+  "command" : "graph central",
+  "store" : null,
+  "revision" : null,
+  "data" : {
+    "metric" : "pagerank",
+    "nodes" : [ {
+      "id" : "sldb://ns/kimun.kernel.err",
+      "score" : 0.12890191884324806
+    }, {
+      "id" : "sldb://ns/kimun.kernel.ports",
+      "score" : 0.07646563743631912
+    }, {
+      "id" : "sldb://ns/kimun.kernel.canon",
+      "score" : 0.038480638229778326
+    }, {
+      "id" : "sldb://ns/kimun.host.treesitter",
+      "score" : 0.024566019515496827
+    }, {
+      "id" : "sldb://ns/kimun.cli.out",
+      "score" : 0.021225919970172716
+    }, {
+      "id" : "sldb://ns/kimun.kernel.revision",
+      "score" : 0.019527685706439507
+    }, {
+      "id" : "sldb://ns/kimun.surface.models.descriptor",
+      "score" : 0.01854305350503741
+    }, {
+      "id" : "sldb://ns/kimun.surface.docs",
+      "score" : 0.01803715282186208
+    }, {
+      "id" : "sldb://ns/kimun.surface.models.store",
+      "score" : 0.017288477367458945
+    }, {
+      "id" : "sldb://ns/kimun.kernel.node",
+      "score" : 0.01627116602321052
+    }, {
+      "id" : "sldb://ns/kimun.cli.store",
+      "score" : 0.015584640324921913
+    }, {
+      "id" : "sldb://ns/kimun.surface.models.blocks",
+      "score" : 0.014954379145661296
+    }, {
+      "id" : "sldb://ns/kimun.graph.model",
+      "score" : 0.01455567860335165
+    }, {
+      "id" : "sldb://ns/kimun.surface.models.marker",
+      "score" : 0.01437464899936596
+    }, {
+      "id" : "sldb://ns/kimun.kernel.store",
+      "score" : 0.01415947205027687
+    }, {
+      "id" : "sldb://ns/kimun.host.default",
+      "score" : 0.013284118676000219
+    }, {
+      "id" : "sldb://ns/kimun.surface.models.extract",
+      "score" : 0.01153501841515657
+    }, {
+      "id" : "sldb://ns/kimun.surface.semantic",
+      "score" : 0.010801144289579399
+    }, {
+      "id" : "sldb://ns/kimun.kernel.tree",
+      "score" : 0.010025067950085485
+    }, {
+      "id" : "sldb://ns/kimun.surface.models.recipe",
+      "score" : 0.009617546860564073
+    } ]
+  },
+  "warnings" : [ ]
+}

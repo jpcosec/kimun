@@ -1,0 +1,13 @@
+{
+  "ok" : true,
+  "command" : "graph path",
+  "store" : null,
+  "revision" : null,
+  "data" : {
+    "from" : "sldb://ns/kimun.cli.main",
+    "to" : "sldb://ns/kimun.kernel.err",
+    "length" : 2,
+    "path" : [ "sldb://ns/kimun.cli.main", "sldb://ns/kimun.cli.args", "sldb://ns/kimun.kernel.err" ]
+  },
+  "warnings" : [ ]
+}

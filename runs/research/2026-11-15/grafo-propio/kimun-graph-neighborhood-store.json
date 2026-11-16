@@ -1,0 +1,13 @@
+{
+  "ok" : true,
+  "command" : "graph neighborhood",
+  "store" : null,
+  "revision" : null,
+  "data" : {
+    "node" : "sldb://ns/kimun.kernel.store",
+    "depth" : 1,
+    "direction" : "both",
+    "nodes" : [ "sldb://ns/kimun.cli.commands.docs", "sldb://ns/kimun.cli.commands.edges", "sldb://ns/kimun.cli.commands.fields", "sldb://ns/kimun.cli.commands.include", "sldb://ns/kimun.cli.commands.journal", "sldb://ns/kimun.cli.commands.migrate", "sldb://ns/kimun.cli.commands.models", "sldb://ns/kimun.cli.commands.predicates", "sldb://ns/kimun.cli.commands.semantic", "sldb://ns/kimun.cli.commands.stores", "sldb://ns/kimun.cli.store", "sldb://ns/kimun.host.fs-store", "sldb://ns/kimun.kernel.canon", "sldb://ns/kimun.kernel.edge", "sldb://ns/kimun.kernel.err", "sldb://ns/kimun.kernel.legacy.revision", "sldb://ns/kimun.kernel.mmap", "sldb://ns/kimun.kernel.node", "sldb://ns/kimun.kernel.ports", "sldb://ns/kimun.kernel.revision", "sldb://ns/kimun.kernel.route", "sldb://ns/kimun.kernel.route-tree", "sldb://ns/kimun.kernel.store", "sldb://ns/kimun.kernel.upgrade", "sldb://ns/kimun.surface.docs" ]
+  },
+  "warnings" : [ ]
+}

@@ -1,0 +1,112 @@
+62 cli.args | Command-line parsing of the `kimun` CLI over babashka.cli (docs/v2/06 §B): global options, positional tokens, and rejection of unk
+507 cli.commands.adapters | The `kimun adapters` group (docs/v2/11; v1 `sldb selfdoc`): `scan`, `sync`, `check` and `list` over surface adapters. An adapter i
+136 cli.commands.corpus | The `kimun corpus` group: v1's `GET /corpus/rank` (`sldb.cli.serve.corpus_routes`) as a CLI, over the pure engine `kimun.surface.i
+119 cli.commands.direct | The direct-mode commands `extract`, `render` and `validate` (docs/v2/06 §5, 07 §6): model-first operations that need no store. The
+939 cli.commands.docs | The `kimun docs` group (docs/v2/06 §3, first slice of S2): `ingest`, `update`, `render` and `list`. A document is a `:document` tr
+314 cli.commands.edges | The `kimun edges` group (v1 `sldb edges`): `show`, `check`, `node`, `nodes`, `relate`, `unrelate`, `types`, `type-define`, `init` 
+229 cli.commands.fields | The `kimun fields` group (docs/v2/06 §5; v1 `sldb fields`): `get`, `set`, `unset`, `append`, `clean`, `clear`, `schema` and `query
+104 cli.commands.find | The `kimun find` command (docs/v2/06 §3; v1 `sldb find` and `sldb legacy find`), over the pure engine `kimun.surface.index.search`
+297 cli.commands.graph | The `kimun graph` group (v1 `sldb graph`): `get`, `list`, `query`, `neighborhood`, `path`, `cycles`, `order`, `components`, `centr
+614 cli.commands.include | The `kimun include` group (docs/v2/13): a repo's kimun.include.edn declares what of the kimun world it versions in git, and this g
+47 cli.commands.index | The `kimun rebuild-indexes` command (v1 `stores semantic-map` and the index refresh of `stores update`; docs/v2/06 §3): rebuilds t
+97 cli.commands.journal | The `kimun journal` group: `show` and `verify`. The journal is a read-only view over the log and the revisions (`kimun.surface.jou
+172 cli.commands.links | `docs recover` and `docs compose` (parity with sldb v1 `LinkCLI`): the pure links core `kimun.surface.links` run against a real st
+175 cli.commands.migrate | The `migrate` command: brings an sldb v1 store (`.sldb/`) into a kimun store in one process and one open — every model is defined 
+368 cli.commands.models | The `kimun models` group (docs/v2/07 §7): `define`, `list`, `show`, `check`, `history`, `field-add` and `template`. A model is dat
+127 cli.commands.predicates | The `kimun predicates` group (v1 `sldb predicates`): `add`, `list`, `show`, `validate` and `remove` over the predicate definitions
+144 cli.commands.sections | The `kimun sections` group (v1 `sldb sections show|find|fields`): `list` (alias `show`), `find` and `fields`, read-only and thin o
+123 cli.commands.semantic | The `kimun semantic` group (v1 `sldb semantic` and `stores semantic-export`): `show`, `tags`, `parent-add`, `parent-remove`, `equi
+52 cli.commands.serve | The `kimun serve` group (docs/v2/06 §5): one HTTP API over the commands (`kimun.surface.http`). `serve` has no subcommand (`serve`
+822 cli.commands.stores | The `kimun stores` group (docs/v2/06 §3): `init`, `check`, `health`, `sense`, `heartbeat`, `update`, `reconcile`, `verify`, `unrea
+75 cli.compose | The composition context of a store: the two functions `kimun.surface.models.render/render` (and `render-marked`, and through it `k
+79 cli.errors | Error contract of the `kimun` CLI (docs/v2/06 §1): maps every kernel or surface error `:type` to a process exit code and turns any
+135 cli.linked | Models and stores reached through links (docs/v2/06 §2), for `docs create|track`: `--store ALIAS` picks a linked store as the one 
+210 cli.main | Entry point of the `kimun` CLI (docs/v2/06 §1): parses the command line, routes the first token to a command group, renders one en
+90 cli.out | Result envelopes of the `kimun` CLI and their rendering (docs/v2/06 §1): every command returns one envelope value, `{:ok true …}` 
+293 cli.store | Locating, opening and creating the `.kimun/` store of the CLI (docs/v2/06 §1): discovery walks up from the working directory, `--s
+260 graph.analysis | Whole-graph questions on the `kimun.graph.model` value: paths, cycles, dependency order, components, centrality and similarity by 
+589 graph.edges | The graph of a store as a derived view (v1's edge index), pure. `(index store)` rebuilds, from an opened store value (the `:store`
+49 graph.export | The semantic export (v1 `export.py`): the `sldb_kgdb_semantic_export` payload kimun emits from an opened store, and its reading as
+176 graph.io | The portable node-link snapshot. Conversions are pure over maps with string keys (the JSON shape); `cheshire` is touched only by `
+150 graph.model | The in-memory graph value: a directed, typed multi-graph on plain data. `{:nodes {id {:type "Spec" :semantics {...} :facets {...}}
+155 graph.query | v1's structured graph query language and its executor. A query is a map (typically read from JSON, string keys, snake_case) with t
+88 graph.store | Where the graph a `graph` command reads comes from, and the one shape it has whatever the source (v1 `store/graph/convert.py` and 
+109 graph.traversal | Walks over the edge list: one-relation steps (targets, sources, roots, descendants, shared-target neighbours) and neighbourhood wi
+24 host.default | The standard host for Babashka/JVM (and, once host parity lands, Node): composes the port implementations of `kimun.host.*` into t
+953 host.fs-store | Files-only backend for kimun.kernel.store with Babashka/JVM file semantics (docs/v2/02 §8.1). Node parity is a later task. `commit
+38 host.hash | Host adapter implementing `kimun.kernel.ports/Hasher` (docs/v2/02 §8.1): SHA-256 over the UTF-8 encoding of a string. Babashka/JVM
+47 host.lazy | The LazyMaps port (kimun.kernel.ports) for Babashka/JVM: a persistent map whose values come from a loader on first use. Each map l
+150 host.store-cache | Cache by hash of a store (docs/v2/14 §18.6, §19): the derived objects of a document with an external anchor — its tree objects and
+91 host.text | Host adapter implementing `kimun.kernel.ports/TextNormalizer` and `kimun.kernel.ports/TextSegmenter` (docs/v2/02 §2.1 step 1, §4, 
+111 host.treesitter | Host adapter for the tree-sitter pod (docs/v2/14 §11, decision 29): discovers, loads and calls the native parser of the M layer. R
+37 host.ulid | Host adapter implementing `kimun.kernel.ports/IdMinter` (docs/v2/02 §3.1): ULID = 48-bit millisecond time + 80-bit randomness, 26 
+186 kernel.anchor | Anchor states and anchor queries (docs/v2/02 §6.2, §6.3). An anchor is an active edge of a revision whose type is one of `anchor-t
+86 kernel.canon | Canonical EDN serialization — the reference implementation of `canonical-bytes` (docs/v2/02 §2.1). 1. every string is NFC-normaliz
+84 kernel.edge | Edges and evidence (docs/v2/02 §3, §3.2). Edge {:type t :from id :to id :evidence Evidence} ; non-ownership {:type :ownership :tre
+28 kernel.err | Kernel error contract (docs/v2/03 §2): every kernel error is an `ex-info` whose data carries a namespaced `:type`. This is the sin
+56 kernel.heads | Heads and compare-and-swap over an in-memory store (docs/v2/02 §3.1, §5.2). `heads` is {tree-id revision-id}: the last revision th
+408 kernel.legacy.revision | FORMAT 1 (legacy). The revision engine of `:format-version 1` stores, kept verbatim: only format-1 open/replay/commit (kimun.kerne
+345 kernel.mmap | Persistent Merkle map: a history-independent hash trie whose nodes are plain EDN values stored in the CAS like any other object (i
+89 kernel.node | Nodes of the SMG pool (docs/v2/02 §2, §2.1). A node is {:class c :kind k :content m}. Its id is H(canonical-bytes {:class c :kind 
+170 kernel.plan | TransactionPlan: schema, alias resolution and the seven validation checks (docs/v2/02 §5.1). A plan is pure EDN data; it applies e
+34 kernel.pool | In-memory pool of content-addressed nodes (docs/v2/02 §2; milestone 0). A pool is a plain map id → node. `put` is idempotent: the 
+65 kernel.ports | Ports of the kernel (docs/v2/03 §1): the capabilities the kernel needs from its host, declared as protocols and received as a `hos
+167 kernel.reconcile | Reconciliation of drifted anchors (docs/v2/02 §6.5). Takes the orphan endpoints of a revision and proposes what replaced them. A p
+877 kernel.revision | Applying a TransactionPlan to a store value and producing an immutable revision (docs/v2/02 §5, §5.1, §5.2), format 2: every cost 
+147 kernel.route | Route Merkle over the tracked documents of a store (K2a, docs/v2/14 §20). A route entry names the tracked projection of one relati
+264 kernel.route-tree | The route map as a Merkle tree by path (K2a, docs/v2/14 §20; route schema 2, docs/v2/10 §11.2): one node per directory, so a chang
+88 kernel.standoff | Stand-off below the paragraph (docs/v2/02 §4, §4.1). The canonical leaf is a paragraph's plain NFC text with grapheme offsets; ove
+1009 kernel.store | Persistence port and the host-independent parts of open/replay/verify (docs/v2/02 §8.1, milestone 3). Layout (files-only backend, 
+247 kernel.tree | Trees as indexes over the node pool, as trees of POSITIONS (docs/v2/02 §3, §3.1). A node may occur at several positions of the sam
+96 kernel.upgrade | Upgrade of a format-1 store to format 2 (docs/v2/10-escala.md, the upgrade path). Host-independent: it reads one Backend and write
+481 surface.adapters | Pure planner of the surface adapters (docs/v2/11): adapter facts (protocol 1 JSON, parsed to string-keyed maps) → planned document
+347 surface.diagnostics | What is wrong with a store and what repairs it (sldb v1 `store/diagnostics`). `report` turns an opened store plus a `read-file` fu
+1325 surface.docs | Typed documents: a Markdown document bound to a model (docs/v2/06 §5, 07 §5). Representation in the kernel, all written in ONE Tra
+299 surface.fields | The `fields` surface of sldb v1 over typed documents (docs/v2/06 §5), pure: field paths (`a.b`, `items.0.name`; a numeric segment 
+171 surface.heartbeat | The heartbeat loop (docs/v2/06 §3, `stores heartbeat`): periodically recompute the existing sensorization signals and hand each ob
+227 surface.http | The HTTP surface of kimun (docs/v2/06 §5, row `serve`): one Ring-style handler over `kimun.cli.main/run`, so there is a single HTT
+260 surface.http.routes | The routing table of the HTTP surface as data (see `kimun.surface.http`): one entry per route, each a thin handler over a CLI comm
+265 surface.http.views | Shared pieces of the HTTP routes (`kimun.surface.http.routes`): running a CLI command for a request, opening the store once per re
+197 surface.include | The include file of a kimun project (docs/v2/13): the kimun.include.edn a repo keeps at its root declaring what of the kimun world
+318 surface.index.address | v1's address surface over the index (docs/v2/06 §3), pure: `address?` routes a TERM, `parse` turns an address into a closed AST, `
+148 surface.index.build | The derived index of a store (docs/v2/06 §3): one pure map computed from an opened store, reconstructible from `(store, head)` alo
+128 surface.index.cache | The derived index on disk: `<store-dir>/index/<head>.edn` (docs/v2/06 §3). The file is a cache of `kimun.surface.index.build/build
+200 surface.index.corpus | The field corpus and its ranking (v1 `sldb.api.corpus` field half and `sldb.api.matching`), pure over the index of `kimun.surface.
+180 surface.index.search | `find` as a pure function over a federated view `[{:store name :index idx}]` (docs/v2/06 §3; v1 `sldb.api.search` + `sldb.api.reco
+301 surface.index.where | The `--where` filter (docs/v2/06 §3): `parse` turns an expression into a closed AST and `matches?` evaluates that AST against one 
+132 surface.journal | The journal as a read-only view over the log and the revisions (docs/v2/02 §5): like `git log` / `git diff`, nothing is stored and
+31 surface.links | Document links, the pure core: parse `[[links]]`, resolve them through a caller-supplied lookup, recover a document's links and co
+59 surface.links.composer | Expands `![[transclusions]]` into composed Markdown (v1: `sldb.links.composer`). Cycles and repeats are not errors in v1: a docume
+63 surface.links.parser | Finds the `[[links]]`, `![[transclusions]]` and `[pred:: [[links]]]` of a Markdown text with their exact offsets, in the grammar s
+56 surface.links.recovery | The report of `docs recover`: the links of a document, resolved or not, optionally followed through resolved targets (v1: `sldb.li
+35 surface.links.resolver | Resolves a parsed link to a target through a caller-supplied lookup; the store is never read here (v1: `sldb.links.resolver`).
+370 surface.markdown.anchors | Structural anchors of a document as EVIDENCE, with no identity (S2a of the parser plan, docs/v2/12 §1 S2, docs/v2/14 §13): a locat
+142 surface.markdown.ast | CST → neutral structural AST of the SLDB-MD profile (docs/v2/04 §3.2, §4, §7). Total: anything outside the profile becomes an :opa
+164 surface.markdown.cst | Lossless block segmentation of Markdown text (docs/v2/04 §3, §3.1): total, never interprets inlines, and `(text (parse s)) == s` f
+240 surface.markdown.cst-ast | SLDB-MD as a view over the tree-sitter CST (docs/v2/14 §13 etapa S.2, decision 29): the pod's **block** CST (`parse-block`, no inl
+156 surface.markdown.inline | Inline parser of the SLDB-MD profile (docs/v2/04 §4, §5): one pass with a delimiter stack over a logical line, producing {:text Te
+95 surface.markdown.offsets | Pure boundary mapping between code-point offsets and grapheme offsets over the NFC form of a text (docs/v2/14 §7 and Q9, decision 
+175 surface.markdown.plan | AST ⇄ kernel (docs/v2/04 §8): ast->plan builds the TransactionPlan that creates a :document tree of positions with one pool node p
+111 surface.markdown.render | Canonical Markdown renderer (docs/v2/04 §6): one spelling per construct, so that parse(render(A)) == A for every canonical A (inva
+26 surface.markdown.report | Addressability report of a document AST (docs/v2/04 §9, docs/v2/01 §4.7): how much of the document is operable and exactly which r
+95 surface.migrate | Migration from an sldb v1 store (`.sldb/`) to kimun, the pure half: reads the v1 layout through injected file functions into a pla
+265 surface.models.blocks | Top-level block view of a Markdown text for the models surface: the same segmentation sldb v1 took from markdown-it (`front_matter
+84 surface.models.capture | C6 of docs/v2/16 §3.3: every capture of a selector carries the coordinates of where it was read, in the vocabulary of `kimun.surfa
+30 surface.models.compile | The v1 `:template` as compilable sugar (docs/v2/16 §3.2): a derived spec 16 view of a v1 descriptor — its recipe as the `:anchorin
+114 surface.models.descriptor | Model descriptors (docs/v2/07 §2): validation of the EDN shape and the typing of an extracted payload — defaults, required fields,
+99 surface.models.edit | Editing a model is transforming its descriptor (docs/v2/07 §1): the pure counterparts of v1's draft edits — add a field with its t
+23 surface.models.extract | Markdown → payload (docs/v2/07 §6): aligns the blocks of a document with the recipe of the model's template and captures each fiel
+72 surface.models.marker | Markers of a model template (docs/v2/07 §4): `⸢kind[,trait…]•field[|trait…]⸥`. Both spellings are accepted — v1's `⸢rev,list•items
+84 surface.models.noise | Structural noise of a document (v1 `structural_noise`, `heading_scan`, `frontmatter_keys`): the headings its model's template neve
+116 surface.models.recipe | The recipe of a template (docs/v2/07 §4): a derived view, never persisted — one entry per marker-bearing or literal block of the t
+242 surface.models.render | Payload → Markdown (docs/v2/07 §6): walks the blocks of the model's template and injects each marker — scalars in place, lists by 
+438 surface.models.segments | Explains a document as segments (sldb v1 `sldb.core.segments` / `sldb.api.segments`): which characters of the canonical render eac
+276 surface.models.selector | The selector engine (docs/v2/16 §3): interprets a vector of EDN steps over the SLDB-MD block view of a Markdown text and returns t
+158 surface.models.selector-cst | The selector steps that only the tree-sitter CST can serve (docs/v2/16 §3.3): C3 `:want :find` (a section by heading and regex, wh
+188 surface.models.store | Models as nodes of the store (docs/v2/07 §3): a descriptor is the opaque `edn/model` node, placed as a child of the root of the ta
+205 surface.models.subgraph | Spec 16 model descriptors (docs/v2/16 §3.4, §4): shape validation, the `:base` hierarchy (`derive`/`isa?`) and the composition of 
+28 surface.models.validate | Roundtrip validation of a document against its model (docs/v2/07 §6): `render` then `extract` must give back the fields the templa
+211 surface.parse-contract | The parse contract of a typed Markdown document, recorded with its digest (K6, docs/v2/10 §11.1). A document's structure is the ou
+149 surface.sections | The section surface of a typed document (sldb v1 `sldb sections show|find| fields`), thin over `kimun.surface.models.segments`: th
+264 surface.semantic | The semantic layer (v1 `sldb.store.semantic*`, `export.py`): the tags of a document, the tag index, the tag DAG with its walks and
+105 surface.signals | Read-only sensorization signals derived from diagnostics (first cut). A signal is a derived observation of the current revision, n

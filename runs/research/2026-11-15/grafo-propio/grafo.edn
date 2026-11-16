@@ -1,0 +1,2727 @@
+{:nodes
+ [{:ns "kimun.cli.args",
+   :file "src/kimun/cli/args.cljc",
+   :lines 62,
+   :defn-public 2,
+   :public-vars ["formats" "spec" "default-actor" "parse"],
+   :dir "cli",
+   :ring "kimun.*",
+   :requires ["babashka.cli" "kimun.kernel.err"]}
+  {:ns "kimun.cli.commands.adapters",
+   :file "src/kimun/cli/commands/adapters.cljc",
+   :lines 507,
+   :defn-public 12,
+   :public-vars
+   ["usage"
+    "spec"
+    "default-output"
+    "drift-type"
+    "builtins"
+    "resolve-adapter"
+    "run-adapter"
+    "architecture-spec"
+    "inspect"
+    "check-before-images!"
+    "apply-plan!"
+    "scan"
+    "check"
+    "sync"
+    "list-adapters"
+    "aliases"
+    "commands"
+    "dispatch"],
+   :dir "cli/commands",
+   :ring "kimun.*",
+   :requires
+   ["babashka.fs"
+    "babashka.process"
+    "cheshire.core"
+    "clojure.edn"
+    "clojure.java.io"
+    "clojure.string"
+    "kimun.cli.commands.docs"
+    "kimun.cli.commands.models"
+    "kimun.cli.out"
+    "kimun.cli.store"
+    "kimun.host.default"
+    "kimun.kernel.err"
+    "kimun.surface.adapters"
+    "kimun.surface.docs"
+    "kimun.surface.models.extract"
+    "kimun.surface.models.store"]}
+  {:ns "kimun.cli.commands.corpus",
+   :file "src/kimun/cli/commands/corpus.cljc",
+   :lines 136,
+   :defn-public 3,
+   :public-vars
+   ["spec" "default-k" "rank" "refresh" "commands" "dispatch"],
+   :dir "cli/commands",
+   :ring "kimun.*",
+   :requires
+   ["clojure.string"
+    "kimun.cli.out"
+    "kimun.cli.store"
+    "kimun.kernel.err"
+    "kimun.surface.index.cache"
+    "kimun.surface.index.corpus"]}
+  {:ns "kimun.cli.commands.direct",
+   :file "src/kimun/cli/commands/direct.cljc",
+   :lines 119,
+   :defn-public 4,
+   :public-vars
+   ["spec" "extract-cmd" "render-cmd" "validate-cmd" "dispatcher"],
+   :dir "cli/commands",
+   :ring "kimun.*",
+   :requires
+   ["babashka.fs"
+    "cheshire.core"
+    "clj-yaml.core"
+    "clojure.string"
+    "clojure.walk"
+    "kimun.cli.commands.models"
+    "kimun.cli.out"
+    "kimun.kernel.err"
+    "kimun.surface.models.edit"
+    "kimun.surface.models.extract"
+    "kimun.surface.models.render"
+    "kimun.surface.models.store"
+    "kimun.surface.models.validate"]}
+  {:ns "kimun.cli.commands.docs",
+   :file "src/kimun/cli/commands/docs.cljc",
+   :lines 939,
+   :defn-public 20,
+   :public-vars
+   ["timestamp"
+    "documents"
+    "resolve-document"
+    "ingest"
+    "update-doc"
+    "render"
+    "list-docs"
+    "create"
+    "track"
+    "update-typed"
+    "reanchor"
+    "untrack"
+    "anchors"
+    "mark"
+    "unmark"
+    "marks"
+    "show"
+    "status"
+    "update-any"
+    "spec"
+    "commands"
+    "dispatch"],
+   :dir "cli/commands",
+   :ring "kimun.*",
+   :requires
+   ["babashka.fs"
+    "cheshire.core"
+    "clj-yaml.core"
+    "clojure.edn"
+    "clojure.string"
+    "clojure.walk"
+    "kimun.cli.compose"
+    "kimun.cli.linked"
+    "kimun.cli.out"
+    "kimun.cli.store"
+    "kimun.host.default"
+    "kimun.kernel.err"
+    "kimun.kernel.ports"
+    "kimun.kernel.revision"
+    "kimun.kernel.route"
+    "kimun.kernel.store"
+    "kimun.kernel.tree"
+    "kimun.surface.docs"
+    "kimun.surface.markdown.anchors"
+    "kimun.surface.markdown.plan"
+    "kimun.surface.models.capture"
+    "kimun.surface.models.extract"
+    "kimun.surface.models.noise"
+    "kimun.surface.models.render"
+    "kimun.surface.models.store"
+    "kimun.surface.parse-contract"]}
+  {:ns "kimun.cli.commands.edges",
+   :file "src/kimun/cli/commands/edges.cljc",
+   :lines 314,
+   :defn-public 11,
+   :public-vars
+   ["show"
+    "check"
+    "node"
+    "nodes"
+    "relate"
+    "unrelate"
+    "types"
+    "type-define"
+    "init"
+    "rebuild"
+    "spec"
+    "commands"
+    "dispatch"],
+   :dir "cli/commands",
+   :ring "kimun.*",
+   :requires
+   ["clojure.string"
+    "kimun.cli.commands.docs"
+    "kimun.cli.out"
+    "kimun.cli.store"
+    "kimun.graph.edges"
+    "kimun.host.default"
+    "kimun.kernel.err"
+    "kimun.kernel.ports"
+    "kimun.kernel.revision"
+    "kimun.kernel.store"]}
+  {:ns "kimun.cli.commands.fields",
+   :file "src/kimun/cli/commands/fields.cljc",
+   :lines 229,
+   :defn-public 4,
+   :public-vars
+   ["usage" "schema" "get-field" "query" "spec" "commands" "dispatch"],
+   :dir "cli/commands",
+   :ring "kimun.*",
+   :requires
+   ["babashka.fs"
+    "clj-yaml.core"
+    "clojure.string"
+    "clojure.walk"
+    "kimun.cli.commands.docs"
+    "kimun.cli.compose"
+    "kimun.cli.out"
+    "kimun.cli.store"
+    "kimun.host.default"
+    "kimun.kernel.err"
+    "kimun.kernel.store"
+    "kimun.surface.docs"
+    "kimun.surface.fields"
+    "kimun.surface.index.where"
+    "kimun.surface.models.noise"
+    "kimun.surface.models.store"]}
+  {:ns "kimun.cli.commands.find",
+   :file "src/kimun/cli/commands/find.cljc",
+   :lines 104,
+   :defn-public 2,
+   :public-vars ["spec" "find-command" "commands" "dispatch"],
+   :dir "cli/commands",
+   :ring "kimun.*",
+   :requires
+   ["clojure.string"
+    "kimun.cli.out"
+    "kimun.cli.store"
+    "kimun.kernel.err"
+    "kimun.surface.index.cache"
+    "kimun.surface.index.search"
+    "kimun.surface.index.where"]}
+  {:ns "kimun.cli.commands.graph",
+   :file "src/kimun/cli/commands/graph.cljc",
+   :lines 297,
+   :defn-public 15,
+   :public-vars
+   ["get-node"
+    "list-nodes"
+    "query"
+    "neighborhood"
+    "path"
+    "cycles"
+    "order"
+    "components"
+    "central"
+    "isolated"
+    "similar"
+    "export"
+    "snapshot"
+    "ingest-sldb"
+    "spec"
+    "commands"
+    "dispatch"],
+   :dir "cli/commands",
+   :ring "kimun.*",
+   :requires
+   ["babashka.fs"
+    "clojure.string"
+    "kimun.cli.out"
+    "kimun.cli.store"
+    "kimun.graph.analysis"
+    "kimun.graph.io"
+    "kimun.graph.model"
+    "kimun.graph.query"
+    "kimun.graph.store"
+    "kimun.graph.traversal"
+    "kimun.kernel.err"]}
+  {:ns "kimun.cli.commands.include",
+   :file "src/kimun/cli/commands/include.cljc",
+   :lines 614,
+   :defn-public 6,
+   :public-vars
+   ["spec"
+    "check"
+    "gitignore"
+    "hook"
+    "build"
+    "status"
+    "commands"
+    "dispatch"],
+   :dir "cli/commands",
+   :ring "kimun.*",
+   :requires
+   ["babashka.fs"
+    "babashka.process"
+    "clojure.edn"
+    "clojure.string"
+    "kimun.cli.compose"
+    "kimun.cli.out"
+    "kimun.cli.store"
+    "kimun.host.default"
+    "kimun.kernel.err"
+    "kimun.kernel.plan"
+    "kimun.kernel.ports"
+    "kimun.kernel.revision"
+    "kimun.kernel.store"
+    "kimun.surface.docs"
+    "kimun.surface.include"
+    "kimun.surface.models.extract"
+    "kimun.surface.models.noise"
+    "kimun.surface.models.render"
+    "kimun.surface.models.store"]}
+  {:ns "kimun.cli.commands.index",
+   :file "src/kimun/cli/commands/index.cljc",
+   :lines 47,
+   :defn-public 2,
+   :public-vars ["spec" "rebuild-indexes" "commands" "dispatch"],
+   :dir "cli/commands",
+   :ring "kimun.*",
+   :requires
+   ["kimun.cli.out" "kimun.cli.store" "kimun.surface.index.cache"]}
+  {:ns "kimun.cli.commands.journal",
+   :file "src/kimun/cli/commands/journal.cljc",
+   :lines 97,
+   :defn-public 3,
+   :public-vars ["show" "verify" "spec" "commands" "dispatch"],
+   :dir "cli/commands",
+   :ring "kimun.*",
+   :requires
+   ["clojure.string"
+    "kimun.cli.out"
+    "kimun.cli.store"
+    "kimun.kernel.err"
+    "kimun.kernel.store"
+    "kimun.surface.journal"]}
+  {:ns "kimun.cli.commands.links",
+   :file "src/kimun/cli/commands/links.cljc",
+   :lines 172,
+   :defn-public 2,
+   :public-vars
+   ["spec" "default-predicates" "recover" "compose" "commands"],
+   :dir "cli/commands",
+   :ring "kimun.*",
+   :requires
+   ["babashka.fs"
+    "clojure.string"
+    "kimun.cli.commands.direct"
+    "kimun.cli.out"
+    "kimun.cli.store"
+    "kimun.graph.edges"
+    "kimun.kernel.err"
+    "kimun.surface.docs"
+    "kimun.surface.links"]}
+  {:ns "kimun.cli.commands.migrate",
+   :file "src/kimun/cli/commands/migrate.cljc",
+   :lines 175,
+   :defn-public 3,
+   :public-vars
+   ["usage" "run!" "migrate" "spec" "commands" "dispatch"],
+   :dir "cli/commands",
+   :ring "kimun.*",
+   :requires
+   ["babashka.fs"
+    "clojure.string"
+    "kimun.cli.commands.docs"
+    "kimun.cli.commands.models"
+    "kimun.cli.out"
+    "kimun.cli.store"
+    "kimun.host.default"
+    "kimun.kernel.err"
+    "kimun.kernel.ports"
+    "kimun.kernel.store"
+    "kimun.surface.docs"
+    "kimun.surface.migrate"
+    "kimun.surface.models.descriptor"
+    "kimun.surface.models.edit"
+    "kimun.surface.models.extract"
+    "kimun.surface.models.render"
+    "kimun.surface.models.store"]}
+  {:ns "kimun.cli.commands.models",
+   :file "src/kimun/cli/commands/models.cljc",
+   :lines 368,
+   :defn-public 14,
+   :public-vars
+   ["spec"
+    "read-descriptor-file"
+    "from-python"
+    "resolve-model"
+    "define"
+    "list-models"
+    "projection"
+    "show"
+    "history"
+    "check"
+    "parse-type"
+    "field-add"
+    "field-remove"
+    "template"
+    "commands"
+    "dispatch"],
+   :dir "cli/commands",
+   :ring "kimun.*",
+   :requires
+   ["babashka.fs"
+    "babashka.process"
+    "clojure.edn"
+    "clojure.java.io"
+    "clojure.string"
+    "kimun.cli.commands.docs"
+    "kimun.cli.compose"
+    "kimun.cli.out"
+    "kimun.cli.store"
+    "kimun.host.default"
+    "kimun.kernel.err"
+    "kimun.kernel.ports"
+    "kimun.kernel.store"
+    "kimun.surface.docs"
+    "kimun.surface.models.descriptor"
+    "kimun.surface.models.edit"
+    "kimun.surface.models.extract"
+    "kimun.surface.models.render"
+    "kimun.surface.models.store"
+    "kimun.surface.models.subgraph"]}
+  {:ns "kimun.cli.commands.predicates",
+   :file "src/kimun/cli/commands/predicates.cljc",
+   :lines 127,
+   :defn-public 6,
+   :public-vars
+   ["add"
+    "list-predicates"
+    "show"
+    "validate"
+    "remove-predicate"
+    "spec"
+    "commands"
+    "dispatch"],
+   :dir "cli/commands",
+   :ring "kimun.*",
+   :requires
+   ["clojure.string"
+    "kimun.cli.commands.docs"
+    "kimun.cli.out"
+    "kimun.cli.store"
+    "kimun.graph.edges"
+    "kimun.host.default"
+    "kimun.kernel.err"
+    "kimun.kernel.ports"
+    "kimun.kernel.store"]}
+  {:ns "kimun.cli.commands.sections",
+   :file "src/kimun/cli/commands/sections.cljc",
+   :lines 144,
+   :defn-public 4,
+   :public-vars
+   ["list-sections"
+    "find-cmd"
+    "fields"
+    "spec"
+    "usage"
+    "commands"
+    "dispatch"],
+   :dir "cli/commands",
+   :ring "kimun.*",
+   :requires
+   ["clojure.string"
+    "kimun.cli.out"
+    "kimun.cli.store"
+    "kimun.kernel.err"
+    "kimun.surface.docs"
+    "kimun.surface.models.store"
+    "kimun.surface.sections"
+    "kimun.surface.semantic"]}
+  {:ns "kimun.cli.commands.semantic",
+   :file "src/kimun/cli/commands/semantic.cljc",
+   :lines 123,
+   :defn-public 7,
+   :public-vars
+   ["show"
+    "tags"
+    "parent-add"
+    "parent-remove"
+    "equivalent-add"
+    "export"
+    "spec"
+    "commands"
+    "dispatch"],
+   :dir "cli/commands",
+   :ring "kimun.*",
+   :requires
+   ["babashka.fs"
+    "cheshire.core"
+    "clojure.java.io"
+    "clojure.string"
+    "kimun.cli.commands.docs"
+    "kimun.cli.out"
+    "kimun.cli.store"
+    "kimun.graph.export"
+    "kimun.host.default"
+    "kimun.kernel.err"
+    "kimun.kernel.store"
+    "kimun.surface.semantic"]}
+  {:ns "kimun.cli.commands.serve",
+   :file "src/kimun/cli/commands/serve.cljc",
+   :lines 52,
+   :defn-public 2,
+   :public-vars ["spec" "start" "commands" "dispatch"],
+   :dir "cli/commands",
+   :ring "kimun.*",
+   :requires
+   ["clojure.string"
+    "kimun.cli.out"
+    "kimun.kernel.err"
+    "kimun.surface.http"]}
+  {:ns "kimun.cli.commands.stores",
+   :file "src/kimun/cli/commands/stores.cljc",
+   :lines 822,
+   :defn-public 17,
+   :public-vars
+   ["init"
+    "check"
+    "sense"
+    "heartbeat"
+    "health"
+    "update-store"
+    "reconcile"
+    "verify"
+    "unreachable-note"
+    "unreachable"
+    "pack"
+    "unpack"
+    "upgrade-store"
+    "show"
+    "link"
+    "unlink"
+    "links"
+    "spec"
+    "commands"
+    "dispatch"],
+   :dir "cli/commands",
+   :ring "kimun.*",
+   :requires
+   ["babashka.fs"
+    "cheshire.core"
+    "clojure.edn"
+    "clojure.string"
+    "kimun.cli.commands.docs"
+    "kimun.cli.compose"
+    "kimun.cli.errors"
+    "kimun.cli.out"
+    "kimun.cli.store"
+    "kimun.host.default"
+    "kimun.host.fs-store"
+    "kimun.kernel.err"
+    "kimun.kernel.plan"
+    "kimun.kernel.ports"
+    "kimun.kernel.revision"
+    "kimun.kernel.store"
+    "kimun.kernel.upgrade"
+    "kimun.surface.diagnostics"
+    "kimun.surface.docs"
+    "kimun.surface.heartbeat"
+    "kimun.surface.signals"]}
+  {:ns "kimun.cli.compose",
+   :file "src/kimun/cli/compose.cljc",
+   :lines 75,
+   :defn-public 2,
+   :public-vars ["project-root" "context"],
+   :dir "cli",
+   :ring "kimun.*",
+   :requires
+   ["babashka.fs"
+    "clojure.string"
+    "kimun.surface.docs"
+    "kimun.surface.models.store"]}
+  {:ns "kimun.cli.errors",
+   :file "src/kimun/cli/errors.cljc",
+   :lines 79,
+   :defn-public 2,
+   :public-vars ["exit-for" "wrap"],
+   :dir "cli",
+   :ring "kimun.*",
+   :requires ["kimun.cli.out"]}
+  {:ns "kimun.cli.linked",
+   :file "src/kimun/cli/linked.cljc",
+   :lines 135,
+   :defn-public 3,
+   :public-vars ["target" "resolve-model" "import-plan"],
+   :dir "cli",
+   :ring "kimun.*",
+   :requires
+   ["babashka.fs"
+    "clojure.string"
+    "kimun.cli.store"
+    "kimun.kernel.err"
+    "kimun.surface.docs"
+    "kimun.surface.models.store"]}
+  {:ns "kimun.cli.main",
+   :file "src/kimun/cli/main.cljc",
+   :lines 210,
+   :defn-public 3,
+   :public-vars
+   ["groups" "group-specs" "usage" "version-data" "run" "-main"],
+   :dir "cli",
+   :ring "kimun.*",
+   :requires
+   ["clojure.java.io"
+    "clojure.string"
+    "kimun.cli.args"
+    "kimun.cli.commands.adapters"
+    "kimun.cli.commands.corpus"
+    "kimun.cli.commands.direct"
+    "kimun.cli.commands.docs"
+    "kimun.cli.commands.edges"
+    "kimun.cli.commands.fields"
+    "kimun.cli.commands.find"
+    "kimun.cli.commands.graph"
+    "kimun.cli.commands.include"
+    "kimun.cli.commands.index"
+    "kimun.cli.commands.journal"
+    "kimun.cli.commands.links"
+    "kimun.cli.commands.migrate"
+    "kimun.cli.commands.models"
+    "kimun.cli.commands.predicates"
+    "kimun.cli.commands.sections"
+    "kimun.cli.commands.semantic"
+    "kimun.cli.commands.serve"
+    "kimun.cli.commands.stores"
+    "kimun.cli.errors"
+    "kimun.cli.out"
+    "kimun.cli.store"]}
+  {:ns "kimun.cli.out",
+   :file "src/kimun/cli/out.cljc",
+   :lines 90,
+   :defn-public 5,
+   :public-vars ["type-name" "ok" "failure" "exit-code" "emit"],
+   :dir "cli",
+   :ring "kimun.*",
+   :requires ["cheshire.core" "clj-yaml.core" "clojure.string"]}
+  {:ns "kimun.cli.store",
+   :file "src/kimun/cli/store.cljc",
+   :lines 293,
+   :defn-public 13,
+   :public-vars
+   ["dirname"
+    "descriptor-path"
+    "store?"
+    "discover"
+    "normalize-store-path"
+    "resolve-store"
+    "*wait*"
+    "backend"
+    "open!"
+    "default-name"
+    "init!"
+    "link!"
+    "unlink!"
+    "links"
+    "linked-stores"],
+   :dir "cli",
+   :ring "kimun.*",
+   :requires
+   ["babashka.fs"
+    "clojure.string"
+    "kimun.host.default"
+    "kimun.host.fs-store"
+    "kimun.kernel.err"
+    "kimun.kernel.store"]}
+  {:ns "kimun.graph.analysis",
+   :file "src/kimun/graph/analysis.cljc",
+   :lines 260,
+   :defn-public 13,
+   :public-vars
+   ["path-between"
+    "paths-between"
+    "cycles"
+    "acyclic?"
+    "must-be-acyclic"
+    "cycle-errors"
+    "layers"
+    "topological-order"
+    "components"
+    "islands"
+    "of-types"
+    "isolated"
+    "centrality-kinds"
+    "central"
+    "similar-to"],
+   :dir "graph",
+   :ring "graph",
+   :requires
+   ["clojure.set"
+    "clojure.string"
+    "kimun.graph.model"
+    "kimun.kernel.err"]}
+  {:ns "kimun.graph.edges",
+   :file "src/kimun/graph/edges.cljc",
+   :lines 589,
+   :defn-public 28,
+   :public-vars
+   ["tree-name"
+    "predicate-format"
+    "relation-type-format"
+    "relation-context"
+    "anchor-tag"
+    "store-id"
+    "model-id"
+    "field-id"
+    "doc-id"
+    "section-id"
+    "tag-id"
+    "relation-type-id"
+    "anchor-id"
+    "as-node-id"
+    "default-predicates"
+    "builtin-relation-types"
+    "predicates"
+    "predicate"
+    "predicate-registry"
+    "stored-relation-types"
+    "validate-predicate"
+    "add-predicate-plan"
+    "remove-predicate-plan"
+    "define-relation-type-plan"
+    "authored"
+    "relate-plan"
+    "unrelate-plan"
+    "anchor-targets"
+    "index"
+    "graph"
+    "edges-from"
+    "edges-to"
+    "node"
+    "nodes-of-type"
+    "check"],
+   :dir "graph",
+   :ring "graph",
+   :requires
+   ["clojure.edn"
+    "clojure.string"
+    "kimun.kernel.anchor"
+    "kimun.kernel.err"
+    "kimun.kernel.node"
+    "kimun.kernel.revision"
+    "kimun.surface.docs"
+    "kimun.surface.links"
+    "kimun.surface.models.segments"
+    "kimun.surface.models.store"
+    "kimun.surface.semantic"]}
+  {:ns "kimun.graph.export",
+   :file "src/kimun/graph/export.cljc",
+   :lines 49,
+   :defn-public 2,
+   :public-vars ["contract-version" "export" "export->snapshot"],
+   :dir "graph",
+   :ring "graph",
+   :requires
+   ["kimun.graph.io"
+    "kimun.surface.docs"
+    "kimun.surface.models.store"
+    "kimun.surface.semantic"]}
+  {:ns "kimun.graph.io",
+   :file "src/kimun/graph/io.cljc",
+   :lines 176,
+   :defn-public 7,
+   :public-vars
+   ["to-node-link"
+    "from-node-link"
+    "snapshot->graph"
+    "read-json"
+    "write-json"
+    "contract-name"
+    "contract-version"
+    "semantic-export->snapshot"
+    "semantic-export->graph"],
+   :dir "graph",
+   :ring "graph",
+   :requires ["cheshire.core" "kimun.graph.model" "kimun.kernel.err"]}
+  {:ns "kimun.graph.model",
+   :file "src/kimun/graph/model.cljc",
+   :lines 150,
+   :defn-public 18,
+   :public-vars
+   ["derived-relations"
+    "all-relations"
+    "graph"
+    "from-triples"
+    "add-node"
+    "add-edge"
+    "node-ids"
+    "node-type"
+    "has-node?"
+    "live-edges"
+    "edges-from"
+    "edges-to"
+    "adjacency"
+    "present"
+    "authored"
+    "resolve-relations"
+    "view"
+    "collapsed"
+    "undirected-neighbors"
+    "relation-label"],
+   :dir "graph",
+   :ring "graph",
+   :requires ["clojure.set" "clojure.string"]}
+  {:ns "kimun.graph.query",
+   :file "src/kimun/graph/query.cljc",
+   :lines 155,
+   :defn-public 2,
+   :public-vars ["operators" "directions" "parse-query" "execute"],
+   :dir "graph",
+   :ring "graph",
+   :requires ["clojure.string" "kimun.graph.model" "kimun.kernel.err"]}
+  {:ns "kimun.graph.store",
+   :file "src/kimun/graph/store.cljc",
+   :lines 88,
+   :defn-public 9,
+   :public-vars
+   ["canonical"
+    "from-store"
+    "snapshot"
+    "from-semantic-export"
+    "from-snapshot"
+    "node-id"
+    "node"
+    "ids"
+    "summary"],
+   :dir "graph",
+   :ring "graph",
+   :requires
+   ["kimun.graph.edges"
+    "kimun.graph.export"
+    "kimun.graph.io"
+    "kimun.graph.model"
+    "kimun.kernel.err"]}
+  {:ns "kimun.graph.traversal",
+   :file "src/kimun/graph/traversal.cljc",
+   :lines 109,
+   :defn-public 12,
+   :public-vars
+   ["targets"
+    "sources"
+    "roots"
+    "children"
+    "parent"
+    "descendants"
+    "kind"
+    "bare"
+    "neighbors-via"
+    "edge-between"
+    "neighborhood-by-direction"
+    "neighborhood"],
+   :dir "graph",
+   :ring "graph",
+   :requires ["clojure.string" "kimun.graph.model"]}
+  {:ns "kimun.host.default",
+   :file "src/kimun/host/default.cljc",
+   :lines 24,
+   :defn-public 1,
+   :public-vars ["host" "layer-cache"],
+   :dir "host",
+   :ring "host",
+   :requires
+   ["kimun.host.hash"
+    "kimun.host.lazy"
+    "kimun.host.text"
+    "kimun.host.ulid"]}
+  {:ns "kimun.host.fs-store",
+   :file "src/kimun/host/fs_store.cljc",
+   :lines 953,
+   :defn-public 8,
+   :public-vars
+   ["pack!"
+    "pack-cache!"
+    "cache-bad-packs"
+    "unpack!"
+    "pack-stats"
+    "stored-size"
+    "FsBackend"
+    "backend"
+    "cached-ids"],
+   :dir "host",
+   :ring "host",
+   :requires
+   ["clojure.edn"
+    "clojure.java.io"
+    "clojure.string"
+    "kimun.host.store-cache"
+    "kimun.kernel.err"
+    "kimun.kernel.store"]}
+  {:ns "kimun.host.hash",
+   :file "src/kimun/host/hash.cljc",
+   :lines 38,
+   :defn-public 2,
+   :public-vars ["utf8-bytes" "sha256-hex" "Sha256" "sha-256"],
+   :dir "host",
+   :ring "host",
+   :requires ["kimun.kernel.ports"]}
+  {:ns "kimun.host.lazy",
+   :file "src/kimun/host/lazy.cljc",
+   :lines 47,
+   :defn-public 0,
+   :public-vars ["maps"],
+   :dir "host",
+   :ring "host",
+   :requires ["kimun.kernel.ports"]}
+  {:ns "kimun.host.store-cache",
+   :file "src/kimun/host/store_cache.cljc",
+   :lines 150,
+   :defn-public 17,
+   :public-vars
+   ["dirname"
+    "parser-version"
+    "cache-dir"
+    "objects-dir"
+    "docs-dir"
+    "routes-dir"
+    "route-path"
+    "read-routes"
+    "write-routes!"
+    "plans-dir"
+    "plan-path"
+    "read-plan"
+    "write-plan!"
+    "read-object"
+    "write-object!"
+    "object-ids"
+    "cache-key"
+    "entry-path"
+    "write-entry!"],
+   :dir "host",
+   :ring "host",
+   :requires ["babashka.fs" "clojure.edn"]}
+  {:ns "kimun.host.text",
+   :file "src/kimun/host/text.cljc",
+   :lines 91,
+   :defn-public 4,
+   :public-vars
+   ["nfc"
+    "Nfc"
+    "normalizer"
+    "graphemes"
+    "words"
+    "sentences"
+    "Segmenter"
+    "segmenter"],
+   :dir "host",
+   :ring "host",
+   :requires ["kimun.kernel.ports"]}
+  {:ns "kimun.host.treesitter",
+   :file "src/kimun/host/treesitter.cljc",
+   :lines 111,
+   :defn-public 8,
+   :public-vars
+   ["pod-file"
+    "available?"
+    "version"
+    "blocks"
+    "parse-block"
+    "parse-inline"
+    "parse-lang"
+    "query"],
+   :dir "host",
+   :ring "host",
+   :requires ["babashka.fs" "babashka.pods" "clojure.string"]}
+  {:ns "kimun.host.ulid",
+   :file "src/kimun/host/ulid.cljc",
+   :lines 37,
+   :defn-public 1,
+   :public-vars ["ulid" "Minter" "minter"],
+   :dir "host",
+   :ring "host",
+   :requires ["kimun.kernel.ports"]}
+  {:ns "kimun.kernel.anchor",
+   :file "src/kimun/kernel/anchor.cljc",
+   :lines 186,
+   :defn-public 7,
+   :public-vars
+   ["anchor-types"
+    "state-order"
+    "placements"
+    "endpoint-state"
+    "state"
+    "states"
+    "anchored-in"
+    "report"
+    "diff"],
+   :dir "kernel",
+   :ring "kernel",
+   :requires
+   ["kimun.kernel.err"
+    "kimun.kernel.ports"
+    "kimun.kernel.revision"
+    "kimun.kernel.tree"]}
+  {:ns "kimun.kernel.canon",
+   :file "src/kimun/kernel/canon.cljc",
+   :lines 86,
+   :defn-public 4,
+   :public-vars ["normalize" "canon-str" "digest" "valid?"],
+   :dir "kernel",
+   :ring "kernel",
+   :requires
+   ["clojure.string" "kimun.kernel.err" "kimun.kernel.ports"]}
+  {:ns "kimun.kernel.edge",
+   :file "src/kimun/kernel/edge.cljc",
+   :lines 84,
+   :defn-public 4,
+   :public-vars
+   ["types"
+    "statuses"
+    "required-evidence"
+    "validate"
+    "identity-form"
+    "edge-id"
+    "make"],
+   :dir "kernel",
+   :ring "kernel",
+   :requires ["kimun.kernel.canon" "kimun.kernel.err"]}
+  {:ns "kimun.kernel.err",
+   :file "src/kimun/kernel/err.cljc",
+   :lines 28,
+   :defn-public 1,
+   :public-vars ["raise" "rescue" "rescue-any"],
+   :dir "kernel",
+   :ring "kernel",
+   :requires []}
+  {:ns "kimun.kernel.heads",
+   :file "src/kimun/kernel/heads.cljc",
+   :lines 56,
+   :defn-public 5,
+   :public-vars
+   ["max-attempts" "heads" "head" "cas" "commit!" "conflict-set"],
+   :dir "kernel",
+   :ring "kernel",
+   :requires ["kimun.kernel.revision"]}
+  {:ns "kimun.kernel.legacy.revision",
+   :file "src/kimun/kernel/legacy/revision.cljc",
+   :lines 408,
+   :defn-public 7,
+   :public-vars
+   ["empty-store"
+    "get-object"
+    "revision"
+    "ancestors"
+    "tree-at"
+    "diff"
+    "apply-plan"],
+   :dir "kernel/legacy",
+   :ring "kernel",
+   :requires
+   ["kimun.kernel.canon"
+    "kimun.kernel.edge"
+    "kimun.kernel.err"
+    "kimun.kernel.node"
+    "kimun.kernel.plan"
+    "kimun.kernel.tree"]}
+  {:ns "kimun.kernel.mmap",
+   :file "src/kimun/kernel/mmap.cljc",
+   :lines 345,
+   :defn-public 15,
+   :public-vars
+   ["leaf-capacity"
+    "nibbles-per-level"
+    "removal"
+    "empty-leaf"
+    "leaf?"
+    "branch?"
+    "node?"
+    "child-ids"
+    "node-count"
+    "path"
+    "entries"
+    "keys"
+    "count"
+    "lookup"
+    "has-key?"
+    "empty"
+    "update-many"
+    "from-entries"
+    "diff"],
+   :dir "kernel",
+   :ring "kernel",
+   :requires ["kimun.kernel.canon" "kimun.kernel.err"]}
+  {:ns "kimun.kernel.node",
+   :file "src/kimun/kernel/node.cljc",
+   :lines 89,
+   :defn-public 7,
+   :public-vars
+   ["shapes"
+    "classes"
+    "kinds"
+    "address"
+    "fingerprint-ok?"
+    "validate"
+    "identity-form"
+    "node-id"
+    "make"],
+   :dir "kernel",
+   :ring "kernel",
+   :requires
+   ["kimun.kernel.canon" "kimun.kernel.err" "kimun.kernel.ports"]}
+  {:ns "kimun.kernel.plan",
+   :file "src/kimun/kernel/plan.cljc",
+   :lines 170,
+   :defn-public 11,
+   :public-vars
+   ["ops"
+    "reject"
+    "check-schema"
+    "alias?"
+    "resolve-ref"
+    "substitute-aliases"
+    "touched-trees"
+    "compose-plans"
+    "capability-ok?"
+    "check-capabilities"
+    "check-opaque-replace-only"
+    "canonical"],
+   :dir "kernel",
+   :ring "kernel",
+   :requires ["clojure.string" "kimun.kernel.canon"]}
+  {:ns "kimun.kernel.pool",
+   :file "src/kimun/kernel/pool.cljc",
+   :lines 34,
+   :defn-public 5,
+   :public-vars ["empty-pool" "put" "get-node" "has?" "size"],
+   :dir "kernel",
+   :ring "kernel",
+   :requires ["kimun.kernel.err" "kimun.kernel.node"]}
+  {:ns "kimun.kernel.ports",
+   :file "src/kimun/kernel/ports.cljc",
+   :lines 65,
+   :defn-public 6,
+   :public-vars
+   ["Hasher"
+    "TextNormalizer"
+    "IdMinter"
+    "TextSegmenter"
+    "LazyMaps"
+    "lazy-maps"
+    "lazy-maps?"
+    "segmenter"
+    "hasher"
+    "text"
+    "ids"],
+   :dir "kernel",
+   :ring "kernel",
+   :requires []}
+  {:ns "kimun.kernel.reconcile",
+   :file "src/kimun/kernel/reconcile.cljc",
+   :lines 167,
+   :defn-public 4,
+   :public-vars
+   ["default-min-confidence"
+    "dice"
+    "orphans"
+    "proposals"
+    "accept-plan"],
+   :dir "kernel",
+   :ring "kernel",
+   :requires
+   ["kimun.kernel.anchor"
+    "kimun.kernel.err"
+    "kimun.kernel.ports"
+    "kimun.kernel.revision"
+    "kimun.kernel.tree"]}
+  {:ns "kimun.kernel.revision",
+   :file "src/kimun/kernel/revision.cljc",
+   :lines 877,
+   :defn-public 25,
+   :public-vars
+   ["empty-store"
+    "route-schema"
+    "legacy?"
+    "get-object"
+    "revision"
+    "ancestors"
+    "active-edges"
+    "edge-active?"
+    "hub-threshold"
+    "hub-value?"
+    "edges-touching"
+    "edge-count"
+    "tree-ids"
+    "tree-count"
+    "tree-entry"
+    "tree-descriptor"
+    "tree-descriptors"
+    "load-tree"
+    "committed-tree"
+    "lazy-store"
+    "trees-named"
+    "refresh-views"
+    "tree-at"
+    "diff"
+    "incidence-value"
+    "apply-plan"],
+   :dir "kernel",
+   :ring "kernel",
+   :requires
+   ["kimun.kernel.canon"
+    "kimun.kernel.edge"
+    "kimun.kernel.err"
+    "kimun.kernel.legacy.revision"
+    "kimun.kernel.mmap"
+    "kimun.kernel.node"
+    "kimun.kernel.plan"
+    "kimun.kernel.ports"
+    "kimun.kernel.route"
+    "kimun.kernel.route-tree"
+    "kimun.kernel.tree"]}
+  {:ns "kimun.kernel.route",
+   :file "src/kimun/kernel/route.cljc",
+   :lines 147,
+   :defn-public 11,
+   :public-vars
+   ["schema"
+    "required"
+    "normalize-path"
+    "valid-path?"
+    "path-key"
+    "entry"
+    "canonical-entries"
+    "root"
+    "canonical-map"
+    "map-object"
+    "entries-digest"
+    "lookup"
+    "diff"],
+   :dir "kernel",
+   :ring "kernel",
+   :requires
+   ["clojure.string" "kimun.kernel.canon" "kimun.kernel.err"]}
+  {:ns "kimun.kernel.route-tree",
+   :file "src/kimun/kernel/route_tree.cljc",
+   :lines 264,
+   :defn-public 11,
+   :public-vars
+   ["schema"
+    "removal"
+    "node?"
+    "node-hash"
+    "node-count"
+    "child-ids"
+    "root-node"
+    "empty"
+    "update"
+    "from-entries"
+    "lookup"
+    "entries"
+    "diff"],
+   :dir "kernel",
+   :ring "kernel",
+   :requires
+   ["clojure.string"
+    "kimun.kernel.canon"
+    "kimun.kernel.err"
+    "kimun.kernel.route"]}
+  {:ns "kimun.kernel.standoff",
+   :file "src/kimun/kernel/standoff.cljc",
+   :lines 88,
+   :defn-public 4,
+   :public-vars
+   ["layers" "cached?" "grapheme-count" "resolve-address"],
+   :dir "kernel",
+   :ring "kernel",
+   :requires
+   ["kimun.kernel.err" "kimun.kernel.ports" "kimun.kernel.revision"]}
+  {:ns "kimun.kernel.store",
+   :file "src/kimun/kernel/store.cljc",
+   :lines 1009,
+   :defn-public 21,
+   :public-vars
+   ["Backend"
+    "HeadsSwap"
+    "PlanCache"
+    "RouteCache"
+    "StoredObjects"
+    "ObjectCache"
+    "hashed-form"
+    "serialize"
+    "deserialize"
+    "load-object"
+    "no-heads"
+    "heads-record"
+    "transaction?"
+    "log-tail"
+    "committed-log"
+    "uncommitted-tail"
+    "format-version"
+    "route-schema"
+    "init!"
+    "replay"
+    "replay-open"
+    "open"
+    "commit!"
+    "upgrade-routes!"
+    "route-coverage"
+    "reachable"
+    "object-class"
+    "unreachable"
+    "verify"
+    "verify-full"],
+   :dir "kernel",
+   :ring "kernel",
+   :requires
+   ["clojure.edn"
+    "kimun.kernel.canon"
+    "kimun.kernel.edge"
+    "kimun.kernel.err"
+    "kimun.kernel.legacy.revision"
+    "kimun.kernel.mmap"
+    "kimun.kernel.node"
+    "kimun.kernel.ports"
+    "kimun.kernel.revision"
+    "kimun.kernel.route"
+    "kimun.kernel.route-tree"]}
+  {:ns "kimun.kernel.tree",
+   :file "src/kimun/kernel/tree.cljc",
+   :lines 247,
+   :defn-public 27,
+   :public-vars
+   ["kinds"
+    "ulid?"
+    "path?"
+    "descriptor-id"
+    "create"
+    "position-at"
+    "node-at"
+    "children-at"
+    "root"
+    "positions"
+    "nodes"
+    "contains-node?"
+    "paths-of"
+    "parent-path"
+    "ancestor-path?"
+    "add-child"
+    "detach"
+    "move"
+    "replace-node"
+    "valid?"
+    "tree-object"
+    "commit"
+    "dirty?"
+    "dirty-paths"
+    "merkle-root"
+    "hash-at"
+    "objects"
+    "from-objects"],
+   :dir "kernel",
+   :ring "kernel",
+   :requires
+   ["kimun.kernel.canon" "kimun.kernel.err" "kimun.kernel.ports"]}
+  {:ns "kimun.kernel.upgrade",
+   :file "src/kimun/kernel/upgrade.cljc",
+   :lines 96,
+   :defn-public 1,
+   :public-vars ["upgrade!"],
+   :dir "kernel",
+   :ring "kernel",
+   :requires
+   ["kimun.kernel.err"
+    "kimun.kernel.ports"
+    "kimun.kernel.revision"
+    "kimun.kernel.store"]}
+  {:ns "kimun.surface.adapters",
+   :file "src/kimun/surface/adapters.cljc",
+   :lines 481,
+   :defn-public 17,
+   :public-vars
+   ["protocol"
+    "profile-models"
+    "model-dirs"
+    "authored-defaults"
+    "fact-keys"
+    "py-json"
+    "validate"
+    "provenance-prefix"
+    "v1-symbol-record"
+    "v1-provenance"
+    "argument-keys"
+    "v1-command-record"
+    "cli-provenance"
+    "plan-documents"
+    "merge-payload"
+    "owned?"
+    "sync-plan"
+    "drift-report"
+    "v1-report"
+    "cites"
+    "source-node"
+    "source-graph-check"
+    "source-graph-current?"],
+   :dir "surface",
+   :ring "kimun.*",
+   :requires ["clojure.string"]}
+  {:ns "kimun.surface.diagnostics",
+   :file "src/kimun/surface/diagnostics.cljc",
+   :lines 347,
+   :defn-public 2,
+   :public-vars ["safe" "clean" "report" "health"],
+   :dir "surface",
+   :ring "kimun.*",
+   :requires
+   ["clojure.string"
+    "clojure.walk"
+    "kimun.kernel.err"
+    "kimun.surface.docs"
+    "kimun.surface.models.noise"
+    "kimun.surface.models.store"
+    "kimun.surface.parse-contract"]}
+  {:ns "kimun.surface.docs",
+   :file "src/kimun/surface/docs.cljc",
+   :lines 1325,
+   :defn-public 54,
+   :public-vars
+   ["source-format"
+    "meta-key"
+    "py-json"
+    "text-hash"
+    "content-hash"
+    "field-hashes"
+    "fingerprint"
+    "qualified-path"
+    "generic-class"
+    "generic-class?"
+    "extract-under"
+    "current-reading"
+    "documents"
+    "hidden-trees"
+    "candidates"
+    "resolve-any"
+    "find-document"
+    "refuse-collision!"
+    "contract-descriptor"
+    "extract-doc"
+    "payload-of"
+    "unit-states"
+    "file-missing!"
+    "document"
+    "of-model"
+    "cached-tree?"
+    "rebuild-tree"
+    "rebuilt-root"
+    "doc-tree"
+    "document-markdown"
+    "document-ast"
+    "changed-fields"
+    "projection-hash"
+    "route-entry"
+    "route-owner"
+    "route-state"
+    "routed?"
+    "move-text"
+    "track-plan"
+    "create-plan"
+    "update-plan"
+    "generic-registrable?"
+    "generic-documents"
+    "generic-document"
+    "refuse-anchored!"
+    "generic-root"
+    "generic-plan"
+    "generic-update-plan"
+    "route-coverage"
+    "untrack-plan"
+    "sync-report"
+    "marks-of"
+    "mark-anchors"
+    "mark-plan"
+    "unit-field"
+    "close-unit-plan"
+    "move-unit-plan"],
+   :dir "surface",
+   :ring "kimun.*",
+   :requires
+   ["clojure.edn"
+    "clojure.string"
+    "kimun.host.store-cache"
+    "kimun.kernel.canon"
+    "kimun.kernel.edge"
+    "kimun.kernel.err"
+    "kimun.kernel.node"
+    "kimun.kernel.plan"
+    "kimun.kernel.ports"
+    "kimun.kernel.revision"
+    "kimun.kernel.route"
+    "kimun.kernel.store"
+    "kimun.kernel.tree"
+    "kimun.surface.markdown.anchors"
+    "kimun.surface.markdown.ast"
+    "kimun.surface.markdown.plan"
+    "kimun.surface.models.descriptor"
+    "kimun.surface.models.extract"
+    "kimun.surface.models.render"
+    "kimun.surface.models.selector"
+    "kimun.surface.models.store"
+    "kimun.surface.models.subgraph"
+    "kimun.surface.parse-contract"]}
+  {:ns "kimun.surface.fields",
+   :file "src/kimun/surface/fields.cljc",
+   :lines 299,
+   :defn-public 15,
+   :public-vars
+   ["operations"
+    "split-path"
+    "value-at"
+    "present?"
+    "assoc-at"
+    "dissoc-at"
+    "with-schema-fields"
+    "schema"
+    "type-at"
+    "coerce"
+    "mutate"
+    "render-checked"
+    "owning-sections"
+    "owning-section"
+    "rows"
+    "query"],
+   :dir "surface",
+   :ring "kimun.*",
+   :requires
+   ["clojure.string"
+    "kimun.kernel.err"
+    "kimun.surface.docs"
+    "kimun.surface.index.where"
+    "kimun.surface.models.descriptor"
+    "kimun.surface.models.extract"
+    "kimun.surface.models.render"
+    "kimun.surface.models.segments"
+    "kimun.surface.models.store"
+    "kimun.surface.models.subgraph"]}
+  {:ns "kimun.surface.heartbeat",
+   :file "src/kimun/surface/heartbeat.cljc",
+   :lines 171,
+   :defn-public 8,
+   :public-vars
+   ["schema"
+    "stop-reasons"
+    "outcomes"
+    "fingerprint"
+    "started"
+    "beat"
+    "error"
+    "stopped"
+    "run"
+    "parse-interval"
+    "parse-beats"],
+   :dir "surface",
+   :ring "kimun.*",
+   :requires ["clojure.string"]}
+  {:ns "kimun.surface.http",
+   :file "src/kimun/surface/http.cljc",
+   :lines 227,
+   :defn-public 5,
+   :public-vars
+   ["status-of"
+    "env-var"
+    "resolve-token"
+    "run-command"
+    "command-route"
+    "routes"
+    "handler"
+    "start!"
+    "stop!"],
+   :dir "surface",
+   :ring "kimun.*",
+   :requires
+   ["babashka.fs"
+    "cheshire.core"
+    "clojure.string"
+    "kimun.cli.errors"
+    "kimun.cli.out"
+    "kimun.surface.http.routes"
+    "kimun.surface.http.views"
+    "org.httpkit.server"]}
+  {:ns "kimun.surface.http.routes",
+   :file "src/kimun/surface/http/routes.cljc",
+   :lines 260,
+   :defn-public 0,
+   :public-vars ["routes"],
+   :dir "surface/http",
+   :ring "kimun.*",
+   :requires
+   ["clojure.string" "kimun.cli.out" "kimun.surface.http.views"]}
+  {:ns "kimun.surface.http.views",
+   :file "src/kimun/surface/http/views.cljc",
+   :lines 265,
+   :defn-public 18,
+   :public-vars
+   ["fail"
+    "run-command"
+    "command-route"
+    "param"
+    "missing-parameter"
+    "bad-parameter"
+    "as-status"
+    "override"
+    "open-store"
+    "with-temp-file"
+    "with-payload"
+    "schema"
+    "graph"
+    "save"
+    "lint"
+    "ast"
+    "document-segments"
+    "extract-segments"],
+   :dir "surface/http",
+   :ring "kimun.*",
+   :requires
+   ["babashka.fs"
+    "cheshire.core"
+    "kimun.cli.out"
+    "kimun.cli.store"
+    "kimun.host.default"
+    "kimun.surface.docs"
+    "kimun.surface.fields"
+    "kimun.surface.models.segments"
+    "kimun.surface.models.store"
+    "kimun.surface.semantic"]}
+  {:ns "kimun.surface.include",
+   :file "src/kimun/surface/include.cljc",
+   :lines 197,
+   :defn-public 8,
+   :public-vars
+   ["finding-kinds"
+    "normalize-path"
+    "glob->regex"
+    "compile-glob"
+    "glob-match?"
+    "parse"
+    "managed-globs"
+    "plan"
+    "diff"],
+   :dir "surface",
+   :ring "kimun.*",
+   :requires ["clojure.edn" "clojure.string" "kimun.kernel.err"]}
+  {:ns "kimun.surface.index.address",
+   :file "src/kimun/surface/index/address.cljc",
+   :lines 318,
+   :defn-public 4,
+   :public-vars ["address?" "parse" "resolve-address" "list-address"],
+   :dir "surface/index",
+   :ring "kimun.*",
+   :requires
+   ["clojure.string" "kimun.kernel.err" "kimun.surface.semantic"]}
+  {:ns "kimun.surface.index.build",
+   :file "src/kimun/surface/index/build.cljc",
+   :lines 148,
+   :defn-public 3,
+   :public-vars
+   ["version" "contract-keys" "build" "skipped" "fingerprint"],
+   :dir "surface/index",
+   :ring "kimun.*",
+   :requires
+   ["kimun.surface.docs"
+    "kimun.surface.models.segments"
+    "kimun.surface.models.store"
+    "kimun.surface.semantic"]}
+  {:ns "kimun.surface.index.cache",
+   :file "src/kimun/surface/index/cache.cljc",
+   :lines 128,
+   :defn-public 5,
+   :public-vars
+   ["dirname" "cache-path" "lookup!" "load!" "federated!" "rebuild!"],
+   :dir "surface/index",
+   :ring "kimun.*",
+   :requires
+   ["babashka.fs"
+    "clojure.edn"
+    "kimun.cli.store"
+    "kimun.surface.index.build"]}
+  {:ns "kimun.surface.index.corpus",
+   :file "src/kimun/surface/index/corpus.cljc",
+   :lines 200,
+   :defn-public 10,
+   :public-vars
+   ["default-excluded-fields"
+    "default-min-chars"
+    "field-text"
+    "field-id"
+    "split-field-id"
+    "document-id"
+    "entries"
+    "document-entries"
+    "normalize"
+    "lexical-score"
+    "cosine"
+    "rank"],
+   :dir "surface/index",
+   :ring "kimun.*",
+   :requires
+   ["clojure.string"
+    "kimun.host.default"
+    "kimun.kernel.reconcile"
+    "kimun.surface.docs"]}
+  {:ns "kimun.surface.index.search",
+   :file "src/kimun/surface/index/search.cljc",
+   :lines 180,
+   :defn-public 3,
+   :public-vars
+   ["kinds"
+    "layers"
+    "fuzzy-threshold"
+    "records"
+    "address-term?"
+    "search"],
+   :dir "surface/index",
+   :ring "kimun.*",
+   :requires
+   ["clojure.string"
+    "kimun.host.default"
+    "kimun.kernel.err"
+    "kimun.kernel.reconcile"
+    "kimun.surface.index.address"
+    "kimun.surface.index.where"
+    "kimun.surface.models.segments"
+    "kimun.surface.semantic"]}
+  {:ns "kimun.surface.index.where",
+   :file "src/kimun/surface/index/where.cljc",
+   :lines 301,
+   :defn-public 2,
+   :public-vars ["parse" "matches?"],
+   :dir "surface/index",
+   :ring "kimun.*",
+   :requires ["clojure.string" "kimun.kernel.err"]}
+  {:ns "kimun.surface.journal",
+   :file "src/kimun/surface/journal.cljc",
+   :lines 132,
+   :defn-public 2,
+   :public-vars ["entries" "verify"],
+   :dir "surface",
+   :ring "kimun.*",
+   :requires
+   ["clojure.edn"
+    "kimun.kernel.canon"
+    "kimun.kernel.plan"
+    "kimun.kernel.revision"]}
+  {:ns "kimun.surface.links",
+   :file "src/kimun/surface/links.cljc",
+   :lines 31,
+   :defn-public 4,
+   :public-vars
+   ["parse-links" "resolve-link" "recover-links" "compose-document"],
+   :dir "surface",
+   :ring "kimun.*",
+   :requires
+   ["kimun.surface.links.composer"
+    "kimun.surface.links.parser"
+    "kimun.surface.links.recovery"
+    "kimun.surface.links.resolver"]}
+  {:ns "kimun.surface.links.composer",
+   :file "src/kimun/surface/links/composer.cljc",
+   :lines 59,
+   :defn-public 1,
+   :public-vars ["compose-document"],
+   :dir "surface/links",
+   :ring "kimun.*",
+   :requires
+   ["clojure.string"
+    "kimun.surface.links.parser"
+    "kimun.surface.links.recovery"
+    "kimun.surface.links.resolver"]}
+  {:ns "kimun.surface.links.parser",
+   :file "src/kimun/surface/links/parser.cljc",
+   :lines 63,
+   :defn-public 2,
+   :public-vars
+   ["link-pattern" "inline-predicate-pattern" "matches" "parse-links"],
+   :dir "surface/links",
+   :ring "kimun.*",
+   :requires ["clojure.string"]}
+  {:ns "kimun.surface.links.recovery",
+   :file "src/kimun/surface/links/recovery.cljc",
+   :lines 56,
+   :defn-public 2,
+   :public-vars ["stem" "recover-links"],
+   :dir "surface/links",
+   :ring "kimun.*",
+   :requires
+   ["clojure.string"
+    "kimun.surface.links.parser"
+    "kimun.surface.links.resolver"]}
+  {:ns "kimun.surface.links.resolver",
+   :file "src/kimun/surface/links/resolver.cljc",
+   :lines 35,
+   :defn-public 2,
+   :public-vars ["source-order" "resolve-target" "resolve-link"],
+   :dir "surface/links",
+   :ring "kimun.*",
+   :requires []}
+  {:ns "kimun.surface.markdown.anchors",
+   :file "src/kimun/surface/markdown/anchors.cljc",
+   :lines 370,
+   :defn-public 7,
+   :public-vars
+   ["anchors"
+    "span-locator?"
+    "span-anchor"
+    "resolve-anchor"
+    "field-anchors"
+    "mark-states"
+    "advance-marks"],
+   :dir "surface/markdown",
+   :ring "surface.markdown",
+   :requires
+   ["kimun.kernel.canon"
+    "kimun.kernel.ports"
+    "kimun.surface.markdown.ast"]}
+  {:ns "kimun.surface.markdown.ast",
+   :file "src/kimun/surface/markdown/ast.cljc",
+   :lines 142,
+   :defn-public 5,
+   :public-vars
+   ["from-blocks"
+    "parse-native"
+    "*parser*"
+    "requested-parser"
+    "effective-parser"
+    "parse"],
+   :dir "surface/markdown",
+   :ring "surface.markdown",
+   :requires
+   ["clojure.string"
+    "kimun.host.treesitter"
+    "kimun.surface.markdown.cst"
+    "kimun.surface.markdown.inline"]}
+  {:ns "kimun.surface.markdown.cst",
+   :file "src/kimun/surface/markdown/cst.cljc",
+   :lines 164,
+   :defn-public 9,
+   :public-vars
+   ["strip-cr"
+    "fence-open"
+    "list-marker"
+    "classify"
+    "marker-type"
+    "parse"
+    "parse-document"
+    "text"
+    "block-text"],
+   :dir "surface/markdown",
+   :ring "surface.markdown",
+   :requires ["clojure.string"]}
+  {:ns "kimun.surface.markdown.cst-ast",
+   :file "src/kimun/surface/markdown/cst_ast.cljc",
+   :lines 240,
+   :defn-public 1,
+   :public-vars ["parse"],
+   :dir "surface/markdown",
+   :ring "surface.markdown",
+   :requires
+   ["clojure.string"
+    "kimun.host.treesitter"
+    "kimun.surface.markdown.ast"
+    "kimun.surface.markdown.cst"]}
+  {:ns "kimun.surface.markdown.inline",
+   :file "src/kimun/surface/markdown/inline.cljc",
+   :lines 156,
+   :defn-public 3,
+   :public-vars ["mark-key" "valid-marks?" "parse"],
+   :dir "surface/markdown",
+   :ring "surface.markdown",
+   :requires ["clojure.string" "kimun.kernel.ports"]}
+  {:ns "kimun.surface.markdown.offsets",
+   :file "src/kimun/surface/markdown/offsets.cljc",
+   :lines 95,
+   :defn-public 2,
+   :public-vars
+   ["cp-range->grapheme-range" "grapheme-range->cp-range"],
+   :dir "surface/markdown",
+   :ring "surface.markdown",
+   :requires ["kimun.kernel.ports"]}
+  {:ns "kimun.surface.markdown.plan",
+   :file "src/kimun/surface/markdown/plan.cljc",
+   :lines 175,
+   :defn-public 7,
+   :public-vars
+   ["ast->plan"
+    "ast->tree"
+    "markdown->plan"
+    "ast->update-plan"
+    "markdown->update-plan"
+    "store->ast"
+    "store->markdown"],
+   :dir "surface/markdown",
+   :ring "surface.markdown",
+   :requires
+   ["kimun.kernel.err"
+    "kimun.kernel.node"
+    "kimun.kernel.revision"
+    "kimun.kernel.tree"
+    "kimun.surface.markdown.ast"
+    "kimun.surface.markdown.render"]}
+  {:ns "kimun.surface.markdown.render",
+   :file "src/kimun/surface/markdown/render.cljc",
+   :lines 111,
+   :defn-public 2,
+   :public-vars ["render-inline" "render"],
+   :dir "surface/markdown",
+   :ring "surface.markdown",
+   :requires
+   ["clojure.string"
+    "kimun.kernel.ports"
+    "kimun.surface.markdown.cst"
+    "kimun.surface.markdown.inline"]}
+  {:ns "kimun.surface.markdown.report",
+   :file "src/kimun/surface/markdown/report.cljc",
+   :lines 26,
+   :defn-public 1,
+   :public-vars ["report"],
+   :dir "surface/markdown",
+   :ring "surface.markdown",
+   :requires ["kimun.kernel.ports"]}
+  {:ns "kimun.surface.migrate",
+   :file "src/kimun/surface/migrate.cljc",
+   :lines 95,
+   :defn-public 3,
+   :public-vars
+   ["index-path"
+    "documents-dir"
+    "reasons"
+    "read-v1"
+    "select"
+    "report"],
+   :dir "surface",
+   :ring "kimun.*",
+   :requires ["clj-yaml.core" "clojure.string" "kimun.kernel.err"]}
+  {:ns "kimun.surface.models.blocks",
+   :file "src/kimun/surface/models/blocks.cljc",
+   :lines 265,
+   :defn-public 6,
+   :public-vars
+   ["parse-native" "parse-pod" "parse" "text-of" "leaf-text" "rows"],
+   :dir "surface/models",
+   :ring "kimun.*",
+   :requires ["clojure.string" "kimun.host.treesitter"]}
+  {:ns "kimun.surface.models.capture",
+   :file "src/kimun/surface/models/capture.cljc",
+   :lines 84,
+   :defn-public 2,
+   :public-vars ["aligned-spans" "capture-selector"],
+   :dir "surface/models",
+   :ring "kimun.*",
+   :requires
+   ["clojure.string"
+    "kimun.host.default"
+    "kimun.kernel.canon"
+    "kimun.surface.markdown.anchors"
+    "kimun.surface.markdown.ast"
+    "kimun.surface.models.blocks"
+    "kimun.surface.models.selector"]}
+  {:ns "kimun.surface.models.compile",
+   :file "src/kimun/surface/models/compile.cljc",
+   :lines 30,
+   :defn-public 1,
+   :public-vars ["template->spec16"],
+   :dir "surface/models",
+   :ring "kimun.*",
+   :requires
+   ["kimun.surface.models.descriptor" "kimun.surface.models.recipe"]}
+  {:ns "kimun.surface.models.descriptor",
+   :file "src/kimun/surface/models/descriptor.cljc",
+   :lines 114,
+   :defn-public 4,
+   :public-vars
+   ["scalar-types"
+    "type-valid?"
+    "default-of-type?"
+    "validate!"
+    "finalize"],
+   :dir "surface/models",
+   :ring "kimun.*",
+   :requires ["clojure.string" "kimun.kernel.err"]}
+  {:ns "kimun.surface.models.edit",
+   :file "src/kimun/surface/models/edit.cljc",
+   :lines 99,
+   :defn-public 7,
+   :public-vars
+   ["section-for-field"
+    "add-field"
+    "remove-field"
+    "set-template"
+    "rev-fields"
+    "undeclared-fields"
+    "check-template!"],
+   :dir "surface/models",
+   :ring "kimun.*",
+   :requires ["clojure.string" "kimun.kernel.err"]}
+  {:ns "kimun.surface.models.extract",
+   :file "src/kimun/surface/models/extract.cljc",
+   :lines 23,
+   :defn-public 2,
+   :public-vars ["extract-raw" "extract"],
+   :dir "surface/models",
+   :ring "kimun.*",
+   :requires
+   ["kimun.surface.models.descriptor"
+    "kimun.surface.models.recipe"
+    "kimun.surface.models.selector"]}
+  {:ns "kimun.surface.models.marker",
+   :file "src/kimun/surface/models/marker.cljc",
+   :lines 72,
+   :defn-public 6,
+   :public-vars
+   ["pattern"
+    "token-pattern"
+    "parse"
+    "data?"
+    "optional?"
+    "trait?"
+    "table-columns"
+    "text-pattern"],
+   :dir "surface/models",
+   :ring "kimun.*",
+   :requires ["clojure.string"]}
+  {:ns "kimun.surface.models.noise",
+   :file "src/kimun/surface/models/noise.cljc",
+   :lines 84,
+   :defn-public 3,
+   :public-vars ["structural-noise" "noisy?" "describe"],
+   :dir "surface/models",
+   :ring "kimun.*",
+   :requires
+   ["clj-yaml.core"
+    "clojure.string"
+    "kimun.surface.models.blocks"
+    "kimun.surface.models.marker"]}
+  {:ns "kimun.surface.models.recipe",
+   :file "src/kimun/surface/models/recipe.cljc",
+   :lines 116,
+   :defn-public 3,
+   :public-vars ["markers-of" "recipes" "data-fields"],
+   :dir "surface/models",
+   :ring "kimun.*",
+   :requires
+   ["clojure.string"
+    "kimun.kernel.err"
+    "kimun.surface.models.blocks"
+    "kimun.surface.models.marker"]}
+  {:ns "kimun.surface.models.render",
+   :file "src/kimun/surface/models/render.cljc",
+   :lines 242,
+   :defn-public 5,
+   :public-vars
+   ["replace-markers"
+    "render-template"
+    "compositions"
+    "render"
+    "render-marked"],
+   :dir "surface/models",
+   :ring "kimun.*",
+   :requires
+   ["clj-yaml.core"
+    "clojure.string"
+    "kimun.surface.models.blocks"
+    "kimun.surface.models.descriptor"
+    "kimun.surface.models.extract"
+    "kimun.surface.models.marker"]}
+  {:ns "kimun.surface.models.segments",
+   :file "src/kimun/surface/models/segments.cljc",
+   :lines 438,
+   :defn-public 8,
+   :public-vars
+   ["segment-tree"
+    "segments"
+    "extract-segments"
+    "document-segments"
+    "sections"
+    "field-lines"
+    "field-owners"
+    "fields-of-section"],
+   :dir "surface/models",
+   :ring "kimun.*",
+   :requires
+   ["clojure.edn"
+    "clojure.string"
+    "kimun.surface.models.blocks"
+    "kimun.surface.models.extract"
+    "kimun.surface.models.marker"
+    "kimun.surface.models.render"]}
+  {:ns "kimun.surface.models.selector",
+   :file "src/kimun/surface/models/selector.cljc",
+   :lines 276,
+   :defn-public 2,
+   :public-vars ["modes" "extract-selector" "extract-located"],
+   :dir "surface/models",
+   :ring "kimun.*",
+   :requires
+   ["clj-yaml.core"
+    "clojure.string"
+    "clojure.walk"
+    "kimun.kernel.err"
+    "kimun.surface.models.blocks"
+    "kimun.surface.models.marker"
+    "kimun.surface.models.selector-cst"]}
+  {:ns "kimun.surface.models.selector-cst",
+   :file "src/kimun/surface/models/selector_cst.cljc",
+   :lines 158,
+   :defn-public 3,
+   :public-vars ["cst-step?" "extract-located" "extract"],
+   :dir "surface/models",
+   :ring "kimun.*",
+   :requires
+   ["clojure.string" "kimun.host.treesitter" "kimun.kernel.err"]}
+  {:ns "kimun.surface.models.store",
+   :file "src/kimun/surface/models/store.cljc",
+   :lines 188,
+   :defn-public 12,
+   :public-vars
+   ["tree-name"
+    "blob-format"
+    "serialize"
+    "descriptor-node"
+    "node-id"
+    "models-tree"
+    "models"
+    "model"
+    "find-model"
+    "descriptor-by-id"
+    "spec16?"
+    "validate-descriptor!"
+    "define-plan"
+    "history"],
+   :dir "surface/models",
+   :ring "kimun.*",
+   :requires
+   ["clojure.edn"
+    "clojure.string"
+    "clojure.walk"
+    "kimun.kernel.err"
+    "kimun.kernel.node"
+    "kimun.kernel.revision"
+    "kimun.surface.models.descriptor"
+    "kimun.surface.models.subgraph"]}
+  {:ns "kimun.surface.models.subgraph",
+   :file "src/kimun/surface/models/subgraph.cljc",
+   :lines 205,
+   :defn-public 10,
+   :public-vars
+   ["validate!"
+    "blocked-by"
+    "index-models"
+    "hierarchy"
+    "isa-model?"
+    "ancestors-of"
+    "compose-selector"
+    "compose-fields"
+    "compose-projections"
+    "check-composition!"],
+   :dir "surface/models",
+   :ring "kimun.*",
+   :requires
+   ["kimun.kernel.err"
+    "kimun.surface.models.descriptor"
+    "kimun.surface.models.selector-cst"]}
+  {:ns "kimun.surface.models.validate",
+   :file "src/kimun/surface/models/validate.cljc",
+   :lines 28,
+   :defn-public 1,
+   :public-vars ["validate"],
+   :dir "surface/models",
+   :ring "kimun.*",
+   :requires
+   ["clojure.string"
+    "kimun.surface.models.descriptor"
+    "kimun.surface.models.extract"
+    "kimun.surface.models.recipe"
+    "kimun.surface.models.render"]}
+  {:ns "kimun.surface.parse-contract",
+   :file "src/kimun/surface/parse_contract.cljc",
+   :lines 211,
+   :defn-public 9,
+   :public-vars
+   ["version"
+    "components"
+    "components-spec16"
+    "components-of"
+    "extractor"
+    "environment"
+    "known?"
+    "reading"
+    "contract"
+    "digest"
+    "record"
+    "consistent?"
+    "compare-recorded"],
+   :dir "surface",
+   :ring "kimun.*",
+   :requires
+   ["clojure.string"
+    "kimun.host.store-cache"
+    "kimun.host.treesitter"
+    "kimun.kernel.err"
+    "kimun.kernel.ports"
+    "kimun.surface.markdown.ast"]}
+  {:ns "kimun.surface.sections",
+   :file "src/kimun/surface/sections.cljc",
+   :lines 149,
+   :defn-public 6,
+   :public-vars
+   ["entries"
+    "resolve-section"
+    "fields-of"
+    "records"
+    "find-sections"
+    "result"],
+   :dir "surface",
+   :ring "kimun.*",
+   :requires
+   ["clojure.string"
+    "kimun.kernel.err"
+    "kimun.surface.index.where"
+    "kimun.surface.models.segments"]}
+  {:ns "kimun.surface.semantic",
+   :file "src/kimun/surface/semantic.cljc",
+   :lines 264,
+   :defn-public 27,
+   :public-vars
+   ["root-semantics"
+    "tag-lang"
+    "parent-context"
+    "equivalent-context"
+    "model-tags"
+    "tags-of"
+    "index"
+    "prefix-edges"
+    "dag-of"
+    "parents"
+    "children"
+    "roots"
+    "above"
+    "under"
+    "scope"
+    "reach"
+    "equivalents"
+    "relative"
+    "list-tags"
+    "matches?"
+    "glob-tags"
+    "query-scope"
+    "in-scope?"
+    "documents-for"
+    "document-tags"
+    "declared"
+    "dag"
+    "show"
+    "parent-add-plan"
+    "parent-remove-plan"
+    "equivalent-add-plan"],
+   :dir "surface",
+   :ring "kimun.*",
+   :requires
+   ["clojure.set"
+    "clojure.string"
+    "kimun.kernel.err"
+    "kimun.kernel.node"
+    "kimun.surface.docs"
+    "kimun.surface.models.store"]}
+  {:ns "kimun.surface.signals",
+   :file "src/kimun/surface/signals.cljc",
+   :lines 105,
+   :defn-public 4,
+   :public-vars
+   ["category->type"
+    "severity-rank"
+    "from-finding"
+    "from-report"
+    "counts"
+    "summary"],
+   :dir "surface",
+   :ring "kimun.*",
+   :requires ["clojure.string"]}],
+ :edges
+ [["kimun.cli.args" "kimun.kernel.err"]
+  ["kimun.cli.commands.adapters" "kimun.cli.commands.docs"]
+  ["kimun.cli.commands.adapters" "kimun.cli.commands.models"]
+  ["kimun.cli.commands.adapters" "kimun.cli.out"]
+  ["kimun.cli.commands.adapters" "kimun.cli.store"]
+  ["kimun.cli.commands.adapters" "kimun.host.default"]
+  ["kimun.cli.commands.adapters" "kimun.kernel.err"]
+  ["kimun.cli.commands.adapters" "kimun.surface.adapters"]
+  ["kimun.cli.commands.adapters" "kimun.surface.docs"]
+  ["kimun.cli.commands.adapters" "kimun.surface.models.extract"]
+  ["kimun.cli.commands.adapters" "kimun.surface.models.store"]
+  ["kimun.cli.commands.corpus" "kimun.cli.out"]
+  ["kimun.cli.commands.corpus" "kimun.cli.store"]
+  ["kimun.cli.commands.corpus" "kimun.kernel.err"]
+  ["kimun.cli.commands.corpus" "kimun.surface.index.cache"]
+  ["kimun.cli.commands.corpus" "kimun.surface.index.corpus"]
+  ["kimun.cli.commands.direct" "kimun.cli.commands.models"]
+  ["kimun.cli.commands.direct" "kimun.cli.out"]
+  ["kimun.cli.commands.direct" "kimun.kernel.err"]
+  ["kimun.cli.commands.direct" "kimun.surface.models.edit"]
+  ["kimun.cli.commands.direct" "kimun.surface.models.extract"]
+  ["kimun.cli.commands.direct" "kimun.surface.models.render"]
+  ["kimun.cli.commands.direct" "kimun.surface.models.store"]
+  ["kimun.cli.commands.direct" "kimun.surface.models.validate"]
+  ["kimun.cli.commands.docs" "kimun.cli.compose"]
+  ["kimun.cli.commands.docs" "kimun.cli.linked"]
+  ["kimun.cli.commands.docs" "kimun.cli.out"]
+  ["kimun.cli.commands.docs" "kimun.cli.store"]
+  ["kimun.cli.commands.docs" "kimun.host.default"]
+  ["kimun.cli.commands.docs" "kimun.kernel.err"]
+  ["kimun.cli.commands.docs" "kimun.kernel.ports"]
+  ["kimun.cli.commands.docs" "kimun.kernel.revision"]
+  ["kimun.cli.commands.docs" "kimun.kernel.route"]
+  ["kimun.cli.commands.docs" "kimun.kernel.store"]
+  ["kimun.cli.commands.docs" "kimun.kernel.tree"]
+  ["kimun.cli.commands.docs" "kimun.surface.docs"]
+  ["kimun.cli.commands.docs" "kimun.surface.markdown.anchors"]
+  ["kimun.cli.commands.docs" "kimun.surface.markdown.plan"]
+  ["kimun.cli.commands.docs" "kimun.surface.models.capture"]
+  ["kimun.cli.commands.docs" "kimun.surface.models.extract"]
+  ["kimun.cli.commands.docs" "kimun.surface.models.noise"]
+  ["kimun.cli.commands.docs" "kimun.surface.models.render"]
+  ["kimun.cli.commands.docs" "kimun.surface.models.store"]
+  ["kimun.cli.commands.docs" "kimun.surface.parse-contract"]
+  ["kimun.cli.commands.edges" "kimun.cli.commands.docs"]
+  ["kimun.cli.commands.edges" "kimun.cli.out"]
+  ["kimun.cli.commands.edges" "kimun.cli.store"]
+  ["kimun.cli.commands.edges" "kimun.graph.edges"]
+  ["kimun.cli.commands.edges" "kimun.host.default"]
+  ["kimun.cli.commands.edges" "kimun.kernel.err"]
+  ["kimun.cli.commands.edges" "kimun.kernel.ports"]
+  ["kimun.cli.commands.edges" "kimun.kernel.revision"]
+  ["kimun.cli.commands.edges" "kimun.kernel.store"]
+  ["kimun.cli.commands.fields" "kimun.cli.commands.docs"]
+  ["kimun.cli.commands.fields" "kimun.cli.compose"]
+  ["kimun.cli.commands.fields" "kimun.cli.out"]
+  ["kimun.cli.commands.fields" "kimun.cli.store"]
+  ["kimun.cli.commands.fields" "kimun.host.default"]
+  ["kimun.cli.commands.fields" "kimun.kernel.err"]
+  ["kimun.cli.commands.fields" "kimun.kernel.store"]
+  ["kimun.cli.commands.fields" "kimun.surface.docs"]
+  ["kimun.cli.commands.fields" "kimun.surface.fields"]
+  ["kimun.cli.commands.fields" "kimun.surface.index.where"]
+  ["kimun.cli.commands.fields" "kimun.surface.models.noise"]
+  ["kimun.cli.commands.fields" "kimun.surface.models.store"]
+  ["kimun.cli.commands.find" "kimun.cli.out"]
+  ["kimun.cli.commands.find" "kimun.cli.store"]
+  ["kimun.cli.commands.find" "kimun.kernel.err"]
+  ["kimun.cli.commands.find" "kimun.surface.index.cache"]
+  ["kimun.cli.commands.find" "kimun.surface.index.search"]
+  ["kimun.cli.commands.find" "kimun.surface.index.where"]
+  ["kimun.cli.commands.graph" "kimun.cli.out"]
+  ["kimun.cli.commands.graph" "kimun.cli.store"]
+  ["kimun.cli.commands.graph" "kimun.graph.analysis"]
+  ["kimun.cli.commands.graph" "kimun.graph.io"]
+  ["kimun.cli.commands.graph" "kimun.graph.model"]
+  ["kimun.cli.commands.graph" "kimun.graph.query"]
+  ["kimun.cli.commands.graph" "kimun.graph.store"]
+  ["kimun.cli.commands.graph" "kimun.graph.traversal"]
+  ["kimun.cli.commands.graph" "kimun.kernel.err"]
+  ["kimun.cli.commands.include" "kimun.cli.compose"]
+  ["kimun.cli.commands.include" "kimun.cli.out"]
+  ["kimun.cli.commands.include" "kimun.cli.store"]
+  ["kimun.cli.commands.include" "kimun.host.default"]
+  ["kimun.cli.commands.include" "kimun.kernel.err"]
+  ["kimun.cli.commands.include" "kimun.kernel.plan"]
+  ["kimun.cli.commands.include" "kimun.kernel.ports"]
+  ["kimun.cli.commands.include" "kimun.kernel.revision"]
+  ["kimun.cli.commands.include" "kimun.kernel.store"]
+  ["kimun.cli.commands.include" "kimun.surface.docs"]
+  ["kimun.cli.commands.include" "kimun.surface.include"]
+  ["kimun.cli.commands.include" "kimun.surface.models.extract"]
+  ["kimun.cli.commands.include" "kimun.surface.models.noise"]
+  ["kimun.cli.commands.include" "kimun.surface.models.render"]
+  ["kimun.cli.commands.include" "kimun.surface.models.store"]
+  ["kimun.cli.commands.index" "kimun.cli.out"]
+  ["kimun.cli.commands.index" "kimun.cli.store"]
+  ["kimun.cli.commands.index" "kimun.surface.index.cache"]
+  ["kimun.cli.commands.journal" "kimun.cli.out"]
+  ["kimun.cli.commands.journal" "kimun.cli.store"]
+  ["kimun.cli.commands.journal" "kimun.kernel.err"]
+  ["kimun.cli.commands.journal" "kimun.kernel.store"]
+  ["kimun.cli.commands.journal" "kimun.surface.journal"]
+  ["kimun.cli.commands.links" "kimun.cli.commands.direct"]
+  ["kimun.cli.commands.links" "kimun.cli.out"]
+  ["kimun.cli.commands.links" "kimun.cli.store"]
+  ["kimun.cli.commands.links" "kimun.graph.edges"]
+  ["kimun.cli.commands.links" "kimun.kernel.err"]
+  ["kimun.cli.commands.links" "kimun.surface.docs"]
+  ["kimun.cli.commands.links" "kimun.surface.links"]
+  ["kimun.cli.commands.migrate" "kimun.cli.commands.docs"]
+  ["kimun.cli.commands.migrate" "kimun.cli.commands.models"]
+  ["kimun.cli.commands.migrate" "kimun.cli.out"]
+  ["kimun.cli.commands.migrate" "kimun.cli.store"]
+  ["kimun.cli.commands.migrate" "kimun.host.default"]
+  ["kimun.cli.commands.migrate" "kimun.kernel.err"]
+  ["kimun.cli.commands.migrate" "kimun.kernel.ports"]
+  ["kimun.cli.commands.migrate" "kimun.kernel.store"]
+  ["kimun.cli.commands.migrate" "kimun.surface.docs"]
+  ["kimun.cli.commands.migrate" "kimun.surface.migrate"]
+  ["kimun.cli.commands.migrate" "kimun.surface.models.descriptor"]
+  ["kimun.cli.commands.migrate" "kimun.surface.models.edit"]
+  ["kimun.cli.commands.migrate" "kimun.surface.models.extract"]
+  ["kimun.cli.commands.migrate" "kimun.surface.models.render"]
+  ["kimun.cli.commands.migrate" "kimun.surface.models.store"]
+  ["kimun.cli.commands.models" "kimun.cli.commands.docs"]
+  ["kimun.cli.commands.models" "kimun.cli.compose"]
+  ["kimun.cli.commands.models" "kimun.cli.out"]
+  ["kimun.cli.commands.models" "kimun.cli.store"]
+  ["kimun.cli.commands.models" "kimun.host.default"]
+  ["kimun.cli.commands.models" "kimun.kernel.err"]
+  ["kimun.cli.commands.models" "kimun.kernel.ports"]
+  ["kimun.cli.commands.models" "kimun.kernel.store"]
+  ["kimun.cli.commands.models" "kimun.surface.docs"]
+  ["kimun.cli.commands.models" "kimun.surface.models.descriptor"]
+  ["kimun.cli.commands.models" "kimun.surface.models.edit"]
+  ["kimun.cli.commands.models" "kimun.surface.models.extract"]
+  ["kimun.cli.commands.models" "kimun.surface.models.render"]
+  ["kimun.cli.commands.models" "kimun.surface.models.store"]
+  ["kimun.cli.commands.models" "kimun.surface.models.subgraph"]
+  ["kimun.cli.commands.predicates" "kimun.cli.commands.docs"]
+  ["kimun.cli.commands.predicates" "kimun.cli.out"]
+  ["kimun.cli.commands.predicates" "kimun.cli.store"]
+  ["kimun.cli.commands.predicates" "kimun.graph.edges"]
+  ["kimun.cli.commands.predicates" "kimun.host.default"]
+  ["kimun.cli.commands.predicates" "kimun.kernel.err"]
+  ["kimun.cli.commands.predicates" "kimun.kernel.ports"]
+  ["kimun.cli.commands.predicates" "kimun.kernel.store"]
+  ["kimun.cli.commands.sections" "kimun.cli.out"]
+  ["kimun.cli.commands.sections" "kimun.cli.store"]
+  ["kimun.cli.commands.sections" "kimun.kernel.err"]
+  ["kimun.cli.commands.sections" "kimun.surface.docs"]
+  ["kimun.cli.commands.sections" "kimun.surface.models.store"]
+  ["kimun.cli.commands.sections" "kimun.surface.sections"]
+  ["kimun.cli.commands.sections" "kimun.surface.semantic"]
+  ["kimun.cli.commands.semantic" "kimun.cli.commands.docs"]
+  ["kimun.cli.commands.semantic" "kimun.cli.out"]
+  ["kimun.cli.commands.semantic" "kimun.cli.store"]
+  ["kimun.cli.commands.semantic" "kimun.graph.export"]
+  ["kimun.cli.commands.semantic" "kimun.host.default"]
+  ["kimun.cli.commands.semantic" "kimun.kernel.err"]
+  ["kimun.cli.commands.semantic" "kimun.kernel.store"]
+  ["kimun.cli.commands.semantic" "kimun.surface.semantic"]
+  ["kimun.cli.commands.serve" "kimun.cli.out"]
+  ["kimun.cli.commands.serve" "kimun.kernel.err"]
+  ["kimun.cli.commands.serve" "kimun.surface.http"]
+  ["kimun.cli.commands.stores" "kimun.cli.commands.docs"]
+  ["kimun.cli.commands.stores" "kimun.cli.compose"]
+  ["kimun.cli.commands.stores" "kimun.cli.errors"]
+  ["kimun.cli.commands.stores" "kimun.cli.out"]
+  ["kimun.cli.commands.stores" "kimun.cli.store"]
+  ["kimun.cli.commands.stores" "kimun.host.default"]
+  ["kimun.cli.commands.stores" "kimun.host.fs-store"]
+  ["kimun.cli.commands.stores" "kimun.kernel.err"]
+  ["kimun.cli.commands.stores" "kimun.kernel.plan"]
+  ["kimun.cli.commands.stores" "kimun.kernel.ports"]
+  ["kimun.cli.commands.stores" "kimun.kernel.revision"]
+  ["kimun.cli.commands.stores" "kimun.kernel.store"]
+  ["kimun.cli.commands.stores" "kimun.kernel.upgrade"]
+  ["kimun.cli.commands.stores" "kimun.surface.diagnostics"]
+  ["kimun.cli.commands.stores" "kimun.surface.docs"]
+  ["kimun.cli.commands.stores" "kimun.surface.heartbeat"]
+  ["kimun.cli.commands.stores" "kimun.surface.signals"]
+  ["kimun.cli.compose" "kimun.surface.docs"]
+  ["kimun.cli.compose" "kimun.surface.models.store"]
+  ["kimun.cli.errors" "kimun.cli.out"]
+  ["kimun.cli.linked" "kimun.cli.store"]
+  ["kimun.cli.linked" "kimun.kernel.err"]
+  ["kimun.cli.linked" "kimun.surface.docs"]
+  ["kimun.cli.linked" "kimun.surface.models.store"]
+  ["kimun.cli.main" "kimun.cli.args"]
+  ["kimun.cli.main" "kimun.cli.commands.adapters"]
+  ["kimun.cli.main" "kimun.cli.commands.corpus"]
+  ["kimun.cli.main" "kimun.cli.commands.direct"]
+  ["kimun.cli.main" "kimun.cli.commands.docs"]
+  ["kimun.cli.main" "kimun.cli.commands.edges"]
+  ["kimun.cli.main" "kimun.cli.commands.fields"]
+  ["kimun.cli.main" "kimun.cli.commands.find"]
+  ["kimun.cli.main" "kimun.cli.commands.graph"]
+  ["kimun.cli.main" "kimun.cli.commands.include"]
+  ["kimun.cli.main" "kimun.cli.commands.index"]
+  ["kimun.cli.main" "kimun.cli.commands.journal"]
+  ["kimun.cli.main" "kimun.cli.commands.links"]
+  ["kimun.cli.main" "kimun.cli.commands.migrate"]
+  ["kimun.cli.main" "kimun.cli.commands.models"]
+  ["kimun.cli.main" "kimun.cli.commands.predicates"]
+  ["kimun.cli.main" "kimun.cli.commands.sections"]
+  ["kimun.cli.main" "kimun.cli.commands.semantic"]
+  ["kimun.cli.main" "kimun.cli.commands.serve"]
+  ["kimun.cli.main" "kimun.cli.commands.stores"]
+  ["kimun.cli.main" "kimun.cli.errors"]
+  ["kimun.cli.main" "kimun.cli.out"]
+  ["kimun.cli.main" "kimun.cli.store"]
+  ["kimun.cli.store" "kimun.host.default"]
+  ["kimun.cli.store" "kimun.host.fs-store"]
+  ["kimun.cli.store" "kimun.kernel.err"]
+  ["kimun.cli.store" "kimun.kernel.store"]
+  ["kimun.graph.analysis" "kimun.graph.model"]
+  ["kimun.graph.analysis" "kimun.kernel.err"]
+  ["kimun.graph.edges" "kimun.kernel.anchor"]
+  ["kimun.graph.edges" "kimun.kernel.err"]
+  ["kimun.graph.edges" "kimun.kernel.node"]
+  ["kimun.graph.edges" "kimun.kernel.revision"]
+  ["kimun.graph.edges" "kimun.surface.docs"]
+  ["kimun.graph.edges" "kimun.surface.links"]
+  ["kimun.graph.edges" "kimun.surface.models.segments"]
+  ["kimun.graph.edges" "kimun.surface.models.store"]
+  ["kimun.graph.edges" "kimun.surface.semantic"]
+  ["kimun.graph.export" "kimun.graph.io"]
+  ["kimun.graph.export" "kimun.surface.docs"]
+  ["kimun.graph.export" "kimun.surface.models.store"]
+  ["kimun.graph.export" "kimun.surface.semantic"]
+  ["kimun.graph.io" "kimun.graph.model"]
+  ["kimun.graph.io" "kimun.kernel.err"]
+  ["kimun.graph.query" "kimun.graph.model"]
+  ["kimun.graph.query" "kimun.kernel.err"]
+  ["kimun.graph.store" "kimun.graph.edges"]
+  ["kimun.graph.store" "kimun.graph.export"]
+  ["kimun.graph.store" "kimun.graph.io"]
+  ["kimun.graph.store" "kimun.graph.model"]
+  ["kimun.graph.store" "kimun.kernel.err"]
+  ["kimun.graph.traversal" "kimun.graph.model"]
+  ["kimun.host.default" "kimun.host.hash"]
+  ["kimun.host.default" "kimun.host.lazy"]
+  ["kimun.host.default" "kimun.host.text"]
+  ["kimun.host.default" "kimun.host.ulid"]
+  ["kimun.host.fs-store" "kimun.host.store-cache"]
+  ["kimun.host.fs-store" "kimun.kernel.err"]
+  ["kimun.host.fs-store" "kimun.kernel.store"]
+  ["kimun.host.hash" "kimun.kernel.ports"]
+  ["kimun.host.lazy" "kimun.kernel.ports"]
+  ["kimun.host.text" "kimun.kernel.ports"]
+  ["kimun.host.ulid" "kimun.kernel.ports"]
+  ["kimun.kernel.anchor" "kimun.kernel.err"]
+  ["kimun.kernel.anchor" "kimun.kernel.ports"]
+  ["kimun.kernel.anchor" "kimun.kernel.revision"]
+  ["kimun.kernel.anchor" "kimun.kernel.tree"]
+  ["kimun.kernel.canon" "kimun.kernel.err"]
+  ["kimun.kernel.canon" "kimun.kernel.ports"]
+  ["kimun.kernel.edge" "kimun.kernel.canon"]
+  ["kimun.kernel.edge" "kimun.kernel.err"]
+  ["kimun.kernel.heads" "kimun.kernel.revision"]
+  ["kimun.kernel.legacy.revision" "kimun.kernel.canon"]
+  ["kimun.kernel.legacy.revision" "kimun.kernel.edge"]
+  ["kimun.kernel.legacy.revision" "kimun.kernel.err"]
+  ["kimun.kernel.legacy.revision" "kimun.kernel.node"]
+  ["kimun.kernel.legacy.revision" "kimun.kernel.plan"]
+  ["kimun.kernel.legacy.revision" "kimun.kernel.tree"]
+  ["kimun.kernel.mmap" "kimun.kernel.canon"]
+  ["kimun.kernel.mmap" "kimun.kernel.err"]
+  ["kimun.kernel.node" "kimun.kernel.canon"]
+  ["kimun.kernel.node" "kimun.kernel.err"]
+  ["kimun.kernel.node" "kimun.kernel.ports"]
+  ["kimun.kernel.plan" "kimun.kernel.canon"]
+  ["kimun.kernel.pool" "kimun.kernel.err"]
+  ["kimun.kernel.pool" "kimun.kernel.node"]
+  ["kimun.kernel.reconcile" "kimun.kernel.anchor"]
+  ["kimun.kernel.reconcile" "kimun.kernel.err"]
+  ["kimun.kernel.reconcile" "kimun.kernel.ports"]
+  ["kimun.kernel.reconcile" "kimun.kernel.revision"]
+  ["kimun.kernel.reconcile" "kimun.kernel.tree"]
+  ["kimun.kernel.revision" "kimun.kernel.canon"]
+  ["kimun.kernel.revision" "kimun.kernel.edge"]
+  ["kimun.kernel.revision" "kimun.kernel.err"]
+  ["kimun.kernel.revision" "kimun.kernel.legacy.revision"]
+  ["kimun.kernel.revision" "kimun.kernel.mmap"]
+  ["kimun.kernel.revision" "kimun.kernel.node"]
+  ["kimun.kernel.revision" "kimun.kernel.plan"]
+  ["kimun.kernel.revision" "kimun.kernel.ports"]
+  ["kimun.kernel.revision" "kimun.kernel.route"]
+  ["kimun.kernel.revision" "kimun.kernel.route-tree"]
+  ["kimun.kernel.revision" "kimun.kernel.tree"]
+  ["kimun.kernel.route" "kimun.kernel.canon"]
+  ["kimun.kernel.route" "kimun.kernel.err"]
+  ["kimun.kernel.route-tree" "kimun.kernel.canon"]
+  ["kimun.kernel.route-tree" "kimun.kernel.err"]
+  ["kimun.kernel.route-tree" "kimun.kernel.route"]
+  ["kimun.kernel.standoff" "kimun.kernel.err"]
+  ["kimun.kernel.standoff" "kimun.kernel.ports"]
+  ["kimun.kernel.standoff" "kimun.kernel.revision"]
+  ["kimun.kernel.store" "kimun.kernel.canon"]
+  ["kimun.kernel.store" "kimun.kernel.edge"]
+  ["kimun.kernel.store" "kimun.kernel.err"]
+  ["kimun.kernel.store" "kimun.kernel.legacy.revision"]
+  ["kimun.kernel.store" "kimun.kernel.mmap"]
+  ["kimun.kernel.store" "kimun.kernel.node"]
+  ["kimun.kernel.store" "kimun.kernel.ports"]
+  ["kimun.kernel.store" "kimun.kernel.revision"]
+  ["kimun.kernel.store" "kimun.kernel.route"]
+  ["kimun.kernel.store" "kimun.kernel.route-tree"]
+  ["kimun.kernel.tree" "kimun.kernel.canon"]
+  ["kimun.kernel.tree" "kimun.kernel.err"]
+  ["kimun.kernel.tree" "kimun.kernel.ports"]
+  ["kimun.kernel.upgrade" "kimun.kernel.err"]
+  ["kimun.kernel.upgrade" "kimun.kernel.ports"]
+  ["kimun.kernel.upgrade" "kimun.kernel.revision"]
+  ["kimun.kernel.upgrade" "kimun.kernel.store"]
+  ["kimun.surface.diagnostics" "kimun.kernel.err"]
+  ["kimun.surface.diagnostics" "kimun.surface.docs"]
+  ["kimun.surface.diagnostics" "kimun.surface.models.noise"]
+  ["kimun.surface.diagnostics" "kimun.surface.models.store"]
+  ["kimun.surface.diagnostics" "kimun.surface.parse-contract"]
+  ["kimun.surface.docs" "kimun.host.store-cache"]
+  ["kimun.surface.docs" "kimun.kernel.canon"]
+  ["kimun.surface.docs" "kimun.kernel.edge"]
+  ["kimun.surface.docs" "kimun.kernel.err"]
+  ["kimun.surface.docs" "kimun.kernel.node"]
+  ["kimun.surface.docs" "kimun.kernel.plan"]
+  ["kimun.surface.docs" "kimun.kernel.ports"]
+  ["kimun.surface.docs" "kimun.kernel.revision"]
+  ["kimun.surface.docs" "kimun.kernel.route"]
+  ["kimun.surface.docs" "kimun.kernel.store"]
+  ["kimun.surface.docs" "kimun.kernel.tree"]
+  ["kimun.surface.docs" "kimun.surface.markdown.anchors"]
+  ["kimun.surface.docs" "kimun.surface.markdown.ast"]
+  ["kimun.surface.docs" "kimun.surface.markdown.plan"]
+  ["kimun.surface.docs" "kimun.surface.models.descriptor"]
+  ["kimun.surface.docs" "kimun.surface.models.extract"]
+  ["kimun.surface.docs" "kimun.surface.models.render"]
+  ["kimun.surface.docs" "kimun.surface.models.selector"]
+  ["kimun.surface.docs" "kimun.surface.models.store"]
+  ["kimun.surface.docs" "kimun.surface.models.subgraph"]
+  ["kimun.surface.docs" "kimun.surface.parse-contract"]
+  ["kimun.surface.fields" "kimun.kernel.err"]
+  ["kimun.surface.fields" "kimun.surface.docs"]
+  ["kimun.surface.fields" "kimun.surface.index.where"]
+  ["kimun.surface.fields" "kimun.surface.models.descriptor"]
+  ["kimun.surface.fields" "kimun.surface.models.extract"]
+  ["kimun.surface.fields" "kimun.surface.models.render"]
+  ["kimun.surface.fields" "kimun.surface.models.segments"]
+  ["kimun.surface.fields" "kimun.surface.models.store"]
+  ["kimun.surface.fields" "kimun.surface.models.subgraph"]
+  ["kimun.surface.http" "kimun.cli.errors"]
+  ["kimun.surface.http" "kimun.cli.out"]
+  ["kimun.surface.http" "kimun.surface.http.routes"]
+  ["kimun.surface.http" "kimun.surface.http.views"]
+  ["kimun.surface.http.routes" "kimun.cli.out"]
+  ["kimun.surface.http.routes" "kimun.surface.http.views"]
+  ["kimun.surface.http.views" "kimun.cli.out"]
+  ["kimun.surface.http.views" "kimun.cli.store"]
+  ["kimun.surface.http.views" "kimun.host.default"]
+  ["kimun.surface.http.views" "kimun.surface.docs"]
+  ["kimun.surface.http.views" "kimun.surface.fields"]
+  ["kimun.surface.http.views" "kimun.surface.models.segments"]
+  ["kimun.surface.http.views" "kimun.surface.models.store"]
+  ["kimun.surface.http.views" "kimun.surface.semantic"]
+  ["kimun.surface.include" "kimun.kernel.err"]
+  ["kimun.surface.index.address" "kimun.kernel.err"]
+  ["kimun.surface.index.address" "kimun.surface.semantic"]
+  ["kimun.surface.index.build" "kimun.surface.docs"]
+  ["kimun.surface.index.build" "kimun.surface.models.segments"]
+  ["kimun.surface.index.build" "kimun.surface.models.store"]
+  ["kimun.surface.index.build" "kimun.surface.semantic"]
+  ["kimun.surface.index.cache" "kimun.cli.store"]
+  ["kimun.surface.index.cache" "kimun.surface.index.build"]
+  ["kimun.surface.index.corpus" "kimun.host.default"]
+  ["kimun.surface.index.corpus" "kimun.kernel.reconcile"]
+  ["kimun.surface.index.corpus" "kimun.surface.docs"]
+  ["kimun.surface.index.search" "kimun.host.default"]
+  ["kimun.surface.index.search" "kimun.kernel.err"]
+  ["kimun.surface.index.search" "kimun.kernel.reconcile"]
+  ["kimun.surface.index.search" "kimun.surface.index.address"]
+  ["kimun.surface.index.search" "kimun.surface.index.where"]
+  ["kimun.surface.index.search" "kimun.surface.models.segments"]
+  ["kimun.surface.index.search" "kimun.surface.semantic"]
+  ["kimun.surface.index.where" "kimun.kernel.err"]
+  ["kimun.surface.journal" "kimun.kernel.canon"]
+  ["kimun.surface.journal" "kimun.kernel.plan"]
+  ["kimun.surface.journal" "kimun.kernel.revision"]
+  ["kimun.surface.links" "kimun.surface.links.composer"]
+  ["kimun.surface.links" "kimun.surface.links.parser"]
+  ["kimun.surface.links" "kimun.surface.links.recovery"]
+  ["kimun.surface.links" "kimun.surface.links.resolver"]
+  ["kimun.surface.links.composer" "kimun.surface.links.parser"]
+  ["kimun.surface.links.composer" "kimun.surface.links.recovery"]
+  ["kimun.surface.links.composer" "kimun.surface.links.resolver"]
+  ["kimun.surface.links.recovery" "kimun.surface.links.parser"]
+  ["kimun.surface.links.recovery" "kimun.surface.links.resolver"]
+  ["kimun.surface.markdown.anchors" "kimun.kernel.canon"]
+  ["kimun.surface.markdown.anchors" "kimun.kernel.ports"]
+  ["kimun.surface.markdown.anchors" "kimun.surface.markdown.ast"]
+  ["kimun.surface.markdown.ast" "kimun.host.treesitter"]
+  ["kimun.surface.markdown.ast" "kimun.surface.markdown.cst"]
+  ["kimun.surface.markdown.ast" "kimun.surface.markdown.inline"]
+  ["kimun.surface.markdown.cst-ast" "kimun.host.treesitter"]
+  ["kimun.surface.markdown.cst-ast" "kimun.surface.markdown.ast"]
+  ["kimun.surface.markdown.cst-ast" "kimun.surface.markdown.cst"]
+  ["kimun.surface.markdown.inline" "kimun.kernel.ports"]
+  ["kimun.surface.markdown.offsets" "kimun.kernel.ports"]
+  ["kimun.surface.markdown.plan" "kimun.kernel.err"]
+  ["kimun.surface.markdown.plan" "kimun.kernel.node"]
+  ["kimun.surface.markdown.plan" "kimun.kernel.revision"]
+  ["kimun.surface.markdown.plan" "kimun.kernel.tree"]
+  ["kimun.surface.markdown.plan" "kimun.surface.markdown.ast"]
+  ["kimun.surface.markdown.plan" "kimun.surface.markdown.render"]
+  ["kimun.surface.markdown.render" "kimun.kernel.ports"]
+  ["kimun.surface.markdown.render" "kimun.surface.markdown.cst"]
+  ["kimun.surface.markdown.render" "kimun.surface.markdown.inline"]
+  ["kimun.surface.markdown.report" "kimun.kernel.ports"]
+  ["kimun.surface.migrate" "kimun.kernel.err"]
+  ["kimun.surface.models.blocks" "kimun.host.treesitter"]
+  ["kimun.surface.models.capture" "kimun.host.default"]
+  ["kimun.surface.models.capture" "kimun.kernel.canon"]
+  ["kimun.surface.models.capture" "kimun.surface.markdown.anchors"]
+  ["kimun.surface.models.capture" "kimun.surface.markdown.ast"]
+  ["kimun.surface.models.capture" "kimun.surface.models.blocks"]
+  ["kimun.surface.models.capture" "kimun.surface.models.selector"]
+  ["kimun.surface.models.compile" "kimun.surface.models.descriptor"]
+  ["kimun.surface.models.compile" "kimun.surface.models.recipe"]
+  ["kimun.surface.models.descriptor" "kimun.kernel.err"]
+  ["kimun.surface.models.edit" "kimun.kernel.err"]
+  ["kimun.surface.models.extract" "kimun.surface.models.descriptor"]
+  ["kimun.surface.models.extract" "kimun.surface.models.recipe"]
+  ["kimun.surface.models.extract" "kimun.surface.models.selector"]
+  ["kimun.surface.models.noise" "kimun.surface.models.blocks"]
+  ["kimun.surface.models.noise" "kimun.surface.models.marker"]
+  ["kimun.surface.models.recipe" "kimun.kernel.err"]
+  ["kimun.surface.models.recipe" "kimun.surface.models.blocks"]
+  ["kimun.surface.models.recipe" "kimun.surface.models.marker"]
+  ["kimun.surface.models.render" "kimun.surface.models.blocks"]
+  ["kimun.surface.models.render" "kimun.surface.models.descriptor"]
+  ["kimun.surface.models.render" "kimun.surface.models.extract"]
+  ["kimun.surface.models.render" "kimun.surface.models.marker"]
+  ["kimun.surface.models.segments" "kimun.surface.models.blocks"]
+  ["kimun.surface.models.segments" "kimun.surface.models.extract"]
+  ["kimun.surface.models.segments" "kimun.surface.models.marker"]
+  ["kimun.surface.models.segments" "kimun.surface.models.render"]
+  ["kimun.surface.models.selector" "kimun.kernel.err"]
+  ["kimun.surface.models.selector" "kimun.surface.models.blocks"]
+  ["kimun.surface.models.selector" "kimun.surface.models.marker"]
+  ["kimun.surface.models.selector" "kimun.surface.models.selector-cst"]
+  ["kimun.surface.models.selector-cst" "kimun.host.treesitter"]
+  ["kimun.surface.models.selector-cst" "kimun.kernel.err"]
+  ["kimun.surface.models.store" "kimun.kernel.err"]
+  ["kimun.surface.models.store" "kimun.kernel.node"]
+  ["kimun.surface.models.store" "kimun.kernel.revision"]
+  ["kimun.surface.models.store" "kimun.surface.models.descriptor"]
+  ["kimun.surface.models.store" "kimun.surface.models.subgraph"]
+  ["kimun.surface.models.subgraph" "kimun.kernel.err"]
+  ["kimun.surface.models.subgraph" "kimun.surface.models.descriptor"]
+  ["kimun.surface.models.subgraph" "kimun.surface.models.selector-cst"]
+  ["kimun.surface.models.validate" "kimun.surface.models.descriptor"]
+  ["kimun.surface.models.validate" "kimun.surface.models.extract"]
+  ["kimun.surface.models.validate" "kimun.surface.models.recipe"]
+  ["kimun.surface.models.validate" "kimun.surface.models.render"]
+  ["kimun.surface.parse-contract" "kimun.host.store-cache"]
+  ["kimun.surface.parse-contract" "kimun.host.treesitter"]
+  ["kimun.surface.parse-contract" "kimun.kernel.err"]
+  ["kimun.surface.parse-contract" "kimun.kernel.ports"]
+  ["kimun.surface.parse-contract" "kimun.surface.markdown.ast"]
+  ["kimun.surface.sections" "kimun.kernel.err"]
+  ["kimun.surface.sections" "kimun.surface.index.where"]
+  ["kimun.surface.sections" "kimun.surface.models.segments"]
+  ["kimun.surface.semantic" "kimun.kernel.err"]
+  ["kimun.surface.semantic" "kimun.kernel.node"]
+  ["kimun.surface.semantic" "kimun.surface.docs"]
+  ["kimun.surface.semantic" "kimun.surface.models.store"]]}

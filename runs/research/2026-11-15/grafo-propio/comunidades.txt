@@ -1,0 +1,40 @@
+modularity 0.38538110267369574 groups 19 (hubs excluded: #{kimun.cli.store kimun.cli.out kimun.kernel.err kimun.kernel.ports} )
+22 {cli.commands 4, surface 3, surface.index 1, surface.models 14}
+    cli.commands.adapters cli.commands.direct cli.commands.migrate cli.commands.models surface.adapters surface.fields surface.index.build surface.migrate surface.models.blocks surface.models.compile surface.models.descriptor surface.models.edit surface.models.extract surface.models.marker surface.models.recipe surface.models.render surface.models.segments surface.models.selector surface.models.selector-cst surface.models.store surface.models.subgraph surface.models.validate
+17 {cli.commands 2, kernel 13, kernel.legacy 1, surface 1}
+    cli.commands.edges cli.commands.journal kernel.canon kernel.edge kernel.heads kernel.legacy.revision kernel.mmap kernel.node kernel.plan kernel.pool kernel.revision kernel.route kernel.route-tree kernel.standoff kernel.store kernel.upgrade surface.journal
+7 {host 1, surface.markdown 6}
+    host.treesitter surface.markdown.ast surface.markdown.cst surface.markdown.cst-ast surface.markdown.inline surface.markdown.plan surface.markdown.render
+7 {cli.commands 1, graph 6}
+    cli.commands.graph graph.analysis graph.io graph.model graph.query graph.store graph.traversal
+6 {cli 2, cli.commands 3, surface.index 1}
+    cli.args cli.commands.corpus cli.commands.find cli.commands.index cli.main surface.index.cache
+5 {surface 1, surface.links 4}
+    surface.links surface.links.composer surface.links.parser surface.links.recovery surface.links.resolver
+5 {cli.commands 1, graph 1, surface.index 2, surface 1}
+    cli.commands.semantic graph.export surface.index.address surface.index.search surface.semantic
+5 {host 5}
+    host.default host.hash host.lazy host.text host.ulid
+5 {cli.commands 1, cli 1, surface 1, surface.http 2}
+    cli.commands.serve cli.errors surface.http surface.http.routes surface.http.views
+4 {kernel 3, surface.index 1}
+    kernel.anchor kernel.reconcile kernel.tree surface.index.corpus
+4 {cli.commands 1, cli 1, surface.markdown 1, surface.models 1}
+    cli.commands.docs cli.linked surface.markdown.anchors surface.models.capture
+4 {host 1, surface 3}
+    host.store-cache surface.diagnostics surface.docs surface.parse-contract
+4 {cli.commands 1, host 1, surface 2}
+    cli.commands.stores host.fs-store surface.heartbeat surface.signals
+3 {cli.commands 1, surface.index 1, surface 1}
+    cli.commands.sections surface.index.where surface.sections
+3 {cli.commands 1, cli 1, surface 1}
+    cli.commands.include cli.compose surface.include
+3 {cli.commands 2, graph 1}
+    cli.commands.links cli.commands.predicates graph.edges
+2 {cli.commands 1, surface.models 1}
+    cli.commands.fields surface.models.noise
+1 {surface.markdown 1}
+    surface.markdown.report
+1 {surface.markdown 1}
+    surface.markdown.offsets
+edges within same dir 141 / 477

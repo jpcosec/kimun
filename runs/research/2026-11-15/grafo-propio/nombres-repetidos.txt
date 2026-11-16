@@ -1,0 +1,229 @@
+total defs 2049 public 956 private 1093
+mismo-nombre active-edges kernel.anchor:43, kernel.revision:105
+mismo-nombre add-edge-op kernel.legacy.revision:140, kernel.revision:497
+mismo-nombre add-node-op kernel.legacy.revision:82, kernel.revision:400
+mismo-nombre address cli.commands.fields:103, kernel.node:39
+IDENTICO ancestors kernel.legacy.revision:45, kernel.revision:78
+mismo-nombre anchors cli.commands.docs:554, surface.markdown.anchors:129
+mismo-nombre apply-op kernel.legacy.revision:196, kernel.revision:568
+mismo-nombre apply-plan kernel.legacy.revision:350, kernel.revision:777
+mismo-nombre authored graph.edges:212, graph.model:94
+mismo-nombre backend cli.store:108, host.fs-store:940
+mismo-nombre bad graph.query:30, surface.index.address:53, surface.index.where:20, surface.models.subgraph:15
+IDENTICO bind-alias kernel.legacy.revision:71, kernel.revision:376
+mismo-nombre blocks host.treesitter:85, surface.markdown.ast:89
+mismo-nombre build cli.commands.include:497, kernel.mmap:177, surface.index.build:88, surface.index.where:193
+mismo-nombre candidates host.treesitter:33, surface.docs:330
+mismo-nombre canonical cli.commands.stores:360, cli.linked:26, cli.store:204, graph.store:16, kernel.plan:167, surface.parse-contract:124
+mismo-nombre cell-text surface.models.selector:98, surface.models.selector-cst:103
+mismo-nombre central cli.commands.graph:182, graph.analysis:225
+mismo-nombre check cli.commands.adapters:402, cli.commands.edges:133, cli.commands.include:151, cli.commands.models:261, cli.commands.stores:74, graph.edges:557
+IDENTICO check-base kernel.legacy.revision:323, kernel.revision:707
+mismo-nombre child-ids kernel.mmap:79, kernel.route-tree:93
+mismo-nombre children graph.traversal:25, surface.semantic:106
+IDENTICO children-map kernel.legacy.revision:220, kernel.revision:596
+mismo-nombre classify surface.diagnostics:124, surface.index.where:159, surface.markdown.cst:41
+mismo-nombre closes-after? surface.markdown.cst:94, surface.markdown.cst-ast:122
+mismo-nombre coerce surface.fields:152, surface.models.descriptor:81
+mismo-nombre command-route surface.http:139, surface.http.views:31
+mismo-nombre commit cli.commands.edges:177, cli.commands.predicates:34, kernel.tree:207
+mismo-nombre commit! kernel.heads:33, kernel.store:536
+mismo-nombre components cli.commands.graph:174, graph.analysis:125, surface.parse-contract:46
+mismo-nombre compose-document surface.links:28, surface.links.composer:50
+IDENTICO conflicts-for kernel.legacy.revision:291, kernel.revision:675
+mismo-nombre context cli.compose:51, kernel.anchor:59, surface.semantic:169
+mismo-nombre contract-version graph.export:11, graph.io:83
+mismo-nombre counts cli.commands.edges:131, surface.signals:86
+IDENTICO cp-count surface.markdown.offsets:17, surface.models.segments:20
+mismo-nombre create cli.commands.docs:307, kernel.tree:50, surface.http.routes:56
+mismo-nombre csv cli.commands.edges:59, cli.commands.find:36
+mismo-nombre cycles cli.commands.graph:160, graph.analysis:71
+mismo-nombre declared surface.models.noise:30, surface.semantic:183
+mismo-nombre decode surface.http:94, surface.models.segments:45
+mismo-nombre default-predicates cli.commands.links:28, graph.edges:53
+mismo-nombre describe surface.docs:261, surface.models.noise:76
+IDENTICO detach-op kernel.legacy.revision:192, kernel.revision:545
+mismo-nombre diagnose cli.commands.stores:57, surface.diagnostics:183
+mismo-nombre diff kernel.anchor:175, kernel.legacy.revision:227, kernel.mmap:338, kernel.revision:604, kernel.route:132, kernel.route-tree:250, surface.include:161
+mismo-nombre digest kernel.canon:78, surface.parse-contract:133
+IDENTICO dirname cli.store:12, host.store-cache:15, surface.index.cache:17
+mismo-nombre document surface.docs:476, surface.http.routes:90
+mismo-nombre document-id graph.io:88, surface.index.corpus:67
+mismo-nombre document-segments surface.http.views:235, surface.models.segments:302
+mismo-nombre documents cli.commands.docs:44, surface.docs:304
+mismo-nombre edge graph.edges:300, graph.io:92
+mismo-nombre edges-from graph.edges:520, graph.model:72, surface.docs:113
+mismo-nombre edges-to graph.edges:526, graph.model:77
+mismo-nombre empty kernel.mmap:271, kernel.route-tree:141
+mismo-nombre empty-store kernel.legacy.revision:31, kernel.revision:52, kernel.store:291
+mismo-nombre entries graph.edges:92, kernel.mmap:122, kernel.route-tree:224, surface.index.corpus:108, surface.journal:82, surface.sections:29
+mismo-nombre entry kernel.route:61, surface.journal:58, surface.links.recovery:16
+mismo-nombre execute cli.commands.adapters:99, graph.query:142
+mismo-nombre expand surface.links.composer:15, surface.markdown.cst-ast:35
+mismo-nombre export cli.commands.graph:217, cli.commands.semantic:83, graph.export:13
+mismo-nombre extract surface.http.routes:117, surface.models.extract:17, surface.models.selector-cst:152
+mismo-nombre extract-located surface.models.selector:267, surface.models.selector-cst:135
+mismo-nombre extract-segments surface.http.views:252, surface.models.segments:253
+mismo-nombre fail cli.commands.migrate:27, kernel.edge:34, kernel.mmap:93, kernel.node:59, kernel.route-tree:64, kernel.store:165, kernel.tree:38, kernel.upgrade:32, surface.http:89, surface.http.views:18
+mismo-nombre fence-close? surface.markdown.cst:28, surface.markdown.cst-ast:95
+mismo-nombre fetch kernel.mmap:110, kernel.route-tree:98
+mismo-nombre field-id graph.edges:39, surface.index.corpus:49
+mismo-nombre field-kind graph.edges:306, surface.models.segments:86
+mismo-nombre fields cli.commands.sections:90, surface.http.routes:106
+mismo-nombre fingerprint surface.docs:97, surface.heartbeat:29, surface.index.build:140
+mismo-nombre flag cli.commands.edges:45, cli.commands.fields:47, cli.commands.sections:24
+mismo-nombre flatten-payload surface.fields:263, surface.models.segments:425
+mismo-nombre formats cli.args:8, surface.models.subgraph:13
+mismo-nombre from-entries kernel.mmap:303, kernel.route-tree:192
+mismo-nombre get-node cli.commands.graph:110, kernel.pool:24
+mismo-nombre get-object kernel.legacy.revision:37, kernel.revision:70
+mismo-nombre graph graph.edges:513, graph.model:25, surface.http.views:123
+mismo-nombre health cli.commands.stores:267, surface.diagnostics:332, surface.http.routes:170
+mismo-nombre history cli.commands.models:237, surface.models.store:173
+IDENTICO id-of graph.edges:205, surface.docs:105, surface.semantic:170
+mismo-nombre identity-form kernel.edge:70, kernel.node:75
+mismo-nombre ids graph.store:76, kernel.ports:63
+mismo-nombre index graph.edges:493, surface.semantic:77
+mismo-nombre index-of cli.commands.corpus:33, surface.fields:36
+mismo-nombre ingest cli.commands.docs:113, surface.http.routes:47
+mismo-nombre init cli.commands.edges:264, cli.commands.stores:38
+mismo-nombre init! cli.store:175, kernel.store:300
+mismo-nombre invalid kernel.canon:19, kernel.route:26
+mismo-nombre isolated cli.commands.graph:195, graph.analysis:155
+mismo-nombre json-str surface.adapters:38, surface.docs:79
+mismo-nombre kind graph.traversal:48, surface.markdown.cst-ast:46
+mismo-nombre kinds kernel.node:35, kernel.tree:23, surface.index.search:22
+mismo-nombre layers graph.analysis:100, kernel.standoff:36, surface.index.search:23
+IDENTICO leading-spaces surface.markdown.cst:56, surface.markdown.cst-ast:99
+mismo-nombre leaf-text kernel.standoff:17, surface.models.blocks:257
+mismo-nombre lineage surface.index.build:26, surface.models.store:161, surface.models.subgraph:118, surface.semantic:42
+mismo-nombre links cli.commands.stores:782, cli.store:254
+mismo-nombre list-items surface.models.blocks:71, surface.models.selector-cst:93
+mismo-nombre lookup kernel.mmap:146, kernel.route:126, kernel.route-tree:202, surface.index.where:237
+mismo-nombre make kernel.edge:80, kernel.node:85
+mismo-nombre matches? surface.index.where:280, surface.semantic:137
+mismo-nombre model-id graph.edges:38, graph.io:87
+IDENTICO move-op kernel.legacy.revision:188, kernel.revision:541
+mismo-nombre neighborhood cli.commands.graph:135, graph.traversal:106
+mismo-nombre new-tree-op kernel.legacy.revision:90, kernel.revision:417
+mismo-nombre node cli.commands.edges:152, graph.edges:531, graph.io:94, graph.store:69, kernel.route-tree:71
+mismo-nombre node-count kernel.mmap:86, kernel.route-tree:88
+mismo-nombre node-exists? kernel.legacy.revision:64, kernel.revision:337
+mismo-nombre node-id graph.store:60, kernel.node:80, surface.models.store:37
+mismo-nombre node? kernel.mmap:74, kernel.route-tree:66
+mismo-nombre nodes cli.commands.edges:164, kernel.tree:93
+mismo-nombre norm surface.fields:224, surface.markdown.cst-ast:14, surface.models.validate:10
+mismo-nombre normalize kernel.canon:25, surface.index.corpus:146
+mismo-nombre normalize-path kernel.route:29, surface.include:21
+IDENTICO op-parent-paths kernel.legacy.revision:272, kernel.revision:656
+IDENTICO op-position-paths kernel.legacy.revision:282, kernel.revision:666
+mismo-nombre open cli.commands.docs:252, cli.commands.edges:21, cli.commands.fields:43, cli.commands.predicates:19, cli.commands.sections:17, cli.commands.semantic:21, kernel.store:494
+mismo-nombre open-store cli.commands.adapters:161, cli.commands.models:73, surface.http.views:82
+mismo-nombre ops kernel.plan:25, surface.index.where:48
+mismo-nombre order cli.commands.graph:167, surface.http.views:161, surface.index.search:129
+mismo-nombre ordered graph.query:79, surface.index.where:264
+mismo-nombre parse cli.args:40, surface.include:74, surface.index.address:115, surface.index.where:226, surface.markdown.ast:129, surface.markdown.cst:100, surface.markdown.cst-ast:225, surface.markdown.inline:138, surface.models.blocks:244, surface.models.marker:24
+mismo-nombre parse-in cli.commands.find:38, surface.index.where:97
+mismo-nombre parse-limit cli.commands.find:51, cli.commands.journal:15
+mismo-nombre parse-links surface.links:13, surface.links.parser:46
+mismo-nombre parse-native surface.markdown.ast:100, surface.models.blocks:124
+mismo-nombre parse-query graph.query:59, surface.http:96
+mismo-nombre path cli.commands.graph:147, host.fs-store:63, kernel.mmap:99
+mismo-nombre path-key kernel.route:55, kernel.route-tree:135
+IDENTICO path? kernel.edge:41, kernel.tree:34
+mismo-nombre plain cli.commands.docs:220, cli.commands.fields:55, surface.models.selector:82, surface.semantic:30
+mismo-nombre plan graph.edges:140, surface.include:129, surface.semantic:218
+mismo-nombre plan-of kernel.store:316, surface.journal:51
+IDENTICO position-map kernel.legacy.revision:215, kernel.revision:591
+mismo-nombre present? surface.fields:57, surface.index.where:254
+mismo-nombre problems cli.commands.models:245, cli.commands.predicates:71
+mismo-nombre project-root cli.commands.adapters:162, cli.commands.docs:241, cli.compose:15
+mismo-nombre put kernel.pool:13, surface.fields:64
+mismo-nombre py-json surface.adapters:45, surface.docs:83
+IDENTICO python-dir cli.commands.adapters:65, cli.commands.models:54
+mismo-nombre query cli.commands.fields:131, cli.commands.graph:124, host.treesitter:108, surface.fields:281
+mismo-nombre quote-block surface.markdown.ast:40, surface.models.blocks:81
+IDENTICO r kernel.legacy.revision:77, kernel.revision:382
+mismo-nombre rank cli.commands.corpus:95, kernel.reconcile:132, surface.index.corpus:183
+mismo-nombre re-anchor kernel.legacy.revision:116, kernel.revision:479
+mismo-nombre reach graph.query:113, surface.index.search:37, surface.semantic:118
+mismo-nombre reachable cli.linked:52, kernel.store:712
+mismo-nombre read-node surface.index.where:166, surface.models.store:50
+mismo-nombre records surface.index.search:76, surface.sections:73
+mismo-nombre recover-links surface.links:23, surface.links.recovery:42
+mismo-nombre refuse-noise! cli.commands.docs:283, cli.commands.fields:145
+IDENTICO rejecting kernel.legacy.revision:79, kernel.revision:397
+IDENTICO removal kernel.mmap:56, kernel.route-tree:56
+mismo-nombre remove-edge-op kernel.legacy.revision:169, kernel.revision:522
+IDENTICO removed-edge-conflicts kernel.legacy.revision:315, kernel.revision:699
+mismo-nombre render cli.commands.docs:188, surface.http.routes:125, surface.markdown.render:107, surface.models.render:218
+mismo-nombre render-list surface.markdown.render:81, surface.models.render:96
+mismo-nombre replace-op kernel.legacy.revision:174, kernel.revision:527
+mismo-nombre repo-root cli.commands.include:58, host.treesitter:26
+mismo-nombre report kernel.anchor:161, surface.diagnostics:277, surface.markdown.report:8, surface.migrate:78
+mismo-nombre require-arg! cli.commands.docs:82, cli.commands.edges:27, cli.commands.graph:28, cli.commands.predicates:25, cli.commands.sections:20, cli.commands.semantic:24
+IDENTICO require-node kernel.legacy.revision:66, kernel.revision:371
+mismo-nombre require-tree kernel.legacy.revision:101, kernel.revision:464
+mismo-nombre resolve-address kernel.standoff:69, surface.index.address:260
+IDENTICO resolve-edge kernel.legacy.revision:108, kernel.revision:471
+mismo-nombre resolve-link surface.links:18, surface.links.resolver:29
+mismo-nombre resolve-model cli.commands.models:76, cli.linked:66
+mismo-nombre result cli.commands.links:112, surface.sections:146
+mismo-nombre revision kernel.legacy.revision:41, kernel.revision:74
+mismo-nombre root kernel.route:95, kernel.tree:81
+mismo-nombre root-node graph.edges:138, kernel.route-tree:123, surface.docs:101, surface.models.store:24
+mismo-nombre roots graph.traversal:19, kernel.revision:99, surface.semantic:107
+mismo-nombre route-coverage kernel.store:636, surface.docs:1140
+mismo-nombre route-schema kernel.revision:59, kernel.store:279
+mismo-nombre routes surface.http:143, surface.http.routes:183
+mismo-nombre rows surface.fields:268, surface.models.blocks:262
+mismo-nombre run cli.main:182, surface.heartbeat:95
+mismo-nombre run-command surface.http:134, surface.http.views:23
+mismo-nombre same-list-marker? surface.markdown.cst:64, surface.markdown.cst-ast:102
+mismo-nombre scan cli.commands.adapters:389, surface.index.where:61
+mismo-nombre schema cli.commands.fields:105, kernel.route:18, kernel.route-tree:52, surface.fields:126, surface.heartbeat:13, surface.http.views:104
+mismo-nombre scope surface.models.selector-cst:75, surface.semantic:117
+mismo-nombre section-body surface.models.selector:167, surface.models.selector-cst:114
+mismo-nombre section-id graph.edges:41, graph.io:89
+mismo-nombre sections surface.models.segments:337, surface.models.selector-cst:45
+mismo-nombre segmenter host.text:89, kernel.ports:51
+mismo-nombre segments kernel.route-tree:133, surface.models.segments:162
+mismo-nombre serialize kernel.store:149, surface.models.store:26
+mismo-nombre sha256-hex cli.commands.adapters:137, host.fs-store:165, host.hash:24, host.store-cache:125
+mismo-nombre show cli.commands.docs:853, cli.commands.edges:107, cli.commands.journal:28, cli.commands.models:227, cli.commands.predicates:63, cli.commands.semantic:28, cli.commands.stores:734, surface.semantic:205
+mismo-nombre shown cli.commands.graph:58, surface.http.views:141
+mismo-nombre slugify surface.models.segments:328, surface.sections:14
+mismo-nombre snapshot cli.commands.graph:226, graph.store:37
+mismo-nombre status cli.commands.docs:879, cli.commands.include:581
+mismo-nombre step graph.traversal:81, surface.fields:44, surface.heartbeat:70
+mismo-nombre store-ref cli.commands.adapters:387, cli.commands.corpus:91, cli.commands.docs:35, cli.commands.edges:22, cli.commands.fields:45, cli.commands.journal:13, cli.commands.models:43, cli.commands.predicates:20, cli.commands.sections:18, cli.commands.semantic:22, cli.commands.stores:31
+mismo-nombre stores-of cli.commands.corpus:73, surface.index.address:166
+mismo-nombre summary graph.store:83, surface.diagnostics:268, surface.signals:94
+IDENTICO tag-id graph.edges:42, graph.io:90
+mismo-nombre target cli.commands.fields:81, cli.linked:30, surface.docs:121
+mismo-nombre text kernel.ports:59, surface.markdown.cst:155
+mismo-nombre text-opt cli.commands.edges:30, cli.commands.predicates:28
+mismo-nombre title-of surface.markdown.anchors:40, surface.models.edit:9
+mismo-nombre track cli.commands.docs:341, surface.http.routes:69
+mismo-nombre tree-at kernel.legacy.revision:208, kernel.revision:582
+IDENTICO tree-changed-since? kernel.legacy.revision:266, kernel.revision:650
+IDENTICO tree-name graph.edges:31, surface.models.store:16
+mismo-nombre type-name cli.out:11, surface.fields:109
+mismo-nombre types cli.commands.edges:222, kernel.edge:15
+mismo-nombre ulid cli.commands.migrate:28, host.ulid:25
+mismo-nombre unreachable cli.commands.stores:432, kernel.store:795
+mismo-nombre untrack cli.commands.docs:480, surface.http.routes:77
+mismo-nombre upd kernel.mmap:222, kernel.route-tree:149
+mismo-nombre usage! cli.commands.adapters:62, cli.commands.corpus:29, cli.commands.edges:24, cli.commands.fields:40, cli.commands.find:34, cli.commands.graph:26, cli.commands.links:35, cli.commands.predicates:22
+mismo-nombre valid? kernel.canon:83, kernel.tree:186, surface.index.cache:33
+mismo-nombre validate cli.commands.predicates:82, kernel.edge:43, kernel.node:62, surface.adapters:99, surface.models.validate:12
+mismo-nombre validate! surface.models.descriptor:47, surface.models.subgraph:64
+mismo-nombre value-at surface.fields:49, surface.models.segments:110
+mismo-nombre verify cli.commands.journal:44, cli.commands.stores:388, kernel.store:872, surface.journal:106
+mismo-nombre version host.treesitter:80, surface.index.build:17, surface.parse-contract:42
+mismo-nombre view cli.commands.corpus:79, graph.model:109
+mismo-nombre walk kernel.route-tree:215, surface.links.recovery:25, surface.semantic:109
+mismo-nombre with-tree kernel.legacy.revision:105, kernel.revision:468, surface.docs:570
+mismo-nombre wrap cli.errors:60, surface.models.render:55
+IDENTICO write-file! cli.commands.docs:246, cli.commands.fields:153
+mismo-nombre ws-init kernel.legacy.revision:58, kernel.revision:323

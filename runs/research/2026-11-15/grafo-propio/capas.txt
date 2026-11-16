@@ -1,0 +1,14 @@
+0: cli.out, graph.model, host.store-cache, host.treesitter, kernel.err, kernel.ports, surface.adapters, surface.heartbeat, surface.links.parser, surface.links.resolver, surface.markdown.cst, surface.models.marker, surface.signals
+1: cli.args, cli.errors, graph.analysis, graph.io, graph.query, graph.traversal, host.hash, host.lazy, host.text, host.ulid, kernel.canon, surface.include, surface.index.where, surface.links.recovery, surface.markdown.inline, surface.markdown.offsets, surface.markdown.report, surface.migrate, surface.models.blocks, surface.models.descriptor, surface.models.edit, surface.models.selector-cst
+2: host.default, kernel.edge, kernel.mmap, kernel.node, kernel.plan, kernel.route, kernel.tree, surface.links.composer, surface.markdown.ast, surface.markdown.render, surface.models.noise, surface.models.recipe, surface.models.selector, surface.models.subgraph
+3: kernel.legacy.revision, kernel.pool, kernel.route-tree, surface.links, surface.markdown.anchors, surface.markdown.cst-ast, surface.models.compile, surface.models.extract, surface.parse-contract
+4: kernel.revision, surface.models.capture, surface.models.render
+5: kernel.anchor, kernel.heads, kernel.standoff, kernel.store, surface.journal, surface.markdown.plan, surface.models.segments, surface.models.store, surface.models.validate
+6: host.fs-store, kernel.reconcile, kernel.upgrade, surface.docs, surface.sections
+7: cli.compose, cli.store, surface.diagnostics, surface.fields, surface.index.corpus, surface.semantic
+8: cli.commands.include, cli.commands.journal, cli.commands.sections, cli.linked, graph.edges, graph.export, surface.http.views, surface.index.address, surface.index.build
+9: cli.commands.docs, graph.store, surface.http.routes, surface.index.cache, surface.index.search
+10: cli.commands.corpus, cli.commands.edges, cli.commands.fields, cli.commands.find, cli.commands.graph, cli.commands.index, cli.commands.models, cli.commands.predicates, cli.commands.semantic, cli.commands.stores, surface.http
+11: cli.commands.adapters, cli.commands.direct, cli.commands.migrate, cli.commands.serve
+12: cli.commands.links
+13: cli.main
