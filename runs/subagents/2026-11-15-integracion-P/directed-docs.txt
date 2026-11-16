@@ -1,0 +1,9 @@
+
+Testing kimun.doc14-contract-test
+
+Testing kimun.wittgenstein-manifest-test
+
+Testing kimun.lint-test
+
+Ran 14 tests containing 962 assertions.
+0 failures, 0 errors.

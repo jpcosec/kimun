@@ -73,6 +73,13 @@ paridad v1 sin brechas (`scripts/parity/coverage.py … --strict --allow-open-pr
 `bin/kimun include check` limpio; todo `bb`/script pesado bajo `memcap` (`AGENTS.md`). `bb oracle`
 (ids canónicos) solo puede cambiar dentro de K1, y a propósito.
 
+> **Paridad v1 suspendida (dueño, 2026-11-15):** «olvidémonos de la paridad con v1 hasta que
+> terminemos esta "rearquitecturización" que estamos haciendo». Mientras dure, «paridad v1 sin
+> brechas» **no** es un invariante: las pruebas de paridad siguen en la suite, pero un corte de
+> la rearquitectura que cambie el comportamiento a propósito las retira o las ajusta diciéndolo,
+> en vez de conservar un quirk de v1. Siguen valiendo `bb lint`, `bb test`, `bb oracle` e
+> `include check`. Contexto: `docs/v2/drafts/sesion-2026-11-15.md`.
+
 | id | trabajo | depende de | dónde está descrito |
 |---|---|---|---|
 | D0 | **contrato S–M derivado por el concilio (2026-11-15); no hay pregunta pendiente al dueño**: la unidad es el hecho detectado con identidad propia; el anclaje es su referencia vigente; la continuidad uno a uno conserva la unidad y lo demás crea unidades nuevas con linaje declarado. Reglas = inferencias del concilio. La fila anterior («identidad = lugar») quedó sustituida por la corrección del dueño del 2026-11-14 | — | `14 §21`, decisión 46, `runs/research/2026-11-15/concilio/d0-contrato-sintesis.md` |

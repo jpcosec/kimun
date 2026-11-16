@@ -1,0 +1,11 @@
+
+Testing kimun.cli.adapters-test
+
+Testing kimun.surface.adapters-test
+
+Testing kimun.cli.main-test
+
+Testing kimun.doc14-contract-test
+
+Ran 50 tests containing 666 assertions.
+0 failures, 0 errors.
