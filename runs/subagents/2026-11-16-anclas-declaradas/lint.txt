@@ -1,0 +1,2 @@
+rings and docstrings ok: 107 files
+exit 0

@@ -1,0 +1,36 @@
+=== M1 unchanged files are opened too
+      1 5 failures, 0 errors.
+      3 FAIL in (a-file-git-does-not-report-is-not-opened) (/tmp/kimun-dmarks-wt/test/kimun/surface/declared_anchors_test.cljc:107)
+      2 FAIL in (editing-the-anchored-paragraph-mutates-only-it) (/tmp/kimun-dmarks-wt/test/kimun/cli/declare_anchors_test.cljc:73)
+      1 Ran 13 tests containing 122 assertions.
+=== M2 block ordinal 0-based
+      1 14 failures, 0 errors.
+      2 FAIL in (editing-the-anchored-paragraph-mutates-only-it) (/tmp/kimun-dmarks-wt/test/kimun/cli/declare_anchors_test.cljc:73)
+      2 FAIL in (forms-resolve-without-comparison) (/tmp/kimun-dmarks-wt/test/kimun/surface/declared_anchors_test.cljc:36)
+      1 FAIL in (moving-and-deleting-a-section) (/tmp/kimun-dmarks-wt/test/kimun/cli/declare_anchors_test.cljc:97)
+      1 FAIL in (read-only) (/tmp/kimun-dmarks-wt/test/kimun/cli/declare_anchors_test.cljc:166)
+      4 FAIL in (states-with-a-commit) (/tmp/kimun-dmarks-wt/test/kimun/surface/declared_anchors_test.cljc:75)
+      2 FAIL in (the-pointer-of-the-store-is-the-default-commit) (/tmp/kimun-dmarks-wt/test/kimun/cli/declare_anchors_test.cljc:114)
+      2 FAIL in (without-store-and-without-commit-it-only-resolves) (/tmp/kimun-dmarks-wt/test/kimun/cli/declare_anchors_test.cljc:56)
+=== M3 whole file: equal hash reads as mutated
+      1 2 failures, 0 errors.
+      2 FAIL in (whole-file-of-any-type-and-inner-locators-on-code) (/tmp/kimun-dmarks-wt/test/kimun/surface/declared_anchors_test.cljc:60)
+      1 Ran 13 tests containing 122 assertions.
+=== M4 pointer of the store ignored
+      1 4 failures, 0 errors.
+      4 FAIL in (the-pointer-of-the-store-is-the-default-commit) (/tmp/kimun-dmarks-wt/test/kimun/cli/declare_anchors_test.cljc:114)
+      1 Ran 13 tests containing 122 assertions.
+=== M5 .. allowed in paths
+      1 3 failures, 1 errors.
+      1 ERROR in (badly-formed-locators-are-declared-with-file-and-line) (/tmp/kimun-dmarks-wt/test/kimun/surface/declared_anchors_test.cljc:123)
+      3 FAIL in (badly-formed-locators-are-declared-with-file-and-line) (/tmp/kimun-dmarks-wt/test/kimun/surface/declared_anchors_test.cljc:123)
+      1 Ran 13 tests containing 122 assertions.
+=== M6 candidates dropped
+      1 1 failures, 0 errors.
+      1 FAIL in (states-with-a-commit) (/tmp/kimun-dmarks-wt/test/kimun/surface/declared_anchors_test.cljc:75)
+      1 Ran 13 tests containing 122 assertions.
+=== M7 inner locator on non-md not unsupported
+      1 3 failures, 0 errors.
+      3 FAIL in (whole-file-of-any-type-and-inner-locators-on-code) (/tmp/kimun-dmarks-wt/test/kimun/surface/declared_anchors_test.cljc:60)
+      1 Ran 13 tests containing 122 assertions.
+restored

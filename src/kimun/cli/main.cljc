@@ -124,6 +124,7 @@
              "  semantic show [TAG] | tags [PREFIX]            a tag (parents, children, equivalents, documents) or the DAG; list tags"
              "  semantic parent-add|parent-remove CHILD PARENT · equivalent-add A B · export [-o FILE]"
              "  declare read FILE…          evaluate declaration files (Clojure) and show their propositions; read-only, no store"
+             "  declare anchors FILE… [--since COMMIT]   resolve the (at …) anchors of declarations against the files; with a commit (or the pointer of a store here) git says what changed; read-only"
              "  journal show [--limit N] [--by ACTOR] [--tree NAME|ID]   the write history, newest first (a view of the log)"
              "  journal verify              check the revision chain, the log replay and every reachable object"
              "  serve [--port N] [--host H] [--token T] [--cors]   HTTP API over the commands (default 127.0.0.1:8787)"

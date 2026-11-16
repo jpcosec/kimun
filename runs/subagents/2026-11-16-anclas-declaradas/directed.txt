@@ -1,0 +1,29 @@
+
+Testing kimun.surface.declared-anchors-test
+
+Testing kimun.cli.declare-anchors-test
+
+Testing kimun.surface.declare-test
+
+Testing kimun.cli.declare-test
+
+Testing kimun.cli.changed-test
+
+Testing kimun.cli.seen-test
+moved existing store to /tmp/kimun-adhoc-11338709899774583565/kimun-seen-inc-11856190791962102482/.kimun.bak-20261116-010536-01M7H8G9N6MHDGMG6D2M04QR6N
+
+Testing kimun.cli.main-test
+
+Testing kimun.lint-test
+
+Ran 50 tests containing 411 assertions.
+0 failures, 0 errors.
+exit 0
+
+Testing kimun.surface.markdown.anchors-test
+
+Testing kimun.cli.range-marks-test
+
+Ran 9 tests containing 162 assertions.
+0 failures, 0 errors.
+exit 0

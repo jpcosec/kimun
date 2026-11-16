@@ -1,0 +1,57 @@
+
+Testing kimun.surface.declared-anchors-test
+
+Testing kimun.cli.declare-anchors-test
+
+Testing kimun.cli.compose-test
+
+Testing kimun.cli.contract-test
+
+Testing kimun.cli.edges-test
+
+Testing kimun.cli.fields-test
+
+Testing kimun.cli.find-test
+
+Testing kimun.cli.graph-test
+
+Testing kimun.cli.identity-carry-test
+moved existing store to /tmp/kimun-adhoc-15803321000658368560/kimun-k1a-9152555289117702306/.kimun.bak-20261116-010551-01M7H8GRE8YDVES72XSCRB4F13
+moved existing store to /tmp/kimun-adhoc-15803321000658368560/kimun-k1a-4958348432702447530/.kimun.bak-20260101-000000-01M7H8GRGZEKKTQH43YBMRT82X
+moved existing store to /tmp/kimun-adhoc-15803321000658368560/kimun-k1a-4958348432702447530/.kimun.bak-20260101-000000-01M7H8GRHZ6BDHBG96SKCHNY5H
+moved existing store to /tmp/kimun-adhoc-15803321000658368560/kimun-k1a-15805234088354549642/.kimun.bak-20261116-010551-01M7H8GRN66X0MZ71FKMTG5GD5
+moved existing store to /tmp/kimun-adhoc-15803321000658368560/kimun-k1a-15805234088354549642/.kimun.bak-20261116-010551-01M7H8GRPD1EV4JKVZ15AGZRT8
+moved existing store to /tmp/kimun-adhoc-15803321000658368560/kimun-k1a-8142239830445654355/.kimun.bak-20261116-010551-01M7H8GRSMJNSYXSBDJNXW18C1
+moved existing store to /tmp/kimun-adhoc-15803321000658368560/kimun-k1a-4228867753908400658/.kimun.bak-20261116-010551-01M7H8GRXK88S06S87H2BS9D7C
+
+Testing kimun.cli.journal-test
+
+Testing kimun.cli.links-test
+
+Testing kimun.cli.marks-test
+moved existing store to /tmp/kimun-adhoc-15803321000658368560/kimun-marks-inc-924506904717007630/.kimun.bak-20261116-010552-01M7H8GSZQCGRC19MWB60CNJMP
+
+Testing kimun.cli.names-test
+
+Testing kimun.cli.pack-test
+
+Testing kimun.cli.predicates-test
+
+Testing kimun.cli.reanchor-test
+moved existing store to /tmp/kimun-adhoc-15803321000658368560/kimun-reanchor-inc-4209689239329954295/.kimun.bak-20261116-010554-01M7H8GVX6BV3862FRACC6JPHR
+
+Testing kimun.cli.sections-test
+
+Testing kimun.cli.semantic-test
+
+Testing kimun.cli.route-schema-test
+
+Testing kimun.cli.noise-test
+
+Testing kimun.cli.declare-test
+
+Testing kimun.cli.changed-test
+
+Ran 162 tests containing 1860 assertions.
+0 failures, 0 errors.
+exit 0

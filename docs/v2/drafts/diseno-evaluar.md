@@ -67,8 +67,7 @@ relaciones son macros de ese evaluador, para que los símbolos desnudos lleguen 
 
 1. **Leer** (hecho, 2026-11-16: `kimun.surface.declare`, `declare read ARCHIVO…`): el evaluador puro y
    un comando de solo lectura que muestra las proposiciones de uno o más archivos. Sin store.
-2. **Marcas desde declaraciones**: las proposiciones con `(at …)` dan las marcas, con los estados y
-   candidatos de hoy (`mark-states`) y el sensor por git.
+2. **Marcas desde declaraciones** (hecho, 2026-11-16: `kimun.surface.declared-anchors`, `declare anchors FILE… [--since COMMIT]`): las proposiciones con `(at …)` se resuelven contra los archivos y, con un commit, dan los estados de `mark-states` comparando el texto que git guarda con el de ahora. Sin store.
 3. **Los comandos generan formas** en vez de escribir en el store; el índice se deriva.
 4. **Borrar** lo que eso reemplaza.
 
@@ -91,3 +90,14 @@ relaciones son macros de ese evaluador, para que los símbolos desnudos lleguen 
 - El nombre de una relación no se puede generar con código (es una macro); sus usos sí.
 - Aislamiento: el evaluador no expone nada del anfitrión (`slurp`, `System`, clases, `require`, shell).
   No es un aislamiento del sistema operativo.
+
+## 8. Decidido al implementar el corte 2
+
+- Formas de `(at …)`: `(at "r")` archivo entero (hash del texto, cualquier tipo), `(at "r" [camino])` sección, `(at "r" [camino] {:type T :n N})` bloque, `(at "r" [camino] {:type T :n N} [s e])` rango en graphemes. Un elemento del camino es `"Título"` o `["Título" K]`.
+- Los ordinales de la declaración son de 1 (`:n 1` es el primer párrafo, `["Sub" 2]` el segundo hermano); `anchors` numera desde 0 y la traducción resta uno. `0` es `declare/bad-locator`.
+- `(at "r" [])` solo (la sección raíz) es mal formado: `anchors` no la lista; se ancla un bloque de ella con `[] {:type … :n …}`.
+- La forma se valida al calcular los estados (`declared-anchors/states`), no al evaluar: `declare read` no la comprueba. Una ruta absoluta o con `..` también es `declare/bad-locator`.
+- Sin comparación no hay candidatos: `anchors` los propone a partir de un hash y no hay ninguno con qué comparar. Tampoco hay `:lines`: las anclas se leen sin los spans de la capa de bloques.
+- Un archivo no Markdown con localizador interno es `:unsupported` aunque git no lo reporte cambiado (es una propiedad de la declaración, no del archivo).
+- Un renombrado se reporta con las dos rutas (`:path` y `:from`) como cambiadas; un ancla escrita con la ruta vieja sale `:missing`.
+- Sin `--since`, el puntero se busca solo en `<cwd>/.kimun/seen.edn` (no sube por los directorios); un puntero dañado es `git/bad-pointer`.
