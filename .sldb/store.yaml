@@ -238,9 +238,6 @@ include:
   - desk/tasks/task-generate-leftovers-http-over-propositions-and-orphan-files.md
   - desk/tasks/task-readers-for-every-class-of-the-deskops-desk.md
   - desk/tasks/task-tags-on-any-node-code-nodes-and-kimun-indexing-itself.md
-- model: TaskDocsDoc
-  paths:
-  - desk/tasks/task-design-kimun-as-the-core-of-sldb.md
 - model: TaskDecisionDoc
   paths:
   - desk/tasks/task-open-owner-decisions-that-hold-work.md

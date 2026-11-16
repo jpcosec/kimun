@@ -1,7 +1,7 @@
 ---
 sldb:
   by: agent
-  at: '2026-11-16T17:57:16Z'
+  at: '2026-11-16T17:57:19Z'
   authority: generated
   via: save_document_payload
 # board-xxx
@@ -10,7 +10,6 @@ id: board-001
 scope: desk
 # List of task-xxx paths
 tasks:
-- desk/tasks/task-design-kimun-as-the-core-of-sldb.md
 - desk/tasks/task-deskops-views-as-declare-generate-recipes.md
 - desk/tasks/task-fichas-and-graph-queries-over-propositions.md
 - desk/tasks/task-finish-wip-leer-readers-by-class.md
@@ -57,7 +56,6 @@ _Add short operational notes about the current routed set._
 
 _Generated from the task references above._
 
-- Design kimun as the core of sldb [draft] - A design written by the coordinator, from the owner's answer and the measured terrain.
 - Deskops views as declare generate recipes [draft] - The Board and the view of one task of the deskops desk come out of declare generate.
 - Fichas and graph queries over propositions [draft] - Terms with content and no anchor; graph.* queries the propositions; declare about accepts a proposition as term.
 - Finish wip-leer readers by class [draft] - Branch wip/leer is rebased on origin/main, its tests and the whole suite pass, the readers have been run over a copy of the real deskops desk with the numbers recorded, and main is fast-forwarded to it and pushed.
