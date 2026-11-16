@@ -1,0 +1,11 @@
+
+Testing kimun.surface.generate-test
+
+Testing kimun.cli.generate-test
+
+Testing kimun.cli.mcp-test
+
+Testing kimun.cli.declare-fixes-test
+
+Ran 32 tests containing 368 assertions.
+0 failures, 0 errors.
