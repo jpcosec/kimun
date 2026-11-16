@@ -8,6 +8,7 @@
             [kimun.cli.args :as args]
             [kimun.cli.commands.direct :as direct]
             [kimun.cli.commands.corpus :as corpus]
+            [kimun.cli.commands.declare :as declare]
             [kimun.cli.commands.docs :as docs]
             [kimun.cli.commands.edges :as edges]
             [kimun.cli.commands.fields :as fields]
@@ -36,6 +37,7 @@
             (if-let [f (get links/commands sub)]
               (f args opts ctx)
               (docs/dispatch sub args opts ctx)))
+   "declare" declare/dispatch
    "edges" edges/dispatch
    "graph" graph/dispatch
    "predicates" predicates/dispatch
@@ -57,7 +59,7 @@
   "The option spec of every group, merged: a group declares its own options
    in its `spec` var, so adding a group never edits `kimun.cli.args`. Two
    groups may share an option name only with the same meaning."
-  (merge stores/spec docs/spec journal/spec serve/spec models/spec include/spec direct/spec links/spec semantic/spec fields/spec sections/spec find/spec corpus/spec index/spec predicates/spec edges/spec graph/spec))
+  (merge stores/spec docs/spec journal/spec serve/spec models/spec include/spec direct/spec links/spec semantic/spec fields/spec sections/spec find/spec corpus/spec index/spec predicates/spec edges/spec graph/spec declare/spec))
 
 (def usage
   "Usage text shown by `kimun`, `kimun help` and `--help`."
@@ -121,6 +123,7 @@
              "  sections list DOC · fields DOC SECTION · find [TERM] [--in physical|semantic|both] [--regex] [--fuzzy] [--where EXPR]"
              "  semantic show [TAG] | tags [PREFIX]            a tag (parents, children, equivalents, documents) or the DAG; list tags"
              "  semantic parent-add|parent-remove CHILD PARENT · equivalent-add A B · export [-o FILE]"
+             "  declare read FILE…          evaluate declaration files (Clojure) and show their propositions; read-only, no store"
              "  journal show [--limit N] [--by ACTOR] [--tree NAME|ID]   the write history, newest first (a view of the log)"
              "  journal verify              check the revision chain, the log replay and every reachable object"
              "  serve [--port N] [--host H] [--token T] [--cors]   HTTP API over the commands (default 127.0.0.1:8787)"

@@ -42,7 +42,7 @@ Códigos de salida (`kimun.cli.errors`): 0 ok, 1 `missing`/`empty`, 2 `ambiguous
 | 0 | ok |
 | 1 | `*/missing` o `*/empty` por nombre (`find/empty`, `graph/empty`, `links/missing`, `docs/missing`, `models/no-file`, `eval/missing`) |
 | 2 | `*/ambiguous` |
-| 3 | namespaces `query` `models` `validate` `docs` `fields` `sections` `find` `graph` `edges` `semantic` `include` `links`; `:plan/rejected` salvo chequeo de capability |
+| 3 | namespaces `query` `models` `validate` `docs` `fields` `sections` `find` `graph` `edges` `semantic` `include` `links` `declare`; `:plan/rejected` salvo chequeo de capability |
 | 4 | `*/conflict`, `*/stale`, `plan/conflict`, `store/stale`, `store/busy` |
 | 5 | namespaces `store` `route` `markdown` `index` `journal` `serve`; `cli/no-store`, `cli/store-exists` |
 | 6 | `cli/usage`, `org.babashka/cli`, `eval/not-available` |
@@ -502,6 +502,12 @@ Campos de documentos tipados. `DOC` es nombre, tree-id o `Model:doc`; un campo d
 |---|---|---|
 | `journal show` | `--limit N`, `--by ACTOR`, `--tree NAME\|ID` | entradas, la más nueva primero; una entrada puede llevar `:operation`/`:address`/`:fields` y, si la revisión reparó varios documentos (`stores update`), `:documents` |
 | `journal verify` | — | `{:revisions :checked :objects :bad}`; problema ⇒ `store/corrupt` (5) |
+
+### declare
+
+| subcomando | opciones | `:data` |
+|---|---|---|
+| `declare read` | `FILE…` (una o más rutas, relativas al cwd; sin store) | `{:files [{:file :context :relations :propositions}] :summary {:files :relations :propositions}}`. Evalúa cada archivo de declaración (Clojure aislado en `sci`, `docs/v2/drafts/diseno-evaluar.md`) y muestra las proposiciones `{:r :a :b :context :at {:file :line} :id}` (`:r` y `:context` cadenas; `:a` y `:b` nodos etiquetados, iguales en JSON y EDN: `{:term "x"}`, `{:proposition id}`, `{:anchor …}`, `{:files …}` o un literal escalar; un vector o mapa como argumento es `declare/bad-node`); no escribe nada. Archivo ausente ⇒ `declare/missing` (1); un archivo que no evalúa ⇒ `declare/*` (3, p. ej. `declare/relation-redefined`) con `:file` y `:line` |
 
 ### serve
 

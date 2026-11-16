@@ -1,0 +1,52 @@
+
+Testing kimun.surface.declare-test
+
+Testing kimun.cli.declare-test
+
+Testing kimun.cli.main-test
+
+Testing kimun.cli.c4-route-rebuild-test
+moved existing store to /tmp/kimun-adhoc-3946491093488669218/kimun-c4-route-432477291876999421/.kimun.bak-20261116-005443-01M7H7WCK6H6B83G7N60DFDZBC
+
+Testing kimun.cli.cache-pack-test
+
+Testing kimun.cli.cache-verified-test
+
+Testing kimun.cli.changed-test
+
+Testing kimun.cli.cold-cache-test
+
+Testing kimun.cli.compose-test
+
+Testing kimun.cli.contract-test
+
+Testing kimun.cli.corpus-test
+
+Testing kimun.cli.diagnostics-test
+
+Testing kimun.cli.docs-anchors-test
+
+Testing kimun.cli.docs-test
+
+Testing kimun.cli.edges-test
+
+Testing kimun.cli.fault-injection-test
+
+Testing kimun.cli.fields-test
+
+Testing kimun.cli.field-units-test
+moved existing store to /tmp/kimun-adhoc-3946491093488669218/kimun-units-inc-3713048314365780167/.kimun.bak-20261116-005518-01M7H7XEGRPSAN42ECR7F1WZ4G
+
+Testing kimun.cli.find-test
+
+Testing kimun.cli.generic-docs-test
+
+Testing kimun.cli.golden-test
+
+Testing kimun.cli.graph-test
+
+Testing kimun.cli.heartbeat-test
+
+Ran 158 tests containing 2109 assertions.
+0 failures, 0 errors.
+exit=0

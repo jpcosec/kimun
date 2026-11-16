@@ -16,7 +16,7 @@
    ;; the graph package (docs/v2/14 §19, decision 43): over the base, never the CLI
    "kimun.graph."           #{"clojure." "kimun.kernel." "kimun.surface." "kimun.graph." "cheshire."}
    "kimun."                  #{"clojure." "kimun.kernel." "kimun.host." "kimun.surface.markdown." "kimun."
-                               "babashka." "cheshire." "clj-yaml." "org.httpkit."}})
+                               "babashka." "cheshire." "clj-yaml." "org.httpkit." "sci."}})
 
 (def graph-package
   "Prefix of the graph package (docs/v2/14 §19 rule 3): the base does not

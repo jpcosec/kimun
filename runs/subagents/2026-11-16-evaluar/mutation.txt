@@ -1,0 +1,74 @@
+== MUTATION: m1
+      1 2 failures, 0 errors.
+      1 FAIL in (bare-symbol-is-a-term-and-bound-symbol-is-its-value) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:55)
+      1 FAIL in (declarations-can-be-generated-with-code) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:73)
+      1 Ran 10 tests containing 68 assertions.
+== MUTATION: m2
+      1 7 failures, 6 errors.
+      1 ERROR in (bare-symbol-is-a-term-and-bound-symbol-is-its-value) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:55)
+      1 ERROR in (declarations-can-be-generated-with-code) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:73)
+      1 ERROR in (id-is-stable-independent-of-position-and-sensitive-to-context) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:93)
+      1 ERROR in (the-complete-example-gives-the-expected-propositions) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:32)
+      1 ERROR in (the-same-proposition-twice-is-one) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:83)
+      1 ERROR in (the-sandbox-rejects-the-host) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:127)
+      2 FAIL in (declared-errors-carry-file-and-line) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:102)
+== MUTATION: m3
+      1 2 failures, 0 errors.
+      1 FAIL in (id-is-stable-independent-of-position-and-sensitive-to-context) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:93)
+      1 FAIL in (the-complete-example-gives-the-expected-propositions) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:32)
+      1 Ran 10 tests containing 68 assertions.
+== MUTATION: m4
+      1 4 failures, 0 errors.
+      1 FAIL in (id-is-stable-independent-of-position-and-sensitive-to-context) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:93)
+      1 FAIL in (the-complete-example-gives-the-expected-propositions) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:32)
+      2 FAIL in (the-same-proposition-twice-is-one) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:83)
+      1 Ran 10 tests containing 68 assertions.
+== MUTATION: m5
+      1 3 failures, 0 errors.
+      1 FAIL in (the-complete-example-gives-the-expected-propositions) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:32)
+      2 FAIL in (the-same-proposition-twice-is-one) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:83)
+      1 Ran 10 tests containing 68 assertions.
+== MUTATION: m6
+      1 2 failures, 0 errors.
+      2 FAIL in (declared-errors-carry-file-and-line) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:102)
+      1 Ran 10 tests containing 68 assertions.
+== MUTATION: m7
+      1 1 failures, 0 errors.
+      1 FAIL in (declared-errors-carry-file-and-line) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:102)
+      1 Ran 10 tests containing 68 assertions.
+== MUTATION: m9
+      1 0 failures, 0 errors.
+      1 Ran 10 tests containing 68 assertions.
+== MUTATION: m9
+      1 1 failures, 0 errors.
+      1 FAIL in (declared-errors-carry-file-and-line) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:102)
+      1 Ran 10 tests containing 69 assertions.
+== MUTATION: m8 (sandbox opened: classes allowed)
+== MUTATION: m8 sandbox opened (:deny [] and :classes System/File allowed): the run dies before reporting, because the test's (System/exit 3) really exits the process (exit code of run: non-zero, no 'Ran' line)
+
+# Segunda ronda (correcciones del coordinador)
+== MUTATION n1
+      1 4 failures, 0 errors.
+      1 FAIL in (bare-symbol-is-a-term-and-bound-symbol-is-its-value) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:56)
+      1 FAIL in (declarations-can-be-generated-with-code) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:74)
+      1 FAIL in (the-complete-example-gives-the-expected-propositions) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:34)
+      1 FAIL in (the-same-proposition-twice-is-one) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:84)
+== MUTATION n2
+      1 1 failures, 0 errors.
+      1 FAIL in (declared-errors-carry-file-and-line) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:103)
+== MUTATION n3
+      1 1 failures, 0 errors.
+      1 FAIL in (declared-errors-carry-file-and-line) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:103)
+(restauradas; diff idéntico)
+== MUTATION p1: vocabulary under 'user instead of the context namespace
+      1 9 failures, 9 errors.
+      1 ERROR in (at-and-files-are-nodes-that-open-nothing) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:152)
+      1 ERROR in (bare-symbol-is-a-term-and-bound-symbol-is-its-value) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:56)
+      1 ERROR in (declarations-can-be-generated-with-code) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:74)
+      1 ERROR in (declared-errors-carry-file-and-line) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:103)
+      1 ERROR in (evaluation-is-pinned-to-its-own-namespace-whatever-the-caller) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:160)
+      1 ERROR in (id-is-stable-independent-of-position-and-sensitive-to-context) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:94)
+      1 ERROR in (the-complete-example-gives-the-expected-propositions) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:34)
+      1 ERROR in (the-same-proposition-twice-is-one) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:84)
+      1 ERROR in (the-sandbox-rejects-the-host) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:136)
+      9 FAIL in (declared-errors-carry-file-and-line) (/tmp/kimun-eval-wt/test/kimun/surface/declare_test.cljc:103)

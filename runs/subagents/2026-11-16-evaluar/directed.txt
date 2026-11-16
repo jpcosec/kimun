@@ -1,0 +1,17 @@
+
+Testing kimun.surface.declare-test
+
+Testing kimun.cli.declare-test
+
+Testing kimun.cli.main-test
+
+Testing kimun.cli.golden-test
+
+Testing kimun.lint-test
+
+Testing kimun.cli.edges-test
+
+Testing kimun.cli.stores-test
+
+Ran 61 tests containing 595 assertions.
+0 failures, 0 errors.

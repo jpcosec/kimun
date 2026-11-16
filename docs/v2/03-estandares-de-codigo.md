@@ -13,7 +13,7 @@ ring 1  kimun.host.*     ← adaptadores: implementan los puertos del kernel; ú
 ring 2  kimun.surface.markdown.* ← superficie Markdown del núcleo (perfil SLDB-MD):
                           requiere kernel y host; nunca al revés; + babashka.*
 ring 3  kimun.*         ← producto (CLI y demás superficies kimun: models, index…):
-                          requiere los anillos 0–2; además cheshire, clj-yaml y org.httpkit
+                          requiere los anillos 0–2; además cheshire, clj-yaml, org.httpkit y sci (el evaluador de declaraciones)
 paquete kimun.graph.*   ← el grafo, sobre la base (`14 §19`, decisión 43): requiere kernel,
                           kimun.surface.* y a sí mismo, + cheshire; nunca kimun.cli.*
 ring 4  tests           ← requieren cualquier cosa
