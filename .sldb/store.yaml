@@ -237,9 +237,6 @@ include:
   paths:
   - desk/tasks/task-open-owner-decisions-that-hold-work.md
   - desk/tasks/task-owner-decides-what-new-core-of-sldb-means.md
-- model: TaskRefactorDoc
-  paths:
-  - desk/tasks/task-retire-the-previous-store-once-declarations-replace-it.md
 - model: TaskExternalDoc
   paths:
   - desk/tasks/task-toolchain-on-robocop2-and-suite-reproduced.md

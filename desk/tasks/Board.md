@@ -1,7 +1,7 @@
 ---
 sldb:
   by: agent
-  at: '2026-11-16T17:57:34Z'
+  at: '2026-11-16T17:57:37Z'
   authority: generated
   via: save_document_payload
 # board-xxx
@@ -13,7 +13,6 @@ tasks:
 - desk/tasks/task-finish-wip-leer-readers-by-class.md
 - desk/tasks/task-open-owner-decisions-that-hold-work.md
 - desk/tasks/task-owner-decides-what-new-core-of-sldb-means.md
-- desk/tasks/task-retire-the-previous-store-once-declarations-replace-it.md
 - desk/tasks/task-tags-on-any-node-code-nodes-and-kimun-indexing-itself.md
 - desk/tasks/task-toolchain-on-robocop2-and-suite-reproduced.md
 # List of pill-xxx paths
@@ -54,6 +53,5 @@ _Generated from the task references above._
 - Finish wip-leer readers by class [draft] - Branch wip/leer is rebased on origin/main, its tests and the whole suite pass, the readers have been run over a copy of the real deskops desk with the numbers recorded, and main is fast-forwarded to it and pushed.
 - Open owner decisions that hold work [draft] - Each of the four rows of docs/v2/drafts/preguntas-abiertas.md carries the owner's answer, verbatim and dated, at the start of its second cell, prefixed by **Respondida (dueño, YYYY-MM-DD):** as the answered rows of that table already do; a question he declines is prefixed by **Sin decidir (dueño, YYYY-MM-DD):**.
 - Owner decides what new core of sldb means [draft] - The owner's answer, in his own words, is appended as a dated section to docs/v2/drafts/sesion-2026-11-15.md (the file that holds his verbatim words), and docs/v2/drafts/diseno-leer.md §6 is rewritten from 'Mi lectura, sin confirmar' to what he said.
-- Retire the previous store once declarations replace it [draft] - Path tree, per-file fingerprint, revisions, log, plans, replay and include's identity-registry are gone, with their tests.
 - Tags on any node, code nodes and kimun indexing itself [draft] - Several tags per node on several axes; code nodes; kimun's own code graph comes from kimun and replaces scripts/check_rings.clj.
 - Toolchain on robocop2 and suite reproduced [draft] - On the machine robocop2 (ssh host 'robocop2', user robocop), in the clone ~/proyectos/kimun of https://github.com/jpcosec/kimun (branch main), 'bb test' runs with the tree-sitter pod and has no failures, with at least the 1081 tests of the baseline (runs/subagents/2026-11-16-find-genericos/coordinator/full-test.txt, commit e84869af).
