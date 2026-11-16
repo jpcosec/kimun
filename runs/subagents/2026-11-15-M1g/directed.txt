@@ -1,0 +1,13 @@
+== batch A
+Ran 70 tests containing 644 assertions.
+0 failures, 0 errors.
+== batch B
+parity engine corpus: {:pass 2384, :fail 0, :excluded 24, :pending 0}
+Ran 37 tests containing 361 assertions.
+0 failures, 0 errors.
+== batch C
+Ran 142 tests containing 1612 assertions.
+0 failures, 0 errors.
+A: typed_docs docs docs_parity cli.corpus index.corpus golden field_units cli.marks surface.marks reanchor identity_carry model_carry
+B: parity cold_cache fault_injection tour contract sense spec16_docs
+C: cli.diagnostics parity.diagnostics surface.diagnostics find heartbeat index stores index.{address,build,cache,search,where} fields sections

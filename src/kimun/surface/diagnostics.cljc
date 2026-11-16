@@ -55,7 +55,6 @@
             [clojure.walk :as walk]
             [kimun.kernel.err :as err]
             [kimun.surface.docs :as tdocs]
-            [kimun.surface.models.extract :as extract]
             [kimun.surface.models.noise :as noise]
             [kimun.surface.models.store :as mstore]
             [kimun.surface.parse-contract :as parse-contract]))
@@ -68,8 +67,8 @@
   "Categories that keep the store valid (v1: ok and benign_mutation)."
   #{:ok :reformatted})
 
-(defn- try-extract [descriptor text]
-  (try {:payload (extract/extract descriptor text)}
+(defn- try-extract [store doc descriptor text]
+  (try {:payload (tdocs/extract-doc store descriptor doc text)}
        (catch #?(:clj clojure.lang.ExceptionInfo :cljs ExceptionInfo) e {:error (ex-message e)})))
 
 (defn- action-of
@@ -129,8 +128,8 @@
   (let [host (:host store)
         content-ok (or (nil? (:path doc)) (and (some? text) (= (:fingerprint doc) (tdocs/fingerprint host text))))
         verified-text (if (and (:path doc) content-ok) (or text (:source doc)) (:source doc))
-        recorded (when (and descriptor verified-text) (try-extract descriptor verified-text))
-        on-disk (when (and descriptor text (not content-ok)) (try-extract descriptor text))
+        recorded (when (and descriptor verified-text) (try-extract store doc descriptor verified-text))
+        on-disk (when (and descriptor text (not content-ok)) (try-extract store doc descriptor text))
         ;; the recorded payload's hashes live in the anchor edge (format 3): the text is not stored,
         ;; so an edit is told apart from a reformatting by comparing hashes, not payloads
         on-disk-hash (when-let [p (:payload on-disk)] (tdocs/content-hash host p))
@@ -141,8 +140,9 @@
                   (let [rh (:recorded-field-hashes doc) now (tdocs/field-hashes host (:payload on-disk))]
                     (vec (sort (keep (fn [k] (when (not= (get rh k) (get now k)) k)) (distinct (concat (keys rh) (keys now)))))))
                   (vec (sort (keys (tdocs/changed-fields (or (:payload recorded) {}) (:payload on-disk))))))
-        noise-of (fn [t] (let [n (noise/structural-noise descriptor t {:related (keep :descriptor (map #(mstore/find-model store (:name %)) (mstore/models store)))})]
-                           (when (noise/noisy? n) n)))
+        noise-of (fn [t] (when-not (mstore/spec16? descriptor) ; a spec 16 class has no template to declare headings in (M1g)
+                           (let [n (noise/structural-noise descriptor t {:related (keep :descriptor (map #(mstore/find-model store (:name %)) (mstore/models store)))})]
+                           (when (noise/noisy? n) n))))
         noisy (fn [base n] [:noise (assoc base :noise n :undeclared (mapv :raw (:headings n)))])
         pc (parse-contract/compare-recorded host env (:parse-contract doc) (:model-id doc))
         contract-moved? (or (= :superseded (:state doc)) (= :changed (:status pc)))

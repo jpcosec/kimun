@@ -251,7 +251,24 @@
 
 (defn- open [opts {:keys [env cwd]}] (cli-store/open! (cli-store/resolve-store opts env cwd)))
 
-(defn- doc-data [d] (select-keys d [:name :qualified :model :model-version :state :path :tree :payload :error :source-hash :content-hash :field-hashes]))
+(defn- doc-data
+  "The document map as `docs` answers it. A document of a spec 16 class (M1g, `:spec16`)
+   also reports the exact class it was anchored under (`:class`, the address of its
+   descriptor) and the ancestors its selector was composed with (`:ancestors`); a v1
+   document answers exactly as before."
+  [d]
+  (cond-> (select-keys d [:name :qualified :model :model-version :state :path :tree :payload :error :source-hash :content-hash :field-hashes])
+    (:spec16 d) (assoc :class (:contract-id d) :ancestors (vec (:ancestors d)))))
+
+(defn- refuse-spec16-render!
+  "Raises `cli/usage` when `d` is a spec 16 class and `op` needs a renderer: generation
+   from a spec 16 descriptor is M2, so a document of such a class is tracked and
+   updated from its file only (M1g)."
+  [d op]
+  (when (mstore/spec16? d)
+    (err/raise :cli/usage (str "`docs " op "` renders the payload, and a spec 16 class (" (:model/name d) ") has no renderer yet (M2): "
+                               "write the file and use `docs track` / `docs update FILE`")
+               {:model (:model/name d)})))
 
 (defn- done
   "The envelope of a document write; `token` is the tree id of the document
@@ -303,6 +320,7 @@
         {:keys [backend descriptor store] store-path :path} opened
         payload (read-payload opts cwd)
         {model :name d :descriptor :as m} (linked/resolve-model opened home token)
+        _ (refuse-spec16-render! d "create")
         root (project-root store-path)
         path (relative-path root (fs/path (if alias root cwd) (or (:path opts) (str name ".md"))))
         text (str (mrender/render d payload (compose/context store store-path)) "\n")
@@ -334,7 +352,8 @@
         name (name-of opts p)
         {model :name d :descriptor :as m} (linked/resolve-model opened home token)
         _ (refuse-tracked! store name (relative-path (project-root store-path) p))
-        _ (when-not (:force opts)
+        _ (when-not (or (:force opts) (mstore/spec16? d))
+            ;; a spec 16 class has no template to render, so no round trip (and no noise check) applies: M1g
             ;; noise first: a dropped frontmatter key would otherwise surface as a bare round-trip failure
             (refuse-noise! model d name text)
             (let [again (mrender/render d (mextract/extract d text) (compose/context store store-path))]
@@ -367,14 +386,16 @@
         full (tdocs/document store (:tree doc))
         no-input? (and (not payload?) (not (get args 1)))
         stored (when (and no-input? (:path doc)) (second (read-file! (str (fs/path root (:path doc))) cwd)))
-        migrate? (and no-input? (= :superseded (:state doc)) (= (or stored (:source full)) (:source full)))
+        spec16? (mstore/spec16? current)
+        _ (when (and payload? spec16?) (refuse-spec16-render! current "update --data/--set"))
+        migrate? (and (not spec16?) no-input? (= :superseded (:state doc)) (= (or stored (:source full)) (:source full)))
         text (cond payload? (str (mrender/render current (merge (:payload full) (read-payload opts cwd))
                                                     (compose/context store store-path)) "\n")
                    (get args 1) (second (read-file! (get args 1) cwd))
                    migrate? (tdocs/move-text store full nil (compose/context store store-path))
                    stored stored
                    :else (err/raise :cli/usage "`docs update` needs a FILE, --data or --set for a document without a file" {}))
-        _ (refuse-noise! (:model doc) (or current {}) (:name doc) text)
+        _ (when-not spec16? (refuse-noise! (:model doc) (or current {}) (:name doc) text))
         {:keys [plan unchanged?]} (tdocs/update-plan host/host store (:tree doc) text
                                                      {:mint mint-unit :actor (:actor opts) :timestamp (timestamp)})
         r (if plan (store/commit! backend store plan) {:store store :revision-id (:head store)})
@@ -438,7 +459,8 @@
                  :data {:name (:name d) :tree (:tree d) :path path :blocks blocks
                         :class (:class d) :anchor anchor :unchanged? (boolean unchanged?)}})
               ;; the same refusal `docs update` makes: nothing is committed for a noisy file
-              (let [_ (refuse-noise! (:model d) (or (:descriptor (mstore/model store (:model d))) {}) (:name d) text)
+              (let [_ (let [md (or (:descriptor (mstore/model store (:model d))) {})]
+                        (when-not (mstore/spec16? md) (refuse-noise! (:model d) md (:name d) text)))
                     {:keys [plan unchanged?]} (tdocs/update-plan host/host store (:tree d) text opts*)
                     r (if plan (store/commit! backend store plan) {:store store :revision-id (:head store)})]
                 {:revision-id (:revision-id r) :store (:store r)

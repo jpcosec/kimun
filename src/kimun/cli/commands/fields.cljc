@@ -167,6 +167,10 @@
           mopts (cond-> {:create? create? :dedupe (flag opts :dedupe sub) :drop-empty (flag opts :drop-empty sub)}
                   value? (assoc :raw raw :value (parse-value raw sub)))
           [full d] (readable store doc)
+          _ (when (mstore/spec16? d)
+              (err/raise :cli/usage (str "`fields " sub "` renders the document, and a spec 16 class (" (:model full)
+                                         ") has no renderer yet (M2): edit the file and use `docs update`")
+                         {:group "fields" :subcommand sub :model (:model full)}))
           m (fields/mutate d (:payload full) op path mopts)
           command (:operation m)
           base {:doc (:name full) :model (:model full) :address (address full) :file (:path full)}

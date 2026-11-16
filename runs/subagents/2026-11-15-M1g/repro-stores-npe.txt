@@ -1,0 +1,27 @@
+["stores" "sense" "--once"] => FAIL cli/unexpected | {:type "cli/unexpected", :message "class java.lang.NullPointerException", :data {}}
+["stores" "health"] => FAIL cli/unexpected | {:type "cli/unexpected", :message "class java.lang.NullPointerException", :data {}}
+["stores" "check"] => FAIL cli/unexpected | {:type "cli/unexpected", :message "class java.lang.NullPointerException", :data {}}
+["stores" "verify"] => OK | {:checked 25, :bad [], :routes {:complete? true, :routes-available? true, :routes-root "364394f181e83121cd841e6af85d39a6b7f1cdeb2a
+["stores" "update"] => FAIL cli/unexpected | {:type "cli/unexpected", :message "class java.lang.NullPointerException", :data {}}
+{"kind":"started","schema":"kimun.heartbeat/1","at":"2026-11-16T00:21:58.164Z","store":{"name":"p","path":"/tmp/kimun-adhoc-1936235945714905691/kimun-m1g-14327524031270638245/.kimun"},"interval-ms":30000,"beats":1}
+{"kind":"error","seq":1,"at":"2026-11-16T00:21:58.169Z","error":{"type":"cli/unexpected","message":"class java.lang.NullPointerException","data":{}},"consecutive-errors":1,"elapsed-ms":5}
+{"kind":"stopped","at":"2026-11-16T00:21:58.169Z","reason":"beats","beats":1,"errors":1}
+["stores" "heartbeat" "--beats" "1"] => OK | {:reason :beats, :beats 1, :errors 1}
+["find" "Hello"] => FAIL cli/unexpected | {:type "cli/unexpected", :message "class java.lang.NullPointerException", :data {}}
+["index"] => FAIL eval/not-available | {:type "eval/not-available", :message "the evaluator surface (kimun index) arrives in milestone S4; known groups: adapters, corpus
+["index" "build"] => FAIL eval/not-available | {:type "eval/not-available", :message "the evaluator surface (kimun index build) arrives in milestone S4; known groups: adapters, 
+["fields" "get" "r" "title"] => OK | {:doc "r", :model "ReportDoc", :address "ReportDoc:r", :field "title", :path "title", :value "Hello", :owning_section nil}
+["fields" "set" "r" "title=X"] => FAIL cli/usage | {:type "cli/usage", :message "`fields set` needs a VALUE (JSON or YAML)", :data {:group "fields", :subcommand "set"}}
+["fields" "list" "r"] => FAIL cli/usage | {:type "cli/usage", :message "unknown subcommand `fields list`; expected one of: append, clean, clear, create, get, query, remove,
+["sections" "list" "r"] => OK | {:document "r", :model "ReportDoc", :path "r.md", :sections [{:path "hello", :slug "hello", :line_end 5, :title "Hello", :level 1,
+["sections" "fields" "r" "summary"] => FAIL cli/unexpected | {:type "cli/unexpected", :message "class java.lang.NullPointerException", :data {}}
+["docs" "anchors" "r"] => OK | {:name "r", :tree "01M7GVPT6K7KRMWS361RZG13J8", :path "r.md", :parse-contract {:contract/version 1, :parser ["kimun.surface.markdo
+["docs" "marks" "r"] => OK | {:name "r", :tree "01M7GVPT6K7KRMWS361RZG13J8", :path "r.md", :parse-contract {:contract/version 1, :parser ["kimun.surface.markdo
+["journal" "show"] => OK | [{:address "ReportDoc:r", :revision "c23e38aeab8eaef61e608b6398257397106d149069d7d3c6a2e2d415abbb7b20", :fields {"summary" {:befor
+["docs" "create" "ReportDoc" "z" "--set" "title=a"] => FAIL cli/usage | {:type "cli/usage", :message "`docs create` renders the payload, and a spec 16 class (ReportDoc) has no renderer yet (M2): write t
+["docs" "list"] => OK | [{:name "r", :qualified "r.md", :tree "01M7GVPT6K7KRMWS361RZG13J8", :root "9c6ecfa16e702a005f10044bc7f06c64d547d1eb58e70cf6fc25cd4
+["docs" "show" "r"] => OK | {:path "r.md", :markdown "# Hello\n\n## Summary\n\nThe summary.\n", :qualified "r.md", :tree "01M7GVPT6K7KRMWS361RZG13J8", :payloa
+["docs" "status"] => OK | [{:name "r", :path "r.md", :status :ok}]
+["models" "check"] => OK | {:ok true, :models [{:name "BaseDoc", :ok true, :errors []} {:name "ReportDoc", :ok true, :errors [], :documents 1}]}
+["models" "define" "-f" "/tmp/kimun-adhoc-1936235945714905691/kimun-m1g-14327524031270638245/BaseDoc.edn"] => OK | {:name "BaseDoc", :version 1, :id "be7f68b61d962405c311738df7b07f76737bbd3fab9c3df4f14ec98e5fffdf2e", :created? false, :unchanged?
+["include" "build"] => FAIL include/invalid | {:type "include/invalid", :message "not inside a git repository: /tmp/kimun-adhoc-1936235945714905691/kimun-m1g-143275240312706382

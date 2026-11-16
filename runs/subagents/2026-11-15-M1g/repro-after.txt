@@ -1,0 +1,27 @@
+["stores" "sense" "--once"] => OK | {:mode :once, :observed-at "2026-11-16T00:23:08.133Z", :tracked 1, :valid true, :signals [], :counts {:total 0, :by-type {}, :by-s
+["stores" "health"] => OK | {:status :ok, :findings [], :actions [], :next nil, :summary "PASS: store integrity — 1 documents in 2 models"}
+["stores" "check"] => OK | {:path "/tmp/kimun-adhoc-17876062991293345516/kimun-m1g-17018048125578933977/.kimun", :routes-schema 2, :routes-missing [], :route
+["stores" "verify"] => OK | {:checked 25, :bad [], :routes {:complete? true, :routes-available? true, :routes-root "364394f181e83121cd841e6af85d39a6b7f1cdeb2a
+["stores" "update"] => OK | {:updated [], :skipped [], :status :ok}
+{"kind":"started","schema":"kimun.heartbeat/1","at":"2026-11-16T00:23:08.179Z","store":{"name":"p","path":"/tmp/kimun-adhoc-17876062991293345516/kimun-m1g-17018048125578933977/.kimun"},"interval-ms":3
+{"kind":"beat","seq":1,"store":{"name":"p","path":"/tmp/kimun-adhoc-17876062991293345516/kimun-m1g-17018048125578933977/.kimun"},"revision":"dea4e068464af917d997a9531a98c35d3811ecc5c1eadbeba20ff6c8e01
+{"kind":"stopped","at":"2026-11-16T00:23:08.191Z","reason":"beats","beats":1,"errors":0}
+["stores" "heartbeat" "--beats" "1"] => OK | {:reason :beats, :beats 1, :errors 0}
+["find" "Hello"] => OK | [{:path "r.md", :tags ["representation.markdown" "source.document.markdown"], :tree "01M7GVRYJ4TZ0EK008GRBW7FF5", :store "p", :nam
+["index"] => FAIL eval/not-available | {:type "eval/not-available", :message "the evaluator surface (kimun index) arrives in milestone S4; known groups: adapters, corpus
+["index" "build"] => FAIL eval/not-available | {:type "eval/not-available", :message "the evaluator surface (kimun index build) arrives in milestone S4; known groups: adapters, 
+["fields" "get" "r" "title"] => OK | {:doc "r", :model "ReportDoc", :address "ReportDoc:r", :field "title", :path "title", :value "Hello", :owning_section nil}
+["fields" "set" "r" "title=X"] => FAIL cli/usage | {:type "cli/usage", :message "`fields set` needs a VALUE (JSON or YAML)", :data {:group "fields", :subcommand "set"}}
+["fields" "list" "r"] => FAIL cli/usage | {:type "cli/usage", :message "unknown subcommand `fields list`; expected one of: append, clean, clear, create, get, query, remove,
+["sections" "list" "r"] => OK | {:document "r", :model "ReportDoc", :path "r.md", :sections [{:path "hello", :slug "hello", :line_end 5, :title "Hello", :level 1,
+["sections" "fields" "r" "summary"] => FAIL cli/usage | {:type "cli/usage", :message "`sections fields` reads the template of the model, and a spec 16 class (ReportDoc) has none: its fie
+["docs" "anchors" "r"] => OK | {:name "r", :tree "01M7GVRYJ4TZ0EK008GRBW7FF5", :path "r.md", :parse-contract {:contract/version 1, :parser ["kimun.surface.markdo
+["docs" "marks" "r"] => OK | {:name "r", :tree "01M7GVRYJ4TZ0EK008GRBW7FF5", :path "r.md", :parse-contract {:contract/version 1, :parser ["kimun.surface.markdo
+["journal" "show"] => OK | [{:address "ReportDoc:r", :revision "dea4e068464af917d997a9531a98c35d3811ecc5c1eadbeba20ff6c8e01506e6", :fields {"summary" {:befor
+["docs" "create" "ReportDoc" "z" "--set" "title=a"] => FAIL cli/usage | {:type "cli/usage", :message "`docs create` renders the payload, and a spec 16 class (ReportDoc) has no renderer yet (M2): write
+["docs" "list"] => OK | [{:name "r", :qualified "r.md", :tree "01M7GVRYJ4TZ0EK008GRBW7FF5", :root "9e0e2a25f271c2f650a239f3577a9921582da5c6574695be221669e
+["docs" "show" "r"] => OK | {:path "r.md", :markdown "# Hello\n\n## Summary\n\nThe summary.\n", :qualified "r.md", :tree "01M7GVRYJ4TZ0EK008GRBW7FF5", :payloa
+["docs" "status"] => OK | [{:name "r", :path "r.md", :status :ok}]
+["models" "check"] => OK | {:ok true, :models [{:name "BaseDoc", :ok true, :errors []} {:name "ReportDoc", :ok true, :errors [], :documents 1}]}
+["models" "define" "-f" "/tmp/kimun-adhoc-17876062991293345516/kimun-m1g-17018048125578933977/BaseDoc.edn"] => OK | {:name "BaseDoc", :version 1, :id "be7f68b61d962405c311738df7b07f76737bbd3fab9c3df4f
+["include" "build"] => FAIL include/invalid | {:type "include/invalid", :message "not inside a git repository: /tmp/kimun-adhoc-17876062991293345516/kimun-m1g-17018048125578933

@@ -1,0 +1,13 @@
+A: src/ HEAD (28 fallos en 6 de las pruebas iniciales; guardia v1 pasa)
+      1 28 failures, 0 errors.
+      4 FAIL in (a-document-extracts-own-and-inherited-fields) (/tmp/kimun-m1g-wt/test/kimun/cli/spec16_docs_test.cljc:68)
+      3 FAIL in (an-unselected-paragraph-moves-neither-the-hash-nor-the-route) (/tmp/kimun-m1g-wt/test/kimun/cli/spec16_docs_test.cljc:118)
+      6 FAIL in (an-update-after-redefining-the-parent-reanchors-the-child) (/tmp/kimun-m1g-wt/test/kimun/cli/spec16_docs_test.cljc:103)
+      7 FAIL in (editing-the-parent-does-not-change-an-anchored-child-silently) (/tmp/kimun-m1g-wt/test/kimun/cli/spec16_docs_test.cljc:86)
+      5 FAIL in (show-reports-the-exact-class-of-a-spec16-document) (/tmp/kimun-m1g-wt/test/kimun/cli/spec16_docs_test.cljc:151)
+      3 FAIL in (the-compat-mode-of-the-class-decides-how-it-extracts) (/tmp/kimun-m1g-wt/test/kimun/cli/spec16_docs_test.cljc:75)
+B: chain-moved? siempre falso: falla editing-the-parent...
+C (ampliacion): diagnostics.cljc, index/build.cljc, fields.cljc, sections.cljc a HEAD:
+      1 13 failures, 0 errors.
+     13 FAIL in (readers-and-sensors-answer-on-a-store-with-a-spec16-document) (/tmp/kimun-m1g-wt/test/kimun/cli/spec16_docs_test.cljc:162)
+src restaurado cada vez (diff -r vacio, sin git stash)

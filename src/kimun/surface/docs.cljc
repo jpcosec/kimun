@@ -51,7 +51,10 @@
             [clojure.string :as str]
             [kimun.host.store-cache :as store-cache]
             [kimun.surface.parse-contract :as parse-contract]
+            [kimun.surface.models.descriptor :as descriptor]
             [kimun.surface.models.extract :as extract]
+            [kimun.surface.models.selector :as selector]
+            [kimun.surface.models.subgraph :as subgraph]
             [kimun.surface.models.render :as render]
             [kimun.surface.models.store :as mstore]
             [kimun.kernel.canon :as canon]
@@ -172,6 +175,58 @@
   [store e]
   (let [n (target store e)] (or (model-node? n) (source-or-file? n))))
 
+;; ---------------------------------------------------------------- classes of spec 16 (M1g)
+;; [inf] team inference, not in the spec text: a document of a spec 16 class is anchored under an
+;; EXACT chain of revisions (the descriptor of its class, in `:contract`, plus the descriptors of the
+;; ancestors its selector was composed with, in `:ancestors`, both in the evidence of its anchor edge).
+;; docs/v2/16 §4.3 says a changed class is another class and that a classified document keeps the exact
+;; class it was anchored with; `:base` is a NAME, so the ancestors are pinned here, by address.
+
+(defn- current-lineage
+  "The ancestors of spec 16 model entry `m` as the models now defined,
+   ancestor-first: `[{:name :id :descriptor …}]` (entries of `mstore/models`).
+   Raises `:models/invalid` on a cycle, a missing base, or a base that is not
+   a spec 16 class [inf]: a v1 template has no selector to compose."
+  [store m]
+  (let [entries (mstore/models store)
+        by-name (into {} (map (juxt :name identity)) entries)
+        names (subgraph/ancestors-of (subgraph/index-models (map :descriptor entries)) (:name m))]
+    (mapv (fn [n]
+            (let [e (by-name n)]
+              (when-not (mstore/spec16? (:descriptor e))
+                (err/raise :models/invalid
+                           (str "model `" (:name m) "` inherits from `" n "`, which is not a spec 16 class: a v1 template has no selector to compose")
+                           {:model (:name m) :base n}))
+              e))
+          names)))
+
+(defn- chain-moved?
+  "True when the ancestors recorded for a document (`recorded`, ids, ancestor-first)
+   are no longer those of its class `entry` under the models now defined. Only
+   a document anchored with ancestors can move this way; a v1 document, or a
+   class without bases, never does."
+  [current entry recorded]
+  (and (seq recorded)
+       (not= (vec recorded)
+             (try (let [by-name (into {} (map (juxt :name identity)) current)
+                        idx (subgraph/index-models (map :descriptor current))]
+                    (mapv (comp :id by-name) (subgraph/ancestors-of idx (:name entry))))
+                  (catch #?(:clj clojure.lang.ExceptionInfo :cljs ExceptionInfo) _ ::unresolved)))))
+
+(defn extract-under
+  "The typed payload of Markdown `text` under class descriptor `d`. A v1
+   descriptor (`:template`) goes through `extract/extract`, unchanged. A spec 16
+   one is extracted with the COMPOSED selector and fields of `d` and its
+   `ancestors` (descriptors, ancestor-first; docs/v2/16 §4.2), in the
+   `:substrate :compat` mode the class declares (§3)."
+  [d ancestors text]
+  (if (mstore/spec16? d)
+    (let [nm (:model/name d)
+          idx (subgraph/index-models (conj (vec ancestors) d))]
+      (descriptor/finalize {:model/name nm :fields (subgraph/compose-fields idx nm)}
+                           (selector/extract-selector (subgraph/compose-selector idx nm) text (get-in d [:substrate :compat]))))
+    (extract/extract d text)))
+
 (defn- describe
   "The document map of the `:document` tree `[tid t]`, or nil when its root is
    not a typed-document root or it has been untracked. `:contract-id` is the
@@ -195,6 +250,7 @@
          :model (or (:name entry) (some-> any :content :blob edn/read-string :model/name))
          :model-version (:version entry) :model-id (:id entry)
          :contract-id (get-in (anchor-edge store es) [:evidence :contract])
+         :ancestors (get-in (anchor-edge store es) [:evidence :ancestors])
          :parse-contract (get-in (anchor-edge store es) [:evidence :parse-contract])
          :inline (boolean (some #(stored-source? (target store %)) es))
          :recorded-content-hash (or (get-in (anchor-edge store es) [:evidence :content-hash])
@@ -205,7 +261,10 @@
          :units (get-in d [:units])
          :marks (get-in d [:marks])
          :merkle-root (second (revision/tree-entry store tid))
-         :state (cond (nil? entry) :orphan (contains? extracted (:id entry)) :intact :else :superseded)
+         :state (cond (nil? entry) :orphan
+                      (not (contains? extracted (:id entry))) :superseded
+                      (chain-moved? current entry (get-in (anchor-edge store es) [:evidence :ancestors])) :superseded
+                      :else :intact)
          :path path :qualified (or (qualified-path (:host store) path) (get-in t [:descriptor :name]))
          :fingerprint (get-in ext [:content :fingerprint])
          :source (source-of (:host store) store tid es path (get-in ext [:content :fingerprint])) :edges (mapv :id es)}))))
@@ -329,6 +388,25 @@
   [store doc]
   (when-let [id (:contract-id doc)] (mstore/descriptor-by-id store id)))
 
+(defn- recorded-ancestors
+  "Descriptors of the ancestors `doc` was anchored with (its recorded
+   `:ancestors`, still in the CAS after a redefinition), ancestor-first. For a
+   spec 16 class with bases but no record, the ancestors now defined."
+  [store d doc]
+  (cond (not (mstore/spec16? d)) []
+        (seq (:ancestors doc)) (mapv #(mstore/descriptor-by-id store %) (:ancestors doc))
+        (seq (:base d)) (mapv :descriptor (current-lineage store {:name (:model/name d)}))
+        :else []))
+
+(defn extract-doc
+  "The typed payload of `text` under descriptor `d` read as document `doc` reads
+   it: a spec 16 class with the ancestors `doc` was anchored with
+   (`recorded-ancestors`), a v1 descriptor through `extract/extract`. Raises
+   what the extraction raises. This is the path every reader of a document's
+   text takes (`payload-of`, sensing, the index)."
+  [store d doc text]
+  (extract-under d (recorded-ancestors store d doc) text))
+
 (defn payload-of
   "`{:payload p}` of document `doc` extracted under the contract it was last
    written with (`contract-descriptor`, the model's current contract only when
@@ -339,7 +417,7 @@
               (some->> (:model doc) (mstore/find-model store) :descriptor))]
     (if-not d
       {:error (str "model `" (:model doc) "` is not defined")}
-      (try {:payload (extract/extract d (:source doc))}
+      (try {:payload (extract-doc store d doc (:source doc))}
            (catch #?(:clj clojure.lang.ExceptionInfo :cljs ExceptionInfo) e {:error (ex-message e)})))))
 
 (defn unit-states
@@ -375,6 +453,7 @@
         _ (when (and (nil? (:source doc)) (:path doc)) (file-missing! doc))
         host (:host store) {:keys [payload] :as r} (payload-of store doc)]
     (cond-> (merge doc r {:source-hash (text-hash host (or (:source doc) ""))})
+      (mstore/spec16? (contract-descriptor store doc)) (assoc :spec16 true)
       payload (assoc :content-hash (content-hash host payload) :field-hashes (field-hashes host payload)))))
 
 (defn of-model "Tracked documents bound to model `name`." [store name] (filterv #(= name (:model %)) (documents store)))
@@ -628,7 +707,7 @@
    `:register-tree` op, which carries the document's `:route` entry when it
    has a file. No ownership edge and no block/text node enters the
    plan: that structure is recomputable from `archivo + clase`."
-  [host store {:keys [doc tree-id name text path class content-hash actor units marks]}]
+  [host store {:keys [doc tree-id name text path class content-hash actor units marks ancestors]}]
   (let [a (assoc-in (ast/parse host text) [:attrs :doc] doc)
         reg (assoc (md/ast->tree host a {:tree-id tree-id :name name :class class :content-hash content-hash
                                         :units units :marks marks})
@@ -637,8 +716,9 @@
         ext (when path (external-node host path text))
         xid (when ext (id-of host ext))
         ext-ref (when ext {:type :reference :from root :to xid
-                           :evidence {:ref-hash xid :actor actor :contract class
-                                      :parse-contract (parse-contract/record host (parse-contract/environment) class)}})
+                           :evidence (cond-> {:ref-hash xid :actor actor :contract class
+                                               :parse-contract (parse-contract/record host (parse-contract/environment) class)}
+                                        (seq ancestors) (assoc :ancestors (vec ancestors)))})
         wanted (cond-> [{:type :reference :from root :to class :evidence {:ref-hash class :actor actor}}
                         {:type :derived :from root :to class
                          :evidence {:ref-hash class :engine "kimun.surface.models" :version "1"}}]
@@ -686,7 +766,7 @@
    edge, so the document carries its own text (docs/v2/14 §10: `:content
    :inline`); by reference (default) no source sign is written and the text is
    read from the file."
-  [host store root {:keys [model-id text path actor content-hash inline?]} old]
+  [host store root {:keys [model-id text path actor content-hash inline? ancestors]} old]
   (let [src (when inline? {:class :sign :kind :opaque :content {:format source-format :blob text}})
         sid (when src (id-of host src))
         ext (when path (external-node host path text)) xid (when ext (id-of host ext))
@@ -694,7 +774,8 @@
         ;; descriptor of a cached document, not in the edge evidence; the field
         ;; hashes are gone (readers recompute them from the payload when needed)
         marks (cond-> {:contract model-id :parse-contract (parse-contract/record host (parse-contract/environment) model-id)}
-                content-hash (assoc :content-hash content-hash))
+                content-hash (assoc :content-hash content-hash)
+                (seq ancestors) (assoc :ancestors (vec ancestors)))
         ext-ref (when ext {:type :reference :from root :to xid
                            :evidence (merge {:ref-hash xid :actor actor} marks)})
         wanted (cond-> [{:type :reference :from root :to model-id
@@ -747,7 +828,9 @@
   (refuse-collision! store name path)
   (when (and path (not= :allow shared-path)) (refuse-routed! store path nil))
   (let [m (require-model store model)
-        payload (extract/extract (:descriptor m) text)
+        lineage (when (mstore/spec16? (:descriptor m)) (current-lineage store m))
+        ancestors (not-empty (mapv :id lineage))
+        payload (extract-under (:descriptor m) (map :descriptor lineage) text)
         ch (content-hash host payload)
         inline? (or inline (= :inline (:content store)))
         cached? (and path (not inline?) (not (revision/legacy? store)))
@@ -758,6 +841,7 @@
         ops (if cached?
               (let [{:keys [reg ops]} (registry-ops host store {:doc doc :tree-id tree-id :name name :text text
                                                                  :path path :class (:id m) :content-hash ch :actor actor
+                                                                 :ancestors ancestors
                                                                  :units field-units :marks (when (seq marks) marks)} nil)]
                 (cache-write! store reg {:fingerprint (fingerprint host text) :class (:id m)})
                 ops)
@@ -765,6 +849,7 @@
                     root (:id (root-node host doc))
                     base (md/ast->plan host a {:tree-id tree-id :name name :actor actor :timestamp timestamp :base (:head store)})]
                 (into (:ops base) (binding-ops host store root {:model-id (:id m) :text text :path path :actor actor
+                                                                :ancestors ancestors
                                                                 :content-hash ch :inline? inline?} nil))))]
     {:name name :tree tree-id :payload payload
      :plan {:plan/version 1 :base (:head store) :actor actor :timestamp timestamp :engines engines :ops (vec ops)}}))
@@ -792,7 +877,9 @@
   [host store token text {:keys [path actor timestamp operation inline declared mint marks] :as opts-map}]
   (let [doc (document store token)
         m (require-model store (:model doc))
-        payload (extract/extract (:descriptor m) text)
+        lineage (when (mstore/spec16? (:descriptor m)) (current-lineage store m))
+        ancestors (not-empty (mapv :id lineage))
+        payload (extract-under (:descriptor m) (map :descriptor lineage) text)
         path (or path (:path doc))
         ch (content-hash host payload)
         inline? (or inline (:inline doc))
@@ -832,6 +919,7 @@
     (if cached?
       (let [{:keys [reg ops]} (registry-ops host store {:doc (:doc doc) :tree-id (:tree doc) :name (:name doc)
                                                          :text text :path path :class (:id m) :content-hash ch :actor actor
+                                                         :ancestors ancestors
                                                          :units field-units :marks field-marks}
                                              doc)
             same? (and base-same?
@@ -852,6 +940,7 @@
                  (-> base
                      (assoc :engines engines)
                      (update :ops into (binding-ops host store (:root doc) {:model-id (:id m) :text text :path path :actor actor
+                                                                            :ancestors ancestors
                                                                             :content-hash ch :inline? inline?} doc))))}))))
 
 ;; ---------------------------------------------------------------- generic documents (K3)

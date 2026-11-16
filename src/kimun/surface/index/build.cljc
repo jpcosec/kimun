@@ -10,7 +10,6 @@
    numbers, vectors, maps and sets only). `kimun.surface.index.cache` is the
    only place that reads or writes it on disk."
   (:require [kimun.surface.docs :as tdocs]
-            [kimun.surface.models.extract :as extract]
             [kimun.surface.models.segments :as segments]
             [kimun.surface.models.store :as mstore]
             [kimun.surface.semantic :as sem]))
@@ -46,15 +45,15 @@
 (defn- extraction
   "`{:payload p}` of `source` under `descriptor`, or `{:error message}` when
    the model is gone or the source no longer extracts (never raises)."
-  [descriptor model source]
+  [store doc descriptor model source]
   (if-not descriptor
     {:error (str "model `" model "` is not defined")}
-    (try {:payload (extract/extract descriptor source)}
+    (try {:payload (tdocs/extract-doc store descriptor doc source)}
          (catch #?(:clj Exception :cljs :default) e {:error (or (ex-message e) (str e))}))))
 
 (defn- doc-entry [store host bases models d]
   (let [descriptor (or (tdocs/contract-descriptor store d) (get bases (:model d)))
-        {:keys [payload error]} (extraction descriptor (:model d) (:source d))
+        {:keys [payload error]} (extraction store d descriptor (:model d) (:source d))
         base {:tree (:tree d) :doc (:doc d) :name (:name d) :model (:model d)
               :model-version (:model-version d)
               :bases (get-in models [(:model d) :base] [])
@@ -84,7 +83,7 @@
 
 (defn- model-sections [descriptor]
   (let [ss (vec (segments/sections (or (:template descriptor) "")))]
-    {:sections ss :owners (into (sorted-map) (segments/field-owners descriptor ss))}))
+    {:sections ss :owners (into (sorted-map) (segments/field-owners (update descriptor :template #(or % "")) ss))}))
 
 (defn build
   "The index of the opened kernel `store` (what `kimun.kernel.store/open`

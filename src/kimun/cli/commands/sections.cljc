@@ -105,6 +105,10 @@
     (when-not (:payload doc)
       (err/raise :sections/unreadable (str "the source of `" (:name d) "` no longer extracts: " (:error doc)) {:document (:name d)}))
     (let [descriptor (or (tdocs/contract-descriptor store doc) (:descriptor model))
+          _ (when (mstore/spec16? descriptor)
+              (err/raise :cli/usage (str "`sections fields` reads the template of the model, and a spec 16 class (" (:model d)
+                                         ") has none: its fields come from a selector (M1g does not map them to sections)")
+                         {:group "sections" :subcommand "fields" :model (:model d)}))
           rows (sections/fields-of descriptor (:source d) (:payload doc) (:path sec))]
       (non-empty! "fields in that section" rows {:document (:name d) :section (:path sec)})
       (out/ok "sections fields" {:store (store-ref o) :revision (:head store)
