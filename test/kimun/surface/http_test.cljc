@@ -180,15 +180,17 @@
   (is (nil? (h/resolve-token nil {})))
   (is (= token (h/resolve-token nil {"KIMUN_SERVE_TOKEN" token})))
   (is (= "flag-wins" (h/resolve-token "flag-wins" {"KIMUN_SERVE_TOKEN" token})))
-  (is (nil? (h/resolve-token nil {"KIMUN_SERVE_TOKEN" ""}))))
+  ;; an empty token is a usage error, never "auth off" (serve-seguro)
+  (doseq [[flag e] [["" {}] ["" {"KIMUN_SERVE_TOKEN" token}] [nil {"KIMUN_SERVE_TOKEN" ""}]]]
+    (is (= :cli/usage (:type (ex-data (try (h/resolve-token flag e) (catch Exception x x))))) (pr-str flag e))))
 
 ;; ------------------------------------------------------------------ CORS
 
 (deftest cors-headers-when-enabled-and-404-preflight-when-not
   ;; v1: handle_options / handle_cors_headers
-  (with-server {:cors? true}
+  (with-server {:cors? true :token token}
     (fn [base _]
-      (let [r (req :get (str base "/health"))]
+      (let [r (req :get (str base "/health") token nil)]
         (is (= "*" (get-in r [:headers "access-control-allow-origin"])))
         (is (= "GET, POST, OPTIONS" (get-in r [:headers "access-control-allow-methods"])))
         (is (str/includes? (get-in r [:headers "access-control-allow-headers"]) "Authorization")))))
@@ -230,7 +232,7 @@
            (argv {:request-method :get :uri "/graph/cycles" :query-string "limit=3"})))
     (is (= ["docs" "render" "my doc" "--store" "/s" "--format" "json"]
            (argv {:request-method :get :uri "/docs/render" :query-string "name=my%20doc"})))
-    (is (= ["docs" "ingest"] (take 2 (argv {:request-method :post :uri "/docs/ingest" :body "{\"name\":\"n\",\"markdown\":\"# t\"}"}))))))
+    (is (= ["docs" "ingest"] (take 2 (argv {:request-method :post :uri "/docs/ingest" :headers {"content-type" "application/json"} :body "{\"name\":\"n\",\"markdown\":\"# t\"}"}))))))
 
 (deftest handler-auth-and-errors-without-a-socket
   (let [cfg {:run stub-run :token token}]
@@ -239,7 +241,7 @@
     (is (= 401 (:status (call h/routes cfg {:request-method :get :uri "/stores" :headers {"authorization" token}}))) "scheme required")
     (is (= 204 (:status (call h/routes (assoc cfg :cors? true) {:request-method :options :uri "/stores"}))))
     (is (= 405 (:status (call h/routes {} {:request-method :delete :uri "/stores"}))))
-    (is (= 400 (:status (call h/routes {:run stub-run} {:request-method :post :uri "/docs/ingest" :body "nope"}))))))
+    (is (= 400 (:status (call h/routes {:run stub-run} {:request-method :post :uri "/docs/ingest" :headers {"content-type" "application/json"} :body "nope"}))))))
 
 ;; ------------------------------------------------------------ the serve group
 

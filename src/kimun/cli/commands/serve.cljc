@@ -11,9 +11,9 @@
 (def spec
   "Options of the `serve` group (babashka.cli spec, merged by `kimun.cli.main`)."
   {:port {:ref "N" :desc "TCP port (default 8787; 0 picks a free one)"}
-   :host {:ref "HOST" :desc "Address to bind (default 127.0.0.1)"}
-   :token {:ref "TOKEN" :desc "Require `Authorization: Bearer TOKEN` (else $KIMUN_SERVE_TOKEN; none = open)"}
-   :cors {:desc "Send CORS headers and answer the OPTIONS preflight" :coerce :boolean}})
+   :host {:ref "HOST" :desc "Address to bind (default 127.0.0.1; a non-loopback host needs a token)"}
+   :token {:ref "TOKEN" :desc "Require `Authorization: Bearer TOKEN` (else $KIMUN_SERVE_TOKEN; none = loopback only; empty is an error)"}
+   :cors {:desc "Send CORS headers and answer the OPTIONS preflight (needs a token)" :coerce :boolean}})
 
 (defn- parse-port [v]
   (if (nil? v)
@@ -26,7 +26,8 @@
 (defn start
   "`serve [start] [--port N] [--host H] [--token T] [--cors]`: starts the server
    for the store of `opts`/`ctx`, prints one banner line to stderr-free stdout
-   and blocks until interrupted."
+   and blocks until interrupted. Refuses to start (`cli/usage`) with an empty
+   token, a non-loopback `--host` without a token, or `--cors` without a token."
   [_args opts {:keys [env cwd]}]
   (let [port (parse-port (:port opts))
         token (http/resolve-token (:token opts) env)

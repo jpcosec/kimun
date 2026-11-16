@@ -47,3 +47,12 @@
                            body (-> (assoc :body (if (string? body) body (json/generate-string body)))
                                     (assoc-in [:headers "Content-Type"] "application/json"))))]
      (assoc r :json (when-not (str/blank? (:body r)) (try (json/parse-string (:body r) true) (catch Exception _ nil)))))))
+
+(defn req*
+  "An HTTP request with explicit `headers` (a map) and a raw string `body`;
+   returns the response with the parsed JSON body as `:json`."
+  ([method url headers] (req* method url headers nil))
+  ([method url headers body]
+   (let [r (http/request (cond-> {:method method :uri url :throw false :headers headers}
+                           body (assoc :body body)))]
+     (assoc r :json (when-not (str/blank? (:body r)) (try (json/parse-string (:body r) true) (catch Exception _ nil)))))))

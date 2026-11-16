@@ -176,7 +176,10 @@
                       :action "run: kimun stores verify"})})))
 
 (def routes
-  "The routing table: a vector of `{:method :path :write? :handler}`."
+  "The routing table: a vector of `{:method :path :write? :paths :handler}`.
+   `:paths` lists the parameters (body or query) that name a file of the
+   project; `kimun.surface.http.guard/check-inputs` confines them (and, on a
+   `:write?` route, every document/model name) before the handler runs."
   [{:method :get :path "/health" :handler health}
    {:method :get :path "/stores" :handler (command-route ["stores" "show"])}
    {:method :get :path "/stores/check" :handler (command-route ["stores" "check"])}
@@ -192,9 +195,9 @@
    {:method :get :path "/docs" :handler (command-route ["docs" "list"] :query {:model "--model"})}
    {:method :get :path "/docs/render" :handler (command-route ["docs" "render"] :positional [:name] :required [:name])}
    {:method :post :path "/docs/ingest" :write? true :handler ingest}
-   {:method :post :path "/docs" :write? true :handler create}
-   {:method :post :path "/docs/create" :write? true :handler create}
-   {:method :post :path "/docs/track" :write? true :handler track}
+   {:method :post :path "/docs" :write? true :paths [:path] :handler create}
+   {:method :post :path "/docs/create" :write? true :paths [:path] :handler create}
+   {:method :post :path "/docs/track" :write? true :paths [:path] :handler track}
    {:method :post :path "/docs/untrack" :write? true :handler untrack}
    {:method :get :path "/document" :handler (document false)}
    {:method :get :path "/document/ir" :handler (document true)}

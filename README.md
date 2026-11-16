@@ -21,7 +21,7 @@ back toward the direction above (the deletion cuts are in progress):
 
 - A content-addressed store `.kimun/`, with Markdown documents parsed (tree-sitter pod),
   anchored and rendered; typed documents, fields and sections, marks on units, an index,
-  `find`, edges and a graph view, semantic tags, and an HTTP `serve` and an MCP server over stdio (`kimun mcp`: the `declare` and read-only `stores` commands as tools).
+  `find`, edges and a graph view, semantic tags, an HTTP `serve` (loopback by default; paths confined to the project; a token is required off loopback or with `--cors`) and an MCP server over stdio (`kimun mcp`: the `declare` and read-only `stores` commands as tools).
 - Not there yet: declarations as Clojure that runs, relations as nodes, several classes per
   node, code nodes, a git-based sensor as the default, materialization from the graph, MCP.
   Parity with sldb v1 is suspended. The contextual `G` layer waits for owner decision `D-G`:

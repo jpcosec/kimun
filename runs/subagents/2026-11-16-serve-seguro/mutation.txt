@@ -1,0 +1,61 @@
+=== BASELINE (no mutation)
+      1 0 failures, 0 errors.
+      1 Ran 14 tests containing 133 assertions.
+=== MUTATION A: no confinement (check-inputs returns nil)
+      1 32 failures, 0 errors.
+      2 FAIL in (a-symlink-directory-cannot-be-written-through)
+     11 FAIL in (vector-2c-and-8-track-outside-or-through-a-symlink-is-refused)
+     10 FAIL in (vector-2d-save-names-with-separators-are-refused)
+      9 FAIL in (vectors-2a-2b-create-path-outside-is-refused)
+      1 Ran 14 tests containing 133 assertions.
+=== MUTATION A2: names may carry separators
+      1 10 failures, 0 errors.
+     10 FAIL in (vector-2d-save-names-with-separators-are-refused)
+      1 Ran 14 tests containing 133 assertions.
+=== MUTATION A3: symlinks are not followed
+      1 10 failures, 0 errors.
+      2 FAIL in (a-symlink-directory-cannot-be-written-through)
+      1 FAIL in (confine-resolves-against-the-real-root)
+      7 FAIL in (vector-2c-and-8-track-outside-or-through-a-symlink-is-refused)
+      1 Ran 14 tests containing 133 assertions.
+=== MUTATION A4: .git/.kimun segments allowed
+      1 4 failures, 0 errors.
+      1 FAIL in (confine-resolves-against-the-real-root)
+      3 FAIL in (vectors-2a-2b-create-path-outside-is-refused)
+      1 Ran 14 tests containing 133 assertions.
+=== MUTATION B: no token required off loopback
+      1 7 failures, 0 errors.
+      5 FAIL in (startup-needs-a-token-outside-loopback-and-for-cors)
+      2 FAIL in (the-serve-command-refuses-before-opening-any-socket)
+      1 Ran 14 tests containing 133 assertions.
+=== MUTATION B2: --cors without token allowed
+      1 2 failures, 0 errors.
+      1 FAIL in (startup-needs-a-token-outside-loopback-and-for-cors)
+      1 FAIL in (the-serve-command-refuses-before-opening-any-socket)
+      1 Ran 14 tests containing 133 assertions.
+=== MUTATION B3: empty token accepted by check-config!
+      1 1 failures, 0 errors.
+      1 FAIL in (startup-needs-a-token-outside-loopback-and-for-cors)
+      1 Ran 14 tests containing 133 assertions.
+=== MUTATION C: no Host check
+      1 11 failures, 0 errors.
+     11 FAIL in (vector-7c-a-foreign-host-is-refused-without-a-token)
+      1 Ran 14 tests containing 133 assertions.
+=== MUTATION D: no Origin check
+      1 16 failures, 0 errors.
+     15 FAIL in (vector-7b-a-foreign-origin-is-refused-for-reads-and-writes)
+      1 FAIL in (with-a-token-and-cors-the-origin-rule-relaxes-only-as-cors-did)
+      1 Ran 14 tests containing 133 assertions.
+=== MUTATION E: no Content-Type check
+      1 5 failures, 0 errors.
+      5 FAIL in (vector-7b-a-simple-form-post-is-refused-by-content-type)
+      1 Ran 14 tests containing 133 assertions.
+=== MUTATION F: token compared with = on a prefix (length-blind check lost)
+      1 3 failures, 0 errors.
+      3 FAIL in (token-comparison-is-exact-and-length-blind)
+      1 Ran 14 tests containing 133 assertions.
+=== MUTATION G: resolve-token: empty token means no auth again
+      1 3 failures, 0 errors.
+      3 FAIL in (the-serve-command-refuses-before-opening-any-socket)
+      1 Ran 14 tests containing 133 assertions.
+restored-identical

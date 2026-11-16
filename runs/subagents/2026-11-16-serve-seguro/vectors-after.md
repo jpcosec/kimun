@@ -1,0 +1,20 @@
+# serve-seguro · vectores de la auditoría S1 después del cambio
+
+Tests: `T` = `test/kimun/surface/http/serve_safe_test.cljc`, `S` = `test/kimun/surface/http/security_test.cljc` (preexistente), `H` = `test/kimun/surface/http_test.cljc`.
+
+| # | Vector | Estado | Cómo / prueba |
+|---|---|---|---|
+| 1 | Cuerpo enorme / costo del parser en `/docs/ingest` | **Abierto** | No es de confinamiento ni de token; el tope de 8 MB es de http-kit y el costo (82 s para 400 KB en una línea, con la cola de escritura bloqueada) es del parser. Cerrarlo exige elegir un tope y/o timeout (punto 4 de la fila `SERVE`, sin decidir) y cambia el contrato. No se tocó. Con token baja a gravedad baja; sin token lo acota que ahora solo entran peticiones loopback sin `Origin` ajeno |
+| 2a | `path` absoluto en `/docs/create` | **Cerrado** (1) | 400 `serve/path-outside-project`, árboles de proyecto y exterior idénticos: `T vectors-2a-2b-create-path-outside-is-refused` |
+| 2b | `path` con `..` en `/docs/create` | **Cerrado** (1) | mismo test (`../x`, `sub/../../x`) |
+| 2c | `path` fuera en `/docs/track` (lectura vía `/render`, `/document`) | **Cerrado** (1) | `T vector-2c-and-8-track-outside-or-through-a-symlink-is-refused` (absoluto y `..`); el texto exterior no se devuelve |
+| 2d | `id` con `..` en `/save` create | **Cerrado** (1) | `T vector-2d-save-names-with-separators-are-refused` (`../x`, `a/b`, `..\x`, `..`), y la misma regla en `/docs/ingest` |
+| 3 | `--host 0.0.0.0` sin token | **Cerrado** (2) | no arranca, `cli/usage` con la corrección: `T startup-needs-a-token-outside-loopback-and-for-cors`, `T the-serve-command-refuses-before-opening-any-socket` (sin abrir socket: `check-config!` corre antes de `run-server`) |
+| 4 | Token vacío (`--token ""`, `KIMUN_SERVE_TOKEN=`) | **Cerrado** (2) | `cli/usage`; el flag vacío ya no cae al entorno ni apaga la auth: `T the-serve-command-refuses…`, `H env-var-configures-the-token-when-the-flag-is-absent` (ajustado) |
+| 5 | Authorization mal formada | **Ya cerrado** (falla cerrado), sin cambio | `S only-the-bearer-scheme-with-the-exact-token-passes`. Quedan abiertos, sin riesgo: esquema sensible a mayúsculas y `Bearer tok ` con espacio final (200); no se cambió el contrato |
+| 6 | Timing del token | **Cerrado** | `constant-time=` compara los SHA-256 de ambos (antes `isEqual` sobre los bytes, que filtra la longitud): `T token-comparison-is-exact-and-length-blind` (corrección; el tiempo no se mide) |
+| 7a | CORS sin `--cors` | **Ya cerrado** | `S cors-preflight-exists-only-with-the-flag`. Además `--cors` sin token ya no arranca |
+| 7b | Escritura cross-origin sin preflight (CSRF) | **Cerrado** (3b, 3c) | `Origin` ajeno: 403 `serve/origin-not-allowed` en toda ruta salvo `/health`; `text/plain`, formulario o sin tipo: 415. `T vector-7b-a-foreign-origin-is-refused-for-reads-and-writes`, `T vector-7b-a-simple-form-post-is-refused-by-content-type`; el store no cambia. Resto: una petición cross-origin que el navegador envía **sin** `Origin` (un `GET` simple `no-cors`) pasa, pero su respuesta no es legible sin CORS; el único GET con efecto es `corpus rank --refresh` (reconstruye la caché derivada) |
+| 7c | `Host` arbitrario (DNS rebinding) | **Cerrado** sin token (3a) | 403 `serve/host-not-allowed` si `Host` no es loopback con el puerto del servidor, también en `/health`: `T vector-7c-a-foreign-host-is-refused-without-a-token` (socket crudo). Con token no se mira `Host` (decisión, ver REPORT) |
+| 8 | Symlink fuera del proyecto | **Cerrado en HTTP** (1) | se resuelven los enlaces del tramo existente (rotos incluidos): `T vector-2c-and-8-…` (archivo, directorio y roto), `T a-symlink-directory-cannot-be-written-through`, `T confine-resolves-against-the-real-root`. La CLI sigue como estaba (`docs ingest FILE` sin confinamiento) |
+| extra | `path` hacia `.git/` o `.kimun/` dentro del proyecto (no está en S1: escribir `.git/hooks/*` o `.kimun/store.edn` es una vía a ejecución/corrupción) | **Cerrado** | `.git` y `.kimun` como segmento se rechazan: mismo test que 2a/2b |

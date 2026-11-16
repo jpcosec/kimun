@@ -1,0 +1,28 @@
+
+Testing kimun.surface.http-test
+
+Testing kimun.surface.http.documents-test
+
+Testing kimun.surface.http.security-test
+
+Testing kimun.surface.http.circuit-test
+
+Testing kimun.surface.http.analysis-test
+
+Testing kimun.surface.http.models-fields-test
+
+Testing kimun.surface.http.save-schema-test
+
+Testing kimun.surface.http.serve-safe-test
+
+Testing kimun.cli.spec16-readers-test
+moved existing store to /tmp/kimun-adhoc-17595481189473143428/kimun-s16-include-11166752972121830776/.kimun.bak-20261116-014824-01M7HAYNKJXH89H507EM8538XR
+
+Testing kimun.cli.main-test
+
+Testing kimun.cli.golden-test
+
+Testing kimun.lint-test
+
+Ran 124 tests containing 943 assertions.
+0 failures, 0 errors.

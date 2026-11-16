@@ -21,6 +21,7 @@
             [clojure.string :as str]
             [kimun.cli.errors :as errors]
             [kimun.cli.out :as out]
+            [kimun.surface.http.guard :as guard]
             [kimun.surface.http.routes :as routes]
             #?(:clj [org.httpkit.server :as hk])))
 
@@ -48,16 +49,22 @@
   "KIMUN_SERVE_TOKEN")
 
 (defn resolve-token
-  "The token: the flag wins over `env` (a map) `KIMUN_SERVE_TOKEN`; empty or
-   missing means no auth (nil)."
+  "The token: the flag wins over `env` (a map) `KIMUN_SERVE_TOKEN`; neither
+   given means no token (nil). A value that is given but empty (`--token \"\"`,
+   `KIMUN_SERVE_TOKEN=`) is the usage failure `cli/usage`, never \"auth off\"."
   [flag env]
   (let [t (if (some? flag) flag (get env env-var))]
-    (when (and (string? t) (seq t)) t)))
+    (cond (nil? t) nil
+          (and (string? t) (seq t)) t
+          :else (throw (ex-info "the token is empty; give `--token TOKEN` (or $KIMUN_SERVE_TOKEN) a value, or leave both unset for loopback use"
+                                {:type :cli/usage :option "token"})))))
 
 (defn- constant-time=
-  "Equality of two strings in time independent of where they differ."
+  "Equality of two strings in time independent of where they differ and of
+   their lengths (the SHA-256 digests are compared)."
   [a b]
-  #?(:clj (java.security.MessageDigest/isEqual (.getBytes ^String a "UTF-8") (.getBytes ^String b "UTF-8"))
+  #?(:clj (let [sha (fn [^String x] (.digest (java.security.MessageDigest/getInstance "SHA-256") (.getBytes x "UTF-8")))]
+            (java.security.MessageDigest/isEqual (sha a) (sha b)))
      :cljs (= a b)))
 
 (defn- authorized?
@@ -150,28 +157,44 @@
           {:failure (fail :serve/bad-json "Expected a JSON object body" {} 6)})))))
 
 (defn- call-route [{:keys [route params]} request ctx]
-  (let [{:keys [json failure]} (if (= :post (:request-method request)) (parse-json-body request) {})
+  (let [post? (= :post (:request-method request))
+        request (cond-> request post? (assoc :body (body-text (:body request)))) ; a stream is read once
+        bad-type? (and post? (not (str/blank? (body-text (:body request))))
+                       (not (guard/json-content-type? (get-in request [:headers "content-type"]))))
+        {:keys [json failure]} (if (and post? (not bad-type?)) (parse-json-body request) {})
         request (assoc request :path-params params :json json
                        :query-params (parse-query (:query-string request)))
+        refused (when-not (or failure bad-type?) (guard/check-inputs route request (guard/project-root (:cwd ctx))))
         run (fn [] (errors/wrap #((:handler route) request ctx)))
-        result (cond failure failure
+        result (cond bad-type? (fail :serve/unsupported-media-type "A request body must be sent as Content-Type: application/json" {} 6)
+                     failure failure
+                     refused refused
                      (:write? route) (locking (:lock ctx) (run))
                      :else (run))]
-    (if (and (map? result) (contains? result :status))
-      (update result :headers #(merge {"Content-Type" json-type} (cors-headers (:cors? ctx)) %))
-      (respond (status-of result) result (:cors? ctx)))))
+    (cond (and (map? result) (contains? result :status))
+          (update result :headers #(merge {"Content-Type" json-type} (cors-headers (:cors? ctx)) %))
+          bad-type? (respond 415 result (:cors? ctx))
+          :else (respond (status-of result) result (:cors? ctx)))))
 
 (defn handler
   "The Ring handler for `routes` (a vector of route entries) and config
-   `{:store path :token string-or-nil :cwd dir :env {} :cors? bool :run fn}`
-   (`:run` defaults to `kimun.cli.main/run`). Order: OPTIONS preflight (exempt
-   from auth; 204 with CORS headers, 404 when CORS is off), then auth (401 for
-   every GET/POST without the bearer token, before any routing), then the
-   route (404 unknown path, 405 known path with another method, 400 invalid
-   JSON body)."
+   `{:store path :token string-or-nil :cwd dir :env {} :cors? bool :run fn
+   :port n :bound-port deref-or-nil}` (`:run` defaults to `kimun.cli.main/run`;
+   the port the server listens on is `:port`, else `@:bound-port`, else not
+   compared). Order: OPTIONS preflight (exempt from auth; 204 with CORS
+   headers, 404 when CORS is off), then without a token the `Host` check (403
+   unless a loopback name on the server's port), then the `Origin` check (403
+   for any `Origin` that is not the server's own, on every path but `/health`,
+   unless `:cors?`, which `start!` only allows with a token), then auth (401
+   for every GET/POST without the bearer token, before any routing), then the
+   route (404 unknown path, 405 known path with another method, 415 a POST body
+   that is not `application/json`, 400 invalid JSON body or an input that
+   leaves the project, `serve/path-outside-project`)."
   [routes config]
   (let [ctx (assoc config :lock (Object.))
-        cors? (:cors? config)]
+        cors? (:cors? config)
+        port #(let [p (:port config)] (if (and (integer? p) (pos? p)) p (some-> (:bound-port config) deref)))
+        forbidden (fn [e] (respond (status-of e) e cors?))]
     (fn [request]
       (let [method (:request-method request)
             path (or (:uri request) "/")]
@@ -180,6 +203,12 @@
           (if cors?
             {:status 204 :headers (merge {"Content-Type" json-type} (cors-headers true)) :body ""}
             (respond 404 (fail :serve/cors-disabled "CORS disabled" {} 1) false))
+
+          (and (nil? (:token config)) (guard/check-host request (port)))
+          (forbidden (guard/check-host request (port)))
+
+          (and (not= "/health" path) (not (and cors? (:token config))) (guard/check-origin request (port)))
+          (forbidden (guard/check-origin request (port)))
 
           (not (authorized? (:token config) request))
           (respond 401 (fail :serve/unauthorized "unauthorized" {} 6) cors?
@@ -202,11 +231,17 @@
   "Starts an http-kit server for `routes` (default `routes`) with `config`
    (see `handler`) plus `:host` (default \"127.0.0.1\") and `:port` (default 0 =
    a free port). Returns `{:host :port :stop!}` with the actual port; call
-   `(stop! server)` or `((:stop! server))`."
+   `(stop! server)` or `((:stop! server))`. Raises the usage failure
+   `cli/usage` (`guard/check-config!`) for a config it will not serve: an empty
+   token, a non-loopback `:host` or `:cors?` without a token."
   ([config] (start! routes config))
   ([routes config]
    #?(:clj (let [host (or (:host config) "127.0.0.1")
-                 srv (hk/run-server (handler routes config) {:ip host :port (or (:port config) 0) :legacy-return-value? false})]
+                 _ (guard/check-config! config)
+                 bound (atom nil)
+                 srv (hk/run-server (handler routes (assoc config :bound-port bound))
+                                    {:ip host :port (or (:port config) 0) :legacy-return-value? false})]
+             (reset! bound (hk/server-port srv))
              {:host host :port (hk/server-port srv) :stop! (fn [] (hk/server-stop! srv {:timeout 100}))})
       :cljs (throw (ex-info "serve needs the JVM" {})))))
 

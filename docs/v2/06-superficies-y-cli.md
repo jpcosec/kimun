@@ -505,7 +505,13 @@ Campos de documentos tipados. `DOC` es nombre, tree-id o `Model:doc`; un campo d
 
 ### serve
 
-`serve [start] [--port N] [--host H] [--token T] [--cors]`. Bloquea hasta interrupción; `--token` o `$KIMUN_SERVE_TOKEN` exige `Authorization: Bearer TOKEN`; def. `127.0.0.1:8787`.
+`serve [start] [--port N] [--host H] [--token T] [--cors]`. Bloquea hasta interrupción; def. `127.0.0.1:8787`. `--token` (o `$KIMUN_SERVE_TOKEN`) exige `Authorization: Bearer TOKEN` (comparación en tiempo constante). Contrato de seguridad (evidencia `runs/subagents/2026-11-16-serve-seguro/`):
+
+- **Arranque.** Un `--host` que no sea loopback (`127.0.0.0/8`, `::1`, `localhost`) sin token no arranca (`cli/usage`); `--token ""` o variable vacía es `cli/usage`, no «sin auth»; `--cors` sin token es `cli/usage`. No hay `--insecure`.
+- **Rutas confinadas al proyecto** (solo HTTP; la CLI no cambia). La raíz es el cwd del servidor. Un parámetro que nombra un archivo (`path` de `/docs`, `/docs/create`, `/docs/track`) se rechaza si es absoluto, trae `..`, nombra `.git` o `.kimun`, o —tras seguir enlaces simbólicos, también los rotos— sale de la raíz; en las rutas que escriben, `name`, `id`, `doc` y `model` (a cualquier profundidad del cuerpo) no admiten `/`, `\` ni `.`/`..`. Rechazo: 400 `serve/path-outside-project`, sin leer ni escribir nada. Un solo punto de validación (`kimun.surface.http.guard`), declarado por ruta con `:paths`.
+- **Sin token (solo loopback):** `Host` debe ser un nombre/IP loopback con el puerto del servidor (si no, 403 `serve/host-not-allowed`); un `Origin` que no sea el propio se rechaza en toda ruta salvo `/health` (403 `serve/origin-not-allowed`); todo `POST` con cuerpo exige `Content-Type: application/json` (415 `serve/unsupported-media-type`).
+- **Con token:** no se mira `Host` (puede haber nombre público o proxy); `Origin` ajeno se rechaza salvo con `--cors`, que es lo único que lo relaja; el `Content-Type` JSON se exige igual.
+- Orden: `OPTIONS` (404 sin `--cors`), `Host`, `Origin`, 401, 405/404, 415, 400 (cuerpo o ruta fuera del proyecto).
 
 ### mcp
 
