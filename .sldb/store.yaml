@@ -231,7 +231,6 @@ include:
   - desk/lifecycle/rule-closeout-task-refactor.md
 - model: TaskCodeDoc
   paths:
-  - desk/tasks/task-fichas-and-graph-queries-over-propositions.md
   - desk/tasks/task-finish-wip-leer-readers-by-class.md
   - desk/tasks/task-first-release-ci-run-pod-published-version-tagged.md
   - desk/tasks/task-generate-leftovers-http-over-propositions-and-orphan-files.md

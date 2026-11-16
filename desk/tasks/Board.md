@@ -1,7 +1,7 @@
 ---
 sldb:
   by: agent
-  at: '2026-11-16T17:57:22Z'
+  at: '2026-11-16T17:57:25Z'
   authority: generated
   via: save_document_payload
 # board-xxx
@@ -10,7 +10,6 @@ id: board-001
 scope: desk
 # List of task-xxx paths
 tasks:
-- desk/tasks/task-fichas-and-graph-queries-over-propositions.md
 - desk/tasks/task-finish-wip-leer-readers-by-class.md
 - desk/tasks/task-first-release-ci-run-pod-published-version-tagged.md
 - desk/tasks/task-generate-leftovers-http-over-propositions-and-orphan-files.md
@@ -55,7 +54,6 @@ _Add short operational notes about the current routed set._
 
 _Generated from the task references above._
 
-- Fichas and graph queries over propositions [draft] - Terms with content and no anchor; graph.* queries the propositions; declare about accepts a proposition as term.
 - Finish wip-leer readers by class [draft] - Branch wip/leer is rebased on origin/main, its tests and the whole suite pass, the readers have been run over a copy of the real deskops desk with the numbers recorded, and main is fast-forwarded to it and pushed.
 - First release CI run pod published version tagged [draft] - An installable, tagged kimun.
 - Generate leftovers HTTP over propositions and orphan files [draft] - HTTP serves the propositions; a generated file whose declaration disappeared is detected; typed docstring as materialization of a class.
