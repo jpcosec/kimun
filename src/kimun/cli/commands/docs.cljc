@@ -620,7 +620,41 @@
   [marks locator except]
   (first (keep (fn [[id m]] (when (and (not= id except) (= locator (:locator m))) id)) marks)))
 
-(defn mark
+(defn- move-unit
+  "`docs mark OTHER --unit ID --from NAME (--locator L | --field F) --reason TEXT`:
+   DECLARES that unit `ID` of document NAME is now anchored in OTHER (K1f, docs/v2/14
+   §21 rule 3): the same id, one revision touching both trees. See `mark`."
+  [args opts {:keys [env cwd] :as ctx}]
+  (let [token (require-arg! args 0 "a document NAME" "mark")
+        usage! (fn [msg] (err/raise :cli/usage msg {:group "docs" :subcommand "mark"}))
+        unit (or (:unit opts) (usage! "`docs mark --from` needs --unit ID: the unit that moves"))
+        _ (when-not (string? (:reason opts)) (usage! "`docs mark --from` needs --reason TEXT: the declaration says what happened"))
+        _ (when-not (= 1 (count (filter some? [(:locator opts) (:field opts)])))
+            (usage! "`docs mark --from` needs exactly one of --locator L (a structural unit) or --field F (a field unit)"))
+        {:keys [backend descriptor store] store-path :path} (open opts ctx)
+        [from from-text] (mark-target store store-path (:from opts))
+        [to to-text] (mark-target store store-path token)
+        _ (when (= (:tree from) (:tree to))
+            (usage! "`docs mark --from` moves a unit to ANOTHER document; re-anchoring in the same one is `docs mark --unit`"))
+        locator (some-> (:locator opts) str parse-locator)
+        a (when locator (resolve-locator! locator to-text))
+        mark (when locator
+               (let [label (or (:label opts) (:label (get (:marks from) unit)))]
+                 (cond-> {:kind (locator-kind locator) :locator locator :hash (:hash a)}
+                   label (assoc :label label))))
+        declared (cond-> {:kind "unit-move" :unit unit :from (:name from) :to (:name to) :reason (:reason opts)}
+                   locator (assoc :locator locator)
+                   (:field opts) (assoc :field (:field opts)))
+        mp (tdocs/move-unit-plan host/host store from to
+                                 {:unit unit :mark mark :field (:field opts) :from-text from-text :to-text to-text
+                                  :declared declared :actor (:actor opts) :timestamp (timestamp)})
+        r (store/commit! backend store (:plan mp))]
+    (out/ok "docs mark"
+            {:store (store-ref descriptor store-path) :revision (:revision-id r)
+             :data (assoc (doc-data (tdocs/resolve-any (:store r) (:tree to)))
+                          :id unit :moved (select-keys declared [:unit :from :to :locator :field]))})))
+
+(defn- mark-here
   "`docs mark NAME --locator L [--label TEXT] [--reason TEXT]`, or
    `docs mark NAME --unit ID --locator L --reason TEXT`: DECLARES a structural
    unit on a section or a block of a by-reference document (K1e, docs/v2/14
@@ -673,10 +707,31 @@
                           :marked (select-keys mark [:kind :locator :hash :label])
                           :id id)})))
 
+(defn mark
+  "`docs mark`: declares a structural unit (`mark-here`) or, with `--from NAME`,
+   MOVES unit `--unit ID` of NAME to this document (K1f): `docs mark OTHER --unit
+   ID --from NAME (--locator L | --field F) --reason TEXT`. The unit keeps its
+   id, leaves NAME and is anchored in OTHER (a locator that resolves in OTHER, or
+   a field of OTHER's payload without a unit), in ONE revision whose journal
+   entry says `:declared {:kind \"unit-move\" :unit :from :to :reason}`. A
+   mark of a generic document moves too; a field unit needs two typed
+   documents. kimun never moves a unit on its own. Rejections write nothing:
+   no `--reason` or neither/both of `--locator`/`--field` (`cli/usage`), a
+   locator or field of OTHER that already holds a unit (`docs/exists`: units are
+   not fused, close the other first), an unknown unit (`docs/missing`), a
+   locator that does not resolve in OTHER (`docs/anchor-unresolved`), a field
+   that is not in OTHER's payload (`docs/not-anchored`). Data: the document map
+   of OTHER plus `:id` and `:moved`."
+  [args opts ctx]
+  (if (:from opts) (move-unit args opts ctx) (mark-here args opts ctx)))
+
 (defn unmark
-  "`docs unmark NAME ID [--reason TEXT]`: DECLARES the closure of structural
-   unit `ID` of a document: the mark leaves the tree descriptor and the closure
-   (with the state it had) stays in the journal (`:declared {:kind
+  "`docs unmark NAME ID [--reason TEXT]`: DECLARES the closure of unit `ID` of a
+   document. A structural unit (K1e): the mark leaves the tree descriptor. A FIELD
+   unit of a typed document (K1f): the id leaves `:units` and is never reused;
+   `--reason` is then required, and a field still in the payload gets a NEW id on
+   the next write (the replacement is declared, 14 §21 rule 5). The closure (with
+   the state the unit had) stays in the journal (`:declared {:kind
    \"unit-closure\"}`). The document itself is written as an update of the same
    text. Unknown unit: `docs/missing`. Data: the document map plus `:unmarked`."
   [args opts {:keys [env cwd] :as ctx}]
@@ -684,15 +739,24 @@
         id (require-arg! args 1 "a unit ID" "unmark")
         {:keys [backend descriptor store] store-path :path} (open opts ctx)
         [d text] (mark-target store store-path token)
-        _ (when-not (contains? (or (:marks d) {}) id)
+        mark? (contains? (or (:marks d) {}) id)
+        field (when-not mark? (tdocs/unit-field d id))
+        _ (when-not (or mark? field)
             (err/raise :docs/missing (str "no unit `" id "` in `" (:name d) "`") {:document (:name d) :unit id}))
-        status (-> (tdocs/marks-of host/host text d nil) :marks
-                   (->> (filter #(= id (:id %))) first :status))
-        mp (tdocs/mark-plan host/host store (:tree d) text
-                            {:unmark? true :id id
-                             :declared (cond-> {:kind "unit-closure" :unit id :status status}
-                                         (:reason opts) (assoc :reason (:reason opts)))
-                             :actor (:actor opts) :timestamp (timestamp) :operation "docs unmark"})
+        _ (when (and field (not (string? (:reason opts))))
+            (err/raise :cli/usage "`docs unmark` of a field unit needs --reason TEXT: the declaration says what happened"
+                       {:group "docs" :subcommand "unmark"}))
+        status (if mark?
+                 (-> (tdocs/marks-of host/host text d nil) :marks
+                     (->> (filter #(= id (:id %))) first :status))
+                 (->> (tdocs/unit-states store (assoc d :source text)) (filter #(= id (:id %))) first :status))
+        declared (cond-> {:kind "unit-closure" :unit id :status status}
+                   field (assoc :field field)
+                   (:reason opts) (assoc :reason (:reason opts)))
+        base {:id id :declared declared :actor (:actor opts) :timestamp (timestamp) :operation "docs unmark"}
+        mp (if mark?
+             (tdocs/mark-plan host/host store (:tree d) text (assoc base :unmark? true))
+             (tdocs/close-unit-plan host/host store d text base))
         r (store/commit! backend store (:plan mp))]
     (out/ok "docs unmark"
             {:store (store-ref descriptor store-path) :revision (:revision-id r)
@@ -781,7 +845,7 @@
    :reason {:ref "TEXT" :desc "What happened (docs reanchor, docs untrack, docs delete)"}
    :sections {:desc "Only the sections of the document (docs anchors)" :coerce :boolean}
    :locator {:ref "L" :desc "Locator of a section or a block, as `docs anchors` prints it (docs mark)"}
-   :unit {:ref "ID" :desc "Structural unit to re-anchor or to close (docs mark, docs unmark)"}
+   :unit {:ref "ID" :desc "Unit to re-anchor, move or close (docs mark, docs unmark)"}
    :label {:ref "TEXT" :desc "Optional label of a structural unit (docs mark)"}})
 
 (def commands

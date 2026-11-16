@@ -482,9 +482,9 @@ Qué queda **pendiente tras `D0`**, y nada de ello es una pregunta al dueño sob
   —qué es una unidad, su anclaje, su identidad, la continuidad, la ausencia y el renombrado— son
   **inferencias del concilio/equipo**, no palabras del dueño.)* Quedan fuera: documentos
   genéricos, campos anidados e ítems de lista, documentos `:inline` o de formato < 4, ids de
-  modelos, cierre y linaje de unidades de campo, y G. Pendientes reales de `K1`: las unidades de
+  modelos, linaje de unidades de campo (el cierre llegó con K1f), y G. Pendientes reales de `K1`: las unidades de
   **sección y bloque** (esperan la serie `S2a` → `K1e` → `S2b`), los campos anidados e ítems de
-  lista, el cierre y el linaje de unidades de campo y copiar/dividir/fusionar con linaje
+  lista, el linaje de unidades de campo y copiar/dividir/fusionar con linaje
   declarado. **K1d (inferencia del equipo):** un rebuild conserva el **árbol `models`** y la
   **versión y el contrato** de cada modelo: mismo contrato ⇒ misma versión (y misma dirección
   del descriptor); contrato distinto ⇒ versión vieja + 1 (la versión no retrocede); nombre
@@ -500,9 +500,19 @@ Qué queda **pendiente tras `D0`**, y nada de ello es una pregunta al dueño sob
   `ambiguous` o `missing`— y, si hay evidencia, se proponen **candidatos**; **kimun no decide
   continuidad**: una escritura normal registra la huella nueva de una marca `mutated` y no toca
   las demás, y el cambio de anclaje o el cierre los declara un actor (`docs mark --unit`,
-  `docs unmark`). Quedan fuera: mover una unidad a otro documento, copiar/dividir/fusionar con
+  `docs unmark`). Quedan fuera: copiar/dividir/fusionar con
   linaje, marcas dentro de un bloque (`S2b`), que el sensor informe estados de marcas, y los
-  documentos `:inline` o de formato < 4. `K2b`, esa serie y la implementación de `M1` esperan a
+  documentos `:inline` o de formato < 4. **K1f (2026-11-15, inferencia del equipo):** el
+  **cierre** de una unidad de campo y el **traslado** de una unidad (marca o campo) a otro
+  documento son declaraciones con `--reason` y quedan en el journal (`:declared`). `docs unmark
+  NAME ID --reason` cierra una unidad de campo: la id sale de `:units`, no se reutiliza, y un
+  campo que sigue en el payload recibe una id **nueva** en la escritura siguiente (el reemplazo
+  se declara, regla 5). `docs mark OTHER --unit ID --from NAME (--locator L | --field F)
+  --reason` traslada la unidad con la **misma** id en **una** revisión (`:declared {:kind
+  "unit-move"}` con origen y destino); no se funde: un localizador o un campo de destino que ya
+  tiene unidad se rechaza (hay que cerrar la otra antes). kimun no detecta ni propone ningún
+  cierre ni traslado. Siguen fuera: renombrar un campo dentro del documento y el linaje entre
+  unidades (esperan decisión del dueño), los campos anidados y los ítems de lista. `K2b`, esa serie y la implementación de `M1` esperan a
   `K1`.
 - **Alcance sobre `01 §4` principio 3 y decisiones `1`, `3`, `4` de `05`**: se revisa al
   implementar `K1`, en lo que toca a unidades.

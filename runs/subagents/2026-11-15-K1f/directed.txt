@@ -1,0 +1,40 @@
+
+Testing kimun.cli.unit-close-move-test
+moved existing store to /tmp/kimun-close-inc-15768219975420925631/.kimun.bak-20261115-215943-01M7GXVYD1939CQX7XN5N7PVM3
+moved existing store to /tmp/kimun-close-inc-1877396335453087247/.kimun.bak-20261115-215944-01M7GXVZ54P22SMBCST72W8M9Q
+
+Testing kimun.cli.field-units-test
+moved existing store to /tmp/kimun-adhoc-1159750460157255904/kimun-units-inc-9239944085087070456/.kimun.bak-20261115-215944-01M7GXVZN1VX23DCF3H5WXXHQC
+
+Testing kimun.cli.marks-test
+moved existing store to /tmp/kimun-adhoc-1159750460157255904/kimun-marks-inc-11215502502274646480/.kimun.bak-20261115-215944-01M7GXVZWCW31RMX6WEZW9ZZCS
+
+Testing kimun.surface.markdown.anchors-test
+
+Testing kimun.cli.reanchor-test
+moved existing store to /tmp/kimun-adhoc-1159750460157255904/kimun-reanchor-inc-12692494601425351240/.kimun.bak-20261115-215945-01M7GXW0EMYQAQ6A1MXAQQKZEX
+
+Testing kimun.cli.identity-carry-test
+moved existing store to /tmp/kimun-adhoc-1159750460157255904/kimun-k1a-3799647117772229619/.kimun.bak-20261115-215945-01M7GXW0QWMMRC59DB1W2R8J5B
+moved existing store to /tmp/kimun-adhoc-1159750460157255904/kimun-k1a-6684514838184505118/.kimun.bak-20260101-000000-01M7GXW0TYT2HE39XFNBHZ516Y
+moved existing store to /tmp/kimun-adhoc-1159750460157255904/kimun-k1a-6684514838184505118/.kimun.bak-20260101-000000-01M7GXW0VWHBHSA8QPH42BCPCQ
+moved existing store to /tmp/kimun-adhoc-1159750460157255904/kimun-k1a-10912815709797462997/.kimun.bak-20261115-215946-01M7GXW0Z5EDVDMKRTXCKK4MW4
+moved existing store to /tmp/kimun-adhoc-1159750460157255904/kimun-k1a-10912815709797462997/.kimun.bak-20261115-215946-01M7GXW109F4C3XFQ1EY2CKKYP
+moved existing store to /tmp/kimun-adhoc-1159750460157255904/kimun-k1a-5107984355752828536/.kimun.bak-20261115-215946-01M7GXW13WGSZJ9FEZ489RXCM5
+moved existing store to /tmp/kimun-adhoc-1159750460157255904/kimun-k1a-11726890088502844376/.kimun.bak-20261115-215946-01M7GXW18BXZZNQKHJXHW3CCBB
+
+Testing kimun.cli.typed-docs-test
+
+Testing kimun.cli.generic-docs-test
+
+Testing kimun.cli.docs-test
+
+Testing kimun.cli.spec16-docs-test
+
+Testing kimun.cli.tour-test
+
+Testing kimun.doc14-contract-test
+
+Ran 77 tests containing 1083 assertions.
+0 failures, 0 errors.
+exit 0

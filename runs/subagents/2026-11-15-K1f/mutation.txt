@@ -1,0 +1,16 @@
+Mutation (K1f): src/ reverted to base c8ca2f25 (git diff -> /tmp/K1f-src.patch, backup, checkout), tests run, patch re-applied; diff -r src backup identical.
+      4 FAIL in (a-moved-unit-survives-a-reanchor-and-a-rebuild)
+      5 FAIL in (closing-an-absent-field-removes-it-and-a-rebuild-does-not-bring-it-back)
+      8 FAIL in (closing-a-present-field-is-declared-and-its-replacement-gets-a-new-id)
+      7 FAIL in (moving-a-field-unit-needs-the-destination-field-to-have-none)
+      7 FAIL in (moving-a-mark-keeps-its-id-in-one-revision-and-says-what-happened)
+      4 FAIL in (rejected-moves-and-closures-leave-the-head-where-it-was)
+      2 FAIL in (units-are-not-a-fingerprint-and-reading-writes-nothing)
+Ran 7 tests containing 158 assertions.
+37 failures, 0 errors.
+exit 1
+
+With the change:
+Ran 7 tests containing 158 assertions.
+0 failures, 0 errors.
+exit 0

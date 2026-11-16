@@ -61,6 +61,7 @@
             [kimun.kernel.edge :as edge]
             [kimun.kernel.err :as err]
             [kimun.kernel.node :as node]
+            [kimun.kernel.plan :as plan]
             [kimun.kernel.ports :as ports]
             [kimun.kernel.revision :as revision]
             [kimun.kernel.route :as route]
@@ -921,7 +922,10 @@
         cached? (and path (not inline?) (not (revision/legacy? store)))
         ;; only a by-reference document persists units (in its registry descriptor); an inline or
         ;; legacy one has none, and must not look "moved" for lacking them
-        field-units (if cached? (units-for (:units doc) payload mint) (:units doc))
+        ;; an explicit `:units` is a DECLARATION (a closure, a move: K1f): taken as given, nothing minted
+        field-units (cond (not cached?) (:units doc)
+                          (contains? opts-map :units) (not-empty (:units opts-map))
+                          :else (units-for (:units doc) payload mint))
         ;; structural marks: an explicit `:marks` is a DECLARATION (mark, unmark,
         ;; re-anchor) and is taken as given; otherwise a normal write advances
         ;; them: a mutated mark records its new hash, the rest are untouched
@@ -1218,3 +1222,88 @@
       (generic-update-plan host store doc text (assoc opts :marks marks))
       (update-plan host store token text (assoc opts :marks marks)))))
 
+
+;; ---------------------------------------------------------------- close and move units (K1f)
+
+(defn- doc-update
+  "`update-plan` or `generic-update-plan` for `doc` (a map of `documents` or
+   `generic-documents`) written from `text` with `opts`."
+  [host store doc text opts]
+  (if (:generic doc)
+    (generic-update-plan host store doc text opts)
+    (update-plan host store (:tree doc) text opts)))
+
+(defn unit-field
+  "The field of typed document `doc` (a map of `documents`) whose unit is `id`,
+   or nil."
+  [doc id]
+  (some (fn [[f u]] (when (= id u) f)) (:units doc)))
+
+(defn close-unit-plan
+  "Plan that DECLARES the closure of the FIELD unit `id` of typed document
+   `doc` (a map of `documents`, K1f): the id leaves the descriptor's `:units`
+   and is never reused. Nothing is minted in this write, so a field still in the
+   payload gets a NEW id on the next normal write (docs/v2/14 §21 rule 5: the
+   replacement is declared). `opts`: `:declared`, `:actor`, `:timestamp`,
+   `:operation` and what `update-plan` takes. Raises `:docs/missing` when `doc`
+   has no such unit and `:docs/not-anchored` when the plan would not persist
+   (no descriptor to hold units). Returns `update-plan`'s map."
+  [host store doc text {:keys [id] :as opts}]
+  (let [f (or (unit-field doc id)
+              (err/raise :docs/missing (str "no unit `" id "` in `" (:name doc) "`") {:document (:name doc) :unit id}))
+        r (update-plan host store (:tree doc) text (assoc opts :units (dissoc (:units doc) f)))]
+    (when-not (:plan r)
+      (err/raise :docs/not-anchored (str "the closure of `" id "` would not persist in `" (:name doc) "`")
+                 {:document (:name doc) :unit id}))
+    (assoc r :field f)))
+
+(defn move-unit-plan
+  "Plan that DECLARES the move of unit `unit` from document `from` to document
+   `to` (maps of `documents`/`generic-documents`, K1f) in ONE revision: the
+   unit leaves `from` and is anchored in `to` with the SAME id, and the two
+   trees are written together (`kernel.plan/compose-plans`). `opts`: `:unit`,
+   `:from-text`, `:to-text`, `:declared`, `:actor`, `:timestamp`, and either
+   `:mark` (`{:kind :locator :hash :label}`: a structural mark) or `:field` (the
+   field of `to` that takes a field unit). Nothing is minted. Raises
+   `:docs/exists` when the destination already has a mark with that locator or a
+   unit for that field (a unit is not fused: close the other first),
+   `:docs/missing` when `from` does not hold the unit and `:docs/not-anchored`
+   for a field that is not a key of the payload of `to` or a generic document.
+   Returns `{:plan :from :to}`."
+  [host store from to {:keys [unit mark field from-text to-text declared actor timestamp] :as opts}]
+  (let [common {:actor actor :timestamp timestamp :operation "docs mark"}
+        ex (fn [msg data] (err/raise :docs/exists msg data))
+        a (if field
+            (let [f (or (unit-field from unit)
+                        (err/raise :docs/missing (str "no field unit `" unit "` in `" (:name from) "`")
+                                   {:document (:name from) :unit unit}))]
+              (update-plan host store (:tree from) from-text (assoc common :units (dissoc (:units from) f))))
+            (do (when-not (contains? (or (:marks from) {}) unit)
+                  (err/raise :docs/missing (str "no unit `" unit "` in `" (:name from) "`")
+                             {:document (:name from) :unit unit}))
+                (doc-update host store from from-text (assoc common :marks (dissoc (:marks from) unit)))))
+        b (if field
+            (do (when (:generic to)
+                  (err/raise :docs/not-anchored (str "`" (:name to) "` has no model: it has no field units")
+                             {:document (:name to)}))
+                (when-let [held (get (:units to) field)]
+                  (ex (str "the field `" field "` of `" (:name to) "` already has unit " held ": close it first (a unit is not fused)")
+                      {:document (:name to) :field field :unit held}))
+                (when-not (contains? (or (:payload (payload-of store (assoc to :source to-text))) {}) field)
+                  (err/raise :docs/not-anchored (str "`" field "` is not a field of `" (:name to) "`")
+                             {:document (:name to) :field field}))
+                (update-plan host store (:tree to) to-text (assoc common :units (assoc (or (:units to) {}) field unit))))
+            (do (when-let [holder (some (fn [[id m]] (when (= (:locator mark) (:locator m)) id)) (:marks to))]
+                  (ex (str "a mark of `" (:name to) "` already has that locator: " holder)
+                      {:document (:name to) :unit holder :locator (:locator mark)}))
+                (when (contains? (or (:marks to) {}) unit)
+                  (ex (str "unit `" unit "` is already in `" (:name to) "`") {:document (:name to) :unit unit}))
+                (doc-update host store to to-text (assoc common :marks (assoc (or (:marks to) {}) unit mark)))))]
+    (when-not (and (:plan a) (:plan b))
+      (err/raise :docs/not-anchored "the move would not persist: a document has no descriptor to hold it"
+                 {:from (:name from) :to (:name to) :unit unit}))
+    {:plan (plan/compose-plans [(:plan a) (:plan b)]
+                               {:base (:head store) :actor actor :timestamp timestamp
+                                :engines (meta-engines {:operation "docs mark" :address (str (:name from) " -> " (:name to))
+                                                        :fields {} :declared declared})})
+     :from (:name from) :to (:name to)}))
