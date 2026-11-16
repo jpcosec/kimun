@@ -1,0 +1,9 @@
+
+Testing kimun.cli.changed-test
+
+Testing kimun.cli.sense-test
+
+Testing kimun.cli.stores-test
+
+Ran 37 tests containing 300 assertions.
+0 failures, 0 errors.
