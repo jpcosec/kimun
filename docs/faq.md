@@ -13,7 +13,7 @@ See `docs/v2/tests/wittgenstein-manifest.md` for the full `C01–C28` manifest.
 
 ### Out of the current slice (deferred or blocked by open decisions)
 
-Notice that only the **base S/M surfaces** are implemented today: the contextual `G` superset (`C01–C28`) is **not yet implemented** (`0 implemented`, `12 partial`, `5 direction`, `11 absent`).
+Notice that only the **base S/M surfaces** (and, since 2026-11-16, declarations in Clojure read without a store: `declare *`, `kimun mcp`) are implemented today: the contextual `G` superset (`C01–C28`) is **not yet implemented** (`0 implemented`, `12 partial`, `5 direction`, `11 absent`).
 
 - Contextual `G` engine, truth/sense evaluation (`V_i`/`S_i`), deduction and `ask` (`C04–C10`, `C12–C17`, `C21–C23`, `C25–C27`), which depend on the owner decision `D-G`, on `G1` and on the implementation (`K1`) of the `D0` identity contract (derived 2026-11-15, no longer an owner decision).
 - The anchored evaluator (S4) and derived writes (S5), embeddings (`G3`), and full conversational REPL prose (`C18`; API session contracts stay tracked in `T13`, historic Node parity stays in the drawer). **Visualization as a whole is not out of scope:** a minimal view of the circuit and signals remains required under `Operación y vista` (`docs/v2/12-ecosistema-y-pendientes.md §1`).

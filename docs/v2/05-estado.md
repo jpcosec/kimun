@@ -1,16 +1,15 @@
 # kimun (SLDB v2) — Estado (2026-10-09; nota al día 2026-11-16)
 
 > **Nota 2026-11-16.** El 2026-11-15 el dueño cambió el marco y el 2026-11-16 aprobó un plan
-> (`drafts/plan-producto.md`; palabras del dueño en `drafts/sesion-2026-11-15.md`; diseño en
-> `drafts/diseno-declaraciones.md`). Estado real: kimun está **en rearquitectura** y no hay
-> release publicada. Lo que corre hoy es la implementación del diseño anterior (store de formato 4,
-> superficie Markdown, modelos, marcas de unidades, `serve`); el 2026-11-15 se borraron `python/`, el
-> subsistema de adaptadores, los formatos de store anteriores al 4 y su código muerto. En curso (etapa 0 del
-> plan): el sensor por git (`stores changed --since`), el borrado de la paridad v1 y de sus modos de
-> compatibilidad, y la poda de documentos. **No existe todavía**: leer o evaluar declaraciones en Clojure,
-> proposiciones `(R A B)` vivas, relaciones como nodos, varias clases por nodo, nodos de código, caché
-> explícita, generar desde el grafo, MCP. Las secciones de abajo conservan el texto del 2026-10-09 salvo donde
-> se indica; las decisiones 48–56 son las del dueño del 2026-11-15.
+> (`drafts/plan-producto.md`, con su avance al final; palabras del dueño en `drafts/sesion-2026-11-15.md`;
+> diseños, borradores del coordinador, en `drafts/diseno-{declaraciones,evaluar,generar}.md`). Estado real:
+> kimun está **en rearquitectura** y no hay release publicada. Hay, sin store, declaraciones en Clojure
+> evaluadas a proposiciones (`declare read|add|anchors|terms|about|members`) y `kimun mcp`; y el sensor que
+> pregunta a git (`stores changed|seen`; `sense|health|heartbeat` con `:scope`). Se borraron `python/`, los
+> adaptadores, los formatos de store anteriores al 4, la paridad v1, journal, packs y `docs status`. **En
+> curso**: `declare generate`. **No existe todavía**: nodos de código, relaciones como nodos, varias clases por
+> nodo, que las declaraciones reemplacen al store, generar desde las proposiciones, la capa G. Las secciones
+> de abajo conservan el texto del 2026-10-09 salvo donde se indica; las decisiones 48–56 son las del dueño.
 
 > Solo estado actual y decisiones vigentes. La autoridad y el orden de lectura están en
 > `docs/v2/README.md`. Los pendientes, en `12-ecosistema-y-pendientes.md`. La historia
@@ -50,8 +49,10 @@ no es identidad — `14 §21`). Cada capacidad tiene un dueño:
   `13-include.md`.
 - **Descomposición de código** — la hace el pod de tree-sitter (`pods/treesitter`,
   `kimun.host.treesitter`), único mecanismo; no hay adaptadores ni código Python (borrados el 2026-11-15).
-- **`serve`** — API HTTP sobre los comandos, con token opcional. CLI:
-  `06-superficies-y-cli.md`.
+- **`serve`** — API HTTP sobre los comandos; segura por defecto (rutas confinadas al proyecto; token
+  obligatorio fuera de loopback o con `--cors`). CLI: `06-superficies-y-cli.md`.
+- **Declaraciones y MCP (sin store)** — `declare *` evalúa archivos Clojure bajo `kimun/` a proposiciones
+  y `kimun mcp` los sirve por stdio. CLI: `06-superficies-y-cli.md`; diseño: `drafts/diseno-evaluar.md`.
 - **Empaquetado** — `bb jar`, `bb release` y el launcher. Dueño: `08-distribucion.md`.
 - **No implementado** — el evaluador anclado (S4) y los derivados (S5), los motores de derivados
   (el cliente Python no existe: `C2` quedó diferida el 2026-11-15 hasta que kimun esté probado, decisión 47 y `12 §1`). `06 §6`, `docs/archive/v2/09-evaluador-anclado.md`.
@@ -65,9 +66,7 @@ no es identidad — `14 §21`). Cada capacidad tiene un dueño:
 `stores verify` 228,4 s → 32,0 s; `.kimun/` 606 MB → 97,7 MB; migración desde v1 522 s → 71 s.
 Abrir y commitear no crecen con la historia.
 
-**Suite** — (el plan del 2026-11-16 cita 1 176 pruebas; no re-medido aquí) 890 tests / 9.584 aserciones, 109 namespaces (última corrida de `bb test`,
-2026-10-09, con el pod tree-sitter construido), 0 fallos. `bb oracle`: 9/9 ids
-canónicos; `bb lint`: 99 ficheros.
+**Suite** — última corrida completa de `bb test` con el pod (2026-11-16, commit `8e5780a6`): 1.053 tests, 10.064 aserciones, 129 namespaces, 0 fallos y 0 errores; `bb oracle` sin desajustes; `include check` limpio. `bb lint`: 109 archivos (corrida de este documento, sobre `main`).
 
 **Inclusión Wittgenstein (`C01–C28`, 2026-11-14)** — manifiesto `T01` en
 `tests/wittgenstein-manifest.md` y `test/fixtures/wittgenstein/manifest.edn`: **28**
@@ -149,3 +148,15 @@ build sigue en el CAS, así que el store no baja de los 433 KB del desk que inde
 | 54 | **la paridad con v1 queda suspendida** (dueño, 2026-11-15): «olvidémonos de la paridad con v1 hasta que terminemos esta "rearquitecturización" que estamos haciendo.» Suspendida, no borrada; un corte que cambie el comportamiento a propósito retira o ajusta la prueba de paridad diciéndolo | `drafts/sesion-2026-11-15.md §8`; `12 §1` |
 | 55 | **nada se borra sin marcar; la limpieza se declara por proyecto y tipo de dato** (dueño, 2026-11-15): «no deberíamos borrar nada así automáticamente, algo que nada referencia se marca como "borrado" y luego si queremos por ejemplo reducir el caché o limpiar se quita.» y «eso debería poder declararse por cada proyecto y según cada tipo de dato.» Supuesto del equipo, sin confirmar: sin política declarada no se quita nada | `drafts/sesion-2026-11-15.md §5` |
 | 56 | **borrar la grasa** (dueño, 2026-11-15): «necesito que borres toda la grasa, incluidos esos adaptadores. No tengas cuidado, todo lo que se borra vive en el historial git.» Hecho ese día: `python/`, el subsistema de adaptadores, los formatos de store viejos y el código muerto del kernel y el host; el resto, en el plan (`drafts/plan-producto.md`, etapas 0–2). Sobre las ideas de arquitectura: «Creo que lo que traza las fronteras al final es clean_code, NO duplicar fronteras» | `drafts/sesion-2026-11-15.md §3`, `§9`; `drafts/plan-producto.md` |
+
+## 4. Elecciones del coordinador, revisables por el dueño (2026-11-16)
+
+No son decisiones del dueño: las tomó el coordinador al diseñar o integrar, y el dueño puede cambiarlas. Las palabras del dueño están en las filas 48–56.
+
+| elección | qué se hizo | referencia |
+|---|---|---|
+| dónde vive el puntero «miré hasta este commit» | en `<store>/seen.edn` (`{:commit sha}`), fuera del log; se mueve con `stores seen --set COMMIT` (COMMIT obligatorio; `HEAD` vale) y `include build`; sin puntero, `stores changed` pide `--since` | `drafts/diseno-declaraciones.md §4`; `runs/subagents/2026-11-16-puntero/REPORT.md` |
+| la forma de las declaraciones | archivos Clojure bajo `kimun/`; el contexto es el `ns` (con docstring); una relación se define con `(relation nombre "docstring")`; se evalúa aislada con `sci`; un contexto requiere a otro con `(:require [a :refer [r]])` y `:r` sale calificado `a/r`; los nodos salen etiquetados (`{:term}`, `{:proposition}`, `{:anchor}`, `{:files}`) | `drafts/diseno-evaluar.md` §2, §9–§12; `runs/subagents/2026-11-16-evaluar/REPORT.md`, `…-proyecto-declaraciones/REPORT.md` |
+| `serve` sin token en loopback | `Host` debe ser loopback con el puerto del servidor, un `Origin` ajeno se rechaza (salvo `/health`), todo `POST` con cuerpo exige `application/json`, y `--cors` exige token; fuera de loopback sin token no arranca | `runs/subagents/2026-11-16-serve-seguro/REPORT.md` («Decisión del coordinador, punto 3») |
+| la raíz del proyecto | el directorio más cercano, subiendo desde el cwd, que contiene `kimun/`; si ninguno, la raíz del repositorio git; si no, el cwd; las rutas de `(at …)` y `(files …)` son relativas a ella | `drafts/diseno-evaluar.md §11`; `runs/subagents/2026-11-16-preguntar/REPORT.md` («Junta con el corte 3a») |
+| los ordinales de `(at …)` | `:n` y los ordinales de título cuentan desde 1 en la declaración (`anchors` cuenta desde 0 por dentro) | `drafts/diseno-evaluar.md §8`; `runs/subagents/2026-11-16-anclas-declaradas/REPORT.md` (ambigüedad 1) |

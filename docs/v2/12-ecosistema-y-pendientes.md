@@ -5,6 +5,7 @@
 > se leen a través de él: lo que rehace git a nivel de archivo está diferido (nota «Rehacer git» de §1), la
 > paridad v1 está suspendida, y `M2` se redefine (`drafts/sesion-2026-11-15.md §4`). Las filas conservan su
 > texto del momento en que se escribieron; abajo solo se corrigen las frases que hoy son falsas.
+> Qué entró y qué falta de ese plan al 2026-11-16: «Avance al 2026-11-16» al final de `drafts/plan-producto.md`.
 
 > **Actualización 2026-11-15 (reemplazo de sldb):** el dueño fijó que kimun reemplazará el núcleo
 > de sldb y que el wrapper Python se agrega **después** de que kimun esté probadamente
@@ -90,8 +91,8 @@ paridad v1 suspendida durante la rearquitectura (`docs/v2/drafts/sesion-2026-11-
 >
 > **Paridad v1 suspendida (dueño, 2026-11-15):** «olvidémonos de la paridad con v1 hasta que
 > terminemos esta "rearquitecturización" que estamos haciendo». Mientras dure, «paridad v1 sin
-> brechas» **no** es un invariante: las pruebas de paridad siguen en la suite, pero un corte de
-> la rearquitectura que cambie el comportamiento a propósito las retira o las ajusta diciéndolo,
+> brechas» **no** es un invariante: las pruebas de paridad se borraron el 2026-11-16 (`5ed1deed`); un corte de
+> la rearquitectura que cambie el comportamiento a propósito ajusta lo que lo fija diciéndolo,
 > en vez de conservar un quirk de v1. Siguen valiendo `bb lint`, `bb test`, `bb oracle` e
 > `include check`. Contexto: `docs/v2/drafts/sesion-2026-11-15.md`.
 

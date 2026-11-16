@@ -8,9 +8,11 @@ How an agent works in this repository.
 2. `README.md`
 3. `docs/v2/00-nucleo.md` — the core of kimun in one page: what it is and must not stop being
 4. `docs/v2/drafts/sesion-2026-11-15.md` — the owner's words (verbatim) that changed the frame;
-   `docs/v2/drafts/diseno-declaraciones.md` — the design that follows from them;
-   `docs/v2/drafts/plan-producto.md` — the plan the owner approved on 2026-11-16, by stages
-5. `docs/v2/README.md` — authority table and reading order (the three drafts above are the
+   `docs/v2/drafts/diseno-declaraciones.md`, `diseno-evaluar.md` and `diseno-generar.md` — the
+   coordinator's design drafts (declare, evaluate, generate): his choices, not owner decisions;
+   `docs/v2/drafts/plan-producto.md` — the plan the owner approved on 2026-11-16, by stages, with
+   its progress at the end
+5. `docs/v2/README.md` — authority table and reading order (the drafts above are the
    current direction even though they are drafts)
 6. `docs/v2/05-estado.md` — status and decisions
 7. `docs/faq.md` — scope and what closes a task
@@ -25,13 +27,19 @@ Then the documents the task references. Always cite files by path when reporting
 
 kimun sees, synthesizes and generates; it asks nothing of the sources, because reality lives
 outside it. Declarations are Clojure that runs. Up to the file level git does the monitoring;
-inside a file only what is anchored matters. Do not implement anything that depends on an open
+inside a file only what is anchored matters. As of 2026-11-16 this exists, with no store:
+`declare read|add|anchors|terms|about|members` over the `*.clj` under `kimun/`, the sensor that
+asks git (`stores changed|seen`; `sense|health|heartbeat` with `:scope`), and `kimun mcp`.
+Generating from the propositions (`declare generate`, `docs/v2/drafts/diseno-generar.md`) is in
+progress, not done; code nodes, the replacement of the old store and the `G` layer do not exist.
+Do not implement anything that depends on an open
 decision (`docs/v2/drafts/preguntas-abiertas.md`; today `D-G`, the truth axis of the G layer,
 among others). Invariants no work may break: `bb lint` and `bb test` green, `bb oracle`,
 `bin/kimun include check` clean. **Parity with sldb v1 is suspended** (owner, 2026-11-15): a
 cut that changes behaviour on purpose retires or adjusts the parity test and says so. **Redoing
-git is explicitly deferred**: do not keep building the file-level Merkle store, packs,
-revisions or journal as a goal of its own.
+git is explicitly deferred**: do not keep building the file-level Merkle store or revisions as a
+goal of its own (packs, the unreachable inventory, the journal and `docs status` were deleted on
+2026-11-16).
 
 Branches: `main` is the only line of work. Close a branch as soon as it is merged or abandoned,
 after copying anything worth keeping to `runs/`. Evidence of past sessions is in `runs/research/`.
@@ -48,6 +56,13 @@ after copying anything worth keeping to `runs/`. Evidence of past sessions is in
   `flock /tmp/kimun-bb.lock env KIMUN_POD=<main checkout>/pods/treesitter/target/release/pod-kimun-treesitter ~/bin/memcap 3 bb …`
   (`KIMUN_POD` points a worktree at the built pod, which lives only in the main checkout).
   Executors run targeted tests, never the whole `bb test`; the coordinator does.
+- **A Babashka evaluator of our own must pin its namespace.** Babashka is `sci` inside, and
+  `sci/eval-form` evaluates in the process's current namespace: a test can pass alone and fail
+  in the suite (`runs/subagents/2026-11-16-evaluar/REPORT.md`, third round). Run the new
+  namespaces together with about twenty others before reporting.
+- **Do not delete with wildcards in temporary directories.** Make them with `mktemp -d` and
+  delete the exact files you created.
+- **An executor delivers its report once**, at the end, and stops; no second copy by another channel.
 - **Never `git stash`** when worktrees exist: the stash is shared by all of them and two
   executors overwrite each other's changes. To compare against the old code, save a patch and a
   copy of `src/`, `git checkout -- src/`, run, and re-apply.
@@ -56,6 +71,7 @@ after copying anything worth keeping to `runs/`. Evidence of past sessions is in
 
 - `kimun` is the data/document layer: a stable store (anchors and hashes of the environment;
   document trees live in a recomputable cache) plus the Markdown, models and query surfaces.
+  The new path (declarations, `declare *`, `mcp`) does not use a store (only `declare anchors` reads the pointer `.kimun/seen.edn` if one is there).
   The graph (models, G layer) is meant to become a separate package (`12 §1`). `sldb` v1 and
   `kgdb` are frozen and superseded by it.
 - The desk is a kimun store at `.kimun/`, never committed. Build it with

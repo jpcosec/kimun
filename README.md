@@ -15,25 +15,47 @@ debería exigir nada al resto.»
 
 ## Status
 
-**kimun is being re-architected; there is no published release.** What exists today is the
-previous design's implementation, pure Clojure (`.cljc`) on Babashka, in the middle of being cut
-back toward the direction above (the deletion cuts are in progress):
+**kimun is being re-architected; there is no published release.** The direction is the one
+above; the plan, in stages, is `docs/v2/drafts/plan-producto.md` (approved by the owner on
+2026-11-16; its last section says how far each stage is). What works today, in two blocks.
 
-- A content-addressed store `.kimun/`, with Markdown documents parsed (tree-sitter pod),
-  anchored and rendered; typed documents, fields and sections, marks on units, an index,
-  `find`, edges and a graph view, semantic tags, an HTTP `serve` (loopback by default; paths confined to the project; a token is required off loopback or with `--cors`) and an MCP server over stdio (`kimun mcp`: the `declare` and read-only `stores` commands as tools).
-- Not there yet: declarations as Clojure that runs, relations as nodes, several classes per
-  node, code nodes, a git-based sensor as the default, materialization from the graph, MCP.
-  Parity with sldb v1 is suspended. The contextual `G` layer waits for owner decision `D-G`:
-  its capabilities (`docs/v2/tests/wittgenstein-manifest.md`) are not yet implemented.
+**New, no store needed** (reads files; writes nothing unless it says so):
 
-The plan, in stages, is `docs/v2/drafts/plan-producto.md` (approved by the owner on 2026-11-16);
-the session that changed the frame is `docs/v2/drafts/sesion-2026-11-15.md`; its design is
-`docs/v2/drafts/diseno-declaraciones.md`. Those are drafts, and they are the current direction.
+- Declarations in Clojure under `kimun/`: `declare read` evaluates them (isolated, with `sci`)
+  into propositions `(R A B)`. A context is the file's `ns`; contexts `:require` each other to
+  share relations.
+- `declare add` appends one form to a declaration file (the only write of the group).
+- `declare anchors [--since COMMIT]` resolves the `(at …)` anchors of declarations against the
+  files; git says which files changed, and only those are opened.
+- Asking: `declare terms`, `declare about TERM | --path PATH`, `declare members 'PATTERN'`.
+- `kimun mcp`: an MCP server over stdio with nine tools (the `declare` commands and read-only
+  `stores` ones). Not tried against a real MCP client.
+
+**Earlier, with a store** (`.kimun/`, content-addressed): Markdown documents (tree-sitter pod),
+typed documents with models, fields, sections and marks on units, an index and `find`, edges
+and a graph view, semantic tags, and `serve` (HTTP; loopback by default, paths confined to the
+project, a token required off loopback or with `--cors`). The sensor asks git: `stores
+changed|seen`, and `stores sense|health|heartbeat` open only the documents git says changed
+(`:scope`; `--full` reads them all). The journal, packs and `docs status` were deleted.
+
+**Not there yet** (checked against the code):
+
+- Generating from the propositions: `declare generate` is being implemented
+  (`docs/v2/drafts/diseno-generar.md`); it is not in `main`.
+- Reading code: there are no code nodes, and the tree-sitter pod has the Markdown and Python
+  grammars (`pods/treesitter/Cargo.toml`), not Clojure.
+- Declarations do not replace the old store: the two paths live side by side.
+- The contextual `G` layer waits for owner decision `D-G`; its capabilities
+  (`docs/v2/tests/wittgenstein-manifest.md`) are not yet implemented.
+- A published release (see Install). Parity with sldb v1 is suspended.
+
+Who decided what: the direction is the owner's words (`docs/v2/drafts/sesion-2026-11-15.md`).
+`diseno-declaraciones.md`, `diseno-evaluar.md` and `diseno-generar.md` (same folder) are drafts
+by the coordinator: his choices, not owner decisions.
 
 ## Install
 
-There is no published release: no tag exists and the release workflow has never run. From a
+There is no published release: no release tag exists (`git tag` lists two old, non-release tags) and the release workflow has never run. From a
 checkout, `bin/kimun` is a development launcher (needs `bb` ≥ 1.13 on PATH, and the tree-sitter
 pod built with `bb pod` for the tree-sitter parser).
 
@@ -49,17 +71,49 @@ no pod has been published yet.
 
 ## Five-minute tour
 
+Declarations, no store. A minimal project with one commit (needs `bb` ≥ 1.13; `kimun` stands
+for this checkout's `bin/kimun`, run from the project directory):
+
 ```bash
-bin/kimun stores init --name my-kb          # create .kimun/ in the working directory
-bin/kimun docs ingest notes.md --name notes # parse Markdown and commit it as a document
-bin/kimun docs list --format text           # name, tree id, and for typed ones model/state/path
-bin/kimun docs render notes                 # canonical Markdown of a document
-bin/kimun find "some term"                  # physical, semantic and address search
-bin/kimun stores health                     # verdict: ok | degraded | needs-human
+mkdir -p kimun docs && git init -q .
+printf '# Spec\n\n## Cache\n\nThe cache is derived and may be deleted.\n' > docs/spec.md
+cat > kimun/base.clj <<'EOF'
+(ns base "Relations every context of this project can use.")
+(relation isa "A is an instance of the class B.")
+(relation anchors "A is the text that B stands on.")
+(relation decides "A is a decision about B.")
+EOF
+cat > kimun/decisiones.clj <<'EOF'
+(ns decisiones "Decisions of the project." (:require [base :refer [isa anchors decides]]))
+(isa (files "docs/**/*.md") Doc.spec)
+(anchors cache-decision (at "docs/spec.md" ["Spec" "Cache"]))
+(decides cache-decision Cache)
+EOF
+git add -A && git commit -qm init
+
+kimun declare read --format text                   # three propositions, each with file and line
+kimun declare anchors --since HEAD --format text   # the anchor is :anchored; no file was opened
+sed -i 's/may be deleted/can be deleted/' docs/spec.md
+kimun declare anchors --since HEAD --format text   # now :mutated: git said it changed, kimun opened it
+kimun declare about Cache --format text            # what the declarations say about a term
+kimun declare add --to kimun/decisiones.clj '(decides cache-decision Spec.format)' --format text
 ```
 
-Every command prints one envelope (`--format json|edn|text`) and exits with a documented
-code. `bin/kimun --help` lists every group.
+Also `declare terms`, `declare about --path docs/spec.md` and `declare members 'docs/**/*.md'`.
+A real session of this tour is in `runs/subagents/2026-11-16-docs-al-dia-2/tour.txt`. Every
+command prints one envelope (`--format json|edn|text`) and exits with a documented code;
+`bin/kimun --help` lists every group.
+
+The store, in a git repository (`.kimun/` is created in the working directory):
+
+```bash
+kimun stores init --name my-kb          # create .kimun/
+kimun docs ingest notes.md --name notes # parse Markdown and commit it as a document
+kimun docs list --format text           # name, tree id, class
+kimun docs render notes                 # canonical Markdown of a document
+kimun stores seen --set HEAD            # the pointer "looked up to this commit"
+kimun stores health --format text       # verdict: ok | degraded | needs-human (:scope :git)
+```
 
 ## Build and test
 
@@ -71,7 +125,8 @@ bb desk                           # build this repo's desk store (.kimun) from k
 
 ## Read next
 
-- `docs/v2/drafts/plan-producto.md` — the approved plan, by stages; `docs/v2/drafts/sesion-2026-11-15.md` — the owner's words
+- `docs/v2/drafts/plan-producto.md` — the approved plan, by stages, with its progress; `docs/v2/drafts/sesion-2026-11-15.md` — the owner's words
+- `docs/v2/drafts/diseno-declaraciones.md`, `diseno-evaluar.md`, `diseno-generar.md` — the coordinator's design drafts (declare, evaluate, generate)
 - `docs/v2/README.md` — authority table and reading order for the direction docs
 - `docs/v2/05-estado.md` — current status and decisions
 - `docs/v2/06-superficies-y-cli.md` — the CLI inventory and the envelope/exit-code contract
@@ -81,11 +136,15 @@ bb desk                           # build this repo's desk store (.kimun) from k
 ## Layout
 
 - `src/kimun/{kernel,host,surface/markdown}/` — rings 0/1/2 of the kernel (`bb lint` enforces the rings)
-- `src/kimun/cli/` — the CLI (ring 3, `kimun.*` may require the kernel rings, never the reverse)
+- `src/kimun/surface/` — the surfaces over them: declarations (`declare.cljc`, `declared_anchors.cljc`, `propositions.cljc`), `mcp.cljc`, `changes.cljc` (what git says changed), diagnostics, HTTP, models, index
+- `src/kimun/graph/` — the graph package (over the base, never the CLI)
+- `src/kimun/cli/` — the CLI (`kimun.*` may require the kernel rings, never the reverse)
 - `test/`, `test/fixtures/cli/` — suite and golden envelopes
-- `scripts/` — `check_rings.clj` (lint), `canon_oracle.py` (oracle, Python 3), `release.clj` (bundles)
+- `scripts/` — `check_rings.clj` (lint), `canon_oracle.py` (oracle, Python 3), `release.clj` (bundles), `store_size.clj`, `tour_mutation.sh`, `bench/`
+- `pods/treesitter/` — the tree-sitter pod (Rust; `bb pod`)
 - `release.edn` — pinned Babashka version, platform matrix and asset digests
 - `kimun.include.edn` — what this repo versions in git; the store itself is built, not committed
+- `kimun/` (in a project kimun observes, not in this repo) — the folder of its declarations: `*.clj`, one context per file
 - `docs/v2/` — direction (highest authority); `docs/archive/` — historical material
 - `desk/` — tracked desk sources; `.kimun/` — the built store (the include declares no models or documents today)
 - `docs/archive/raw/source/` — frozen source material; `runs/` — execution evidence

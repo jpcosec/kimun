@@ -1,0 +1,180 @@
+# Sesión real (2026-11-16), proyectos temporales (mktemp -d), bin/kimun de este worktree.
+# Parte 1 = el primer bloque de código del README ejecutado tal cual (las líneas de cat/printf/git se ejecutaron sin eco).
+
+## Parte 1: el bloque de declaraciones del README (sin store)
+
+$ kimun declare read --format text
+files: [{:context "base", :relations {"isa" {:doc "A is an instance of the class B."}, "anchors" {:doc "A is the text that B stands on."}, "decides" {:doc "A is a decision about B."}}, :propositions [], :file "kimun/base.clj"} {:context "decisiones", :relations {}, :propositions [{:r "base/isa", :a {:files "docs/**/*.md"}, :b {:term "Doc.spec"}, :context "decisiones", :at {:file "kimun/decisiones.clj", :line 2}, :id "0ca002a89105597fc73bd270d2488baf3a4f8d35f8a7f505ebb69a998621ad4c"} {:r "base/anchors", :a {:term "cache-decision"}, :b {:anchor {:path "docs/spec.md", :locator [["Spec" "Cache"]]}}, :context "decisiones", :at {:file "kimun/decisiones.clj", :line 3}, :id "f8c16cb51ac40ba94ef8ce549ed5b9dde6875417af4595b8ae91236f8259f44b"} {:r "base/decides", :a {:term "cache-decision"}, :b {:term "Cache"}, :context "decisiones", :at {:file "kimun/decisiones.clj", :line 4}, :id "e0d9407003784f088e6ca61e634bfa31a1e6b2b979dd99725dee10974eebdbf8"}], :file "kimun/decisiones.clj"}]
+root: /tmp/tmp.7sWzw4b9ZC
+summary: {:files 2, :relations 3, :propositions 3}
+[exit 0]
+
+$ kimun declare anchors --since HEAD --format text
+anchors: [{:role :b, :r "base/anchors", :proposition "f8c16cb51ac40ba94ef8ce549ed5b9dde6875417af4595b8ae91236f8259f44b", :candidates [], :other {:term "cache-decision"}, :opened false, :declared-at {:file "kimun/decisiones.clj", :line 3}, :status :anchored, :kind :section, :anchor {:path "docs/spec.md", :locator [["Spec" "Cache"]]}}]
+files: [{:file "kimun/base.clj", :context "base", :propositions []} {:file "kimun/decisiones.clj", :context "decisiones", :propositions [{:r "base/isa", :a {:files "docs/**/*.md"}, :b {:term "Doc.spec"}, :context "decisiones", :at {:file "kimun/decisiones.clj", :line 2}, :id "0ca002a89105597fc73bd270d2488baf3a4f8d35f8a7f505ebb69a998621ad4c"} {:r "base/anchors", :a {:term "cache-decision"}, :b {:anchor {:path "docs/spec.md", :locator [["Spec" "Cache"]]}}, :context "decisiones", :at {:file "kimun/decisiones.clj", :line 3}, :id "f8c16cb51ac40ba94ef8ce549ed5b9dde6875417af4595b8ae91236f8259f44b"} {:r "base/decides", :a {:term "cache-decision"}, :b {:term "Cache"}, :context "decisiones", :at {:file "kimun/decisiones.clj", :line 4}, :id "e0d9407003784f088e6ca61e634bfa31a1e6b2b979dd99725dee10974eebdbf8"}]}]
+head: 3dde28aa014122c30363fdf165a4009bb4a507d0
+pointer: nil
+root: /tmp/tmp.7sWzw4b9ZC
+since: 3dde28aa014122c30363fdf165a4009bb4a507d0
+summary: {:files 2, :anchors 1, :opened 0, :by-status {:anchored 1}}
+[exit 0]
+
+$ kimun declare anchors --since HEAD --format text
+anchors: [{:role :b, :r "base/anchors", :proposition "f8c16cb51ac40ba94ef8ce549ed5b9dde6875417af4595b8ae91236f8259f44b", :hash "6198801d781070e49b2ae0f8fca454c518b0b475745c64ef031ec7e34032abc9", :candidates [], :other {:term "cache-decision"}, :opened true, :declared-at {:file "kimun/decisiones.clj", :line 3}, :status :mutated, :kind :section, :anchor {:path "docs/spec.md", :locator [["Spec" "Cache"]]}, :before "a46b4748c124769e46bc5ad8f04c510aaeff7da8507df3457516f791db3c9492"}]
+files: [{:file "kimun/base.clj", :context "base", :propositions []} {:file "kimun/decisiones.clj", :context "decisiones", :propositions [{:r "base/isa", :a {:files "docs/**/*.md"}, :b {:term "Doc.spec"}, :context "decisiones", :at {:file "kimun/decisiones.clj", :line 2}, :id "0ca002a89105597fc73bd270d2488baf3a4f8d35f8a7f505ebb69a998621ad4c"} {:r "base/anchors", :a {:term "cache-decision"}, :b {:anchor {:path "docs/spec.md", :locator [["Spec" "Cache"]]}}, :context "decisiones", :at {:file "kimun/decisiones.clj", :line 3}, :id "f8c16cb51ac40ba94ef8ce549ed5b9dde6875417af4595b8ae91236f8259f44b"} {:r "base/decides", :a {:term "cache-decision"}, :b {:term "Cache"}, :context "decisiones", :at {:file "kimun/decisiones.clj", :line 4}, :id "e0d9407003784f088e6ca61e634bfa31a1e6b2b979dd99725dee10974eebdbf8"}]}]
+head: 3dde28aa014122c30363fdf165a4009bb4a507d0
+pointer: nil
+root: /tmp/tmp.7sWzw4b9ZC
+since: 3dde28aa014122c30363fdf165a4009bb4a507d0
+summary: {:files 2, :anchors 1, :opened 1, :by-status {:mutated 1}}
+[exit 0]
+
+$ kimun declare about Cache --format text
+exact: false
+files: []
+levels: 1
+results: [{:via :term, :proposition {:r "base/decides", :a {:term "cache-decision"}, :b {:term "Cache"}, :context "decisiones", :at {:file "kimun/decisiones.clj", :line 4}, :id "e0d9407003784f088e6ca61e634bfa31a1e6b2b979dd99725dee10974eebdbf8"}, :side :b, :matched "Cache", :other {:term "cache-decision"}}]
+root: /tmp/tmp.7sWzw4b9ZC
+summary: {:results 1}
+term: Cache
+[exit 0]
+
+$ kimun declare add --to kimun/decisiones.clj (decides cache-decision Spec.format) --format text
+added: true
+file: kimun/decisiones.clj
+propositions: [{:r "base/decides", :a {:term "cache-decision"}, :b {:term "Spec.format"}, :context "decisiones", :at {:file "kimun/decisiones.clj", :line 5}, :id "9bb30828675428c2e147dd80fde14cff3b2a496ce3946830e82454953538c20a"}]
+relations: []
+root: /tmp/tmp.7sWzw4b9ZC
+[exit 0]
+
+DIR=/tmp/tmp.7sWzw4b9ZC
+
+## Parte 1b: terms, about --path, members (mismo proyecto, sesión previa equivalente; el glob de `members` iba entre comillas simples) y `stores changed` sin store (error esperado)
+
+$ kimun declare terms --format text
+files: []
+root: /tmp/tmp.KMDjpQ3PB9
+summary: {:terms 4, :implicit 1}
+terms: [{:term "Cache", :count 1, :ancestors [], :implicit false} {:term "Doc", :count 0, :ancestors [], :implicit true} {:term "Doc.spec", :count 1, :ancestors ["Doc"], :implicit false} {:term "cache-decision", :count 2, :ancestors [], :implicit false}]
+[exit 0]
+
+$ kimun declare about Cache --format text
+exact: false
+files: []
+levels: 1
+results: [{:via :term, :proposition {:r "base/decides", :a {:term "cache-decision"}, :b {:term "Cache"}, :context "decisiones", :at {:file "kimun/decisiones.clj", :line 7}, :id "e0d9407003784f088e6ca61e634bfa31a1e6b2b979dd99725dee10974eebdbf8"}, :side :b, :matched "Cache", :other {:term "cache-decision"}}]
+root: /tmp/tmp.KMDjpQ3PB9
+summary: {:results 1}
+term: Cache
+[exit 0]
+
+$ kimun declare about --path docs/spec.md --format text
+files: []
+path: docs/spec.md
+results: [{:via :files, :pattern "docs/**/*.md", :proposition {:r "base/isa", :a {:files "docs/**/*.md"}, :b {:term "Doc.spec"}, :context "decisiones", :at {:file "kimun/decisiones.clj", :line 5}, :id "0ca002a89105597fc73bd270d2488baf3a4f8d35f8a7f505ebb69a998621ad4c"}, :side :a, :other {:term "Doc.spec"}} {:via :anchor, :proposition {:r "base/anchors", :a {:term "cache-decision"}, :b {:anchor {:path "docs/spec.md", :locator [["Spec" "Cache"]]}}, :context "decisiones", :at {:file "kimun/decisiones.clj", :line 6}, :id "f8c16cb51ac40ba94ef8ce549ed5b9dde6875417af4595b8ae91236f8259f44b"}, :side :b, :locator [["Spec" "Cache"]], :other {:term "cache-decision"}}]
+root: /tmp/tmp.KMDjpQ3PB9
+summary: {:results 2}
+[exit 0]
+
+$ kimun declare members docs/**/*.md --format text
+files-from: git
+members: ["docs/spec.md"]
+pattern: docs/**/*.md
+root: /tmp/tmp.KMDjpQ3PB9
+summary: {:members 1}
+[exit 0]
+
+$ kimun stores changed --format text
+✗ cli/no-store: no kimun store found (no .kimun/ here or in a parent directory, no --store, no $KIMUN_STORE): run `kimun stores init` or pass --store PATH
+[exit 5]
+
+
+## Parte 2: tour del store (proyecto aparte con notes.md; salidas recortadas a 200 columnas y 12 líneas)
+# La corrida anterior con git: stores seen --set HEAD / stores changed / stores health dieron exit 0, scope :mode :git :changed 0 :opened 0.
+# Nota: find "term" sobre un documento genérico dio find/empty (exit 1) incluso tras rebuild-indexes: no entra al tour.
+
+$ kimun stores init --name my-kb --format text
+actor: human/jp
+capabilities: {"human/jp" :all, "kimun/derive" :all, "kimun/materialize" :all}
+name: my-kb
+path: /tmp/tmp.0WbyHKpXUn/.kimun
+[exit 0]
+
+$ kimun docs ingest notes.md --name notes --format text
+anchor: notes.md
+blocks: 4
+class: generic/md
+name: notes
+path: /tmp/tmp.0WbyHKpXUn/notes.md
+tree: 01M7HBPVK3PHQE7JYBTQP0QD2C
+revision: b9441e909cd98f10b7cadbfc17b6104275ca4052dd393fed0263404605446b64
+[exit 0]
+
+$ kimun docs list --format text
+{:name "notes", :tree "01M7HBPVK3PHQE7JYBTQP0QD2C", :root "952f798f80819376a9a732a140e7bca519fbc72f44bb55a59497d917aeda4317", :class "generic/md"}
+revision: b9441e909cd98f10b7cadbfc17b6104275ca4052dd393fed0263404605446b64
+[exit 0]
+
+$ kimun docs render notes --format text
+# Notes
+
+Some term here.
+
+## Next
+
+more
+
+[exit 0]
+
+$ kimun rebuild-indexes --format text
+bytes: 241
+cache: index/b9441e909cd98f10b7cadbfc17b6104275ca4052dd393fed0263404605446b64.edn
+complete: true
+documents: 0
+head: b9441e909cd98f10b7cadbfc17b6104275ca4052dd393fed0263404605446b64
+models: 0
+pruned: 0
+skipped: []
+tags: 0
+revision: b9441e909cd98f10b7cadbfc17b6104275ca4052dd393fed0263404605446b64
+[exit 0]
+
+$ kimun find term --format text
+✗ find/empty: nothing found for "term"
+  global: false
+  in: all
+  term: term
+[exit 1]
+
+$ kimun stores health --format text
+actions: []
+findings: []
+next: nil
+scope: {:mode :full, :since nil, :head nil, :changed nil, :opened 1}
+status: ok
+summary: PASS: store integrity — 1 documents in 0 models
+revision: b9441e909cd98f10b7cadbfc17b6104275ca4052dd393fed0263404605446b64
+[exit 0]
+
+
+## Parte 2b: con git (primera corrida del tour del store, repo con un commit; salida de las tres órdenes)
+
+$ kimun stores seen --set HEAD --format text
+behind: false
+commit: ece8ecd6cd093378d437f65619e7d805b3787da0
+head: ece8ecd6cd093378d437f65619e7d805b3787da0
+previous: nil
+[exit 0]
+
+$ kimun stores changed --format text
+changed: []
+dirty: false
+pointer: ece8ecd6cd093378d437f65619e7d805b3787da0
+since: ece8ecd6cd093378d437f65619e7d805b3787da0
+summary: {:changed 0, :known 0, :opened 0, :marks 0, :by-status {}}
+[exit 0]
+
+$ kimun stores health --format text
+scope: {:mode :git, :since "ece8ec…", :head "ece8ec…", :changed 0, :opened 0}
+status: ok
+[exit 0]
