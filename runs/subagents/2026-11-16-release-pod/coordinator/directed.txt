@@ -1,0 +1,8 @@
+
+Testing kimun.cli.release-test
+release_test: bundle --version in 302 ms
+
+Testing kimun.lint-test
+
+Ran 11 tests containing 114 assertions.
+0 failures, 0 errors.
