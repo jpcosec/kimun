@@ -1,0 +1,17 @@
+drwxr-xr-x 0/0               0 1979-12-31 21:00 kimun-2.0.0-alpha.1-linux-amd64/
+-rw-r--r-- 0/0            1074 1979-12-31 21:00 kimun-2.0.0-alpha.1-linux-amd64/LICENSE
+-rw-r--r-- 0/0             342 1979-12-31 21:00 kimun-2.0.0-alpha.1-linux-amd64/MANIFEST.edn
+-rw-r--r-- 0/0              14 1979-12-31 21:00 kimun-2.0.0-alpha.1-linux-amd64/VERSION
+drwxr-xr-x 0/0               0 1979-12-31 21:00 kimun-2.0.0-alpha.1-linux-amd64/bin/
+-rwxr-xr-x 0/0             575 1979-12-31 21:00 kimun-2.0.0-alpha.1-linux-amd64/bin/kimun
+-rw-r--r-- 0/0             282 1979-12-31 21:00 kimun-2.0.0-alpha.1-linux-amd64/bin/kimun.cmd
+drwxr-xr-x 0/0               0 1979-12-31 21:00 kimun-2.0.0-alpha.1-linux-amd64/lib/
+-rwxr-xr-x 0/0        70059328 1979-12-31 21:00 kimun-2.0.0-alpha.1-linux-amd64/lib/bb
+-rw-r--r-- 0/0          368891 1979-12-31 21:00 kimun-2.0.0-alpha.1-linux-amd64/lib/kimun.jar
+-rwxr-xr-x 0/0         3240000 1979-12-31 21:00 kimun-2.0.0-alpha.1-linux-amd64/lib/pod-kimun-treesitter
+{:version "2.0.0-alpha.1"
+ :platform :linux-amd64
+ :bb {:version "babashka v1.13.219" :source :local-path :sha256 "da8731ca93065423dd96e60f7227b264a5093d9afa502816f1cd18efff947145"}
+ :pod {:bin "pod-kimun-treesitter" :sha256 "5ecf6172492164293f62391f3435a16a6d1952b8ba5abd11fcacf59755c43809" :origin :local-build :pinned false :smoked true}}
+5ecf6172492164293f62391f3435a16a6d1952b8ba5abd11fcacf59755c43809  pods/treesitter/target/release/pod-kimun-treesitter
+5ecf6172492164293f62391f3435a16a6d1952b8ba5abd11fcacf59755c43809  /tmp/kimun-rel-ext/kimun-2.0.0-alpha.1-linux-amd64/lib/pod-kimun-treesitter

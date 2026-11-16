@@ -1,0 +1,43 @@
+=== mutation m1
+FAIL in (local-bb-release-bundle-runs-without-bb-on-path) (/tmp/kimun-release-wt/test/kimun/cli/release_test.cljc:67)
+expected: (fs/executable? bundled)
+  actual: (not (fs/executable? "/tmp/kimun-release7302069800028450804/ext/kimun-2.0.0-alpha.1-linux-amd64/lib/pod-kimun-treesitter"))
+ERROR in (local-bb-release-bundle-runs-without-bb-on-path) (/tmp/kimun-release-wt/test/kimun/cli/release_test.cljc:67)
+expected: (= (sha256 dev-pod) (sha256 bundled))
+  actual: java.nio.file.NoSuchFileException: /tmp/kimun-release7302069800028450804/ext/kimun-2.0.0-alpha.1-linux-amd64/lib/pod-kimun-treesitter
+ERROR in (local-bb-release-bundle-runs-without-bb-on-path) (/tmp/kimun-release-wt/test/kimun/cli/release_test.cljc:67)
+expected: (= (sha256 bundled) (get-in manifest [:pod :sha256]))
+  actual: java.nio.file.NoSuchFileException: /tmp/kimun-release7302069800028450804/ext/kimun-2.0.0-alpha.1-linux-amd64/lib/pod-kimun-treesitter
+FAIL in (local-bb-release-bundle-runs-without-bb-on-path) (/tmp/kimun-release-wt/test/kimun/cli/release_test.cljc:67)
+expected: (= ["kimun.surface.markdown/treesitter" "1"] (:parser contract))
+  actual: (not (= ["kimun.surface.markdown/treesitter" "1"] ["kimun.surface.markdown/native" "1"]))
+FAIL in (local-bb-release-bundle-runs-without-bb-on-path) (/tmp/kimun-release-wt/test/kimun/cli/release_test.cljc:67)
+expected: (str/starts-with? (:grammar contract) "pod-kimun-treesitter/")
+  actual: (not (str/starts-with? "builtin" "pod-kimun-treesitter/"))
+Ran 5 tests containing 79 assertions.
+3 failures, 2 errors.
+=== mutation m2
+FAIL in (a-bundle-never-carries-another-platforms-pod-nor-silently-no-pod) (/tmp/kimun-release-wt/test/kimun/cli/release_test.cljc:217)
+expected: (= 2 (:exit r))
+  actual: (not (= 2 0))
+FAIL in (a-bundle-never-carries-another-platforms-pod-nor-silently-no-pod) (/tmp/kimun-release-wt/test/kimun/cli/release_test.cljc:217)
+expected: (str/includes? (:err r) "no tree-sitter pod compiled for macos-aarch64")
+  actual: (not (str/includes? "release: pod for macos-aarch64 packed but not smoke-tested (not this machine's platform)\n" "no tree-sitter pod compiled for macos-aarch64"))
+FAIL in (a-bundle-never-carries-another-platforms-pod-nor-silently-no-pod) (/tmp/kimun-release-wt/test/kimun/cli/release_test.cljc:217)
+expected: (str/includes? (:err r) "does not count")
+  actual: (not (str/includes? "release: pod for macos-aarch64 packed but not smoke-tested (not this machine's platform)\n" "does not count"))
+FAIL in (a-bundle-never-carries-another-platforms-pod-nor-silently-no-pod) (/tmp/kimun-release-wt/test/kimun/cli/release_test.cljc:217)
+expected: (empty? (fs/glob out "*.tar.gz"))
+  actual: (not (empty? [#object[sun.nio.fs.UnixPath 0x15995289 "/tmp/kimun-release-pod10748229787628410303/dist/kimun-2.0.0-alpha.1-macos-aarch64.tar.gz"]]))
+FAIL in (a-bundle-never-carries-another-platforms-pod-nor-silently-no-pod) (/tmp/kimun-release-wt/test/kimun/cli/release_test.cljc:217)
+expected: (= 2 (:exit r))
+  actual: (not (= 2 0))
+FAIL in (a-bundle-never-carries-another-platforms-pod-nor-silently-no-pod) (/tmp/kimun-release-wt/test/kimun/cli/release_test.cljc:217)
+expected: (str/includes? (:err r) "only fits that platform")
+  actual: (not (str/includes? "release: pod for macos-aarch64 packed but not smoke-tested (not this machine's platform)\n" "only fits that platform"))
+FAIL in (a-bundle-never-carries-another-platforms-pod-nor-silently-no-pod) (/tmp/kimun-release-wt/test/kimun/cli/release_test.cljc:217)
+expected: (empty? (fs/glob out "*.tar.gz"))
+  actual: (not (empty? [#object[sun.nio.fs.UnixPath 0x7571dba2 "/tmp/kimun-release-pod10748229787628410303/dist/kimun-2.0.0-alpha.1-macos-aarch64.tar.gz"]]))
+Ran 5 tests containing 79 assertions.
+7 failures, 0 errors.
+restored

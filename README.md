@@ -33,10 +33,19 @@ the session that changed the frame is `docs/v2/drafts/sesion-2026-11-15.md`; its
 
 ## Install
 
-There is no published release. From a checkout, `bin/kimun` is a development launcher (needs
-`bb` ≥ 1.13 on PATH, and the tree-sitter pod built with `bb pod` for anything that parses
-Markdown). `bb release --local-bb --platforms linux-amd64` builds a local bundle
-(`dist/kimun-<ver>-<plat>.tar.gz`); it is not a distribution channel.
+There is no published release: no tag exists and the release workflow has never run. From a
+checkout, `bin/kimun` is a development launcher (needs `bb` ≥ 1.13 on PATH, and the tree-sitter
+pod built with `bb pod` for the tree-sitter parser).
+
+`bb release --local-bb --platforms linux-amd64` builds a local bundle
+(`dist/kimun-<ver>-linux-amd64.tar.gz`: `bin/kimun`, `lib/bb`, `lib/kimun.jar`,
+`lib/pod-kimun-treesitter`, `MANIFEST.edn` with the sha256 of the packed pod). It needs the pod
+(`bb pod`) and is not a distribution channel. Only **linux-amd64** is built and tested. A bundle
+never carries another platform's pod: without a pod compiled for its platform the build fails,
+unless `--without-pod` asks for a bundle with no pod (declared in `MANIFEST.edn`; its launcher
+refuses `KIMUN_PARSER=treesitter`). The other platforms and the Windows launcher
+(`bin/kimun.cmd`) are not built by CI and have never been run. `release.edn` pins no pod hash:
+no pod has been published yet.
 
 ## Five-minute tour
 

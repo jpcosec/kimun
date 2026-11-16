@@ -87,11 +87,15 @@ KIMUN_POD="$DIR/lib/pod-kimun-treesitter"; export KIMUN_POD
 exec "$DIR/lib/bb" --jar "$DIR/lib/kimun.jar" -- "$@"
 ```
 
-- El pod se resuelve por `KIMUN_POD` (el launcher lo apunta a `lib/`); si el bundle no trae
-  pod, el path no existe y `kimun.host.treesitter` cae al build de desarrollo o al parser in
-  process (`parse-native`). `bb release` copia el binario de `target/pods/<plataforma>/`
-  (staging de CI) o del build de desarrollo, le da permisos de ejecución y hace smoke de
-  `version` a través del pod empaquetado.
+- El pod se resuelve por `KIMUN_POD` (el launcher lo apunta a `lib/`). Un bundle lleva el pod
+  compilado **para su plataforma** o el build falla (exit 2, dice qué falta): las únicas fuentes
+  son `target/pods/<plataforma>/` (staging de CI) y, solo si la plataforma es la de esta máquina,
+  el build de desarrollo; nunca el binario de otra plataforma. `--without-pod` construye un
+  bundle sin pod a propósito: su `MANIFEST.edn` dice `:pod nil` y su launcher se niega a correr
+  con `KIMUN_PARSER=treesitter`. `MANIFEST.edn` registra siempre el sha256 de lo empaquetado;
+  `release.edn` `:pods` `:sha256` se verifica solo si no es `nil` (hoy lo es: ningún pod
+  publicado). `bb release` hace smoke de `version` a través del pod empaquetado (solo en la
+  plataforma de la máquina). `--local-bb` solo vale para la plataforma de la máquina.
 
 - Instalación típica: `ln -s <bundle>/bin/kimun ~/.local/bin/kimun`; el launcher resuelve el enlace (test `release_test`, caso symlink).
 - El `--` es obligatorio: sin él `bb` se queda con `--version`, `--help` y `version` y responde por sí mismo.
@@ -127,8 +131,9 @@ se revisan en el diff del commit; un asset cuyo digest no coincide aborta el bui
   uberjar (`bb jar` y `bb --jar target/kimun.jar --version`) y smoke del bundle local
   (`bb release --local-bb --platforms linux-amd64`, descomprimir y correr `--version`).
 - `.github/workflows/release.yml` (tag `v*`): job `build` corre `bb lint && bb test` (sin
-  oracle), exige que el tag sea `v$(resources/VERSION)`, construye los bundles y
-  `SHA256SUMS` con `bb release --out dist` y los sube como artefacto; job `publish` crea la
+  oracle), exige que el tag sea `v$(resources/VERSION)`, compila el pod linux-amd64 (job `pod-linux-amd64`), construye el bundle linux-amd64 (las demás
+  plataformas no se publican: sin pod ni prueba) y
+  `SHA256SUMS` con `bb release --platforms linux-amd64 --out dist` y los sube como artefacto; job `publish` crea la
   GitHub Release con `bundles` y `SHA256SUMS`, y está protegido con `environment: release`,
   cuya única regla es un *required reviewer* humano.
 - Por qué el gate: la regla ID-5 de `hum-ecosystem`

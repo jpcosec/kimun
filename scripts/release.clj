@@ -1,13 +1,23 @@
 #!/usr/bin/env bb
 ;; Builds distributable bundles of `kimun` (docs/v2/08 §3–§5):
 ;;   bb release [--platforms linux-amd64,macos-aarch64] [--out dist] [--jar target/kimun.jar]
-;;              [--local-bb] [--pin]
+;;              [--local-bb] [--pin] [--without-pod]
 ;; Per platform: <out>/kimun-<version>-<platform>/{bin/kimun, bin/kimun.cmd,
-;; lib/bb, lib/kimun.jar, VERSION, LICENSE}, an archive (.tar.gz, .zip on windows) and
-;; <out>/SHA256SUMS. `--local-bb` copies the babashka found on PATH instead of downloading
-;; the pinned asset (tests, offline builds). `--pin` downloads every asset and rewrites the
-;; sha256 map of release.edn. Prints one EDN summary on stdout; exit 2 on a usage or
-;; consistency error, 3 on a digest mismatch.
+;; lib/bb, lib/kimun.jar, lib/pod-kimun-treesitter, MANIFEST.edn, VERSION, LICENSE}, an
+;; archive (.tar.gz, .zip on windows) and <out>/SHA256SUMS. `--local-bb` copies the
+;; babashka found on PATH instead of downloading the pinned asset (tests, offline builds)
+;; and is only valid for the platform of this machine. `--pin` downloads every asset and
+;; rewrites the sha256 map of release.edn. Prints one EDN summary on stdout; exit 2 on a
+;; usage or consistency error, 3 on a digest mismatch.
+;;
+;; One rule for the tree-sitter pod: a bundle carries the pod compiled FOR ITS PLATFORM
+;; or the build fails (exit 2, naming what is missing). The only sources are
+;; `target/pods/<platform>/<bin>` (CI staging) and, when <platform> is the platform of
+;; this machine, the development build `pods/treesitter/target/release/<bin>`. There is
+;; no other fallback. `--without-pod` builds a bundle with no pod on purpose: its
+;; MANIFEST.edn says `:pod nil` and its launcher refuses `KIMUN_PARSER=treesitter`.
+;; MANIFEST.edn always records the sha256 of what was packed; release.edn :pods
+;; :sha256 is verified only when it is not nil.
 (ns release
   (:require [babashka.cli :as cli]
             [babashka.fs :as fs]
@@ -79,8 +89,14 @@
 
 (defn- windows? [platform] (str/starts-with? (name platform) "windows"))
 
-(def posix-launcher
-  "#!/bin/sh
+(def ^:private no-pod-message
+  "kimun: this bundle was built with --without-pod, so it has no tree-sitter pod and KIMUN_PARSER=treesitter cannot work (see MANIFEST.edn). Unset KIMUN_PARSER to use the in-process parser.")
+
+(defn- posix-launcher
+  "bin/kimun of a bundle: with a pod it points KIMUN_POD at lib/; without one it
+   refuses (exit 2) to run when the tree-sitter parser is requested."
+  [pod?]
+  (str "#!/bin/sh
 # kimun launcher: bundled babashka + uberjar, located relative to this file.
 # Follows symlinks (e.g. ~/.local/bin/kimun -> <bundle>/bin/kimun).
 # `--` keeps every argument for kimun (bb would otherwise take --version/--help/version).
@@ -91,12 +107,44 @@ while [ -h \"$SELF\" ]; do
   case \"$SELF\" in /*) ;; *) SELF=\"$LINKDIR/$SELF\" ;; esac
 done
 DIR=\"$(cd \"$(dirname \"$SELF\")/..\" && pwd)\"
-KIMUN_POD=\"$DIR/lib/pod-kimun-treesitter\"; export KIMUN_POD
-exec \"$DIR/lib/bb\" --jar \"$DIR/lib/kimun.jar\" -- \"$@\"
-")
+"
+       (if pod?
+         "KIMUN_POD=\"$DIR/lib/pod-kimun-treesitter\"; export KIMUN_POD\n"
+         (str "unset KIMUN_POD\n"
+              "if [ \"${KIMUN_PARSER:-}\" = treesitter ]; then\n"
+              "  echo \"" no-pod-message "\" >&2\n"
+              "  exit 2\n"
+              "fi\n"))
+       "exec \"$DIR/lib/bb\" --jar \"$DIR/lib/kimun.jar\" -- \"$@\"\n"))
 
-(def cmd-launcher
-  "@echo off\r\nrem kimun launcher (Windows): bundled bb.exe + uberjar, relative to this file.\r\nset \"DIR=%~dp0..\"\r\nset \"KIMUN_POD=%DIR%\\lib\\pod-kimun-treesitter.exe\"\r\n\"%DIR%\\lib\\bb.exe\" --jar \"%DIR%\\lib\\kimun.jar\" -- %*\r\n")
+(defn- cmd-launcher
+  "bin/kimun.cmd of a bundle (same contract as `posix-launcher`). Windows is not
+   built by CI nor tested: see README Install."
+  [pod?]
+  (str "@echo off\r\nrem kimun launcher (Windows): bundled bb.exe + uberjar, relative to this file.\r\n"
+       "rem Not tested: no windows bundle is published (README Install).\r\n"
+       "set \"DIR=%~dp0..\"\r\n"
+       (if pod?
+         "set \"KIMUN_POD=%DIR%\\lib\\pod-kimun-treesitter.exe\"\r\n"
+         (str "set \"KIMUN_POD=\"\r\n"
+              "if /i \"%KIMUN_PARSER%\"==\"treesitter\" (\r\n"
+              "  echo " no-pod-message " 1>&2\r\n"
+              "  exit /b 2\r\n"
+              ")\r\n"))
+       "\"%DIR%\\lib\\bb.exe\" --jar \"%DIR%\\lib\\kimun.jar\" -- %*\r\n"))
+
+(defn host-platform
+  "Keyword of the platform this machine runs (:linux-amd64 …), or nil when it is not
+   one of release.edn's."
+  []
+  (let [os (str/lower-case (System/getProperty "os.name"))
+        arch (str/lower-case (System/getProperty "os.arch"))
+        os' (cond (str/includes? os "linux") "linux"
+                  (str/includes? os "mac") "macos"
+                  (str/includes? os "windows") "windows")
+        arch' (cond (#{"amd64" "x86_64"} arch) "amd64"
+                    (#{"aarch64" "arm64"} arch) "aarch64")]
+    (when (and os' arch') (keyword (str os' "-" arch')))))
 
 (defn- pod-bin
   "Bundle name of the tree-sitter pod for `platform` (release.edn :pods)."
@@ -105,15 +153,29 @@ exec \"$DIR/lib/bb\" --jar \"$DIR/lib/kimun.jar\" -- \"$@\"
           (if (windows? platform) "pod-kimun-treesitter.exe" "pod-kimun-treesitter")))
 
 (defn- pod-source
-  "Local path of the pod binary to bundle for `platform`, or nil: the CI staging
-   directory `target/pods/<platform>/` first (R2 §4), then the development build
-   of this machine (only meaningful for the host platform)."
+  "`{:path :origin}` of the pod binary to bundle for `platform`, or nil. The only
+   sources: `target/pods/<platform>/<bin>` (CI staging, origin :ci-staging) and, only
+   when `platform` is the platform of this machine, the development build
+   `pods/treesitter/target/release/<bin>` (origin :local-build). A pod of another
+   platform is never returned."
+  [cfg platform]
+  (let [bin (pod-bin cfg platform)
+        staged (fs/path root "target" "pods" (clojure.core/name platform) bin)
+        local (fs/path root "pods" "treesitter" "target" "release" bin)]
+    (cond
+      (fs/exists? staged) {:path staged :origin :ci-staging}
+      (and (= platform (host-platform)) (fs/exists? local)) {:path local :origin :local-build})))
+
+(defn- pod-missing-message
+  "What is missing for `platform`'s pod, and the ways to provide it."
   [cfg platform]
   (let [bin (pod-bin cfg platform)]
-    (or (let [f (fs/path root "target" "pods" (clojure.core/name platform) bin)]
-          (when (fs/exists? f) f))
-        (let [f (fs/path root "pods" "treesitter" "target" "release" bin)]
-          (when (fs/exists? f) f)))))
+    (str "no tree-sitter pod compiled for " (clojure.core/name platform)
+         ": expected target/pods/" (clojure.core/name platform) "/" bin " (CI staging)"
+         (if (= platform (host-platform))
+           (str " or pods/treesitter/target/release/" bin " (run `bb pod`)")
+           (str "; this machine is " (some-> (host-platform) clojure.core/name) ", so its development build does not count"))
+         ". Pass --without-pod to build a bundle with no pod on purpose.")))
 
 (defn- smoke-pod!
   "Runs the bundled pod through `kimun.host.treesitter` (KIMUN_POD pointed at it)
@@ -161,15 +223,32 @@ exec \"$DIR/lib/bb\" --jar \"$DIR/lib/kimun.jar\" -- \"$@\"
         (not= expected digest) (fail 3 "sha256 mismatch for" asset "expected" expected "got" digest))
       {:archive cache :sha256 digest})))
 
+(defn- manifest
+  "Text of MANIFEST.edn, one key per line, in a fixed order (the archive stays
+   reproducible): what was packed, with the sha256 of the binaries."
+  [{:keys [version platform bb-version bb-source bb-sha256 pod]}]
+  (str "{:version " (pr-str version) "\n"
+       " :platform " platform "\n"
+       " :bb {:version " (pr-str bb-version) " :source " bb-source " :sha256 " (pr-str bb-sha256) "}\n"
+       " :pod " (if pod
+                  (str "{:bin " (pr-str (:bin pod)) " :sha256 " (pr-str (:sha256 pod))
+                       " :origin " (:origin pod) " :pinned " (:pinned pod) " :smoked " (:smoked pod) "}")
+                  "nil")
+       "}\n"))
+
 (defn- bundle!
-  [{:keys [version] :as cfg} platform {:keys [out jar local-bb pin]}]
+  [{:keys [version] :as cfg} platform {:keys [out jar local-bb pin without-pod]}]
   (let [epoch (source-epoch)
         name (str "kimun-" version "-" (clojure.core/name platform))
         dir (fs/path out name)
         bin (fs/path dir "bin") lib (fs/path dir "lib")
         bb-name (if (windows? platform) "bb.exe" "bb")
         pod-name (pod-bin cfg platform)
-        pod (pod-source cfg platform)]
+        {pod :path pod-origin :origin} (when-not without-pod (pod-source cfg platform))
+        _ (when-not (or pod without-pod) (fail 2 (pod-missing-message cfg platform)))
+        pod-sha (when pod (sha256-file pod))
+        pod-pin (get-in cfg [:pods platform :sha256])
+        smoke? (and pod (= platform (host-platform)))]
     (fs/delete-tree dir)
     (fs/create-dirs bin) (fs/create-dirs lib)
     (let [bb-src (if local-bb
@@ -179,23 +258,31 @@ exec \"$DIR/lib/bb\" --jar \"$DIR/lib/kimun.jar\" -- \"$@\"
       (fs/copy bb-src (fs/path lib bb-name) {:replace-existing true}))
     (normalize-jar! jar (fs/path lib "kimun.jar") epoch)
     (when pod
-      (fs/copy pod (fs/path lib pod-name) {:replace-existing true})
-      (let [expected (get-in cfg [:pods platform :sha256])
-            digest (sha256-file (fs/path lib pod-name))]
-        (when (and expected (not= expected digest))
-          (fail 3 "sha256 mismatch for pod" (str pod-name) "expected" expected "got" digest))))
-    (spit (str (fs/path bin "kimun")) posix-launcher)
-    (spit (str (fs/path bin "kimun.cmd")) cmd-launcher)
+      (when (and pod-pin (not= pod-pin pod-sha))
+        (fail 3 "sha256 mismatch for pod" (str pod-name) "expected" pod-pin "got" pod-sha))
+      (fs/copy pod (fs/path lib pod-name) {:replace-existing true}))
+    (spit (str (fs/path bin "kimun")) (posix-launcher (boolean pod)))
+    (spit (str (fs/path bin "kimun.cmd")) (cmd-launcher (boolean pod)))
     (spit (str (fs/path dir "VERSION")) (str version "\n"))
+    (spit (str (fs/path dir "MANIFEST.edn"))
+          (manifest {:version version :platform platform :bb-version (if local-bb
+                                                  (str/trim (:out (shell {:out :string} (str (fs/which "bb")) "--version")))
+                                                  (:bb cfg))
+                     :bb-source (if local-bb :local-path :pinned)
+                     :bb-sha256 (sha256-file (fs/path lib bb-name))
+                     :pod (when pod {:bin pod-name :sha256 pod-sha :origin pod-origin
+                                     :pinned (some? pod-pin) :smoked (boolean smoke?)})}))
     (fs/copy (fs/path root "LICENSE") (fs/path dir "LICENSE") {:replace-existing true})
     (doseq [f (cond-> [(fs/path bin "kimun") (fs/path lib bb-name)]
                 pod (conj (fs/path lib pod-name)))]
       (try (fs/set-posix-file-permissions f "rwxr-xr-x") (catch Exception _ nil)))
-    (when pod (smoke-pod! (fs/path lib pod-name)))
+    (when smoke? (smoke-pod! (fs/path lib pod-name)))
+    (when (and pod (not smoke?))
+      (binding [*out* *err*]
+        (println "release: pod for" (clojure.core/name platform) "packed but not smoke-tested (not this machine's platform)")))
     (when-not pod
       (binding [*out* *err*]
-        (println "release: no tree-sitter pod for" (clojure.core/name platform)
-                 "— bundled without it (bb pod / target/pods)")))
+        (println "release: --without-pod: bundle for" (clojure.core/name platform) "has no tree-sitter pod (MANIFEST.edn :pod nil)")))
     (normalize-tree! dir epoch)
     (let [archive (if (windows? platform)
                     (let [z (fs/path out (str name ".zip"))]
@@ -209,24 +296,36 @@ exec \"$DIR/lib/bb\" --jar \"$DIR/lib/kimun.jar\" -- \"$@\"
                       t))]
       {:platform platform :dir (str dir) :archive (str archive) :sha256 (sha256-file archive)})))
 
+(def ^:private release-header
+  ";; Release matrix for `bb release` (docs/v2/08 §5). `:version` must equal
+;; resources/VERSION. `:sha256` digests of the babashka assets are pinned with
+;; `bb release --pin`; a nil digest aborts a non-local build. `:pods` names the
+;; tree-sitter pod per platform: a bundle carries the pod compiled for ITS platform
+;; (target/pods/<platform>/, CI staging; or the development build on that same
+;; platform) or the build fails; `--without-pod` omits it explicitly. A pod `:sha256`
+;; is nil until a pod built in CI has been published and pinned (`--pin` pins only
+;; CI-staged pods): a locally compiled binary is not reproducible across machines, so
+;; nothing is claimed about it here; MANIFEST.edn of each bundle records the sha256 of
+;; what was actually packed.
+")
+
 (defn- pin! [cfg platforms out]
   (let [digests (into {} (for [p platforms] [p (:sha256 (pinned-bb! cfg p out true))]))
+        ;; only CI-staged pods are pinned: a local build is not what anyone publishes
         pod-digests (into {} (for [p platforms
                                    :let [src (pod-source cfg p)]
-                                   :when src]
-                               [p (sha256-file src)]))
+                                   :when (= :ci-staging (:origin src))]
+                               [p (sha256-file (:path src))]))
         cfg' (-> cfg
                  (update :sha256 merge digests)
                  (update :pods (fn [pods] (reduce-kv (fn [m p d] (assoc-in m [p :sha256] d)) pods pod-digests))))]
     (spit (str (fs/path root "release.edn"))
-          (str ";; Release matrix for `bb release` (docs/v2/08 §5). `:version` must equal\n"
-               ";; resources/VERSION. `:sha256` digests of the babashka assets are pinned with\n"
-               ";; `bb release --pin`; a nil digest aborts a non-local build.\n"
+          (str release-header
                (with-out-str (clojure.pprint/pprint cfg'))))
     cfg'))
 
 (defn -main [& args]
-  (let [opts (cli/parse-opts args {:coerce {:local-bb :boolean :pin :boolean}
+  (let [opts (cli/parse-opts args {:coerce {:local-bb :boolean :pin :boolean :without-pod :boolean}
                                    :alias {:p :platforms :o :out}})
         cfg (edn/read-string (slurp (str (fs/path root "release.edn"))))
         version (str/trim (slurp (str (fs/path root "resources" "VERSION"))))
@@ -239,6 +338,12 @@ exec \"$DIR/lib/bb\" --jar \"$DIR/lib/kimun.jar\" -- \"$@\"
         _ (doseq [p platforms] (when-not (all p) (fail 2 "unknown platform" (name p) "(known:" (str/join "," (map name (:platforms cfg))) ")")))
         out (str (fs/absolutize (or (:out opts) (fs/path root "dist"))))
         jar (str (fs/absolutize (or (:jar opts) (fs/path root "target" "kimun.jar"))))]
+    (when-not (:without-pod opts)
+      (when-let [missing (seq (remove #(pod-source cfg %) platforms))]
+        (fail 2 (str/join "\n         " (map #(pod-missing-message cfg %) missing)))))
+    (when (and (:local-bb opts) (seq (remove #{(host-platform)} platforms)))
+      (fail 2 "--local-bb copies this machine's bb (" (some-> (host-platform) name) ") and only fits that platform; got"
+            (str/join "," (map name (remove #{(host-platform)} platforms)))))
     (fs/create-dirs out)
     ;; Without --jar the jar is always rebuilt from the working tree: a stale
     ;; target/kimun.jar would silently ship old code. --jar means "use this one".
@@ -246,7 +351,9 @@ exec \"$DIR/lib/bb\" --jar \"$DIR/lib/kimun.jar\" -- \"$@\"
       (when-not (fs/exists? jar) (fail 2 "jar not found:" jar))
       (shell {:dir root :out :string} "bb" "jar"))
     (let [cfg (if (:pin opts) (pin! cfg platforms out) cfg)
-          bundles (mapv #(bundle! cfg % {:out out :jar jar :local-bb (:local-bb opts) :pin (:pin opts)}) platforms)]
+          bundles (mapv #(bundle! cfg % {:out out :jar jar 
+                                  :local-bb (:local-bb opts) :pin (:pin opts)
+                                  :without-pod (:without-pod opts)}) platforms)]
       (spit (str (fs/path out "SHA256SUMS"))
             (str/join "" (for [{:keys [archive sha256]} bundles] (str sha256 "  " (fs/file-name archive) "\n"))))
       (prn {:version version :out out :local-bb (boolean (:local-bb opts))

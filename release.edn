@@ -1,10 +1,13 @@
 ;; Release matrix for `bb release` (docs/v2/08 §5). `:version` must equal
 ;; resources/VERSION. `:sha256` digests of the babashka assets are pinned with
 ;; `bb release --pin`; a nil digest aborts a non-local build. `:pods` names the
-;; tree-sitter pod asset per platform (R2 §4): `scripts/release.clj` bundles the
-;; binary from `target/pods/<platform>/` (CI staging) or the development build,
-;; installs it as `lib/<:bin>` and smokes `version`; `:sha256` is verified when
-;; pinned (nil = unpinned local build).
+;; tree-sitter pod per platform: a bundle carries the pod compiled for ITS platform
+;; (target/pods/<platform>/, CI staging; or the development build on that same
+;; platform) or the build fails; `--without-pod` omits it explicitly. A pod `:sha256`
+;; is nil until a pod built in CI has been published and pinned (`--pin` pins only
+;; CI-staged pods): a locally compiled binary is not reproducible across machines, so
+;; nothing is claimed about it here; MANIFEST.edn of each bundle records the sha256 of
+;; what was actually packed.
 {:version "2.0.0-alpha.1",
  :bb "1.13.219",
  :platforms

@@ -1,0 +1,13 @@
+# env -i PATH=/usr/bin:/bin KIMUN_PARSER=treesitter (KIMUN_POD unset), bundle bin/kimun from a temp dir, cwd without pods/
+$ kimun stores init --name demo
+  "ok" : true,
+$ kimun docs ingest n.md --name notes
+  "ok" : true,
+    "blocks" : 3,
+$ kimun docs render notes
+  "ok" : true,
+  "data" : "# T\n\nhello *w*\n\n- a\n- b\n",
+$ kimun docs marks notes
+  "ok" : true,
+      "parser" : [ "kimun.surface.markdown/treesitter", "1" ],
+      "grammar" : "pod-kimun-treesitter/0.1.0 tree-sitter/0.26",

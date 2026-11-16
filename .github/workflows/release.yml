@@ -3,7 +3,31 @@ on:
   push:
     tags: ["v*"]
 jobs:
+  # The tree-sitter pod is compiled here, for linux-amd64 only, and handed to `build`
+  # as an artifact. No other platform has a pod yet, so no other platform is built or
+  # published (scripts/release.clj fails for a platform without its pod).
+  pod-linux-amd64:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the static pod (pods/treesitter/README.md "Build")
+        working-directory: pods/treesitter
+        env:
+          RUSTFLAGS: "-C target-feature=+crt-static"
+          CARGO_TARGET_DIR: target-static
+        run: cargo build --release --locked
+      - name: Show what was built
+        run: |
+          f=pods/treesitter/target-static/release/pod-kimun-treesitter
+          file "$f"
+          sha256sum "$f"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pod-linux-amd64
+          path: pods/treesitter/target-static/release/pod-kimun-treesitter
+          if-no-files-found: error
   build:
+    needs: pod-linux-amd64
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -13,11 +37,27 @@ jobs:
       - uses: turtlequeue/setup-babashka@v1.7.0
         with:
           babashka-version: ${{ steps.bb.outputs.version }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: pod-linux-amd64
+          path: target/pods/linux-amd64
+      - name: Stage the pod (release bundle) and expose it to the tests (development path)
+        run: |
+          chmod +x target/pods/linux-amd64/pod-kimun-treesitter
+          mkdir -p pods/treesitter/target/release
+          cp target/pods/linux-amd64/pod-kimun-treesitter pods/treesitter/target/release/
       - run: bb lint && bb test
       - name: Tag must match resources/VERSION
         run: test "v$(tr -d '[:space:]' < resources/VERSION)" = "${GITHUB_REF_NAME}"
-      - name: Build all platform bundles (pinned bb, sha256-checked)
-        run: bb release --out dist
+      - name: Build the linux-amd64 bundle (pinned bb, sha256-checked, with its pod)
+        # Only linux-amd64: the other platforms have no compiled pod and no test yet.
+        run: bb release --platforms linux-amd64 --out dist
+      - name: The bundle carries the pod and says so
+        run: |
+          tar -xzf dist/kimun-*-linux-amd64.tar.gz -C /tmp
+          cat /tmp/kimun-*-linux-amd64/MANIFEST.edn
+          grep -q ':pod {:bin "pod-kimun-treesitter"' /tmp/kimun-*-linux-amd64/MANIFEST.edn
+          test -x /tmp/kimun-*-linux-amd64/lib/pod-kimun-treesitter
       - uses: actions/upload-artifact@v4
         with:
           name: bundles
