@@ -19,9 +19,8 @@ How an agent works in this repository.
 8. `docs/v2/12-ecosistema-y-pendientes.md §1` — the backlog as a dependency graph; the working
    order is the plan's, and the rows are read through it. There are no priorities: pick work
    whose dependencies are met.
-9. `desk/tasks/Board.md` — the board. The pending work is there as `deskops` tasks since
-   2026-11-16 (`deskops list tasks`); the thirteen tasks older than that date are in a format
-   `deskops` no longer loads and were not migrated
+9. `desk/tasks/Board.md` and `deskops list tasks` — the work that can be executed now;
+   `desk/drawer/tasks/` — the pending work that is not ready to be a task
 
 Then the documents the task references. Always cite files by path when reporting to the owner.
 
@@ -79,15 +78,18 @@ after copying anything worth keeping to `runs/`. Evidence of past sessions is in
   The new path (declarations, `declare *`, `mcp`) does not use a store (only `declare anchors` reads the pointer `.kimun/seen.edn` if one is there).
   The graph (models, G layer) is meant to become a separate package (`12 §1`). `sldb` v1 and
   `kgdb` are frozen and superseded by it.
-- The desk is a kimun store at `.kimun/`, never committed. Build it with
-  `bin/kimun include build` (alias `bb desk`) from `kimun.include.edn`. The include declares no
-  models or documents today (`docs/archive/desk/README.md`). The documents SLDB used to
-  generate become materializations from models (`docs/v2/drafts/sesion-2026-11-15.md §4`), and
-  the desk's source documents are ordinary documents, as in any project that does not use kimun.
-- Tasks are created, advanced and closed with the `deskops` CLI (2026-11-16; before that date
-  this file said not to use it). A task is dispatchable only with an accepted cold-context review
-  (`deskops review preflight <task>`, then `deskops review dispose`; `deskops review status <task>`
-  shows it). On 2026-11-16 four of the fifteen tasks had one; the other eleven are rejected drafts. To read the desk, kimun commands (`docs`, `fields`, `find`) also work.
+- **The desk is a `deskops` desk** (owner, 2026-11-16: «así desarrollamos el producto puro antes
+  de hardcodearnos con el desk»): `desk/` plus the store `.sldb/`, both versioned; kimun the
+  product does not depend on it. Tasks are created, edited, advanced and closed only with the
+  `deskops` CLI; `deskops doctor` must stay healthy. A task is dispatchable only with an accepted
+  cold-context review (`deskops review preflight <task>`, `deskops review dispose`,
+  `deskops review status <task>`). Work that is not ready lives in the drawer and becomes a task
+  with `deskops add task --from-drawer`.
+- The desk kimun had until that day (atoms, primitives, routines, old tasks) is kept unedited in
+  `docs/archive/desk-kimun-2026-11-16/`, as material for when kimun migrates an sldb desk.
+- `kimun.include.edn` still declares an empty include over `.kimun/` (`bin/kimun include check`
+  stays an invariant); it no longer describes the desk. The documents SLDB used to generate
+  become materializations from models (`docs/v2/drafts/sesion-2026-11-15.md §4`).
 - Work is executed by herdr pi workers.
 
 ## Validation
