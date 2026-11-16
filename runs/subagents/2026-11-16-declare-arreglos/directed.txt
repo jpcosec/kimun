@@ -1,0 +1,52 @@
+== declare + surface ==
+
+Testing kimun.surface.declare-test
+
+Testing kimun.surface.declare-project-test
+
+Testing kimun.surface.declare-fixes-test
+
+Testing kimun.surface.propositions-test
+
+Testing kimun.surface.declared-anchors-test
+
+Testing kimun.cli.declare-test
+
+Testing kimun.cli.declare-project-test
+
+Testing kimun.cli.declare-ask-test
+
+Testing kimun.cli.declare-anchors-test
+
+Testing kimun.cli.declare-root-test
+
+Testing kimun.cli.declare-fixes-test
+
+Ran 63 tests containing 471 assertions.
+0 failures, 0 errors.
+== main golden lint ==
+
+Testing kimun.cli.main-test
+
+Testing kimun.cli.golden-test
+
+Testing kimun.lint-test
+
+Testing kimun.cli.docs-test
+
+Testing kimun.cli.typed-docs-test
+
+Ran 34 tests containing 266 assertions.
+0 failures, 0 errors.
+== fields stores edges models ==
+
+Testing kimun.cli.fields-test
+
+Testing kimun.cli.stores-test
+
+Testing kimun.cli.edges-test
+
+Testing kimun.cli.models-test
+
+Ran 65 tests containing 664 assertions.
+0 failures, 0 errors.

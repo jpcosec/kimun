@@ -153,10 +153,10 @@
       "the process is alive and evaluates afterwards"))
 
 (deftest at-and-files-are-nodes-that-open-nothing
-  (let [[p q] (:propositions (ev "(ns t)\n(relation r \"d\")\n(r (at \"no/such/file.md\") (files \"**/*.nowhere\"))\n(r (at \"x.md\" :a [1] \"b\") 7)"))]
+  (let [[p q] (:propositions (ev "(ns t)\n(relation r \"d\")\n(r (at \"no/such/file.md\") (files \"**/*.nowhere\"))\n(r (at \"x.md\" [\"a\"] {:type :list :n 2}) 7)"))]
     (is (= {:anchor {:path "no/such/file.md" :locator []}} (:a p)))
     (is (= {:files "**/*.nowhere"} (:b p)))
-    (is (= {:anchor {:path "x.md" :locator [:a [1] "b"]}} (:a q)))
+    (is (= {:anchor {:path "x.md" :locator [["a"] {:type :list :n 2}]}} (:a q)))
     (is (= 7 (:b q)))
     (is (nil? (meta (:a q))) "no host metadata leaks into the output")))
 

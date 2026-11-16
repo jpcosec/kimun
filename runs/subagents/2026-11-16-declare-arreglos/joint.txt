@@ -1,0 +1,69 @@
+
+Testing kimun.surface.declare-test
+
+Testing kimun.surface.declare-project-test
+
+Testing kimun.surface.declare-fixes-test
+
+Testing kimun.surface.propositions-test
+
+Testing kimun.surface.declared-anchors-test
+
+Testing kimun.cli.declare-test
+
+Testing kimun.cli.declare-project-test
+
+Testing kimun.cli.declare-ask-test
+
+Testing kimun.cli.declare-anchors-test
+
+Testing kimun.cli.declare-root-test
+
+Testing kimun.cli.declare-fixes-test
+
+Testing kimun.cli.changed-test
+
+Testing kimun.cli.compose-test
+
+Testing kimun.cli.corpus-test
+
+Testing kimun.cli.docs-anchors-test
+
+Testing kimun.cli.find-test
+
+Testing kimun.cli.generic-docs-test
+
+Testing kimun.cli.graph-test
+
+Testing kimun.cli.links-test
+
+Testing kimun.cli.marks-test
+moved existing store to /tmp/kimun-adhoc-1357011029027411567/kimun-marks-inc-3376410925342252403/.kimun.bak-20261116-015346-01M7HB8GS0S6RF246P2NMAARRM
+
+Testing kimun.cli.predicates-test
+
+Testing kimun.cli.sections-test
+
+Testing kimun.cli.semantic-test
+
+Testing kimun.cli.seen-test
+moved existing store to /tmp/kimun-adhoc-1357011029027411567/kimun-seen-inc-17178095071683534404/.kimun.bak-20261116-015348-01M7HB8HZZM4QT97CWG90W6EX0
+
+Testing kimun.cli.sense-test
+
+Testing kimun.cli.spec16-contract-test
+
+Testing kimun.cli.spec16-docs-test
+
+Testing kimun.cli.spec16-readers-test
+moved existing store to /tmp/kimun-adhoc-1357011029027411567/kimun-s16-include-13586648880525796336/.kimun.bak-20261116-015350-01M7HB8M04V4T28R0A5B2YX9HV
+
+Testing kimun.cli.tour-test
+
+Testing kimun.cli.routes-test
+
+Testing kimun.cli.index-test
+
+Ran 196 tests containing 2070 assertions.
+0 failures, 0 errors.
+done 0

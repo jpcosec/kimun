@@ -41,9 +41,13 @@
     (testing "other.clj alone: not the project"
       (let [e (run dir "declare" "read" "other.clj")]
         (is (= ["other.clj"] (mapv :file (get-in e [:data :files]))))))
-    (testing "b alone cannot see a: the set is only the files named"
+    (testing "b alone, under kimun/: the context it requires is loaded as a dependency, and listed apart"
       (let [e (run dir "declare" "read" "kimun/sub/b.clj")]
-        (is (= ["declare/unknown-context" 3 "kimun/sub/b.clj" 1] [(get-in e [:error :type]) (:exit e) (get-in e [:error :data :file]) (get-in e [:error :data :line])]))))
+        (is (= [["kimun/sub/b.clj"] ["kimun/a.clj"]] [(mapv :file (get-in e [:data :files])) (get-in e [:data :required])]))))
+    (testing "outside kimun/ the set is only the files named"
+      (put! dir "other2.clj" "(ns other2 (:require [a :refer [isa]]))\n")
+      (let [e (run dir "declare" "read" "other2.clj")]
+        (is (= ["declare/unknown-context" 3 "other2.clj" 1] [(get-in e [:error :type]) (:exit e) (get-in e [:error :data :file]) (get-in e [:error :data :line])]))))
     (testing "both named: the set is complete"
       (is (true? (:ok (run dir "declare" "read" "kimun/sub/b.clj" "kimun/a.clj")))))))
 

@@ -46,7 +46,7 @@
 (deftest a-required-context-is-evaluated-once
   (let [calls (atom [])
         real @#'declare/evaluate-file]
-    (with-redefs [declare/evaluate-file (fn [host text file info imports] (swap! calls conj file) (real host text file info imports))]
+    (with-redefs [declare/evaluate-file (fn [host text file info imports timeout-ms] (swap! calls conj file) (real host text file info imports timeout-ms))]
       (declare/read-project [b-file a-file c-file]))
     (is (= 1 (count (filter #{"kimun/a.clj"} @calls))) "a is required by b and by c")
     (is (= 3 (count @calls)))))

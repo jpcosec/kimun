@@ -63,36 +63,88 @@
     {:abs abs :inside? inside?
      :rel (str/replace (str (if inside? (fs/relativize root abs) abs)) "\\" "/")}))
 
+(defn- under-project?
+  "True when `path` (absolute) is a `*.clj` file under the project folder of `root`."
+  [root path]
+  (and (str/ends-with? (str path) ".clj")
+       (fs/starts-with? (fs/normalize path) (fs/path root project-dir))))
+
+(defn- timeout-opts
+  "`{:timeout-ms n}` for the evaluator from `$KIMUN_DECLARE_TIMEOUT_MS` in the environment of
+   `ctx` (the limit for each file; unset: the evaluator's default). Not a positive integer is
+   a usage error."
+  [{:keys [env]}]
+  (if-let [v (get env "KIMUN_DECLARE_TIMEOUT_MS")]
+    (let [n (try (Long/parseLong (str/trim (str v))) (catch NumberFormatException _ nil))]
+      (if (and n (pos? n))
+        {:timeout-ms n}
+        (args/usage! "declare" (str "KIMUN_DECLARE_TIMEOUT_MS must be a positive number of milliseconds, got " (pr-str v)) {:value v})))
+    {}))
+
+(defn- header
+  "`{:context :requires}` of a declaration text, or nil when it does not read (the evaluator
+   reports that error when it evaluates the set)."
+  [file text]
+  (try (declare/header-of text file) (catch clojure.lang.ExceptionInfo _ nil)))
+
+(defn- dependencies
+  "Of the project files not in `named` (`[{:file :text}]`), the ones that define, directly or
+   through each other, a context the `named` ones require and no named one defines; `[{:file
+   :text}]` in path order. Contexts nobody defines are left for the evaluator to report."
+  [root named]
+  (let [named-files (into #{} (map :file) named)
+        candidates (delay (into [] (keep (fn [f] (let [text (slurp (str (fs/path root f)))]
+                                                   (when-let [h (header f text)] (assoc h :file f :text text)))))
+                                (remove named-files (project-files root))))
+        headers (keep #(header (:file %) (:text %)) named)]
+    (loop [defined (set (map :context headers))
+           needed (set (mapcat :requires headers))
+           taken []]
+      (let [missing (remove defined needed)]
+        (if-let [dep (and (seq missing) (first (filter #(and (not (some #{(:file %)} (map :file taken))) ((set missing) (:context %))) @candidates)))]
+          (recur (conj defined (:context dep)) (into needed (:requires dep)) (conj taken dep))
+          (mapv #(select-keys % [:file :text]) (sort-by :file taken)))))))
+
 (defn- read-set
   "The declaration set as one project: `files` (as given, relative to the working directory)
-   or, when none, the files of the project folder of the root. Returns `[{:file :context
-   :relations :propositions}]` with the files named relative to the root; a missing file is
-   `declare/missing`."
-  [rt files]
+   or, when none, the files of the project folder of the root. Returns `{:results [{:file
+   :context :relations :propositions}] :required [file…]}` with the files named relative to
+   the root; a missing file is `declare/missing`. When every FILE is under the project folder
+   the contexts they require that no FILE defines are looked for in the rest of the project
+   and loaded as dependencies: they take part in the evaluation, are listed in `:required`
+   and are not in `:results`."
+  [rt files ctx]
   (let [items (if (seq files)
                 (mapv #(assoc (named rt %) :given %) files)
-                (mapv (fn [f] {:abs (fs/path (:root rt) f) :rel f :given f}) (project-files (:root rt))))
+                (mapv (fn [f] {:abs (fs/path (:root rt) f) :rel f :given f :inside? true}) (project-files (:root rt))))
         texts (mapv (fn [{:keys [abs rel given]}]
                       (when-not (fs/regular-file? abs)
                         (err/raise :declare/missing (str "declaration file not found: " given) {:file given}))
                       {:file rel :text (slurp (str abs))})
-                    items)]
-    (declare/read-project texts)))
+                    items)
+        deps (if (and (seq files) (every? #(and (:inside? %) (under-project? (:root rt) (:abs %))) items))
+               (dependencies (:root rt) texts)
+               [])
+        results (declare/read-project host/host (into texts deps) (timeout-opts ctx))]
+    {:results (vec (take (count texts) results)) :required (mapv :file deps)}))
 
 (defn read-files
   "`declare read [FILE…]`: data `{:root :files [{:file :context :relations :propositions}]
-   :summary {:files :relations :propositions}}`. A file that does not exist is `declare/missing`
+   :summary {:files :relations :propositions}}`, plus `:required [path…]` when FILEs under the
+   project folder needed contexts of other project files, loaded as dependencies and not listed
+   in `:files`. A file that does not exist is `declare/missing`
    (1); one that does not evaluate is the `declare/*` error of the evaluator (3), naming file
    and line."
-  [files _opts {:keys [cwd]}]
+  [files _opts {:keys [cwd] :as ctx}]
   (let [rt (project-root cwd)
-        results (read-set rt files)]
+        {:keys [results required]} (read-set rt files ctx)]
     (out/ok "declare read"
-            {:data {:root (str (:root rt))
-                    :files results
-                    :summary {:files (count results)
-                              :relations (transduce (map (comp count :relations)) + results)
-                              :propositions (transduce (map (comp count :propositions)) + results)}}})))
+            {:data (cond-> {:root (str (:root rt))
+                            :files results
+                            :summary {:files (count results)
+                                      :relations (transduce (map (comp count :relations)) + results)
+                                      :propositions (transduce (map (comp count :propositions)) + results)}}
+                     (seq required) (assoc :required required))})))
 
 (defn- project-reader
   "`(fn [relative-path] text-or-nil)` over the project directory `root`."
@@ -122,13 +174,13 @@
    {:files :anchors :opened :by-status} :since :pointer :head}` (`:since`/`:pointer`/`:head`
    nil without comparison). Errors: `declare/*` of the evaluator, `declare/bad-locator`,
    `git/not-a-repository`, `git/unknown-commit`, `git/bad-pointer`, `git/error`."
-  [files opts {:keys [cwd]}]
+  [files opts {:keys [cwd] :as ctx}]
   (let [since (:since opts)
         _ (when-not (or (nil? since) (and (string? since) (seq since)))
             (args/usage! "declare" "anchors" "`declare anchors --since` needs a COMMIT" {}))
         rt (project-root cwd)
         root (:root rt)
-        results (read-set rt files)
+        {:keys [results required]} (read-set rt files ctx)
         props (vec (mapcat :propositions results))
         cmp (comparison root since)
         changed (when cmp
@@ -139,13 +191,14 @@
                                        :read-then (when cmp #(git/show root (:since cmp) %))
                                        :changed changed})]
     (out/ok "declare anchors"
-            {:data {:root (str root)
-                    :files (mapv #(select-keys % [:file :context :propositions]) results)
-                    :anchors rows
-                    :summary {:files (count results) :anchors (count rows)
-                              :opened (count (filter :opened rows))
-                              :by-status (frequencies (map :status rows))}
-                    :since (:since cmp) :pointer (:pointer cmp) :head (:head cmp)}})))
+            {:data (cond-> {:root (str root)
+                            :files (mapv #(select-keys % [:file :context :propositions]) results)
+                            :anchors rows
+                            :summary {:files (count results) :anchors (count rows)
+                                      :opened (count (filter :opened rows))
+                                      :by-status (frequencies (map :status rows))}
+                            :since (:since cmp) :pointer (:pointer cmp) :head (:head cmp)}
+                     (seq required) (assoc :required required))})))
 
 (defn- write-atomic!
   "Writes `text` to `path` through a temporary file in the same folder and a rename."
@@ -163,12 +216,6 @@
     {:propositions (vec (remove #(contains? ids (:id %)) (:propositions after)))
      :relations (vec (sort (remove #(contains? (:relations before) %) (keys (:relations after)))))}))
 
-(defn- under-project?
-  "True when `path` (absolute) is a `*.clj` file under the project folder of `root`."
-  [root path]
-  (and (str/ends-with? (str path) ".clj")
-       (fs/starts-with? (fs/normalize path) (fs/path root project-dir))))
-
 (defn add-form
   "`declare add --to FILE 'FORM' [--context NAME]`: appends the text of FORM (one form, as
    given, on a new last line) to the declaration file FILE (relative to the working
@@ -179,12 +226,16 @@
    answer and nothing is written; if the form adds no proposition and no relation the answer
    is `:added false` with a `:reason` and nothing is written. The write is atomic and is the
    only one of the group. Data `{:root :file :added :propositions [new] :relations [new names]}`."
-  [args opts {:keys [cwd]}]
+  [args opts {:keys [cwd] :as ctx}]
   (let [[form & more] args
         to (:to opts)
         context (:context opts)]
     (when (or (str/blank? form) (seq more))
       (args/usage! "declare" "add" "`declare add --to FILE 'FORM'` needs exactly one FORM" {}))
+    ;; a form that does not even read is reported by the evaluation below, with the file and line
+    (let [n (try (declare/count-forms form "FORM") (catch clojure.lang.ExceptionInfo _ 1))]
+      (when-not (= 1 n)
+        (args/usage! "declare" "add" (str "`declare add` takes exactly one form, the text has " n) {:forms n})))
     (when-not (and (string? to) (seq to))
       (args/usage! "declare" "add" "`declare add` needs --to FILE" {}))
     (let [rt (project-root cwd)
@@ -194,11 +245,15 @@
           _ (when-not (or exists? (and (string? context) (seq context)))
               (args/usage! "declare" "add" (str "`" to "` does not exist: create it with --context NAME") {:file to}))
           current (if exists? (slurp (str abs)) (str "(ns " context ")\n"))
+          _ (when (and exists? (string? context) (seq context))
+              (let [actual (:context (declare/header-of current rel))]
+                (when (not= context actual)
+                  (args/usage! "declare" "add" (str "--context " context " does not match the `ns` of " rel " (" actual ")") {:file rel :context context :actual actual}))))
           appended (str current (if (or (str/blank? current) (str/ends-with? current "\n")) "" "\n") (str/trim form) "\n")
           others (when (under-project? root abs) (remove #(= rel %) (project-files root)))
           other-texts (mapv (fn [f] {:file f :text (slurp (str (fs/path root f)))}) others)
-          after (first (declare/read-project (into [{:file rel :text appended}] other-texts)))
-          before (when exists? (first (declare/read-project (into [{:file rel :text current}] other-texts))))
+          after (first (declare/read-project host/host (into [{:file rel :text appended}] other-texts) (timeout-opts ctx)))
+          before (when exists? (first (declare/read-project host/host (into [{:file rel :text current}] other-texts) (timeout-opts ctx))))
           news (new-keys (or before {}) after)
           added? (boolean (or (seq (:propositions news)) (seq (:relations news))))]
       (when added?
@@ -211,9 +266,10 @@
 ;; --- cut 3b: asking (docs/v2/drafts/diseno-evaluar.md §9, §11) ----------------------------
 
 (defn- propositions-of-set
-  "The propositions of the declaration set (the FILEs given or the project's)."
-  [rt files]
-  (vec (mapcat :propositions (read-set rt files))))
+  "`{:propositions [p…] :required [file…]}` of the declaration set (the FILEs given or the project's)."
+  [rt files ctx]
+  (let [{:keys [results required]} (read-set rt files ctx)]
+    {:propositions (vec (mapcat :propositions results)) :required required}))
 
 (defn- walk-files
   "The files under `root` relative to it, without `.git` and `.kimun`."
@@ -235,12 +291,14 @@
   "`declare terms [FILE…]`: data `{:root :terms [{:term :count :ancestors :implicit}] :files
    [file…] :summary {:terms :implicit}}`; without FILE the project's declarations. See
    `kimun.surface.propositions/terms`."
-  [files _opts {:keys [cwd]}]
+  [files _opts {:keys [cwd] :as ctx}]
   (let [rt (project-root cwd)
-        ts (props/terms (propositions-of-set rt files))]
+        {:keys [propositions required]} (propositions-of-set rt files ctx)
+        ts (props/terms propositions)]
     (out/ok "declare terms"
-            {:data {:root (str (:root rt)) :terms ts :files (vec files)
-                    :summary {:terms (count ts) :implicit (count (filter :implicit ts))}}})))
+            {:data (cond-> {:root (str (:root rt)) :terms ts :files (vec files)
+                            :summary {:terms (count ts) :implicit (count (filter :implicit ts))}}
+                     (seq required) (assoc :required required))})))
 
 (defn- relative-to-root
   "`p` (relative to the working directory or absolute) as a path relative to the root; a
@@ -257,7 +315,7 @@
    of the path form `{:root :path :results [row…] :files}`; rows in
    `kimun.surface.propositions`. PATH is relative to the working directory and is answered
    relative to the root; the file is never opened; `--exact` with `--path` is a usage error."
-  [argv opts {:keys [cwd]}]
+  [argv opts {:keys [cwd] :as ctx}]
   (let [p (:path opts)
         _ (when (and (contains? opts :path) (not (and (string? p) (seq p))))
             (args/usage! "declare" "about" "`declare about --path` needs a PATH" {}))
@@ -266,12 +324,13 @@
         term (when-not p (args/require-arg! "declare" argv 0 "a TERM (or --path PATH)" "about"))
         files (vec (if p argv (rest argv)))
         rt (project-root cwd)
-        ps (propositions-of-set rt files)
+        {ps :propositions required :required} (propositions-of-set rt files ctx)
         data (if p
                (props/about-path ps (relative-to-root rt p))
                (props/about ps term {:exact (boolean (:exact opts))}))]
     (out/ok "declare about"
-            {:data (assoc data :root (str (:root rt)) :files files :summary {:results (count (:results data))})})))
+            {:data (cond-> (assoc data :root (str (:root rt)) :files files :summary {:results (count (:results data))})
+                     (seq required) (assoc :required required))})))
 
 (defn members-of
   "`declare members 'PATTERN'`: the project files a `(files PATTERN)` node reaches, expanded

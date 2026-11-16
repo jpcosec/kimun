@@ -52,11 +52,15 @@
    evaluation.
 
    Errors are `kimun.kernel.err/raise` with `:declare/*` types, always carrying
-   `:file` and `:line`: `syntax`, `relation-redefined`, `no-context`, `ns-clauses`, `unresolved`,
-   `arity`, `bad-relation`, `bad-node`, `bad-arg`, `eval`; of a set:
-   `duplicate-context`, `unknown-context`, `require-cycle`, `unknown-relation`."
+   `:file` and `:line`: `syntax`, `relation-redefined`, `no-context`, `reserved-context`,
+   `ns-clauses`, `unresolved`, `arity`, `bad-relation`, `bad-node`, `bad-arg`, `bad-locator`
+   (the shape of every `(at …)` is checked after the file evaluates, with
+   `kimun.surface.declared-anchors/translate`), `timeout` (a file that evaluates longer than
+   the `:timeout-ms` option, default `default-timeout-ms`), `eval`; of a set: `duplicate-context`,
+   `unknown-context`, `require-cycle`, `unknown-relation`, `relation-conflict`."
   (:require [clojure.string :as str]
             [sci.core :as sci]
+            [kimun.surface.declared-anchors :as declared-anchors]
             [kimun.host.default :as host-default]
             [kimun.kernel.canon :as canon]
             [kimun.kernel.err :as err]))
@@ -123,6 +127,10 @@
   [st r doc line]
   (when-not (and (string? doc) (not (str/blank? doc)))
     (fail :declare/bad-relation (str "relation `" r "` needs a non-empty docstring") line {:relation r}))
+  (when-let [from (get-in @st [:referred (str r)])]
+    (fail :declare/relation-conflict
+          (str "relation `" r "` is defined in context `" (:context @st) "` but it is also imported from context `" from "` by :refer: rename one of them")
+          line {:relation (str r) :contexts [(str (:context @st)) from]}))
   (when-let [old (get-in @st [:relations (str r) :doc])]
     (when (not= old doc)
       (fail :declare/relation-redefined (str "relation `" r "` is already defined with another docstring") line {:relation r})))
@@ -199,22 +207,14 @@
                    (str file ":" line ": " (ex-message e) (when unresolved? " (not a relation defined with `relation` in this file, nor part of the vocabulary)"))
                    {:file file :line line})))))
 
-(defn- line-of
-  "The line, from `ns-line` on, where the symbol `sym` first appears as a whole
-   token in `lines` (the reader gives no line to vectors and symbols); `ns-line`
-   when it is not found."
-  [lines ns-line sym]
-  (let [re (re-pattern (str "(?<![\\w.\\-/*+!?<>=$%&])" (java.util.regex.Pattern/quote (str sym)) "(?![\\w.\\-/*+!?<>=$%&])"))]
-    (or (some (fn [i] (when (re-find re (nth lines (dec i))) i)) (range ns-line (inc (count lines))))
-        ns-line)))
-
 (defn- libspec
   "The import `{:context :as :refer :line}` of one `:require` libspec of the
-   `ns` form of `file` (`lines` are the lines of the file), or a
-   declared `ns-clauses` error: only a context name, or `[context :as alias]` /
-   `[context :refer [relation …]]`, are accepted."
-  [file lines ns-line spec]
-  (let [line (line-of lines ns-line (if (vector? spec) (first spec) spec))
+   `ns` form of `file`, or a declared `ns-clauses` error: only a context name, or
+   `[context :as alias]` / `[context :refer [relation …]]`, are accepted. The line is the
+   one the reader gives the libspec (`scan` reads with `:location?` for every form), so two
+   libspecs of the same context have their own line; `ns-line` when it has none."
+  [file ns-line spec]
+  (let [line (or (:line (meta spec)) ns-line)
         bad (fn [why] (fail :declare/ns-clauses (str "`:require` accepts only a context, `[context :as alias]` or `[context :refer [relation …]]`: " why)
                             line {:file file}))
         plain? (fn [x] (and (symbol? x) (nil? (namespace x))))]
@@ -232,19 +232,31 @@
                 (partition 2 opts)))
       :else (bad (pr-str spec)))))
 
+(defn- reserved-context?
+  "True when the context name `nm` (a symbol) is `clojure`, `user`, `sci`, `kimun.declare` or
+   anything under `clojure.`, `sci.` or `kimun.declare.`: names the evaluator or the language use."
+  [nm]
+  (let [n (str nm)]
+    (boolean (or (#{"clojure" "user" "sci" "kimun.declare"} n)
+                 (some #(str/starts-with? n %) ["clojure." "sci." "kimun.declare."])))))
+
 (defn- ns-info
   "`{:context sym :requires [import…] :line n}` of the `(ns …)` form, or a
    declared error."
-  [file lines form]
+  [file form]
   (let [line (or (:line (meta form)) 1)
         [_ nm & more] form
         require? (fn [c] (and (seq? c) (= :require (first c))))]
     (when-not (and (symbol? nm) (nil? (namespace nm)))
       (fail :declare/ns-clauses "`ns` needs a plain symbol name" line {:file file}))
+    (when (reserved-context? nm)
+      (fail :declare/reserved-context
+            (str "context `" nm "` is reserved (the name of the language or of the evaluator): a declaration there could shadow what the language needs; choose another `ns` name")
+            line {:file file :context (str nm)}))
     (when (some #(not (or (string? %) (map? %) (require? %))) more)
       (fail :declare/ns-clauses "`ns` accepts only a name, a docstring, an attribute map and `(:require …)` of other contexts in a declaration file" line {:file file}))
     {:context nm :line line
-     :requires (vec (mapcat (fn [c] (map #(libspec file lines line %) (rest c))) (filter require? more)))}))
+     :requires (vec (mapcat (fn [c] (map #(libspec file line %) (rest c))) (filter require? more)))}))
 
 (defn- scan
   "First pass over `text` (file `file`): syntax, and the `ns` form, which must
@@ -254,7 +266,7 @@
         rdr (sci/reader (str text))
         eof (Object.)
         next-form (fn []
-                    (try (sci/parse-next scan-ctx rdr {:eof eof})
+                    (try (sci/parse-next scan-ctx rdr {:eof eof :location? (fn [_] true)})
                          (catch Exception e
                            (let [line (or (:line (ex-data e)) 1)]
                              (err/raise :declare/syntax (str file ":" line ": " (ex-message e)) {:file file :line line})))))]
@@ -274,7 +286,7 @@
               (err/raise :declare/no-context (str file ":" line ": a second `ns`: one context per file") {:file file :line line})
 
               :else
-              (recur false (if ns-form? (try (ns-info file (vec (str/split-lines (str text))) form) (catch clojure.lang.ExceptionInfo e (rethrow e file line))) info)))))))))
+              (recur false (if ns-form? (try (ns-info file form) (catch clojure.lang.ExceptionInfo e (rethrow e file line))) info)))))))))
 
 (defn- prelude
   "Source that defines, in the sci namespace of the required context `ctx-sym`,
@@ -283,21 +295,60 @@
   [ctx-sym names]
   (str/join "\n" (map (fn [n] (str "(defmacro " n " [& args] (kimun.declare.impl/expand-as '" ctx-sym "/" n " &form &env args resolve))")) names)))
 
+(def default-timeout-ms
+  "How long one file may take to evaluate, unless the `:timeout-ms` option says otherwise."
+  10000)
+
+(defn- run-limited
+  "Calls `f` on a daemon thread and waits at most `timeout-ms` for it; returns its value,
+   rethrows what it threw, or raises `declare/timeout` for `file`. The JVM (and Babashka's
+   native image) cannot stop a thread that does not cooperate: after a timeout the thread is
+   interrupted and ABANDONED, so a loop like `(loop [] (recur))` keeps a core busy until the
+   process ends. It is a daemon (it never keeps the process alive) of minimum priority."
+  [file timeout-ms f]
+  (let [result (promise)
+        bound (bound-fn* f)
+        t (doto (Thread. nil (fn [] (deliver result (try {:value (bound)} (catch Throwable e {:error e})))) "kimun-declare-eval" 33554432)
+            (.setDaemon true)
+            (.setPriority Thread/MIN_PRIORITY)
+            (.start))
+        r (deref result timeout-ms ::timeout)]
+    (cond
+      (identical? r ::timeout)
+      (do (.interrupt t)
+          (err/raise :declare/timeout
+                     (str "the file took more than " timeout-ms " ms to evaluate (an endless loop?); the evaluation was abandoned")
+                     {:file file :line 1 :timeout-ms timeout-ms}))
+      (:error r) (throw (:error r))
+      :else (:value r))))
+
+(defn- check-locators!
+  "Raises `declare/bad-locator` when an `(at …)` node of the propositions `props` is not one of
+   the forms of `kimun.surface.declared-anchors`."
+  [props]
+  (doseq [p props, node [(:a p) (:b p)]
+          :when (and (map? node) (:anchor node))]
+    (declared-anchors/translate (:at p) (:anchor node))))
+
 (defn- evaluate-file
   "Evaluates one file whose `info` (from `scan`) is known; `imports` are the
-   already evaluated required contexts `[{:context sym :names [relation-name…]}]`."
-  [host text file info imports]
-  (let [st (atom {:file file :host host :context (:context info) :relations {} :props [] :index {}})
+   already evaluated required contexts `[{:context sym :names [relation-name…] :refer […]}]`."
+  [host text file info imports timeout-ms]
+  (let [referred (into {} (for [{c :context rs :refer} imports, r rs] [(str r) (str c)]))
+        st (atom {:file file :host host :context (:context info) :relations {} :props [] :index {} :referred referred})
         context (:context info)
         ctx (make-ctx st context)]
     (try
-      (doseq [{c :context names :names} imports]
-        (sci/eval-string+ ctx (prelude c names) {:ns (sci/create-ns c nil)}))
-      ;; the whole text, ns form included, pinned to the context namespace; sci
-      ;; resolves the `:require`s against the macros the prelude just defined
-      (sci/eval-string+ ctx (str text) {:ns (sci/create-ns context nil)})
+      (run-limited file timeout-ms
+                   (fn []
+                     (doseq [{c :context names :names} imports]
+                       (sci/eval-string+ ctx (prelude c names) {:ns (sci/create-ns c nil)}))
+                     ;; the whole text, ns form included, pinned to the context namespace; sci
+                     ;; resolves the `:require`s against the macros the prelude just defined
+                     (sci/eval-string+ ctx (str text) {:ns (sci/create-ns context nil)})))
       (catch Throwable e (rethrow e file 1)))
     (let [{:keys [relations props]} @st]
+      (check-locators! props)
       {:context (str context)
        :relations relations
        :propositions (mapv #(vary-meta % dissoc ::proposition) props)})))
@@ -344,10 +395,13 @@
    `[{:file :context :relations :propositions}]`. Declared errors (all with
    `:file` and `:line`): those of `read-declarations` and
    `declare/duplicate-context`, `declare/unknown-context`,
-   `declare/require-cycle`, `declare/unknown-relation`. `host` defaults to the
-   standard host."
-  ([files] (read-project host-default/host files))
-  ([host files]
+   `declare/require-cycle`, `declare/unknown-relation`, `declare/relation-conflict`
+   (an own relation named like one imported with `:refer`), `declare/reserved-context`,
+   `declare/timeout`. `host` defaults to the standard host; `opts` is `{:timeout-ms n}`, the
+   limit for EACH file (default `default-timeout-ms`)."
+  ([files] (read-project host-default/host files {}))
+  ([host files] (read-project host files {}))
+  ([host files {:keys [timeout-ms] :or {timeout-ms default-timeout-ms}}]
    (let [scanned (mapv (fn [{:keys [file text]}] {:file file :text text :info (scan text file)}) files)
          results (reduce
                   (fn [acc {:keys [file text info]}]
@@ -358,11 +412,33 @@
                                                 (fail :declare/unknown-relation
                                                       (str file ":" line ": context `" context "` does not define a relation `" r "`")
                                                       line {:file file :context (str context) :relation (str r)})))
-                                            {:context context :names names}))
+                                            {:context context :names names :refer refer}))
                                         (:requires info))]
-                      (assoc acc (:context info) (assoc (evaluate-file host text file info imports) :file file))))
+                      (assoc acc (:context info) (assoc (evaluate-file host text file info imports timeout-ms) :file file))))
                   {} (order scanned))]
      (mapv #(get results (get-in % [:info :context])) scanned))))
+
+(defn header-of
+  "`{:context \"c\" :requires [\"other\" …]}` of the declaration file `text` (named `file`): its
+   `ns` form read, nothing evaluated. Raises the declared errors of reading (`syntax`,
+   `no-context`, `ns-clauses`, `reserved-context`)."
+  [text file]
+  (let [{:keys [context requires]} (scan text file)]
+    {:context (str context) :requires (mapv (comp str :context) requires)}))
+
+(defn count-forms
+  "How many top-level forms the Clojure `text` has, read with the reader of the evaluator; a
+   text that does not read is `declare/syntax` (`file` and the line in the data)."
+  [text file]
+  (let [ctx (sci/init {})
+        rdr (sci/reader (str text))
+        eof (Object.)]
+    (loop [n 0]
+      (let [f (try (sci/parse-next ctx rdr {:eof eof})
+                   (catch Exception e
+                     (let [line (or (:line (ex-data e)) 1)]
+                       (err/raise :declare/syntax (str file ":" line ": " (ex-message e)) {:file file :line line}))))]
+        (if (identical? f eof) n (recur (inc n)))))))
 
 (defn read-declarations
   "Evaluates the declaration file whose text is `text` (named `file` in

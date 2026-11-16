@@ -78,7 +78,6 @@ relaciones son macros de ese evaluador, para que los símbolos desnudos lleguen 
 - Dónde busca kimun los archivos de declaración por defecto.
 - Qué pasa cuando dos contextos definen la misma relación con distinto sentido.
 - El `:id` no cambia si cambia el docstring de la relación.
-- El evaluador no tiene tope de tiempo: una declaración con un bucle infinito cuelga el proceso.
 
 ## 7. Decidido al implementar el corte 1
 
@@ -148,3 +147,18 @@ Elecciones mías, 2026-11-16.
 - `declare members 'PATRÓN'` no lee declaraciones: expande un patrón contra los archivos del proyecto (git: seguidos más los no seguidos no ignorados, solo los que existen; fuera de git, el recorrido del directorio sin `.git` ni `.kimun`); la respuesta dice `:files-from :git|:walk`. Más de un argumento es error de uso.
 - Sin FILE, `terms` y `about` leen el proyecto (`read-set` del corte 3a), igual que `read` y `anchors`.
 - **La raíz del proyecto** (decisión del coordinador): los seis comandos de `declare` trabajan desde ella, no desde el cwd. Es el directorio más cercano, subiendo desde el cwd (con los enlaces simbólicos resueltos), que contiene la carpeta `kimun/` (`project-dir`); si ninguno la tiene, la raíz del repositorio git del cwd (`git rev-parse --show-toplevel`); si tampoco, el cwd. Las rutas de `(at …)`/`(files …)`, `--path`, `members` y las de salida son relativas a la raíz; FILE, `--to` y `--path` se interpretan relativos al cwd (un FILE fuera de la raíz sale con su ruta absoluta; `--path` fuera, `cli/usage`). Toda respuesta lleva `:root` (ruta absoluta). El puntero de `anchors` y la lista de `members` también parten de la raíz.
+
+## 12. Decidido al arreglar (2026-11-16)
+
+Hechos de usar `declare` de verdad; cambian lo dicho en §8, §10 y §6 donde se indica.
+
+- **Opciones después de un posicional** (`declare add --to F 'FORMA' --format edn`): babashka.cli deja de leer opciones en el primer posicional que viene después de una opción con valor y entrega el resto, tal cual, como posicionales. `kimun.cli.args/parse` vuelve a leer ese resto (`parse-all`), salvo que haya un `--`. Valía para todos los grupos (`--opt V POSICIONAL --otra`), no solo `declare`; el `:default` de `--format` se aplica ahora al final.
+- **`declare add`** recibe exactamente una forma (se cuenta con el lector de sci, no con una expresión regular): cero o varias es `cli/usage` y no se escribe. Con el archivo ya existente, `--context` debe ser su `ns`; si no, `cli/usage`. Una forma que no lee sigue dando `declare/syntax` con el archivo y la línea.
+- **Contextos reservados**: `clojure`, `user`, `sci`, `kimun.declare` y todo bajo `clojure.`, `sci.` o `kimun.declare.` es `declare/reserved-context` (archivo y línea del `ns`).
+- **Dependencias fuera de los FILE**: si todos los FILE están bajo `kimun/`, los contextos que requieren y ninguno define se buscan en el resto de `kimun/` (transitivamente) y se evalúan con ellos; `:required` lista sus rutas y `:files` solo los nombrados. Fuera de `kimun/` sigue `declare/unknown-context`. Un archivo de `kimun/` que no lee se ignora al buscar (su error sale si es el que se necesita y entonces no se halla: `unknown-context`).
+- **Relación propia con el nombre de una importada con `:refer`** es `declare/relation-conflict` (archivo, línea, `:contexts [propio importado]`); con `:as` no hay choque.
+- **La línea de un `:require`** es la del libspec: el lector de sci da línea a vectores y símbolos si se lo pide (`:location?`), así que se acabó buscar el nombre en el texto (§10, párrafo de la línea): dos libspecs del mismo contexto tienen cada uno la suya.
+- **Tope de tiempo** por archivo: 10 s (`kimun.surface.declare/default-timeout-ms`), opción `:timeout-ms` del evaluador puro; el comando la lee de `$KIMUN_DECLARE_TIMEOUT_MS` (no entero positivo: `cli/usage`). Al excederlo, `declare/timeout` con el archivo (línea 1). El archivo se evalúa en un hilo daemon de prioridad mínima; al vencer se le hace `interrupt` y se lo abandona: ni la JVM ni el binario de Babashka pueden detener un hilo que no coopera, así que un bucle infinito sigue gastando un núcleo hasta que el proceso termina. La CLI termina igual (el hilo es daemon y `-main` sale con `System/exit`); en un proceso de larga vida (`serve`, MCP) cada timeout deja un hilo así.
+- **`declare read` valida la forma de los `(at …)`** al evaluar, con `declared-anchors/translate` (pura, sin ciclo de requires: `declare` requiere a `declared-anchors`, no al revés): `declare/bad-locator` también en `read`, `terms`, `about` y `add`. Un localizador mal formado ya no se acepta en silencio (§8, cuarto punto).
+- Requerir un contexto que no define ninguna relación sigue siendo `declare/eval` («Could not find namespace»): no se tocó.
+
