@@ -19,7 +19,9 @@ How an agent works in this repository.
 8. `docs/v2/12-ecosistema-y-pendientes.md §1` — the backlog as a dependency graph; the working
    order is the plan's, and the rows are read through it. There are no priorities: pick work
    whose dependencies are met.
-9. `desk/tasks/Board.md` — legacy board (not editable through the CLI)
+9. `desk/tasks/Board.md` — the board. The pending work is there as `deskops` tasks since
+   2026-11-16 (`deskops list tasks`); the thirteen tasks older than that date are in a format
+   `deskops` no longer loads and were not migrated
 
 Then the documents the task references. Always cite files by path when reporting to the owner.
 
@@ -82,7 +84,8 @@ after copying anything worth keeping to `runs/`. Evidence of past sessions is in
   models or documents today (`docs/archive/desk/README.md`). The documents SLDB used to
   generate become materializations from models (`docs/v2/drafts/sesion-2026-11-15.md §4`), and
   the desk's source documents are ordinary documents, as in any project that does not use kimun.
-- Use kimun commands (`docs`, `fields`, `find`) on the desk, not the deskops CLI.
+- Tasks are created, advanced and closed with the `deskops` CLI (2026-11-16; before that date
+  this file said not to use it). To read the desk, kimun commands (`docs`, `fields`, `find`) also work.
 - Work is executed by herdr pi workers.
 
 ## Validation
