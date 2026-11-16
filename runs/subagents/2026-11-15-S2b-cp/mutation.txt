@@ -1,0 +1,24 @@
+== M0: sin el namespace (archivo apartado)
+Type:     java.io.FileNotFoundException
+Message:  Could not locate kimun/surface/markdown/offsets.bb, kimun/surface/markdown/offsets.clj or kimun/surface/markdown/offsets.cljc on classpath.
+     ^--- Could not locate kimun/surface/markdown/offsets.bb, kimun/surface/markdown/offsets.clj or kimun/surface/markdown/offsets.cljc on classpath.
+== M1: mapeo de code points = identidad (cps := gs)
+FAIL in (nfc-changes-code-point-count) (/tmp/kimun-s2bcp-wt/test/kimun/surface/markdown/offsets_test.cljc:21)
+FAIL in (nfc-changes-code-point-count) (/tmp/kimun-s2bcp-wt/test/kimun/surface/markdown/offsets_test.cljc:21)
+FAIL in (nfc-changes-code-point-count) (/tmp/kimun-s2bcp-wt/test/kimun/surface/markdown/offsets_test.cljc:21)
+FAIL in (cuts-through-a-cluster-are-rejected-not-adjusted) (/tmp/kimun-s2bcp-wt/test/kimun/surface/markdown/offsets_test.cljc:31)
+FAIL in (cuts-through-a-cluster-are-rejected-not-adjusted) (/tmp/kimun-s2bcp-wt/test/kimun/surface/markdown/offsets_test.cljc:31)
+FAIL in (cuts-through-a-cluster-are-rejected-not-adjusted) (/tmp/kimun-s2bcp-wt/test/kimun/surface/markdown/offsets_test.cljc:31)
+FAIL in (cuts-through-a-cluster-are-rejected-not-adjusted) (/tmp/kimun-s2bcp-wt/test/kimun/surface/markdown/offsets_test.cljc:31)
+FAIL in (cuts-through-a-cluster-are-rejected-not-adjusted) (/tmp/kimun-s2bcp-wt/test/kimun/surface/markdown/offsets_test.cljc:31)
+== M2: ajuste silencioso (ya no rechaza cortes)
+FAIL in (nfc-changes-code-point-count) (/tmp/kimun-s2bcp-wt/test/kimun/surface/markdown/offsets_test.cljc:21)
+FAIL in (nfc-changes-code-point-count) (/tmp/kimun-s2bcp-wt/test/kimun/surface/markdown/offsets_test.cljc:21)
+FAIL in (nfc-changes-code-point-count) (/tmp/kimun-s2bcp-wt/test/kimun/surface/markdown/offsets_test.cljc:21)
+FAIL in (nfc-changes-code-point-count) (/tmp/kimun-s2bcp-wt/test/kimun/surface/markdown/offsets_test.cljc:21)
+FAIL in (cuts-through-a-cluster-are-rejected-not-adjusted) (/tmp/kimun-s2bcp-wt/test/kimun/surface/markdown/offsets_test.cljc:31)
+FAIL in (cuts-through-a-cluster-are-rejected-not-adjusted) (/tmp/kimun-s2bcp-wt/test/kimun/surface/markdown/offsets_test.cljc:31)
+FAIL in (cuts-through-a-cluster-are-rejected-not-adjusted) (/tmp/kimun-s2bcp-wt/test/kimun/surface/markdown/offsets_test.cljc:31)
+FAIL in (cuts-through-a-cluster-are-rejected-not-adjusted) (/tmp/kimun-s2bcp-wt/test/kimun/surface/markdown/offsets_test.cljc:31)
+== restaurado:
+idéntico
