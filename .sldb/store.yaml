@@ -231,7 +231,6 @@ include:
   - desk/lifecycle/rule-closeout-task-refactor.md
 - model: TaskCodeDoc
   paths:
-  - desk/tasks/task-declared-debt-of-the-new-path.md
   - desk/tasks/task-deskops-views-as-declare-generate-recipes.md
   - desk/tasks/task-fichas-and-graph-queries-over-propositions.md
   - desk/tasks/task-finish-wip-leer-readers-by-class.md
