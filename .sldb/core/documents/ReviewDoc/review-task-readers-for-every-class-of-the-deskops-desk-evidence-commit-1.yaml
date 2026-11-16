@@ -1,0 +1,36 @@
+name: review-task-readers-for-every-class-of-the-deskops-desk-evidence-commit-1
+path: desk/reviews/task-readers-for-every-class-of-the-deskops-desk/evidence-commit-1.md
+source_hash: b1e5d17244f59d81180faa29d46bfd6a588ddabc6861efc4263dafa1c6759bd8
+content_hash: 20714549564fa688d37335f2f8c9e6018b3c741c0f954746fe36e27d43564fdb
+field_hashes:
+  id: 566b6c65e26007b9c73c6e4093d719ccd9df5326fd38763a34011975f8476cfc
+  title: 2c87dcd03d2923cde54a28dbb6c07539a6b2fa73ed5ede2fdd3da384938b7663
+  kind: edecec53ab11f560816e75a17681eb83886beace01d7fb927d99707d3d031aac
+  fact: 5ea9c58673a69c87d0e5540a6f9978aad8f8e0a0b9ce3471cff139c730d97888
+  value: 4118d730413f6bd3c5cb79ab4bb1bc4c7d459904720e7cd4f23368f693d85326
+  subject: f48ceb442f1af2735ada4584716b2ccd19ffe115bd7b0af096743652df322dc1
+  subject_ref: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+  engine: 9eeef991471c47a0f748cc581c93b036c7560af99f0fcdf1ed75357a5551f1ac
+  actor: 35d53354ac301d8fb5ae94f2c3b19cc261a42cc09f6ee6b7a60b5c686b776d77
+  run_dir: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+  input_sha256: 089e4378565402b6964d441bcb58c9ceacd3e75a4d511131659149d587814be9
+  output_sha256: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+  verdict: d288c584af270151f7b7cd7977b94160ce1d7b501dee2d6308f2ac84ebaacc99
+  reason: 6bd86d902b76f4666fa02a1a9138229daa2553e2054a01bc2eb6487ca8316099
+  created_at: 67da72622b43b8482664c2b9b299c1bca1b1c40909994443ca026db378cd34d2
+  disposed_at: 67da72622b43b8482664c2b9b299c1bca1b1c40909994443ca026db378cd34d2
+  disposed_by: 35d53354ac301d8fb5ae94f2c3b19cc261a42cc09f6ee6b7a60b5c686b776d77
+  summary: df1a3c974c56cb303e0ed9d31a3c2318c74cac3cd2b609eeb43410e086ab235e
+  disposition: 3de48295272c4c288a227dc60ea5845cdb02822fcc0141280846ab9044196255
+  tags: 26f66ebae91f717518f0d0c6585e99f1cbd539bcb3504598ddeb732dec3a0af9
+semantic_tags:
+- representation.markdown
+- source.document.markdown
+- type.workflow.review
+- workspace.desk.runs
+- workspace:desk
+provenance:
+  by: agent
+  at: '2026-11-16T23:42:04Z'
+  authority: generated
+  via: create_document
