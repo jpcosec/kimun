@@ -394,7 +394,7 @@ Estado de la bandera `KIMUN_PARSER`:
 
 - **Default `native`** (el parser in-process, `ast/parse-native`; es el oráculo).
 - `KIMUN_PARSER=treesitter` usa la vista del pod. Da AST idéntico en **1099/1099** del
-  corpus de paridad + el desk (`cst-ast-parity-test`) y en **0/500 y 0/3000 divergencias**
+  el corpus y el desk (medición del 2026-10-08; su prueba diferencial se borró con la paridad v1) y en **0/500 y 0/3000 divergencias**
   sobre Markdown libre muestreado con el alfabeto de `gen-free-md`
   (`runs/subagents/2026-11-15-S1/`). La vista solo adopta un bloque del pod cuando su span y
   su kind coinciden con el perfil; donde no coinciden usa el corte del perfil, así que el AST

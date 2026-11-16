@@ -272,7 +272,7 @@
    :template "---\nname: ⸢rev•name⸥\ndirection: ⸢rev•direction⸥\ncardinality: ⸢rev•cardinality⸥\naxis: ⸢rev•axis⸥\nsource_types: ⸢rev,list•source_types⸥\ntarget_types: ⸢rev,list•target_types⸥\ncondition: ⸢rev•condition⸥\n---\n\n# ⸢rev•title⸥\n"})
 
 ;; v1 `RelationTypeDoc` (tests/test_relation_models.py, store/edge_index relation_contribution): a document of the
-;; model, or of a model based on it, IS a relation type — the real ones are compared in edges_parity_test.
+;; model, or of a model based on it, IS a relation type.
 (deftest a-relation-type-document-defines-a-relation-type
   (let [p (world)
         rtype (fn [m n src tgt] (create p m (str "reltype-" n) {"title" n "name" n "direction" "directed" "cardinality" "many_to_many" "axis" "WHO"

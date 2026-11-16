@@ -9,7 +9,6 @@
 
 (def ^:private roles #{:source :generated})
 (def ^:private parsers #{:treesitter :sldb-md/blocks})
-(def ^:private compats #{:strict :legacy-v1-template})
 (def ^:private formats #{:markdown :edn :json})
 
 (defn- bad
@@ -80,9 +79,7 @@
     (let [s (:substrate d)]
       (when-not (map? s) (bad nm ":substrate must be a map"))
       (when-not (contains? parsers (:parser s))
-        (bad nm (str ":substrate :parser must be one of " (pr-str parsers))))
-      (when-not (contains? compats (:compat s))
-        (bad nm (str ":substrate :compat must be one of " (pr-str compats)))))
+        (bad nm (str ":substrate :parser must be one of " (pr-str parsers)))))
     (let [a (:anchoring d)]
       (when-not (map? a) (bad nm ":anchoring must be a map"))
       (when-not (vector? (:fields a)) (bad nm ":anchoring :fields must be a vector"))

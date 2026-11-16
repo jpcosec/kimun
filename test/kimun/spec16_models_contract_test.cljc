@@ -1,7 +1,7 @@
 (ns kimun.spec16-models-contract-test
   "Contract checks for M1 (Spec 16 — docs/v2/16-modelos-como-subgrafos.md):
    anchoring vs. generation separation, EDN selector schema & R3 continuity,
-   DAG inheritance semantics (make-hierarchy/derive/isa?), R3 strict vs legacy
+   DAG inheritance semantics (make-hierarchy/derive/isa?), the R3 strict-extraction
    discrepancies, and explicit open-decision boundaries without resolving D0."
   (:require [babashka.fs :as fs]
             [clojure.edn :as edn]
@@ -41,7 +41,7 @@
     (is (= #{:K1e} (set (get-in fx [:implementation :blocked-by]))))
 
     (testing "Open decisions are declared explicitly and D0 prescribes no ID scheme"
-      (doseq [k [:A1.1 :F10 :R3-quirks]]
+      (doseq [k [:A1.1 :F10]]
         (is (= :open (get-in open-decs [k :status])) (str "Decision " k " must remain :open")))
       ;; D0 is no longer the owner's to answer: the council derived its S–M contract (14 §21)
       (is (= :derived (get-in open-decs [:D0 :status])))

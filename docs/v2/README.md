@@ -30,7 +30,7 @@ De mayor a menor. Ante contradicción gana el número menor.
 6. `06-superficies-y-cli.md`, `07-modelos-como-nodos.md`, `08-distribucion.md`,
    `10-escala.md`, `13-include.md` (cada uno dueño de su tema)
 7. `05-estado.md` (estado y decisiones vigentes)
-8. `tests/promises.md` y `tests/parity-v1.md` (evidencia)
+8. `tests/promises.md` (evidencia)
 9. `desk/atoms/` (`epoch:v2` prevalece sobre los atoms anteriores)
 10. `12-ecosistema-y-pendientes.md`
 11. `docs/archive/` — material histórico, no autoritativo; nunca corrige a `docs/v2/`
@@ -54,7 +54,6 @@ De mayor a menor. Ante contradicción gana el número menor.
 | `14-juego-del-lenguaje.md` | **reordenado por tema (`DOC1` / `F18`)**: separa contrato objetivo, estado implementado, decisiones abiertas (`D-G`; `D0` es desde el 2026-11-15 contrato S–M derivado) e historia; integra `P1–P15`, tres capas (`§19`), clases/anclaje vs. generación (`§18`), trackeable vs. trackeado (`§20`), identidad vs. huella Merkle (`§21`, contrato `D0` derivado por el concilio; implementación `K1`) y decisiones `21–46` |
 | `16-modelos-como-subgrafos.md` | **spec M1 (Etapa A, diseño objetivo)**: modelos de anclaje vs. generación, selectores EDN sobre substrato tree-sitter (`R3`), herencia de clases e inmutabilidad de contrato (`14 §18`, pendiente de `P1` y `K1` para implementar) |
 | `tests/promises.md` | promesa normativa de `02`/`04` → test que la prueba |
-| `tests/parity-v1.md` | marcador de paridad con sldb v1, DAG y desviaciones deliberadas |
 | `drafts/sesion-2026-11-15.md`, `drafts/diseno-declaraciones.md`, `drafts/plan-producto.md` | **borradores, pero lo vigente para la dirección** (2026-11-15/16): las palabras del dueño (textuales), el diseño de las declaraciones y el plan aprobado por etapas |
 | `drafts/` (resto) | **no autoritativo**: registro de la sesión 2026-10-08/09, **preguntas abiertas al dueño**, análisis previo del 14, dudas de la capa G, IDs a partir de Matrix |
 | `runs/research/2026-10-08/` | evidencia de la sesión: spikes R1–R3, dossiers del store, reportes de las tandas A y S |
@@ -74,7 +73,7 @@ Newcomer:
 2. `05` (estado y decisiones).
 3. `06` (la CLI), `07` (modelos) y `10` (el store en disco).
 4. `13` si vas a versionar un repo con kimun.
-5. `tests/promises.md` y `tests/parity-v1.md` para la evidencia.
+5. `tests/promises.md` para la evidencia.
 6. `12` para lo que falta; `docs/archive/` para la historia.
 
 Agente que retoma: `AGENTS.md` (orden operativo) → `00` → los tres borradores vigentes → `05` (estado) →
@@ -94,7 +93,7 @@ Una frase por documento; los textos de abajo siguen en sus documentos y no se ha
   compatibilidad con v1 (`:legacy-v1-template`, `§3.5`) se está borrando (en curso).
 - `07` (modelos como nodos con la plantilla de v1): el modelo como receta de materialización desde el grafo
   está en `drafts/plan-producto.md`, etapa 5, y en `16`.
-- `tests/parity-v1.md`: la paridad con v1 está suspendida (`drafts/sesion-2026-11-15.md §8`).
+- La paridad con v1 está suspendida (`drafts/sesion-2026-11-15.md §8`); sus pruebas y su marcador se borraron el 2026-11-16.
 - No existe un documento `11`: el diseño de adaptadores se retiró y el subsistema se borró el 2026-11-15.
 
 Lo retirado del diseño anterior está en `01 §7`.

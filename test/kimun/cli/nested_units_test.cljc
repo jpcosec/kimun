@@ -187,7 +187,7 @@
     (testing "a document of a spec 16 class marks its list items the same way"
       (spit (file "Tagged.edn")
             (pr-str {:model/name "Tagged" :model/version 1 :base [] :document-role :source
-                     :substrate {:parser :sldb-md/blocks :grammar "markdown" :compat :strict}
+                     :substrate {:parser :sldb-md/blocks :grammar "markdown"}
                      :generation {:projections {}}
                      :anchoring {:fields [{:name "title" :type :string :required true :description "Title."}
                                           {:name "tags" :type [:list :string] :required true :description "Tags."}]

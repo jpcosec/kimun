@@ -27,8 +27,7 @@
 > auditoría y el mapa de ambigüedades están en `runs/research/2026-11-14/concilio/`.
 
 > Pendientes abiertos en kimun, quién usa hoy sldb v1 y qué es `wittgenstein` (motor de la capa G).
-> El estado y las decisiones vigentes están en `05-estado.md`; el detalle test a test de la
-> paridad, en `tests/parity-v1.md` y `scripts/parity/coverage.py`.
+> El estado y las decisiones vigentes están en `05-estado.md`.
 
 ## 1. Pendientes en kimun
 

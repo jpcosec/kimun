@@ -1,8 +1,0 @@
-{
- "body": "## Scope\n\n- `stores init` should be idempotent: if `.sldb/` exists, report it clearly and exit 0\n- Partial init failures (created dirs but no index) should roll back or leave a detectable partial state\n- Exit codes should distinguish: already-exists (0), created (0), partial-failure (1+), precondition-error (2+)\n- Stderr output for failures should be actionable, not raw tracebacks\n\n## Motivation\n\nDeskops needs to report safe, clear output to first-time users. Currently a bare `sldb stores init` failure propagates as a cryptic subprocess error.\n\n## Existing pills\n\n- `desk/pills/pill-001-sldb-vs-deskops-boundary.md` — SLDB owns store contracts, deskops owns workflow\n\n## Done When\n\n- `sldb stores init` run twice in the same directory: first exits 0 creates store, second exits 0 says \"already exists\"\n- Forced init failure (readonly parent dir) exits non-zero with actionable stderr and no partial `.sldb/` left behind\n- Deskops `init` can read the exit code and report the right user message",
- "created_at": "2026-06-14T00:00:00",
- "kind": "suggestion",
- "sender_project": "deskops",
- "status": "open",
- "title": "Stabilize `stores init` failure handling"
-}

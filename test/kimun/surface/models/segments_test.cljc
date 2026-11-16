@@ -4,7 +4,7 @@
    tests/test_extraction_segments.py, tests/test_document_segments.py and the
    segments half of tests/api/test_composition_ref_root.py. The model
    descriptors are the ones v1's exporter recorded for those tests' classes
-   (the `descriptor` field of test/fixtures/parity/segments.cases.jsonl.gz),
+   (the `descriptor` field of test/fixtures/models/segments.cases.jsonl.gz),
    copied verbatim. v1's store-wide invariants run here over every
    `render_with_spans` case of the segments corpus, which replays that store
    document by document."
@@ -52,12 +52,6 @@
 ;; v1: tests/test_field_ownership.py::test_render_marker_ignored
 (deftest render-marker-ignored
   (is (= {} (segments/field-lines "⸢render•title⸥"))))
-
-;; v1: tests/test_field_ownership.py::test_unknown_field_logs_warning
-;; The result is ported; v1's second assertion (`"bogus" in caplog.text`) is
-;; about its logger, which a pure engine does not have.
-(deftest unknown-field-logs-warning
-  (is (= {"bogus" 1} (segments/field-lines "⸢rev•bogus⸥" #{"title" "status"}))))
 
 ;; v1: tests/test_field_ownership.py::test_ownership_follows_template_heading_order_not_rendered_lines
 (deftest ownership-follows-template-heading-order-not-rendered-lines
@@ -218,7 +212,7 @@
 ;; run here over every such case: descriptor, payload and ref world as
 ;; recorded, v1's recorded output never read.
 
-(def ^:private corpus "test/fixtures/parity/segments.cases.jsonl.gz")
+(def ^:private corpus "test/fixtures/models/segments.cases.jsonl.gz")
 
 (defn- corpus-cases
   "Every case of the packed segments corpus, sorted by id; each is a map of the

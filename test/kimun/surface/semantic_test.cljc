@@ -1,12 +1,8 @@
 (ns kimun.surface.semantic-test
-  "Semantic layer, pure half: tags of a document (differential against a real
-   v1 store, frozen under test/fixtures/parity/semantic), the DAG walks of v1
+  "Semantic layer, pure half: tags of a document, the DAG walks of v1
    `tests/store/test_semantic_dag_walk.py`, the empty-store queries of
    `test_queries_expanded.py`."
-  (:require [cheshire.core :as json]
-            [clojure.edn :as edn]
-            [clojure.string :as str]
-            [clojure.test :refer [deftest is testing]]
+  (:require [clojure.test :refer [deftest is testing]]
             [kimun.surface.semantic :as sem]))
 
 (def derived
@@ -96,19 +92,3 @@
            (sem/tags-of {:model/name "Plain"} {} {:payload {"tags" [" t " "" 3] "semantic_tags" ["a:b"]}})))
     (is (= {:by-tag {"t" #{"M:a" "M:b"} "u" #{"M:b"}} :by-doc {"M:a" ["t"] "M:b" ["t" "u"]}}
            (sem/index [{:model "M" :name "b" :tags ["u" "t"]} {:model "M" :name "a" :tags ["t"]}])))))
-
-(def fixtures "test/fixtures/parity/semantic/")
-
-;; Differential on real data: 87 documents of 23 models of v1's own store.
-(deftest tags-of-reproduces-the-tags-v1-recorded
-  (let [models (into {} (map #(let [d (edn/read-string %)] [(:model/name d) d]))
-                     (remove str/blank? (str/split-lines (slurp (str fixtures "models.edn")))))
-        docs (json/parse-string (slurp (str fixtures "documents.json")))
-        expected-diff (set (map (juxt :model :name) (edn/read-string (slurp (str fixtures "EXPECTED-DIFFS.edn")))))]
-    (is (<= 40 (count docs)))
-    (is (<= 8 (count (set (map #(get % "model") docs)))))
-    (doseq [d docs :let [k [(get d "model") (get d "name")]
-                         got (sem/tags-of (models (get d "model")) models {:payload (get d "payload")})]]
-      (if (expected-diff k)
-        (is (not= (get d "expected") got) (str k " is listed in EXPECTED-DIFFS.edn but matches"))
-        (is (= (get d "expected") got) (str k))))))

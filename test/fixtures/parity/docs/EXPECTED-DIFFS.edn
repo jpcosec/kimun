@@ -1,6 +1,0 @@
-{"TaskDoc--task-borrar-la-capa-runtime-edges-y-podar-el-surface-publico"
- "deskops TaskDoc drops an empty `from_drawer` in Python code of the model class, not in the engine (same reason as test/fixtures/parity/engine/EXCLUSIONS.edn; docs/v2/07 §1)"
- "TaskDoc--task-build-code-self-documentation"
- "deskops TaskDoc drops an empty `from_drawer` in Python code of the model class, not in the engine (same reason as test/fixtures/parity/engine/EXCLUSIONS.edn; docs/v2/07 §1)"
- "TaskDoc--task-cerrar-los-gaps-g1-g5-que-bloquean-el-retiro-de-runtime-edges"
- "deskops TaskDoc drops an empty `from_drawer` in Python code of the model class, not in the engine (same reason as test/fixtures/parity/engine/EXCLUSIONS.edn; docs/v2/07 §1)"}

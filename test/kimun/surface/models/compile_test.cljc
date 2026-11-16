@@ -28,11 +28,10 @@
    :template template})
 
 (deftest output-validates-as-spec16
-  (testing "the compiled view passes the M1a shape check, under the legacy compat"
+  (testing "the compiled view passes the M1a shape check"
     (doseq [nm ["ChecklistDoc" "AtomDoc" "TaskDoc"]
             :let [view (compile/template->spec16 (v1 nm))]]
       (is (= view (sg/validate! view)) nm)
-      (is (= :legacy-v1-template (get-in view [:substrate :compat])) nm)
       (is (= :sldb-md/blocks (get-in view [:substrate :parser])) nm)
       (is (contains? (get-in view [:generation :projections]) :markdown/v1) nm)
       (is (seq (get-in view [:anchoring :selector])) nm))))

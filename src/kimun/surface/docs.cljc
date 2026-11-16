@@ -218,20 +218,19 @@
   "The typed payload of Markdown `text` under class descriptor `d`. A v1
    descriptor (`:template`) goes through `extract/extract`, unchanged. A spec 16
    one is extracted with the COMPOSED selector and fields of `d` and its
-   `ancestors` (descriptors, ancestor-first; docs/v2/16 §4.2), in the
-   `:substrate :compat` mode the class declares (§3)."
+   `ancestors` (descriptors, ancestor-first; docs/v2/16 §4.2)."
   [d ancestors text]
   (if (mstore/spec16? d)
     (let [nm (:model/name d)
           idx (subgraph/index-models (conj (vec ancestors) d))]
       (descriptor/finalize {:model/name nm :fields (subgraph/compose-fields idx nm)}
-                           (selector/extract-selector (subgraph/compose-selector idx nm) text (get-in d [:substrate :compat]))))
+                           (selector/extract-selector (subgraph/compose-selector idx nm) text)))
     (extract/extract d text)))
 
 (defn- reading-of
   "The reading of spec 16 descriptor `d` composed with `ancestors` (descriptors,
    ancestor-first) whose ids are `ids`, for the parse contract (M1h, docs/v2/10
-   §11.1): the substrate and `:compat` it declares, the ancestors, and the text
+   §11.1): the substrate it declares, the ancestors, and the text
    the selector digest is taken of — the COMPOSED selector and fields, not the
    descriptor, so a `:contract/digest` a descriptor declares is never read.
    Nil for a v1 descriptor: its contract is the one of always."
@@ -666,24 +665,19 @@
   "How the document with tree `tree-id` and file `path` stands in the route
    map of `store`:
    - `:routed`   it holds the route of its path;
-   - `:unrouted` nobody holds it: the document was registered before routes
-                 existed, and its next write registers it;
-   - `:shared`   another document holds it. The route map has one entry per
-                 path and a new document on a held file is refused; a second
-                 document on the same file exists only as legacy (stores
-                 migrated from v1 have them, `track-plan` `:shared-path
-                 :allow`): tracked and sensed, without a route;
+   - `:unrouted` it holds none: the document was registered before routes
+                 existed, and its next write registers it (a new document on
+                 a held file is refused, so no two documents share a file);
    - `:outside`  its file is outside the project (a relative path with
                  `..`, which the API admits with `--store`): the route map
                  refuses such a path, so the document has no route.
-   The route root covers only `:routed` documents; the other three are
+   The route root covers only `:routed` documents; the other two are
    reported by `route-coverage`, never silently left out."
   [store tree-id path]
   (let [q (qualified-path (:host store) path)
         owner (when q (route-owner store q))]
     (cond (not (route/valid-path? q)) :outside
           (= owner tree-id) :routed
-          (some? owner) :shared
           :else :unrouted)))
 
 (defn routed?
@@ -854,13 +848,10 @@
    file (default: the store descriptor's `:content`). A document with a path
    (and not `:inline`) is registered as CACHE (docs/v2/14 §18.6): no ownership
    edge, no block/text node and no tree object enters the plan. One route, one
-   document: a file whose route another document holds is `:docs/exists` —
-   unless `:shared-path :allow` is given, the explicit legacy mode for stores
-   that already hold two documents on one file (a v1 migration): the document
-   is then tracked without a route and reported as `:shared`."
-  [host store model name text {:keys [doc tree-id path actor timestamp operation inline shared-path units marks mint]}]
+   document: a file whose route another document holds is `:docs/exists`."
+  [host store model name text {:keys [doc tree-id path actor timestamp operation inline units marks mint]}]
   (refuse-collision! store name path)
-  (when (and path (not= :allow shared-path)) (refuse-routed! store path nil))
+  (when path (refuse-routed! store path nil))
   (let [m (require-model store model)
         lineage (when (mstore/spec16? (:descriptor m)) (current-lineage store m))
         ancestors (not-empty (mapv :id lineage))
@@ -1131,14 +1122,12 @@
 
 (defn route-coverage
   "How much of what is registered the route map covers: `{:registered n
-   :routed n :missing [doc] :shared [doc] :outside [doc]}` over the documents
+   :routed n :missing [doc] :outside [doc]}` over the documents
    whose tree is registered as cache with a file (typed and generic); `doc` is
    `{:name :qualified :tree}`. `:missing` are documents registered before
-   routes existed (their next write gives them one); `:shared` are legacy
-   second documents on a file whose route another holds; `:outside` are
+   routes existed (their next write gives them one); `:outside` are
    documents whose file is outside the project (`route-state`). The route
-   root covers none of the three: the coverage is complete only when all are
-   empty."
+   root covers neither: the coverage is complete only when both are empty."
   [store]
   (let [docs (->> (concat (documents store) (generic-documents store))
                   (filter #(and (:path %) (cached-tree? store (:tree %))))
@@ -1148,7 +1137,6 @@
     {:registered (count docs)
      :routed (count (of :routed))
      :missing (of :unrouted)
-     :shared (of :shared)
      :outside (of :outside)}))
 
 (defn untrack-plan

@@ -299,9 +299,6 @@ redactado en Etapa A; implementación dependiente de `P1` y `K1`):
 - **Estado implementado hoy (`07-modelos-como-nodos.md`):**
   - Descriptores EDN opacos con template de bloques (`markdown-it` / `kimun.surface.models.blocks`) y
     composición `07`.
-  - **Regresión de v1 (`tests/parity-v1.md`):** el template estricto de v1 es el caso especial del
-    sistema actual; marcador vigente tras `C1/F25` y `C1` chequeo fuente: **`520/1/14/55/0/0/0/0`**
-    (`520` portadas, `1` mapeada, `14` oráculo, `55` n/a, `0` brechas, `0` corpus, `0` abiertas).
 - **Retirado / pendiente:** el descubrimiento automático (`CHIC`/`SIA`) requiere la capa G y vive en
   Etapa C; la regeneración del desk (`M2`) espera la implementación de `M1`.
 
@@ -677,15 +674,15 @@ Reúne las decisiones `21–46` (numeradas a continuación de `05 §3`), señala
 
 | # | decisión | estrato / estado | dónde vive | evidencia / tests |
 |---|---|---|---|---|
-| 21 | Autoridad partida por clase: bytes → archivo (+git), estructura → caché/pool verificable, hechos → grafo + docs de decisión (revisa `01 §4.1`) | **Parcialmente implementado** (S/M en Formato 4; G objetivo) | `14 §2`, `01 §4`, `05 §3` | `docs_test`, `durability_test` |
+| 21 | Autoridad partida por clase: bytes → archivo (+git), estructura → caché/pool verificable, hechos → grafo + docs de decisión (revisa `01 §4.1`) | **Parcialmente implementado** (S/M en Formato 4; G objetivo) | `14 §2`, `01 §4`, `05 §3` | `docs_test` |
 | 22 | Todo hecho vive en un `W_i`; contexto por defecto = documento `source`; ruteo solo por proyecciones promovidas | **Contrato objetivo** (bloqueado por `G1`/`D0`) | `14 §3`, `05 §3` | `manifest.edn` `C01–C02` |
 | 23 | `R`, `A`, `B` en taxonomías con herencia (`isa?`); propiedades algebraicas de `R` por contexto; vocabulario `L_i` en EDN (`source`) | **Contrato objetivo** (herencia usada en docs/tags; reglas G esperan `G1`) | `14 §4`, `05 §3` | `semantic_test`, `manifest.edn` `C06–C08` |
 | 24 | Afirmación en arista `projection` + `V`/`S` por `(hecho, W_i)` + promoción explícita a `TRUE` | **EN REVISIÓN (`D-G`)** | `14 §5`, `drafts/capa-g-dudas.md` | — (bloqueado hasta cierre `D-G`) |
 | 25 | Conflicto lógico vive fuera del pool; se resuelve por transacción (separar contextos, retractar, fuente equivocada); nunca en silencio | **Contrato objetivo** (`G1`, Etapa C) | `14 §6`, `05 §3` | `manifest.edn` `C11` |
 | 26 | Evaluación booleana por matrices `W_i`, índices derivados, nunca `p×p` global | **Contrato objetivo** (`G1`, Etapa C) | `14 §8`, `05 §3` | — |
-| 27 | Formato 4 del store: registro por documento + caché de árbol/bloques en `<store>/cache/`; `:content :inline` opcional; log bajo `:git :ignore` | **Implementado** (`S1c`, Formato 4; `K6` en Markdown implementado; `K2b` pendiente de `D0`) | `10-escala.md §11`, `14 §19`, `05 §3` | `revision_format2_test`, `durability_test`, `store_size.clj` |
-| 28 | Modelo = símbolo-tipo + selector + proyecciones; template v1 como caso especial (regresión `parity-v1`) | **Especificado (`M1`) / Parcial** (v1 implementado; selector EDN en diseño objetivo) | `16-modelos-como-subgrafos.md`, `07-modelos-como-nodos.md`, `14 §9` | `spec16_models_contract_test`, `adapters_parity_test` |
-| 29 | Tree-sitter como pod es el parser de la capa M, por fases; SLDB-MD perfil cerrado; `blocks.cljc` como oráculo | **Implementado** (fase 1 `blocks` `1099/1099`; fase 2 `cst_ast` en `S1`) | `04-superficie-markdown.md`, `14 §11` | `blocks_parity_test`, `segments_parity_test` |
+| 27 | Formato 4 del store: registro por documento + caché de árbol/bloques en `<store>/cache/`; `:content :inline` opcional; log bajo `:git :ignore` | **Implementado** (`S1c`, Formato 4; `K6` en Markdown implementado; `K2b` pendiente de `D0`) | `10-escala.md §11`, `14 §19`, `05 §3` | `revision_format2_test`, `store_size.clj` |
+| 28 | Modelo = símbolo-tipo + selector + proyecciones; template v1 como caso especial | **Especificado (`M1`) / Parcial** (v1 implementado; selector EDN en diseño objetivo) | `16-modelos-como-subgrafos.md`, `07-modelos-como-nodos.md`, `14 §9` | `spec16_models_contract_test` |
+| 29 | Tree-sitter como pod es el parser de la capa M, por fases; SLDB-MD perfil cerrado; `blocks.cljc` como oráculo | **Implementado** (fase 1 `blocks` `1099/1099`; fase 2 `cst_ast` en `S1`) | `04-superficie-markdown.md`, `14 §11` | `cst_test`, `segments_test` |
 | 30 | Datalog para consulta de G; Datalevin (pod) candidato con respaldo in-process; índice G derivado | **Spike `R1` cerrado / Contrato objetivo (`G2`)** | `14 §8`, `12 §1` | `runs/research/2026-10-08/R1-report.md` |
 | 31 | Salida de prompt como `proposed` + políticas de promoción (harness) | **EN REVISIÓN (`D-G`)** (no existe categoría `"propuesto"`) | `14 §7`, `drafts/capa-g-dudas.md` | — |
 | 32 | Unidad de anclaje = hoja + grafemas NFC; chunks en code points mapeados al entrar | **Parcialmente implementado** (hojas/grafemas en M; cruce completo es `S2` tras `K1`) | `02-sustrato-computacional.md §4.1`, `14 §7` | `anchor_test`, `cst_ast_test` |
@@ -696,12 +693,12 @@ Reúne las decisiones `21–46` (numeradas a continuación de `05 §3`), señala
 | 37 | Hechos almacenados en la forma más simple (CAS) + caché de derivados con clave por inputs | **Contrato objetivo** (caché de árbol ya existe; derivados G en Etapa C) | `14 §12`, `05 §3` | — |
 | 38 | Embeddings multilingües sin idioma fijo ni plantilla declarada sobre forma canónica (`dog/perro/hund`) | **Contrato objetivo** (`G3`; corrige `Q13`) | `14 §1 P15`, `14 §7` | — |
 | 39 | Lenguaje de selección por spike en etapa A + índice por revisión derivado también en `:git :track` | **Mixto**: spike `R3` cerró selector EDN (`M1`); en el índice por ruta están implementados los cortes `C2a`/`C2b`/`C4`/`C5` de `K2a` (árbol Merkle por directorio en stores nuevos; pendiente el coste dentro de un directorio ancho) | `16-modelos-como-subgrafos.md`, `14 §20`, `10 §11` | `spec16_models_contract_test`, `route_store_test`, `routes_test` |
-| 40 | Todo documento se lee bajo el contrato con el que se escribió (`:contract` en evidencia de arista `reference` root→external) | **Implementado (`A1`, `2026-10-08`)** | `06-superficies-y-cli.md`, `07-modelos-como-nodos.md`, `14 §18.3` | `closed_gaps_test`, `models_parity_test` |
+| 40 | Todo documento se lee bajo el contrato con el que se escribió (`:contract` en evidencia de arista `reference` root→external) | **Implementado (`A1`, `2026-10-08`)** | `06-superficies-y-cli.md`, `07-modelos-como-nodos.md`, `14 §18.3` | `typed_docs_test` |
 | 41 | Todo documento es instancia de una clase; herencia con `derive`/`isa?`; clase cambiada = otra clase | **Parcialmente implementado** (`K3` clase genérica cerrado en `076be35b`, `43d9db6d`; Spec 16 `M1` redactado, runtime M1 espera `P1`/`D0`) | `14 §18`, `16-modelos-como-subgrafos.md`, `10 §11` | `spec16_models_contract_test`, `typed_docs_test` |
 | 42 | Anclaje y generación son modelos distintos; azúcar en nodo; `source` vs `generado` | **Especificado (`M1`)** (desk actual tratado como `source` tras retiro de modelos legacy, `F10`) | `14 §18.7–9`, `16-modelos-como-subgrafos.md` | `spec16_models_contract_test`, `manifest.edn` |
-| 43 | Tres capas: caché, store estable (hashes/anchors, nunca contenido) y grafo (`kimun.graph.*` paquete aparte) | **Parcialmente implementado**: `Formato 4` en `main`; primer corte de `P1` implementado (`70b8abe9`: `kimun.graph.*` con anillo en `bb lint`; modelos/`semantic`/`edges` pendientes de `M1`/`D0`); `K2a` con cortes `C2a`/`C2b`/`C4` implementados y estructura Merkle incremental/coste pendiente | `14 §19`, `12 §1`, `03 §1` | `durability_test`, `lint_test` |
+| 43 | Tres capas: caché, store estable (hashes/anchors, nunca contenido) y grafo (`kimun.graph.*` paquete aparte) | **Parcialmente implementado**: `Formato 4` en `main`; primer corte de `P1` implementado (`70b8abe9`: `kimun.graph.*` con anillo en `bb lint`; modelos/`semantic`/`edges` pendientes de `M1`/`D0`); `K2a` con cortes `C2a`/`C2b`/`C4` implementados y estructura Merkle incremental/coste pendiente | `14 §19`, `12 §1`, `03 §1` | `lint_test` |
 | 44 | Trackeable vs. trackeado; Merkle del store estable por ruta sobre lo trackeado; plan fuera del CAS | **Parcial (`K2a`)**: cortes `C2a`, `C2b`, `C4` y `C5` implementados (`3b2d6d5d`..`b4931b7c`: plan fuera del CAS, mapa durable de rutas y, en stores nuevos, árbol Merkle incremental por directorio con descenso local — esquema 2, el único que se abre); **pendiente el coste dentro de un directorio ancho (sin fan-out) y medir en un store real**; retirada de `mmap`/aristas redundantes es `K2b` (`D0`/`K1`) | `14 §20`, `10 §11`, `10 §11.2`, `06-superficies-y-cli.md` | `route_store_test`, `route_tree_test`, `route_tree_store_test`, `route_schema_test`, `routes_test`, `c4_route_rebuild_test` |
-| 45 | Formato 4 implementado (`S1c`): registro por documento y árbol como caché por hash en `<store>/cache/` | **Implementado (`S1c`)** | `10-escala.md §11`, `05 §1` | `durability_test`, `diagnostics_test` |
+| 45 | Formato 4 implementado (`S1c`): registro por documento y árbol como caché por hash en `<store>/cache/` | **Implementado (`S1c`)** | `10-escala.md §11`, `05 §1` | `diagnostics_test` |
 | 46 | El hash detecta mutaciones; no es identidad (ni lugar es identidad positiva; dirección `2026-11-14`) | **Contrato S–M derivado por el concilio (`D0`, 2026-11-15)**; implementación pendiente | `14 §21`, `runs/research/2026-11-15/concilio/d0-contrato-sintesis.md`, `drafts/fuentes-identidad.md` | **Sin código todavía**: lo implementa `K1`; `K2b`, `S2` y `M1` esperan a `K1`; `G1` además a `D-G` |
 
 ## 13. Etapas (P12)
@@ -780,15 +777,15 @@ Estado real de ejecución por etapa (el backlog vivo y dependencias residen en
 
 ## 14. Promesas (resumen; la traza viva está en `tests/promises.md`)
 
-La tabla promesa → test, con la evidencia implementada (incluidos formatos 3 y 4 y paridad v1), vive en
-`tests/promises.md` y `tests/parity-v1.md`. Resumen normativo y límites medidos:
+La tabla promesa → test, con la evidencia implementada (incluidos formatos 3 y 4), vive en
+`tests/promises.md`. Resumen normativo y límites medidos:
 
 - Un documento `source` sin cambios conserva intactos sus anchors tras un `rebuild` (`hoja igual ⇒ mismo id` en el esquema actual; sujeto a revisión al resolverse `D0`).
 - Cambiar una hoja marca `orphan` solo lo anclado a ella; el resto conserva anclaje (`intact`).
 - `include build` / `include build --rebuild` sobre fuentes idénticas estabiliza el registro trackeado y su `route-root` (`C4`, `c4_route_rebuild_test`).
 - **Límite heredado del formato 4 inicial (en reducción con `K2a`–`K2b`):** en la medición de `2026-10-09`, el store del desk (`2,51 MB`) pesaba más que el texto indexado (`433 KB`) por retener el plan del build en el CAS, `mmap` por ids internos y tres aristas por documento (`§20`); además, en disco real de `4 KB`/bloque `K4` (packfiles) sigue pendiente (`tests/parity-v1.md §5`).
 - **Contratos aún NO implementados (capa G):** conflicto lógico al unir contextos (`§6`), promoción controlada de verdad (`§5`, pendiente `D-G`) y evaluación booleana en dos etapas (`§8`).
-- **Segmentación Markdown:** `tree-sitter pod` coincide `1099/1099` con `blocks.cljc` en corpus + desk (`blocks_parity_test`, `segments_parity_test`).
+- **Segmentación Markdown:** `tree-sitter pod` coincide `1099/1099` con `blocks.cljc` en corpus + desk (medición del `2026-10-09`; su prueba diferencial se borró con la paridad v1).
 
 ## 15. Qué revisa de los documentos vigentes
 

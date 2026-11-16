@@ -64,21 +64,19 @@
      :leaf-hashes (mapv :hash leaves)}))
 
 (defn capture-selector
-  "The captures of selector `steps` over Markdown `text` (same `mode` as
-   `selector/extract-selector`): `{:captures {field {:value … :path … :spans …
+  "The captures of selector `steps` over Markdown `text` (as `selector/extract-selector`): `{:captures {field {:value … :path … :spans …
    :leaf-hashes …}} :aligned? bool}` (see the namespace docstring). The values
    are those of `extract-selector`; the coordinates come from
    `kimun.surface.markdown.anchors` over spans the block layer shares with the
    neutral AST. Needs the tree-sitter pod exactly when a step does."
-  ([steps text] (capture-selector steps text :legacy-v1-template))
-  ([steps text mode]
-   (let [text (str text)
-         located (selector/extract-located steps text mode)
-         spans (aligned-spans text)
-         anchored (when spans (anchors/anchors host/host text {:spans spans}))]
-     {:aligned? (boolean spans)
-      :captures (into {}
-                      (map (fn [[k {:keys [value lines]}]]
-                             [k (merge {:value value}
-                                       (when (and anchored lines) (coordinates anchored lines)))]))
-                      located)})))
+  [steps text]
+  (let [text (str text)
+        located (selector/extract-located steps text)
+        spans (aligned-spans text)
+        anchored (when spans (anchors/anchors host/host text {:spans spans}))]
+    {:aligned? (boolean spans)
+     :captures (into {}
+                     (map (fn [[k {:keys [value lines]}]]
+                            [k (merge {:value value}
+                                      (when (and anchored lines) (coordinates anchored lines)))]))
+                     located)}))

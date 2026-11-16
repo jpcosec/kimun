@@ -1,0 +1,7 @@
+
+Testing kimun.surface.models.selector-test
+
+Testing kimun.cli.models-test
+
+Ran 25 tests containing 182 assertions.
+0 failures, 0 errors.

@@ -1,7 +1,7 @@
 (ns kimun.cli.spec16-docs-test
   "Typed documents of a spec 16 class (M1g, docs/v2/16 §4.2-§4.3): `docs track`
    and `docs update` extract with the COMPOSED selector of the class (own +
-   inherited by `:base`) in the `:compat` mode it declares, and the document
+   inherited by `:base`), and the document
    records the exact revision of its class and of its ancestors. The pinning of
    the ancestors is a team inference (docs/v2/06 §5, 16 §4.3). One function per
    case, on temporary projects."
@@ -24,7 +24,7 @@
   "Parent: the h1 is the `title`. `regex` is what the title captures."
   [regex]
   {:model/name "BaseDoc" :model/version 1 :base [] :document-role :source
-   :substrate {:parser :sldb-md/blocks :grammar "markdown" :compat :strict}
+   :substrate {:parser :sldb-md/blocks :grammar "markdown"}
    :generation {:projections {}}
    :anchoring {:fields [{:name "title" :type :string :required true :description "Title."}]
                :selector [{:outer-index 0 :outer-type "heading" :outer-tag "h1" :handler :text
@@ -32,10 +32,10 @@
 
 (defn- report-class
   "Child of BaseDoc: adds a `## Summary` section whose body is the `summary`."
-  ([] (report-class "ReportDoc" :strict))
-  ([nm compat]
+  []
+  (let [nm "ReportDoc"]
    {:model/name nm :model/version 1 :base ["BaseDoc"] :document-role :source
-    :substrate {:parser :sldb-md/blocks :grammar "markdown" :compat compat}
+    :substrate {:parser :sldb-md/blocks :grammar "markdown"}
     :generation {:projections {}}
     :anchoring {:fields [{:name "summary" :type :string :required true :description "Summary."}]
                 :selector [{:outer-index 0 :outer-type "heading" :outer-tag "h2" :handler :text :anchor true
@@ -72,16 +72,12 @@
     (testing "both fields of the composed selector receive a unit (K1c)"
       (is (= #{"title" "summary"} (set (map :field (:units (show p "r")))))))))
 
-(deftest the-compat-mode-of-the-class-decides-how-it-extracts
-  (let [p (project) body "# Hello\n\nSome body without its section.\n"]
-    (define! p (report-class "LegacyReport" :legacy-v1-template))
-    (spit (file p "a.md") body)
-    (let [strict (run p "docs" "track" "ReportDoc" "a.md" "--name" "a")
-          legacy (run p "docs" "track" "LegacyReport" "a.md" "--name" "b")]
-      (is (false? (:ok strict)) "strict: a missing required section is reported missing")
-      (is (= "validate/missing" (get-in strict [:error :type])))
-      (is (true? (:ok legacy)) (pr-str legacy))
-      (is (= "Some body without its section." (get-in legacy [:data :payload "summary"])) "legacy keeps the v1 quirk"))))
+(deftest a-missing-required-section-is-reported-missing
+  (let [p (project)]
+    (spit (file p "a.md") "# Hello\n\nSome body without its section.\n")
+    (let [e (run p "docs" "track" "ReportDoc" "a.md" "--name" "a")]
+      (is (false? (:ok e)))
+      (is (= "validate/missing" (get-in e [:error :type]))))))
 
 (deftest editing-the-parent-does-not-change-an-anchored-child-silently
   (let [p (project)

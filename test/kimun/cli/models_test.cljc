@@ -194,8 +194,11 @@
   ;; v1: test_standalone.py — a missing rev field, missing files, bad arguments
   (let [p (project) _ (write! p "bad.md" "# Sin cuerpo\n\nStatus: open\n\n## Tags\n\n- a\n")]
     (let [e (run p "extract" ticket "--input" "bad.md")]
-      (is (= [3 "validate/missing" ["body"]] [(:exit e) (get-in e [:error :type]) (get-in e [:error :data :fields])]) (pr-str e)))
-    (is (= "" (get-in (run p "extract" ticket "--input" "bad.md" "--allow-empty") [:data :payload "body"])) "v1's empty value, on request")
+      (is (= [3 "validate/missing" "body"] [(:exit e) (get-in e [:error :type]) (get-in e [:error :data :field])]) (pr-str e)))
+    (write! p "empty.md" "# Login roto\n\nStatus: open\n\n## Tags\n\n- a\n\n## Body\n")
+    (let [e (run p "extract" ticket "--input" "empty.md")]
+      (is (= [3 "validate/missing" ["body"]] [(:exit e) (get-in e [:error :type]) (get-in e [:error :data :fields])])
+          "a present, empty section is an empty value, refused too"))
     (is (= 3 (:exit (run p "validate" ticket "--input" "bad.md"))))
     (is (= [1 "docs/no-file"] ((juxt :exit #(get-in % [:error :type])) (run p "extract" ticket "--input" "ghost.md"))))
     (is (= 6 (:exit (run p "extract" ticket))))
@@ -270,7 +273,7 @@
   ;; M1a-pasos: a descriptor whose selector uses C3-C5 steps (docs/v2/16 §3.3) is registered.
   (let [p (project)
         d {:model/name "CstDoc" :model/version 1 :base [] :document-role :source
-           :substrate {:parser :treesitter :compat :strict}
+           :substrate {:parser :treesitter}
            :anchoring {:fields []
                        :selector [{:key "notes" :want :find :where {:outer-tag "h2" :regex "^\\QNotes\\E$"}}
                                   {:key "items" :outer-type "list" :preserve-nesting true}

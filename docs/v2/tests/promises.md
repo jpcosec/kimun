@@ -211,7 +211,7 @@ Bugs de kernel encontrados por el hito 4: el modelo "un padre por nodo por árbo
 
 - Paridad de host (Node): `task-node-host-parity-for-the-v2-kernel`.
 - Cobertura/lint externos: `task-test-coverage-and-lint-tooling-for-babashka`.
-- Dos procesos reales escribiendo el mismo directorio: `task-contention-test-for-heads-commit` (en memoria ya cubierto). *(2026-10-06, escala)* el lock de `commit-tx!` lo cubren hilos de una misma JVM (store_test/concurrent-writers-on-the-fs-backend-exactly-one-wins, parity/closed_gaps_test/many-concurrent-writers-leave-a-valid-store) y otro proceso que tiene el lock (`store/busy` sin `--wait`, espera con `--wait`: parity/closed_gaps_test/a-write-while-another-process-holds-the-store-fails-fast, with-wait-a-write-blocks-until-the-lock-is-released-then-succeeds); no dos procesos que confirman a la vez.
+- Dos procesos reales escribiendo el mismo directorio: `task-contention-test-for-heads-commit` (en memoria ya cubierto). *(2026-10-06, escala)* el lock de `commit-tx!` lo cubren hilos de una misma JVM (store_test/concurrent-writers-on-the-fs-backend-exactly-one-wins) y otro proceso que tiene el lock (`store/busy` sin `--wait`, espera con `--wait`); no dos procesos que confirman a la vez.
 - *(2026-10-06, escala)* `:incidence` "nunca de confianza": la recalcula el replay de `verify-full`, pero ningún test altera una `:incidence` dejando el resto válido (alterarla cambia el id de la Revision, que el hash ya detecta).
 - *(2026-10-06, escala)* objetos sin referencia (de un escritor perdedor, nodos de raíces de cabezas reemplazadas): ningún comando los informa; GC en el hito 8.
 - Monotonicidad de ULID: `task-ulid-monotonicity-and-clock-adapter`.
@@ -220,7 +220,7 @@ Bugs de kernel encontrados por el hito 4: el modelo "un padre por nodo por árbo
 
 | promesa | test |
 |---|---|
-| el `:contract` vive en la arista anchor y ningún lector de `:contract` cambia | typed_docs_test/create-writes-markdown-and-tracks-it, the-recorded-contract-survives-the-model-succession; surface/index/build_test; optional_field_hash_test |
+| el `:contract` vive en la arista anchor y ningún lector de `:contract` cambia | typed_docs_test/create-writes-markdown-and-tracks-it, the-recorded-contract-survives-the-model-succession; surface/index/build_test |
 | el texto rastreado se lee del archivo (fingerprint), del signo si `:inline`, o del árbol | typed_docs_test/inline-content-is-stored-with-the-document, store-content-inline-defaults-documents-to-inline; cli/docs_test |
 | editar el archivo por fuera sigue siendo `:edited` (hashes en la evidencia, no el texto) | cli/typed_docs_test/a-file-edited-outside-is-reported-then-reconciled; cli/diagnostics_test/check-reports-divergence-and-a-missing-file-together |
 | el plan no se guarda dos veces: línea `{:id :revision}`, plan leído del CAS | kernel/store_test/the-full-verification-detects-a-damaged-log-and-heads-that-disagree-with-it; kernel/revision_format2_test/commit-writes-exactly-the-new-objects-and-never-lists-the-backend |
@@ -228,7 +228,7 @@ Bugs de kernel encontrados por el hito 4: el modelo "un padre por nodo por árbo
 | `stores update` compone en UNA revisión todos los documentos que repara, con `:documents` por documento en el journal | cli/diagnostics_test/update-composes-one-revision-for-every-document-it-repairs |
 | un store formato 2 se convierte a 3 en el sitio y verifica | cli/upgrade_test/a-format-1-store-answers-the-same-after-the-upgrade |
 | `include build` escribe el desk en UNA revisión que reaplica igual | cli/include_test/build-then-check-is-clean, build-reproduces-the-store |
-| el flag `:content`/`--inline` no cambia ids de nodo ni la paridad | `bb oracle` 9/9; docs-parity-test |
+| el flag `:content`/`--inline` no cambia ids de nodo | `bb oracle` 9/9 |
 | *(2026-10-09, formato 4)* un documento con archivo se registra con anchor + clase + hash raíz (`merkle-root` en el mmap `:trees`) + `:content-hash` en el descriptor; su árbol, bloques y nodos NO están en el CAS y sí en `<store>/cache/` | cli/include_test/build-then-check-is-clean, build-reproduces-the-store; cli/typed_docs_test; `bb store-size` (tree-object → 0, `sign/sign/text` → 0, `sign/sign/block` = nodo raíz) |
 | *(2026-10-09, formato 4)* borrar `<store>/cache/` no pierde nada: el resolver recalcula del archivo y lo reescribe; `include check`, `docs list`, `docs render`, `stores verify` siguen bien | `bb cli include check` / `docs render` tras `rm -rf .kimun/cache` |
 | *(2026-10-09, formato 4)* `stores verify` no exige en el CAS los tree objects de un árbol `:cached?` (su integridad la comprueba el resolver: raíz registrada vs recomputada) | kimun.kernel.store/reachable (:tree-hash) |

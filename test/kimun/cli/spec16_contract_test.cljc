@@ -1,7 +1,7 @@
 (ns kimun.cli.spec16-contract-test
   "K6 for the selectors of spec 16 (M1h, docs/v2/10 §11.1, 16 §3.3): the reading
    contract of a document of a spec 16 class records the substrate, the profile,
-   `:compat`, the ancestors and a digest of the COMPOSED selector, so a change of
+   the ancestors and a digest of the COMPOSED selector, so a change of
    the selector (own or inherited) is `contract/changed` and a change of the file
    is `source/*`. The contract of v1 and generic documents does not move. One
    function per case, on temporary projects; the cases are in the plan M1h."
@@ -26,7 +26,7 @@
 
 (defn- base-class [regex declared-digest]
   (cond-> {:model/name "BaseDoc" :model/version 1 :base [] :document-role :source
-           :substrate {:parser :sldb-md/blocks :grammar "markdown" :compat :strict}
+           :substrate {:parser :sldb-md/blocks :grammar "markdown"}
            :generation {:projections {}}
            :anchoring {:fields [{:name "title" :type :string :required true :description "Title."}]
                        :selector [{:outer-index 0 :outer-type "heading" :outer-tag "h1" :handler :text
@@ -35,7 +35,7 @@
 
 (defn- report-class [regex]
   {:model/name "ReportDoc" :model/version 1 :base ["BaseDoc"] :document-role :source
-   :substrate {:parser :sldb-md/blocks :grammar "markdown" :compat :strict}
+   :substrate {:parser :sldb-md/blocks :grammar "markdown"}
    :generation {:projections {}}
    :anchoring {:fields [{:name "summary" :type :string :required true :description "Summary."}]
                :selector [{:outer-index 0 :outer-type "heading" :outer-tag "h2" :handler :text :anchor true
@@ -96,12 +96,11 @@
           (is (= 1 (:contract/version r))))
         (is (= [] (signals p)))))))
 
-(deftest a-spec16-document-records-substrate-profile-compat-ancestors-and-selector
+(deftest a-spec16-document-records-substrate-profile-ancestors-and-selector
   (let [p (project) r (recorded p) store (open-store p)
         base (:id (mstore/find-model store "BaseDoc"))]
     (is (= 2 (:contract/version r)))
     (is (= "sldb-md/blocks:markdown" (:substrate r)))
-    (is (= "strict" (:compat r)))
     (is (= [base] (:ancestors r)))
     (is (re-matches #"sha-256:[0-9a-f]{64}" (:selector r)))
     (is (pc/consistent? host/host r))

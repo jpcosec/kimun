@@ -1,8 +1,7 @@
 (ns kimun.surface.models.store-test
   "Descriptor validation (docs/v2/07 §2), the pure plan builders of
    `kimun.surface.models.store`, and the golden descriptors of the two real
-   corpora of 07 §9 (deskops, hum-scrapper), exported from their v1 classes
-   with scripts/parity/export_models.py."
+   corpora of 07 §9 (deskops, hum-scrapper)."
   (:require [clojure.test :refer [deftest is testing]]
             [clojure.edn :as edn]
             [babashka.fs :as fs]

@@ -4,7 +4,7 @@
 > confunde dos cosas que kimun separa: el modelo de **anclaje** (qué se ancla al leer) y el de
 > **generación** (cómo se produce texto). Todo documento es instancia de una clase y lo que no calza
 > se resuelve por herencia. Este documento sigue describiendo lo **implementado** hoy (descriptores,
-> template, marcas, paridad v1) hasta que se implemente `16-modelos-como-subgrafos.md` tras `P1`, `D0` y `K1`.
+> template, marcas) hasta que se implemente `16-modelos-como-subgrafos.md` tras `P1`, `D0` y `K1`.
 
 > Cómo un modelo de documento (lo que v1 llamaba `StructuredNLDoc`) deja de ser una clase
 > Python y pasa a ser un nodo del pool, sin tocar el kernel. Requisito del usuario, textual:
@@ -107,7 +107,7 @@ Tipos de campo: `:string :int :bool :text :yaml [:list T] [:map T] [:enum v…] 
 
 > **Diseño no implementado (2026-10-09):** hoy `models define` **no** ingesta el template como
 documento `model/<Name>/template` — duplicaría revisiones y aparecería en `docs list`
-(`tests/parity-v1.md` §Modelos). El template vive en el descriptor y la receta se recalcula de
+El template vive en el descriptor y la receta se recalcula de
 él. Lo de abajo es el diseño previsto.
 
 En el diseño previsto, el `:template` se ingesta **además** como un documento del perfil SLDB-MD

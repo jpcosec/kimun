@@ -84,8 +84,7 @@ ring 4  tests           ← requieren cualquier cosa
 ## 5. Tests
 
 - Un archivo `*_test.cljc` por namespace, con el mismo nombre; un namespace puede tener
-  un segundo archivo de tests cuando el primero se acerca al límite razonable, y los
-  tests de paridad viven aparte (`test/kimun/parity/`).
+  un segundo archivo de tests cuando el primero se acerca al límite razonable.
 - Para cada promesa normativa de `docs/v2/02` (regla, fila de tabla, invariante) existe
   un test que **fallaría si la promesa se rompiera**; la tabla
   `docs/v2/tests/promises.md` lo registra. Un test que compara la función consigo misma

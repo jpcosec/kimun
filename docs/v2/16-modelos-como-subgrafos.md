@@ -2,7 +2,7 @@
 
 > **Estado:** especificación de diseño objetivo (**Etapa A**, tarea `M1`). Sustituye conceptualmente al
 > modelo como plantilla única de [`07-modelos-como-nodos.md`](07-modelos-como-nodos.md), que sigue
-> describiendo lo implementado hoy para compatibilidad de v1 hasta la ejecución de `P1`, `K1`/`D0` e
+> describiendo lo implementado hoy hasta la ejecución de `P1`, `K1`/`D0` e
 > implementación de `M1`.
 >
 > **Implementación:** M1a implementada (forma, jerarquía y composición del descriptor, `kimun.surface.models.subgraph`); resto de M1 pendiente.
@@ -37,8 +37,7 @@ Modelo = (símbolo-tipo con herencia, selector de anclaje [EDN], proyecciones de
 ### Lo que ya existe hoy vs. lo que especifica este documento
 
 - **Implementado hoy:** [`07-modelos-como-nodos.md`](07-modelos-como-nodos.md) (descriptores
-  `edn/model` con `:template` único bidireccional, regresión v1 cerrada en
-  [`tests/parity-v1.md`](tests/parity-v1.md)), [`K3`](12-ecosistema-y-pendientes.md) (documentos sin
+  `edn/model` con `:template` único bidireccional), [`K3`](12-ecosistema-y-pendientes.md) (documentos sin
   modelo registrados bajo clase genérica) y el pod tree-sitter (`kimun.host.treesitter`, decisión 29).
 - **Especificado aquí (Etapa A / implementación post-`P1` y `D0`/`K1`):** separación anclaje/generación,
   selector en patrones EDN sobre substrato tree-sitter, herencia por composición de selectores y contrato
@@ -112,7 +111,7 @@ midió los tres candidatos sobre **428 documentos reales** de 5 modelos del desk
 
 ### 3.2 El `:template` de v1 como azúcar compilable
 
-Para preservar la compatibilidad hacia atrás (`tests/parity-v1.md`), todo descriptor clásico de v1
+Todo descriptor clásico de v1
 (`07 §2`) es un subconjunto del descriptor de spec 16: sus marcadores (`⸢rev•…⸥`, `⸢optrev•…⸥`,
 `⸢render•…⸥`, traits `|list`, `|table`, `|dict`) compilan determinísticamente a:
 - un vector de pasos EDN en `:anchoring/:selector` (secuencia exacta equivalente al *recipe*), y
@@ -141,8 +140,7 @@ Ejemplo mínimo (sin presuponer representación interna de `D0`, con las claves 
  :base            ["PrimitiveDoc"]          ; DAG inmutable de herencia
  :substrate       {:parser    :treesitter   ; :treesitter | :sldb-md/blocks (legacy)
                    :grammar   "markdown"
-                   :profile   "sldb-md/v2"
-                   :compat    :strict}      ; :strict | :legacy-v1-template
+                   :profile   "sldb-md/v2"}
  :contract/digest "sha256:…"                ; digest K6: gramática+perfil+NFC+selector+clase
  :anchoring
  {:fields   [{:name "id" :type :string :required true :description "…"}
@@ -182,10 +180,10 @@ los mismos 5 documentos por dos peculiaridades de la implementación heredada de
    `task-specify-specyaml-schema-contract`): v1 devolvía `"## Done When\n\n_…_"` (incluyendo el heading);
    el selector estructural devuelve `""`.
 
-**Regla de Spec 16 ("features de v1 sí, bugs no"):** el modo `:strict` (por defecto para modelos nuevos de
-spec 16) reporta campo obligatorio ausente como `:missing` y sección presente vacía como `""`. Los
-descriptores migrados que deban reproducir exactamente el oráculo histórico de `parity-v1.md` declaran
-explícitamente `:compat :legacy-v1-template`.
+**Regla de Spec 16 ("features de v1 sí, bugs no"):** hay un solo comportamiento (el que fue el modo
+`:strict`; el modo `:legacy-v1-template` se borró el 2026-11-16 junto con la paridad con v1): un campo
+obligatorio ausente es `:missing` y una sección presente vacía es `""`. El descriptor ya no declara
+`:substrate :compat`; la clave se ignora.
 
 ---
 

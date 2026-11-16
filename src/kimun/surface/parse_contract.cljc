@@ -23,7 +23,7 @@
                       are the selector and the class.
    A document of a spec 16 class (M1h, docs/v2/16 §3.3) records version 2:
    the same six plus what decides how the selector reads it — `:substrate`
-   (`parser:grammar` the class declares), `:profile`, `:compat`, `:ancestors`
+   (`parser:grammar` the class declares), `:profile`, `:ancestors`
    (the ids of the revisions its selector was composed with) and `:selector`
    (the digest of the COMPOSED selector and fields, own plus inherited). The
    caller supplies them as a `reading` (see `reading`); v1 and generic
@@ -50,7 +50,7 @@
 (def components-spec16
   "The components of a version 2 contract (a spec 16 class): `components` plus
    the reading of the class, in the order they are hashed and reported."
-  (into components [:substrate :profile :compat :ancestors :selector]))
+  (into components [:substrate :profile :ancestors :selector]))
 
 (defn components-of
   "The components of contract map `c`, by its `:contract/version`."
@@ -93,15 +93,14 @@
 
 (defn reading
   "What a spec 16 class adds to the contract (M1h): `{:substrate :profile
-   :compat :ancestors :selector-text}` as the caller read it from the class
+   :ancestors :selector-text}` as the caller read it from the class
    and its lineage. `:substrate` is the map the class declares; `:selector-text`
    is the canonical text of the composed selector and fields (hashed by
    `contract`'s caller, `record`). Nil in, nil out: a v1 or generic document
    has no reading."
-  [{:keys [substrate profile compat ancestors selector-text]}]
+  [{:keys [substrate profile ancestors selector-text]}]
   {:substrate (str (kw-str (:parser substrate)) ":" (:grammar substrate))
    :profile (str (or profile (:profile substrate)))
-   :compat (kw-str (or compat (:compat substrate)))
    :ancestors (vec ancestors)
    :selector-text selector-text})
 
@@ -119,7 +118,7 @@
               :normalization "nfc"
               :extractor extractor
               :class class-id}
-       rd (merge (select-keys rd [:substrate :profile :compat :ancestors :selector]))))))
+       rd (merge (select-keys rd [:substrate :profile :ancestors :selector]))))))
 
 (defn- canonical
   "The exact string that is hashed: one component per line in the order of

@@ -383,12 +383,9 @@
 (defn field-lines
   "`{field line}` (v1 `_field_template_line_map`): the 1-based template line
    of each `rev`/`optrev` marker with a name — the last one when a field has
-   several; `render` markers and nameless markers are ignored. `known-fields`
-   is accepted for parity with v1, where a marker naming a field outside it
-   only triggers a log warning: it never changes the result."
-  ([template-or-descriptor] (field-lines template-or-descriptor nil))
-  ([template-or-descriptor _known-fields]
-   (:at (marker-lines (template-of template-or-descriptor)))))
+   several; `render` markers and nameless markers are ignored."
+  [template-or-descriptor]
+  (:at (marker-lines (template-of template-or-descriptor))))
 
 (defn- owner-pairs
   "`[[field section-path]…]` in template order (first appearance of a field),
@@ -416,11 +413,9 @@
    last template heading at or above its (last) marker line, mapped by
    position onto the rendered sections; fields above the first heading have
    no owner, and the result is `{}` when the rendered headings do not
-   correspond to the template's. `known-fields` is accepted for parity with
-   v1, where it only triggers a log warning: it never changes the result."
-  ([template-or-descriptor sections] (field-owners template-or-descriptor sections nil))
-  ([template-or-descriptor sections _known-fields]
-   (into {} (owner-pairs (template-of template-or-descriptor) sections))))
+   correspond to the template's."
+  [template-or-descriptor sections]
+  (into {} (owner-pairs (template-of template-or-descriptor) sections)))
 
 (defn- flatten-payload [payload prefix]
   (if (map? payload)

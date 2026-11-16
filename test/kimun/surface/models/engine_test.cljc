@@ -50,7 +50,7 @@
         p (extract/extract doc md)]
     (is (= "line one\nline two\n\n```clj\n(+ 1 2)\n```" (get p "body")))
     (is (= ["a" "b"] (get p "items")))
-    (is (not (contains? p "notes")) "an empty optional section is absent, not empty")
+    (is (= "" (get p "notes")) "a present, empty optional section is the empty string (docs/v2/16 §3.5)")
     (is (= "n1" (get p "id")))))
 
 (deftest missing-required-field-is-an-explicit-error
@@ -78,5 +78,8 @@
       notes (assoc "notes" notes))))
 
 (defspec extract-of-render-is-identity 100
+  ;; render prints the `## Notes` heading even without notes, so a payload without
+  ;; them extracts them as the empty string: a present, empty section (§3.5)
   (prop/for-all [d gen-payload]
-    (= d (extract/extract doc (render/render doc d)))))
+    (= (cond-> d (not (contains? d "notes")) (assoc "notes" ""))
+       (extract/extract doc (render/render doc d)))))

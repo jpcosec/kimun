@@ -176,9 +176,6 @@ en ese momento, el commit falla enseguida con `store/busy` (exit 4, sin escribir
 que objetos de escritura única) o, con la opción global `--wait` de la CLI
 (`fs-store/backend` con `{:wait? true}`), espera a que se libere y sigue (el contrato de
 v1: fallar rápido o esperar). Los hilos de un mismo proceso siempre esperan (monitor).
-Pruebas: `test/kimun/parity/closed_gaps_test.cljc` (la carrera determinista, cuatro
-escritores concurrentes, otro proceso con el lock sin y con `--wait`).
-
 **Ventana de caída**: entre agregar la línea al log y reemplazar `heads.edn`. Un proceso
 que muere ahí deja una última línea (entera o cortada) que las cabezas no registran. La
 regla pura `store/log-tail` la clasifica: `:clean` (el log termina en la cabeza),
@@ -421,7 +418,7 @@ divergencia de raíz o hash de contenido incluso si huella y contrato no cambiar
 
 **Clases spec 16 (M1h).** El contrato de un documento de una clase del spec 16 (`docs/v2/16 §3.3`) es de
 versión 2: a los seis componentes añade `:substrate` (`parser:grammar` que declara la clase), `:profile`,
-`:compat`, `:ancestors` (ids de las revisiones con que se compuso su selector, `M1g`) y `:selector` (digest del
+`:ancestors` (ids de las revisiones con que se compuso su selector, `M1g`) y `:selector` (digest del
 selector y los campos **compuestos**, propio más heredado). Editar un paso del selector, propio o heredado,
 es `contract/changed` (`:changed` nombra `:class`, `:ancestors` o `:selector`), no `source/*`; el estado
 `:superseded` de `M1g` y esa señal son un solo hecho (la categoría es `:contract-moved`) y la reparación es

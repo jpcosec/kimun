@@ -4,10 +4,8 @@
    A step is the plain-data entry of a template's recipe
    (`kimun.surface.models.recipe/recipes`): `{:outer-index :outer-type
    :outer-tag :handler …}`; a vector of steps survives `pr-str` and
-   `edn/read-string` (§3.1). Two modes, named as the descriptor's `:compat`
-   (docs/v2/16 §3.5): `:legacy-v1-template` (default) keeps the quirks of
-   sldb v1's `DataExtractor` on purpose (R3 §7); `:strict` corrects the two
-   the spec names. Pure."
+   `edn/read-string` (§3.1). One behaviour (docs/v2/16 §3.5): a field whose
+   section is absent is missing, and a present, empty section reads as \"\". Pure."
   (:require [clj-yaml.core :as yaml]
             [clojure.string :as str]
             [clojure.walk :as walk]
@@ -164,11 +162,10 @@
     (or (first (filter #(= "heading" (:outer-type (nth rs %))) chain))
         (first chain))))
 
-(defn- section-body [mode bs rs i lines {:keys [search] :as st}]
+(defn- section-body [bs rs i lines {:keys [search] :as st}]
   (let [r (nth rs i)
-        anchor (section-anchor rs i)
-        strict? (= :strict mode)]
-    (if (and strict? anchor (not (contains? (:hits st) anchor)))
+        anchor (section-anchor rs i)]
+    (if (and anchor (not (contains? (:hits st) anchor)))
       ;; docs/v2/16 §3.5 line 1: a field whose section is absent is `:missing`.
       st
       (let [boundary (section-boundary bs rs i search)
@@ -176,7 +173,7 @@
                     (str/trim (str/join "\n" (subvec lines (first (:map (nth bs search))) (min (count lines) (second (:map (nth bs (dec boundary))))))))
                     "")
             ;; docs/v2/16 §3.5 line 2: a present, empty section is "".
-            keep? (or (seq value) (not (marker/optional? (first (:props-info r)))) (and strict? anchor))]
+            keep? (or (seq value) (not (marker/optional? (first (:props-info r)))) anchor)]
         (cond-> (assoc st :curr (dec boundary))
           keep? (assoc-in [:out (first (:props r))] value)
           ;; the blocks the value was read from, for `extract-located`
@@ -185,7 +182,7 @@
                     [(first (:map (nth bs search))) (second (:map (nth bs (dec boundary))))]))))))
 
 (defn- regular [bs rs i {:keys [search] :as st}]
-  ;; `:hits` records the anchors that matched; legacy never reads it.
+  ;; `:hits` records the anchors that matched; `section-body` reads it.
   (let [r (nth rs i)
         end (if (:optional-block r) (min (inc search) (count bs)) (count bs))]
     (loop [b search st st]
@@ -210,14 +207,10 @@
                (str "Selector step " i " has no :outer-type: " (pr-str s))
                {:step i :selector-step s})))
 
-(def modes
-  "The extraction modes, named as the descriptor's `:compat` (docs/v2/16 §3.5)."
-  #{:legacy-v1-template :strict})
-
 (defn- extract-blocks
-  "The final state of the block-view `steps` over `text` in `mode`: `:out` holds
+  "The final state of the block-view `steps` over `text`: `:out` holds
    the captured values and `:src` the line range of the blocks each came from."
-  [steps text mode]
+  [steps text]
   (check-steps! steps)
   (let [bs (blocks/parse text) rs (vec steps) lines (vec (str/split-lines text))]
     (select-keys (reduce (fn [st i]
@@ -225,52 +218,38 @@
                           st (if (not= (:outer-index r) (:last st))
                                (assoc st :search (max (:search st) (inc (:curr st))) :last (:outer-index r) :curr -1)
                                st)]
-                      (if (= :section-body (:capture r)) (section-body mode bs rs i lines st) (regular bs rs i st))))
+                      (if (= :section-body (:capture r)) (section-body bs rs i lines st) (regular bs rs i st))))
                   {:out {} :src {} :search 0 :last -1 :curr -1} (range (count rs)))
                  [:out :src])))
-
-(defn- check-mode!
-  "Raises `:models/invalid` naming `mode` when it is not one of `modes`."
-  [mode]
-  (when-not (contains? modes mode)
-    (err/raise :models/invalid
-               (str "Unknown selector mode " (pr-str mode) "; expected one of " (pr-str (sort modes)))
-               {:mode mode :modes modes})))
 
 (defn- extract-located*
   "`{:out {field value} :src {field [start end)}}`: the values `extract-selector`
    returns and the line range of the source of each one."
-  [steps text mode]
+  [steps text]
   (if (some cst/cst-step? steps)
-    (let [b (extract-blocks (vec (remove cst/cst-step? steps)) text mode)
+    (let [b (extract-blocks (vec (remove cst/cst-step? steps)) text)
           c (cst/extract-located (filterv cst/cst-step? steps) text)]
       {:out (merge (:out b) (update-vals c :value))
        :src (merge (:src b) (update-vals c :lines))})
-    (extract-blocks steps text mode)))
+    (extract-blocks steps text)))
 
 (defn extract-selector
   "The untyped values (`{field value}`, string keys) that the selector `steps`
    capture from Markdown `text`. `steps` is the vector that `recipe/recipes`
-   returns, or its EDN round trip. `mode` is `:legacy-v1-template` (default:
-   v1's behaviour, quirks included) or `:strict`; any other value raises
-   `:models/invalid` naming it. The substrate follows the step: a step with
+   returns, or its EDN round trip. The substrate follows the step: a step with
    `:want :find`/`:table` or `:preserve-nesting` (C3-C5, docs/v2/16 §3.3) is
    served by the tree-sitter CST (`selector-cst`) and raises
    `:docs/parser-unavailable` without the pod; every other step runs on the
    block view, as always. `extract-located` gives the same values with the
    line range each was read from."
-  ([steps text] (extract-selector steps text :legacy-v1-template))
-  ([steps text mode]
-   (check-mode! mode)
-   (:out (extract-located* steps text mode))))
+  [steps text]
+  (:out (extract-located* steps text)))
 
 (defn extract-located
   "Like `extract-selector`, but `{field {:value v :lines [start end)}}`: the
    0-based line range (end exclusive) of the text each value was read from. A
    field with no source range (an empty section body) carries no `:lines`.
    The values are exactly those of `extract-selector`."
-  ([steps text] (extract-located steps text :legacy-v1-template))
-  ([steps text mode]
-   (check-mode! mode)
-   (let [{:keys [out src]} (extract-located* steps text mode)]
-     (into {} (map (fn [[k v]] [k (cond-> {:value v} (get src k) (assoc :lines (get src k)))])) out))))
+  [steps text]
+  (let [{:keys [out src]} (extract-located* steps text)]
+    (into {} (map (fn [[k v]] [k (cond-> {:value v} (get src k) (assoc :lines (get src k)))])) out)))

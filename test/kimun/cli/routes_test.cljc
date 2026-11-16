@@ -220,42 +220,6 @@
       (let [e (run p "docs" "ingest" "tickets/login.md" "--name" "raw")]
         (is (= ["docs/exists" "login"] [(get-in e [:error :type]) (get-in e [:error :data :document])]))))))
 
-(deftest a-legacy-second-document-on-one-file-is-kept-without-a-route-and-declared
-  ;; a v1 store holds them (two documents of one model on desk/tasks/Board.md). They enter only through
-  ;; the explicit legacy mode a migration uses; the route map has one entry per path, so the second is
-  ;; not under the root, and `stores check` says so instead of reporting a complete root
-  (let [p (project)
-        first-tree (get-in (routes p) ["tickets/login.md" :tree-id])
-        root-before (root p)
-        {:keys [backend store]} (cli-store/open! (file p ".kimun"))
-        {:keys [plan tree]} (binding [ast/*parser* "native"]
-                              (tdocs/track-plan h store "TicketDoc" "again" ticket-text
-                                                {;; the legacy document gets its field units when it is
-                                                 ;; written, exactly as the CLI does (K1c)
-                                                 :mint (fn [] (ports/ulid (:ids h)))
-                                                 :doc "01EEEEEEEEEEEEEEEEEEEEEEEE" :tree-id "01FFFFFFFFFFFFFFFFFFFFFFFF"
-                                                 :path "tickets/login.md" :actor "human/tester"
-                                                 :timestamp "2026-01-01T00:00:00.000Z" :shared-path :allow}))]
-    (is (nil? (:route (first (filter #(= :register-tree (:op %)) (:ops plan))))) "the legacy plan carries no route")
-    (kstore/commit! backend store plan)
-    (is (= first-tree (get-in (routes p) ["tickets/login.md" :tree-id])) "the route stays with its first holder")
-    (is (= root-before (root p)) "the root does not move for a document it does not cover")
-    (is (= :shared (tdocs/route-state (opened p) tree "tickets/login.md")))
-    (let [c (run p "stores" "check")]
-      (is (true? (:ok c)))
-      (is (= [2 false [] [{:name "again" :qualified "tickets/login.md"}] []]
-             ((juxt :route-count :routes-complete? :routes-missing :routes-shared :routes-outside) (:data c))))
-      (is (= 1 (count (filter #(= "routes/shared-path" (:type %)) (:warnings c))))))
-    (testing "it is still sensed, and an unchanged update writes nothing and takes no route"
-      (is (true? (get-in (run p "docs" "update" tree) [:data :unchanged?])))
-      (spit (file p "tickets" "login.md") "# T\n\nStatus: closed\n")
-      (is (= 2 (count (get-in (run p "stores" "sense") [:data :signals]))))
-      (spit (file p "tickets" "login.md") ticket-text))
-    (testing "untracking it removes no route and the coverage is complete again"
-      (is (true? (:ok (run p "docs" "untrack" tree))))
-      (is (= first-tree (get-in (routes p) ["tickets/login.md" :tree-id])))
-      (is (= [true []] ((juxt :routes-complete? :routes-shared) (:data (run p "stores" "check"))))))))
-
 (deftest a-document-outside-the-project-keeps-working-and-is-reported-as-not-covered
   ;; the API admits `--store` from another directory and records a relative path that leaves the
   ;; project (v1: test_open_store_resolves_store_and_project_root). The route map refuses such a path,

@@ -284,7 +284,7 @@
    :fixture :F-W01
    :negative-control :N-F20
    :expected-outcome "Gates semánticos con controles negativos, tiempos cold/warm y presupuesto memcap."
-   :current-evidence ["bb test" "bb oracle" "scripts/parity/coverage.py"]
+   :current-evidence ["bb test" "bb oracle"]
    :intentional-deviation "Mide alcance, falsos positivos y prueba además de QA y citas; excluye auto-ajuste de umbral (F20)."}
   {:id "C20"
    :line :W1

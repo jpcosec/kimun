@@ -3,7 +3,7 @@
    the store commit of `docs update --set` / `fields set`, and when a write into
    `<store>/cache/` fails. Characterisation, not a new protocol: there is no
    outbox, the command writes the file after the commit
-   (docs/v2/tests/parity-v1.md, «Documentos»). The injected fault is a
+   (docs/v2/10-escala.md §11). The injected fault is a
    `with-redefs` of `clojure.core/spit` that throws for one path, so the tests
    do not depend on the uid running them.
 

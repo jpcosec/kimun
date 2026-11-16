@@ -24,8 +24,7 @@
    :input {:alias :i :ref "FILE" :desc "Markdown file to extract or validate"}
    :data {:alias :d :ref "FILE" :desc "Payload file (.json, .yaml, .yml) to render or validate"}
    :output {:alias :o :ref "FILE" :desc "Write the result to FILE (`-` = the envelope only)"}
-   :mode {:ref "MODE" :desc "validate: render-validity (default) | strict-roundtrip"}
-   :allow-empty {:desc "Accept an empty value for a `rev` field, as v1 did" :coerce :boolean}})
+   :mode {:ref "MODE" :desc "validate: render-validity (default) | strict-roundtrip"}})
 
 (defn- file! [path cwd what]
   (let [p (fs/absolutize (fs/path cwd path))]
@@ -41,12 +40,13 @@
     (walk/postwalk #(cond (map? %) (into {} %) (seq? %) (vec %) :else %) v)))
 
 (defn- extract-strict
-  "The payload of `text` under `d`; unless `--allow-empty`, a `rev` field
-   that came out nil or empty raises `:validate/missing` naming it (07 §6)."
-  [d text opts]
+  "The payload of `text` under `d`; a `rev` field that came out empty (its
+   section present but with no content) raises `:validate/missing` naming it
+   (07 §6); one whose section is absent raises it from `extract/extract`."
+  [d text]
   (let [payload (extract/extract d text)
         empty (vec (filter #(contains? #{nil ""} (get payload %)) (edit/rev-fields d)))]
-    (when (and (seq empty) (not (:allow-empty opts)))
+    (when (seq empty)
       (err/raise :validate/missing (str "the document has no value for required field(s): " (str/join ", " empty))
                  {:model (:model/name d) :fields empty}))
     payload))
@@ -73,7 +73,7 @@
   [sub opts {:keys [cwd] :as ctx}]
   (let [d (model-of sub opts ctx)
         input (or (:input opts) (err/raise :cli/usage "`extract` needs --input FILE" {:command "extract"}))
-        payload (extract-strict d (slurp (file! input cwd "input")) opts)
+        payload (extract-strict d (slurp (file! input cwd "input")))
         o (:output opts)
         written (write-out opts cwd (if (and o (re-find #"\.ya?ml$" o))
                                       (yaml/generate-string payload :dumper-options {:flow-style :block})
@@ -99,7 +99,7 @@
   (let [d (model-of sub opts ctx)
         mode (case (:mode opts) (nil "render-validity") :render-validity "strict-roundtrip" :strict-roundtrip
                    (err/raise :cli/usage "--mode must be render-validity or strict-roundtrip" {:mode (:mode opts)}))
-        _ (when (:input opts) (extract-strict d (slurp (file! (:input opts) cwd "input")) opts))
+        _ (when (:input opts) (extract-strict d (slurp (file! (:input opts) cwd "input"))))
         input (cond (:input opts) {:markdown (slurp (file! (:input opts) cwd "input"))}
                     (:data opts) {:data (read-data (:data opts) cwd)}
                     :else (err/raise :cli/usage "`validate` needs --input FILE or --data FILE" {:command "validate"}))

@@ -5,8 +5,7 @@
 > (`main.cljc`, `args.cljc`, `out.cljc`, `errors.cljc`, `store.cljc`, `commands/*`).
 > Autoridad según `docs/v2/README.md`. El kernel es `docs/v2/02`; los modelos, `07`; la
 > distribución, `08`; los formatos del store y la escala, `10`; la inclusión en
-> git, `13`. Los anillos y reglas de dependencia son `03`. La paridad medida con sldb v1 es
-> `docs/v2/tests/parity-v1.md`.
+> git, `13`. Los anillos y reglas de dependencia son `03`.
 
 ## 1. Envelope, opciones globales y códigos de salida
 
@@ -254,10 +253,6 @@ superficie `docs` la mantiene en cada escritura; la entrada es:
   `kimun.include.edn` que declara la ruta vieja hay que cambiarlo a mano.
 - **Una ruta, un documento.** Registrar un documento nuevo —tipado o genérico— sobre un archivo cuya
   ruta tiene otro es `docs/exists` (3) y nombra al que la tiene.
-- **Duplicados heredados.** Un store heredado puede traer dos documentos sobre el mismo archivo. Entran
-  solo por el modo explícito `track-plan` con `:shared-path :allow`: el
-  segundo queda trackeado y sensorizado pero **sin ruta**, la ruta sigue con el primero, y
-  `stores check` lo declara (`:routes-shared`, warning `routes/shared-path`).
 - **Archivo fuera del proyecto.** La API admite `--store` desde otro directorio y guarda una ruta
   relativa con `..`. El mapa de rutas rechaza una ruta así (`kimun.kernel.route/valid-path?`), de
   modo que ese documento sigue funcionando **sin ruta** y `stores check` lo declara
@@ -335,7 +330,7 @@ archivo esperan al spec 16 (M1). `include` sigue sin admitir documentos sin mode
 | `docs render NAME\|TREE` | — | Markdown canónico como string de `:data` (`--format text` lo imprime crudo) |
 | `docs list` | `--model M` | untyped `{:name :tree :root}`; typed añade `:model :model-version :state :path` |
 | `docs create MODEL NAME` | `--data F` \| `--set k=v…`, `--path P`, `--inline` | mapa del documento (con payload, hashes, path); `--inline` guarda el texto en el store |
-| `docs track MODEL FILE` | `--name N`, `--force`, `--inline` | mapa del documento; `--force` para un fichero que no ida-vuelta; `--inline` guarda el texto en el store Con una clase spec 16 (M1g, sin `:template`): extrae con el selector compuesto de la clase (propio + heredado por `:base`) en el `:compat` que declara; no hay ida-vuelta ni ruido que comprobar (no hay renderizador, M2); `docs create` y `docs update --data/--set` se rechazan por lo mismo; las mutaciones de `fields` y `sections fields` también se rechazan; `stores health/sense/check` y `find` sí leen el documento |
+| `docs track MODEL FILE` | `--name N`, `--force`, `--inline` | mapa del documento; `--force` para un fichero que no ida-vuelta; `--inline` guarda el texto en el store Con una clase spec 16 (M1g, sin `:template`): extrae con el selector compuesto de la clase (propio + heredado por `:base`); no hay ida-vuelta ni ruido que comprobar (no hay renderizador, M2); `docs create` y `docs update --data/--set` se rechazan por lo mismo; las mutaciones de `fields` y `sections fields` también se rechazan; `stores health/sense/check` y `find` sí leen el documento |
 | `docs show NAME` | `--format md`, `--ast` (equivale a `--format ast`) | mapa con `:markdown` y, en un documento tipado, `:units [{:field :id :status}]` (`anchored \| missing`, K1c); `--ast` ⇒ `{:name :tree :ast}`. Un documento de clase spec 16 añade `:class` (dirección del descriptor con el que se ancló) y `:ancestors` (direcciones de los ancestros con los que se compuso su selector); **[inferencia del equipo]** la cadena se fija por revisión exacta: si se redefine la clase o un ancestro, el documento sigue leyéndose bajo la cadena registrada y pasa a `:superseded` hasta `docs update`. Un documento v1 no lleva esas claves |
 | `docs status` | — | `[{:name :path :status}]` con `status` `ok \| modified \| missing` |
 | `docs anchors NAME` | `--sections` | anclas estructurales del documento como **evidencia, sin identidad** (S2a): `{:name :tree :path :parse-contract :sections [{:locator :level :hash :lines :bytes :blocks}] :blocks [{:locator :hash :lines :bytes}]}`; `--sections` omite `:blocks`. Solo lectura: no escribe store ni caché y no acuña ids. Tipado o genérico |
@@ -391,7 +386,7 @@ El modelo es `--model X.edn | NAME del store | module:Class`, o el primer token 
 
 | comando | opciones | `:data` |
 |---|---|---|
-| `extract [MODEL]` | `--input FILE`, `-o FILE`, `--allow-empty` | `{:model :payload}` (+`:output` si se escribió) |
+| `extract [MODEL]` | `--input FILE`, `-o FILE` | `{:model :payload}` (+`:output` si se escribió) |
 | `render [MODEL]` | `--data FILE`, `-o FILE` | Markdown (o `{:model :output}`) |
 | `validate [MODEL]` | `--input FILE` \| `--data FILE`, `--mode render-validity\|strict-roundtrip` | `{:ok true :model :mode :errors []}`; no valida ⇒ `validate/invalid` (3) |
 

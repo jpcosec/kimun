@@ -25,7 +25,7 @@
   "Minimal valid spec 16 model `nm` with `base` and `fields`."
   [nm base fields]
   {:model/name nm :model/version 1 :base base :document-role :source
-   :substrate {:parser :treesitter :compat :strict}
+   :substrate {:parser :treesitter}
    :anchoring {:fields fields :selector []}
    :generation {:projections {:markdown/default {:format :markdown}}}})
 
@@ -39,7 +39,7 @@
   (let [d (first models)]
     (doseq [[mutate key-name]
             [[#(dissoc % :anchoring) ":anchoring"]
-             [#(assoc-in % [:substrate :compat] :loose) ":compat"]
+             [#(assoc-in % [:substrate :parser] :other) ":parser"]
              [#(assoc % :document-role :other) ":document-role"]]]
       (is (str/includes? (or (invalid-msg #(sg/validate! (mutate d))) "") key-name)
           key-name))))

@@ -99,7 +99,7 @@
              "  models list | show NAME [--format md] | history NAME | check [NAME] [-f DRAFT.edn]"
              "  models field-add NAME --field F --type T --description TEXT [--default D] [--required] | field-remove NAME --field F"
              "  models template NAME [-f FILE]   show the template, or replace it (new version)"
-             "  extract [MODEL] --input DOC.md [-o FILE] [--allow-empty]   typed payload of a document (no store needed)"
+             "  extract [MODEL] --input DOC.md [-o FILE]   typed payload of a document (no store needed)"
              "  render [MODEL] --data PAYLOAD.json|yaml [-o FILE]   Markdown of a payload"
              "  validate [MODEL] --input DOC.md | --data FILE [--mode render-validity|strict-roundtrip]"
              "                              MODEL (or --model): X.edn | model NAME in the store"
