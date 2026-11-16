@@ -1,0 +1,21 @@
+carpeta | archivos | con frontmatter | sin frontmatter | con frontmatter y sin proposicion
+(raiz) | 1 | 0 | 1 | 0
+atoms | 172 | 172 | 0 | 0
+contexts | 31 | 29 | 2 | 0
+drawer | 1 | 0 | 1 | 0
+drawer/plans | 47 | 0 | 47 | 0
+drawer/tasks | 82 | 81 | 1 | 0
+inbox | 77 | 77 | 0 | 0
+lifecycle | 22 | 22 | 0 | 0
+logbook | 3 | 0 | 3 | 0
+materializations | 115 | 115 | 0 | 0
+registry | 6 | 6 | 0 | 0
+reviews | 315 | 315 | 0 | 0
+rituals | 7 | 7 | 0 | 0
+roles | 3 | 3 | 0 | 0
+runtimes | 3 | 3 | 0 | 0
+tasks | 44 | 44 | 0 | 0
+TOTAL | 929 | 874 | 55 | 0
+fuentes distintas en read.edn: 874
+
+Archivos con frontmatter y sin proposicion: 0

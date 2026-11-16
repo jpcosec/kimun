@@ -1,0 +1,5 @@
+valores crudos distintos normalizados: 121
+3 Model:id [source_id] ej: RitualDoc:ritual-closeout
+3 Model:id [target_id] ej: RitualDoc:ritual-closeout
+37 doc:Model:id [subject] ej: doc:TaskCodeDoc:task-cc35b-selectores-resolución-de-documentos-por-sldb-api-select-documents
+275 doc:Model:id@sha256 [subject] ej: doc:TaskDocsDoc:task-manual-sin-atoms-split-en-el-ejemplo-ejecutable-sldb-rechaza-encabezados-en-el-field-desd
