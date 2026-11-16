@@ -1,0 +1,677 @@
+rings and docstrings ok: 109 files
+tree-sitter pod: available
+
+Testing kimun.cli.beat-git-test
+
+Ran 11 tests containing 207 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.c4-route-rebuild-test
+moved existing store to /tmp/kimun-test-1794804573035-197007012160161-15251240187411308609/kimun-c4-route-395465100370103874/.kimun.bak-20261116-014937-01M7HB0X8V9MK02419HB4SSB4J
+
+Ran 1 tests containing 11 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.cache-verified-test
+
+Ran 5 tests containing 37 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.changed-test
+
+Ran 7 tests containing 84 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.cold-cache-test
+
+Ran 4 tests containing 69 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.compose-test
+
+Ran 4 tests containing 36 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.contract-test
+
+Ran 12 tests containing 94 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.corpus-test
+
+Ran 5 tests containing 55 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.declare-anchors-test
+
+Ran 7 tests containing 48 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.declare-ask-test
+
+Ran 5 tests containing 38 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.declare-project-test
+
+Ran 8 tests containing 51 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.declare-root-test
+
+Ran 3 tests containing 42 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.declare-test
+
+Ran 2 tests containing 14 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.diagnostics-test
+
+Ran 13 tests containing 389 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.docs-anchors-test
+
+Ran 1 tests containing 34 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.docs-test
+
+Ran 4 tests containing 41 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.edges-test
+
+Ran 9 tests containing 252 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.fault-injection-test
+
+Ran 7 tests containing 48 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.field-units-test
+moved existing store to /tmp/kimun-test-1794804573035-197007012160161-15251240187411308609/kimun-units-inc-2897480685847677701/.kimun.bak-20261116-015010-01M7HB1XDJW5HKW9G1W7J4AQT3
+
+Ran 7 tests containing 71 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.fields-test
+
+Ran 9 tests containing 106 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.find-test
+
+Ran 13 tests containing 132 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.generic-docs-test
+
+Ran 11 tests containing 121 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.golden-test
+
+Ran 2 tests containing 3 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.graph-test
+
+Ran 12 tests containing 232 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.heartbeat-test
+
+Ran 7 tests containing 68 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.identity-carry-test
+moved existing store to /tmp/kimun-test-1794804573035-197007012160161-15251240187411308609/kimun-k1a-16006963119383230392/.kimun.bak-20261116-015015-01M7HB22QY77H7HVEMWSM1B6JC
+moved existing store to /tmp/kimun-test-1794804573035-197007012160161-15251240187411308609/kimun-k1a-756024346265720867/.kimun.bak-20260101-000000-01M7HB22V02M46XXJ58WQNSX16
+moved existing store to /tmp/kimun-test-1794804573035-197007012160161-15251240187411308609/kimun-k1a-756024346265720867/.kimun.bak-20260101-000000-01M7HB22W07BN05X9W5KR5DZ37
+moved existing store to /tmp/kimun-test-1794804573035-197007012160161-15251240187411308609/kimun-k1a-4107505669562104405/.kimun.bak-20261116-015016-01M7HB22Z4TQGTY543SVGBM6DG
+moved existing store to /tmp/kimun-test-1794804573035-197007012160161-15251240187411308609/kimun-k1a-4107505669562104405/.kimun.bak-20261116-015016-01M7HB230BVKMJGV08T6TG31EW
+moved existing store to /tmp/kimun-test-1794804573035-197007012160161-15251240187411308609/kimun-k1a-8195373872743724257/.kimun.bak-20261116-015016-01M7HB233QR3N2JDP7ASSF8BBH
+moved existing store to /tmp/kimun-test-1794804573035-197007012160161-15251240187411308609/kimun-k1a-1227631748662112337/.kimun.bak-20261116-015016-01M7HB237VRRFZFWFZ1003R48N
+
+Ran 5 tests containing 40 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.include-test
+moved existing store to /tmp/kimun-test-1794804573035-197007012160161-15251240187411308609/kimun-include-16387355895013662582/.kimun.bak-20261116-015016-01M7HB23B72HQP8RMFW5ZQC96P
+
+Ran 7 tests containing 37 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.index-test
+
+Ran 3 tests containing 38 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.linked-models-test
+
+Ran 4 tests containing 53 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.links-test
+
+Ran 8 tests containing 80 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.main-test
+
+Ran 7 tests containing 42 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.marks-test
+moved existing store to /tmp/kimun-test-1794804573035-197007012160161-15251240187411308609/kimun-marks-inc-1951115634149207420/.kimun.bak-20261116-015017-01M7HB24GCZAY4PWS4YCFJV501
+
+Ran 5 tests containing 73 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.mcp-test
+
+Ran 6 tests containing 159 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.model-carry-test
+moved existing store to /tmp/kimun-test-1794804573035-197007012160161-15251240187411308609/kimun-model-carry-1819738666399729335/.kimun.bak-20261116-015018-01M7HB25E3BG6DVE1TDYN9EQK6
+moved existing store to /tmp/kimun-test-1794804573035-197007012160161-15251240187411308609/kimun-model-carry-1395446835790710010/.kimun.bak-20261116-015018-01M7HB25HBCHRVDGFDDGX3WA93
+moved existing store to /tmp/kimun-test-1794804573035-197007012160161-15251240187411308609/kimun-model-carry-1395446835790710010/.kimun.bak-20261116-015018-01M7HB25JP4WT6CZAC7EGWKRQ4
+moved existing store to /tmp/kimun-test-1794804573035-197007012160161-15251240187411308609/kimun-model-carry-1395446835790710010/.kimun.bak-20261116-015018-01M7HB25M3TJX3XEGVZ3H24N58
+moved existing store to /tmp/kimun-test-1794804573035-197007012160161-15251240187411308609/kimun-model-carry-11733649772544251760/.kimun.bak-20261116-015018-01M7HB25QDA0W2WT34D7S6SN97
+moved existing store to /tmp/kimun-test-1794804573035-197007012160161-15251240187411308609/kimun-model-carry-15746903618659459257/.kimun.bak-20261116-015019-01M7HB25X0EGA5SCW1AHNCTMH7
+moved existing store to /tmp/kimun-test-1794804573035-197007012160161-15251240187411308609/kimun-model-carry-5242406866670334143/.kimun.bak-20261116-015019-01M7HB2609KCPAV76BPXHCCXEM
+
+Ran 5 tests containing 45 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.models-test
+
+Ran 19 tests containing 107 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.names-test
+
+Ran 8 tests containing 91 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.nested-units-test
+
+Ran 5 tests containing 89 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.noise-test
+
+Ran 7 tests containing 64 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.predicates-test
+
+Ran 5 tests containing 53 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.range-marks-test
+
+Ran 4 tests containing 94 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.reanchor-test
+moved existing store to /tmp/kimun-test-1794804573035-197007012160161-15251240187411308609/kimun-reanchor-inc-16310557958799136396/.kimun.bak-20261116-015022-01M7HB28XPB8P99GDZQBHB40CH
+
+Ran 4 tests containing 40 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.release-test
+release_test: bundle --version in 305 ms
+release_test: SKIPPED pod smoke — no pods/treesitter/target/release/pod-kimun-treesitter (run `bb pod`)
+
+Ran 5 tests containing 66 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.route-schema-test
+
+Ran 3 tests containing 29 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.routes-test
+
+Ran 10 tests containing 137 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.sections-test
+
+Ran 7 tests containing 52 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.seen-test
+moved existing store to /tmp/kimun-test-1794804573035-197007012160161-15251240187411308609/kimun-seen-inc-16016970737558443228/.kimun.bak-20261116-015128-01M7HB49Q36HQYHRX3EAM08DYW
+
+Ran 6 tests containing 50 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.semantic-test
+
+Ran 10 tests containing 100 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.sense-test
+
+Ran 4 tests containing 31 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.spec16-contract-test
+
+Ran 8 tests containing 56 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.spec16-docs-test
+
+Ran 8 tests containing 81 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.spec16-readers-test
+moved existing store to /tmp/kimun-test-1794804573035-197007012160161-15251240187411308609/kimun-s16-include-13292573090251454027/.kimun.bak-20261116-015131-01M7HB4C5CT70JT3CQEJH2GEQF
+
+Ran 5 tests containing 124 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.stores-test
+
+Ran 28 tests containing 199 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.tour-test
+
+Ran 1 tests containing 30 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.typed-docs-test
+
+Ran 15 tests containing 145 assertions.
+0 failures, 0 errors.
+
+Testing kimun.cli.unit-close-move-test
+moved existing store to /tmp/kimun-close-inc-11845047825990573141/.kimun.bak-20261116-015133-01M7HB4EZBBRTD5G9MT6WRFMSJ
+moved existing store to /tmp/kimun-close-inc-16380495611500881297/.kimun.bak-20261116-015134-01M7HB4FKW2V6TVRC45EJVZMS5
+
+Ran 7 tests containing 152 assertions.
+0 failures, 0 errors.
+
+Testing kimun.doc14-contract-test
+
+Ran 4 tests containing 176 assertions.
+0 failures, 0 errors.
+
+Testing kimun.graph.analysis-test
+
+Ran 19 tests containing 52 assertions.
+0 failures, 0 errors.
+
+Testing kimun.graph.edges-test
+
+Ran 17 tests containing 301 assertions.
+0 failures, 0 errors.
+
+Testing kimun.graph.export-test
+
+Ran 1 tests containing 4 assertions.
+0 failures, 0 errors.
+
+Testing kimun.graph.io-test
+
+Ran 3 tests containing 14 assertions.
+0 failures, 0 errors.
+
+Testing kimun.graph.query-test
+
+Ran 10 tests containing 29 assertions.
+0 failures, 0 errors.
+
+Testing kimun.graph.store-test
+
+Ran 3 tests containing 15 assertions.
+0 failures, 0 errors.
+
+Testing kimun.graph.traversal-test
+
+Ran 4 tests containing 5 assertions.
+0 failures, 0 errors.
+
+Testing kimun.kernel.anchor-test
+
+Ran 11 tests containing 37 assertions.
+0 failures, 0 errors.
+
+Testing kimun.kernel.canon-test
+
+Ran 9 tests containing 25 assertions.
+0 failures, 0 errors.
+
+Testing kimun.kernel.edge-test
+
+Ran 4 tests containing 15 assertions.
+0 failures, 0 errors.
+
+Testing kimun.kernel.hardening-test
+
+Ran 21 tests containing 92 assertions.
+0 failures, 0 errors.
+
+Testing kimun.kernel.mmap-test
+
+Ran 19 tests containing 113 assertions.
+0 failures, 0 errors.
+
+Testing kimun.kernel.node-test
+
+Ran 8 tests containing 25 assertions.
+0 failures, 0 errors.
+
+Testing kimun.kernel.plan-test
+
+Ran 4 tests containing 14 assertions.
+0 failures, 0 errors.
+
+Testing kimun.kernel.revision-format2-test
+
+Ran 7 tests containing 78 assertions.
+0 failures, 0 errors.
+
+Testing kimun.kernel.revision-test
+
+Ran 9 tests containing 42 assertions.
+0 failures, 0 errors.
+
+Testing kimun.kernel.route-store-test
+
+Ran 6 tests containing 25 assertions.
+0 failures, 0 errors.
+
+Testing kimun.kernel.route-test
+
+Ran 5 tests containing 22 assertions.
+0 failures, 0 errors.
+
+Testing kimun.kernel.route-tree-store-test
+
+Ran 13 tests containing 56 assertions.
+0 failures, 0 errors.
+
+Testing kimun.kernel.route-tree-test
+
+Ran 17 tests containing 84 assertions.
+0 failures, 0 errors.
+
+Testing kimun.kernel.store-test
+
+Ran 26 tests containing 255 assertions.
+0 failures, 0 errors.
+
+Testing kimun.kernel.tree-test
+
+Ran 14 tests containing 47 assertions.
+0 failures, 0 errors.
+
+Testing kimun.lint-test
+
+Ran 6 tests containing 35 assertions.
+0 failures, 0 errors.
+
+Testing kimun.spec16-models-contract-test
+
+Ran 4 tests containing 278 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.declare-project-test
+
+Ran 7 tests containing 35 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.declare-test
+
+Ran 9 tests containing 65 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.declared-anchors-test
+
+Ran 6 tests containing 74 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.diagnostics-test
+
+Ran 11 tests containing 116 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.fields-test
+
+Ran 6 tests containing 79 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.heartbeat-test
+
+Ran 10 tests containing 40 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.http-test
+
+Ran 23 tests containing 97 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.http.analysis-test
+
+Ran 16 tests containing 188 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.http.circuit-test
+
+Ran 5 tests containing 18 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.http.documents-test
+
+Ran 23 tests containing 132 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.http.models-fields-test
+
+Ran 7 tests containing 67 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.http.save-schema-test
+
+Ran 11 tests containing 79 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.http.security-test
+
+Ran 5 tests containing 25 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.http.serve-safe-test
+
+Ran 14 tests containing 133 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.include-test
+
+Ran 7 tests containing 40 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.index.address-test
+
+Ran 13 tests containing 90 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.index.build-test
+
+Ran 8 tests containing 117 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.index.cache-test
+
+Ran 8 tests containing 95 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.index.corpus-test
+
+Ran 12 tests containing 61 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.index.search-test
+
+Ran 5 tests containing 31 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.index.where-test
+
+Ran 15 tests containing 120 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.links-test
+
+Ran 13 tests containing 57 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.markdown.anchors-test
+
+Ran 5 tests containing 63 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.markdown.cst-test
+
+Ran 3 tests containing 40 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.markdown.drift-test
+
+Ran 1 tests containing 2 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.markdown.frontmatter-test
+
+Ran 3 tests containing 14 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.markdown.inline-test
+
+Ran 3 tests containing 38 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.markdown.plan-test
+
+Ran 4 tests containing 21 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.markdown.roundtrip-test
+
+Ran 5 tests containing 52 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.marks-test
+
+Ran 9 tests containing 96 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.models.capture-test
+
+Ran 6 tests containing 22 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.models.compile-test
+
+Ran 6 tests containing 78 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.models.composition-test
+
+Ran 7 tests containing 15 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.models.engine-test
+
+Ran 7 tests containing 23 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.models.engine-units-test
+
+Ran 13 tests containing 40 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.models.noise-test
+
+Ran 6 tests containing 23 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.models.segments-test
+
+Ran 31 tests containing 71 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.models.selector-cst-test
+
+Ran 5 tests containing 13 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.models.selector-test
+
+Ran 6 tests containing 73 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.models.store-test
+
+Ran 4 tests containing 101 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.models.subgraph-test
+
+Ran 9 tests containing 42 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.parse-contract-test
+
+Ran 7 tests containing 42 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.propositions-test
+
+Ran 5 tests containing 29 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.sections-test
+
+Ran 11 tests containing 49 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.semantic-test
+
+Ran 11 tests containing 40 assertions.
+0 failures, 0 errors.
+
+Testing kimun.surface.signals-test
+
+Ran 5 tests containing 19 assertions.
+0 failures, 0 errors.
+
+Testing kimun.wittgenstein-manifest-test
+
+Ran 4 tests containing 745 assertions.
+0 failures, 0 errors.
+
+Ran 127 namespaces in 163 s
+    64494 ms  kimun.cli.release-test
+    19158 ms  kimun.kernel.mmap-test
+    17953 ms  kimun.cli.diagnostics-test
+     8209 ms  kimun.cli.cold-cache-test
+     4674 ms  kimun.kernel.route-tree-test
+     3610 ms  kimun.surface.models.segments-test
+     3368 ms  kimun.cli.beat-git-test
+     2628 ms  kimun.graph.edges-test
+     2330 ms  kimun.kernel.route-tree-store-test
+     1720 ms  kimun.cli.graph-test
+     1632 ms  kimun.cli.edges-test
+     1473 ms  kimun.cli.unit-close-move-test
+{:test 1042, :pass 9989, :fail 0, :error 0, :namespaces 127}

@@ -1,0 +1,11 @@
+
+Testing kimun.surface.http.serve-safe-test
+
+Testing kimun.surface.http-test
+
+Testing kimun.cli.mcp-test
+
+Testing kimun.cli.main-test
+
+Ran 50 tests containing 431 assertions.
+0 failures, 0 errors.
