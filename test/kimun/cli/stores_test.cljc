@@ -279,7 +279,7 @@
   (let [e (run (tmp) "stores" "nope")]
     (is (= 6 (:exit e)))
     (is (= "cli/usage" (get-in e [:error :type])))
-    (is (= ["check" "health" "heartbeat" "init" "link" "links" "pack" "reconcile" "sense" "show" "unlink" "unpack" "unreachable" "update" "verify"] (get-in e [:error :data :known])))))
+    (is (= ["changed" "check" "health" "heartbeat" "init" "link" "links" "pack" "reconcile" "sense" "show" "unlink" "unpack" "unreachable" "update" "verify"] (get-in e [:error :data :known])))))
 
 ;; ------------------------------------------------------------------ federation
 

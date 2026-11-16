@@ -77,6 +77,7 @@
              "  stores pack [--max-bytes N] move loose objects smaller than N bytes (default 4096) into a pack"
              "  stores unpack              write every packed object back to objects/ and remove the packs"
              "  stores sense [--once]       one read-only observation: structured signals from tracked documents"
+             "  stores changed --since COMMIT   what git says changed since COMMIT and the state of the marks in those files; read-only"
              "  stores heartbeat [--interval SECONDS] [--beats N]   repeat that observation; NDJSON stream on stdout, writes nothing"
              "  stores update               apply the repairs that need no decision (reformatted files, moved contracts)"
              "  stores reconcile [ROOT] [--apply]  compare stores found under ROOT with the links"

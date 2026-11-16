@@ -1,0 +1,25 @@
+
+FAIL in (nothing-changed-opens-nothing) (/tmp/kimun-gitsense-wt/test/kimun/cli/changed_test.cljc:60)
+expected: (= x (get-in r [:data :since]))
+  actual: (not (= "66334badc30893dd9e2f40fa288f8f8d31f5f4ca" nil))
+
+FAIL in (nothing-changed-opens-nothing) (/tmp/kimun-gitsense-wt/test/kimun/cli/changed_test.cljc:60)
+expected: (= [] (get-in r [:data :changed]))
+  actual: (not (= [] nil))
+
+FAIL in (nothing-changed-opens-nothing) (/tmp/kimun-gitsense-wt/test/kimun/cli/changed_test.cljc:60)
+expected: (= [] (get-in r [:data :marks]))
+  actual: (not (= [] nil))
+
+FAIL in (nothing-changed-opens-nothing) (/tmp/kimun-gitsense-wt/test/kimun/cli/changed_test.cljc:60)
+the same counter does see an analysis when a marked file changed
+expected: (= 1 (count (get-in r2 [:data :changed])))
+  actual: (not (= 1 0))
+
+FAIL in (nothing-changed-opens-nothing) (/tmp/kimun-gitsense-wt/test/kimun/cli/changed_test.cljc:60)
+the same counter does see an analysis when a marked file changed
+expected: (pos? n2)
+  actual: (not (pos? 0))
+
+Ran 7 tests containing 84 assertions.
+30 failures, 0 errors.

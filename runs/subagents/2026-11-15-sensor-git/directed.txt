@@ -1,0 +1,10 @@
+Testing kimun.cli.changed-test
+Testing kimun.cli.sense-test
+Testing kimun.cli.heartbeat-test
+Testing kimun.cli.marks-test
+Testing kimun.surface.marks-test
+Testing kimun.cli.stores-test
+Testing kimun.cli.tour-test
+Testing kimun.lint-test
+Ran 65 tests containing 609 assertions.
+0 failures, 0 errors.

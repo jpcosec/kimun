@@ -1,6 +1,6 @@
 (ns kimun.cli.commands.stores
   "The `kimun stores` group (docs/v2/06 §3): `init`, `check`, `health`,
-   `sense`, `heartbeat`, `update`, `reconcile`, `verify`, `unreachable`, `pack`,
+   `sense`, `changed`, `heartbeat`, `update`, `reconcile`, `verify`, `unreachable`, `pack`,
    `unpack`, `show`, and the federation commands `link`, `unlink` and
    `links`. Every
    command is `(fn [args opts ctx] envelope)` where `args` are the positional
@@ -15,6 +15,8 @@
             [kimun.cli.errors :as errors]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
+            [kimun.host.git :as git]
+            [kimun.surface.changes :as changes]
             [kimun.surface.diagnostics :as diag]
             [kimun.surface.docs :as tdocs]
             [kimun.surface.heartbeat :as heartbeat]
@@ -190,6 +192,29 @@
   [_args opts {:keys [env cwd]}]
   (update (observe "stores sense" (cli-store/resolve-store opts env cwd))
           :data #(merge (array-map :mode :once) %)))
+
+(defn changed
+  "`stores changed --since COMMIT`: read-only, asks git what changed between COMMIT and the
+   working tree, and for the changed files that have a mark in the store, the state of each
+   mark (`kimun.surface.changes/since`). Next to `stores sense`, which it leaves untouched:
+   it does not hash the tracked documents, opens only changed files with marks, writes
+   nothing and persists no pointer. A directory that is not a git repository is
+   `git/not-a-repository`. Data: `{:since :head :dirty :changed :marks :summary}`."
+  [_args opts {:keys [env cwd]}]
+  (let [since (:since opts)
+        _ (when-not (and (string? since) (seq since))
+            (err/raise :cli/usage "`stores changed` needs --since COMMIT" {:group "stores" :subcommand "changed"}))
+        {:keys [descriptor store path]} (cli-store/open! (cli-store/resolve-store opts env cwd))
+        root (str (fs/parent (fs/absolutize path)))
+        rel-store (when (fs/starts-with? (fs/absolutize path) root) (str (fs/relativize root (fs/absolutize path))))
+        head (git/repo-head root)
+        sha (git/resolve-commit root since)
+        ex [rel-store]
+        data (changes/since host/host store
+                            {:since sha :head head :dirty (boolean (seq (git/changed-since root head ex)))
+                             :changes (git/changed-since root sha ex)}
+                            {:read-then #(git/show root sha %) :read-now (file-reader path)})]
+    (out/ok "stores changed" {:store (store-ref descriptor path) :revision (:head store) :data data})))
 
 (defn- emit-line!
   "Writes `record` as one compact JSON line on stdout and flushes; false when
@@ -625,6 +650,7 @@
   {:name {:ref "NAME" :desc "Store name (stores init)"}
    :content {:ref "MODE" :desc "Content mode of the store: by-reference (default) or inline (stores init)"}
    :apply {:desc "Write what the comparison found (stores reconcile)" :coerce :boolean}
+   :since {:ref "COMMIT" :desc "Commit to compare the working tree with (stores changed)"}
    :once {:desc "Make the single observation explicit (stores sense; no daemon)" :coerce :boolean}
    :ids {:desc "List the id, class and bytes of every object (stores unreachable)" :coerce :boolean}
    :max-bytes {:ref "N" :desc "Largest loose object, in bytes, that `stores pack` moves into a pack (default 4096, at most 16777216)"}
@@ -636,7 +662,7 @@
   "Subcommand name → command fn."
   {"init" init "check" check "verify" verify "show" show
    "link" link "unlink" unlink "links" links
-   "unreachable" unreachable "pack" pack "unpack" unpack "health" health "sense" sense "heartbeat" heartbeat "update" update-store "reconcile" reconcile})
+   "unreachable" unreachable "pack" pack "unpack" unpack "health" health "sense" sense "changed" changed "heartbeat" heartbeat "update" update-store "reconcile" reconcile})
 
 (defn dispatch
   "Runs subcommand `sub` of the `stores` group (`args` are the positional tokens);
