@@ -17,11 +17,16 @@ module (`docs/v2/06-superficies-y-cli.md §6`) and it feeds
 runnable as a script, and `bin/kimun adapters` drives them:
 
 - `python_symbols.py` — static Python symbols (port of the sldb v1 `PythonScanner`).
-- `treesitter_symbols.py` — symbols for Python and JavaScript via tree-sitter.
 - `argparse_cli.py` — `argparse` CLI surface (port of v1 `ParserScanner`).
 - `click_cli.py` — `click` CLI surface (port of v1 `ClickScanner`; needs the `click` package).
 
 The protocol is fixed in `docs/v2/11-adaptadores.md`.
+
+There is no tree-sitter adapter here. The tree-sitter parser is the Rust pod
+(`pods/treesitter/`, `src/kimun/host/treesitter.cljc`), the only tree-sitter mechanism: today it
+carries the Markdown, inline Markdown and Python grammars. Extracting code symbols (classes,
+functions, docstrings, imports) with it, and other grammars (Clojure, JavaScript), are not
+available yet; the former Python adapter `treesitter_symbols.py` was retired on 2026-11-15.
 
 ## Client library
 

@@ -121,7 +121,7 @@
              "  graph snapshot save|load FILE · export [-o FILE] · ingest-sldb FILE [-o OUT]"
              "  adapters list · scan|sync|check ADAPTER PATH --system S [--factory M:A] [--language L] [-- adapter options]"
              "                              code → documents through an out-of-process adapter: python-symbols, argparse-cli,"
-             "                              click-cli, treesitter-symbols, or the path of any executable (docs/v2/11)"
+             "                              click-cli, or the path of any executable (docs/v2/11)"
              "  migrate --from-v1 [PATH] [--pythonpath P] [--dry-run] [--only MODEL] [--limit N] [--force]"
              "                              bring a sldb v1 store (.sldb) into this kimun store; idempotent"
              "  fields get DOC PATH · schema MODEL [FIELD] · query FIELD [--where EXPR] [--model M]"

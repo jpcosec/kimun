@@ -8,7 +8,6 @@
    names the v1 function in a comment."
   (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [cheshire.core :as json]
-            [babashka.process :as process]
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.commands.adapters :as cmd]
@@ -402,29 +401,14 @@
             (is (true? (:ok (adapters p "selfdoc-check" {:factory "app:build" :system "demo"}))))
             (is (not (fs/exists? (file p "__pycache__"))))))))))
 
-(deftest python-and-treesitter-adapters-agree
-  (let [py (or (System/getenv "KIMUN_ADAPTER_PYTHON") "python3")
-        ts (str (fs/absolutize "python/kimun/adapters/treesitter_symbols.py"))
-        ok? (and (fs/exists? real-adapter) (fs/exists? ts)
-                 (try (zero? (:exit (process/shell {:out :string :err :string :continue true} py "-c" "import tree_sitter, tree_sitter_python")))
-                      (catch Exception _ false)))]
-    (if-not ok?
-      (println "SKIP python-and-treesitter-adapters-agree: tree_sitter runtime not available (set KIMUN_ADAPTER_PYTHON)")
-      (let [p (real-project)
-            _ (spit (file p "src" "demo" "util.py")
-                    (str "\"\"\"Utilities.\"\"\"\nimport json\nfrom os import path\n\n\ndef dump(value, indent=2):\n    \"\"\"Dump value as JSON.\"\"\"\n    return json.dumps(value, indent=indent)\n\n\n"
-                         "class Cache:\n    \"\"\"A small cache.\"\"\"\n\n    def get(self, key):\n        \"\"\"Value of key.\"\"\"\n        return None\n\n    def clear(self):\n        return None\n"))
-            a (adapters p "scan" "python-symbols" "src" {:system "demo"})
-            b (adapters p "scan" "treesitter-symbols" "src" "--language" "python" {:system "demo"})
-            docs (fn [e] (into (sorted-map) (map (juxt :name #(vector (:model %) (dissoc (:fields %) "provenance")))) (:documents (:data e))))]
-        (is (true? (:ok a)) (pr-str (:error a)))
-        (is (true? (:ok b)) (pr-str (:error b)))
-        (println "python-and-treesitter-adapters-agree compared" (count (docs a)) "documents")
-        (is (= 7 (count (docs a))))
-        (is (= (keys (docs a)) (keys (docs b))))
-        (doseq [[n [model fields]] (docs a) :let [[m2 f2] (get (docs b) n)]]
-          (is (= model m2) n)
-          (doseq [k (keys fields)] (is (= (get fields k) (get f2 k)) (str n " " k))))))))
+(deftest treesitter-symbols-adapter-is-retired
+  (let [p (project) e (adapters p "scan" "treesitter-symbols" "src" "--language" "python" {:system "demo"})]
+    (is (= "adapters/missing" (error-type e)))
+    (is (= 1 (:exit e)))
+    (is (= "unknown-adapter" (get-in e [:error :data :reason])))
+    (is (= "treesitter-symbols" (get-in e [:error :data :adapter])))
+    (is (not-any? #{"treesitter-symbols"} (get-in e [:error :data :known])))
+    (is (some #{"python-symbols"} (get-in e [:error :data :known])) "the other built-ins are still there")))
 
 ;; v1: src/sldb/cli/selfdoc_write.py `_save_document` (untracked branch, `{**existing, **fields}`)
 (deftest returning-symbol-with-changed-facts-is-adopted-then-updated

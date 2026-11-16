@@ -1,0 +1,22 @@
+
+Testing kimun.cli.adapters-test
+
+Testing kimun.surface.adapters-test
+
+Testing kimun.parity.adapters-parity-test
+
+Testing kimun.cli.main-test
+
+Testing kimun.cli.release-test
+release_test: bundle --version in 387 ms
+
+Testing kimun.doc14-contract-test
+
+Testing kimun.wittgenstein-manifest-test
+
+Testing kimun.lint-test
+
+Testing kimun.surface.parse-contract-test
+
+Ran 79 tests containing 2932 assertions.
+0 failures, 0 errors.

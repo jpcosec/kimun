@@ -1,0 +1,8 @@
+
+FAIL in (treesitter-symbols-adapter-is-retired) (/tmp/kimun-noadapter-wt/test/kimun/cli/adapters_test.cljc:404)
+expected: (= "adapters/missing" (error-type e))
+  actual: (not (= "adapters/missing" "adapters/failed"))
+
+FAIL in (treesitter-symbols-adapter-is-retired) (/tmp/kimun-noadapter-wt/test/kimun/cli/adapters_test.cljc:404)
+expected: (= 1 (:exit e))
+  actual: (not (= 1 5))

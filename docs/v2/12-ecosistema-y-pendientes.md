@@ -123,8 +123,8 @@ En paralelo hoy, sin esperar al dueño: `K2a` (cortes `C2a`/`C2b`/`C4`/`C5` en `
 - **Board legado**: `desk/tasks/Board.md` no es editable por CLI.
 - **Tree-sitter como pod**: el pod existe y es el parser de la capa M
   (`kimun.host.treesitter`, `pods/treesitter`, decisión 29). Falta el parseo de **código**
-  como superficie de modelos (hoy el adaptador `treesitter-symbols` de `11 §9` cubre
-  símbolos) y la fase 3 (ids de nodo del CST como anclas).
+  como superficie de modelos (el adaptador Python `treesitter-symbols` se retiró el 2026-11-15,
+  `11 §9.4`: hoy no hay lector de símbolos sobre el pod) y la fase 3 (ids de nodo del CST como anclas).
 
 ## 2. Consumidores y superficies
 

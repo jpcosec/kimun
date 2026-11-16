@@ -664,7 +664,7 @@ coordina la sensorización, persistencia, indexación y consulta:
 
 | motor | papel | lenguaje / frontera | estado actual |
 |---|---|---|---|
-| **tree-sitter** | parser de la capa **M** (bloques Markdown y símbolos de código) | Rust (`pods/treesitter`) como pod de Babashka (`KIMUN_POD`); `R2`: pod 3–4 MB, 19 ms carga, 1,2 ms/doc, paridad de bloques `1099/1099` (`S1`/`S2`) | **Implementado** para bloques Markdown (`S1` CST libre ~3 % pendiente) y adaptador Python `treesitter_symbols.py`; supera `11 §1` |
+| **tree-sitter** | parser de la capa **M** (bloques Markdown y símbolos de código) | Rust (`pods/treesitter`) como pod de Babashka (`KIMUN_POD`); `R2`: pod 3–4 MB, 19 ms carga, 1,2 ms/doc, paridad de bloques `1099/1099` (`S1`/`S2`) | **Implementado** para bloques Markdown (`S1` CST libre ~3 % pendiente); el pod trae Markdown, Markdown en línea y Python; el adaptador Python `treesitter_symbols.py` se retiró el 2026-11-15 (`11 §9.4`); supera `11 §1` |
 | **descompositor** | texto → `(R A B)` detectados (heurística o LLM) | proceso externo bajo protocolo `propositions` (sin auto-confirmación ni categoría `proposed` como verdad) | **Contrato objetivo** (Etapa C) |
 | **Matrix / wittgenstein** | evaluación booleana por `W_i`, detección de conflicto y convergencia entre contextos | Python externo por protocolo; **productor y evaluador, no almacén** (`R1 §5`, `12 §3`) | **Contrato objetivo** (`G1` / Etapa C; manifiesto `T01` fijado en `28` capacidades) |
 | **Datalevin** | consulta Datalog sobre triples con procedencia | pod nativo (`index/graph/` derivado) + respaldo in-process | **Spike `R1` medido**; integración es **Etapa C** (`G2`) |

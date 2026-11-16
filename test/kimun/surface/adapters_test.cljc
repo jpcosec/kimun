@@ -145,11 +145,11 @@
            (a/py-json (array-map "a" [] "b" [{"c" nil}]) {:indent 2})))))
 
 (deftest non-python-language-prefix
-  (let [out (assoc symbols-output "adapter" "treesitter-symbols" "language" "javascript")
+  (let [out (assoc symbols-output "adapter" "other-symbols" "language" "javascript")
         d (first (filter #(= "pkg.mod.sin_doc" (:fact %)) (docs out sym-opts)))]
     (is (= "javascript-sldb-pkg-mod-sin_doc" (:name d)))
     (is (= "PythonSymbolDoc" (:model d)))
-    (is (str/starts-with? (get-in d [:fields "provenance"]) "treesitter-symbols:javascript:pkg.mod:sin_doc; contract-sha256:"))
+    (is (str/starts-with? (get-in d [:fields "provenance"]) "other-symbols:javascript:pkg.mod:sin_doc; contract-sha256:"))
     (is (= "go-sldb-pkg-mod-sin_doc" (:name (first (filter #(= "pkg.mod.sin_doc" (:fact %)) (docs out (assoc sym-opts :language "go")))))))
     (testing "python-symbols keeps v1's python-ast tag"
       (is (every? #(str/starts-with? (get-in % [:fields "provenance"]) "python-ast:python:pkg.mod:") (docs symbols-output sym-opts))))))
@@ -293,7 +293,7 @@
     (is (not (a/owned? scope c)))
     (is (not (a/owned? (assoc scope :system "other") t)))
     (is (not (a/owned? (assoc scope :output "docs") t)))
-    (is (not (a/owned? (assoc scope :adapter "treesitter-symbols") t)))
+    (is (not (a/owned? (assoc scope :adapter "other-symbols") t)))
     (is (not (a/owned? (assoc scope :language "javascript") t)))
     (is (not (a/owned? scope (assoc t :model "NoteDoc"))))
     (is (not (a/owned? scope (assoc-in t [:payload "provenance"] "hand-written"))))

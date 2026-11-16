@@ -39,8 +39,8 @@ Los adaptadores de este protocolo son **procesos separados por diseño**:
   archivos son ejecutables (`#!/usr/bin/env python3`). kimun los corre con el intérprete de
   la variable `KIMUN_ADAPTER_PYTHON` (por defecto `python3`) y `PYTHONDONTWRITEBYTECODE=1`.
 - Nombres (CLI / archivo): `python-symbols` / `python_symbols.py`, `argparse-cli` /
-  `argparse_cli.py`, `click-cli` / `click_cli.py`, `treesitter-symbols` /
-  `treesitter_symbols.py`.
+  `argparse_cli.py`, `click-cli` / `click_cli.py`. (El adaptador `treesitter-symbols` se retiró
+  el 2026-11-15, ver §9.4.)
 - Los adaptadores nunca escriben dentro de `ROOT` (ni bytecode ni cachés).
 - Los adaptadores de CLI toman `--factory modulo:attr` (`ROOT` se pone en `sys.path`).
 
@@ -101,8 +101,8 @@ registros de v1 llevaban sin clave neutral.
   import declarado. `python-symbols` emite además relaciones **resueltas** (portadas de
   `python_source_graph` de v1): `imports` y `references` (de asignaciones anotadas) cuyo
   `target` es un id de hecho si `external` es `false`, o un nombre punteado externo si es
-  `true`. `external` es la única clave permitida además de `type` y `target`.
-  `treesitter-symbols` emite solo `contained-in` e imports crudos.
+  `true`. `external` es la única clave permitida además de `type` y `target`. Un adaptador que
+  emita solo `contained-in` e imports crudos también es válido.
 - Para los hechos módulo, el planificador toma la lista de imports de `attrs.imports` cuando es
   una lista (`python-symbols` guarda ahí la lista exacta de v1) y, si no, de las relaciones
   `imports` en el orden emitido. Las relaciones solas no son exactas a v1 para `imports` y
@@ -131,7 +131,7 @@ relación exige solo `type` y `target` strings: **acepta claves extra**, así qu
 | 0 | ok: JSON en stdout y nada más en stdout |
 | 1 | escaneo fallido (fuente ilegible o no parseable, falla al importar la fábrica); stderr termina con la línea `error: <mensaje>` |
 | 2 | error de uso |
-| 3 | falta el runtime (click, tree_sitter, ...); stderr: `error: runtime missing: <paquetes>` |
+| 3 | falta el runtime (click, ...); stderr: `error: runtime missing: <paquetes>` |
 
 Con cualquier salida distinta de 0, stdout queda vacío. Los avisos van a stderr con prefijo
 `warning: `.
@@ -184,7 +184,7 @@ Todo valor es string salvo `tags` (lista de strings). `architecture_spec` vale
 
 `provenance` es `<prefijo>:<id de registro v1>; contract-sha256:<hex>`. El prefijo es
 `python-ast` para `python-symbols`, el nombre del adaptador para otros adaptadores symbols
-(p. ej. `treesitter-symbols:javascript:index:Shape; ...`) y `parser:` para el perfil cli.
+(p. ej. `otro-adaptador:javascript:index:Shape; ...`) y `parser:` para el perfil cli.
 
 `owned?(scope, tracked)` decide si un documento rastreado lo generó este adaptador y sistema.
 Es verdadero cuando se cumplen **todas**:
@@ -414,32 +414,18 @@ firmas de uso; por defecto `pron`, como v1) y `--system`.
   forma de `attrs` que `argparse-cli`.
 - Errores: igual que `argparse-cli` (uso exit 2; fábrica inválida exit 1).
 
-### 9.4 `treesitter-symbols`
+### 9.4 `treesitter-symbols` (retirado)
 
-`treesitter_symbols.py`; perfil `symbols`; lenguajes `python` y `javascript`; runtime opcional:
-necesita `tree_sitter` y la gramática del lenguaje elegido (`tree_sitter_python`,
-`tree_sitter_javascript`); si falta, exit 3 (`error: runtime missing: <paquetes>`).
-`KIMUN_ADAPTER_PYTHON` selecciona un intérprete que las tenga. Opciones: `--language
-python|javascript` y `--system` (aceptada, no usada).
+El adaptador `treesitter_symbols.py` (símbolos de Python y JavaScript con los paquetes pip
+`tree_sitter*`) se retiró el 2026-11-15 por decisión del dueño («Quita ese adaptador python, no
+tiene sentido»): eran dos mecanismos de tree-sitter en paralelo. El único mecanismo es el pod
+(`pods/treesitter`, `kimun.host.treesitter`), que hoy trae las gramáticas Markdown, Markdown en
+línea y Python; Clojure y JavaScript no están todavía. Pedir `treesitter-symbols` da ahora
+`adapters/missing` (`unknown adapter`), como cualquier nombre desconocido.
 
-- Lenguaje: se infiere de los archivos; con ambos presentes, exit 2 (`error: both ... found:
-  pass --language`); sin archivos, `python`.
-- Tabla por lenguaje (`LANGUAGES`): extensiones, consulta tree-sitter, mapa captura-kind, tipos
-  de nodo transparentes y de ancla, y lectores de nombre, doc, firma, `native_kind`, módulo e
-  imports. Agregar un lenguaje es agregar una entrada.
-- JavaScript (`.js .mjs .cjs .jsx`): declaraciones de función, generador y async, clases,
-  métodos, y `const`/`let`/`var` de nivel módulo cuyo valor es función flecha o expresión de
-  función; el bloque JSDoc es `doc`; los imports son las cadenas de origen; se omiten
-  `node_modules` y `*.min.js`.
-- Hechos: misma forma que `python-symbols` (módulo + símbolos, ids `<módulo>.<qualname>`, `~2`,
-  `~3` en duplicados); relaciones solo `contained-in` e imports crudos; `attrs`: `native_kind`,
-  `module` y, en el módulo, `imports`.
-- `source_hash` es el sha256 de los bytes (sin la excepción de §9.1).
-- Errores: una fuente con errores de sintaxis da `warning: <ruta>: syntax errors, facts are
-  best-effort` en stderr y hechos de mejor esfuerzo (no es fallo); `OSError` o `ROOT` que no es
-  directorio, exit 1.
-- Acuerdo con `python-symbols`: claves neutrales, `signature` e imports crudos iguales sobre
-  el propio código de v1.
+**Se pierde hasta que se rehaga sobre el pod:** extraer símbolos (módulos, clases, funciones,
+métodos, docstrings/JSDoc, imports) de Python y de JavaScript como hechos con tree-sitter. Para
+Python sigue `python-symbols` (ast, §9.1); para JavaScript no hay lector.
 
 ## 10. Desviaciones respecto de v1
 
