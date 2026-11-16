@@ -145,7 +145,7 @@
   ;; 10 §5/§7: objects are written once; `.tmp-*` names are only transient.
   (failing-spit "docs/a.md" (run "docs" "update" "a" "--set" "status=done"))
   (failing-spit "docs/a.md" (run "fields" "set" "a" "title" "\"U\""))
-  (is (true? (:ok (run "journal" "verify"))))
+  (is (true? (:ok (run "stores" "verify"))))
   (is (= [] (tmp-names)))
   (is (seq (fs/glob (file ".kimun" "objects") "**")) "objects/ exists and is not empty"))
 

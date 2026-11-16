@@ -1,0 +1,36 @@
+=== kernel
+Ran 173 tests containing 930 assertions.
+0 failures, 0 errors.
+exit=0
+=== http
+Ran 90 tests containing 604 assertions.
+0 failures, 0 errors.
+exit=0
+=== surface-root
+Ran 122 tests containing 736 assertions.
+0 failures, 0 errors.
+exit=0
+=== docs-contracts
+Ran 18 tests containing 1234 assertions.
+0 failures, 0 errors.
+exit=0
+=== cli-A
+Ran 83 tests containing 705 assertions.
+0 failures, 0 errors.
+exit=0
+=== cli-B
+moved existing store to /tmp/kimun-nogit1-14239556353450542482/kimun-model-carry-6778733137380748577/.kimun.bak-20261116-012056-01M7H9CC7AR8X7GKFZESB2FVQ6
+moved existing store to /tmp/kimun-nogit1-14239556353450542482/kimun-model-carry-12299018936221392146/.kimun.bak-20261116-012056-01M7H9CCAPBNE5GH0DJ0YY731W
+moved existing store to /tmp/kimun-nogit1-14239556353450542482/kimun-model-carry-9855233863084312077/.kimun.bak-20261116-012056-01M7H9CCE11F9NPRGRZ3W0HRB8
+moved existing store to /tmp/kimun-nogit1-14239556353450542482/kimun-seen-inc-15299217270618626279/.kimun.bak-20261116-012102-01M7H9CJ68NKK6DPFRYV5JJF7T
+Ran 66 tests containing 758 assertions.
+0 failures, 0 errors.
+exit=0
+=== cli-C
+moved existing store to /tmp/kimun-close-inc-11033309830402466177/.kimun.bak-20261116-012129-01M7H9DCP6TKCX4S14K7ABTJQH
+moved existing store to /tmp/kimun-close-inc-15645900870001038920/.kimun.bak-20261116-012130-01M7H9DDADNXG8VQETCYTWQZ89
+moved existing store to /tmp/kimun-nogit1-1796613568928323082/kimun-units-inc-15796148929084354755/.kimun.bak-20261116-012130-01M7H9DDSHSD7G7NWE6QZX0AZ5
+moved existing store to /tmp/kimun-nogit1-1796613568928323082/kimun-s16-include-5229443327909254104/.kimun.bak-20261116-012132-01M7H9DG3TEXPQNHFEBMPF33DP
+Ran 104 tests containing 1551 assertions.
+0 failures, 0 errors.
+exit=0

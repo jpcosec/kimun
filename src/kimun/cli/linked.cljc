@@ -8,9 +8,7 @@
    it at the moment of the command. What the local store keeps is the BINDING
    — the owner's descriptor node itself, appended to the local `models` tree
    byte for byte (`:model/version` included, so it is the same
-   content-addressed node id in both stores), in a plan whose journal metadata
-   (`kimun.surface.docs/meta-key`) records `{:operation \"models import\"
-   :address \"ALIAS:Model\" :origin {:alias :store :id :version}}`. From then on
+   content-addressed node id in both stores), in a plan of its own. From then on
    the document is an ordinary typed document of the local store: reads,
    updates and `stores check` never resolve the link again, and a broken link
    breaks nothing already written. A later change of the owner's model is not
@@ -19,7 +17,6 @@
   (:require [babashka.fs :as fs]
             [clojure.string :as str]
             [kimun.cli.store :as cli-store]
-            [kimun.surface.docs :as tdocs]
             [kimun.surface.models.store :as mstore]
             [kimun.kernel.err :as err]))
 
@@ -115,8 +112,7 @@
    result) in `store`, or nil when there is nothing to write: `m` is local, or
    the store already holds that node or the same contract under that name.
    The plan is `kimun.surface.models.store/define-plan`'s with the owner's
-   node put in verbatim (same node id as in the owning store) and the origin
-   in the journal metadata (see the namespace docstring). `opts` is
+   node put in verbatim (same node id as in the owning store). `opts` is
    `define-plan`'s: `{:actor :timestamp :tree-id}`. Raises `:models/conflict`
    (exit 4) when the store holds another contract under that name."
   [host store {:keys [name descriptor id origin]} opts]
@@ -130,6 +126,4 @@
                            "` this store already holds: use the local one, or redefine it with `models define`")
                       {:model name :alias (:alias origin) :local (:id mine) :foreign id})
       :else (-> (:plan (mstore/define-plan host store descriptor opts))
-                (update :ops (fn [ops] (mapv #(if (= :m (:as %)) (assoc % :node (mstore/descriptor-node descriptor)) %) ops)))
-                (update :engines assoc tdocs/meta-key
-                        (pr-str {:operation "models import" :address (str (:alias origin) ":" name) :origin origin :fields {}}))))))
+                (update :ops (fn [ops] (mapv #(if (= :m (:as %)) (assoc % :node (mstore/descriptor-node descriptor)) %) ops)))))))

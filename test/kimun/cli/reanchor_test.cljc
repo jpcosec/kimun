@@ -2,8 +2,7 @@
   "K1b: re-anchoring and closure are DECLARATIONS (docs/v2/14 §21, rules 3 and
    6). The path is the vigente reference, not the identity: a document keeps
    its document id and tree id when it is declared anchored elsewhere, the
-   declaration says what happened (`--reason`) and it stays in the journal
-   (`:declared`). The sensor never decides continuity and kimun moves no file."
+   declaration says what happened (`--reason`). The sensor never decides continuity and kimun moves no file."
   (:require [babashka.fs :as fs]
             [babashka.process :as process]
             [clojure.string :as str]
@@ -65,9 +64,7 @@
       (is (= d0 (:doc (doc "a"))) "the document id is kept")
       (is (= {:from "docs/a.md" :to "b/c.md" :previous-file "missing" :reason "moved by hand"}
              (:reanchored d)))
-      (is (= "b/c.md" (:path (doc "a"))) "the new anchor is recorded")
-      (is (= ["b/c.md"] (mapv :path (data "docs" "status"))) "status sees the new path")
-      (is (= [:ok] (mapv :status (data "docs" "status")))))
+      (is (= "b/c.md" (:path (doc "a"))) "the new anchor is recorded"))
     (testing "the old path is free and a new document there gets fresh ids"
       (spit (file "docs" "a.md") "# T\n\nStatus: closed\n")
       (is (true? (:ok (run "docs" "track" "TicketDoc" "docs/a.md" "--name" "a2"))))
@@ -100,20 +97,6 @@
     (testing "the path it already has"
       (is (= "cli/usage" (get-in (run "docs" "reanchor" "a" (:path a) "--reason" "x") [:error :type]))))
     (is (= h0 (head)) "no revision was written")))
-
-(deftest the-declaration-is-in-the-journal
-  (fs/create-dirs (file "b"))
-  (fs/move (file "docs" "a.md") (file "b" "c.md"))
-  (is (true? (:ok (run "docs" "reanchor" "a" "b/c.md" "--reason" "moved by hand"))))
-  (let [e (first (data "journal" "show"))]
-    (is (= "docs reanchor" (:operation e)))
-    (is (= {:kind "reanchor" :from "docs/a.md" :to "b/c.md"
-            :previous-file "missing" :reason "moved by hand"} (:declared e))))
-  (is (true? (:ok (run "docs" "untrack" "a" "--reason" "no longer tracked"))))
-  (let [e (first (data "journal" "show"))]
-    (is (= "docs untrack" (:operation e)))
-    (is (= {:kind "closure" :file "present" :reason "no longer tracked" :file-deleted? false}
-           (:declared e)))))
 
 (deftest a-reanchor-composes-with-a-rebuild-that-carries-identities
   (let [p (str (ktu/temp-dir "kimun-reanchor-inc-"))

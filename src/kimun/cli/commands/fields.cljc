@@ -152,8 +152,7 @@
 (defn- mutation
   "The command of mutation `op` named `sub` on the command line. Data:
    `{:doc :model :address :operation :field :path :before :after :unchanged?
-   :owning_section :file}`; the journal entry of the write carries
-   `:operation` (`fields <op>`), `:address` (`Model:doc`) and `:fields`."
+   :owning_section :file}`."
   [op sub {:keys [value? create?]}]
   (fn [args opts ctx]
     (let [{:keys [backend descriptor store] store-path :path :as opened} (cli-store/open-for opts ctx)
@@ -185,7 +184,7 @@
               {:keys [text]} (fields/render-checked current (:payload m) (compose/context opened) (:field m))
               _ (refuse-noise! current full text)
               {:keys [plan]} (tdocs/update-plan host/host store (:name full) text
-                                                {:actor (:actor opts) :timestamp (docs/timestamp) :operation command})
+                                                {:actor (:actor opts) :timestamp (docs/timestamp)})
               r (if plan (store/commit! backend store plan) {:revision-id (:head store)})
               root (str (fs/parent (fs/absolutize store-path)))]
           (out/ok command {:store (cli-store/store-ref descriptor store-path) :revision (:revision-id r)

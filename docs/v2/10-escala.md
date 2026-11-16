@@ -132,7 +132,7 @@ resuelto incluye `:base`, un id de revisión).
 Objetos sin referencia que pueden quedar en `objects/` (todos de escritura única e
 inofensivos): los de un escritor que perdió la carrera (§7) y los nodos del mmap de
 cabezas que un commit posterior reemplazó (nada guarda una raíz vieja de cabezas).
-Los informa `stores unreachable` (`§11.3`, solo lectura); recogerlos es el GC del hito 8, que no existe todavía. `stores check` cuenta
+Recogerlos es el GC del hito 8, que no existe todavía. `stores check` cuenta
 en `:objects` todo lo que hay en `objects/`, ellos incluidos.
 
 ## 6. Qué confía `open` y qué comprueba cada verificación
@@ -153,7 +153,6 @@ dentro de las Revisiones. Una cola no confirmada del log no se busca.
 | cualquier comando | `store/open` | `store.edn`/hash-alg, forma de `heads.edn`, Revision cabeza y raíz de cabezas ausentes, alteradas o de otra forma |
 | `stores check` | `open` + `store/verify` | además: el hash de **todo objeto alcanzable** desde las cabezas (nodos, aristas, objetos de árbol, descriptores, nodos mmap, Revisiones, cabezas de cada árbol) y el **final** del log frente a las cabezas (`:log-heads-mismatch`). No una línea intermedia alterada o cortada. Fallo `store/invalid`, exit 5 |
 | `stores verify` | `store/verify-full` | replay completo del log por `apply-plan` (cada id de transacción y revisión, `:incidence` y las cabezas recalculadas, las cabezas finales contra `heads.edn`) y luego `verify` sobre el store replayado. Cualquier línea alterada, cortada o faltante y cabezas que no coinciden con el log. Fallo `store/corrupt`, exit 5, `:bad [{:reason :replay-failed}]` |
-| `journal verify` | `replay-open` + DAG de revisiones + `verify` | lo de `stores verify` más el DAG |
 
 Unas cabezas exactamente una transacción por detrás del log son indistinguibles de un
 escritor muerto (§7): se informan como `:uncommitted-tail`, no como error.
@@ -181,8 +180,8 @@ que muere ahí deja una última línea (entera o cortada) que las cabezas no reg
 regla pura `store/log-tail` la clasifica: `:clean` (el log termina en la cabeza),
 `:uncommitted` (la última línea no está registrada pero la anterior es la cabeza, o es
 la única y no hay cabezas: nunca fue un commit) o `:inconsistent` (cualquier otra cosa).
-`open` y `replay-open` la ignoran (abren en las cabezas registradas); `stores verify`,
-`stores check` y `journal verify` la informan como `:uncommitted-tail` sin fallar; el
+`open` y `replay-open` la ignoran (abren en las cabezas registradas); `stores verify` y
+`stores check` la informan como `:uncommitted-tail` sin fallar; el
 siguiente commit la descarta (trunca) bajo el lock antes de agregar. Un log
 `:inconsistent` hace que el siguiente commit falle con `store/error` sin escribir nada.
 No hay `fsync`: está cubierta la muerte del proceso, no un corte de energía.
@@ -212,7 +211,7 @@ Store real (copia de 1.551 documentos, migrada al formato 2 en 77,6 s):
 
 El store formato 2 ocupa 364 MB **en disco real** (no aparentes) porque 80.435 de sus 82.787
 objetos pesan menos de 4 KB y cada uno ocupa un bloque: la meta de 150 MB no se cumple en disco.
-El arreglo es empaquetar los objetos pequeños (packfiles al estilo git, `12 §1`).
+El arreglo sería empaquetar los objetos pequeños (packfiles al estilo git): se probó (`K4`) y se retiró; vive en el historial git.
 
 `docs show` lee 1.923 de 82.755 objetos (2,3 %): 1.552 descriptores (el índice de
 nombres), 276 nodos mmap, 53 objetos de árbol, 38 nodos y 4 aristas.
@@ -277,7 +276,7 @@ Qué cambia:
 5. **Una revisión por `include build`** (§11): todos los modelos y documentos declarados
    componen UN `TransactionPlan` (`kimun.kernel.plan/compose-plans`) y un solo `commit!`.
    `stores update` también compone en **UNA revisión** los `update-plan` de todos los documentos
-   que repara (el journal de esa revisión lleva `:documents`, con los campos que cambió cada uno).
+   que repara.
 
 Para un store `:git :ignore` el camino es `include build --rebuild`, que reconstruye el
 store desde los archivos y descarta las copias verbatim.
@@ -541,195 +540,3 @@ cabeceras resultantes con `heads.edn`.
 - Las hojas son entradas por documento; los **campos** trackeados como hojas (`14 §20`) no
   están: dependen de K1.
 - La ruta sigue siendo localizador, no identidad; nada aquí decide qué es un archivo movido.
-
-### 11.3 Inventario de objetos no alcanzables (K5, primer corte)
-
-`§5` y `§7` dicen que en `objects/` quedan objetos sin referencia y que ningún comando los
-informa. Desde este corte los informa `kimun stores unreachable`
-(`kimun.kernel.store/unreachable`). **Es solo un inventario: no escribe, no borra, y no existe
-todavía un comando que borre.**
-
-**Alcance exacto.**
-
-- **Guardado:** todo id bajo `objects/`. El caché derivado (`cache/`) no se mira.
-- **Alcanzado:** `store/reachable`, el mismo recorrido que rehashea `stores verify`: la revisión
-  de cabecera y **toda su historia** (`:parents`), las cabeceras por árbol y el mapa de rutas que
-  nombran las cabeceras. No hay política de retención: nada de la historia se considera
-  prescindible.
-- **No alcanzable** = guardado y no alcanzado. Cada uno se lee del store mismo (nunca del caché),
-  se rehashea y cae en una de dos listas:
-
-| lista | qué es | qué se puede decir |
-|---|---|---|
-| `:damaged` | no hashea a su nombre, o no se puede leer | su clase no es confiable: solo se informa |
-| `:candidates` | el resto, con su clase por forma y `:root?` | nada conocido lo necesita **en el momento del inventario** |
-
-**Clases** (por forma, `store/object-class`): `revision`, `mmap-leaf`, `mmap-branch`, `route-node`, `descriptor`, `node`, `edge`, `tree-object`,
-`unknown`. La clase dice qué es el objeto, no por qué quedó ahí.
-
-**Qué se puede leer de los candidatos sin adivinar.**
-
-- `:root?` — ningún otro objeto no alcanzable menciona su id. Son las raíces del mapa de
-  cabeceras o del mapa de rutas que un commit posterior reemplazó o que escribió un escritor
-  perdedor.
-- `:lost-revisions` — candidatos de clase `revision`: commits que no están en la historia de la
-  cabecera. Es la revisión de un escritor que perdió la carrera (`§7`) o la de la cola no
-  confirmada del log (`:uncommitted-tail`, que el inventario nombra). Una revisión perdida no es
-  raíz: la menciona el mapa de cabeceras que se escribió con ella.
-- Un store formato 4 con un solo escritor deja solo `mmap-*` y `route-*` (raíces reemplazadas).
-  Un store de esquema de rutas 1 deja un `route-map` por escritura que tocó rutas.
-
-**Lo que este corte no decide.**
-
-- **Un candidato no es basura comprobada.** Un escritor guarda sus objetos **antes** de mover
-  las cabeceras (`§7`); un inventario tomado durante un commit lista objetos que están por ser
-  alcanzados. Borrar exige el lock de escritura y volver a mirar; nada de eso está hecho.
-  `:stable?` dice si las cabeceras se movieron entre abrir y terminar el inventario; no
-  protege contra un escritor que todavía no las movió.
-- **Retención e historia:** qué revisiones antiguas se pueden soltar (pins, poda) es la
-  política del hito 8 de `02`; aquí toda la historia cuenta como alcanzada.
-- **El índice de nombres** de K5 no está en este corte.
-- **«Menciona»** es toda cadena con forma de id dentro del objeto: un superconjunto de sus
-  referencias. Puede marcar como no-raíz un objeto que nadie referencia de verdad; nunca al
-  revés.
-- No se miran referencias desde fuera del store (otro store enlazado, el índice derivado).
-  No se conoce ninguna que apunte a objetos de `objects/`; no está demostrado que no exista.
-
-**Comprobación de solidez** (`kimun.kernel.unreachable-test`): sobre una **copia** de un store,
-borrar todos los candidatos deja un store que abre en la misma cabecera, con las mismas rutas,
-que pasa `verify` y `verify-full` (el log sigue reproduciéndose) y acepta una escritura nueva.
-
-### 11.4 Packs de objetos pequeños (K4, primer corte)
-
-Un objeto suelto de menos de 4 KB ocupa un bloque entero: en un store real la
-mayoría son así y de ahí los 551 MB en bloques de §9. `stores pack` mueve los
-objetos pequeños a un pack; `stores unpack` los devuelve.
-
-```
-<dir>/packs/<name>.pack   "KMNPACK1"                                    8 B
-                          registro*: longitud (4, big-endian) + contenido UTF-8,
-                                     en orden estricto de id
-                          pie: "KMNPIDX1" (8) + número de registros (8)
-                               + SHA-256 del índice canónico (32)        48 B
-<dir>/packs/<name>.idx    índice canónico, 44 B por registro:
-                          id (32 binarios) + offset (8) + longitud (4)
-```
-
-- **El pack es store** (única copia de lo que contiene); el `.idx` es
-  **derivado** y el **pie es store**. El pack no escribe el id por registro: el
-  id es el SHA-256 del contenido.
-- **Empaquetar es explícito** y corre bajo el lock de escritura; nunca es parte
-  de un commit. Solo objetos sueltos con tamaño `< --max-bytes` (por defecto
-  4096, tope 16 MiB). Un suelto cuyo contenido no hashea a su nombre **no** se
-  empaqueta: queda suelto y se informa (`:skipped-damaged`).
-- **Carga**: se usa el `.idx` cuando su tamaño y su SHA-256 coinciden con el
-  pie (sin rehashear contenidos); si no, se reconstruye **una vez por instancia
-  de backend, en memoria, y no se escribe nada**: un lector no modifica el store
-  (`stores sense` y `stores heartbeat` prometen no escribir). Si el índice
-  reconstruido tampoco coincide con el pie, el pack o el pie están dañados:
-  `:store/corrupt-pack`; la recuperación es `stores unpack`, que lee solo el pack
-  e ignora el índice y el pie. Mientras nadie repare el `.idx`, **cada comando
-  vuelve a recorrer el pack**: 2,66 s para un pack de 14,8 MB en el store de
-  banco. La reparación es explícita: `stores pack` reescribe el `.idx` que falte
-  o no coincida (`:indexes-repaired`), aunque no haya nada que empaquetar.
-- **Lectura**: búsqueda binaria sobre los bytes del índice (los ids están
-  ordenados); el rango se valida contra el cuerpo del pack antes de reservar
-  memoria; **no hay hash por lectura** y un fallo no se reintenta. Un registro
-  dañado dentro del pack se lee tal cual y `verify` lo informa como
-  `:hash-mismatch`, igual que un suelto dañado.
-- **Frescura para un lector vivo**: un backend recuerda la fecha de modificación
-  de `packs/` y relista solo si cambió. Como esa fecha puede tener granularidad
-  de un segundo, un sello igual solo se cree cuando tiene más de 2 s: durante
-  los 2 s siguientes a un `pack`/`unpack` el directorio se lista en cada lectura.
-  Un pack que desaparece entre la búsqueda y la lectura (otro proceso hizo
-  `unpack`) se resuelve leyendo el suelto.
-- **Vuelta atrás**: `stores unpack` escribe cada objeto que falte, reemplaza un
-  suelto dañado aunque tenga el mismo tamaño, comprueba que todos están y solo
-  entonces borra `.pack` y `.idx`.
-- Formato del store: sigue en **4** (empaquetar no cambia ids, revisiones ni
-  cabeceras). Un binario anterior a K4 **no lee** un store empaquetado: no
-  encuentra los objetos que están en el pack y falla al abrir
-  (`store/corrupt-head`, `:missing`). `stores unpack` con un binario que conozca
-  los packs lo deja legible otra vez.
-- **Durabilidad**: se fuerza el fichero del pack (`force`) y, tras el `move`, el
-  directorio `packs/` **antes** de borrar los sueltos (mejor esfuerzo: algunas
-  plataformas no lo admiten). No se fuerza `objects/` al escribir un objeto, ni
-  el directorio del store: la garantía es «el pack y su entrada existen antes de
-  perder la otra copia», no un `fsync` completo del sistema de ficheros.
-- **Recuperación**: `unpack` lee solo el pack, pero necesita su **armazón**
-  intacto (magia `KMNPACK1`, longitud de cada registro, magia y cuenta del pie).
-  Un pack truncado a mitad de registro no se recupera por partes.
-
-Medido en un store sintético de 600 documentos (`runs/subagents/2026-11-15-K4/measurement.md`):
-`.kimun` en bloques **204,6 → 145,6 MB (−28,8 %)**; `objects/` en bloques
-151,7 → 77,1 MB; `docs list` 0,72–0,73 → 0,84–0,86 s (**×1,16**); `stores verify`
-75,7 → 77,5 s (+2,4 %); `stores pack` 4,54 s, `stores unpack` 7,5 s; `objects/`
-byte-idéntico tras `unpack`.
-
-El ×1,16 de `docs list` (unos 0,12 s) corresponde a sus 4.198 lecturas de pack
-(de 4.202 lecturas de objeto), unos 29 µs por lectura. De eso, abrir, leer y
-cerrar el `.pack` son unos 4 µs medidos aparte —no se cachea el canal: un
-backend por latido de `stores heartbeat` filtraría un descriptor por pack—; el
-resto (el `stat` de frescura del directorio y la búsqueda binaria, que corre
-interpretada) **no está desglosado**. El sobrecoste
-grande que hubo primero (×1,55) **no** era eso: era la conversión del id en cada
-búsqueda, un bucle interpretado de 32 pasos (~52 µs por id, 217 ms por comando),
-que `java.util.HexFormat` deja en ~1 µs; lo mismo bajó `stores pack` de 12,3 s a
-4,54 s. La lectura empaquetada **no** cuesta lo mismo que la suelta, y el factor
-está medido en un solo store de 600 documentos: no hay medición a otra escala.
-
-**Límites de este corte.** `cache/` **no se empaqueta** y es la mayor parte de
-los ficheros pequeños del formato 4 (aquí 12.344 ficheros, **36 % de los bloques
-del store empaquetado**), así que el objetivo de bloques de §9 no se alcanza con
-packs solo. No hay reempaquetado ni GC: un objeto empaquetado que
-deja de ser alcanzable sigue en el pack y solo `unpack` + otro `pack` lo
-reordena. La durabilidad es la del punto de arriba y no más: no hay `fsync` de
-`objects/` ni del directorio del store.
-### 11.5 Pack de la caché (K4b)
-
-`cache/objects` es la mayor parte de los ficheros pequeños del formato 4; K4
-empaquetó el store y dejó la caché aparte. `stores pack --cache` empaqueta la
-caché con el **mismo formato** que K4 (magia, registros, pie con cuenta y
-digest), pero bajo `cache/packs/`: `rm -rf cache/` lo borra todo.
-
-**Qué es store y qué es caché.** El pack de `packs/` es store (única copia,
-`verify` lo rehashea). El de `cache/packs` es **caché**: derivado, borrable y
-recalculable desde el archivo. `object-ids`, `read-stored-object`, `verify`,
-`verify-full`, `unreachable`, `stored-size`, `pack-stats` y `unpack!` **no
-conocen** el pack de caché.
-
-**Orden de lectura** de un objeto (`FsBackend/read-object`): suelto de store →
-packs de store → suelto de caché (verificado) → **pack de caché (verificado)** →
-plan. **Toda lectura del pack de caché se verifica por hash**: si el SHA-256 de
-los bytes no es el id pedido, es fallo de caché (`nil`), aunque el pie y el
-`.idx` sean válidos; eso cubre bytes corruptos con índice bueno.
-
-**Un lector no escribe ni falla por la caché.** Un pack de caché cuyo `.idx`
-falte o no coincida con el pie, o cuyos registros no deriven el pie, se **ignora
-en memoria** para esa instancia de backend: no se recorre el pack para
-reconstruir el índice, no se renombra ni se borra, y no hay error. Es caché fría
-y `doc-tree` reconstruye del archivo (C2). `stores check` lo nombra con el
-warning `cache/corrupt-pack` (nunca exit 5). El estado de los packs cargados
-vive en el `FsBackend` (átomos propios, sello del directorio con asentamiento de
-2 s); `kimun.host.store-cache` y `kimun.surface.docs` no cambian.
-
-**El comando.** `stores pack --cache [--max-bytes N]`, bajo el lock del store:
-descarta los packs de caché que no cargan (`:dropped-packs`), reescribe el
-`.idx` de los sanos que lo tienen mal (`:indexes-repaired`), **borra** el suelto
-de caché que no hashea a su nombre (`:dropped-damaged`), borra el suelto que ya
-está en un pack (`:deduplicated`) y empaqueta el resto en streaming, un objeto
-en memoria a la vez. No hay `unpack --cache`: la caché se recupera borrándola.
-
-Medido sobre una copia del store de banco de 600 documentos con el store ya
-empaquetado (`runs/subagents/2026-11-15-K4b/measurement.md`): `.kimun` en
-bloques **143,7 → 101,8 MB (−29,2 %)**; ficheros del store **12.953 → 1.839**;
-`cache/objects` baja de 12.344 ficheros a 0; `stores pack --cache` tarda 1,09 s
-(11.116 objetos, pack 3,1 MB + índice 0,5 MB); `docs render`/`docs show` quedan
-en 0,54–0,58 s y `docs list` en 1,01 s, igual que con la caché suelta.
-
-**Límites.** Un pack de caché sin `.idx` es caché fría hasta el siguiente
-`stores pack --cache` (un lector no lo reconstruye). No hay reempaquetado ni GC:
-un objeto de caché que deja de usarse sigue en el pack hasta que se borre
-`cache/`. Un duplicado suelto convive sin daño hasta la siguiente corrida del
-comando.
-

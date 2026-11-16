@@ -6,6 +6,7 @@
             [clojure.edn :as edn]
             [clojure.string :as str]
             [babashka.fs :as fs]
+            [kimun.cli.errors :as errors]
             [kimun.cli.main :as main]
             [kimun.cli.store :as cli-store]
             [kimun.kernel.revision :as revision]
@@ -279,7 +280,7 @@
   (let [e (run (tmp) "stores" "nope")]
     (is (= 6 (:exit e)))
     (is (= "cli/usage" (get-in e [:error :type])))
-    (is (= ["changed" "check" "health" "heartbeat" "init" "link" "links" "pack" "reconcile" "seen" "sense" "show" "unlink" "unpack" "unreachable" "update" "verify"] (get-in e [:error :data :known])))))
+    (is (= ["changed" "check" "health" "heartbeat" "init" "link" "links" "reconcile" "seen" "sense" "show" "unlink" "update" "verify"] (get-in e [:error :data :known])))))
 
 ;; ------------------------------------------------------------------ federation
 
@@ -537,3 +538,59 @@
     (is (= "target" (get-in e [:store :name])))
     (is (= ["req-123"] (mapv :name (get-in (run target "docs" "list") [:data]))))
     (is (empty? (get-in (run central "docs" "list") [:data])) "nothing tracked in the central store")))
+
+;; The limit of `stores verify`, as it is today: it answers for what the head reaches.
+;; A route map a later write replaced is still a file under objects/ and nothing
+;; reaches it, so damage to it is not reported.
+(deftest verify-does-not-answer-for-a-superseded-route-map
+  (let [proj (tmp)
+        heads #(edn/read-string (slurp (str (fs/path proj ".kimun" "heads.edn"))))]
+    (run proj "stores" "init" "--name" "p")
+    (spit (str (fs/path proj "doc.md")) "# T\n\npara one\n")
+    (run proj "docs" "ingest" "doc.md")
+    (let [superseded (:routes-object (heads))
+          victim (str (fs/path proj ".kimun" "objects" superseded))]
+      (spit (str (fs/path proj "doc.md")) "# T\n\npara two\n")
+      (run proj "docs" "update" "doc.md" "--name" "doc")
+      (is (string? superseded))
+      (is (not= superseded (:routes-object (heads))) "the update wrote a new route map")
+      (is (fs/exists? victim) "the old one is still on disk")
+      (spit victim (str (slurp victim) " tampered"))
+      (is (true? (:ok (run proj "stores" "verify")))))))
+
+;; Two writers that opened the same heads: the loser is store/stale (exit 4), wrote
+;; no log line, and the store stays readable; a writer dead mid-commit is reported.
+(deftest a-losing-writer-is-stale-and-leaves-the-store-readable
+  (let [proj (tmp)
+        _ (run proj "stores" "init" "--name" "p")
+        _ (spit (str (fs/path proj "doc.md")) "# T\n\npara one\n")
+        _ (run proj "docs" "ingest" "doc.md")
+        dir (str (fs/path proj ".kimun"))
+        a (cli-store/open! dir)
+        b (cli-store/open! dir)
+        plan (fn [s i]
+               {:plan/version 1 :engines {} :base (:head s) :actor "human/tester" :timestamp "2026-08-29T12:00:00.000Z"
+                :ops [{:op :add-node :node {:class :sign :kind :block :content {:format :markdown :type :document :attrs {:name (str "w" i)}}} :as :r}
+                      {:op :new-tree :tree {:kind :document :name (str "w" i)} :id (str "01ARZ3NDEKTSV4RRFFQ69G000" i) :root :r}]})
+        _ (store/commit! (:backend a) (:store a) (plan (:store a) 1))
+        log-before (slurp (str (fs/path dir "log.edn")))
+        e (try (store/commit! (:backend b) (:store b) (plan (:store b) 2)) nil
+               (catch clojure.lang.ExceptionInfo e (ex-data e)))]
+    (is (= :store/stale (:type e)))
+    (is (= 4 (errors/exit-for (:type e))))
+    (is (= log-before (slurp (str (fs/path dir "log.edn")))) "no line from the loser")
+    (is (true? (:ok (run proj "stores" "verify"))))
+    (testing "the retry on a fresh open! succeeds, and the CLI keeps writing"
+      (let [c (cli-store/open! dir)]
+        (store/commit! (:backend c) (:store c) (plan (:store c) 2)))
+      (spit (str (fs/path proj "doc.md")) "# T\n\npara after the race\n")
+      (is (true? (:ok (run proj "docs" "update" "doc.md" "--name" "doc"))))
+      (is (true? (:ok (run proj "stores" "verify")))))
+    (testing "a line left by a writer that died before recording its heads is reported, not fatal"
+      (let [lines (count (store/read-log (:backend a)))]
+        (spit (str (fs/path dir "log.edn")) "{:id \"dead\" :plan" :append true)
+        (is (= {:torn-line (inc lines)} (get-in (run proj "stores" "verify") [:data :uncommitted-tail])))
+        (spit (str (fs/path proj "doc.md")) "# T\n\npara after the crash\n")
+        (is (true? (:ok (run proj "docs" "update" "doc.md" "--name" "doc"))) "the next commit discards it")
+        (is (= (inc lines) (count (store/read-log (:backend a)))))
+        (is (nil? (get-in (run proj "stores" "verify") [:data :uncommitted-tail])))))))

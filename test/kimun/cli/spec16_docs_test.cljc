@@ -160,7 +160,7 @@
         unexpected? (fn [e] (= "cli/unexpected" (get-in e [:error :type])))
         reads [["stores" "sense" "--once"] ["stores" "health"] ["stores" "check"] ["stores" "verify"] ["stores" "update"]
                ["find" "Hello"] ["fields" "get" "r" "title"] ["sections" "list" "r"] ["docs" "anchors" "r"]
-               ["docs" "marks" "r"] ["journal" "show"] ["docs" "list"] ["docs" "show" "r"] ["docs" "status"] ["models" "check"]]
+               ["docs" "marks" "r"] ["docs" "list"] ["docs" "show" "r"] ["models" "check"]]
         refused [["fields" "set" "r" "title" "\"X\""] ["sections" "fields" "r" "summary"]
                  ["docs" "create" "ReportDoc" "z" "--set" "title=a"]]]
     (testing "the readers and sensors answer"

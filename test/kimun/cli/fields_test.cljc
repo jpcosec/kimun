@@ -40,7 +40,6 @@
 
 (defn- value [p & target] (get-in (apply fields p "get" target) [:data :value]))
 (defn- head [p] (:revision (run p "docs" "list")))
-(defn- journal [p] (:data (run p "journal" "show")))
 
 (deftest v1-update-append-and-clean
   ;; v1: test_fields_update_append_and_clean
@@ -54,7 +53,6 @@
     (is (= ["Ship CLI" "Write docs"] (get-in (fields p "show" "docs/RoadmapDoc/roadmap/tasks") [:data :value])) "docs/Model/doc/field")
     (testing "the file is the document"
       (is (str/includes? (slurp (file p "roadmap.md")) "Status: accepted"))
-      (is (= ["ok"] (mapv (comp name :status) (:data (run p "docs" "status")))))
       (is (true? (:ok (run p "stores" "verify")))))
     (testing "v1 update refuses an absent field, v1 create (= set) makes it"
       (is (= 1 (:exit (fields p "update" "docs/roadmap/extra" "x"))))
@@ -146,8 +144,8 @@
 
 (deftest a-refused-mutation-leaves-store-and-file-untouched
   (let [p (project)
-        before-head (head p) before-file (slurp (file p "roadmap.md")) before-journal (count (journal p))
-        untouched? #(and (= before-head (head p)) (= before-file (slurp (file p "roadmap.md"))) (= before-journal (count (journal p))))]
+        before-head (head p) before-file (slurp (file p "roadmap.md"))
+        untouched? #(and (= before-head (head p)) (= before-file (slurp (file p "roadmap.md"))))]
     (doseq [[why e exit] [["a required field removed" (fields p "unset" "roadmap" "title") 3]
                           ["a value that does not read back" (fields p "set" "roadmap" "tasks" "[\"one\\n- two\"]") 3]
                           ["a wrong type" (fields p "set" "roadmap" "tasks" "{a: 1}") 3]
@@ -159,21 +157,19 @@
     (is (= "fields/not-roundtrip" (get-in (fields p "set" "roadmap" "tasks" "[\"one\\n- two\"]") [:error :type])))
     (is (= "draft" (value p "roadmap" "status")))))
 
-(deftest the-journal-names-operation-address-and-field
-  (let [p (project)]
-    (fields p "update" "docs/roadmap/status" "accepted")
-    (fields p "append" "roadmap" "tasks" "Third")
-    (fields p "remove" "docs/roadmap/tasks/0")
-    (let [[unset append set-status] (journal p)]
-      (is (= {:operation "fields set" :address "RoadmapDoc:roadmap" :actor "human/tester"
-              :fields {"status" {:before "draft" :after "accepted"}}}
-             (select-keys set-status [:operation :address :actor :fields])))
-      (is (= {:operation "fields append" :address "RoadmapDoc:roadmap"
-              :fields {"tasks" {:before ["Ship CLI" "Write docs"] :after ["Ship CLI" "Write docs" "Third"]}}}
-             (select-keys append [:operation :address :fields])))
-      (is (= "fields unset" (:operation unset)) "v1's `remove` is journaled under the kimun name")
-      (is (= ["tasks"] (keys (:fields unset)))))
-    (is (true? (:ok (run p "journal" "verify"))))))
+(deftest a-mutation-names-operation-address-and-field
+  (let [p (project)
+        set-status (:data (fields p "update" "docs/roadmap/status" "accepted"))
+        append (:data (fields p "append" "roadmap" "tasks" "Third"))
+        unset (:data (fields p "remove" "docs/roadmap/tasks/0"))]
+    (is (= {:operation "fields set" :address "RoadmapDoc:roadmap" :field "status" :before "draft" :after "accepted"}
+           (select-keys set-status [:operation :address :field :before :after])))
+    (is (= {:operation "fields append" :address "RoadmapDoc:roadmap" :field "tasks"
+            :before ["Ship CLI" "Write docs"] :after ["Ship CLI" "Write docs" "Third"]}
+           (select-keys append [:operation :address :field :before :after])))
+    (is (= "fields unset" (:operation unset)) "v1's `remove` is named by the kimun name")
+    (is (= "tasks" (:field unset)))
+    (is (true? (:ok (run p "stores" "verify"))))))
 
 (deftest a-mutation-renders-with-the-composition-context
   ;; A composed field (`⸢render•summary⸥`) is expanded from the refs of the payload, resolved

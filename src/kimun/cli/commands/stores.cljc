@@ -1,14 +1,13 @@
 (ns kimun.cli.commands.stores
   "The `kimun stores` group (docs/v2/06 §3): `init`, `check`, `health`,
-   `sense`, `changed`, `heartbeat`, `update`, `reconcile`, `verify`, `unreachable`, `pack`,
-   `unpack`, `show`, and the federation commands `link`, `unlink` and
+   `sense`, `changed`, `heartbeat`, `update`, `reconcile`, `verify`,
+   `show`, and the federation commands `link`, `unlink` and
    `links`. Every
    command is `(fn [args opts ctx] envelope)` where `args` are the positional
    tokens after the subcommand and `ctx` is `{:env env :cwd cwd}`; `dispatch`
    routes a subcommand name."
   (:require [babashka.fs :as fs]
             [cheshire.core :as json]
-            [clojure.edn :as edn]
             [clojure.string :as str]
             [kimun.cli.commands.docs :as docs]
             [kimun.cli.compose :as compose]
@@ -23,7 +22,6 @@
             [kimun.surface.heartbeat :as heartbeat]
             [kimun.surface.signals :as signals]
             [kimun.host.default :as host]
-            [kimun.host.fs-store :as fs-store]
             [kimun.kernel.err :as err]
             [kimun.kernel.ports :as ports]
             [kimun.kernel.plan :as plan]
@@ -135,7 +133,7 @@
    store that is not valid (anything beyond `:ok` and `:reformatted`) is the
    failure `store/invalid`, exit 5, carrying the same data plus `:warnings`."
   [_args opts {:keys [env cwd]}]
-  (let [{:keys [descriptor store path backend] :as opened} (cli-store/open! (cli-store/resolve-store opts env cwd))
+  (let [{:keys [descriptor store path] :as opened} (cli-store/open! (cli-store/resolve-store opts env cwd))
         link-report (cli-store/links path)
         report (diagnose opened)
         ;; what the route root does not cover; unreadable when the store is damaged (reported below)
@@ -181,16 +179,7 @@
                                     " — a path that leaves the project cannot be a route, so the route root does not cover them;"
                                     " they are still tracked and sensed")
                       :documents (mapv #(select-keys % [:name :qualified]) (:outside coverage))}])
-          ;; a cache pack this reader ignored: the cache is not the store, so it is
-          ;; a warning, never a failure (docs/v2/10 §11.5)
-          bad-cache-packs (when backend (fs-store/cache-bad-packs backend))
-          cache-warnings (when (seq bad-cache-packs)
-                           [{:type "cache/corrupt-pack"
-                             :message (str (count bad-cache-packs) " cache pack(s) cannot be read and are ignored (cold cache): "
-                                           (str/join ", " bad-cache-packs) " — `kimun stores pack --cache` drops them")
-                             :packs bad-cache-packs}])
           warnings (-> (mapv link-warning (remove #(= :ok (:status %)) link-report))
-                       (into cache-warnings)
                        (into partial)
                        (into shared)
                        (into outside)
@@ -382,16 +371,6 @@
                              :data (assoc (diag/health report) :summary (:summary report) :scope scope)
                              :warnings (mapv finding-warning (:findings report))})))
 
-(defn- update-meta
-  "The `kimun/meta` of a composed `stores update` revision: one entry per
-   repaired document (`:address` and `:fields` changed), so the journal keeps
-   naming what moved even though the whole repair is one transaction."
-  [metas]
-  {:operation "stores update"
-   :address (str (count metas) " documents")
-   :fields {}
-   :documents (mapv #(select-keys % [:address :fields]) metas)})
-
 (defn update-store
   "`stores update`: applies every repair that needs no decision — re-reads the
    documents whose file was only reformatted and moves those whose model's
@@ -400,8 +379,7 @@
    stored apart from its content, so updating means committing the new source).
    Every repaired document's `update-plan` is computed in memory on the state
    the previous one leaves and all of them compose into ONE revision
-   (`kimun.kernel.plan/compose-plans`, S1b step 2) committed once; the journal
-   entry carries `:documents` with the fields each one changed. Findings that
+   (`kimun.kernel.plan/compose-plans`, S1b step 2) committed once. Findings that
    need a human are left alone and listed. Data:
    `{:updated [name] :skipped [{:document :category :action}] :status}`."
   [_args opts {:keys [env cwd]}]
@@ -412,18 +390,16 @@
         findings (:findings (diagnose opened))
         safe (filter (comp diag/safe :category) findings)
         ts (docs/timestamp)
-        {:keys [final plans metas warnings]}
-        (reduce (fn [{:keys [final plans metas] :as acc} f]
+        {:keys [final plans warnings]}
+        (reduce (fn [{:keys [final plans] :as acc} f]
                   (if (:generic f)
                     ;; a document without a model (K3): its file is registered again as it is
                     (let [doc (tdocs/generic-document final (:tree f))
                           {:keys [plan]} (tdocs/generic-update-plan host/host final doc (read-file (:path doc))
-                                                                    {:actor (:actor opts) :timestamp ts :operation "stores update"})
-                          meta (when plan (edn/read-string (get-in plan [:engines tdocs/meta-key])))]
+                                                                    {:actor (:actor opts) :timestamp ts})]
                       (-> acc
                           (assoc :final (if plan (:store (revision/apply-plan final plan)) final))
-                          (cond-> plan (update :plans conj plan))
-                          (cond-> meta (update :metas conj meta))))
+                          (cond-> plan (update :plans conj plan))))
                   (let [doc (tdocs/document final (or (:tree f) (:document f)))
                         ;; only a redefined model asks for the text to be re-rendered; when the
                         ;; parser moved (K6) the file is already right and is only registered again
@@ -433,9 +409,8 @@
                                (or (some-> (:path doc) read-file) (:source doc)))
                         {:keys [plan]} (tdocs/update-plan host/host final (or (:tree f) (:document f)) text
                                                           {:mint (fn [] (ports/ulid (:ids host/host)))
-                                                           :actor (:actor opts) :timestamp ts :operation "stores update"})
+                                                           :actor (:actor opts) :timestamp ts})
                         st (if plan (:store (revision/apply-plan final plan)) final)
-                        meta (when plan (edn/read-string (get-in plan [:engines tdocs/meta-key])))
                         w (if (and plan moved? (:path doc))
                             (try (spit (str (fs/path root (:path doc))) text) nil
                                  (catch Exception e [{:type "docs/file-not-written"
@@ -444,15 +419,13 @@
                     (-> acc
                         (assoc :final st)
                         (cond-> plan (update :plans conj plan))
-                        (cond-> meta (update :metas conj meta))
                         (update :warnings into w)))))
-                {:final base :plans [] :metas [] :warnings []}
+                {:final base :plans [] :warnings []}
                 safe)
         composed (when (seq plans)
                    (plan/compose-plans plans
                                        {:base (:head base) :actor (:actor opts) :timestamp ts
-                                        :engines {"kimun.surface.docs" "1"
-                                                  tdocs/meta-key (pr-str (update-meta metas))}}))
+                                        :engines {"kimun.surface.docs" "1"}}))
         final (if composed (:store (store/commit! backend base composed)) final)
         after (diag/report final read-file)]
     (out/ok "stores update" {:store (store-ref descriptor path)
@@ -514,160 +487,6 @@
                      (str "the log does not replay in " path ": " (:message f))
                      (str (count bad) " problem(s) in " path " (objects that do not hash to their name, or a log that does not end at the heads)"))
                    {:checked checked :bad bad :path path}
-                   5))))
-
-(defn- tally
-  "`{:count n :bytes n :by-class {class {:count n :bytes n}}}` of `items`
-   (`{:id :class}`), with the stored size of each object (`fs-store/stored-size`:
-   a loose file or its length inside a pack)."
-  [backend items]
-  (let [size (fn [i] (long (or (fs-store/stored-size backend (:id i)) 0)))
-        sized (map #(assoc % :bytes (size %)) items)
-        total (fn [xs] {:count (count xs) :bytes (reduce + 0 (map :bytes xs))})]
-    (assoc (total sized)
-           :by-class (into (sorted-map)
-                           (map (fn [[c xs]] [(name c) (total xs)]))
-                           (group-by :class sized)))))
-
-(def unreachable-note
-  "What every `stores unreachable` answer says of itself, so that the report
-   is not read as a list of garbage."
-  "inventory only: nothing was written or removed. A candidate is an object the heads did not reach when the inventory was taken; it is not known to be safe to remove (a writer stores its objects before it moves the heads).")
-
-(defn unreachable
-  "`stores unreachable [--ids]`: the inventory of the objects under objects/
-   that the heads do not reach (`kimun.kernel.store/unreachable`; docs/v2/10
-   §11.3). Read-only: it writes nothing and removes nothing; there is no
-   command that removes them. Data:
-
-   - `:note`: `unreachable-note`, the same sentence in every answer.
-   - `:stored`, `:reached`, `:unreachable`: object counts (`:stored` is what
-     `stores check` reports as `:objects`).
-   - `:candidates` `{:count :bytes :by-class}`: unreachable objects nothing is
-     known to need, by shape; `:roots` the same for those no other unreachable
-     object mentions (roots of the heads map and of the route map that a later
-     commit replaced or that a losing writer wrote).
-   - `:lost-revisions` `[id]`: candidates that are revisions, i.e. commits that
-     are not in the history of the head (a writer that lost the race, or the
-     uncommitted tail).
-   - `:damaged` `[{:id :reason}]`: unreachable objects that do not hash to
-     their name or do not read; only reported.
-   - `:stable?`: false when the heads moved while the inventory was taken.
-   - `:uncommitted-tail` when the log ends with a line the heads do not record.
-   - with `--ids`, `:ids {:candidates [{:id :class :root? :bytes}]}`.
-
-   Bytes are file sizes, not disk blocks. A candidate is not known to be
-   garbage: a writer stores its objects before it moves the heads, so an
-   inventory taken during a commit lists objects about to be reached. Warning
-   `unreachable/unstable` when `:stable?` is false."
-  [_args opts {:keys [env cwd]}]
-  (let [{:keys [backend descriptor store path]} (cli-store/open! (cli-store/resolve-store opts env cwd))
-        r (store/unreachable backend store)
-        size (fn [i] (assoc i :bytes (long (or (fs-store/stored-size backend (:id i)) 0))))
-        tail (:uncommitted-tail r)]
-    (out/ok "stores unreachable"
-            {:store (store-ref descriptor path)
-             :revision (:head store)
-             :data (cond-> {:path path
-                            :note unreachable-note
-                            :stored (:stored r) :reached (:reached r) :unreachable (:unreachable r)
-                            :candidates (tally backend (:candidates r))
-                            :roots (tally backend (filter :root? (:candidates r)))
-                            :lost-revisions (mapv :id (filter #(= :revision (:class %)) (:candidates r)))
-                            :damaged (:damaged r)
-                            :stable? (:stable? r)}
-                     tail (assoc :uncommitted-tail (select-keys tail [:id :revision :torn-line]))
-                     (:ids opts) (assoc :ids {:candidates (mapv size (:candidates r))}))
-             :warnings (if (:stable? r)
-                         []
-                         [{:type "unreachable/unstable"
-                           :message "the heads moved while the inventory was taken; run it again"}])})))
-
-(def ^:private max-pack-bytes
-  "The largest `stores pack --max-bytes` accepts: a pack record is held in
-   memory while it is written, so the option has a ceiling."
-  16777216)
-
-(defn- checked-max-bytes
-  "`--max-bytes` as a long in [1, max-pack-bytes], or nil when it was not given;
-   anything else is `:cli/usage`."
-  [opts]
-  (when-let [v (:max-bytes opts)]
-    (let [n (try (parse-long (str v)) (catch Exception _ nil))
-          bad (fn [why]
-                (err/raise :cli/usage
-                           (str "`stores pack --max-bytes` " why ", got `" v "`")
-                           {:group "stores" :subcommand "pack" :option "max-bytes" :value v}))]
-      (cond (nil? n) (bad "needs an integer")
-            (< n 1) (bad "needs a positive integer")
-            (> n max-pack-bytes) (bad (str "is at most " max-pack-bytes " (16 MiB)"))
-            :else n))))
-
-(defn pack
-  "`stores pack [--max-bytes N] [--cache]`: moves the loose objects smaller than
-   N bytes (default 4096) into a new pack and removes the loose copies
-   (`kimun.host.fs-store/pack!`; docs/v2/10 §11.4 for the store, §11.5 for the
-   cache). Explicit and never part of a commit. `--cache`
-   packs the DERIVED cache (`cache/objects` → `cache/packs`), which is not the
-   store: it also drops the cache packs that cannot be loaded, deletes a loose
-   cache object that does not hash to its name and deletes a loose object a
-   cache pack already holds. Both scopes repair a missing or stale `.idx`
-   (readers never write), so `:indexes-repaired` can be positive with `:packed`
-   0. The store is verified after packing a store pack: a failure is
-   `store/corrupt` (exit 5) and the loose files are already gone (`stores unpack`
-   writes them back). Data: `{:path :scope :packed :pack :bytes :kept-loose
-   :skipped-damaged :dropped-damaged :deduplicated :dropped-packs :packs
-   :checked :indexes-repaired}`."
-  [_args opts {:keys [env cwd]}]
-  (let [path (cli-store/resolve-store opts env cwd)
-        {:keys [backend descriptor]} (cli-store/open! path)
-        max-bytes (checked-max-bytes opts)
-        cache? (:cache opts)
-        r (if cache?
-            (fs-store/pack-cache! backend (cond-> {} max-bytes (assoc :max-bytes max-bytes)))
-            (fs-store/pack! backend (cond-> {} max-bytes (assoc :max-bytes max-bytes))))
-        reopened (cli-store/open! path)
-        v (when-not cache? (store/verify (:backend reopened) (:store reopened)))]
-    (if (or cache? (:ok? v))
-      (out/ok "stores pack"
-              {:store (store-ref descriptor path)
-               :revision (:head (:store reopened))
-               :data (cond-> {:path path :scope (:scope r) :packed (:packed r) :pack (:pack r)
-                              :bytes (:bytes r) :kept-loose (:kept-loose r)
-                              :skipped-damaged (:skipped-damaged r)
-                              :dropped-damaged (:dropped-damaged r)
-                              :deduplicated (:deduplicated r)
-                              :dropped-packs (:dropped-packs r)
-                              :packs (if cache?
-                                       (:packs r)
-                                       (:packs (fs-store/pack-stats (:backend reopened))))
-                              :indexes-repaired (:indexes-repaired r)}
-                       (not cache?) (assoc :checked (:checked v)))})
-      (out/failure :store/corrupt
-                   (str (count (:bad v)) " problem(s) after packing " path
-                        "; the loose copies are already removed: run `stores unpack` to write them back")
-                   {:path path :pack (:pack r) :checked (:checked v) :bad (:bad v)}
-                   5))))
-
-(defn unpack
-  "`stores unpack`: writes every packed object back to `objects/` and removes the
-   pack (`kimun.host.fs-store/unpack!`; docs/v2/10 §11.4).
-   The store is verified after unpacking: a failure is `store/corrupt` (exit 5).
-   Data: `{:path :packs :unpacked :checked}`."
-  [_args opts {:keys [env cwd]}]
-  (let [path (cli-store/resolve-store opts env cwd)
-        {:keys [backend descriptor]} (cli-store/open! path)
-        r (fs-store/unpack! backend)
-        reopened (cli-store/open! path)
-        v (store/verify (:backend reopened) (:store reopened))]
-    (if (:ok? v)
-      (out/ok "stores unpack"
-              {:store (store-ref descriptor path)
-               :revision (:head (:store reopened))
-               :data {:path path :packs (:packs r) :unpacked (:unpacked r) :checked (:checked v)}})
-      (out/failure :store/corrupt
-                   (str (count (:bad v)) " problem(s) after unpacking " path)
-                   {:path path :checked (:checked v) :bad (:bad v)}
                    5))))
 
 (defn show
@@ -737,9 +556,6 @@
    :since {:ref "COMMIT" :desc "Commit to compare the working tree with (stores changed; default: the pointer). `stores seen --set COMMIT` reuses the shared --set option of docs"}
    :full {:desc "Open every tracked document instead of only what git says changed since the pointer (stores sense, health, heartbeat)" :coerce :boolean}
    :once {:desc "Make the single observation explicit (stores sense; no daemon)" :coerce :boolean}
-   :ids {:desc "List the id, class and bytes of every object (stores unreachable)" :coerce :boolean}
-   :max-bytes {:ref "N" :desc "Largest loose object, in bytes, that `stores pack` moves into a pack (default 4096, at most 16777216)"}
-   :cache {:desc "Pack the derived cache (cache/objects into cache/packs), not the store (stores pack)" :coerce :boolean}
    :interval {:ref "SECONDS" :desc "Seconds between observations, decimals allowed (stores heartbeat; default 30, minimum 0.1)"}
    :beats {:ref "N" :desc "Stop after N observations (stores heartbeat; default: until interrupted)"}})
 
@@ -747,7 +563,7 @@
   "Subcommand name → command fn."
   {"init" init "check" check "verify" verify "show" show
    "link" link "unlink" unlink "links" links
-   "unreachable" unreachable "pack" pack "unpack" unpack "health" health "sense" sense "changed" changed "seen" seen "heartbeat" heartbeat "update" update-store "reconcile" reconcile})
+   "health" health "sense" sense "changed" changed "seen" seen "heartbeat" heartbeat "update" update-store "reconcile" reconcile})
 
 (defn dispatch
   "Runs subcommand `sub` of the `stores` group (`args` are the positional tokens);

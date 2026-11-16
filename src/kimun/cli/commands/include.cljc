@@ -432,7 +432,7 @@
                                                                        :doc (or (:doc carried-ids) (ports/ulid (:ids h)))
                                                                        :tree-id (or (:tree carried-ids) (ports/ulid (:ids h)))
                                                                        :path rel
-                                                                       :actor actor :timestamp ts :operation "include build"
+                                                                       :actor actor :timestamp ts
                                                                        :inline inline})]
                                  (-> acc (update :plans conj plan) (update :names conj name)
                                      (update :paths conj rel)
@@ -453,15 +453,9 @@
         declared-models (set (map first (:models mres)))
         models-not-carried (vec (sort (remove declared-models (keys (get-in registry [:models :by-name])))))
         not-carried (vec (sort (remove declared (keys (:by-path registry)))))
-        operation (if (pos? carried)
-                    (str "include build (identities carried from " (:source registry) ")")
-                    "include build")
         merged (when (seq all)
                  (plan/compose-plans all {:base (:head store) :actor actor :timestamp ts
-                                          :engines {"kimun.surface.docs" "1"
-                                                    tdocs/meta-key (pr-str {:operation operation
-                                                                            :address (str (count (:names dres)) " documents")
-                                                                            :fields {}})}}))
+                                          :engines {"kimun.surface.docs" "1"}}))
         r (when merged (store/commit! backend store merged))]
     {:revision-id (:revision-id r)
      :models (- (count models) (count (:failed mres)))

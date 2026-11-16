@@ -35,7 +35,7 @@ Opciones globales (`kimun.cli.args`):
 
 Un primer token que no sea grupo conocido devuelve `eval/not-available` (exit 6) nombrando los grupos; el evaluador anclado no existe todavía (ver §6).
 
-Códigos de salida (`kimun.cli.errors`): 0 ok, 1 `missing`/`empty`, 2 `ambiguous`, 3 rechazo de entrada, 4 `conflict`/`stale`, 5 store/journal/serve (runtime), 6 uso, 70 inesperado. La tabla explícita:
+Códigos de salida (`kimun.cli.errors`): 0 ok, 1 `missing`/`empty`, 2 `ambiguous`, 3 rechazo de entrada, 4 `conflict`/`stale`, 5 store/serve (runtime), 6 uso, 70 inesperado. La tabla explícita:
 
 | exit | cuándo |
 |---|---|
@@ -44,7 +44,7 @@ Códigos de salida (`kimun.cli.errors`): 0 ok, 1 `missing`/`empty`, 2 `ambiguous
 | 2 | `*/ambiguous` |
 | 3 | namespaces `query` `models` `validate` `docs` `fields` `sections` `find` `graph` `edges` `semantic` `include` `links` `declare`; `:plan/rejected` salvo chequeo de capability |
 | 4 | `*/conflict`, `*/stale`, `plan/conflict`, `store/stale`, `store/busy` |
-| 5 | namespaces `store` `route` `markdown` `index` `journal` `serve`; `cli/no-store`, `cli/store-exists` |
+| 5 | namespaces `store` `route` `markdown` `index` `serve`; `cli/no-store`, `cli/store-exists` |
 | 6 | `cli/usage`, `org.babashka/cli`, `eval/not-available` |
 | 7 | `plan/rejected` con `{:check :capability}` |
 | 70 | cualquier otra cosa |
@@ -79,18 +79,15 @@ Layout de un store formato 4 (`kimun.kernel.store`; detalle en `10`):
 | subcomando | opciones | `:data` y notas |
 |---|---|---|
 | `stores init` | `--name NAME`, `--content by-reference\|inline` | `{:path :name :actor :capabilities}`; `--content inline` escribe `:content :inline` en `store.edn` (docs/v2/10 §10); falla `cli/store-exists` (5) si ya hay store |
-| `stores check` | — | `{:name :path :hash-alg :revisions :trees :objects :head :links}` + `:routes-root :route-count :routes-complete? :routes-missing :routes-shared :routes-outside` si hay documentos registrados con archivo (abajo, «Rutas») + `:documents` si hay findings; abre por replay; store inválido ⇒ `store/invalid` (5) | Warning `cache/corrupt-pack` cuando un pack de `cache/packs` no se puede cargar (se ignora; nunca exit 5).
+| `stores check` | — | `{:name :path :hash-alg :revisions :trees :objects :head :links}` + `:routes-root :route-count :routes-complete? :routes-missing :routes-shared :routes-outside` si hay documentos registrados con archivo (abajo, «Rutas») + `:documents` si hay findings; abre por replay; store inválido ⇒ `store/invalid` (5) |
 | `stores verify` | — | `{:checked :bad}`; verify-full (replay + hash); corrupción ⇒ `store/corrupt` (5) |
-| `stores unreachable` | `[--ids]` | inventario **read-only** de los objetos de `objects/` que las cabeceras no alcanzan (`10 §11.3`): `{:note :stored :reached :unreachable :candidates {:count :bytes :by-class} :roots {…} :lost-revisions [id] :damaged [{:id :reason}] :stable?}` + `:uncommitted-tail` si la hay; `--ids` agrega `:ids {:candidates [{:id :class :root? :bytes}]}`. No escribe ni borra nada; no existe comando que borre. Un candidato **no** es basura segura: `:note` lo dice en cada respuesta. Warning `unreachable/unstable` si las cabeceras se movieron durante el inventario |
-| `stores pack` | `[--max-bytes N] [--cache]` | mueve los objetos sueltos menores que N (defecto 4096, máximo 16 MiB) a `packs/<name>.pack` y borra los sueltos (`10 §11.4`): `{:path :packed :pack :bytes :kept-loose :skipped-damaged :packs :checked :indexes-repaired}`; `:indexes-repaired` cuenta los `.idx` que reescribió (lectores no escriben: un `.idx` ausente o raro se repara aquí, y puede ser 1 con `:packed` 0). Verifica después; un fallo es `store/corrupt` (5) y recuerda que los sueltos ya no están (`stores unpack`). `--cache` empaqueta la **caché derivada** (`cache/objects` → `cache/packs`; verifica por lectura, ignora en memoria un pack malo, borra sueltos dañados y duplicados) y nunca toca el store; `:scope` dice cuál. Solo formato 4; otro formato es `store/error` (5); `--max-bytes` inválido es `cli/usage` (6) |
-| `stores unpack` | — | escribe de vuelta cada objeto empaquetado y borra el pack: `{:path :packs :unpacked :checked}`; verifica después (`store/corrupt` 5 si falla). Solo formato 4 |
 | `stores show` | — | `{:name :path :hash-alg :links :head :capabilities}`; sin replay |
 | `stores health` | `[--full]` | `{:status :summary :findings :actions :next :scope}`; `ok \| degraded \| needs-human`. Igual que `sense`, abre solo los documentos que git reporta cambiados desde el puntero (ver `stores sense`); `--full` abre todos |
 | `stores sense` | `[--once] [--full]` | una observación read-only: `{:mode :once :observed-at :tracked :valid :signals :counts :summary :scope}`; con repositorio git con commits **y** puntero (`stores seen`) pregunta a git qué rutas cambiaron entre el puntero y el árbol de trabajo (lo no commiteado y lo no seguido incluidos; un renombre cuenta en la ruta vieja y en la nueva) y **solo abre y hashea esos documentos**: uno cuya ruta git no reporta cuenta como válido a nivel de archivo, y solo se le hacen las comprobaciones que salen del store (huérfano, contrato movido/inconsistente, parser no disponible); `unextractable`, `rebuild-mismatch` y `noise` necesitan el texto y solo se detectan en los documentos que se abren. Sin git, sin commits o sin puntero, o con `--full`, abre todos como antes; un puntero dañado es `git/bad-pointer`. `:scope` `{:mode :git\|:full :since :head :changed :opened}` dice qué camino se usó (`:opened` = archivos leídos). **Nadie mueve el puntero aquí**: si alguien lo movió con el store desfasado, el camino por git no ve ese desfase (`--full` sí); y un documento en un archivo ignorado por git no se ve cambiar. La verificación de hashes de los objetos del store (`verify`) se hace igual en ambos caminos; reusa `kimun.surface.diagnostics`, no escribe ni en el store ni en `<store>/cache/` y no inicia daemon. `:observed-at` es la hora de esta respuesta, no un evento persistido; las señales cubren las categorías del diagnóstico, no todo cambio topológico. Distingue fuente, contrato y recálculo (`10 §11.1`, K6): `source/*` frente a `contract/changed`, `contract/parser-unavailable`, `contract/inconsistent` y `contract/rebuild-mismatch`; el `:detail` lleva `content-ok`, `contract-ok`, `contract {:status :changed}` y `:registered-root`/`:rebuilt-root` |
 | `stores changed` | `[--since COMMIT]` | solo lectura: pregunta a git qué archivos cambiaron entre COMMIT y el árbol de trabajo (incluye lo sin commitear y lo nuevo sin seguimiento no ignorado; sin hashear nada por cuenta propia) y, solo de los cambiados con alguna marca (`docs mark`), el estado de cada marca (`anchored \| mutated \| ambiguous \| missing`, o `unknown` con `:reason` si COMMIT no dice qué había) comparando el texto de COMMIT (`git show`) con el de ahora. `{:since :head :dirty :changed :marks :summary}`. Sin `--since` usa el puntero de `stores seen` (si no hay, error de uso que dice cómo crearlo); `:data` añade `:pointer`. No mueve el puntero ni toca el store; fuera de un repositorio git: `git/not-a-repository`. Al lado de `stores sense`, que no cambia |
-| `stores seen` | `[--set COMMIT]` | el puntero «miré hasta este commit», en `<store>/seen.edn` (`{:commit sha}`, escritura atómica, fuera del log y del journal). Sin `--set` solo lee: `{:commit :head :behind}`; con `--set` (COMMIT; `HEAD` es uno) lo mueve —lo único que escribe— y responde `{:previous :commit :head :behind}`. `include build` lo deja en HEAD si el proyecto es un repositorio git con commits. Ilegible o con un sha desconocido: `git/bad-pointer` |
+| `stores seen` | `[--set COMMIT]` | el puntero «miré hasta este commit», en `<store>/seen.edn` (`{:commit sha}`, escritura atómica, fuera del log). Sin `--set` solo lee: `{:commit :head :behind}`; con `--set` (COMMIT; `HEAD` es uno) lo mueve —lo único que escribe— y responde `{:previous :commit :head :behind}`. `include build` lo deja en HEAD si el proyecto es un repositorio git con commits. Ilegible o con un sha desconocido: `git/bad-pointer` |
 | `stores heartbeat` | `[--interval SECONDS] [--beats N] [--full]` | daemon: repite la observación de `stores sense` (cada latido pregunta a git; `--full`: abre todos los documentos; la `observation` lleva `:scope`) cada intervalo y la escribe como NDJSON (`started`, `beat`/`error`, `stopped`); no escribe en el store. Contrato abajo, «El latido» |
-| `stores update` | — | `{:updated [name] :skipped [{:document :category :action}] :status}`; todos los reparados van en UNA revisión, cuyo journal lleva `:documents` ({:address :fields}) |
+| `stores update` | — | `{:updated [name] :skipped [{:document :category :action}] :status}`; todos los reparados van en UNA revisión |
 | `stores reconcile` | `[ROOT] [--apply]` | `{:root :discovered :missing :stale :applied}`; sin `--apply` no escribe |
 | `stores link` | `NAME PATH` | `{:link {:name :path} :resolved}` |
 | `stores unlink` | `NAME` | `{:unlinked {:name :path}}` |
@@ -222,9 +219,8 @@ superficie `docs` la mantiene en cada escritura; la entrada es:
 - **Mover** un documento a otra ruta (`docs update OTRO.md --name N` en un genérico; `:path` en
   `update-plan` para un tipado) retira la ruta anterior y registra la nueva **en el mismo commit**.
 - **`docs untrack|delete`** retira la ruta junto con el anclaje; la ruta queda libre. Son un
-  **cierre declarado**: `--reason TEXT` es opcional y la declaración
-  (`:declared {:kind "closure" :file :reason :file-deleted?}`) queda en el journal; `:file` es el
-  estado del archivo antes de actuar (`present | missing | none`).
+  **cierre declarado**: `--reason TEXT` es opcional; `:closure {:file :reason}` de la respuesta lleva
+  la razón y el estado del archivo antes de actuar (`present | missing | none`).
 - **`docs mark|unmark|marks`** son las **unidades estructurales** (K1e): una sección o un
   bloque se marca por **declaración** (nada se marca solo), con id propio acuñado al marcarla
   y localizador + contrato como anclaje. `docs marks` calcula un estado contra el texto leído
@@ -248,8 +244,7 @@ superficie `docs` la mantiene en cada escritura; la entrada es:
   conserva id de documento e id de árbol, libera la ruta vieja y toma la nueva en una sola
   revisión. La ausencia no termina una unidad y el sensor no decide continuidad: eso lo declara
   este comando. kimun **no mueve ni borra** el archivo; si el viejo sigue ahí, warning
-  `docs/previous-file-present`. La declaración queda en el journal
-  (`:declared {:kind "reanchor" …}`). Límites: no hay detección de movimientos, `--reason` es
+  `docs/previous-file-present`. Límites: no hay detección de movimientos, `--reason` es
   opcional solo en el cierre, no existen copiar/dividir/fusionar con linaje declarado, y un
   `kimun.include.edn` que declara la ruta vieja hay que cambiarlo a mano.
 - **Una ruta, un documento.** Registrar un documento nuevo —tipado o genérico— sobre un archivo cuya
@@ -333,14 +328,13 @@ archivo esperan al spec 16 (M1). `include` sigue sin admitir documentos sin mode
 | `docs create MODEL NAME` | `--data F` \| `--set k=v…`, `--path P`, `--inline` | mapa del documento (con payload, hashes, path); `--inline` guarda el texto en el store |
 | `docs track MODEL FILE` | `--name N`, `--force`, `--inline` | mapa del documento; `--force` para un fichero que no ida-vuelta; `--inline` guarda el texto en el store Con una clase spec 16 (M1g, sin `:template`): extrae con el selector compuesto de la clase (propio + heredado por `:base`); no hay ida-vuelta ni ruido que comprobar (no hay renderizador, M2); `docs create` y `docs update --data/--set` se rechazan por lo mismo; las mutaciones de `fields` y `sections fields` también se rechazan; `stores health/sense/check` y `find` sí leen el documento |
 | `docs show NAME` | `--format md`, `--ast` (equivale a `--format ast`) | mapa con `:markdown` y, en un documento tipado, `:units [{:field :id :status}]` (`anchored \| missing`, K1c); `--ast` ⇒ `{:name :tree :ast}`. Un documento de clase spec 16 añade `:class` (dirección del descriptor con el que se ancló) y `:ancestors` (direcciones de los ancestros con los que se compuso su selector); **[inferencia del equipo]** la cadena se fija por revisión exacta: si se redefine la clase o un ancestro, el documento sigue leyéndose bajo la cadena registrada y pasa a `:superseded` hasta `docs update`. Un documento v1 no lleva esas claves |
-| `docs status` | — | `[{:name :path :status}]` con `status` `ok \| modified \| missing` |
 | `docs anchors NAME` | `--sections` | anclas estructurales del documento como **evidencia, sin identidad** (S2a): `{:name :tree :path :parse-contract :sections [{:locator :level :hash :lines :bytes :blocks}] :blocks [{:locator :hash :lines :bytes}]}`; `--sections` omite `:blocks`. Solo lectura: no escribe store ni caché y no acuña ids. Tipado o genérico |
 | `docs mark NAME` | `--locator L` o `--field F` con `--index N` / `--path a.b`, `--label TEXT`, `--unit ID`, `--reason TEXT` | **declara** una unidad estructural (sección o bloque) de un documento por referencia: sin `--unit` acuña su id; con `--unit` re-ancla la **misma** unidad (el `--reason` es entonces obligatorio). `L` es el localizador que imprime `docs anchors` (EDN o JSON). Con `--field F --index N` (ítem de un campo lista) o `--field F --path a.b` (clave anidada de un campo estructurado, claves separadas por `.`; una clave con punto se da con `--locator '{"field":F,"path":[…]}'`) marca un valor **de un documento tipado** (K1h; localizador `{:field :index}` / `{:field :path}`, `:kind :item` / `:nested`); un documento genérico no tiene campos (`docs/not-anchored`). Con `--locator B --range S:E` (B = localizador de un **párrafo o encabezado**) marca un **rango de grafemas `[S E)` del texto plano NFC** de ese bloque (S2b-r; localizador `{:block B :range [S E]}`, `:kind :span`, huella del subtexto); un rango vacío o mal formado es `cli/usage`, y uno que pasa del texto o un bloque sin texto plano (código, lista, opaco) es `docs/anchor-unresolved`. Data: el documento más `:marked {:kind :locator :hash :label}` y `:id`. Rechazos sin revisión: `docs/anchor-unresolved`, `docs/exists` (localizador ya marcado), `docs/missing` (unidad desconocida), `docs/not-anchored`, `cli/usage` |
-| `docs unmark NAME ID` | `--reason TEXT` | **declara** el cierre de la unidad `ID`: la marca sale del descriptor y el cierre queda en el journal (`:declared {:kind "unit-closure" :status …}`). Con la id de una **unidad de campo** (K1f) el `--reason` es obligatorio (`cli/usage`), la id sale de `:units` y no se reutiliza (`:declared` lleva además `:field`); un campo aún presente recibe una id nueva en la escritura siguiente. Data: el documento más `:unmarked` |
-| `docs mark OTHER --unit ID --from NAME` | `--locator L` o `--field F`, `--reason TEXT` | **declara el traslado** (K1f) de la unidad `ID` de NAME a OTHER con la misma id, en una sola revisión (`:declared {:kind "unit-move" :from :to :reason}`). `--locator` traslada una marca (documentos tipados o genéricos); `--field` una unidad de campo (dos tipados; `F` es clave del payload de OTHER y no tiene unidad). Rechazos sin revisión: `cli/usage` (sin `--reason`, ni uno ni ambos de `--locator`/`--field`, mismo documento), `docs/exists` (localizador o campo ya con unidad: no se fusiona), `docs/missing`, `docs/anchor-unresolved`, `docs/not-anchored`. Data: el documento de OTHER más `:id` y `:moved` |
+| `docs unmark NAME ID` | `--reason TEXT` | **declara** el cierre de la unidad `ID`: la marca sale del descriptor. Con la id de una **unidad de campo** (K1f) el `--reason` es obligatorio (`cli/usage`), la id sale de `:units` y no se reutiliza; un campo aún presente recibe una id nueva en la escritura siguiente. Data: el documento más `:unmarked` |
+| `docs mark OTHER --unit ID --from NAME` | `--locator L` o `--field F`, `--reason TEXT` | **declara el traslado** (K1f) de la unidad `ID` de NAME a OTHER con la misma id, en una sola revisión. `--locator` traslada una marca (documentos tipados o genéricos); `--field` una unidad de campo (dos tipados; `F` es clave del payload de OTHER y no tiene unidad). Rechazos sin revisión: `cli/usage` (sin `--reason`, ni uno ni ambos de `--locator`/`--field`, mismo documento), `docs/exists` (localizador o campo ya con unidad: no se fusiona), `docs/missing`, `docs/anchor-unresolved`, `docs/not-anchored`. Data: el documento de OTHER más `:id` y `:moved` |
 | `docs marks NAME` | — | estado derivado de las marcas: `[{:id :kind :label :locator :status :candidates}]` por id y `:parse-contract`. Estados `anchored \| mutated \| ambiguous \| missing`; los candidatos son **propuestas** (`:locator`, `:reason :locator\|:hash`), nunca una decisión. Solo lectura |
 | `docs reanchor NAME FILE` | `--reason TEXT` (obligatorio) | declara el ancla nueva conservando ids: `:reanchored {:from :to :previous-file :reason}` + warning si el archivo viejo sigue |
-| `docs untrack NAME` | `--reason TEXT` | desrastrea; `:closure {:file :reason}` y `:declared` en el journal |
+| `docs untrack NAME` | `--reason TEXT` | desrastrea; `:closure {:file :reason}` |
 | `docs delete NAME` | `--yes`, `--reason TEXT` | desrastrea y borra el fichero; sin `--yes` ⇒ `docs/confirmation-required` (3) |
 | `docs recover DOC` | `--depth N`, `--links-only`, `--include-transclusions` (aceptada e ignorada) | `{:root :path :links [...] :unresolved [...]}`; enlaces sin resolver ⇒ `links/missing` (1) |
 | `docs compose DOC` | `-o FILE\|-` | Markdown con transclusiones expandidas; sin resolver ⇒ `links/missing` (1) |
@@ -496,13 +490,6 @@ Campos de documentos tipados. `DOC` es nombre, tree-id o `Model:doc`; un campo d
 | `semantic equivalent-add A B` | — | `{:changed …}` |
 | `semantic export` | `-o FILE` | payload (productor `kimun`, rutas relativas) |
 
-### journal
-
-| subcomando | opciones | `:data` |
-|---|---|---|
-| `journal show` | `--limit N`, `--by ACTOR`, `--tree NAME\|ID` | entradas, la más nueva primero; una entrada puede llevar `:operation`/`:address`/`:fields` y, si la revisión reparó varios documentos (`stores update`), `:documents` |
-| `journal verify` | — | `{:revisions :checked :objects :bad}`; problema ⇒ `store/corrupt` (5) |
-
 ### declare
 
 | subcomando | opciones | `:data` |
@@ -523,7 +510,7 @@ inspección) → consulta de lo que cambió y **decisión explícita que el guio
 (ninguna persona revisa el cambio; ejecuta una de las `:actions`) → `ok` → la misma fuente bajo otro parser (`contract/changed`, health
 `degraded` con `:next "run: kimun stores update"`: reparación sin decisión) →
 `stores update` → `ok` → archivo movido (`source/missing`; la ausencia no termina
-la unidad) → `docs reanchor` (mismo `:tree`, `:declared` en el journal) → dos
+la unidad) → `docs reanchor` (mismo `:tree`) → dos
 latidos. Comprueba con sha256 del árbol del store que `stores sense`,
 `stores health` y `stores heartbeat` no escriben. Requiere el pod tree-sitter para
 el tramo K6 (sin él lo omite y lo dice). No promete la vista del circuito más
@@ -535,7 +522,7 @@ movimientos: el sensor informa ausencia y el actor declara. Evidencia:
 
 Tabla de rutas como datos en `src/kimun/surface/http/routes.cljc`; cada ruta delega en un comando de §3. Familias:
 
-- `GET /health /schema /stores /stores/check /stores/links /stores/sense /stores/health /docs /document /document/ir /document/segments /ast /lint /fields /sections /find /extract /models /models/detail /render /graph /edges /edges/node /edges/nodes /journal /journal/verify /corpus/rank`.
+- `GET /health /schema /stores /stores/check /stores/links /stores/sense /stores/health /docs /document /document/ir /document/segments /ast /lint /fields /sections /find /extract /models /models/detail /render /graph /edges /edges/node /edges/nodes /corpus/rank`.
 - `/stores/sense` y `/stores/health` son lecturas puras: devuelven el envelope de `stores sense` / `stores health` sin transformarlo (no escriben en el store ni en `cache/`). `stores heartbeat` no tiene ruta: es un flujo NDJSON, no un envelope.
 - `GET /graph/{cycles,components,central,isolated,neighborhood,path}` y `GET /similar`.
 - `POST /save /docs /docs/create /docs/ingest /docs/track /docs/untrack /extract/segments /models/define /models/fields-add /models/fields-remove /models/template-edit /models/validate`.
@@ -561,7 +548,6 @@ Tabla de rutas como datos en `src/kimun/surface/http/routes.cljc`; cada ruta del
 | `predicates add\|list\|show\|validate\|remove` | `predicates` (mismos) | predicados como nodos del árbol `relations` |
 | `edges …` | `edges …` | grafo como vista derivada |
 | `graph …` | `graph …` | |
-| `journal`/log | `journal show\|verify` | |
 | `find`, `serve` | `find`, `serve` | |
 
 Retirados, no portados: `explore`, `faq`, `inbox`, `ast show|schema` (→ `docs show --ast`), `lint`, `legacy ls|get|glob|raw-find`, textos de `help` hardcodeados (→ `--help` genérico), `project init|example`, la materialización de kgdb (`project`), y las banderas `--kgdb-output`/`--kgdb-command`.

@@ -467,7 +467,7 @@ Qué queda **pendiente tras `D0`**, y nada de ello es una pregunta al dueño sob
   (`include build --rebuild` reutiliza id de documento e id de árbol por ruta cualificada y
   declara en `:identities` lo que no puede seguir). **K1b:** el re-anclaje y el cierre a nivel
   documento son declaraciones (`docs reanchor NAME FILE --reason`, `--reason` en
-  `docs untrack|delete`; la declaración queda en el journal) y kimun no mueve archivos ni detecta
+  `docs untrack|delete`) y kimun no mueve archivos ni detecta
   movimientos. **K1c:** cada campo de primer nivel que el modelo de un documento tipado
   selecciona es una unidad con id propio (ULID acuñado la primera vez que el campo se registra,
   persistido en el descriptor del árbol como `:units {campo id}`: es store, no caché) y estado
@@ -498,7 +498,7 @@ Qué queda **pendiente tras `D0`**, y nada de ello es una pregunta al dueño sob
   linaje, marcas dentro de un bloque (`S2b`), que el sensor informe estados de marcas, y los
   documentos `:inline` o de formato < 4. **K1f (2026-11-15, inferencia del equipo):** el
   **cierre** de una unidad de campo y el **traslado** de una unidad (marca o campo) a otro
-  documento son declaraciones con `--reason` y quedan en el journal (`:declared`). `docs unmark
+  documento son declaraciones con `--reason`. `docs unmark
   NAME ID --reason` cierra una unidad de campo: la id sale de `:units`, no se reutiliza, y un
   campo que sigue en el payload recibe una id **nueva** en la escritura siguiente (el reemplazo
   se declara, regla 5). `docs mark OTHER --unit ID --from NAME (--locator L | --field F)

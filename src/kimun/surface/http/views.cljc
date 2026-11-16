@@ -30,7 +30,7 @@
 
 (defn command-route
   "A route handler that runs a CLI command. `tokens` is the fixed command, e.g.
-   `[\"journal\" \"show\"]`. Options: `:query` `{param \"--flag\"}` forwards
+   `[\"models\" \"list\"]`. Options: `:query` `{param \"--flag\"}` forwards
    those query/path parameters as flags when present; `:positional` `[param …]`
    appends those parameters as positional arguments; `:required` `[param …]`
    rejects a request lacking one with a usage failure (400); `:argv-fn`

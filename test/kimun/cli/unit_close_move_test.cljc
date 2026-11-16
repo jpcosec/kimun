@@ -2,7 +2,7 @@
   "K1f: closing a unit and moving it to another document are DECLARATIONS
    (docs/v2/14 §21 rules 3, 4 and 6). `docs unmark` closes a field unit, `docs
    mark OTHER --unit ID --from NAME` moves a unit with its id in one revision;
-   both leave `:declared` in the journal, a rejection leaves the head where it
+   both are one revision, a rejection leaves the head where it
    was, and the unit survives a re-anchor and a rebuild. kimun never decides
    that a unit closed or moved. No test compares empty values."
   (:require [babashka.fs :as fs]
@@ -57,7 +57,7 @@
       (try (binding [*p* p] (setup! p) (f)) (finally (fs/delete-tree p))))))
 
 (defn- head [] (:head (:store (cli-store/open! (file ".kimun")))))
-(defn- journal [] (:data (run "journal" "show" "--limit" "200")))
+(defn- revisions [] (count (:revisions (:store (cli-store/open! (file ".kimun"))))))
 (defn- shown [name] (:data (run "docs" "show" name)))
 (defn- units [name] (into {} (map (fn [u] [(:field u) (:id u)]) (:units (shown name)))))
 (defn- marks [name] (get-in (run "docs" "marks" name) [:data :marks]))
@@ -75,15 +75,9 @@
       (let [h (head) r (run "docs" "unmark" "a" old)]
         (is (false? (:ok r)))
         (is (= h (head)))))
-    (let [r (run "docs" "unmark" "a" old "--reason" "the status means something else now")
-          e (first (journal))]
+    (let [r (run "docs" "unmark" "a" old "--reason" "the status means something else now")]
       (is (true? (:ok r)) (pr-str r))
-      (is (= #{"title"} (set (keys (units "a")))) "the closed unit left the descriptor")
-      (is (= "unit-closure" (get-in e [:declared :kind])))
-      (is (= :anchored (get-in e [:declared :status])) "the state it had is recorded")
-      (is (= old (get-in e [:declared :unit])))
-      (is (= "status" (get-in e [:declared :field])))
-      (is (= "the status means something else now" (get-in e [:declared :reason]))))
+      (is (= #{"title"} (set (keys (units "a")))) "the closed unit left the descriptor"))
     (spit (file "docs" "a.md") "# T\n\nStatus: closed\n")
     (is (true? (:ok (run "docs" "update" "a"))))
     (let [u1 (units "a")]
@@ -129,7 +123,6 @@
         (is (= :missing (->> (:units (:data (run* "docs" "show" "n"))) (filter #(= "note" (:field %))) first :status)))
         (is (true? (:ok (run* "docs" "unmark" "n" old "--reason" "the note was dropped on purpose"))))
         (is (= #{"title"} (set (keys (u)))) "the absent unit is gone")
-        (is (= :missing (get-in (first (:data (run* "journal" "show" "--limit" "1"))) [:declared :status])))
         (git! "add" "-A") (git! "commit" "-qm" "note dropped")
         (is (true? (:ok (inc! "--rebuild"))))
         (is (= #{"title"} (set (keys (u)))))
@@ -139,21 +132,19 @@
 (deftest moving-a-mark-keeps-its-id-in-one-revision-and-says-what-happened
   (let [m (run "docs" "mark" "g1" "--locator" (lstr (paragraph-locator "g1" 0)) "--label" "alfa")
         id (get-in m [:data :id])
-        before (count (journal))
+        before (revisions)
         dest (paragraph-locator "g2" 1)]
     (is (true? (:ok m)) (pr-str m))
     (is (string? id))
     (is (= 1 (count (marks "g1"))))
-    (let [r (run "docs" "mark" "g2" "--unit" id "--from" "g1" "--locator" (lstr dest) "--reason" "the paragraph moved to g2")
-          e (first (journal))]
+    (let [r (run "docs" "mark" "g2" "--unit" id "--from" "g1" "--locator" (lstr dest) "--reason" "the paragraph moved to g2")]
       (is (true? (:ok r)) (pr-str r))
-      (is (= (inc before) (count (journal))) "ONE revision touches both documents")
+      (is (= (inc before) (revisions)) "ONE revision touches both documents")
       (is (empty? (marks "g1")) "it left the origin")
       (is (= [id] (mapv :id (marks "g2"))) "same id in the destination")
       (is (= :anchored (:status (first (marks "g2")))))
       (is (= "alfa" (:label (first (marks "g2")))) "the label travels")
-      (is (= {:kind "unit-move" :unit id :from "g1" :to "g2" :reason "the paragraph moved to g2" :locator dest}
-             (select-keys (:declared e) [:kind :unit :from :to :reason :locator]))))))
+      (is (= {:unit id :from "g1" :to "g2" :locator dest} (select-keys (:moved (:data r)) [:unit :from :to :locator]))))))
 
 (deftest moving-a-field-unit-needs-the-destination-field-to-have-none
   (let [ua (units "a") ub (units "b") id (get ua "status")]
@@ -164,16 +155,14 @@
         (is (= "docs/exists" (get-in r [:error :type] (:error r))) (pr-str r))
         (is (= h (head)))))
     (is (true? (:ok (run "docs" "unmark" "b" (get ub "status") "--reason" "replaced by the one of a"))))
-    (let [before (count (journal))
-          r (run "docs" "mark" "b" "--unit" id "--from" "a" "--field" "status" "--reason" "a's status is b's")
-          e (first (journal))]
+    (let [before (revisions)
+          r (run "docs" "mark" "b" "--unit" id "--from" "a" "--field" "status" "--reason" "a's status is b's")]
       (is (true? (:ok r)) (pr-str r))
-      (is (= (inc before) (count (journal))) "one revision")
+      (is (= (inc before) (revisions)) "one revision")
       (is (= id (get (units "b") "status")) "the unit keeps its id in b")
       (is (nil? (get (units "a") "status")) "and left a")
       (is (= (get ua "title") (get (units "a") "title")))
-      (is (= {:kind "unit-move" :unit id :from "a" :to "b" :field "status"}
-             (select-keys (:declared e) [:kind :unit :from :to :field]))))))
+      (is (= {:unit id :from "a" :to "b" :field "status"} (select-keys (:moved (:data r)) [:unit :from :to :field]))))))
 
 (deftest rejected-moves-and-closures-leave-the-head-where-it-was
   (let [ma (get-in (run "docs" "mark" "g1" "--locator" (lstr (paragraph-locator "g1" 0))) [:data :id])

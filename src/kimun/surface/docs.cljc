@@ -72,7 +72,6 @@
             [kimun.surface.markdown.plan :as md]))
 
 (def source-format "Format of the opaque sign holding a document's source text." "markdown/source")
-(def meta-key "Key of a plan's `:engines` under which a command records its journal metadata (an EDN string)." "kimun/meta")
 
 ;; ---------------------------------------------------------------- hashing
 
@@ -604,7 +603,7 @@
                  (when (not= a b) [[prefix {:before a :after b}]])))]
     (into {} (mapcat (fn [k] (walk (str k) (get before k) (get after k))) (sort (distinct (concat (keys before) (keys after))))))))
 
-(defn- meta-engines [m] {"kimun.surface.docs" "1" meta-key (pr-str m)})
+(def ^:private docs-engines "The `:engines` of every plan this namespace builds." {"kimun.surface.docs" "1"})
 
 ;; ---------------------------------------------------------------- registered tree (cache)
 
@@ -835,7 +834,7 @@
 (defn track-plan
   "Plan that tracks source `text` as document `name` of model `model`.
    `opts`: `:doc` and `:tree-id` (fresh ULIDs), `:path` (relative, or nil),
-   `:actor`, `:timestamp`, `:operation` (journal label, default \"docs track\").
+   `:actor`, `:timestamp`.
    Returns `{:plan :name :tree :payload}`. Raises `:docs/exists` when the name
    cannot be shared (`refuse-collision!`), `:models/missing`, and the extraction errors of the model. With
    `:inline` the source text is stored in the store instead of read from the
@@ -843,7 +842,7 @@
    (and not `:inline`) is registered as CACHE (docs/v2/14 §18.6): no ownership
    edge, no block/text node and no tree object enters the plan. One route, one
    document: a file whose route another document holds is `:docs/exists`."
-  [host store model name text {:keys [doc tree-id path actor timestamp operation inline units marks mint]}]
+  [host store model name text {:keys [doc tree-id path actor timestamp inline units marks mint]}]
   (refuse-collision! store name path)
   (when path (refuse-routed! store path nil))
   (let [m (require-model store model)
@@ -854,8 +853,6 @@
         ch (content-hash host payload)
         inline? (or inline (= :inline (:content store)))
         cached? (and path (not inline?))
-        engines (meta-engines {:operation (or operation "docs track") :address (str model ":" name)
-                               :fields (changed-fields {} payload)})
         ;; units live in the descriptor a `:register-tree` writes: only a by-reference document has one
         field-units (when cached? (units-for units payload mint))
         ops (if cached?
@@ -872,13 +869,13 @@
                                                                 :ancestors ancestors :reading rd
                                                                 :content-hash ch :inline? inline?} nil))))]
     {:name name :tree tree-id :payload payload
-     :plan {:plan/version 1 :base (:head store) :actor actor :timestamp timestamp :engines engines :ops (vec ops)}}))
+     :plan {:plan/version 1 :base (:head store) :actor actor :timestamp timestamp :engines docs-engines :ops (vec ops)}}))
 
 (defn update-plan
   "Plan that replaces the source of tracked document `token` with `text`
    (re-extracted under the model's current contract, which makes it `:intact`
    again). `opts`: `:path` (default: the recorded one), `:actor`, `:timestamp`,
-   `:operation`, `:inline` (default: keep the document's mode). Returns `{:plan
+   `:inline` (default: keep the document's mode). Returns `{:plan
    :name :tree :payload :before :unchanged?}`;
    `:plan` is nil when neither the text, the path nor the contract moved and
    the document already holds its route. A
@@ -886,7 +883,7 @@
    (the document is re-registered under the current one), as does one whose
    digest does not verify; a document with no recorded parse contract is not
    rewritten for that alone."
-  [host store token text {:keys [path actor timestamp operation inline declared mint marks] :as opts-map}]
+  [host store token text {:keys [path actor timestamp inline mint marks] :as opts-map}]
   (let [doc (document store token)
         m (require-model store (:model doc))
         lineage (when (mstore/spec16? (:descriptor m)) (current-lineage store m))
@@ -925,14 +922,7 @@
                                                                              (:parse-contract doc) (:id m) rd)))
                         (if (:path doc)
                           (and (some? (:fingerprint doc)) (= (:fingerprint doc) (fingerprint host text)))
-                          (= text (:source doc))))
-        ;; the payload read is the one under the contract the document was
-        ;; written with: the fields the new contract adds are not in it
-        before (or (:payload doc) {})
-        engines (meta-engines (cond-> {:operation (or operation "docs update")
-                                       :address (str (:model doc) ":" (:name doc))
-                                       :fields (changed-fields before payload)}
-                                declared (assoc :declared declared)))]
+                          (= text (:source doc))))]
     (if cached?
       (let [{:keys [reg ops]} (registry-ops host store {:doc (:doc doc) :tree-id (:tree doc) :name (:name doc)
                                                          :text text :path path :class (:id m) :content-hash ch :actor actor
@@ -945,7 +935,7 @@
         (when-not same? (cache-write! store reg {:fingerprint (fingerprint host text) :class (:id m)}))
         {:name (:name doc) :tree (:tree doc) :payload payload :before (:payload doc) :unchanged? same?
          :plan (when-not same?
-                 {:plan/version 1 :base (:head store) :actor actor :timestamp timestamp :engines engines :ops (vec ops)})})
+                 {:plan/version 1 :base (:head store) :actor actor :timestamp timestamp :engines docs-engines :ops (vec ops)})})
       (let [same? (and base-same?
                        (or (nil? (:merkle-root doc))
                            (= (:merkle-root doc)
@@ -955,7 +945,7 @@
         {:name (:name doc) :tree (:tree doc) :payload payload :before (:payload doc) :unchanged? same?
          :plan (when base
                  (-> base
-                     (assoc :engines engines)
+                     (assoc :engines docs-engines)
                      (update :ops into (binding-ops host store (:root doc) {:model-id (:id m) :text text :path path :actor actor
                                                                             :ancestors ancestors :reading rd
                                                                             :content-hash ch :inline? inline?} doc))))}))))
@@ -1075,7 +1065,7 @@
     (cache-write! store reg {:fingerprint (fingerprint host text) :class generic-class})
     {:name name :tree tree-id :blocks (count (tree/children-at (:tree reg) []))
      :plan {:plan/version 1 :base (:head store) :actor actor :timestamp timestamp
-            :engines (meta-engines {:operation "docs ingest" :address (str generic-class ":" name) :fields {}})
+            :engines docs-engines
             :ops (vec ops)}}))
 
 (defn generic-update-plan
@@ -1085,7 +1075,7 @@
    fingerprint, the path nor the parse contract moved and the document already
    holds its route. Raises `:docs/exists`
    when `path` is already tracked by another document."
-  [host store doc text {:keys [path actor timestamp operation declared marks] :as opts-map}]
+  [host store doc text {:keys [path actor timestamp marks] :as opts-map}]
   (let [path (or path (:path doc))
         field-marks (if (contains? opts-map :marks)
                       marks
@@ -1109,9 +1099,7 @@
      :blocks (count (tree/children-at (:tree reg) []))
      :plan (when-not same?
              {:plan/version 1 :base (:head store) :actor actor :timestamp timestamp
-              :engines (meta-engines (cond-> {:operation (or operation "docs update")
-                                              :address (str generic-class ":" (:name doc)) :fields {}}
-                                       declared (assoc :declared declared)))
+              :engines docs-engines
               :ops (vec ops)})}))
 
 (defn route-coverage
@@ -1141,29 +1129,16 @@
    generic class (K3): its anchor edge is removed, so its file is no longer
    watched and its path and name are free again. The route the document holds
    (K2a) is removed in the same plan. Raises `:docs/missing`."
-  [store token {:keys [actor timestamp operation declared]}]
+  [store token {:keys [actor timestamp]}]
   (let [doc (or (resolve-any store token)
                 (err/raise :docs/missing (str "no document named or identified by `" token "`") {:document token}))]
     {:name (:name doc) :tree (:tree doc) :path (:path doc)
      :plan {:plan/version 1 :base (:head store) :actor actor :timestamp timestamp
-            :engines (meta-engines (cond-> {:operation (or operation "docs untrack")
-                                            :address (str (or (:model doc) (:class doc)) ":" (:name doc)) :fields {}}
-                                     declared (assoc :declared declared)))
+            :engines docs-engines
             ;; the route leaves with the anchor, in the same plan: the path is free for another document
             :ops (into (vec (leave-route-ops store (:tree doc) (:path doc) nil))
                        (for [eid (:edges doc) :when (owned-edge? store (get-in store [:objects eid]))]
                          {:op :remove-edge :edge eid}))}}))
-
-(defn sync-report
-  "`[{:name :path :status}]` for tracked documents with a file, where
-   `read-file` is `(fn [relative-path] text-or-nil)`: `:ok`, `:modified`
-   (fingerprint differs from the recorded one) or `:missing`."
-  [store read-file]
-  (let [host (:host store)]
-    (vec (for [d (documents store) :when (:path d)
-               :let [text (read-file (:path d))]]
-           {:name (:name d) :path (:path d)
-            :status (cond (nil? text) :missing (= (:fingerprint d) (fingerprint host text)) :ok :else :modified)}))))
 
 ;; ---------------------------------------------------------------- structural marks (K1e)
 
@@ -1194,7 +1169,7 @@
 (defn mark-plan
   "Plan that DECLARES structural mark `id` on document `token` (`mark`) or
    removes it (`unmark?`), with `opts` `:locator`/`:label` (mark), `:actor`,
-   `:timestamp`, `:declared` and the same options `update-plan` takes. The rest
+   `:timestamp` and the same options `update-plan` takes. The rest
    of the document is written exactly as `update-plan` would (the text does not
    change): the marks travel in the tree descriptor, which is store. Returns
    `update-plan`'s map."
@@ -1230,8 +1205,8 @@
    `doc` (a map of `documents`, K1f): the id leaves the descriptor's `:units`
    and is never reused. Nothing is minted in this write, so a field still in the
    payload gets a NEW id on the next normal write (docs/v2/14 §21 rule 5: the
-   replacement is declared). `opts`: `:declared`, `:actor`, `:timestamp`,
-   `:operation` and what `update-plan` takes. Raises `:docs/missing` when `doc`
+   replacement is declared). `opts`: `:actor`, `:timestamp`
+   and what `update-plan` takes. Raises `:docs/missing` when `doc`
    has no such unit and `:docs/not-anchored` when the plan would not persist
    (no descriptor to hold units). Returns `update-plan`'s map."
   [host store doc text {:keys [id] :as opts}]
@@ -1248,7 +1223,7 @@
    `to` (maps of `documents`/`generic-documents`, K1f) in ONE revision: the
    unit leaves `from` and is anchored in `to` with the SAME id, and the two
    trees are written together (`kernel.plan/compose-plans`). `opts`: `:unit`,
-   `:from-text`, `:to-text`, `:declared`, `:actor`, `:timestamp`, and either
+   `:from-text`, `:to-text`, `:actor`, `:timestamp`, and either
    `:mark` (`{:kind :locator :hash :label}`: a structural mark) or `:field` (the
    field of `to` that takes a field unit). Nothing is minted. Raises
    `:docs/exists` when the destination already has a mark with that locator or a
@@ -1256,8 +1231,8 @@
    `:docs/missing` when `from` does not hold the unit and `:docs/not-anchored`
    for a field that is not a key of the payload of `to` or a generic document.
    Returns `{:plan :from :to}`."
-  [host store from to {:keys [unit mark field from-text to-text declared actor timestamp] :as opts}]
-  (let [common {:actor actor :timestamp timestamp :operation "docs mark"}
+  [host store from to {:keys [unit mark field from-text to-text actor timestamp] :as opts}]
+  (let [common {:actor actor :timestamp timestamp}
         ex (fn [msg data] (err/raise :docs/exists msg data))
         a (if field
             (let [f (or (unit-field from unit)
@@ -1290,6 +1265,5 @@
                  {:from (:name from) :to (:name to) :unit unit}))
     {:plan (plan/compose-plans [(:plan a) (:plan b)]
                                {:base (:head store) :actor actor :timestamp timestamp
-                                :engines (meta-engines {:operation "docs mark" :address (str (:name from) " -> " (:name to))
-                                                        :fields {} :declared declared})})
+:engines docs-engines})
      :from (:name from) :to (:name to)}))

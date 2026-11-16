@@ -37,7 +37,6 @@
 ;; v1: test_update_store_indexes_reports_a_complete_refresh (through the CLI)
 (deftest rebuild-indexes-writes-the-cache-of-the-head
   (let [p (project) head (:head (:store (opened p)))
-        journal (get-in (run p "journal" "show") [:data])
         e (rebuild p)
         path (fs/path p ".kimun" "index" (str head ".edn"))]
     (is (true? (:ok e)) (pr-str e))
@@ -52,9 +51,8 @@
     (is (= [] (:warnings e)))
     (is (fs/regular-file? path))
     (is (= (build/build (:store (opened p))) (edn/read-string (slurp (str path)))))
-    (testing "it commits nothing: same head, same journal"
-      (is (= head (:head (:store (opened p)))))
-      (is (= journal (get-in (run p "journal" "show") [:data]))))
+    (testing "it commits nothing: same head"
+      (is (= head (:head (:store (opened p))))))
     (testing "running it again is the same answer"
       (is (= (:data e) (:data (rebuild p)))))
     (is (true? (:ok (run p "stores" "check"))))))

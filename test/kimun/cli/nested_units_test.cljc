@@ -57,7 +57,6 @@
 (defn- mark-of [id] (first (filter #(= id (:id %)) (marks))))
 (defn- item! [i & more] (apply run "docs" "mark" "a" "--field" "items" "--index" (str i) more))
 (defn- id-of [r] (get-in r [:data :id]))
-(defn- last-entry [] (first (get-in (run "journal" "show" "--limit" "1") [:data])))
 
 (deftest an-item-and-a-nested-key-are-marked-by-declaration-only
   (let [units0 (into {} (map (juxt :field :id)) (:units (:data (run "docs" "show" "a"))))
@@ -101,9 +100,7 @@
           (is (= h (head)))
           (is (true? (:ok (item! 2 "--unit" id "--reason" "a new item went in above"))))
           (is (= :anchored (:status (mark-of id))))
-          (is (= {:field "items" :index 2} (:locator (mark-of id))))
-          (is (= "unit-reanchor" (get-in (last-entry) [:declared :kind])))
-          (is (= "a new item went in above" (get-in (last-entry) [:declared :reason])))))
+          (is (= {:field "items" :index 2} (:locator (mark-of id))))))
       (testing "deleting it does not end the unit"
         (write! ["uno" "nuevo"])
         (is (= :missing (:status (mark-of id))))
@@ -112,9 +109,7 @@
         (is (= id (:id (mark-of id))) "the id survives the write"))
       (testing "closing is a declaration"
         (is (true? (:ok (run "docs" "unmark" "a" id "--reason" "gone"))))
-        (is (nil? (mark-of id)))
-        (is (= "unit-closure" (get-in (last-entry) [:declared :kind])))
-        (is (= :missing (get-in (last-entry) [:declared :status])))))))
+        (is (nil? (mark-of id)))))))
 
 (deftest identical-items-are-two-units-and-one-to-many-lists-every-candidate
   (write! ["igual" "igual" "otro" "igual"])
@@ -182,8 +177,7 @@
         (let [r (run "docs" "mark" "b" "--unit" id "--from" "a" "--field" "items" "--index" "1" "--reason" "to b")]
           (is (true? (:ok r)) (pr-str r))
           (is (nil? (mark-of id)) "it left a")
-          (is (= [id] (map :id (get-in (run "docs" "marks" "b") [:data :marks]))))
-          (is (= "unit-move" (get-in (last-entry) [:declared :kind])))))))
+          (is (= [id] (map :id (get-in (run "docs" "marks" "b") [:data :marks]))))))))
     (testing "a document of a spec 16 class marks its list items the same way"
       (spit (file "Tagged.edn")
             (pr-str {:model/name "Tagged" :model/version 1 :base [] :document-role :source

@@ -83,7 +83,7 @@ Agente que retoma: `AGENTS.md` (orden operativo) → `00` → los tres borradore
 
 Una frase por documento; los textos de abajo siguen en sus documentos y no se han reescrito.
 
-- `02 §5` (revisiones encadenadas, historia de archivos en el store) y `10` (árbol Merkle por ruta, packs,
+- `02 §5` (revisiones encadenadas, historia de archivos en el store) y `10` (árbol Merkle por ruta,
   recolección): describen mecanismos que **rehacen git**; el dueño los difirió explícitamente el 2026-11-15
   (`drafts/sesion-2026-11-15.md §11`); kimun usa git para el nivel de archivo.
 - `14 §20` en lo del nivel de archivo (Merkle por ruta de lo trackeado): mismo caso; vale en lo de

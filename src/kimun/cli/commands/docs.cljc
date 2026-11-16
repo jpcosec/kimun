@@ -333,7 +333,7 @@
         {:keys [plan tree]} (tdocs/track-plan host/host store model name text
                                          {:mint mint-unit
                                           :doc (ports/ulid (:ids host/host)) :tree-id (ports/ulid (:ids host/host))
-                                          :path path :actor (:actor opts) :timestamp (timestamp) :operation "docs create"
+                                          :path path :actor (:actor opts) :timestamp (timestamp)
                                           :inline (:inline opts)})
         r (store/commit! backend store plan)]
     (done "docs create" descriptor store-path r (:store r) tree {:warnings (cli-store/write-file! root path text)})))
@@ -419,7 +419,7 @@
    sensor never decides continuity. `--reason` is required; FILE must exist
    inside the project; an already tracked path, the current path and a
    document without a file are refused. The declaration travels in the
-   journal (`:declared {:kind reanchor …}`). When the previous file is
+   `:reanchored`. When the previous file is
    still there it stays untracked and the answer warns
    `docs/previous-file-present`. Data: what `docs update` returns for that
    document, plus `:reanchored {:from :to :previous-file :reason}`."
@@ -448,10 +448,7 @@
                        {:document (:name d) :path anchor}))
         _ (tdocs/refuse-anchored! store anchor (:tree d))
         previous-file (if (fs/regular-file? (fs/path root (:path d))) "present" "missing")
-        declared {:kind "reanchor" :from (:path d) :to anchor
-                  :previous-file previous-file :reason reason}
-        opts* {:path anchor :mint mint-unit :actor (:actor opts) :timestamp (timestamp)
-               :operation "docs reanchor" :declared declared}
+        opts* {:path anchor :mint mint-unit :actor (:actor opts) :timestamp (timestamp)}
         res (if (:generic d)
               (let [{:keys [plan unchanged? blocks]} (tdocs/generic-update-plan host/host store d text opts*)
                     r (if plan (store/commit! backend store plan) {:store store :revision-id (:head store)})]
@@ -493,11 +490,7 @@
          file-state (cond (nil? (:path doc)) "none"
                           (fs/regular-file? (fs/path (project-root store-path) (:path doc))) "present"
                           :else "missing")
-         {:keys [plan name path]} (tdocs/untrack-plan store token {:actor (:actor opts) :timestamp (timestamp)
-                                                                   :operation (str "docs " sub)
-                                                                   :declared {:kind "closure" :file file-state
-                                                                              :reason (:reason opts)
-                                                                              :file-deleted? (boolean delete?)}})
+         {:keys [plan name path]} (tdocs/untrack-plan store token {:actor (:actor opts) :timestamp (timestamp)})
          r (store/commit! backend store plan)
          f (when path (fs/path (project-root store-path) path))]
      (when (and delete? f (fs/exists? f)) (fs/delete f))
@@ -716,7 +709,7 @@
                    (and (:field opts) (not locator)) (assoc :field (:field opts)))
         mp (tdocs/move-unit-plan host/host store from to
                                  {:unit unit :mark mark :field (when-not locator (:field opts)) :from-text from-text :to-text to-text
-                                  :declared declared :actor (:actor opts) :timestamp (timestamp)})
+                                  :actor (:actor opts) :timestamp (timestamp)})
         r (store/commit! backend store (:plan mp))]
     (out/ok "docs mark"
             {:store (cli-store/store-ref descriptor store-path) :revision (:revision-id r)
@@ -731,8 +724,7 @@
    re-anchored (the `--reason` is then required: the actor says what happened).
    The locator is what `docs anchors` prints (EDN or JSON). The mark records the
    locator, the current hash and an optional label in the tree descriptor
-   (store, never part of the root hash) and the declaration stays in the
-   journal (`:declared`). Rejections write nothing: no anchor there
+   (store, never part of the root hash). Rejections write nothing: no anchor there
    (`docs/anchor-unresolved`), the locator a mark already has (`docs/exists`),
    an unknown unit (`docs/missing`), a document that is not by reference
    (`docs/not-anchored`), or no `--reason` on a re-anchor (`cli/usage`).
@@ -761,12 +753,9 @@
         kind (locator-kind locator)
         mark {:kind kind :locator locator :hash (:hash a)}
         mark (cond-> mark (:label opts) (assoc :label (:label opts)))
-        declared (cond-> {:kind (if unit "unit-reanchor" "unit-mark") :unit id
-                          :locator locator :anchor-kind kind :hash (:hash a)}
-                   (:reason opts) (assoc :reason (:reason opts)))
         mp (tdocs/mark-plan host/host store (:tree d) text
-                            {:id id :declared declared :actor (:actor opts) :timestamp (timestamp)
-                             :operation "docs mark" :kind kind :locator locator :hash (:hash a)
+                            {:id id :actor (:actor opts) :timestamp (timestamp)
+                             :kind kind :locator locator :hash (:hash a)
                              :label (:label opts)})
         r (store/commit! backend store (:plan mp))]
     (out/ok "docs mark"
@@ -780,8 +769,7 @@
    MOVES unit `--unit ID` of NAME to this document (K1f): `docs mark OTHER --unit
    ID --from NAME (--locator L | --field F) --reason TEXT`. The unit keeps its
    id, leaves NAME and is anchored in OTHER (a locator that resolves in OTHER, or
-   a field of OTHER's payload without a unit), in ONE revision whose journal
-   entry says `:declared {:kind \"unit-move\" :unit :from :to :reason}`. A
+   a field of OTHER's payload without a unit), in ONE revision. A
    mark of a generic document moves too; a field unit needs two typed
    documents. kimun never moves a unit on its own. Rejections write nothing:
    no `--reason` or neither/both of `--locator`/`--field` (`cli/usage`), a
@@ -798,9 +786,7 @@
    document. A structural unit (K1e): the mark leaves the tree descriptor. A FIELD
    unit of a typed document (K1f): the id leaves `:units` and is never reused;
    `--reason` is then required, and a field still in the payload gets a NEW id on
-   the next write (the replacement is declared, 14 §21 rule 5). The closure (with
-   the state the unit had) stays in the journal (`:declared {:kind
-   \"unit-closure\"}`). The document itself is written as an update of the same
+   the next write (the replacement is declared, 14 §21 rule 5). The document itself is written as an update of the same
    text. Unknown unit: `docs/missing`. Data: the document map plus `:unmarked`."
   [args opts {:keys [env cwd] :as ctx}]
   (let [token (cli-args/require-arg! "docs" args 0 "a document NAME" "unmark")
@@ -814,14 +800,7 @@
         _ (when (and field (not (string? (:reason opts))))
             (err/raise :cli/usage "`docs unmark` of a field unit needs --reason TEXT: the declaration says what happened"
                        {:group "docs" :subcommand "unmark"}))
-        status (if mark?
-                 (-> (tdocs/marks-of host/host text d nil (field-payload store d text)) :marks
-                     (->> (filter #(= id (:id %))) first :status))
-                 (->> (tdocs/unit-states store (assoc d :source text)) (filter #(= id (:id %))) first :status))
-        declared (cond-> {:kind "unit-closure" :unit id :status status}
-                   field (assoc :field field)
-                   (:reason opts) (assoc :reason (:reason opts)))
-        base {:id id :declared declared :actor (:actor opts) :timestamp (timestamp) :operation "docs unmark"}
+        base {:id id :actor (:actor opts) :timestamp (timestamp)}
         mp (if mark?
              (tdocs/mark-plan host/host store (:tree d) text (assoc base :unmark? true))
              (tdocs/close-unit-plan host/host store d text base))
@@ -876,15 +855,6 @@
                                           :marks (:marks (tdocs/marks-of host/host (str (:source d)) found nil
                                                                                   (field-payload store found (str (:source d))))))))})))
 
-(defn status
-  "`docs status`: `[{:name :path :status}]` comparing each tracked file with
-   the fingerprint recorded for it (`ok`, `modified`, `missing`)."
-  [_args opts ctx]
-  (let [{:keys [descriptor store] store-path :path} (cli-store/open-for opts ctx)
-        root (project-root store-path)]
-    (out/ok "docs status" {:store (cli-store/store-ref descriptor store-path) :revision (:head store)
-                           :data (tdocs/sync-report store #(let [f (fs/path root %)] (when (fs/regular-file? f) (slurp (str f)))))})))
-
 (defn update-any
   "`docs update`: for a tracked typed document, `docs update NAME [FILE]`
    (`update-typed`); otherwise the untyped re-ingest `docs update FILE --name N`."
@@ -924,7 +894,7 @@
   {"ingest" ingest "update" update-any "render" render "list" list-docs "create" create "track" track
    "untrack" untrack "delete" (fn [args opts ctx] (untrack args opts ctx true))
    "reanchor" reanchor "anchors" anchors "mark" mark "unmark" unmark "marks" marks
-   "show" show "status" status})
+   "show" show})
 
 (defn dispatch
   "Runs subcommand `sub` of the `docs` group with the positional tokens that

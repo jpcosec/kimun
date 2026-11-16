@@ -249,7 +249,4 @@
    {:method :post :path "/models/validate"
     :handler (models-edit ["models" "check"] {})}
    {:method :post :path "/models/define" :write? true :handler models-define}
-   {:method :post :path "/models/template-edit" :write? true :handler template-edit}
-   ;; journal
-   {:method :get :path "/journal" :handler (command-route ["journal" "show"] :query {:limit "--limit" :by "--by" :tree "--tree"})}
-   {:method :get :path "/journal/verify" :handler (command-route ["journal" "verify"])}])
+   {:method :post :path "/models/template-edit" :write? true :handler template-edit}])

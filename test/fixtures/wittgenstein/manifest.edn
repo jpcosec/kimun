@@ -172,7 +172,7 @@
    :fixture :F-W02
    :negative-control :N-F15
    :expected-outcome "Múltiples citas ancladas e historial de derivación preservados por hecho/arista."
-   :current-evidence ["docs/v2/02-sustrato-computacional.md §3.2" "kimun journal"]
+   :current-evidence ["docs/v2/02-sustrato-computacional.md §3.2" "log.edn"]
    :intentional-deviation "Rechaza F15: ningún hecho confirmado entra sin ancla de source o axioma/decisión registrada."}
   {:id "C12"
    :line :W1

@@ -94,7 +94,7 @@
   (reduce (fn [acc {:keys [name path text]}]
             (let [{:keys [plan]} (tdocs/update-plan host/host (:store acc) name text
                                                     {:mint (fn [] (ports/ulid (:ids host/host)))
-                                                     :actor (:actor opts) :timestamp (docs/timestamp) :operation "models backfill"})
+                                                     :actor (:actor opts) :timestamp (docs/timestamp)})
                   r (when plan (store/commit! backend (:store acc) plan))
                   w (when (and r path)
                       (try (spit (str (fs/path root path)) text) nil

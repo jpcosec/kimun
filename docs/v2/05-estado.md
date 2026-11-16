@@ -44,8 +44,6 @@ no es identidad — `14 §21`). Cada capacidad tiene un dueño:
   por nombre de enlace; `--local` los deja fuera). CLI: `06-superficies-y-cli.md`.
 - **Semántica** — tags como términos `:symbol/:term`, jerarquía de padres y equivalencias.
   CLI: `06-superficies-y-cli.md`.
-- **Journal** — vista del log y del DAG de revisiones, sin segundo almacén. CLI:
-  `06-superficies-y-cli.md`.
 - **Diagnósticos** — veredictos y reparaciones del store, con categorías que nombran la
   acción. CLI: `06-superficies-y-cli.md`.
 - **Inclusión en git** — `kimun.include.edn` declara qué versiona un repo. Dueño:

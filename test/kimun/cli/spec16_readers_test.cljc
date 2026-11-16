@@ -35,7 +35,7 @@
    ["models" "list"] ["models" "show" "ReportDoc"] ["models" "history" "ReportDoc"] ["models" "check"]
    ["docs" "compose" "r"] ["docs" "recover" "r"] ["docs" "render" "r"] ["docs" "anchors" "r"]
    ["edges" "show"] ["edges" "nodes"] ["graph" "list"] ["graph" "export"] ["semantic" "show"] ["corpus" "refresh"]
-   ["stores" "unreachable"] ["stores" "pack"] ["stores" "unpack"] ["stores" "update"] ["stores" "sense" "--once"]])
+   ["stores" "update"] ["stores" "sense" "--once"]])
 
 (def ^:private spec16-refusals
   "Commands that cannot serve a spec 16 class (no template, no renderer: M2): a declared error that says so."
@@ -71,8 +71,8 @@
   ;; 10 §11.1: a moved contract (parser, grammar, extractor or CLASS) with the
   ;; source intact is the safe repair of `stores update`. There is no renderer
   ;; for a spec 16 class (M2), so the file is read again under the class in
-  ;; force and is never rewritten; what it anchors may change, in a revision the
-  ;; journal records. Whether that needs a decision is an open question.
+  ;; force and is never rewritten; what it anchors may change, in a revision.
+  ;; Whether that needs a decision is an open question.
   (let [p (fixture :superseded)
         text0 (slurp (file p "r.md"))
         before (:data (run p "docs" "show" "r"))
@@ -82,9 +82,7 @@
     (is (true? (:ok e)) (pr-str e))
     (is (= :intact (:state after)) "re-anchored under the class in force")
     (is (not= (:ancestors before) (:ancestors after)) "the recorded ancestors moved")
-    (is (= text0 (slurp (file p "r.md"))) "the file is not rewritten")
-    (is (= "stores update" (:operation (first (:data (run p "journal" "show" "--limit" "1")))))
-        "the repair is a revision the journal names")))
+    (is (= text0 (slurp (file p "r.md"))) "the file is not rewritten")))
 
 (deftest http-reads-a-spec16-class-and-refuses-the-segments
   (doseq [state [:intact :superseded]]

@@ -1,0 +1,58 @@
+
+=== paso 0 · proyecto temporal (stores init + modelo + un documento tipado y uno genérico)
+    store en /tmp/kimun-tour-qOWWTZ/.kimun
+
+=== paso 1 · reposo
+    observación sin escrituras: stores sense (reposo) (sha c8885ffc)
+    señales: 0  · valid=true
+    observación sin escrituras: stores health (reposo) (sha c8885ffc)
+    health: "ok"  · next=null
+
+=== paso 2 · mutación de la fuente (se edita docs/a.md en disco)
+    observación sin escrituras: stores sense (fuente mutada) (sha c8885ffc)
+    señales: ["source/mutated"]
+    campos que cambiaron (según la señal): ["status"]
+    observación sin escrituras: stores health (fuente mutada) (sha c8885ffc)
+    health: status="needs-human"
+    next: "inspect: docs/a.md"
+    actions: ["kimun docs update a"]
+    ":next" pide una INSPECCIÓN, no es un comando: el circuito se detiene aquí
+    hasta que alguien decide (status="needs-human").
+
+=== paso 2b · inspección (lo que :next pide: mirar qué cambió)
+    docs list: [["a", "intact"], ["plain", null]]
+    la fuente registrada frente al archivo: los campos que la señal nombra arriba.
+
+=== paso 3 · decisión declarada y reconciliación
+    el recorrido SIMULA aquí la decisión explícita de un actor: nadie revisó el cambio;
+    el guion solo consultó docs list y la señal, y aplica la primera acción propuesta.
+    acción elegida (leída de :actions, no fijada de antemano): kimun docs update a
+    observación sin escrituras: stores health (reconciliado) (sha d7837c4e)
+    health: "ok"
+
+=== paso 4 · cambio del contrato de lectura (K6): la misma fuente bajo tree-sitter
+    observación sin escrituras: stores sense (KIMUN_PARSER=treesitter) (sha d7837c4e)
+    señales (KIMUN_PARSER=treesitter): ["contract/changed", "contract/changed"]
+    detalle del contrato: {"status": "changed", "changed": ["parser", "grammar"]}
+    observación sin escrituras: stores health (KIMUN_PARSER=treesitter) (sha d7837c4e)
+    health: "degraded"  · next: "run: kimun stores update"
+    aquí :next sí es una reparación sin decisión ("run: …"), a diferencia del caso anterior
+    reparación sin decisión: stores update (no docs update)
+    observación sin escrituras: stores sense (tras stores update, mismo parser) (sha a23f348e)
+    señales tras stores update (mismo parser): []
+    observación sin escrituras: stores sense (de vuelta al parser nativo) (sha 7bbae0ba)
+    de vuelta al parser nativo, señales: []
+
+=== paso 5 · mover el archivo genérico en disco (K1b: el movimiento se declara)
+    observación sin escrituras: stores sense (archivo ausente) (sha 7bbae0ba)
+    señales: ["source/missing"]
+    la ausencia no termina la unidad: solo informa.
+    tree antes="01M7H9D… después="01M7H9D…  · igual=sí
+    observación sin escrituras: stores sense (tras re-anclar) (sha d04907e5)
+    señales: []
+
+=== paso 6 · latido (stores heartbeat --beats 2)
+    latidos: 4 registros; segundo latido changed=False
+    changed es memoria de este proceso, no un evento guardado; observed-at es la hora del registro.
+
+=== recorrido completo

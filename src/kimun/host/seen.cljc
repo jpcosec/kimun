@@ -1,8 +1,8 @@
 (ns kimun.host.seen
   "The pointer \"I looked up to this commit\" (docs/v2/drafts/diseno-declaraciones.md §4): a
    fact about the derived index, not a declaration. It lives in `<store>/seen.edn` as
-   `{:commit \"<full sha>\"}` and nothing else, outside the log, the plans, the revisions and
-   the journal of the store. Writing is atomic (temporary file + rename). An unreadable file,
+   `{:commit \"<full sha>\"}` and nothing else, outside the log, the plans and the revisions
+   of the store. Writing is atomic (temporary file + rename). An unreadable file,
    or a sha git does not know, is `:git/bad-pointer`: it is never ignored silently."
   (:require [babashka.fs :as fs]
             [clojure.edn :as edn]

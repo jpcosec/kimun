@@ -75,7 +75,7 @@
     id))
 
 (defn sha256-hex
-  "Lower-case hex SHA-256 of the bytes `content`: the id a packed object has and
+  "Lower-case hex SHA-256 of the bytes `content`: the id an object has and
    the hash of a cache key (the store's hasher may differ but a cache key is an
    internal address, never a store id)."
   [^bytes content]

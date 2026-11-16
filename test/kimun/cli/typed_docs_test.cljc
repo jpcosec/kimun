@@ -1,7 +1,7 @@
 (ns kimun.cli.typed-docs-test
   "Typed documents end to end on temporary stores: the `docs` lifecycle of
    sldb v1 (create, track, update, untrack, delete, show, list, status), its
-   consequences for models (counts, superseded, backfill) and for the journal.
+   consequences for models (counts, superseded, backfill).
    Each test names in a comment the v1 functions whose promise it carries."
   (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is testing]]
             [clojure.string :as str]
@@ -119,12 +119,6 @@
     (is (not= (get-in c [:data :content-hash]) (get-in u [:data :content-hash])))
     (is (not= (get-in c [:data :source-hash]) (get-in u [:data :source-hash])))
     (is (= (get-in c [:data :field-hashes "status"]) (get-in u [:data :field-hashes "status"])) "only the changed field's hash moves")
-    (let [[save create] (:data (run p "journal" "show" "--limit" "2"))]
-      (is (= "docs update" (:operation save)))
-      (is (= "TicketDoc:login" (:address save)))
-      (is (= {"title" {:before "Broken login" :after "New"}} (:fields save)))
-      (is (= "docs create" (:operation create)))
-      (is (= [(:revision create)] (:parents save))))
     (testing "an identical update writes nothing"
       (let [head (:revision (run p "stores" "check"))
             same (run p "docs" "update" "login")]
@@ -144,11 +138,9 @@
       (is (= [{:document "login" :model "TicketDoc" :state :intact :category :edited}]
              (mapv #(select-keys % [:document :model :state :category]) (get-in chk [:data :documents :findings]))))
       (is (= "docs/file-modified" (:type (first (:warnings chk))))))
-    (is (= [{:name "login" :path "login.md" :status :modified}] (:data (run p "docs" "status"))))
     (is (= "closed" (get-in (run p "docs" "update" "login") [:data :payload "status"])))
     (is (= [] (:warnings (run p "stores" "check"))))
     (fs/delete (file p "login.md"))
-    (is (= :missing (:status (first (:data (run p "docs" "status"))))))
     (is (= "docs/file-missing" (:type (first (:warnings (run p "stores" "check"))))))))
 
 (deftest untrack-keeps-the-file-and-delete-removes-it
@@ -162,7 +154,6 @@
     (is (fs/exists? (file p "a.md")))
     (is (= ["b"] (mapv :name (:data (run p "docs" "list")))))
     (is (true? (:ok (run p "docs" "track" "TicketDoc" "a.md"))) "the same name can be tracked again")
-    (is (= ["docs track" "docs untrack"] (mapv :operation (take 2 (:data (run p "journal" "show"))))))
     (let [no (run p "docs" "delete" "b")]
       (is (= "docs/confirmation-required" (get-in no [:error :type])))
       (is (fs/exists? (file p "b.md")))
@@ -170,7 +161,7 @@
     (is (true? (:ok (run p "docs" "delete" "b" "--yes"))))
     (is (not (fs/exists? (file p "b.md"))))
     (is (= ["a"] (mapv :name (:data (run p "docs" "list")))))
-    (is (true? (:ok (run p "journal" "verify"))))))
+    (is (true? (:ok (run p "stores" "verify"))))))
 
 (deftest redefining-a-model-with-documents
   ;; v1: test_promote_required_field_without_default_is_rejected_with_clear_error, test_dry_run_reports_backfill_documents,
@@ -196,10 +187,6 @@
       (is (= "docs/superseded" (:type (first (:warnings (run p "stores" "check")))))))
     (let [e (run p "models" "field-add" "TicketDoc" "--field" "area" "--type" "string" "--description" "Field string." "--default" "core" "--backfill")]
       (is (= ["login"] (get-in e [:data :backfilled])))
-      (let [entry (first (:data (run p "journal" "show" "--limit" "1")))]
-        (is (= "models backfill" (:operation entry)))
-        (is (= {"priority" {:before nil :after 5} "area" {:before nil :after "core"}} (:fields entry))
-            "the journal names the fields the backfill added"))
       (is (str/includes? (slurp (file p "login.md")) "core"))
       (let [d (:data (run p "docs" "show" "login"))]
         (is (= :intact (:state d)))
@@ -346,7 +333,7 @@
       (fs/delete (file p "ref-doc.md"))
       (is (= "# T\n\nStatus: open\n" (get-in (run p "docs" "show" "inline-doc") [:data :markdown])))
       (is (= "T" (get-in (run p "docs" "show" "inline-doc") [:data :payload "title"])))
-      (is (= :missing (:status (first (filter #(= "ref-doc" (:name %)) (:data (run p "docs" "status"))))))))))
+      (is (= ["docs/file-missing"] (mapv :type (filter #(= "ref-doc" (:document %)) (:warnings (run p "stores" "check")))))))))
 
 ;; a store created with `--content inline` makes every document inline by default.
 (deftest store-content-inline-defaults-documents-to-inline

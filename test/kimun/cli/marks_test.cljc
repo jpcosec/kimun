@@ -119,13 +119,9 @@
                      "--reason" "inserted a paragraph above")]
           (is (true? (:ok r)) (pr-str r))
           (is (= id (get-in r [:data :id])))
-          (let [after (first (filter #(= id (:id %)) (marks)))
-                e (first (get-in (run "journal" "show" "--limit" "1") [:data]))]
+          (let [after (first (filter #(= id (:id %)) (marks)))]
             (is (= :anchored (:status after)))
-            (is (= (:locator cand) (:locator after)))
-            (is (= "docs mark" (:operation e)))
-            (is (= "unit-reanchor" (get-in e [:declared :kind])))
-            (is (= "inserted a paragraph above" (get-in e [:declared :reason])))))))))
+            (is (= (:locator cand) (:locator after)))))))))
 
 (deftest deleting-does-not-end-the-unit-and-closing-is-declared
   (let [text (slurp (file "notes" "plain.md"))
@@ -138,14 +134,9 @@
     (is (true? (:ok (run "docs" "update" "notes/plain.md" "--name" "plain"))))
     (is (= id (:id (first (filter #(= id (:id %)) (marks))))) "the id survives the write")
     (is (= :missing (:status (first (filter #(= id (:id %)) (marks))))))
-    (let [u (run "docs" "unmark" "plain" id "--reason" "gone for good")
-          e (first (get-in (run "journal" "show" "--limit" "1") [:data]))]
+    (let [u (run "docs" "unmark" "plain" id "--reason" "gone for good")]
       (is (true? (:ok u)) (pr-str u))
-      (is (empty? (filter #(= id (:id %)) (marks))))
-      (is (= "docs unmark" (:operation e)))
-      (is (= "unit-closure" (get-in e [:declared :kind])))
-      (is (= :missing (get-in e [:declared :status])))
-      (is (= "gone for good" (get-in e [:declared :reason]))))))
+      (is (empty? (filter #(= id (:id %)) (marks)))))))
 
 (deftest marks-survive-a-reanchor-and-a-rebuild
   (let [p (str (ktu/temp-dir "kimun-marks-inc-"))

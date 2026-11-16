@@ -75,7 +75,6 @@
 (defn- mark-of [name id] (first (filter #(= id (:id %)) (marks name))))
 (defn- id-of [r] (get-in r [:data :id]))
 (defn- span! [name block range & more] (apply run "docs" "mark" name "--locator" block "--range" range more))
-(defn- last-entry [] (first (get-in (run "journal" "show" "--limit" "1") [:data])))
 (defn- write! [rel text] (spit (file "notes" rel) text))
 (defn- blk-in [title] (pr-str {:section [{:title title :n 0}] :type :paragraph :n 0}))
 (defn- update! [rel name] (run "docs" "update" (str "notes/" rel) "--name" name))
@@ -131,9 +130,7 @@
         (is (true? (:ok (span! "plain" p1 "5:10" "--unit" id "--reason" "a paragraph went in above"))))
         (is (= :anchored (:status (mark-of "plain" id))))
         (is (= (loc 1) (:locator (mark-of "plain" id))))
-        (is (= "unit-reanchor" (get-in (last-entry) [:declared :kind])))
-        (is (= [5 10] (get-in (last-entry) [:declared :locator :range])))
-        (is (= "a paragraph went in above" (get-in (last-entry) [:declared :reason])))))
+        (is (= [5 10] (get-in (mark-of "plain" id) [:locator :range])))))
     (testing "it moves to another document with the same id, in one declared revision"
       (let [o (blk-in "Otra")
             r (run "docs" "mark" "other" "--unit" id "--from" "plain" "--locator" o "--range" "0:4"
@@ -141,17 +138,14 @@
         (is (true? (:ok r)) (pr-str r))
         (is (nil? (mark-of "plain" id)) "it left the first document")
         (is (= [id] (map :id (marks "other"))))
-        (is (= [0 4] (get-in (mark-of "other" id) [:locator :range])))
-        (is (= "unit-move" (get-in (last-entry) [:declared :kind])))))
+        (is (= [0 4] (get-in (mark-of "other" id) [:locator :range])))))
     (testing "deleting the text does not end the unit; closing is a declaration"
       (write! "other.md" "# Otra\n\n```\nx\n```\n")
       (is (= :missing (:status (mark-of "other" id))))
       (is (true? (:ok (update! "other.md" "other"))))
       (is (= id (:id (mark-of "other" id))) "the id survives the write")
       (is (true? (:ok (run "docs" "unmark" "other" id "--reason" "gone"))))
-      (is (nil? (mark-of "other" id)))
-      (is (= "unit-closure" (get-in (last-entry) [:declared :kind])))
-      (is (= :missing (get-in (last-entry) [:declared :status]))))))
+      (is (nil? (mark-of "other" id))))))
 
 (deftest what-has-no-plain-text-or-no-valid-range-is-rejected-and-writes-nothing
   (write! "plain.md" (str "# Nota\n\nHola mundo.\n\n```clj\n(+ 1 2)\n```\n\n* uno\n* dos\n\nEsto * no entra.\n"))

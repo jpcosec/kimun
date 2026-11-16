@@ -76,12 +76,9 @@
   ;;     test_reindex_entry_carries_schema, test_locate_model_source_points_at_the_defining_file (v2: node id + revision)
   (let [p (project) _ (run p "models" "define" "-f" ticket)
         _ (run p "models" "field-add" "TicketDoc" "--field" "priority" "--type" "int" "--description" "Priority." "--default" "5")
-        h (:data (run p "models" "history" "TicketDoc"))
-        j (:data (run p "journal" "show"))]
+        h (:data (run p "models" "history" "TicketDoc"))]
     (is (= [2 1] (mapv :version h)))
     (is (every? #(and (string? (:revision %)) (= "human/tester" (:actor %)) (string? (:timestamp %))) h))
-    (is (= (mapv :revision h) (mapv :revision j)) "every model edit is a journal entry, newest first")
-    (is (= 1 (get-in (first j) [:ops :replace])) "a new version is a :replace, which records supersedes")
     (let [s (store-of p)]
       (is (= 4 (count (:fields (edn/read-string (get-in s [:objects (:id (second h)) :content :blob]))))) "the old schema stays readable")
       (is (= 5 (count (:fields (:descriptor (mstore/model s "TicketDoc")))))))))

@@ -20,7 +20,6 @@
             [kimun.cli.commands.predicates :as predicates]
             [kimun.cli.commands.sections :as sections]
             [kimun.cli.commands.semantic :as semantic]
-            [kimun.cli.commands.journal :as journal]
             [kimun.cli.commands.links :as links]
             [kimun.cli.commands.serve :as serve]
             [kimun.cli.commands.stores :as stores]
@@ -46,7 +45,6 @@
    "rebuild-indexes" index/dispatch
    "fields" fields/dispatch
    "sections" sections/dispatch
-   "journal" journal/dispatch
    "semantic" semantic/dispatch
    "serve" serve/dispatch
    "models" models/dispatch
@@ -59,7 +57,7 @@
   "The option spec of every group, merged: a group declares its own options
    in its `spec` var, so adding a group never edits `kimun.cli.args`. Two
    groups may share an option name only with the same meaning."
-  (merge stores/spec docs/spec journal/spec serve/spec models/spec include/spec direct/spec links/spec semantic/spec fields/spec sections/spec find/spec corpus/spec index/spec predicates/spec edges/spec graph/spec declare/spec))
+  (merge stores/spec docs/spec serve/spec models/spec include/spec direct/spec links/spec semantic/spec fields/spec sections/spec find/spec corpus/spec index/spec predicates/spec edges/spec graph/spec declare/spec))
 
 (def usage
   "Usage text shown by `kimun`, `kimun help` and `--help`."
@@ -75,9 +73,6 @@
              "  stores verify               recompute the hash of every reachable object"
              "  stores show                 descriptor and heads without replay"
              "  stores health [--full]      verdict: ok | degraded (run: …) | needs-human (inspect: …); opens only what git says changed since the pointer"
-             "  stores unreachable [--ids]  read-only inventory of stored objects the heads do not reach (removes nothing)"
-             "  stores pack [--max-bytes N] move loose objects smaller than N bytes (default 4096) into a pack"
-             "  stores unpack              write every packed object back to objects/ and remove the packs"
              "  stores sense [--once] [--full]   one read-only observation: structured signals; opens only what git says changed since the pointer (--full: every document)"
              "  stores changed [--since COMMIT]   what git says changed since COMMIT (default: the pointer) and the state of the marks in those files; read-only"
              "  stores seen [--set COMMIT]   the pointer \"looked up to this commit\" (seen.edn): read it, or move it (COMMIT; HEAD is one); writes only seen.edn"
@@ -94,7 +89,7 @@
              "  docs create MODEL NAME --data FILE | --set k=v … [--path P] [--inline]   render a payload, track it, write the file"
              "  docs track MODEL FILE [--name N] [--force] [--inline]   track an existing Markdown file as a document of MODEL"
              "  docs update NAME [FILE] [--data F | --set k=v]   re-read the file or apply a payload"
-             "  docs show NAME [--format md] [--ast] · docs status · docs untrack NAME · docs delete NAME [--yes]"
+             "  docs show NAME [--format md] [--ast] · docs untrack NAME · docs delete NAME [--yes]"
              "  include check [--staged] · gitignore [--write] · hook --install|--uninstall · build [--rebuild] · status"
              "                              what this repo versions in git, from kimun.include.edn"
              "  models define|field-add … [--dry-run | --backfill]   documents of a redefined model: list or rewrite them"
@@ -125,8 +120,6 @@
              "  semantic parent-add|parent-remove CHILD PARENT · equivalent-add A B · export [-o FILE]"
              "  declare read FILE…          evaluate declaration files (Clojure) and show their propositions; read-only, no store"
              "  declare anchors FILE… [--since COMMIT]   resolve the (at …) anchors of declarations against the files; with a commit (or the pointer of a store here) git says what changed; read-only"
-             "  journal show [--limit N] [--by ACTOR] [--tree NAME|ID]   the write history, newest first (a view of the log)"
-             "  journal verify              check the revision chain, the log replay and every reachable object"
              "  serve [--port N] [--host H] [--token T] [--cors]   HTTP API over the commands (default 127.0.0.1:8787)"
              "                              --token (or $KIMUN_SERVE_TOKEN) requires `Authorization: Bearer TOKEN`"
              ""

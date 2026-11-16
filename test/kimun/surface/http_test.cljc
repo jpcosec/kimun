@@ -138,16 +138,6 @@
                       (is (= "docs ingest" (get-in w [:json :command]))))
                     (is (= #{"doc" "second"} (set (map :name (get-in (req :get (str base "/docs")) [:json :data]))))))))
 
-(deftest journal-routes
-  (with-server {} (fn [base _]
-                    (let [j (req :get (str base "/journal"))]
-                      (is (= 200 (:status j)))
-                      (is (pos? (count (get-in j [:json :data])))))
-                    (is (= [] (get-in (req :get (str base "/journal?tree=nope")) [:json :data])))
-                    (is (= 1 (count (get-in (req :get (str base "/journal?limit=1&by=human/tester")) [:json :data]))))
-                    (is (= 400 (:status (req :get (str base "/journal?limit=0")))))
-                    (is (= 200 (:status (req :get (str base "/journal/verify"))))))))
-
 ;; ------------------------------------------------------------------ auth
 
 (deftest serve-without-token-stays-open
@@ -236,8 +226,8 @@
 (deftest command-route-builds-argv-from-the-request
   (let [cfg {:store "/s" :run stub-run :env {} :cwd "."}
         argv #(get-in (call h/routes cfg %) [:json :data :argv])]
-    (is (= ["journal" "show" "--limit" "3" "--tree" "t" "--store" "/s" "--format" "json"]
-           (argv {:request-method :get :uri "/journal" :query-string "limit=3&tree=t"})))
+    (is (= ["graph" "cycles" "--limit" "3" "--store" "/s" "--format" "json"]
+           (argv {:request-method :get :uri "/graph/cycles" :query-string "limit=3"})))
     (is (= ["docs" "render" "my doc" "--store" "/s" "--format" "json"]
            (argv {:request-method :get :uri "/docs/render" :query-string "name=my%20doc"})))
     (is (= ["docs" "ingest"] (take 2 (argv {:request-method :post :uri "/docs/ingest" :body "{\"name\":\"n\",\"markdown\":\"# t\"}"}))))))

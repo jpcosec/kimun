@@ -207,10 +207,9 @@
 
 (defn- implied? [tag parent] (and (str/starts-with? tag (str parent ".")) (not (str/includes? (subs tag (inc (count parent))) "."))))
 
-(defn- plan [store operation tag value {:keys [actor timestamp]} ops]
+(defn- plan [store {:keys [actor timestamp]} ops]
   {:plan/version 1 :base (:head store) :actor actor :timestamp timestamp :ops (vec ops)
-   :engines {"kimun.surface.semantic" "1"
-             docs/meta-key (pr-str {:operation operation :address (str "se." tag) :new-value value})}})
+   :engines {"kimun.surface.semantic" "1"}})
 
 (defn- relation-ops [host a b ctx actor]
   (let [to (id-of host (term b)) c (context ctx)]
@@ -231,7 +230,7 @@
       (err/raise :semantic/cycle (str "'" child "' cannot be a kind of '" parent "': '" parent "' is already a kind of '" child "'.") {:tag child :parent parent}))
     (if (some #{parent} (parents g child))
       {:changed false}
-      {:changed true :plan (plan store "semantic parent-add" child parent opts (relation-ops host child parent parent-context (:actor opts)))})))
+      {:changed true :plan (plan store opts (relation-ops host child parent parent-context (:actor opts)))})))
 
 (defn parent-remove-plan
   "Plan undeclaring `parent` of `child` (same result shape). Raises
@@ -242,7 +241,7 @@
   (when (implied? child parent)
     (err/raise :semantic/implied (str "'" parent "' is the parent '" child "' gets from its own name; rename the tag to change it.") {:tag child :parent parent}))
   (if-let [eids (seq (get-in (declared store) [:edges [:parent child parent]]))]
-    {:changed true :plan (plan store "semantic parent-remove" child parent opts (map (fn [e] {:op :remove-edge :edge e}) eids))}
+    {:changed true :plan (plan store opts (map (fn [e] {:op :remove-edge :edge e}) eids))}
     {:changed false}))
 
 (defn equivalent-add-plan
@@ -253,4 +252,4 @@
   (when (= a b) (err/raise :semantic/cycle (str "'" a "' already means itself.") {:tag a}))
   (if (seq (get-in (declared store) [:edges [:equivalent a b]]))
     {:changed false}
-    {:changed true :plan (plan store "semantic equivalent-add" a b opts (relation-ops host a b equivalent-context (:actor opts)))}))
+    {:changed true :plan (plan store opts (relation-ops host a b equivalent-context (:actor opts)))}))

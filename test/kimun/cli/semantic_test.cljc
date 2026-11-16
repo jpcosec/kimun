@@ -12,7 +12,6 @@
             [kimun.cli.main :as main]
             [kimun.cli.store :as cli-store]
             [kimun.graph.export :as sexport]
-            [kimun.surface.docs :as docs]
             [kimun.surface.semantic :as sem]
             [kimun.host.default :as host]))
 
@@ -42,7 +41,7 @@
 (defn- docs-of [p tag] (get-in (semantic p "show" tag) [:data :documents]))
 
 ;; v1: test_a_declared_parent_is_read_by_the_closure_by_the_graph_and_by_the_journal
-(deftest a-declared-parent-is-read-by-the-closure-the-kernel-and-the-journal
+(deftest a-declared-parent-is-read-by-the-closure-and-the-kernel
   (let [p (world)]
     (is (= ["Spec:s1"] (docs-of p "type.knowledge")))
     (let [before (:head (opened p)) e (semantic p "parent-add" "layer.topology" "type.knowledge")]
@@ -57,18 +56,14 @@
           (is (= :semantic (:type edge)))
           (is (= {:name "layer.topology" :lang "sldb/tag"} (get-in s [:objects (:from edge) :content])))
           (is (= "human/tester" (get-in edge [:evidence :actor])))
-          (is (= {:name sem/parent-context} (get-in s [:objects (get-in edge [:evidence :context]) :content])))))
-      (testing "the plan journals operation, address and new value (v1 journal entry)"
-        (let [{:keys [plan]} (sem/parent-add-plan host/host (opened p) "layer" "type" {:actor "human/tester" :timestamp "2026-01-01T00:00:00.000Z"})]
-          (is (= {:operation "semantic parent-add" :address "se.layer" :new-value "type"}
-                 (read-string (get-in plan [:engines docs/meta-key])))))))))
+          (is (= {:name sem/parent-context} (get-in s [:objects (get-in edge [:evidence :context]) :content]))))))))
 
 ;; v1: test_declaring_it_twice_changes_nothing_and_journals_nothing
 (deftest declaring-it-twice-changes-nothing
   (let [p (world) head (:revision (semantic p "parent-add" "layer.topology" "type.knowledge"))
         again (semantic p "parent-add" "layer.topology" "type.knowledge")]
     (is (false? (get-in again [:data :changed])))
-    (is (= head (:revision again) (:head (opened p))) "no revision, so no journal entry")))
+    (is (= head (:revision again) (:head (opened p))) "no revision")))
 
 ;; v1: test_a_declared_parent_survives_the_rebuild_that_rederives_the_names
 (deftest a-declared-parent-survives-new-documents

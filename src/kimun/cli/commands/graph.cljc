@@ -262,7 +262,7 @@
    :input {:alias :i :ref "FILE" :desc "Input file (direct commands; graph snapshot load, graph ingest-sldb)"}
    :type {:ref "TYPE" :desc "Field type (models field-add) or node type to keep (graph list|components|central|isolated|similar)"}
    :depth {:ref "N" :desc "Hops to follow (docs recover; graph neighborhood, default 1)"}
-   :limit {:ref "N" :desc "How many results (journal show; graph cycles|central|similar)"}
+   :limit {:ref "N" :desc "How many results (graph cycles|central|similar)"}
    :relation {:ref "R" :desc "Relation to walk (repeatable; default: the authored ones)" :coerce [:string]}
    :all-relations {:desc "Walk every relation, derived structure included" :coerce :boolean}
    :direction {:ref "DIR" :desc "graph neighborhood: both (default) | incoming | outgoing"}

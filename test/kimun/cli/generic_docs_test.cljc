@@ -59,9 +59,6 @@
         (is (= "generic/md" (:class (:parse-contract doc))))
         (is (true? (tdocs/cached-tree? store tree)))
         (is (= [] (tdocs/documents store)) "it is not a typed document")))
-    (is (= {:add-node 2 :register-tree 1 :add-edge 1}
-           (:ops (first (:data (run p "journal" "show" "--limit" "1")))))
-        "root and anchor, the registration and the anchor edge: no block or ownership op")
     (is (= [{:name "plain" :tree tree :class "generic/md"}]
            (mapv #(dissoc % :root) (:data (run p "docs" "list")))))
     (is (= text-1 (:data (run p "docs" "render" "plain"))))

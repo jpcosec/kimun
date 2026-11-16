@@ -3,7 +3,7 @@
    refresh of `stores update`; docs/v2/06 §3): rebuilds the derived index
    from the store and writes its cache, `.kimun/index/<head>.edn`. It is the
    only command that writes the cache — reads never do — and it commits
-   nothing: no transaction, no journal entry, the store's revision is the one
+   nothing: no transaction, the store's revision is the one
    it had. A top-level command: `dispatch` is registered under
    \"rebuild-indexes\" and takes no subcommand."
   (:require [kimun.cli.out :as out]

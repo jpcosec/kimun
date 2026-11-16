@@ -94,12 +94,12 @@ note "\":next\" pide una INSPECCIÓN, no es un comando: el circuito se detiene a
 note "hasta que alguien decide (status=$STATUS)."
 
 say "paso 2b · inspección (lo que :next pide: mirar qué cambió)"
-note "docs status: $(kimun docs status | json 'd["data"]')"
+note "docs list: $(kimun docs list | json '[[x["name"], x.get("state")] for x in d["data"]]')"
 note "la fuente registrada frente al archivo: los campos que la señal nombra arriba."
 
 say "paso 3 · decisión declarada y reconciliación"
 note "el recorrido SIMULA aquí la decisión explícita de un actor: nadie revisó el cambio;"
-note "el guion solo consultó docs status y la señal, y aplica la primera acción propuesta."
+note "el guion solo consultó docs list y la señal, y aplica la primera acción propuesta."
 ACTION=$(printf '%s' "$ACTIONS" | python3 -c "
 import json,sys
 a=json.load(sys.stdin)
@@ -112,8 +112,6 @@ note "acción elegida (leída de :actions, no fijada de antemano): $ACTION"
 kimun $(printf '%s' "$ACTION" | sed 's/^kimun //') >/dev/null
 H=$(observe "stores health (reconciliado)" stores health)
 note "health: $(printf '%s' "$H" | json 'd["data"]["status"]')"
-J=$(kimun journal show --limit 1)
-note "journal: operation=$(printf '%s' "$J" | json 'd["data"][0]["operation"]') fields=$(printf '%s' "$J" | json 'sorted(d["data"][0].get("fields", {}).keys())') actor=$(printf '%s' "$J" | json 'd["data"][0]["actor"]')"
 
 # ---------------------------------------------------------------- paso 4: contrato de lectura (K6)
 
@@ -156,8 +154,6 @@ T1=$(kimun docs list | json '[x["tree"] for x in d["data"] if x["name"]=="plain"
 note "tree antes=$(id8 "$T0") después=$(id8 "$T1")  · igual=$( [ "$T0" = "$T1" ] && echo sí || echo NO )"
 S=$(observe "stores sense (tras re-anclar)" stores sense)
 note "señales: $(printf '%s' "$S" | json '[s["type"] for s in d["data"]["signals"]]')"
-J=$(kimun journal show --limit 1)
-note "journal: operation=$(printf '%s' "$J" | json 'd["data"][0]["operation"]') declared=$(printf '%s' "$J" | json 'd["data"][0].get("declared")')"
 
 # ---------------------------------------------------------------- paso 6: latido
 

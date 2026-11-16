@@ -18,7 +18,7 @@
             [kimun.kernel.err :as err]))
 
 (def operations
-  "The mutations `mutate` knows; the journal names one as `fields <name>`."
+  "The mutations `mutate` knows; the command names one as `fields <name>`."
   #{:set :unset :append :clean :clear})
 
 ;; ---------------------------------------------------------------- paths

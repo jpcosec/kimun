@@ -56,7 +56,6 @@
    ["docs show --ast generic"    ["docs" "show" "plain" "--ast"]]
    ["docs render typed"          ["docs" "render" "a"]]
    ["docs render generic"        ["docs" "render" "plain"]]
-   ["docs status"                ["docs" "status"]]
    ["docs compose typed"         ["docs" "compose" "a"]]
    ["docs compose generic"       ["docs" "compose" "notes/plain.md"]]
    ["docs recover typed"         ["docs" "recover" "a"]]
@@ -97,19 +96,16 @@
    ["stores health"              ["stores" "health"]]
    ["stores show"                ["stores" "show"]]
    ["stores sense"               ["stores" "sense" "--once"]]
-   ["stores unreachable"         ["stores" "unreachable"]]
-   ["semantic tags"              ["semantic" "tags"]]
-   ["journal show"               ["journal" "show"]]
-   ["journal verify"             ["journal" "verify"]]])
+   ["semantic tags"              ["semantic" "tags"]]])
 
 (def known-cold-cache-gaps
   "Commands (by label) that do NOT answer the same with `cache/` deleted /
    with one corrupted cache object, found by this matrix on 2026-11-15. Fix
    them through `kimun.surface.docs/doc-tree` and remove them from here."
-  {:cold #{"journal show" "journal verify"}
+  {:cold #{}
    ;; cache/ minus cache/plans: only objects/ and docs/ are deleted
-   :cold-no-plans #{"journal show"}
-   :corrupt #{"journal show"}})
+   :cold-no-plans #{}
+   :corrupt #{}})
 
 (defn- volatile-free
   "The answer of a command without its clock readings."

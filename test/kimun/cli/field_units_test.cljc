@@ -202,7 +202,5 @@
           (is (= (:projection-hash e1) (:projection-hash e2)))
           (is (= (:content-hash e1) (:content-hash e2)))
           (is (= (:fingerprint e1) (:fingerprint e2))))
-        (is (not= (:units t0) (:units other-doc)) "different identities")
-        (is (= (mapv #(select-keys % [:name :path :status]) (:data (run "docs" "status")))
-               (mapv #(select-keys % [:name :path :status]) (:data (run-in other "docs" "status"))))))
+        (is (not= (:units t0) (:units other-doc)) "different identities"))
       (fs/delete-tree other))))

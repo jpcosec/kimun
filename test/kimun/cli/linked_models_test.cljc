@@ -5,7 +5,6 @@
    names in a comment the v1 function whose promise it carries."
   (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [cheshire.core :as json]
-            [clojure.edn :as edn]
             [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.main :as main]
@@ -74,17 +73,12 @@
       (is (fs/exists? output))
       (is (str/includes? (slurp (str output)) "Use deskops model."))
       (is (= ["desk/inbox/request-456.md"] (doc-paths target)))
-      (testing "the binding: the owner's node itself, its origin in the journal, no link needed afterwards"
+      (testing "the binding: the owner's node itself, no link needed afterwards"
         (let [owner (mstore/find-model (:store (opened deskops)) "RequestDoc")
               s (:store (opened target))
-              mine (mstore/find-model s "RequestDoc")
-              metas (keep #(some-> (get-in % [:engines tdocs/meta-key]) edn/read-string)
-                          (filter map? (vals (:objects s))))]
+              mine (mstore/find-model s "RequestDoc")]
           (is (= (:id owner) (:id mine)) "same content-addressed node in both stores")
           (is (= [2 2] [(:version owner) (:version mine)]))
-          (is (some #(and (= "models import" (:operation %)) (= "deskops" (get-in % [:origin :alias]))
-                          (= (:id owner) (get-in % [:origin :id]))) metas)
-              "the import transaction records where the model came from")
           (is (= :intact (:state (tdocs/find-document s "request-456"))))
           (is (true? (:ok (run target "stores" "check"))) (pr-str (run target "stores" "check")))
           (is (true? (:ok (run target "docs" "update" "request-456" "--set" "title=Changed"))))
