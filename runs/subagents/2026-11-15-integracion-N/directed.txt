@@ -1,0 +1,19 @@
+
+Testing kimun.cli.nested-units-test
+
+Testing kimun.surface.marks-test
+
+Testing kimun.cli.marks-test
+moved existing store to /tmp/kimun-adhoc-9258748183955893398/kimun-marks-inc-13774201595470160249/.kimun.bak-20261115-221141-01M7GYHVGF15XHTHD1E78D1HWR
+
+Testing kimun.cli.unit-close-move-test
+moved existing store to /tmp/kimun-close-inc-17196917212099464233/.kimun.bak-20261115-221142-01M7GYHWNGWR0AB2KM8X1X2CZW
+moved existing store to /tmp/kimun-close-inc-541234221327586010/.kimun.bak-20261115-221143-01M7GYHXD7BBZ156DAATXPWJE1
+
+Testing kimun.cli.field-units-test
+moved existing store to /tmp/kimun-adhoc-9258748183955893398/kimun-units-inc-8357977219421609542/.kimun.bak-20261115-221143-01M7GYHXWWHXX3CK26GAPN0NTR
+
+Testing kimun.doc14-contract-test
+
+Ran 34 tests containing 649 assertions.
+0 failures, 0 errors.
