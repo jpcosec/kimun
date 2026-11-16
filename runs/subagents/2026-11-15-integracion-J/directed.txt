@@ -1,0 +1,11 @@
+
+Testing kimun.cli.spec16-docs-test
+
+Testing kimun.cli.typed-docs-test
+
+Testing kimun.cli.sense-test
+
+Testing kimun.cli.fields-test
+
+Ran 36 tests containing 379 assertions.
+0 failures, 0 errors.
