@@ -1,0 +1,79 @@
+193: (defn- span [block s e] {:block block :range [s e]})
+194: 
+195: (deftest a-range-counts-graphemes-of-the-nfc-plain-text-not-the-source
+196:   (let [a (sas span-doc)
+197:         t (fn [s e] (:text (anchors/span-anchor a (span p0 s e))))]
+                                ^--- Unable to resolve symbol: anchors/span-anchor
+198:     (is (= "mundo" (t 5 10)) "plain offsets: the ** of the source are not counted")
+199:     (is (not= "mundo" (subs "Hola **mundo** é" 5 10)) "the source offsets would read something else")
+200:     (is (= "é" (t 11 12)) "e + combining mark is ONE grapheme and comes out NFC")
+201:     (is (= family (t 13 14)) "a ZWJ family is one grapheme: the limits stay on its edges")
+202:     (is (= (str "é " family " f") (t 11 16)))
+
+----- Stack trace --------------------------------------------------------------
+kimun.surface.marks-test/fn    - /tmp/kimun-s2br-wt/test/kimun/surface/marks_test.cljc:197:28
+kimun.surface.marks-test/fn    - /tmp/kimun-s2br-wt/test/kimun/surface/marks_test.cljc:197:21
+kimun.surface.marks-test       - /tmp/kimun-s2br-wt/test/kimun/surface/marks_test.cljc:197:11
+clojure.core/fn                - clojure/core.clj:4564:1
+kimun.surface.marks-test/let   - /tmp/kimun-s2br-wt/test/kimun/surface/marks_test.cljc:197:11
+... (run with --debug to see elided elements)
+clojure.test/deftest           - babashka/impl/clojure/test.clj:625:1
+kimun.surface.marks-test/apply - /tmp/kimun-s2br-wt/test/kimun/surface/marks_test.cljc:195:1
+kimun.surface.marks-test       - /tmp/kimun-s2br-wt/test/kimun/surface/marks_test.cljc:195:1
+clojure.core/apply             - clojure/core.clj:662:1
+user                           - NO_SOURCE_PATH:1:63
+
+FAIL in (a-shifted-span-is-proposed-never-chosen-and-moves-by-declaration) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:114)
+FAIL in (a-shifted-span-is-proposed-never-chosen-and-moves-by-declaration) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:114)
+FAIL in (a-shifted-span-is-proposed-never-chosen-and-moves-by-declaration) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:114)
+FAIL in (a-shifted-span-is-proposed-never-chosen-and-moves-by-declaration) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:114)
+FAIL in (a-shifted-span-is-proposed-never-chosen-and-moves-by-declaration) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:114)
+FAIL in (a-shifted-span-is-proposed-never-chosen-and-moves-by-declaration) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:114)
+FAIL in (a-shifted-span-is-proposed-never-chosen-and-moves-by-declaration) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:114)
+FAIL in (a-shifted-span-is-proposed-never-chosen-and-moves-by-declaration) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:114)
+FAIL in (a-shifted-span-is-proposed-never-chosen-and-moves-by-declaration) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:114)
+FAIL in (a-shifted-span-is-proposed-never-chosen-and-moves-by-declaration) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:114)
+FAIL in (a-shifted-span-is-proposed-never-chosen-and-moves-by-declaration) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:114)
+FAIL in (a-shifted-span-is-proposed-never-chosen-and-moves-by-declaration) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:114)
+FAIL in (a-shifted-span-is-proposed-never-chosen-and-moves-by-declaration) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:114)
+FAIL in (a-shifted-span-is-proposed-never-chosen-and-moves-by-declaration) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:114)
+FAIL in (a-shifted-span-is-proposed-never-chosen-and-moves-by-declaration) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:114)
+FAIL in (a-shifted-span-is-proposed-never-chosen-and-moves-by-declaration) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:114)
+FAIL in (a-shifted-span-is-proposed-never-chosen-and-moves-by-declaration) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:114)
+FAIL in (a-range-is-marked-by-declaration-and-read-over-the-plain-text) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:83)
+FAIL in (a-range-is-marked-by-declaration-and-read-over-the-plain-text) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:83)
+FAIL in (a-range-is-marked-by-declaration-and-read-over-the-plain-text) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:83)
+FAIL in (a-range-is-marked-by-declaration-and-read-over-the-plain-text) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:83)
+FAIL in (a-range-is-marked-by-declaration-and-read-over-the-plain-text) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:83)
+FAIL in (a-range-is-marked-by-declaration-and-read-over-the-plain-text) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:83)
+FAIL in (a-range-is-marked-by-declaration-and-read-over-the-plain-text) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:83)
+FAIL in (a-range-is-marked-by-declaration-and-read-over-the-plain-text) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:83)
+FAIL in (a-range-is-marked-by-declaration-and-read-over-the-plain-text) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:83)
+FAIL in (a-range-is-marked-by-declaration-and-read-over-the-plain-text) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:83)
+FAIL in (what-has-no-plain-text-or-no-valid-range-is-rejected-and-writes-nothing) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:156)
+FAIL in (what-has-no-plain-text-or-no-valid-range-is-rejected-and-writes-nothing) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:156)
+FAIL in (what-has-no-plain-text-or-no-valid-range-is-rejected-and-writes-nothing) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:156)
+FAIL in (what-has-no-plain-text-or-no-valid-range-is-rejected-and-writes-nothing) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:156)
+FAIL in (what-has-no-plain-text-or-no-valid-range-is-rejected-and-writes-nothing) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:156)
+FAIL in (what-has-no-plain-text-or-no-valid-range-is-rejected-and-writes-nothing) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:156)
+FAIL in (what-has-no-plain-text-or-no-valid-range-is-rejected-and-writes-nothing) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:156)
+FAIL in (what-has-no-plain-text-or-no-valid-range-is-rejected-and-writes-nothing) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:156)
+FAIL in (what-has-no-plain-text-or-no-valid-range-is-rejected-and-writes-nothing) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:156)
+FAIL in (what-has-no-plain-text-or-no-valid-range-is-rejected-and-writes-nothing) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:156)
+FAIL in (what-has-no-plain-text-or-no-valid-range-is-rejected-and-writes-nothing) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:156)
+FAIL in (what-has-no-plain-text-or-no-valid-range-is-rejected-and-writes-nothing) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:156)
+FAIL in (what-has-no-plain-text-or-no-valid-range-is-rejected-and-writes-nothing) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:156)
+FAIL in (what-has-no-plain-text-or-no-valid-range-is-rejected-and-writes-nothing) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:156)
+FAIL in (what-has-no-plain-text-or-no-valid-range-is-rejected-and-writes-nothing) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:156)
+FAIL in (what-has-no-plain-text-or-no-valid-range-is-rejected-and-writes-nothing) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:156)
+FAIL in (what-has-no-plain-text-or-no-valid-range-is-rejected-and-writes-nothing) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:156)
+FAIL in (span-marks-in-typed-documents-are-not-a-hash-and-survive-a-reanchor) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:183)
+FAIL in (span-marks-in-typed-documents-are-not-a-hash-and-survive-a-reanchor) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:183)
+FAIL in (span-marks-in-typed-documents-are-not-a-hash-and-survive-a-reanchor) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:183)
+FAIL in (span-marks-in-typed-documents-are-not-a-hash-and-survive-a-reanchor) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:183)
+FAIL in (span-marks-in-typed-documents-are-not-a-hash-and-survive-a-reanchor) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:183)
+FAIL in (span-marks-in-typed-documents-are-not-a-hash-and-survive-a-reanchor) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:183)
+FAIL in (span-marks-in-typed-documents-are-not-a-hash-and-survive-a-reanchor) (/tmp/kimun-s2br-wt/test/kimun/cli/range_marks_test.cljc:183)
+Ran 4 tests containing 99 assertions.
+51 failures, 0 errors.
+:cli {:test 4, :pass 48, :fail 51, :error 0, :type :summary}

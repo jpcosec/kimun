@@ -533,15 +533,18 @@
       (err/raise :cli/usage "`--locator` needs the locator of `docs anchors` as EDN or JSON" {:value text}))
     (let [l (loc-key raw)]
       (cond-> l
+        (and (map? l) (map? (:block l))) (update-in [:block :type] #(some-> % keyword))
         (and (map? l) (contains? l :type)) (update :type keyword)
         (and (map? l) (contains? l :kind)) (update :kind keyword)))))
 
 (defn- locator-kind
   "`:block` when the locator names a block (`:type`), `:item` / `:nested` when it
    names an item (`:field` + `:index`) or a nested key (`:field` + `:path`) of a
-   field (K1h), `:section` when it is a path of titles."
+   field (K1h), `:span` when it is a block plus a range of graphemes of its
+   plain text (S2b-r), `:section` when it is a path of titles."
   [loc]
-  (cond (:type loc) :block
+  (cond (anchors/span-locator? loc) :span
+        (:type loc) :block
         (and (map? loc) (contains? loc :field) (contains? loc :index)) :item
         (and (map? loc) (contains? loc :field) (contains? loc :path)) :nested
         (or (vector? loc) (sequential? loc)) :section
@@ -623,14 +626,31 @@
           (or (some? (:index opts)) (some? (:path opts)))
           (err/raise :cli/usage "`--index` / `--path` need --field F: the field the item or the nested key lives in" {:group "docs" :subcommand "mark"}))))
 
+(defn- range-opt
+  "`--range S:E` as `[S E]`: graphemes of the NFC plain text of the block, `[S E)`.
+   Anything else is `cli/usage`; whether it is empty or past the text is decided
+   against the block (`resolve-locator!`)."
+  [text]
+  (let [[_ s e] (re-matches #"\s*(\d+)\s*:\s*(\d+)\s*" (str text))]
+    (if s
+      [(parse-long s) (parse-long e)]
+      (err/raise :cli/usage "`--range` is S:E, two whole numbers: [S E) in graphemes of the plain text of the block"
+                 {:group "docs" :subcommand "mark" :value text}))))
+
 (defn- locator-opt
   "The locator the options give: `--locator L`, or the item/nested one of
    `field-locator`; nil when there is none. Both at once is `cli/usage`."
   [opts]
-  (let [fl (field-locator opts)]
+  (let [fl (field-locator opts)
+        usage! #(err/raise :cli/usage % {:group "docs" :subcommand "mark"})]
     (when (and fl (:locator opts))
-      (err/raise :cli/usage "give --locator L or --field F with --index/--path, not both" {:group "docs" :subcommand "mark"}))
-    (or fl (some-> (:locator opts) str parse-locator))))
+      (usage! "give --locator L or --field F with --index/--path, not both"))
+    (let [l (or fl (some-> (:locator opts) str parse-locator))]
+      (if (some? (:range opts))
+        (do (when (or fl (not (and (map? l) (:type l))))
+              (usage! "`--range S:E` goes with --locator B, the locator of a BLOCK (a paragraph or a heading), and not with --field"))
+            {:block l :range (range-opt (:range opts))})
+        l))))
 
 (defn- field-payload
   "The payload of typed document `d` read from `text`, where its items and nested
@@ -652,7 +672,12 @@
                        (str "`" (:name d) "` is a generic document: it has no fields, so no item or nested key to mark")
                        {:document (:name d) :locator locator}))
         as (tdocs/mark-anchors host/host store d text)
-        a (anchors/resolve-anchor as locator)]
+        span (when (= :span kind) (anchors/span-anchor as locator))
+        _ (when (:error span)
+            (err/raise (if (= :invalid-range (:error span)) :cli/usage :docs/anchor-unresolved)
+                       (str (:why span) ": " (pr-str locator))
+                       (assoc (dissoc span :why) :locator locator :group "docs" :subcommand "mark")))
+        a (or span (anchors/resolve-anchor as locator))]
     (or a
         (err/raise :docs/anchor-unresolved
                    (str "no anchor of this document has that locator: " (pr-str locator))
@@ -891,7 +916,8 @@
    :locator {:ref "L" :desc "Locator of a section or a block, as `docs anchors` prints it (docs mark)"}
    :unit {:ref "ID" :desc "Unit to re-anchor, move or close (docs mark, docs unmark)"}
    :label {:ref "TEXT" :desc "Optional label of a structural unit (docs mark)"}
-   :index {:ref "N" :desc "Position of the list item to mark, with --field (docs mark)"}})
+   :index {:ref "N" :desc "Position of the list item to mark, with --field (docs mark)"}
+   :range {:ref "S:E" :desc "Graphemes [S E) of the plain text of the block --locator names (docs mark)"}})
 
 (def commands
   "Subcommand name → command fn `(fn [args opts ctx] envelope)`."

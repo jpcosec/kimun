@@ -526,7 +526,18 @@ Qué queda **pendiente tras `D0`**, y nada de ello es una pregunta al dueño sob
   todos) y kimun no elige. Si el campo padre deja de extraerse, todas sus marcas pasan a
   `missing` y conservan su id (la ausencia no termina la unidad); cerrar la unidad del campo
   padre no cierra las marcas de sus ítems. Quedan fuera: ítems dentro de ítems, documentos
-  genéricos (sin campos: `docs/not-anchored`), el sensor, el renombrado y el linaje. `K2b`, esa serie y la implementación de `M1` esperan a
+  genéricos (sin campos: `docs/not-anchored`), el sensor, el renombrado y el linaje. **S2b-r (2026-11-15, inferencia
+  del equipo):** un **rango de texto dentro de un bloque** (párrafo o encabezado) se marca **por declaración**
+  (`docs mark NAME --locator B --range S:E`; nada se acuña solo) y es una marca más (`:kind :span`, localizador
+  `{:block B :range [S E]}`): el rango `[S E)` cuenta **grafemas del texto plano NFC** de esa hoja (sin el
+  marcado inline; `02 §4.1`, decisión 32) y la huella es la del subtexto. Tiene los mismos estados, candidatos
+  (los otros tramos del documento con ese subtexto, no solo del mismo bloque, para que un desplazamiento de
+  ordinal no pase por una edición en el sitio; se listan todos y kimun no elige), re-anclaje con `--reason`,
+  cierre y traslado que K1e–K1h, y no entra en ninguna huella. Se rechaza declarado, sin ajustar ni escribir:
+  un rango vacío o mal formado, uno que pasa del texto, y un bloque sin texto plano (código, lista, cita,
+  opaco o fuera del perfil). Un rango en grafemas no puede partir un grafema; el rechazo de uno en code points
+  que lo parte vive en `kimun.surface.markdown.offsets` (S2b-cp), no cableado a ningún comando. Quedan fuera las
+  anclas como extremo de aristas (`S2b-anclas`), el sensor y el linaje. `K2b`, esa serie y la implementación de `M1` esperan a
   `K1`.
 - **Alcance sobre `01 §4` principio 3 y decisiones `1`, `3`, `4` de `05`**: se revisa al
   implementar `K1`, en lo que toca a unidades.

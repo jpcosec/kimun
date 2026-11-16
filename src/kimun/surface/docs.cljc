@@ -932,7 +932,7 @@
         field-marks (if (contains? opts-map :marks)
                       marks
                       (when (seq (:marks doc))
-                        (anchors/advance-marks (merge (anchors/anchors host text) (anchors/field-anchors host payload))
+                        (anchors/advance-marks (merge (anchors/anchors host text {:leaves true}) (anchors/field-anchors host payload))
                                                (:marks doc))))
         ;; with by-reference content the tracked text is the file: "unchanged" is the fingerprint
         ;; matching what the doc was written with, not the text read back from the file
@@ -1113,7 +1113,7 @@
         field-marks (if (contains? opts-map :marks)
                       marks
                       (when (seq (:marks doc))
-                        (anchors/advance-marks (anchors/anchors host text) (:marks doc))))
+                        (anchors/advance-marks (anchors/anchors host text {:leaves true}) (:marks doc))))
         _ (refuse-anchored! store path (:tree doc))
         {:keys [reg ops]} (generic-ops host store {:doc (:doc doc) :tree-id (:tree doc) :name (:name doc)
                                                    :text text :path path :actor actor :old-path (:path doc)
@@ -1201,17 +1201,18 @@
    as `:missing`."
   ([host text doc contract] (marks-of host text doc contract nil))
   ([host text doc contract payload]
-   (let [as (merge (anchors/anchors host text) (when payload (anchors/field-anchors host payload)))]
+   (let [as (merge (anchors/anchors host text {:leaves true}) (when payload (anchors/field-anchors host payload)))]
      {:parse-contract contract
       :marks (anchors/mark-states as (:marks doc))})))
 
 (defn mark-anchors
   "The anchors a mark of document `doc` (typed or generic) can point at, read from
-   `text`: the structural ones (sections, blocks) and, for a typed document whose
+   `text`: the structural ones (sections, blocks), the plain-text leaves a range
+   inside a block is read against (S2b-r) and, for a typed document whose
    payload extracts (K1h), the items and nested keys below its fields. A generic
    document has no fields: it has no `:items` or `:nested`."
   [host store doc text]
-  (merge (anchors/anchors host text)
+  (merge (anchors/anchors host text {:leaves true})
          (when (and (not (:generic doc)) (:model doc))
            (when-let [p (:payload (payload-of store (assoc doc :source text)))]
              (anchors/field-anchors host p)))))

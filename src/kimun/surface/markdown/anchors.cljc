@@ -31,6 +31,7 @@
    contract is likewise supplied by the caller (`:parse-contract`): it is not
    computed here, so nothing about the environment is assumed."
   (:require [kimun.kernel.canon :as canon]
+            [kimun.kernel.ports :as ports]
             [kimun.surface.markdown.ast :as ast]))
 
 (defn- heading? [b] (= :heading (:type b)))
@@ -112,6 +113,19 @@
               {:section path :type (:type b) :n n}))
           blocks block-sections)))
 
+(defn- text-leaves
+  "The leaves of the document: the paragraphs and headings that have plain
+   text, in document order, as `{:locator <block locator> :graphemes [g …]}`.
+   The plain text is the `:text` of the neutral AST (inline markup removed,
+   NFC), and graphemes are the kernel's (`ports/graphemes`), docs/v2/02 §4.1.
+   Code, lists, quotes and opaque blocks (what is outside the SLDB-MD profile
+   included) have no leaf: nothing is invented for them."
+  [host blocks locators]
+  (let [seg (ports/segmenter host)]
+    (vec (for [[b loc] (map vector blocks locators)
+               :when (and (#{:paragraph :heading} (:type b)) (seq (:text b)))]
+           {:locator loc :graphemes (vec (ports/graphemes seg (:text b)))}))))
+
 (defn anchors
   "Structural anchors of Markdown `text` under `host` (see the namespace
    docstring): `{:sections [{:locator :level :hash :lines :bytes :blocks}]
@@ -123,11 +137,15 @@
      order: line ranges taken from an aligned block layer. When absent (or when
      its count does not match the AST) no `:lines`/`:bytes` are emitted.
    - `:parse-contract` the reading contract the caller recorded; copied as is.
+   - `:leaves` when true, also `:leaves` (the plain text of each paragraph and
+     heading, as graphemes of its NFC text, with the block locator) and a
+     `:digest-fn`, what `span-anchor` and the marks of kind `:span` (S2b-r) need.
+     Off by default: the result is then exactly what it always was.
 
    Section hashes are the digest of their blocks (heading and subsections
    included); a block hash is the digest of the block. Neither is an identity."
   ([host text] (anchors host text {}))
-  ([host text {:keys [spans parse-contract]}]
+  ([host text {:keys [spans parse-contract leaves]}]
    (let [blocks (:children (ast/parse host text))
          {:keys [sections block-sections]} (section-tree blocks)
          locators (block-locators blocks block-sections)
@@ -154,15 +172,75 @@
                                                           (second (:bytes end))]))))
                                sections)]
      (cond-> {:sections section-anchors :blocks block-anchors}
-       parse-contract (assoc :parse-contract parse-contract)))))
+       parse-contract (assoc :parse-contract parse-contract)
+       leaves (assoc :leaves (text-leaves host blocks locators)
+                     :digest-fn (fn [v] (canon/digest host v)))))))
+
+(defn span-locator?
+  "True when `locator` names a text range inside a block (S2b-r): `{:block <block
+   locator> :range [start end]}`."
+  [locator]
+  (and (map? locator) (contains? locator :block) (contains? locator :range)))
+
+(defn span-anchor
+  "The anchor of the span `locator` (`{:block L :range [start end)}`) in
+   `anchors` read with `:leaves`: `{:locator :hash :text}`, the hash being the
+   digest of the sub-text. The range counts GRAPHEMES of the NFC plain text of
+   the block (docs/v2/02 §4.1, decision 32), not source characters: the inline
+   markup is not in it. Otherwise a typed rejection `{:error kind :why …}`, never
+   an adjustment: `:invalid-range` (not two integers, negative, or empty:
+   `start < end` is required), `:no-leaves` (anchors read without `:leaves`),
+   `:unresolved` (no such block), `:no-plain-text` (the block is code, a list, a
+   quote, or opaque, so outside the profile too) and `:out-of-range` (the range
+   ends past the text). A range cannot cut a grapheme here: it is already
+   counted in them (a producer counting code points maps through
+   `kimun.surface.markdown.offsets`, which rejects that)."
+  [anchors locator]
+  (let [{:keys [block range]} locator
+        [s e] range
+        leaf (some #(when (= block (:locator %)) %) (:leaves anchors))
+        known (some #(when (= block (:locator %)) %) (:blocks anchors))]
+    (cond
+      (not (and (sequential? range) (= 2 (count range)) (integer? s) (integer? e) (<= 0 s) (< s e)))
+      {:error :invalid-range :range range
+       :why "a span range is [start end) of whole numbers with 0 <= start < end (an empty range is not a mark)"}
+      (nil? (:digest-fn anchors)) {:error :no-leaves :why "the anchors were read without :leaves"}
+      leaf (let [g (:graphemes leaf) n (count g)]
+             (if (> e n)
+               {:error :out-of-range :range range :length n
+                :why (str "the range ends past the plain text of the block (" n " graphemes)")}
+               (let [t (apply str (subvec g s e))]
+                 {:locator locator :hash ((:digest-fn anchors) t) :text t})))
+      known {:error :no-plain-text :block block
+             :why (str "a block of type `" (name (:type block)) "` has no plain text to mark a range in")}
+      :else {:error :unresolved :block block :why "no block of this document has that locator"})))
+
+(defn- span-twins
+  "Every window of the plain text of the document with the length of `loc`'s
+   range and the digest `h`, other than the range `a` resolves to, in document
+   order, as `{:locator :hash}`. Windows may overlap. Used as CANDIDATES only."
+  [anchors loc a h]
+  (let [[s e] (:range loc)
+        len (when (and (integer? s) (integer? e)) (- e s))
+        dig (:digest-fn anchors)]
+    (if-not (and dig len (pos? len))
+      []
+      (vec (for [{bl :locator g :graphemes} (:leaves anchors)
+                 i (range 0 (inc (- (count g) len)))
+                 :let [l {:block bl :range [i (+ i len)]}]
+                 :when (and (not= l (:locator a))
+                            (= h (dig (apply str (subvec g i (+ i len))))))]
+             {:locator l :hash h})))))
 
 (defn resolve-anchor
   "The anchor (a section, a block or, when `field-anchors` were merged in, an
    item or a nested key) of `anchors` whose `:locator` equals `locator`, or nil. Exact equality: a locator is read under one contract and
    one state of the document, not resolved by approximation."
   [anchors locator]
-  (some #(when (= locator (:locator %)) %)
-        (concat (:sections anchors) (:blocks anchors) (:items anchors) (:nested anchors))))
+  (if (span-locator? locator)
+    (let [r (span-anchor anchors locator)] (when-not (:error r) r))
+    (some #(when (= locator (:locator %)) %)
+          (concat (:sections anchors) (:blocks anchors) (:items anchors) (:nested anchors)))))
 
 ;; ---------------------------------------------------------------- structural marks (K1e)
 
@@ -208,18 +286,22 @@
 (defn- anchor-at
   "The anchor of `kind` whose locator is `locator`, or nil."
   [anchors kind locator]
-  (first (filter #(= locator (:locator %)) (entries-of anchors kind))))
+  (if (= :span kind)
+    (let [r (span-anchor anchors locator)] (when-not (:error r) r))
+    (first (filter #(= locator (:locator %)) (entries-of anchors kind)))))
 
 (defn- same-hash
   "Anchors of `kind` other than `a` whose hash is `h`. An item or a nested key
    is only compared inside its own field (`loc`'s `:field`): the same value in
    another field is another thing."
   [anchors kind a h loc]
-  (vec (remove #(identical? % a)
+  (if (= :span kind)
+    (span-twins anchors loc a h)
+    (vec (remove #(identical? % a)
                (filter #(and (= h (:hash %))
                              (or (not (#{:item :nested} kind))
                                  (= (:field loc) (:field (:locator %)))))
-                       (entries-of anchors kind)))))
+                       (entries-of anchors kind))))))
 
 (defn- candidate
   "A candidate for a mark: its locator, why it is offered and, when the block
@@ -240,6 +322,12 @@
      elsewhere: probably a shifted ordinal, never decided here;
    - `:missing` the locator does not resolve: no candidate when the hash is
      nowhere, the anchors with that hash when it is elsewhere.
+
+   A mark of kind `:span` (S2b-r; `anchors` read with `:leaves`) reads with the
+   same table: its locator is `{:block L :range [s e)}`, its hash that of the
+   sub-text, and the anchors with that hash are the other windows of that length
+   in the plain text of ANY block of the document (not only its own: an ordinal
+   shift would otherwise look like an edit in place).
 
    Every candidate is a PROPOSAL `{:locator :reason :lines?}`, reason
    `:locator` or `:hash`; one-to-many lists all of them and never picks one."

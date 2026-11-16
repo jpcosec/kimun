@@ -176,3 +176,102 @@
         (is (= (:hash (anchors/resolve-anchor a3 {:field "tags" :index 0})) (:hash (adv "first"))))
         (is (= (:hash (anchors/resolve-anchor a3 {:field "tags" :index 1})) (:hash (adv "second"))))
         (is (= (map :locator (vals marks)) (map :locator (vals adv))))))))
+
+
+;; ---------------------------------------------------------------- S2b-r: ranges inside a block
+
+;; Plain text of the first paragraph below (inline markup removed, NFC):
+;;   H o l a ␠ m u n d o ␠ é ␠ 👨‍👩‍👧 ␠ f i n   -> 18 graphemes
+;; `é` is written e + U+0301 in the source (one grapheme, one code point after NFC),
+;; the family is man ZWJ woman ZWJ girl (one grapheme, five code points), and the
+;; word `mundo` is bold in the source, so its source offsets are not its plain ones.
+(def ^:private family "👨‍👩‍👧")
+(def ^:private span-doc
+  (str "# T\n\nHola **mundo** é " family " fin\n\nOtro.\n\n```clj\n(+ 1 2)\n```\n\n* uno\n* dos\n"))
+(defn- sas [text] (anchors/anchors host/host text {:leaves true}))
+(def ^:private p0 {:section [{:title "T" :n 0}] :type :paragraph :n 0})
+(defn- span [block s e] {:block block :range [s e]})
+
+(deftest a-range-counts-graphemes-of-the-nfc-plain-text-not-the-source
+  (let [a (sas span-doc)
+        t (fn [s e] (:text (anchors/span-anchor a (span p0 s e))))]
+    (is (= "mundo" (t 5 10)) "plain offsets: the ** of the source are not counted")
+    (is (not= "mundo" (subs "Hola **mundo** é" 5 10)) "the source offsets would read something else")
+    (is (= "é" (t 11 12)) "e + combining mark is ONE grapheme and comes out NFC")
+    (is (= family (t 13 14)) "a ZWJ family is one grapheme: the limits stay on its edges")
+    (is (= (str "é " family " f") (t 11 16)))
+    (is (= (:hash (anchors/span-anchor a (span p0 13 14)))
+           ((:digest-fn a) family)) "the hash is the digest of the sub-text")
+    (testing "a heading has plain text too"
+      (is (= "T" (:text (anchors/span-anchor a (span {:section [{:title "T" :n 0}] :type :heading :n 0} 0 1))))))
+    (testing "rejections are typed and nothing is adjusted"
+      (let [err (fn [loc] (:error (anchors/span-anchor a loc)))]
+        (is (= :invalid-range (err (span p0 3 3))) "empty range")
+        (is (= :invalid-range (err (span p0 5 2))))
+        (is (= :invalid-range (err (span p0 -1 2))))
+        (is (= :invalid-range (err {:block p0 :range [1 "x"]})))
+        (is (= :out-of-range (err (span p0 10 19))) "ends past the 18 graphemes")
+        (is (= :no-plain-text (err (span {:section [{:title "T" :n 0}] :type :code :n 0} 0 2))))
+        (is (= :no-plain-text (err (span {:section [{:title "T" :n 0}] :type :list :n 0} 0 2))))
+        (is (= :unresolved (err (span (assoc p0 :n 7) 0 2))))
+        (is (nil? (anchors/resolve-anchor a (span p0 3 3))) "resolve-anchor answers nil on a rejection")))))
+
+(deftest span-marks-read-with-the-state-table-and-list-every-candidate
+  (let [text "# T\n\nuno dos uno\n\nOtro uno.\n"
+        a (sas text)
+        blk0 {:section [{:title "T" :n 0}] :type :paragraph :n 0}
+        blk1 (assoc blk0 :n 1)
+        h-uno ((:digest-fn a) "uno")
+        st (fn [a marks] (into {} (map (juxt :id identity)) (anchors/mark-states a marks)))
+        m (fn [loc] {:kind :span :locator loc :hash h-uno})]
+    (testing "anchored: the registered sub-text is there; its twins are not proposed"
+      (let [s ((st a {"m" (m (span blk0 0 3))}) "m")]
+        (is (= :anchored (:status s)))
+        (is (= [] (:candidates s)))))
+    (testing "mutated: another thing is there and `uno` is nowhere else"
+      (let [a2 (sas "# T\n\nxxx dos yyy\n\nOtro.\n")
+            s ((st a2 {"m" (m (span blk0 0 3))}) "m")]
+        (is (= :mutated (:status s)))
+        (is (= [] (:candidates s)))))
+    (testing "ambiguous: another thing is there and `uno` is elsewhere, in this block and in another"
+      (let [s ((st a {"m" (m (span blk0 4 7))}) "m")]
+        (is (= :ambiguous (:status s)))
+        (is (= [{:locator (span blk0 4 7) :reason :locator}
+                {:locator (span blk0 0 3) :reason :hash}
+                {:locator (span blk0 8 11) :reason :hash}
+                {:locator (span blk1 5 8) :reason :hash}]
+               (:candidates s))
+            "the place now, then every window with the registered hash, in document order; none is chosen")))
+    (testing "missing: the block is gone (no candidate) / the range is past the text (candidates)"
+      (let [a3 (sas "# T\n\nuno\n")
+            gone ((st a3 {"m" (m (span blk1 0 3))}) "m")
+            past ((st a3 {"m" (m (span blk0 6 9))}) "m")]
+        (is (= :missing (:status gone)))
+        (is (= [{:locator (span blk0 0 3) :reason :hash}] (:candidates gone)))
+        (is (= :missing (:status past)))
+        (is (= [{:locator (span blk0 0 3) :reason :hash}] (:candidates past)))))
+    (testing "an ordinal shift (a paragraph inserted before) is not an edit in place"
+      (let [a4 (sas "# T\n\nNuevo.\n\nuno dos uno\n")
+            s ((st a4 {"m" (m (span blk0 0 3))}) "m")]
+        (is (= :ambiguous (:status s)))
+        (is (= [(span blk0 0 3) (span blk1 0 3) (span blk1 8 11)] (mapv :locator (:candidates s))))))))
+
+(deftest a-normal-write-advances-only-a-mutated-span
+  (let [text "# T\n\nuno dos tres\n"
+        a (sas text)
+        blk0 {:section [{:title "T" :n 0}] :type :paragraph :n 0}
+        h (fn [t] ((:digest-fn a) t))
+        marks {"anchored" {:kind :span :locator (span blk0 0 3) :hash (h "uno")}
+               "mutated" {:kind :span :locator (span blk0 4 7) :hash (h "OLD")}
+               "ambiguous" {:kind :span :locator (span blk0 9 12) :hash (h "uno")}
+               "missing" {:kind :span :locator (span (assoc blk0 :n 5) 0 3) :hash (h "tres")}}
+        adv (anchors/advance-marks a marks)]
+    (is (= #{:anchored :mutated :ambiguous :missing}
+           (set (map :status (anchors/mark-states a marks)))) "the four states are there")
+    (is (= (set (keys marks)) (set (keys adv))) "no mark is removed")
+    (is (= (into {} (map (fn [[id m]] [id (:locator m)])) marks)
+           (into {} (map (fn [[id m]] [id (:locator m)])) adv)) "no locator moves")
+    (is (= (marks "anchored") (adv "anchored")))
+    (is (= (h "dos") (:hash (adv "mutated"))) "the mutated mark records the hash of what is there now")
+    (is (= (marks "ambiguous") (adv "ambiguous")))
+    (is (= (marks "missing") (adv "missing")))))
