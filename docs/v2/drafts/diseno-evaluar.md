@@ -101,3 +101,27 @@ relaciones son macros de ese evaluador, para que los símbolos desnudos lleguen 
 - Un archivo no Markdown con localizador interno es `:unsupported` aunque git no lo reporte cambiado (es una propiedad de la declaración, no del archivo).
 - Un renombrado se reporta con las dos rutas (`:path` y `:from`) como cambiadas; un ancla escrita con la ruta vieja sale `:missing`.
 - Sin `--since`, el puntero se busca solo en `<cwd>/.kimun/seen.edn` (no sube por los directorios); un puntero dañado es `git/bad-pointer`.
+
+## 9. El proyecto: varios archivos, contextos que se usan entre sí (cortes 3a y 3b)
+
+Elecciones mías, 2026-11-16.
+
+- **Dónde están las declaraciones.** Por defecto, los `*.clj` bajo `kimun/` en la raíz del proyecto.
+  Es una convención, no una exigencia: un proyecto sin esa carpeta no tiene declaraciones y nada
+  falla. Los comandos `declare` sin archivo leen esa carpeta; con archivos, leen esos.
+- **Un contexto usa relaciones de otro como en Clojure**: `(ns b (:require [a :refer [isa]]))` o
+  `[a :as a]` y `(a/isa …)`. `a` es el contexto de otro archivo de declaración del proyecto. No hay
+  vocabulario de relaciones que venga con kimun: cada proyecto define las suyas.
+- **Una relación es de su contexto.** `:r` sale como `"a/isa"`: el contexto que la define y su nombre.
+  Dos contextos pueden definir `isa` con sentidos distintos sin confundirse; esto responde la
+  pregunta de §6.
+- **Los comandos que declaran escriben código.** `declare add --to ARCHIVO 'FORMA'` agrega la forma al
+  archivo si el archivo sigue evaluando y la forma aporta algo nuevo. No hay otra escritura: no hay
+  store que actualizar.
+- **Preguntar es recorrer relaciones** (**1.1**): `declare about TÉRMINO` da las proposiciones donde
+  aparece el término (o uno más específico: `UI.view` incluye `UI.view.dashboard`), y `declare about
+  --path RUTA` da lo que se sabe de un archivo: las anclas que caen en él y las clases que le llegan
+  por un `(files patrón)`. `(files …)` se expande al preguntar, contra los archivos que git conoce;
+  nunca se guarda expandido.
+- Todavía sin caché: evaluar es rápido. La caché explícita se agrega cuando una medición la pida.
+
