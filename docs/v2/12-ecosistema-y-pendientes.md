@@ -73,6 +73,16 @@ paridad v1 suspendida durante la rearquitectura (`docs/v2/drafts/sesion-2026-11-
 `bin/kimun include check` limpio; todo `bb`/script pesado bajo `memcap` (`AGENTS.md`). `bb oracle`
 (ids canónicos) solo puede cambiar dentro de K1, y a propósito.
 
+> **«Rehacer git» queda EXPLÍCITAMENTE diferido (dueño, 2026-11-15):** el monitoreo hasta el nivel
+> de archivo «es básicamente lo que hace git»; hay dos opciones, rehacer git y utilizar git, hacen
+> falta ambas «porque responden cosas distintas, pero por ahora dejemos el rehacer para después».
+> Por ahora kimun **usa git** para saber qué archivos cambiaron, y solo monitorea por su cuenta
+> **dentro** de los archivos, lo que está anclado. Todo lo de esta tabla que es rehacer git —el
+> árbol Merkle por ruta y su fan-out (`K2a`), el índice mmap y las aristas por documento (`K2b`),
+> packs y recolección (`K4`, `K5`), revisiones, log y journal— queda **diferido**: no se sigue
+> construyendo hasta que el dueño lo reabra. Contexto y citas: `docs/v2/drafts/sesion-2026-11-15.md
+> §11`; diseño en curso: `docs/v2/drafts/diseno-declaraciones.md`.
+>
 > **Paridad v1 suspendida (dueño, 2026-11-15):** «olvidémonos de la paridad con v1 hasta que
 > terminemos esta "rearquitecturización" que estamos haciendo». Mientras dure, «paridad v1 sin
 > brechas» **no** es un invariante: las pruebas de paridad siguen en la suite, pero un corte de
