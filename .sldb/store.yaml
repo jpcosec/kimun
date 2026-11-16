@@ -232,7 +232,6 @@ include:
 - model: TaskCodeDoc
   paths:
   - desk/tasks/task-finish-wip-leer-readers-by-class.md
-  - desk/tasks/task-tags-on-any-node-code-nodes-and-kimun-indexing-itself.md
 - model: TaskDecisionDoc
   paths:
   - desk/tasks/task-open-owner-decisions-that-hold-work.md
