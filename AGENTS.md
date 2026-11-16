@@ -30,8 +30,11 @@ outside it. Declarations are Clojure that runs. Up to the file level git does th
 inside a file only what is anchored matters. As of 2026-11-16 this exists, with no store:
 `declare read|add|anchors|terms|about|members` over the `*.clj` under `kimun/`, the sensor that
 asks git (`stores changed|seen`; `sense|health|heartbeat` with `:scope`), and `kimun mcp`.
-Generating from the propositions (`declare generate`, `docs/v2/drafts/diseno-generar.md`) is in
-progress, not done; code nodes, the replacement of the old store and the `G` layer do not exist.
+Generating from the propositions (`declare generate`, `docs/v2/drafts/diseno-generar.md`) entered
+on 2026-11-16; reading sources by class (`docs/v2/drafts/diseno-leer.md`) is unfinished, on branch
+`wip/leer`; code nodes, the replacement of the old store and the `G` layer do not exist.
+**The owner's criterion of done (2026-11-16): kimun is the new core of sldb and ingests an
+advanced project such as deskops.** Start from `docs/v2/drafts/traspaso-2026-11-17.md`.
 Do not implement anything that depends on an open
 decision (`docs/v2/drafts/preguntas-abiertas.md`; today `D-G`, the truth axis of the G layer,
 among others). Invariants no work may break: `bb lint` and `bb test` green, `bb oracle`,
