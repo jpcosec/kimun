@@ -1,0 +1,18 @@
+name: RelationTypeDoc
+model_ref: sldb.models.relation_type_doc:RelationTypeDoc
+path: /home/jp/proyectos/SLDB_1/sldb/src/sldb/models/relation_type_doc.py
+documents_index: .sldb/core/documents/RelationTypeDoc.yaml
+sections_index: .sldb/runtime/sections/RelationTypeDoc.yaml
+model_hash: 8701735c615ed42c042d51ba0300b828a7cc4212cbb2abc07d35346c34f6ae20
+roster_hash: 2ed1449073a5f086894e598a6edde2eefa8dd214fc7c40c825db747f9045f067
+contract_hash: 57b63063959eb2f0b721697bc626d10bc4d960672ed03fa04f9d0a5e1f499699
+documents_count: 18
+version: 1
+canonical: false
+family: relation
+semantics:
+- layer.topology
+- representation.markdown
+- source.document.markdown
+- type.relation.type
+base_models: []

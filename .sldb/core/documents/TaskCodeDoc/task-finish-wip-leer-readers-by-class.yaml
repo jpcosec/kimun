@@ -1,0 +1,34 @@
+name: task-finish-wip-leer-readers-by-class
+path: desk/tasks/task-finish-wip-leer-readers-by-class.md
+source_hash: ef1e16c6e780b161139e59238a87c2b95b0b7efdebbe9e6f22b898b4d422b0c8
+content_hash: c447041ba995c2ed61d0e51e6a45633ab3cfe17cc5b8297d4ae945ac36f96eae
+field_hashes:
+  title: 20fd83037a6d90e7dcd58aaf4b492461abc974daa867a07b3a33e37f8b8b9c80
+  id: 0cdcbb2c14961d306b5fde76d0336630f29735dc1f6cf1c09867b40a19114cb3
+  status: 6ae048f08fcab44bfbc8463f074bfdb40f94c6bdf56d3aad9a7e1c05e5d5b5c1
+  summary: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+  tags: 9e7e8be2998f87dfcbb538781d827f202722ef7dad630b93bca343e20f247db8
+  current_node: ff5161892aac34735bf10c411f7230b62b7b56446e230a5d26fb75afde4704b6
+  history: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  why: df8fc268c36434135b0624cb9af4847b504404db74a7ec4379b024c181b75404
+  goal: 18b24f6ddd3531ffa1a03c15544463bd61535d9a199ddfdb62b36b06f0d54bef
+  scope: 69b4381581dd2fde6ac96de398c6120db455b1f1a38f905d16e93d2e9e68eb8d
+  references: 60629d3c188faddfa0478a3227105199296ebf6f1d4818094d7a346a511d19eb
+  depends_on: 96f9a95e40cd178d827dd931def5c67eff0e2521bb453c956e4186000748b532
+  pills: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  files: 5d3df743f090c4c81990871e8d40855f393ddd65fdeb1933ad08887b74baa7b8
+  implementation_path: 97f96277d4e1869cf78789123421e69eded85cad7e2f55ad6e55549686d50eef
+  validation: eebd8cc0605cf25d896a1b7df4342c188357f4e8bd8cace1b3b7506b2a737a84
+  done_when: dd1359c3f5fc3f5bb00112ecf4da3d6998edfcfb8d393aa3ba32a73c4e6dfdce
+  task_type: 430e281fc3506e5a61bf187bc4220dab834ca38806ca4f603f817cc82f9791bb
+  inherits_from: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  inherit_acceptance_context: fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa
+  atoms: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+semantic_tags:
+- artifact:task
+- representation.markdown
+- source.document.markdown
+- type.workflow.task
+- workspace.desk
+- workspace:desk
+provenance: null

@@ -1,42 +1,37 @@
 ---
+sldb:
+  by: agent
+  at: '2026-11-16T17:56:05Z'
+  authority: generated
+  via: save_document_payload
 # board-xxx
 id: board-001
 # Affected workspace or domain
 scope: desk
 # List of task-xxx paths
 tasks:
-- desk/tasks/task-external-oracle-for-canonical-bytes.md
-- desk/tasks/task-contention-test-for-heads-commit.md
-- desk/tasks/task-ulid-monotonicity-and-clock-adapter.md
-- desk/tasks/task-unreachable-objects-report-and-gc-groundwork.md
-- desk/tasks/task-rewrite-the-pre-v2-spec2viz-specs.md
-- desk/tasks/task-node-host-parity-for-the-v2-kernel.md
-- desk/tasks/task-test-coverage-and-lint-tooling-for-babashka.md
-- desk/tasks/task-toolchain-on-robocop2-and-suite-reproduced.md
-- desk/tasks/task-finish-wip-leer-readers-by-class.md
-- desk/tasks/task-readers-for-every-class-of-the-deskops-desk.md
-- desk/tasks/task-compare-declare-about-with-the-sldb-edge-index-on-the-desk.md
 - desk/tasks/task-cache-of-readings-by-git-blob-hash.md
-- desk/tasks/task-deskops-views-as-declare-generate-recipes.md
-- desk/tasks/task-owner-decides-what-new-core-of-sldb-means.md
+- desk/tasks/task-compare-declare-about-with-the-sldb-edge-index-on-the-desk.md
+- desk/tasks/task-declared-debt-of-the-new-path.md
 - desk/tasks/task-design-kimun-as-the-core-of-sldb.md
+- desk/tasks/task-deskops-views-as-declare-generate-recipes.md
+- desk/tasks/task-fichas-and-graph-queries-over-propositions.md
+- desk/tasks/task-finish-wip-leer-readers-by-class.md
+- desk/tasks/task-first-release-ci-run-pod-published-version-tagged.md
+- desk/tasks/task-generate-leftovers-http-over-propositions-and-orphan-files.md
+- desk/tasks/task-open-owner-decisions-that-hold-work.md
+- desk/tasks/task-owner-decides-what-new-core-of-sldb-means.md
+- desk/tasks/task-readers-for-every-class-of-the-deskops-desk.md
 - desk/tasks/task-retire-the-previous-store-once-declarations-replace-it.md
 - desk/tasks/task-tags-on-any-node-code-nodes-and-kimun-indexing-itself.md
-- desk/tasks/task-fichas-and-graph-queries-over-propositions.md
-- desk/tasks/task-generate-leftovers-http-over-propositions-and-orphan-files.md
-- desk/tasks/task-first-release-ci-run-pod-published-version-tagged.md
-- desk/tasks/task-declared-debt-of-the-new-path.md
-- desk/tasks/task-open-owner-decisions-that-hold-work.md
+- desk/tasks/task-toolchain-on-robocop2-and-suite-reproduced.md
 # List of pill-xxx paths
-pills:
-- desk/contexts/pill-guardrail-v2-implementation-gate.md
+pills: []
 # List of ritual-xxx paths
-rituals:
-- desk/rituals/ritual-zero-context-audit-gate.md
+rituals: []
 # e.g., system:sldb, workspace:desk
 tags:
 - workspace:desk
-- system:sldb
 ---
 
 # sldb-refactor-worktree Board
@@ -65,18 +60,18 @@ _Add short operational notes about the current routed set._
 
 _Generated from the task references above._
 
-- Toolchain on robocop2 and suite reproduced [draft] - bb test with the tree-sitter pod gives the same numbers as the last chore(evidence) commit of main.
-- Finish wip-leer readers by class [draft] - Branch wip/leer validated and fast-forwarded into main, with numbers measured on a copy of the real deskops desk.
-- Readers for every class of the deskops desk [draft] - Declarations under kimun/ of a copy of deskops that read every class of the desk into propositions.
-- Compare declare about with the sldb edge index on the desk [draft] - A measured comparison of the relations kimun reads from the desk against sldb's edge index.
 - Cache of readings by git blob hash [draft] - Readings of an unchanged file are not recomputed, if the measurement of the first cut asks for it.
-- Deskops views as declare generate recipes [draft] - The Board and the view of one task of the deskops desk come out of declare generate.
-- Owner decides what new core of sldb means [draft] - The owner's answer, verbatim, in docs/v2/drafts/.
+- Compare declare about with the sldb edge index on the desk [draft] - A measured comparison of the relations kimun reads from the desk against sldb's edge index.
+- Declared debt of the new path [draft] - Each limit closed or explicitly kept.
 - Design kimun as the core of sldb [draft] - A design written by the coordinator, from the owner's answer and the measured terrain.
+- Deskops views as declare generate recipes [draft] - The Board and the view of one task of the deskops desk come out of declare generate.
+- Fichas and graph queries over propositions [draft] - Terms with content and no anchor; graph.* queries the propositions; declare about accepts a proposition as term.
+- Finish wip-leer readers by class [draft] - Branch wip/leer is rebased on origin/main, its tests and the whole suite pass, the readers have been run over a copy of the real deskops desk with the numbers recorded, and main is fast-forwarded to it and pushed.
+- First release CI run pod published version tagged [draft] - An installable, tagged kimun.
+- Generate leftovers HTTP over propositions and orphan files [draft] - HTTP serves the propositions; a generated file whose declaration disappeared is detected; typed docstring as materialization of a class.
+- Open owner decisions that hold work [draft] - Each of the four rows of docs/v2/drafts/preguntas-abiertas.md carries the owner's answer, verbatim and dated, at the start of its second cell, prefixed by **Respondida (dueño, YYYY-MM-DD):** as the answered rows of that table already do; a question he declines is prefixed by **Sin decidir (dueño, YYYY-MM-DD):**.
+- Owner decides what new core of sldb means [draft] - The owner's answer, in his own words, is appended as a dated section to docs/v2/drafts/sesion-2026-11-15.md (the file that holds his verbatim words), and docs/v2/drafts/diseno-leer.md §6 is rewritten from 'Mi lectura, sin confirmar' to what he said.
+- Readers for every class of the deskops desk [draft] - Declarations under kimun/ of a copy of deskops that read every class of the desk into propositions.
 - Retire the previous store once declarations replace it [draft] - Path tree, per-file fingerprint, revisions, log, plans, replay and include's identity-registry are gone, with their tests.
 - Tags on any node, code nodes and kimun indexing itself [draft] - Several tags per node on several axes; code nodes; kimun's own code graph comes from kimun and replaces scripts/check_rings.clj.
-- Fichas and graph queries over propositions [draft] - Terms with content and no anchor; graph.* queries the propositions; declare about accepts a proposition as term.
-- Generate leftovers HTTP over propositions and orphan files [draft] - HTTP serves the propositions; a generated file whose declaration disappeared is detected; typed docstring as materialization of a class.
-- First release CI run pod published version tagged [draft] - An installable, tagged kimun.
-- Declared debt of the new path [draft] - Each limit closed or explicitly kept.
-- Open owner decisions that hold work [draft] - The owner's answer to each, recorded in docs/v2/drafts/preguntas-abiertas.md.
+- Toolchain on robocop2 and suite reproduced [draft] - On the machine robocop2 (ssh host 'robocop2', user robocop), in the clone ~/proyectos/kimun of https://github.com/jpcosec/kimun (branch main), 'bb test' runs with the tree-sitter pod and has no failures, with at least the 1081 tests of the baseline (runs/subagents/2026-11-16-find-genericos/coordinator/full-test.txt, commit e84869af).

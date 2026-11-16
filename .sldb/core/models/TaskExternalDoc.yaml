@@ -1,0 +1,18 @@
+name: TaskExternalDoc
+model_ref: deskops.models:TaskExternalDoc
+path: ''
+documents_index: .sldb/core/documents/TaskExternalDoc.yaml
+sections_index: .sldb/runtime/sections/TaskExternalDoc.yaml
+model_hash: df29fa1912ef9f13b129ccbc51c1243c2c6669f1745dfc10f0c77adc2e3c6e0b
+roster_hash: 8801fa6da8b2ada4a36662702ed8e424c2b5ab9fd17153d23d95110623bde942
+contract_hash: 18c9b4f737e2efd59001a6b1d09075cac4eca474b2b89b816d2b4ee631fd1e1c
+documents_count: 1
+version: 1
+canonical: false
+family: null
+semantics:
+- representation.markdown
+- source.document.markdown
+- type.workflow.task
+- workspace.desk
+base_models: []

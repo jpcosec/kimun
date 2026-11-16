@@ -1,0 +1,34 @@
+name: task-design-kimun-as-the-core-of-sldb
+path: desk/tasks/task-design-kimun-as-the-core-of-sldb.md
+source_hash: 7b3e9fc890c2ea402ec9fb6755e98a82440027304f90d74245ca55ed126c8a93
+content_hash: bfb281e916955e340ff8ac37bdd063624ff5122fa0a6153ea94a6178a0f96847
+field_hashes:
+  title: 42e69366cd2bd2d49fe04253844b3e662480e5f46b75959be85213d973b239c6
+  id: 2ac53fa4fcbbed8a1fa8dcf5dd9c2a08cfadf1c0757bea2c27eb93061c3206fa
+  status: 6ae048f08fcab44bfbc8463f074bfdb40f94c6bdf56d3aad9a7e1c05e5d5b5c1
+  summary: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+  tags: 9e7e8be2998f87dfcbb538781d827f202722ef7dad630b93bca343e20f247db8
+  current_node: ff5161892aac34735bf10c411f7230b62b7b56446e230a5d26fb75afde4704b6
+  history: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  why: ed9295d88d639dbc44082930e3940b6078fd53814b2cb1c752457a70996c6514
+  goal: b09ce5a39bdf50a4910b4e0169ae16517ae359449b667e6616206859ff7a6c92
+  scope: 2d12292b1f3ea3dd7b0507bd9d5a3e22bac8df54f786ab287326a0eac99c7e32
+  references: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  depends_on: b5ab6beae9d24839fcd0e3111d1292c05712bc42beabdb9e6a92146fedeeae66
+  pills: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  files: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  implementation_path: 91481b6ce993b368c460ce44e025695fa807ea707a1238f0efcf87ff844052a1
+  validation: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  done_when: 73d3f37ac7919642ea25f453a88ed7644be1088b0181515b51de6186e429ec56
+  task_type: 8dbc7ea3fc2d737a841f8f9a89de6dd4bd2ca7fdc77434a53400db8767ba695d
+  inherits_from: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  inherit_acceptance_context: fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa
+  atoms: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+semantic_tags:
+- artifact:task
+- representation.markdown
+- source.document.markdown
+- type.workflow.task
+- workspace.desk
+- workspace:desk
+provenance: null

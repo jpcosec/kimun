@@ -18,8 +18,7 @@ build/
 dist/
 *.egg-info/
 
-# sldb v1 legacy store: retired from this repo (desk lives in .kimun/)
-.sldb/
+# .sldb/ is the deskops store of this repo's desk: versioned whole (deskops init, 2026-11-16)
 
 .DS_Store
 # Rust build artifacts
@@ -56,3 +55,6 @@ resources/git-sha
 .obsidian/
 # kimun include build --rebuild moves the previous store aside; never committed
 .kimun.bak-*/
+.sldb_cache/
+# a store of the archived spec2viz material, never part of the repo
+docs/archive/architecture/spec2viz/.sldb/

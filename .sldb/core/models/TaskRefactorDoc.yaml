@@ -1,0 +1,18 @@
+name: TaskRefactorDoc
+model_ref: deskops.models:TaskRefactorDoc
+path: ''
+documents_index: .sldb/core/documents/TaskRefactorDoc.yaml
+sections_index: .sldb/runtime/sections/TaskRefactorDoc.yaml
+model_hash: 9bd6fb8bba671b41feebd09d916151b46268e045724f29c93f9f0b6a1e92a736
+roster_hash: fbfbd6cf9820e382ef30dae535ed0bc0d3314b9de2eda4443d008d5f475836ee
+contract_hash: c1246d2faf240237a620436f75d03f1341658637d2b8a207965b720b76e79976
+documents_count: 1
+version: 1
+canonical: false
+family: null
+semantics:
+- representation.markdown
+- source.document.markdown
+- type.workflow.task
+- workspace.desk
+base_models: []

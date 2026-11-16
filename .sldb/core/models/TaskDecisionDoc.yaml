@@ -1,0 +1,18 @@
+name: TaskDecisionDoc
+model_ref: deskops.models:TaskDecisionDoc
+path: ''
+documents_index: .sldb/core/documents/TaskDecisionDoc.yaml
+sections_index: .sldb/runtime/sections/TaskDecisionDoc.yaml
+model_hash: e25b373ee9790c6b638516edd4fc54594777c737f8aff8ed7e8794fbd109c52e
+roster_hash: cfeb24a465395a82c8b67a72616e67e89ebfc8904aab9c74d0d0520850822508
+contract_hash: 8977e4980584dafddb756289693401a7776fe2643c18afab6bd751213fddea69
+documents_count: 2
+version: 1
+canonical: false
+family: null
+semantics:
+- representation.markdown
+- source.document.markdown
+- type.workflow.task
+- workspace.desk
+base_models: []

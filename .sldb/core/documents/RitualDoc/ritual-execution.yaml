@@ -1,0 +1,26 @@
+name: ritual-execution
+path: desk/rituals/execution.md
+source_hash: c9f75fd2aecb2dbf9528fd1223783b8770db9a65be9fd9dc854e2e6b4e496dcb
+content_hash: 7249a51b2a1be3cc6f09ce195656fc10b7b008ed668ade6a4f69ab8bf16b26fb
+field_hashes:
+  title: 10398d2426a21f34536b73122a3f693045cbb38a3801379a86b079f52b5dee79
+  id: ff5161892aac34735bf10c411f7230b62b7b56446e230a5d26fb75afde4704b6
+  status: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+  summary: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+  tags: 26f66ebae91f717518f0d0c6585e99f1cbd539bcb3504598ddeb732dec3a0af9
+  current_node: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+  history: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  purpose: a9b4ac4c334c6b845780b59e21c1abf07ddde7daf5c672d58cc6149518c5c779
+  trigger: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+  preconditions: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  steps: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  validation: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  failure_modes: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  completion: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+semantic_tags:
+- representation.markdown
+- source.document.markdown
+- type.workflow.ritual
+- workspace.desk
+- workspace:desk
+provenance: null
