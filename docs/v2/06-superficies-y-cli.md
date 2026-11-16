@@ -87,7 +87,7 @@ Layout de un store formato 4 (`kimun.kernel.store`; detalle en `10`):
 | `stores unpack` | — | escribe de vuelta cada objeto empaquetado y borra el pack: `{:path :packs :unpacked :checked}`; verifica después (`store/corrupt` 5 si falla). Solo formato 4 |
 | `stores upgrade` | — | `{:upgraded :format-version :path …}`; 1→2 reconstruye en un directorio hermano (`:transactions :backup :map`), 2→3 convierte en el sitio (líneas `{:id :revision}`, `:dropped-plans`), 3→4 reporta `:needs-rebuild true :action "kimun include build --rebuild"` (el registro como caché exige los archivos); formato 4 con rutas de esquema 1 pasa a esquema 2 en el sitio (`:from-route-schema 1 :route-schema 2 :routes :routes-root-before :routes-root :route-nodes :checked`), y con esquema 2 responde `:upgraded false :route-schema 2`; carrera de escritura ⇒ `store/stale` (4) |
 | `stores show` | — | `{:name :path :hash-alg :links :head :capabilities}`; sin replay |
-| `stores health` | — | `{:status :summary :findings :actions :next}`; `ok | degraded | needs-human` |
+| `stores health` | — | `{:status :summary :findings :actions :next}`; `ok \| degraded \| needs-human` |
 | `stores sense` | `[--once]` | una observación read-only: `{:mode :once :observed-at :tracked :valid :signals :counts :summary}`; reusa `kimun.surface.diagnostics`, no escribe ni en el store ni en `<store>/cache/` y no inicia daemon. `:observed-at` es la hora de esta respuesta, no un evento persistido; las señales cubren las categorías del diagnóstico, no todo cambio topológico. Distingue fuente, contrato y recálculo (`10 §11.1`, K6): `source/*` frente a `contract/changed`, `contract/parser-unavailable`, `contract/inconsistent` y `contract/rebuild-mismatch`; el `:detail` lleva `content-ok`, `contract-ok`, `contract {:status :changed}` y `:registered-root`/`:rebuilt-root` |
 | `stores heartbeat` | `[--interval SECONDS] [--beats N]` | daemon: repite la observación de `stores sense` cada intervalo y la escribe como NDJSON (`started`, `beat`/`error`, `stopped`); no escribe en el store. Contrato abajo, «El latido» |
 | `stores update` | — | `{:updated [name] :skipped [{:document :category :action}] :status}`; todos los reparados van en UNA revisión, cuyo journal lleva `:documents` ({:address :fields}) |
@@ -225,6 +225,17 @@ superficie `docs` la mantiene en cada escritura; la entrada es:
   **cierre declarado**: `--reason TEXT` es opcional y la declaración
   (`:declared {:kind "closure" :file :reason :file-deleted?}`) queda en el journal; `:file` es el
   estado del archivo antes de actuar (`present | missing | none`).
+- **`docs mark|unmark|marks`** son las **unidades estructurales** (K1e): una sección o un
+  bloque se marca por **declaración** (nada se marca solo), con id propio acuñado al marcarla
+  y localizador + contrato como anclaje. `docs marks` calcula un estado contra el texto leído
+  ahora —`anchored`, `mutated` (el lugar resuelve y lo registrado no está en otra parte),
+  `ambiguous` (el lugar resuelve a otra cosa y lo registrado aparece en otro sitio) o
+  `missing`— y, si hay evidencia, **candidatos**; kimun **nunca decide** que una unidad se
+  movió, se partió o es otra: lista todos los candidatos y el actor declara (`docs mark --unit
+  … --reason …`). Una escritura normal registra la huella nueva de una marca `mutated` y no
+  toca las demás; una marca no se quita en una escritura (`docs unmark` lo declara). Los
+  ordinales del localizador se desplazan al insertar: eso es exactamente lo que `ambiguous`
+  señala sin resolver.
 - **`docs anchors NAME`** devuelve las **anclas** de un documento como evidencia: secciones
   (encabezado y lo que sigue hasta el siguiente de nivel menor o igual, anidadas) y bloques
   (hijos directos del documento), cada uno con un **localizador** —camino de títulos con ordinal
@@ -331,6 +342,9 @@ archivo esperan al spec 16 (M1). `include` sigue sin admitir documentos sin mode
 | `docs show NAME` | `--format md`, `--ast` (equivale a `--format ast`) | mapa con `:markdown` y, en un documento tipado, `:units [{:field :id :status}]` (`anchored \| missing`, K1c); `--ast` ⇒ `{:name :tree :ast}` |
 | `docs status` | — | `[{:name :path :status}]` con `status` `ok \| modified \| missing` |
 | `docs anchors NAME` | `--sections` | anclas estructurales del documento como **evidencia, sin identidad** (S2a): `{:name :tree :path :parse-contract :sections [{:locator :level :hash :lines :bytes :blocks}] :blocks [{:locator :hash :lines :bytes}]}`; `--sections` omite `:blocks`. Solo lectura: no escribe store ni caché y no acuña ids. Tipado o genérico |
+| `docs mark NAME` | `--locator L`, `--label TEXT`, `--unit ID`, `--reason TEXT` | **declara** una unidad estructural (sección o bloque) de un documento por referencia: sin `--unit` acuña su id; con `--unit` re-ancla la **misma** unidad (el `--reason` es entonces obligatorio). `L` es el localizador que imprime `docs anchors` (EDN o JSON). Data: el documento más `:marked {:kind :locator :hash :label}` y `:id`. Rechazos sin revisión: `docs/anchor-unresolved`, `docs/exists` (localizador ya marcado), `docs/missing` (unidad desconocida), `docs/not-anchored`, `cli/usage` |
+| `docs unmark NAME ID` | `--reason TEXT` | **declara** el cierre de la unidad `ID`: la marca sale del descriptor y el cierre queda en el journal (`:declared {:kind "unit-closure" :status …}`). Data: el documento más `:unmarked` |
+| `docs marks NAME` | — | estado derivado de las marcas: `[{:id :kind :label :locator :status :candidates}]` por id y `:parse-contract`. Estados `anchored \| mutated \| ambiguous \| missing`; los candidatos son **propuestas** (`:locator`, `:reason :locator\|:hash`), nunca una decisión. Solo lectura |
 | `docs reanchor NAME FILE` | `--reason TEXT` (obligatorio) | declara el ancla nueva conservando ids: `:reanchored {:from :to :previous-file :reason}` + warning si el archivo viejo sigue |
 | `docs untrack NAME` | `--reason TEXT` | desrastrea; `:closure {:file :reason}` y `:declared` en el journal |
 | `docs delete NAME` | `--yes`, `--reason TEXT` | desrastrea y borra el fichero; sin `--yes` ⇒ `docs/confirmation-required` (3) |

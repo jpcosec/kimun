@@ -1,0 +1,33 @@
+----- Error --------------------------------------------------------------------
+Type:     clojure.lang.ExceptionInfo
+Message:  Unable to resolve symbol: anchors/mark-states
+Data:     {:type :sci/error, :line 26, :column 1, :file "/tmp/kimun-k1e-wt/test/kimun/surface/marks_test.cljc", :phase "analysis"}
+Location: /tmp/kimun-k1e-wt/test/kimun/surface/marks_test.cljc:34:22
+Phase:    analysis
+
+----- Context ------------------------------------------------------------------
+30:         h0 (hash-of-block a sA :paragraph 0)
+31:         hb (hash-of-block a sB :paragraph 0)
+32:         nowhere "0000000000000000000000000000000000000000000000000000000000000000"
+33:         states (into {} (map (juxt :id identity))
+34:                      (anchors/mark-states
+                         ^--- Unable to resolve symbol: anchors/mark-states
+35:                       a
+36:                       {"anchored" (mark :block p0 h0)
+37:                        "mutated" (mark :block p0 nowhere)
+38:                        "ambiguous" (mark :block p0 hb)
+39:                        "missing-empty" (mark :block (blk (conj sA {:title "Z" :n 0}) :paragraph 0) nowhere)
+
+----- Stack trace --------------------------------------------------------------
+kimun.surface.marks-test         - /tmp/kimun-k1e-wt/test/kimun/surface/marks_test.cljc:34:22
+clojure.core/into                - clojure/core.clj:7033:1
+kimun.surface.marks-test/let     - /tmp/kimun-k1e-wt/test/kimun/surface/marks_test.cljc:33:16
+kimun.surface.marks-test         - /tmp/kimun-k1e-wt/test/kimun/surface/marks_test.cljc:27:3
+clojure.core/let                 - clojure/core.clj:4527:1
+... (run with --debug to see elided elements)
+clojure.test/deftest             - babashka/impl/clojure/test.clj:625:1
+kimun.surface.marks-test/require - /tmp/kimun-k1e-wt/test/kimun/surface/marks_test.cljc:26:1
+kimun.surface.marks-test         - /tmp/kimun-k1e-wt/test/kimun/surface/marks_test.cljc:26:1
+clojure.core/require             - clojure/core.clj:6070:1
+user                             - NO_SOURCE_PATH:1:1
+

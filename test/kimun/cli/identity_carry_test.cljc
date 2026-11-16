@@ -88,7 +88,8 @@
           ids (get-in b [:data :identities])]
       (is (:ok b) (pr-str b))
       (is (= {:available true :carried 1 :minted 0 :units-carried 2 :not-carried [] :ambiguous [] :without-file 0
-              :models {:tree-carried true :kept 1 :advanced 0 :new 0} :models-not-carried []}
+              :models {:tree-carried true :kept 1 :advanced 0 :new 0} :models-not-carried []
+              :marks-carried 0}
              (dissoc ids :source)))
       (is (= t0 (tree "a")) "the tree id is carried")
       (is (= d0 (doc-id "a")) "the document id is carried")

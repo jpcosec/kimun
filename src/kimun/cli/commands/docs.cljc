@@ -7,6 +7,7 @@
    after the subcommand and `ctx` is `{:env env :cwd cwd}`."
   (:require [babashka.fs :as fs]
             [cheshire.core :as json]
+            [clojure.edn :as edn]
             [clj-yaml.core :as yaml]
             [clojure.string :as str]
             [clojure.walk :as walk]
@@ -482,6 +483,46 @@
                                 :data {:name name :path path :file-deleted? (boolean (and delete? f))
                                        :closure {:file file-state :reason (:reason opts)}}}))))
 
+(defn- document-text
+  "The text of document `d`: its file as it is now, else the text the store
+   keeps (an inline document). Nil when there is neither."
+  [store store-path d]
+  (let [root (project-root store-path)]
+    (or (when-let [rel (:path d)]
+          (let [f (fs/path root rel)] (when (fs/regular-file? f) (slurp (str f)))))
+        (:source (or (tdocs/find-document store (:tree d))
+                     (tdocs/generic-document store (:tree d)))))))
+
+(defn- loc-key
+  "Keys of a locator as keywords (EDN or JSON), recursively."
+  [x]
+  (cond (map? x) (into {} (map (fn [[k v]] [(keyword (name k)) (loc-key v)]) x))
+        (vector? x) (mapv loc-key x)
+        :else x))
+
+(defn- parse-locator
+  "A locator read from `--locator`: EDN or JSON (what `docs anchors` prints),
+   keys as keywords and the values of `:type`/`:kind` as keywords. Malformed
+   input is `cli/usage`."
+  [text]
+  (let [raw (or (err/rescue-any (fn [_] nil) (edn/read-string text))
+                (err/rescue-any (fn [_] nil) (json/parse-string text)))]
+    (when-not (or (map? raw) (vector? raw))
+      (err/raise :cli/usage "`--locator` needs the locator of `docs anchors` as EDN or JSON" {:value text}))
+    (let [l (loc-key raw)]
+      (cond-> l
+        (and (map? l) (contains? l :type)) (update :type keyword)
+        (and (map? l) (contains? l :kind)) (update :kind keyword)))))
+
+(defn- locator-kind
+  "`:block` when the locator names a block (`:type`), `:section` when it is a
+   path of titles."
+  [loc]
+  (cond (:type loc) :block
+        (or (vector? loc) (sequential? loc)) :section
+        (and (map? loc) (contains? loc :section)) :block
+        :else :section))
+
 (defn- aligned-spans
   "Line spans `[[start end) …]` of the top-level blocks of `text` when the block
    layer (`kimun.surface.models.blocks/parse`, the pod when it is there) matches
@@ -542,6 +583,143 @@
                             :sections (:sections a)}
                      (not (:sections opts)) (assoc :blocks (:blocks a)))})))
 
+;; ---------------------------------------------------------------- structural marks (K1e)
+
+(defn- require-reference!
+  "A document whose structure is store: by reference, in a format-4 store. A
+   mark lives in the tree descriptor, which an inline or legacy document does
+   not have."
+  [d]
+  (when (or (:inline d) (nil? (:path d)))
+    (err/raise :docs/not-anchored
+               (str "`" (:name d) "` is not a by-reference document of a format-4 store: its structure is not registered as cache")
+               {:document (:name d) :path (:path d)}))
+  d)
+
+(defn- mark-target
+  "The document `token` names and its text, after the by-reference check."
+  [store store-path token]
+  (let [d (require-reference! (or (tdocs/resolve-any store token)
+                                  (err/raise :docs/missing (str "no document named or identified by `" token "`") {:document token})))
+        text (document-text store store-path d)]
+    (when (or (nil? text) (str/blank? (str text)))
+      (err/raise :docs/no-file (str "`" (:name d) "` has no readable source") {:document (:name d) :path (:path d)}))
+    [d (str text)]))
+
+(defn- resolve-locator!
+  "The anchor of `locator` in `text` (the S2a anchors), raising
+   `docs/anchor-unresolved` when nothing is there."
+  [locator text]
+  (let [as (anchors/anchors host/host text)
+        a (anchors/resolve-anchor as locator)]
+    (or a
+        (err/raise :docs/anchor-unresolved
+                   (str "no anchor of this document has that locator: " (pr-str locator))
+                   {:locator locator}))))
+
+(defn- taken-locator
+  "The id of the mark of `marks` (other than `except`) whose locator is `locator`."
+  [marks locator except]
+  (first (keep (fn [[id m]] (when (and (not= id except) (= locator (:locator m))) id)) marks)))
+
+(defn mark
+  "`docs mark NAME --locator L [--label TEXT] [--reason TEXT]`, or
+   `docs mark NAME --unit ID --locator L --reason TEXT`: DECLARES a structural
+   unit on a section or a block of a by-reference document (K1e, docs/v2/14
+   §20–§21). Without `--unit` it mints an id; with it, the SAME unit is
+   re-anchored (the `--reason` is then required: the actor says what happened).
+   The locator is what `docs anchors` prints (EDN or JSON). The mark records the
+   locator, the current hash and an optional label in the tree descriptor
+   (store, never part of the root hash) and the declaration stays in the
+   journal (`:declared`). Rejections write nothing: no anchor there
+   (`docs/anchor-unresolved`), the locator a mark already has (`docs/exists`),
+   an unknown unit (`docs/missing`), a document that is not by reference
+   (`docs/not-anchored`), or no `--reason` on a re-anchor (`cli/usage`).
+   Data: the document map plus `:marked {:id :locator :kind :label}`."
+  [args opts {:keys [env cwd] :as ctx}]
+  (let [token (require-arg! args 0 "a document NAME" "mark")
+        locator-text (:locator opts)
+        _ (when-not locator-text
+            (err/raise :cli/usage "`docs mark` needs --locator L (the locator `docs anchors` prints)"
+                       {:group "docs" :subcommand "mark"}))
+        locator (parse-locator (str locator-text))
+        unit (:unit opts)
+        _ (when (and unit (not (string? (:reason opts))))
+            (err/raise :cli/usage "`docs mark --unit` needs --reason TEXT: the declaration says what happened"
+                       {:group "docs" :subcommand "mark"}))
+        {:keys [backend descriptor store] store-path :path} (open opts ctx)
+        [d text] (mark-target store store-path token)
+        a (resolve-locator! locator text)
+        marks (or (:marks d) {})
+        _ (when-let [holder (taken-locator marks locator unit)]
+            (err/raise :docs/exists
+                       (str "a mark of `" (:name d) "` already has that locator: " holder)
+                       {:document (:name d) :unit holder :locator locator}))
+        _ (when (and unit (not (contains? marks unit)))
+            (err/raise :docs/missing (str "no unit `" unit "` in `" (:name d) "`") {:document (:name d) :unit unit}))
+        id (or unit (ports/ulid (:ids host/host)))
+        kind (locator-kind locator)
+        mark {:kind kind :locator locator :hash (:hash a)}
+        mark (cond-> mark (:label opts) (assoc :label (:label opts)))
+        declared (cond-> {:kind (if unit "unit-reanchor" "unit-mark") :unit id
+                          :locator locator :anchor-kind kind :hash (:hash a)}
+                   (:reason opts) (assoc :reason (:reason opts)))
+        mp (tdocs/mark-plan host/host store (:tree d) text
+                            {:id id :declared declared :actor (:actor opts) :timestamp (timestamp)
+                             :operation "docs mark" :kind kind :locator locator :hash (:hash a)
+                             :label (:label opts)})
+        r (store/commit! backend store (:plan mp))]
+    (out/ok "docs mark"
+            {:store (store-ref descriptor store-path) :revision (:revision-id r)
+             :data (assoc (doc-data (tdocs/resolve-any (:store r) (:tree d)))
+                          :marked (select-keys mark [:kind :locator :hash :label])
+                          :id id)})))
+
+(defn unmark
+  "`docs unmark NAME ID [--reason TEXT]`: DECLARES the closure of structural
+   unit `ID` of a document: the mark leaves the tree descriptor and the closure
+   (with the state it had) stays in the journal (`:declared {:kind
+   \"unit-closure\"}`). The document itself is written as an update of the same
+   text. Unknown unit: `docs/missing`. Data: the document map plus `:unmarked`."
+  [args opts {:keys [env cwd] :as ctx}]
+  (let [token (require-arg! args 0 "a document NAME" "unmark")
+        id (require-arg! args 1 "a unit ID" "unmark")
+        {:keys [backend descriptor store] store-path :path} (open opts ctx)
+        [d text] (mark-target store store-path token)
+        _ (when-not (contains? (or (:marks d) {}) id)
+            (err/raise :docs/missing (str "no unit `" id "` in `" (:name d) "`") {:document (:name d) :unit id}))
+        status (-> (tdocs/marks-of host/host text d nil) :marks
+                   (->> (filter #(= id (:id %))) first :status))
+        mp (tdocs/mark-plan host/host store (:tree d) text
+                            {:unmark? true :id id
+                             :declared (cond-> {:kind "unit-closure" :unit id :status status}
+                                         (:reason opts) (assoc :reason (:reason opts)))
+                             :actor (:actor opts) :timestamp (timestamp) :operation "docs unmark"})
+        r (store/commit! backend store (:plan mp))]
+    (out/ok "docs unmark"
+            {:store (store-ref descriptor store-path) :revision (:revision-id r)
+             :data (assoc (doc-data (tdocs/resolve-any (:store r) (:tree d))) :unmarked id)})))
+
+(defn marks
+  "`docs marks NAME`: the structural marks of a document and their state against
+   the text read now (K1e): `[{:id :kind :label :locator :status :candidates}]`
+   sorted by id, plus `:parse-contract`. Read-only: it writes nothing to the
+   store or to `<store>/cache/`. The state is derived (`anchored`, `mutated`,
+   `ambiguous`, `missing`) and the candidates are PROPOSALS: kimun never decides
+   that a unit moved, was split or is another one."
+  [args opts {:keys [cwd] :as ctx}]
+  (let [token (require-arg! args 0 "a document NAME" "marks")
+        {:keys [descriptor store] store-path :path} (open opts ctx)
+        d (or (tdocs/resolve-any store token)
+              (err/raise :docs/missing (str "no document named or identified by `" token "`") {:document token}))
+        text (or (document-text store store-path d) "")
+        contract (parse-contract/record host/host (parse-contract/environment) (or (:class d) "generic/md"))
+        r (tdocs/marks-of host/host (str text) d contract)]
+    (out/ok "docs marks"
+            {:store (store-ref descriptor store-path) :revision (:head store)
+             :data {:name (:name d) :tree (:tree d) :path (:path d)
+                    :parse-contract (:parse-contract r) :marks (:marks r)}})))
+
 (defn show
   "`docs show NAME [--format md] [--ast]`: the document map with payload, hashes and
    `:markdown` (its source; `--format md` prints it). With `--ast` (or `--format ast`,
@@ -559,9 +737,11 @@
                                     :ast (or (tdocs/document-ast store (or (tdocs/find-document store token)
                                                                            (tdocs/generic-document store tree) tree))
                                              (md/store->ast store tree))})
-                                 (let [d (tdocs/document store token)]
+                                 (let [d (tdocs/document store token)
+                                       found (tdocs/find-document store token)]
                                    (assoc (doc-data d) :markdown (:source d)
-                                          :units (tdocs/unit-states store (tdocs/find-document store token)))))})))
+                                          :units (tdocs/unit-states store found)
+                                          :marks (:marks (tdocs/marks-of host/host (str (:source d)) found nil)))))})))
 
 (defn status
   "`docs status`: `[{:name :path :status}]` comparing each tracked file with
@@ -599,13 +779,17 @@
    :ast {:desc "Print the document's SLDB-MD AST instead of its payload (docs show)" :coerce :boolean}
    :yes {:desc "Confirm a destructive command (docs delete)" :coerce :boolean}
    :reason {:ref "TEXT" :desc "What happened (docs reanchor, docs untrack, docs delete)"}
-   :sections {:desc "Only the sections of the document (docs anchors)" :coerce :boolean}})
+   :sections {:desc "Only the sections of the document (docs anchors)" :coerce :boolean}
+   :locator {:ref "L" :desc "Locator of a section or a block, as `docs anchors` prints it (docs mark)"}
+   :unit {:ref "ID" :desc "Structural unit to re-anchor or to close (docs mark, docs unmark)"}
+   :label {:ref "TEXT" :desc "Optional label of a structural unit (docs mark)"}})
 
 (def commands
   "Subcommand name → command fn `(fn [args opts ctx] envelope)`."
   {"ingest" ingest "update" update-any "render" render "list" list-docs "create" create "track" track
    "untrack" untrack "delete" (fn [args opts ctx] (untrack args opts ctx true))
-   "reanchor" reanchor "anchors" anchors "show" show "status" status})
+   "reanchor" reanchor "anchors" anchors "mark" mark "unmark" unmark "marks" marks
+   "show" show "status" status})
 
 (defn dispatch
   "Runs subcommand `sub` of the `docs` group with the positional tokens that

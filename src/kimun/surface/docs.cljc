@@ -63,6 +63,7 @@
             [kimun.kernel.route :as route]
             [kimun.kernel.store :as kstore]
             [kimun.kernel.tree :as tree]
+            [kimun.surface.markdown.anchors :as anchors]
             [kimun.surface.markdown.ast :as ast]
             [kimun.surface.markdown.plan :as md]))
 
@@ -202,11 +203,13 @@
          :class (or (get-in d [:class]) (get-in (anchor-edge store es) [:evidence :contract]))
          :cached? (true? (get-in d [:cached?]))
          :units (get-in d [:units])
+         :marks (get-in d [:marks])
          :merkle-root (second (revision/tree-entry store tid))
          :state (cond (nil? entry) :orphan (contains? extracted (:id entry)) :intact :else :superseded)
          :path path :qualified (or (qualified-path (:host store) path) (get-in t [:descriptor :name]))
          :fingerprint (get-in ext [:content :fingerprint])
          :source (source-of (:host store) store tid es path (get-in ext [:content :fingerprint])) :edges (mapv :id es)}))))
+
 
 (defn documents
   "Every tracked typed document of `store`, by name: `{:name :qualified :tree
@@ -614,10 +617,10 @@
    `:register-tree` op, which carries the document's `:route` entry when it
    has a file. No ownership edge and no block/text node enters the
    plan: that structure is recomputable from `archivo + clase`."
-  [host store {:keys [doc tree-id name text path class content-hash actor units]}]
+  [host store {:keys [doc tree-id name text path class content-hash actor units marks]}]
   (let [a (assoc-in (ast/parse host text) [:attrs :doc] doc)
         reg (assoc (md/ast->tree host a {:tree-id tree-id :name name :class class :content-hash content-hash
-                                        :units units})
+                                        :units units :marks marks})
                    :tree-id tree-id)
         root (:root reg)
         ext (when path (external-node host path text))
@@ -729,7 +732,7 @@
    unless `:shared-path :allow` is given, the explicit legacy mode for stores
    that already hold two documents on one file (a v1 migration): the document
    is then tracked without a route and reported as `:shared`."
-  [host store model name text {:keys [doc tree-id path actor timestamp operation inline shared-path units mint]}]
+  [host store model name text {:keys [doc tree-id path actor timestamp operation inline shared-path units marks mint]}]
   (refuse-collision! store name path)
   (when (and path (not= :allow shared-path)) (refuse-routed! store path nil))
   (let [m (require-model store model)
@@ -744,7 +747,7 @@
         ops (if cached?
               (let [{:keys [reg ops]} (registry-ops host store {:doc doc :tree-id tree-id :name name :text text
                                                                  :path path :class (:id m) :content-hash ch :actor actor
-                                                                 :units field-units} nil)]
+                                                                 :units field-units :marks (when (seq marks) marks)} nil)]
                 (cache-write! store reg {:fingerprint (fingerprint host text) :class (:id m)})
                 ops)
               (let [a (assoc-in (ast/parse host text) [:attrs :doc] doc)
@@ -775,7 +778,7 @@
    (the document is re-registered under the current one), as does one whose
    digest does not verify; a document with no recorded parse contract is not
    rewritten for that alone."
-  [host store token text {:keys [path actor timestamp operation inline declared mint]}]
+  [host store token text {:keys [path actor timestamp operation inline declared mint marks] :as opts-map}]
   (let [doc (document store token)
         m (require-model store (:model doc))
         payload (extract/extract (:descriptor m) text)
@@ -786,12 +789,20 @@
         ;; only a by-reference document persists units (in its registry descriptor); an inline or
         ;; legacy one has none, and must not look "moved" for lacking them
         field-units (if cached? (units-for (:units doc) payload mint) (:units doc))
+        ;; structural marks: an explicit `:marks` is a DECLARATION (mark, unmark,
+        ;; re-anchor) and is taken as given; otherwise a normal write advances
+        ;; them: a mutated mark records its new hash, the rest are untouched
+        field-marks (if (contains? opts-map :marks)
+                      marks
+                      (when (seq (:marks doc))
+                        (anchors/advance-marks (anchors/anchors host text) (:marks doc))))
         ;; with by-reference content the tracked text is the file: "unchanged" is the fingerprint
         ;; matching what the doc was written with, not the text read back from the file
         ;; a registered document without its route (written before routes existed) is not "unchanged":
         ;; writing it again is what gives it one
         base-same? (and (= path (:path doc)) (= :intact (:state doc))
                         (= field-units (:units doc))
+                        (= field-marks (:marks doc))
                         (or (not cached?) (not= :unrouted (route-state store (:tree doc) path)))
                         (or (nil? (:recorded-content-hash doc)) (= (:recorded-content-hash doc) ch))
                         (contains? #{:same :unrecorded}
@@ -810,7 +821,7 @@
     (if cached?
       (let [{:keys [reg ops]} (registry-ops host store {:doc (:doc doc) :tree-id (:tree doc) :name (:name doc)
                                                          :text text :path path :class (:id m) :content-hash ch :actor actor
-                                                         :units field-units}
+                                                         :units field-units :marks field-marks}
                                              doc)
             same? (and base-same?
                        (or (nil? (:merkle-root doc))
@@ -848,9 +859,11 @@
    ownership edge, no block/text node and no tree object enters the plan.
    `old-edges` are the edge ids of the document being replaced (or nil): the
    ones to a file that are no longer wanted are removed."
-  [host store {:keys [doc tree-id name text path actor old-path]} old-edges]
+  [host store {:keys [doc tree-id name text path actor old-path units marks]} old-edges]
   (let [a (assoc-in (ast/parse host text) [:attrs :doc] doc)
-        reg (assoc (md/ast->tree host a {:tree-id tree-id :name name :class generic-class}) :tree-id tree-id)
+        reg (assoc (md/ast->tree host a {:tree-id tree-id :name name :class generic-class
+                                        :units units :marks marks})
+                   :tree-id tree-id)
         root (:root reg)
         ext (external-node host path text)
         xid (id-of host ext)
@@ -887,6 +900,8 @@
          :class (:class d) :generic true
          :path path :fingerprint (get-in ext [:content :fingerprint])
          :parse-contract (get-in ext-edge [:evidence :parse-contract])
+         :units (get-in d [:units])
+         :marks (get-in d [:marks])
          :merkle-root (second (revision/tree-entry store tid))
          :edges (mapv :id es)}))))
 
@@ -953,16 +968,22 @@
    fingerprint, the path nor the parse contract moved and the document already
    holds its route. Raises `:docs/exists`
    when `path` is already tracked by another document."
-  [host store doc text {:keys [path actor timestamp operation declared]}]
+  [host store doc text {:keys [path actor timestamp operation declared marks] :as opts-map}]
   (let [path (or path (:path doc))
+        field-marks (if (contains? opts-map :marks)
+                      marks
+                      (when (seq (:marks doc))
+                        (anchors/advance-marks (anchors/anchors host text) (:marks doc))))
         _ (refuse-anchored! store path (:tree doc))
         {:keys [reg ops]} (generic-ops host store {:doc (:doc doc) :tree-id (:tree doc) :name (:name doc)
-                                                   :text text :path path :actor actor :old-path (:path doc)}
+                                                   :text text :path path :actor actor :old-path (:path doc)
+                                                   :marks field-marks}
                                        (:edges doc))
         same? (and (= (qualified-path host path) (:qualified doc))
                    (not= :unrouted (route-state store (:tree doc) path))
                    (= (:fingerprint doc) (fingerprint host text))
                    (= (:merkle-root doc) (:merkle-root reg))
+                   (= field-marks (:marks doc))
                    (contains? #{:same :unrecorded}
                               (:status (parse-contract/compare-recorded host (parse-contract/environment)
                                                                         (:parse-contract doc) generic-class))))]
@@ -1029,3 +1050,36 @@
                :let [text (read-file (:path d))]]
            {:name (:name d) :path (:path d)
             :status (cond (nil? text) :missing (= (:fingerprint d) (fingerprint host text)) :ok :else :modified)}))))
+
+;; ---------------------------------------------------------------- structural marks (K1e)
+
+(defn marks-of
+  "The structural marks of document `doc` (a map of `documents` or
+   `generic-documents`), read against the text `text`: `mark-states` plus the
+   reading contract. Empty when the document has none."
+  [host text doc contract]
+  (let [as (anchors/anchors host text)]
+    {:parse-contract contract
+     :marks (anchors/mark-states as (:marks doc))}))
+
+(defn- with-marks
+  "`doc`'s marks with `f` applied (a declaration on them)."
+  [doc f] (update doc :marks #(f (or % {}))))
+
+(defn mark-plan
+  "Plan that DECLARES structural mark `id` on document `token` (`mark`) or
+   removes it (`unmark?`), with `opts` `:locator`/`:label` (mark), `:actor`,
+   `:timestamp`, `:declared` and the same options `update-plan` takes. The rest
+   of the document is written exactly as `update-plan` would (the text does not
+   change): the marks travel in the tree descriptor, which is store. Returns
+   `update-plan`'s map."
+  [host store token text {:keys [unmark? id] :as opts}]
+  (let [doc (or (find-document store token) (generic-document store token))
+        _ (when-not doc (err/raise :docs/missing (str "no document named or identified by `" token "`") {:document token}))
+        marks (if unmark?
+                (dissoc (or (:marks doc) {}) id)
+                (assoc (or (:marks doc) {}) id (select-keys opts [:kind :locator :hash :label])))]
+    (if (:generic doc)
+      (generic-update-plan host store doc text (assoc opts :marks marks))
+      (update-plan host store token text (assoc opts :marks marks)))))
+

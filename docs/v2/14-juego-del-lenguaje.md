@@ -493,7 +493,17 @@ Qué queda **pendiente tras `D0`**, y nada de ello es una pregunta al dueño sob
   unidad del grafo. **Cuestión abierta para `M1`:** `07` llama a los modelos «nodos del
   árbol»; si en `M1` pasan a ser unidades del grafo deberán recibir **identidad propia** según
   `D0` (acuñada al marcarlos, no su hash), y la dirección por contenido seguirá siendo solo la
-  del valor de cada versión. `K2b`, esa serie y la implementación de `M1` esperan a `K1`.
+  del valor de cada versión. **K1e (2026-11-15, inferencia del equipo):** las unidades de
+  **sección y bloque** se marcan por **declaración** (`docs mark`), con id propio acuñado al
+  marcarlas y su anclaje (localizador de `S2a` + contrato) guardado en el descriptor del árbol
+  (`:marks`, store). Su estado se deriva contra el texto leído ahora —`anchored`, `mutated`,
+  `ambiguous` o `missing`— y, si hay evidencia, se proponen **candidatos**; **kimun no decide
+  continuidad**: una escritura normal registra la huella nueva de una marca `mutated` y no toca
+  las demás, y el cambio de anclaje o el cierre los declara un actor (`docs mark --unit`,
+  `docs unmark`). Quedan fuera: mover una unidad a otro documento, copiar/dividir/fusionar con
+  linaje, marcas dentro de un bloque (`S2b`), que el sensor informe estados de marcas, y los
+  documentos `:inline` o de formato < 4. `K2b`, esa serie y la implementación de `M1` esperan a
+  `K1`.
 - **Alcance sobre `01 §4` principio 3 y decisiones `1`, `3`, `4` de `05`**: se revisa al
   implementar `K1`, en lo que toca a unidades.
 - **Diseño de G, no de S–M**: la base de la recursión de `(R A B)` (un store finito no puede

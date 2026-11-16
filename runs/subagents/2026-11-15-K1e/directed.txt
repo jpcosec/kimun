@@ -1,0 +1,39 @@
+
+Testing kimun.surface.marks-test
+
+Testing kimun.cli.marks-test
+moved existing store to /tmp/kimun-adhoc-13874340332068307933/kimun-marks-inc-12771749566197087011/.kimun.bak-20261115-210303-01M7GTM63S78C0CANX8269RJAF
+
+Testing kimun.surface.markdown.anchors-test
+
+Testing kimun.cli.field-units-test
+moved existing store to /tmp/kimun-adhoc-13874340332068307933/kimun-units-inc-1293190181112325776/.kimun.bak-20261115-210304-01M7GTM6XBEWH7RH9GVYW4TH3V
+
+Testing kimun.cli.reanchor-test
+moved existing store to /tmp/kimun-adhoc-13874340332068307933/kimun-reanchor-inc-6956497876759931699/.kimun.bak-20261115-210304-01M7GTM750BW2J6EEH9BEHJ9XB
+
+Testing kimun.cli.identity-carry-test
+moved existing store to /tmp/kimun-adhoc-13874340332068307933/kimun-k1a-7051920261670176101/.kimun.bak-20261115-210304-01M7GTM7EA2ZCPYT8RHRQ4JSDE
+moved existing store to /tmp/kimun-adhoc-13874340332068307933/kimun-k1a-17855653138113556711/.kimun.bak-20260101-000000-01M7GTM7HGDP3CDGM1G4AXCQWB
+moved existing store to /tmp/kimun-adhoc-13874340332068307933/kimun-k1a-17855653138113556711/.kimun.bak-20260101-000000-01M7GTM7JFYVHRE3TWZWZYEHMA
+moved existing store to /tmp/kimun-adhoc-13874340332068307933/kimun-k1a-13899311089722397247/.kimun.bak-20261115-210305-01M7GTM7NT2JPB87TKHR854T3R
+moved existing store to /tmp/kimun-adhoc-13874340332068307933/kimun-k1a-13899311089722397247/.kimun.bak-20261115-210305-01M7GTM7PZVERCWXAAR54XSG5H
+moved existing store to /tmp/kimun-adhoc-13874340332068307933/kimun-k1a-12442745944288788852/.kimun.bak-20261115-210305-01M7GTM7VKAGTE4NFW6RM6PFXT
+moved existing store to /tmp/kimun-adhoc-13874340332068307933/kimun-k1a-13022050643989385593/.kimun.bak-20261115-210305-01M7GTM80CNDRFEMMYS7YM9NX1
+
+Testing kimun.cli.generic-docs-test
+
+Testing kimun.cli.typed-docs-test
+
+Testing kimun.cli.docs-test
+
+Testing kimun.cli.tour-test
+
+Testing kimun.doc14-contract-test
+
+Testing kimun.cli.cold-cache-test
+
+Testing kimun.cli.fault-injection-test
+
+Ran 75 tests containing 945 assertions.
+0 failures, 0 errors.

@@ -163,3 +163,83 @@
   [anchors locator]
   (or (some #(when (= locator (:locator %)) %) (:sections anchors))
       (some #(when (= locator (:locator %)) %) (:blocks anchors))))
+
+;; ---------------------------------------------------------------- structural marks (K1e)
+
+(defn- entries-of
+  "The anchors of `anchors` of `kind` (`:section` or `:block`)."
+  [anchors kind]
+  (case kind
+    :section (:sections anchors)
+    :block (:blocks anchors)))
+
+(defn- anchor-at
+  "The anchor of `kind` whose locator is `locator`, or nil."
+  [anchors kind locator]
+  (first (filter #(= locator (:locator %)) (entries-of anchors kind))))
+
+(defn- same-hash
+  "Anchors of `kind` other than `a` whose hash is `h`."
+  [anchors kind a h]
+  (vec (remove #(identical? % a)
+               (filter #(= h (:hash %)) (entries-of anchors kind)))))
+
+(defn- candidate
+  "A candidate for a mark: its locator, why it is offered and, when the block
+   layer aligned, its lines."
+  [a reason]
+  (cond-> {:locator (:locator a) :reason reason}
+    (:lines a) (assoc :lines (:lines a))))
+
+(defn mark-states
+  "The state of every structural mark of `marks` (`{id {:kind :locator :hash
+   :label}}`) against the `anchors` of the text read now, as
+   `[{:id :kind :label :locator :status :candidates}]` sorted by id.
+
+   - `:anchored` the locator resolves and the hash is the registered one;
+   - `:mutated` it resolves to something else and the registered hash appears
+     nowhere else (an edit in place is the default; a replacement is declared);
+   - `:ambiguous` it resolves to something else AND the registered hash appears
+     elsewhere: probably a shifted ordinal, never decided here;
+   - `:missing` the locator does not resolve: no candidate when the hash is
+     nowhere, the anchors with that hash when it is elsewhere.
+
+   Every candidate is a PROPOSAL `{:locator :reason :lines?}`, reason
+   `:locator` or `:hash`; one-to-many lists all of them and never picks one."
+  [anchors marks]
+  (vec (sort-by :id
+                (for [[id m] marks]
+                  (let [kind (:kind m)
+                        loc (:locator m)
+                        h (:hash m)
+                        a (anchor-at anchors kind loc)
+                        others (same-hash anchors kind a h)
+                        status (cond (and a (= h (:hash a))) :anchored
+                                     (and a (empty? others)) :mutated
+                                     a :ambiguous
+                                     :else :missing)
+                        cands (cond-> []
+                                (= :ambiguous status) (conj (candidate a :locator))
+                                ;; an anchored mark has no candidates, even when its
+                                ;; hash has a twin elsewhere: nothing is in doubt
+                                (and (not= :anchored status) (seq others))
+                                (into (map #(candidate % :hash) others)))]
+                    {:id id :kind kind :label (:label m) :locator loc
+                     :status status :candidates cands})))))
+
+(defn advance-marks
+  "The marks after a normal write, read against the `anchors` of the text
+   written: an `:anchored` mark stays as it is; a `:mutated` one records the new
+   hash (same unit, same id, same locator: while the anchoring resolves a change
+   is a mutation); `:ambiguous` and `:missing` are NOT touched; no id, locator or
+   mark is ever removed here."
+  [anchors marks]
+  (let [states (into {} (map (juxt :id identity)) (mark-states anchors marks))]
+    (into (sorted-map)
+          (map (fn [[id m]]
+                 (let [st (get states id)
+                       new-hash (some-> (anchor-at anchors (:kind m) (:locator m)) :hash)]
+                   [id (if (and (= :mutated (:status st)) new-hash)
+                         (assoc m :hash new-hash)
+                         m)])))
+          marks)))

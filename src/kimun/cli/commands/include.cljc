@@ -329,7 +329,8 @@
                                    (when (= 1 (count ds))
                                      (let [d (first ds)]
                                        [q (cond-> (select-keys d [:doc :tree])
-                                            (seq (:units d)) (assoc :units (:units d)))])))
+                                            (seq (:units d)) (assoc :units (:units d))
+                                            (seq (:marks d)) (assoc :marks (:marks d)))])))
                                  by))
          :ambiguous (vec (sort (keep (fn [[q ds]] (when (< 1 (count ds)) q)) by)))
          :without-file (count (remove :qualified docs))})
@@ -431,6 +432,7 @@
                                (let [{:keys [plan]} (tdocs/track-plan h mstore* model name text
                                                                       {:mint (fn [] (ports/ulid (:ids h)))
                                                                        :units (:units carried-ids)
+                                                                       :marks (:marks carried-ids)
                                                                        :doc (or (:doc carried-ids) (ports/ulid (:ids h)))
                                                                        :tree-id (or (:tree carried-ids) (ports/ulid (:ids h)))
                                                                        :path rel
@@ -439,13 +441,15 @@
                                  (-> acc (update :plans conj plan) (update :names conj name)
                                      (update :paths conj rel)
                                      (update (if carried-ids :carried :minted) inc)
-                                     (update :units-carried + (count (:units carried-ids))))))
+                                     (update :units-carried + (count (:units carried-ids)))
+                                     (update :marks-carried + (count (:marks carried-ids))))))
                              (catch Exception e
                                (-> acc (update :failed conj {:path path :name name :model model
                                                              :error (or (:type (ex-data e)) "docs/failed")
                                                              :message (ex-message e)})
                                        (update :names conj name)))))))
-                     {:plans [] :names [] :failed [] :carried 0 :minted 0 :paths [] :units-carried 0}
+                     {:plans [] :names [] :failed [] :carried 0 :minted 0 :paths []
+                      :units-carried 0 :marks-carried 0}
                      documents)
         all (concat (:plans mres) (:plans dres))
         carried (:carried dres 0)
@@ -472,6 +476,7 @@
      :identities {:available (:available registry)
                   :carried carried :minted (:minted dres 0)
                   :units-carried (:units-carried dres 0)
+                  :marks-carried (:marks-carried dres 0)
                   :models {:tree-carried (boolean (:tree-carried mres))
                            :kept (:kept mres 0) :advanced (:advanced mres 0) :new (:new mres 0)}
                   :models-not-carried models-not-carried
@@ -533,7 +538,7 @@
                        ;; no identity was read: nothing carried, nothing known about
                        ;; the old store; the documents minted are still counted
                        (assoc :available false :carried 0 :not-carried [] :ambiguous []
-                              :units-carried 0 :without-file 0
+                              :units-carried 0 :marks-carried 0 :without-file 0
                               :models {:tree-carried false :kept 0 :advanced 0
                                        ;; every declared model is new when nothing was read
                                        :new (get-in ids [:models :new] 0)}

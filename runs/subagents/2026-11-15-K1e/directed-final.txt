@@ -1,0 +1,9 @@
+
+Testing kimun.doc14-contract-test
+
+Testing kimun.lint-test
+
+Testing kimun.surface.marks-test
+
+Ran 13 tests containing 256 assertions.
+0 failures, 0 errors.
