@@ -121,11 +121,6 @@
 
 ;; ---------------------------------------------------------------- queries (§6.3)
 
-(defn endpoint-state
-  "State of one endpoint node in a revision (docs/v2/02 §6.2, §6.3)."
-  [store rev-id node-id]
-  (endpoint-state* (context store rev-id) node-id))
-
 (defn state
   "State of one active anchor edge of a revision. Raises :anchor/not-an-anchor
    when `edge-id` is not an active edge of the revision or is not an anchor."
@@ -145,42 +140,3 @@
   [store rev-id]
   (let [c (context store rev-id)]
     (mapv (fn [[eid e]] (state* c eid e)) (anchors-of c))))
-
-(defn anchored-in
-  "What is anchored in what, for one node (docs/v2/02 §6.3): its positions and
-   the anchors where it is the :from and where it is the :to, by edge id. An
-   edge whose two endpoints are the same node appears in both lists."
-  [store rev-id node-id]
-  (let [c (context store rev-id)
-        as (anchors-of c)]
-    {:node node-id
-     :positions (vec (get (:placements c) node-id []))
-     :as-from (vec (for [[eid e] as :when (= node-id (:from e))] (state* c eid e)))
-     :as-to (vec (for [[eid e] as :when (= node-id (:to e))] (state* c eid e)))}))
-
-(defn report
-  "Anchor summary of a revision (docs/v2/02 §6.3); the three states and the five
-   anchor types are always present, with zeros."
-  [store rev-id]
-  (let [ss (states store rev-id)
-        zero {:intact 0 :superseded 0 :orphan 0}]
-    {:revision rev-id
-     :anchors (count ss)
-     :by-state (reduce (fn [m s] (update m (:state s) inc)) zero ss)
-     :by-type (reduce (fn [m s] (update-in m [(:type s) (:state s)] inc))
-                      (into {} (map (fn [t] [t zero])) anchor-types)
-                      ss)
-     :orphans (vec (sort (map :edge (filter #(= :orphan (:state %)) ss))))}))
-
-(defn diff
-  "Anchors added, removed and changed between two revisions (docs/v2/02 §6.3)."
-  [store r1 r2]
-  (let [a (into {} (map (juxt :edge identity)) (states store r1))
-        b (into {} (map (juxt :edge identity)) (states store r2))
-        in-a? (set (keys a)) in-b? (set (keys b))]
-    {:added (mapv b (sort (remove in-a? (keys b))))
-     :removed (vec (sort (remove in-b? (keys a))))
-     :changed (vec (for [eid (sort (filter in-a? (keys b)))
-                         :when (not= (:state (a eid)) (:state (b eid)))]
-                     {:edge eid :type (:type (b eid))
-                      :before (:state (a eid)) :after (:state (b eid))}))}))

@@ -26,6 +26,18 @@
   (let [user (get env "USER")]
     (if (and (string? user) (seq user)) (str "human/" user) "human/unknown")))
 
+(defn usage!
+  "Raises `:cli/usage` with `message`; the data carries the command `group`
+   (and the `sub`command when given) plus `data`."
+  ([group message data] (err/raise :cli/usage message (merge {:group group} data)))
+  ([group sub message data] (err/raise :cli/usage message (merge {:group group :subcommand sub} data))))
+
+(defn require-arg!
+  "Positional argument `i` of `args`, or a `:cli/usage` error naming the
+   `what` that `group` `sub` needs."
+  [group args i what sub]
+  (or (get args i) (usage! group sub (str "`" group " " sub "` needs " what) {})))
+
 (defn- require-string! [opts k]
   (let [v (get opts k)]
     (when (and (contains? opts k) (not (string? v)))

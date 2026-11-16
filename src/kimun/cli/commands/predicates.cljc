@@ -8,37 +8,18 @@
    command is `(fn [args opts ctx] envelope)`."
   (:require [clojure.string :as str]
             [kimun.cli.commands.docs :as cdocs]
+            [kimun.cli.args :as cli-args]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
             [kimun.graph.edges :as edges]
-            [kimun.host.default :as host]
-            [kimun.kernel.err :as err]
-            [kimun.kernel.ports :as ports]
-            [kimun.kernel.store :as store]))
+            [kimun.kernel.err :as err]))
 
-(defn- open [opts {:keys [env cwd]}] (cli-store/open! (cli-store/resolve-store opts env cwd)))
-(defn- store-ref [{:keys [descriptor path]}] {:name (:name descriptor) :path path})
-
-(defn- usage! [sub message data]
-  (err/raise :cli/usage message (merge {:group "predicates" :subcommand sub} data)))
-
-(defn- require-arg! [args i what sub]
-  (or (get args i) (usage! sub (str "`predicates " sub "` needs " what) {})))
 
 (defn- text-opt
   "Option `k` as a string or nil; a flag without a value is `cli/usage`."
   [opts k sub]
   (let [v (get opts k)]
-    (if (or (nil? v) (string? v)) v (usage! sub (str "option --" (name k) " needs a value") {:option k}))))
-
-(defn- commit
-  "Commits the plan `build` returns for `arg`: `{:opened :store :revision :changed}`."
-  [build arg opts ctx]
-  (let [{:keys [backend] s :store :as o} (open opts ctx)
-        {:keys [changed plan]} (build host/host s arg {:actor (:actor opts) :timestamp (cdocs/timestamp)
-                                                       :tree-id (ports/ulid (:ids host/host))})
-        r (when changed (store/commit! backend s plan))]
-    {:opened o :store (if r (:store r) s) :revision (if r (:revision-id r) (:head s)) :changed (boolean changed)}))
+    (if (or (nil? v) (string? v)) v (cli-args/usage! "predicates" sub (str "option --" (name k) " needs a value") {:option k}))))
 
 (defn add
   "`predicates add NAME --axis A [--description D]`: registers a predicate;
@@ -46,27 +27,27 @@
    :description}}`. A duplicate is `edges/conflict`, a bad name or axis
    `edges/invalid`, a missing `--axis` `cli/usage`."
   [args opts ctx]
-  (let [n (require-arg! args 0 "a predicate NAME" "add")
-        axis (or (text-opt opts :axis "add") (usage! "add" "`predicates add` needs --axis" {:option :axis}))
+  (let [n (cli-args/require-arg! "predicates" args 0 "a predicate NAME" "add")
+        axis (or (text-opt opts :axis "add") (cli-args/usage! "predicates" "add" "`predicates add` needs --axis" {:option :axis}))
         p {:name n :axis (str/upper-case axis) :description (or (text-opt opts :description "add") "")}
-        {:keys [opened changed revision] s :store} (commit edges/add-predicate-plan p opts ctx)]
-    (out/ok "predicates add" {:store (store-ref opened) :revision revision
+        {:keys [opened changed revision] s :store} (cdocs/commit-built edges/add-predicate-plan p opts ctx)]
+    (out/ok "predicates add" {:store (cli-store/store-ref opened) :revision revision
                               :data {:changed changed :predicate (edges/predicate s n)}})))
 
 (defn list-predicates
   "`predicates list`: every predicate by name. Data: `{:count :predicates
    [{:name :axis :description}]}`."
   [_args opts ctx]
-  (let [o (open opts ctx) s (:store o) ps (edges/predicates s)]
-    (out/ok "predicates list" {:store (store-ref o) :revision (:head s) :data {:count (count ps) :predicates ps}})))
+  (let [o (cli-store/open-for opts ctx) s (:store o) ps (edges/predicates s)]
+    (out/ok "predicates list" {:store (cli-store/store-ref o) :revision (:head s) :data {:count (count ps) :predicates ps}})))
 
 (defn show
   "`predicates show NAME`: one predicate, `{:name :axis :description}`;
    `edges/missing` when it is not registered."
   [args opts ctx]
-  (let [o (open opts ctx) s (:store o)]
-    (out/ok "predicates show" {:store (store-ref o) :revision (:head s)
-                               :data (edges/predicate s (require-arg! args 0 "a predicate NAME" "show"))})))
+  (let [o (cli-store/open-for opts ctx) s (:store o)]
+    (out/ok "predicates show" {:store (cli-store/store-ref o) :revision (:head s)
+                               :data (edges/predicate s (cli-args/require-arg! "predicates" args 0 "a predicate NAME" "show"))})))
 
 (defn- problems
   "v1's `validate_predicates`: each entry's own problems, then a sentence for
@@ -86,12 +67,12 @@
    failure `edges/invalid` (exit 3; v1 exited 1) with `{:valid false :errors
    […] :checked n}`. An unregistered NAME is `edges/missing`."
   [args opts ctx]
-  (let [o (open opts ctx) s (:store o) n (get args 0)
+  (let [o (cli-store/open-for opts ctx) s (:store o) n (get args 0)
         entries (cond->> (edges/predicates s) n (filterv #(= n (:name %))))
         _ (when (and n (empty? entries)) (edges/predicate s n))
         errors (problems entries)]
     (if (empty? errors)
-      (out/ok "predicates validate" {:store (store-ref o) :revision (:head s)
+      (out/ok "predicates validate" {:store (cli-store/store-ref o) :revision (:head s)
                                      :data {:valid true :errors [] :checked (count entries)}})
       (err/raise :edges/invalid (str "predicates invalid: " (str/join " " errors))
                  {:valid false :errors errors :checked (count entries) :revision (:head s)}))))
@@ -100,9 +81,9 @@
   "`predicates remove NAME`: unregisters a predicate. Data: `{:changed
    :removed NAME :count}`; `edges/missing` when it is not registered."
   [args opts ctx]
-  (let [n (require-arg! args 0 "a predicate NAME" "remove")
-        {:keys [opened changed revision] s :store} (commit edges/remove-predicate-plan n opts ctx)]
-    (out/ok "predicates remove" {:store (store-ref opened) :revision revision
+  (let [n (cli-args/require-arg! "predicates" args 0 "a predicate NAME" "remove")
+        {:keys [opened changed revision] s :store} (cdocs/commit-built edges/remove-predicate-plan n opts ctx)]
+    (out/ok "predicates remove" {:store (cli-store/store-ref opened) :revision revision
                                  :data {:changed changed :removed n :count (count (edges/predicates s))}})))
 
 (def spec

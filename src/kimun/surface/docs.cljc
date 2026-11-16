@@ -680,12 +680,6 @@
           (= owner tree-id) :routed
           :else :unrouted)))
 
-(defn routed?
-  "True when document `doc` (a typed or generic document map with a file)
-   holds the route of its own path in `store`."
-  [store doc]
-  (= :routed (route-state store (:tree doc) (:path doc))))
-
 (defn- leave-route-ops
   "`[{:op :remove-route}]` when tree `tree-id` holds the route of `old-path`
    and is about to stop tracking that path (it moves to `new-path`, or to none
@@ -1196,10 +1190,6 @@
          (when (and (not (:generic doc)) (:model doc))
            (when-let [p (:payload (payload-of store (assoc doc :source text)))]
              (anchors/field-anchors host p)))))
-
-(defn- with-marks
-  "`doc`'s marks with `f` applied (a declaration on them)."
-  [doc f] (update doc :marks #(f (or % {}))))
 
 (defn mark-plan
   "Plan that DECLARES structural mark `id` on document `token` (`mark`) or

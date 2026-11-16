@@ -57,11 +57,6 @@
   [k]
   (fail :serve/missing-parameter (str "Missing parameter: " (name k)) {:parameter (name k)} 6))
 
-(defn bad-parameter
-  "The usage failure (400) for parameter `k` with an invalid value."
-  [k message]
-  (fail :serve/bad-parameter (str "Invalid parameter " (name k) ": " message) {:parameter (name k)} 6))
-
 (defn as-status
   "The Ring response of `envelope` under `status` (the route's override of
    `status-of`), for the cases where v1 answered another code."

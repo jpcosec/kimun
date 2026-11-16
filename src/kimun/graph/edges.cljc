@@ -16,6 +16,7 @@
    `kimun.kernel.store/commit!` as the semantic commands do."
   (:require [clojure.edn :as edn]
             [clojure.string :as str]
+            [kimun.graph.model :as m]
             [kimun.surface.docs :as docs]
             [kimun.surface.links :as links]
             [kimun.surface.models.segments :as segments]
@@ -34,19 +35,11 @@
 (def relation-context "Prefix of the evidence context naming an authored relation." "kimun/relation/")
 (def anchor-tag "The semantic tag that makes a document an anchor (v1)." "type.knowledge.anchor")
 
-(defn store-id "Node id of the store." [] "sldb://store")
-(defn model-id "Node id of model `m`." [m] (str "sldb://model/" m))
-(defn field-id "Node id of field `f` of model `m`." [m f] (str "sldb://field/" m "." f))
-(defn doc-id "Node id of the document with export id `Model:name`." [export-id] (str "sldb://document/" export-id))
-(defn section-id "Node id of section `path` of document `export-id`." [export-id path] (str "sldb://section/" export-id "#" path))
-(defn tag-id "Node id of semantic tag `t`." [t] (str "sldb://semantic_tag/" t))
-(defn relation-type-id "Node id of relation type `n`." [n] (str "sldb://relation_type/" n))
-(defn anchor-id "Node id of the anchor named `symbol`." [symbol] (str "sldb://anchor/" symbol))
 (defn as-node-id
   "v1's `as_node_id`: an `sldb://` id is used as is, anything else is a
    document export id."
   [x]
-  (if (str/starts-with? (str x) "sldb://") x (doc-id x)))
+  (if (str/starts-with? (str x) "sldb://") x (m/doc-id x)))
 
 ;; ---------------------------------------------------------------- registries
 
@@ -263,14 +256,14 @@
     []
     (let [[h a b] form nm #(when (or (symbol? %) (string? %)) (str %))]
       (case (name h)
-        ("model" "where" "value" "create") (if (nm a) [(model-id (nm a))] [])
-        ("relation" "assert") (if (nm a) [(relation-type-id (nm a))] [])
-        "doc" (if (nm a) [(doc-id (nm a))] [])
-        "field" (if (and (nm a) (nm b)) [(field-id (nm a) (nm b))] [])
+        ("model" "where" "value" "create") (if (nm a) [(m/model-id (nm a))] [])
+        ("relation" "assert") (if (nm a) [(m/relation-type-id (nm a))] [])
+        "doc" (if (nm a) [(m/doc-id (nm a))] [])
+        "field" (if (and (nm a) (nm b)) [(m/field-id (nm a) (nm b))] [])
         "move" (vec (mapcat form-targets (rest form)))
         ("change" "add" "remove" "clean" "forget")
         (if (and (seq? a) (#{"it" "them"} (str (first a))) (= "of" (str (second a))) (nm (nth a 2 nil)) (nm b))
-          [(field-id (nm (nth a 2)) (nm b))] [])
+          [(m/field-id (nm (nth a 2)) (nm b))] [])
         []))))
 
 (defn anchor-targets
@@ -283,15 +276,15 @@
       (str/starts-with? ref "(") (form-targets (try (edn/read-string ref) (catch #?(:clj Exception :cljs :default) _ nil)))
       (nil? rest*) []
       :else (case head
-              "field" (let [[m f] (str/split rest* #"\." 2)] (if (and (seq m) (seq f)) [(field-id m f)] []))
-              "action" (mapv (fn [[_ m f]] (field-id m f)) (re-seq #"\b([A-Za-z_]\w*)\.([A-Za-z_]\w*)=" rest*))
-              "model" [(model-id rest*)]
-              "predicate" [(model-id (first (str/split rest* #":" 2)))]
-              "relation" [(relation-type-id rest*)]
-              "doc" [(doc-id rest*)]
+              "field" (let [[m f] (str/split rest* #"\." 2)] (if (and (seq m) (seq f)) [(m/field-id m f)] []))
+              "action" (mapv (fn [[_ m f]] (m/field-id m f)) (re-seq #"\b([A-Za-z_]\w*)\.([A-Za-z_]\w*)=" rest*))
+              "model" [(m/model-id rest*)]
+              "predicate" [(m/model-id (first (str/split rest* #":" 2)))]
+              "relation" [(m/relation-type-id rest*)]
+              "doc" [(m/doc-id rest*)]
               "compose" (vec (keep #(when (map? %)
-                                      (cond (seq (get % "model")) (model-id (get % "model"))
-                                            (seq (get % "relation")) (relation-type-id (get % "relation"))))
+                                      (cond (seq (get % "model")) (m/model-id (get % "model"))
+                                            (seq (get % "relation")) (m/relation-type-id (get % "relation"))))
                                    (get payload "steps")))
               []))))
 
@@ -300,7 +293,7 @@
 (defn- edge [from to rel origin & {:as m}] {:from from :to to :type rel :metadata (merge {"origin" origin} m)})
 (defn- add-nodes [g pairs] (update g :nodes #(reduce (fn [ns [id attrs]] (if (contains? ns id) ns (assoc ns id attrs))) % pairs)))
 (defn- add-edges [g es] (update g :edges into es))
-(defn- tag-nodes [tags] (map (fn [t] [(tag-id t) {:type "semantic_tag" :semantics {"tag" t}}]) tags))
+(defn- tag-nodes [tags] (map (fn [t] [(m/tag-id t) {:type "semantic_tag" :semantics {"tag" t}}]) tags))
 (defn- strs [m] (into (sorted-map) (map (fn [[k v]] [(if (keyword? k) (name k) (str k)) v])) m))
 
 (defn- field-kind [t]
@@ -314,27 +307,27 @@
                                             :else (conj acc x))) [] parts))))
 
 (defn- model-part [g {:keys [name descriptor]} by-name]
-  (let [mid (model-id name) tags (sem/model-tags descriptor by-name) bases (vec (sort (set (:base descriptor))))]
+  (let [mid (m/model-id name) tags (sem/model-tags descriptor by-name) bases (vec (sort (set (:base descriptor))))]
     (-> g
         (add-nodes [[mid {:type "sldb_model" :semantics {"name" name "version" (:model/version descriptor) "family" (:py/family descriptor)
                                                          "semantic_tags" (vec tags) "base_models" bases}}]])
-        (add-nodes (map (fn [f] [(field-id name (:name f)) {:type "sldb_field" :semantics {"name" (:name f) "model" name "kind" (field-kind (:type f))
+        (add-nodes (map (fn [f] [(m/field-id name (:name f)) {:type "sldb_field" :semantics {"name" (:name f) "model" name "kind" (field-kind (:type f))
                                                                                              "required" (boolean (:required f)) "description" (or (:description f) "")}}])
                         (:fields descriptor)))
         (add-nodes (tag-nodes tags))
-        (add-edges (concat [(edge (store-id) mid "has_model" "structural")]
-                           (map #(edge mid (tag-id %) "tagged_as" "structural") tags)
-                           (map #(edge mid (field-id name (:name %)) "has_field" "schema") (:fields descriptor))
-                           (map #(edge mid (model-id %) "extends" "schema") bases))))))
+        (add-edges (concat [(edge (m/store-id) mid "has_model" "structural")]
+                           (map #(edge mid (m/tag-id %) "tagged_as" "structural") tags)
+                           (map #(edge mid (m/field-id name (:name %)) "has_field" "schema") (:fields descriptor))
+                           (map #(edge mid (m/model-id %) "extends" "schema") bases))))))
 
 (defn- declared-edges [did descriptor payload]
   (let [containment (:py/containment descriptor)
         ids-in (fn [v] (keep #(when (and (string? %) (str/includes? (str/trim %) ":")) (str/trim %)) (if (sequential? v) v [v])))]
     (concat (for [[field allowed] containment id (ids-in (get payload field))]
-              (if (seq allowed) (edge did (doc-id id) "contains" "schema" "field" field "allowed_models" (vec allowed))
-                  (edge did (doc-id id) "contains" "schema" "field" field)))
+              (if (seq allowed) (edge did (m/doc-id id) "contains" "schema" "field" field "allowed_models" (vec allowed))
+                  (edge did (m/doc-id id) "contains" "schema" "field" field)))
             (for [field (:py/references descriptor) :when (not (contains? containment field)) id (ids-in (get payload field))]
-              (edge did (doc-id id) "references" "schema" "field" field)))))
+              (edge did (m/doc-id id) "references" "schema" "field" field)))))
 
 (defn- compose-edges [did descriptor payload owners]
   (for [[field spec] (or (:py/compositions descriptor) (:compositions descriptor))
@@ -356,7 +349,7 @@
   ;; the descriptor the document was last written with: its payload is read
   ;; under that contract (docs/payload-of), so the schema edges must be
   ;; derived from the same one, never from the model's current contract
-  (let [eid (str (:model doc) ":" (:name doc)) did (doc-id eid)
+  (let [eid (str (:model doc) ":" (:name doc)) did (m/doc-id eid)
         d (or (docs/contract-descriptor store doc) (descriptors (:model doc))) dtags (vec (sort (set (tags eid))))
         needs? (or (:py/references d) (:py/containment d) (:py/compositions d) (:compositions d)
                    (some #{"RelationTypeDoc" "RelationDoc"} (cons (:model doc) (:base d))) (some #{anchor-tag} dtags))
@@ -364,26 +357,26 @@
     (if (some excluded dtags)
       (add-nodes g (tag-nodes dtags))
       (case (special-kind doc d dtags payload)
-        :relation-type (let [n (get payload "name") rid (relation-type-id n)]
+        :relation-type (let [n (get payload "name") rid (m/relation-type-id n)]
                          (-> g (add-nodes [[rid {:type "relation_type" :semantics (assoc (strs payload) "doc" (:name doc))}]])
                              (update :types assoc n (strs payload))
-                             (add-edges (concat (map #(edge rid (model-id %) "applies_to_source" "schema") (get payload "source_types"))
-                                                (map #(edge rid (model-id %) "applies_to_target" "schema") (get payload "target_types"))))))
-        :relation (add-edges g [(edge (doc-id (get payload "source_id")) (doc-id (get payload "target_id")) (get payload "relation_type") "relation_doc"
+                             (add-edges (concat (map #(edge rid (m/model-id %) "applies_to_source" "schema") (get payload "source_types"))
+                                                (map #(edge rid (m/model-id %) "applies_to_target" "schema") (get payload "target_types"))))))
+        :relation (add-edges g [(edge (m/doc-id (get payload "source_id")) (m/doc-id (get payload "target_id")) (get payload "relation_type") "relation_doc"
                                       "relation_doc" (:name doc) "condition" (or (get payload "condition") "") "axis" "")])
-        :anchor (let [aid (anchor-id (get payload "symbol"))]
+        :anchor (let [aid (m/anchor-id (get payload "symbol"))]
                   (-> g (add-nodes [[aid {:type "anchor" :semantics (assoc (strs payload) "doc" (:name doc))}]])
                       (add-edges (map #(edge aid % "names" "alias") (anchor-targets payload)))))
         (let [secs (segments/sections (:source doc))]
           (-> g
               (add-nodes [[did {:type (:model doc) :semantics {"export_id" eid "name" (:name doc) "model" (:model doc) "path" (:path doc)
                                                                "semantic_tags" dtags "fingerprint" (:fingerprint doc) "state" (name (:state doc))}}]])
-              (add-nodes (map (fn [s] [(section-id eid (:path s)) {:type "sldb_section" :semantics (merge (strs s) {"export_id" (str eid "#" (:path s)) "document_id" eid "semantic_tags" dtags})}]) secs))
-              (add-edges (concat [(edge (model-id (:model doc)) did "has_document" "structural")]
-                                 (map #(edge did (section-id eid (:path %)) "has_section" "structural") secs)
-                                 (map #(edge did (tag-id %) "tagged_as" "structural") dtags)
+              (add-nodes (map (fn [s] [(m/section-id eid (:path s)) {:type "sldb_section" :semantics (merge (strs s) {"export_id" (str eid "#" (:path s)) "document_id" eid "semantic_tags" dtags})}]) secs))
+              (add-edges (concat [(edge (m/model-id (:model doc)) did "has_document" "structural")]
+                                 (map #(edge did (m/section-id eid (:path %)) "has_section" "structural") secs)
+                                 (map #(edge did (m/tag-id %) "tagged_as" "structural") dtags)
                                  ;; v1: a section carries its document's tags (every section of v1's real index does)
-                                 (for [s secs t dtags] (edge (section-id eid (:path s)) (tag-id t) "tagged_as" "structural"))
+                                 (for [s secs t dtags] (edge (m/section-id eid (:path s)) (m/tag-id t) "tagged_as" "structural"))
                                  (declared-edges did d payload)
                                  (compose-edges did d payload owners)
                                  (when links?
@@ -401,7 +394,7 @@
    stores and stay as they are."
   [store-name id]
   (cond
-    (= id (store-id)) (str (store-id) "/" store-name)
+    (= id (m/store-id)) (str (m/store-id) "/" store-name)
     :else (if-let [p (some #(when (str/starts-with? id %) %) ["sldb://document/" "sldb://section/"])]
             (let [rest* (subs id (count p))]
               (if (= 1 (count (re-seq #":" (first (str/split rest* #"#" 2)))))
@@ -433,16 +426,16 @@
         dag (sem/dag store) stored (stored-relation-types store)
         tags (into {} (map (fn [e] [(str (:model e) ":" (:name e)) (:tags e)])) (sem/document-tags store))
         ctx {:descriptors by-name :tags tags :registry (predicate-registry store) :links? links? :excluded (set exclude-tags)
-             :owners (reduce (fn [m d] (if (and (:path d) (not (contains? m (norm-path (:path d))))) (assoc m (norm-path (:path d)) (doc-id (str (:model d) ":" (:name d)))) m)) {} ds)}
+             :owners (reduce (fn [m d] (if (and (:path d) (not (contains? m (norm-path (:path d))))) (assoc m (norm-path (:path d)) (m/doc-id (str (:model d) ":" (:name d)))) m)) {} ds)}
         rtypes (merge builtin-relation-types stored)
         g (-> {:nodes {} :edges [] :types rtypes}
-              (add-nodes [[(store-id) {:type "sldb_store" :semantics {}}]])
+              (add-nodes [[(m/store-id) {:type "sldb_store" :semantics {}}]])
               (add-nodes (tag-nodes (distinct (concat (keys (:nodes dag)) (mapcat val (:nodes dag)) (keys (:equivalences dag)) (mapcat val (:equivalences dag))))))
-              (add-edges (for [[t ps] (:nodes dag) p (sort ps)] (edge (tag-id t) (tag-id p) "semantic_parent" "structural")))
-              (add-edges (for [[t es] (:equivalences dag) e (sort es)] (edge (tag-id t) (tag-id e) "semantic_equivalent" "structural")))
-              (add-nodes (map (fn [[n t]] [(relation-type-id n) {:type "relation_type" :semantics t}]) rtypes))
+              (add-edges (for [[t ps] (:nodes dag) p (sort ps)] (edge (m/tag-id t) (m/tag-id p) "semantic_parent" "structural")))
+              (add-edges (for [[t es] (:equivalences dag) e (sort es)] (edge (m/tag-id t) (m/tag-id e) "semantic_equivalent" "structural")))
+              (add-nodes (map (fn [[n t]] [(m/relation-type-id n) {:type "relation_type" :semantics t}]) rtypes))
               (add-edges (for [[n t] stored [k rel] [["source_types" "applies_to_source"] ["target_types" "applies_to_target"]] m (get t k)]
-                           (edge (relation-type-id n) (model-id m) rel "schema"))))]
+                           (edge (m/relation-type-id n) (m/model-id m) rel "schema"))))]
     (let [g (reduce #(model-part %1 %2 by-name) g (sort-by :name ms))]
       (reduce #(doc-part %1 store ctx %2) g (sort-by (juxt :model :name) ds)))))
 
@@ -481,7 +474,7 @@
 (defn- authored-part [g store]
   (let [as (authored store)]
     (reduce (fn [g {:keys [relation from to state edge]}]
-              (let [t (get (:types g) relation) f (some-> (:document from) doc-id) x (some-> (:document to) doc-id)]
+              (let [t (get (:types g) relation) f (some-> (:document from) m/doc-id) x (some-> (:document to) m/doc-id)]
                 (if (and f x ((:nodes g) f) ((:nodes g) x))
                   (let [e {:from f :to x :type relation
                            :metadata {"origin" "authored" "edge" edge "anchor" (name state) "condition" (get t "condition" "") "axis" (get t "axis" "")}}]
@@ -561,8 +554,8 @@
    document), `:unknown-relation`, `:missing-endpoint`, `:endpoint-type`,
    `:cardinality`, `:cycle`, `:anchor`. `:errors` are v1's sentences."
   [{:keys [problems authored] {:keys [nodes edges]} :graph types :relation-types}]
-  (let [bases #(get-in nodes [(model-id %) :semantics "base_models"])
-        allowed? (fn [allowed ntype] (or (empty? allowed) (and (some #{"sldb_document"} allowed) (nodes (model-id ntype))) (some (set allowed) (cons ntype (bases ntype)))))
+  (let [bases #(get-in nodes [(m/model-id %) :semantics "base_models"])
+        allowed? (fn [allowed ntype] (or (empty? allowed) (and (some #{"sldb_document"} allowed) (nodes (m/model-id ntype))) (some (set allowed) (cons ntype (bases ntype)))))
         per-edge (mapcat (fn [{:keys [from to type metadata] :as e}]
                            (let [where (str "edge " from " -[" type "]-> " to) t (types type) v (fn [k m] {:kind k :edge e :message (str where ": " m)})]
                              (cond (and (nil? t) (= "link" (metadata "origin"))) []

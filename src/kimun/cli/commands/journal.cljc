@@ -10,7 +10,6 @@
             [kimun.kernel.err :as err]
             [kimun.kernel.store :as store]))
 
-(defn- store-ref [descriptor path] {:name (:name descriptor) :path path})
 
 (defn- parse-limit
   "The `--limit` value (string or number) as a positive integer, or nil when
@@ -34,7 +33,7 @@
         {:keys [backend descriptor store path]} (cli-store/open! (cli-store/resolve-store opts env cwd))
         es (journal/entries store (store/committed-log backend)
                             {:actor (:by opts) :tree (:tree opts) :limit limit})]
-    (out/ok "journal show" {:store (store-ref descriptor path)
+    (out/ok "journal show" {:store (cli-store/store-ref descriptor path)
                             :revision (:head store)
                             :data es})))
 
@@ -64,7 +63,7 @@
             o (store/verify backend store)
             bad (into (:bad r) (:bad o))]
         (if (empty? bad)
-          (out/ok "journal verify" {:store (store-ref descriptor path)
+          (out/ok "journal verify" {:store (cli-store/store-ref descriptor path)
                                     :revision (:head store)
                                     :data (cond-> {:revisions (:revisions r) :checked (:checked r)
                                                    :objects (:checked o) :bad []}

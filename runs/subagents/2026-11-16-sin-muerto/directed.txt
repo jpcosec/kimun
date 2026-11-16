@@ -1,0 +1,27 @@
+### batch 1
+Ran 241 tests containing 1909 assertions.
+0 failures, 0 errors.
+### batch 2
+pod-ast-parity: 735/735 identical (divergent 0, errors 0)
+  by class: {}
+Ran 156 tests containing 1265 assertions.
+0 failures, 0 errors.
+### batch 3
+moved existing store to /tmp/kimun-adhoc-13343627938357054267/kimun-include-10538878394187857854/.kimun.bak-20261116-002408-01M7H64BYFKWMH8PSGP7S39WVH
+moved existing store to /tmp/kimun-adhoc-13343627938357054267/kimun-marks-inc-13791889308455208955/.kimun.bak-20261116-002411-01M7H64FBZXRDTJEVWY5ETWGDF
+Ran 168 tests containing 1816 assertions.
+0 failures, 0 errors.
+### batch 4
+parity segments corpus by op: {:build_extraction_segments {:pass 6}, :extract_sections {:pass 16}, :map_fields_to_sections {:pass 9}, :render_with_spans {:pass 1557, :excluded 7}}
+moved existing store to /tmp/kimun-adhoc-11743265553153226668/kimun-s16-include-2683129929230302806/.kimun.bak-20261116-002438-01M7H65A0GZJ4T0S2RV1Z7HZ7G
+Ran 323 tests containing 3607 assertions.
+0 failures, 0 errors.
+
+namespaces batch1:
+kimun.graph.analysis-test kimun.graph.edges-parity-test kimun.graph.edges-test kimun.graph.export-test kimun.graph.io-test kimun.graph.query-test kimun.graph.store-test kimun.graph.traversal-test kimun.kernel.anchor-test kimun.kernel.canon-test kimun.kernel.edge-test kimun.kernel.hardening-test kimun.kernel.mmap-test kimun.kernel.node-test kimun.kernel.plan-test kimun.kernel.revision-format2-test kimun.kernel.revision-test kimun.kernel.route-store-test kimun.kernel.route-test kimun.kernel.route-tree-store-test kimun.kernel.route-tree-test kimun.kernel.store-test kimun.kernel.tree-test kimun.kernel.unreachable-test 
+
+batch2:
+kimun.surface.http.analysis-test kimun.surface.http.circuit-test kimun.surface.http.documents-test kimun.surface.http.models-fields-test kimun.surface.http.save-schema-test kimun.surface.http.security-test kimun.surface.index.address-test kimun.surface.index.build-test kimun.surface.index.cache-test kimun.surface.index.corpus-test kimun.surface.index.search-test kimun.surface.index.where-test kimun.surface.markdown.anchors-test kimun.surface.markdown.cst-ast-parity-test kimun.surface.markdown.cst-test kimun.surface.markdown.drift-test kimun.surface.markdown.frontmatter-test kimun.surface.markdown.inline-test kimun.surface.markdown.plan-test kimun.surface.markdown.roundtrip-test 
+
+batch3:
+kimun.cli.docs-test kimun.cli.typed-docs-test kimun.cli.generic-docs-test kimun.cli.edges-test kimun.cli.graph-test kimun.cli.links-test kimun.cli.fields-test kimun.cli.sections-test kimun.cli.find-test kimun.cli.include-test kimun.cli.models-test kimun.cli.predicates-test kimun.cli.semantic-test kimun.cli.corpus-test kimun.cli.index-test kimun.cli.journal-test kimun.cli.main-test kimun.cli.marks-test kimun.cli.tour-test kimun.lint-test 

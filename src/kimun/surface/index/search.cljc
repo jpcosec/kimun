@@ -17,7 +17,7 @@
             [kimun.surface.semantic :as sem]
             [kimun.host.default :as host]
             [kimun.kernel.err :as err]
-            [kimun.kernel.reconcile :as reconcile]))
+            [kimun.surface.index.corpus :as corpus]))
 
 (def kinds "The record kinds `find` knows, as `--type` names them." #{:store :model :doc :section :field :tag})
 (def layers "The values of `--in`." #{:physical :semantic :all})
@@ -99,7 +99,7 @@
         fuzzy? (let [t (str/lower-case term)]
                  (fn [v] (let [v (str/lower-case v)]
                            (boolean (or (str/includes? v t)
-                                        (some #(>= (reconcile/dice host/host t %) fuzzy-threshold) (cons v (str/split v #"\s+"))))))))
+                                        (some #(>= (corpus/dice host/host t %) fuzzy-threshold) (cons v (str/split v #"\s+"))))))))
         :else #(str/includes? % term)))
 
 (defn- matches-of [record match? in]

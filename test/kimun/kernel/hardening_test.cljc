@@ -184,7 +184,7 @@
         r (rev/apply-plan s1 (plan (:head s1) [{:op :add-node :node {:class :sign :kind :text :content {:text "a'"}}}
                                                {:op :replace :tree T :at [0] :new a'}]))
         s2 (:store r)]
-    (is (tree/contains-node? (get-in s2 [:trees U]) a) "a still in U")
+    (is (contains? (tree/nodes (get-in s2 [:trees U])) a) "a still in U")
     (is (= u-root-before (tree/merkle-root (get-in s2 [:trees U]))) "U's merkle-root unchanged")
     (is (= (:head s1) (get-in s2 [:heads U])))))
 

@@ -74,14 +74,6 @@
               (str/trim t))]
     (vec (sort (into (set (model-tags descriptor bases)) own)))))
 
-(defn index
-  "Tag index of `entries` (`[{:name :model :tags}]`):
-   `{:by-tag {tag [\"Model:name\" …]} :by-doc {\"Model:name\" [tag …]}}`, all sorted."
-  [entries]
-  (let [id #(str (:model %) ":" (:name %))]
-    {:by-doc (into (sorted-map) (map (fn [e] [(id e) (vec (sort (:tags e)))])) entries)
-     :by-tag (reduce (fn [m e] (reduce #(update %1 %2 (fnil conj (sorted-set)) (id e)) m (:tags e))) (sorted-map) entries)}))
-
 ;; ---- the DAG: {:nodes {tag #{parent}} :equivalences {tag #{tag}}} ----
 
 (defn prefix-edges

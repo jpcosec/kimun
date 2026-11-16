@@ -7,18 +7,12 @@
    Content: `(fn [path]) -> markdown text`."
   (:require [kimun.surface.links.composer :as composer]
             [kimun.surface.links.parser :as parser]
-            [kimun.surface.links.recovery :as recovery]
-            [kimun.surface.links.resolver :as resolver]))
+            [kimun.surface.links.recovery :as recovery]))
 
 (defn parse-links
   "See `kimun.surface.links.parser/parse-links`."
   ([markdown] (parser/parse-links markdown))
   ([markdown predicate-types] (parser/parse-links markdown predicate-types)))
-
-(defn resolve-link
-  "See `kimun.surface.links.resolver/resolve-link`."
-  [lookup link from]
-  (resolver/resolve-link lookup link from))
 
 (defn recover-links
   "See `kimun.surface.links.recovery/recover-links`."

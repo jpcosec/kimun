@@ -11,7 +11,11 @@
             [babashka.process :as process]
             [clojure.edn :as edn]
             [clojure.string :as str]
+            [kimun.cli.args :as cli-args]
+            [kimun.cli.commands.docs :as cdocs]
+            [kimun.cli.commands.stores :as stores]
             [kimun.cli.compose :as compose]
+            [kimun.cli.errors :as errors]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
             [kimun.host.default :as host]
@@ -279,12 +283,6 @@
       (:uninstall opts) (uninstall-hook! root)
       :else (err/raise :cli/usage "`include hook` needs --install or --uninstall" {:group "include" :subcommand "hook"}))))
 
-(defn- run-cli
-  "Runs another `kimun` command in-process (cwd `root`) through
-   `kimun.cli.main/run`, without printing or exiting."
-  [root env argv]
-  ((requiring-resolve 'kimun.cli.main/run) argv env root))
-
 (defn- descriptor-at
   "The descriptor EDN at `path` (relative to `root`); `:include/invalid` when
    it cannot be read."
@@ -295,13 +293,6 @@
            (err/raise :include/invalid (str "cannot read model descriptor " path ": " (ex-message e)) {:path path})))))
 
 (defn- relative-to [root p] (str (fs/relativize (fs/absolutize root) (fs/absolutize p))))
-
-(defn- now-ts
-  "The current UTC instant in the plan's shape, `yyyy-MM-ddTHH:mm:ss.SSSZ`."
-  []
-  #?(:clj (.format (java.time.format.DateTimeFormatter/ofPattern "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-                   (java.time.ZonedDateTime/now java.time.ZoneOffset/UTC))
-     :cljs (.toISOString (js/Date.))))
 
 (defn- identity-registry
   "Identities a rebuild can carry, read from the store at `store-dir` BEFORE it
@@ -356,7 +347,7 @@
   (let [{:keys [backend store]} (cli-store/open! store-dir)
         h (:host store)
         actor (:actor opts)
-        ts (now-ts)
+        ts (cdocs/timestamp)
         ctx (compose/context store store-dir)
         registry (or identities {:available true :by-path {} :ambiguous [] :without-file 0
                                  :models {:tree nil :by-name {}}})
@@ -524,9 +515,10 @@
         (err/raise :include/exists
                    (str store-dir " already exists; pass --rebuild to move it aside and build it again")
                    {:path store-dir})))
-    (let [init (:envelope (run-cli root env (cond-> ["stores" "init" "--store" store-dir]
-                                              (= :inline (get-in cfg [:store :content]))
-                                              (conj "--content" "inline"))))
+    (let [init (errors/wrap #(stores/init [] (cond-> {:store store-dir :actor (cli-args/default-actor env)}
+                                                  (= :inline (get-in cfg [:store :content]))
+                                                  (assoc :content "inline"))
+                                              {:env env :cwd root}))
           _ (when-not (:ok init)
               (err/raise :include/drift (str "stores init failed: " (get-in init [:error :type]))
                          {:phase "stores init" :error (get-in init [:error :type]) :message (get-in init [:error :message])}))

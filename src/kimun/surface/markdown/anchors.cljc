@@ -193,8 +193,7 @@
    `:unresolved` (no such block), `:no-plain-text` (the block is code, a list, a
    quote, or opaque, so outside the profile too) and `:out-of-range` (the range
    ends past the text). A range cannot cut a grapheme here: it is already
-   counted in them (a producer counting code points maps through
-   `kimun.surface.markdown.offsets`, which rejects that)."
+   counted in them."
   [anchors locator]
   (let [{:keys [block range]} locator
         [s e] range

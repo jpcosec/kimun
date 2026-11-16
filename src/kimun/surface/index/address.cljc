@@ -1,8 +1,7 @@
 (ns kimun.surface.index.address
   "v1's address surface over the index (docs/v2/06 §3), pure: `address?`
    routes a TERM, `parse` turns an address into a closed AST,
-   `resolve-address` answers what the address denotes and `list-address`
-   what hangs one level below it (v1 `ls`). Nothing here reads a store: the
+   `resolve-address` answers what the address denotes. Nothing here reads a store: the
    input is the federated view `[{:store name :index idx} …]`, current store
    first.
 
@@ -287,32 +286,3 @@
            :gse (gse-results ast view)
            nil))))
 
-(defn- description [idx model field]
-  (let [fs (get-in idx [:models model :fields])
-        f (if (map? fs) (or (get fs field) (get fs (keyword field))) (first (filter #(= field (some-> (:name %) name)) fs)))]
-    (when (map? f) (or (:description f) (get f "description")))))
-
-(defn list-address
-  "v1's `ls`: what hangs one level below the address `a` in `view`, as
-   `resolve-address` result maps. `st` lists models, `st.{M}` documents,
-   `st.{M}.doc` the top-level fields of each matching document (`:kind
-   :field` with `:value` and the model's `:description`, nil when it has
-   none), `se` the root tags, `se.<tag>` the child tags (`:name` relative to
-   the parent) or, when it has none, the documents carrying exactly that
-   tag; `se.<glob>` the tags matching the glob. Everything else lists as it
-   resolves. Errors and empties as in `resolve-address`."
-  [a view]
-  (let [{:keys [space tag doc field] :as ast} (ast-of a)
-        {s :store idx :index} (first view) dag (:tag-dag idx)]
-    (cond
-      (and (= :st space) doc (not field))
-      (vec (for [r (resolve-address ast view) :let [i (:index (first (filter #(= (:store r) (:store %)) view)))]
-                 [k v] (payload-fields r)]
-             (-> (dissoc r :payload)
-                 (assoc :kind :field :field k :value v :description (description i (:model r) k) :address (str (:address r) "." k)))))
-      (and (= :se space) tag (str/includes? tag "*")) (mapv #(tag-result s % %) (sem/glob-tags dag tag))
-      (and (= :se space) tag)
-      (if-let [kids (seq (sem/children dag tag))]
-        (vec (sort-by :name (map #(tag-result s % (sem/relative % tag)) kids)))
-        (vec (for [d (docs-of idx) :when (some #{tag} (:tags d))] (doc-result s d (str "st.{" (:model d) "}." (:name d))))))
-      :else (resolve-address ast view))))

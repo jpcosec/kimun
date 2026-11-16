@@ -60,11 +60,6 @@
   [glob]
   (re-pattern (glob->regex glob)))
 
-(defn glob-match?
-  "Whether path `p` is matched by `glob` (see `glob->regex`)."
-  [glob p]
-  (boolean (re-matches (compile-glob glob) (normalize-path p))))
-
 (def ^:private allowed-keys
   "The only keys a kimun.include.edn may carry."
   #{:include/version :store :models :documents :force :exclude})

@@ -59,20 +59,10 @@
     (is (= {:store "repo" :tree "t-memo1" :name "memo1" :model "MemoDoc" :path "memo1.md"
             :kind :field :field "status" :value "open" :address "st.{MemoDoc}.memo1.status"} r))))
 
-(deftest ls-walks-store-model-doc
-  ;; v1 test_legacy_ls_walks_store_model_doc
-  (let [view (memo-view "done")]
-    (is (= ["st.{MemoDoc}"] (addresses (address/list-address "st" view))))
-    (is (= [:model] (map :kind (address/list-address "st" view))))
-    (is (= ["memo1" "memo2"] (map :name (address/list-address "st.{MemoDoc}" view))))
-    (is (= [["status" "Workflow status." "open"] ["title" "Title." "Memo1"]]
-           (map (juxt :field :description :value) (address/list-address "st.{MemoDoc}.memo1" view))))))
-
 (deftest family-scope-works-for-an-unregistered-base
   ;; v1 test_family_scope_works_for_an_unregistered_base: BaseNote is in no `:models`
   (let [view (memo-view "done")]
-    (is (= ["st.{BaseNote+}.memo1"] (find-where "st.{BaseNote+}" "status = \"open\"" view)))
-    (is (= [] (address/list-address "st.{BaseNote}" view)))))
+    (is (= ["st.{BaseNote+}.memo1"] (find-where "st.{BaseNote+}" "status = \"open\"" view)))))
 
 (deftest get-and-glob-by-address
   ;; v1 test_singular_alias_routes_to_the_same_handler (the alias is retired by 06 §5; the answers stay)
@@ -91,15 +81,8 @@
 
 ;; ---- tests/store/test_queries_expanded.py ----
 
-(deftest structural-list-root
-  ;; v1 test_structural_list_root
-  (is (vector? (address/list-address "st" (memo-view "done"))))
-  (is (= [] (address/list-address "st" [{:store "repo" :index (index-of {} [])}]))))
-
 (deftest invalid-address-is-empty
   (let [view (memo-view "done")]
-    ;; v1 test_structural_list_invalid_address
-    (is (= [] (address/list-address "invalid" view)))
     ;; v1 test_get_structural_invalid_address, test_glob_structural_invalid_pattern
     (is (= [] (address/resolve-address "invalid" view)))
     ;; v1 test_find_structural_invalid_address
@@ -108,8 +91,7 @@
     (testing "well-formed but naming nothing: empty, never an error"
       (doseq [a ["st.{Nope}" "st.{MemoDoc}.nope" "st.{MemoDoc}.memo1.nope" "st.{MemoDoc}.memo1.title.deeper"
                  "st.elsewhere" "elsewhere:st.{MemoDoc}" "se.no.such.tag" "gse.no.such.tag" "gse.x.se.{elsewhere}"]]
-        (is (= [] (address/resolve-address a view)) a)
-        (is (= [] (address/list-address a view)) a)))
+        (is (= [] (address/resolve-address a view)) a)))
     (testing "claims the address space and breaks its grammar: typed error with position"
       (is (= {:type :query/bad-address :address "st.{Memo" :position 3} (err/rescue ex-data (address/resolve-address "st.{Memo" view) nil))))))
 
@@ -119,8 +101,6 @@
                :index (index-of {"BaseDoc" {:base []} "ChildDoc" {:base ["BaseDoc"]}}
                                 [{:name "doc1" :model "BaseDoc" :payload {"title" "Base"} :tags ["type.base"]}
                                  {:name "doc2" :model "ChildDoc" :payload {"title" "Child" "child_field" "x"} :tags ["type.child"]}])}]]
-    (is (= ["doc1" "doc2"] (map :name (address/list-address "st.{BaseDoc+}" view))))
-    (is (= ["doc1"] (map :name (address/list-address "st.{BaseDoc}" view))))
     (is (= ["doc1" "doc2"] (map :name (address/resolve-address "st.{*}" view))))))
 
 (deftest global-semantic-empty
@@ -186,11 +166,7 @@
   (is (= ["kind" "topic"] (map :tag (address/resolve-address "se" federated))))
   (is (= ["st.{Note}.n1" "st.{Note}.n2"] (addresses (address/resolve-address "se.topic" federated))) "a parent names its subtree")
   (is (= ["st.{Note}.n1"] (addresses (address/resolve-address "se.topic.money" federated))))
-  (is (= ["st.{Note}.n2"] (addresses (address/resolve-address "se.topic.a*" federated))))
-  (is (= [["art" "se.topic.art" :tag] ["money" "se.topic.money" :tag]]
-         (map (juxt :name :address :kind) (address/list-address "se.topic" federated))))
-  (is (= ["n2"] (map :name (address/list-address "se.topic.art" federated))) "a leaf lists the documents carrying it")
-  (is (= ["se.topic.art" "se.topic.money"] (addresses (address/list-address "se.topic.*" federated)))))
+  (is (= ["st.{Note}.n2"] (addresses (address/resolve-address "se.topic.a*" federated)))))
 
 (deftest global-addresses-span-the-view
   (testing "the current store answers by what its documents reach; a linked one only by its equivalences"

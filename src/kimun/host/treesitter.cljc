@@ -94,18 +94,25 @@
   [text]
   (call "parse-block" text))
 
-(defn parse-inline
-  "Markdown inline CST of `text` as `[root]`."
+(defn with-final-newline
+  "The text the pod's block grammar needs: a final newline. Without it an
+   ATX-only document parses to an ERROR root (R2 §6)."
   [text]
-  (call "parse-inline" text))
+  (if (str/ends-with? text "\n") text (str text "\n")))
 
-(defn parse-lang
-  "CST of `text` with grammar `language` (`\"markdown\"`, `\"markdown-inline\"`,
-   `\"python\"`)."
-  [text language]
-  (call "parse-lang" text language))
+(defn source-lines
+  "Lines of `text` as the pod numbers them: internal blank lines kept, the empty
+   line the trailing newline would add dropped (the convention of
+   `kimun.surface.markdown.cst`)."
+  [text]
+  (let [raw (str/split text #"\n" -1)
+        raw (if (str/ends-with? text "\n") (vec (butlast raw)) (vec raw))]
+    (if (= text "") [] raw)))
 
-(defn query
-  "Tree-sitter captures of `query-string` over `text` parsed as `language`."
-  [text query-string language]
-  (call "query" text query-string language))
+(defn block-span
+  "`[start-line end-line)` of a pod block: start/end point rows, end exclusive
+   (an end column other than 0 belongs to the last line)."
+  [node]
+  (let [[sr _] (:start_point node)
+        [er ec] (:end_point node)]
+    [(long sr) (long (if (zero? ec) er (inc er)))]))

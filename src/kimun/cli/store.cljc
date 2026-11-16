@@ -165,6 +165,24 @@
                    :content (or (:content descriptor) :by-reference))
      :path (str dir)}))
 
+(defn open-for
+  "`open!` of the store that `opts` and the context's `:env`/`:cwd` resolve to
+   (`resolve-store`)."
+  [opts {:keys [env cwd]}]
+  (open! (resolve-store opts env cwd)))
+
+(defn store-ref
+  "`{:name :path}` naming a store in a command's data, from its descriptor and
+   path or from what `open!` returns."
+  ([{:keys [descriptor path]}] (store-ref descriptor path))
+  ([descriptor path] {:name (:name descriptor) :path path}))
+
+(defn write-file!
+  "Writes `text` at `root`/`path`; returns a warnings vector (empty on success)."
+  [root path text]
+  (try (let [f (fs/path root path)] (some-> (fs/parent f) fs/create-dirs) (spit (str f) text) [])
+       (catch Exception e [{:type "docs/file-not-written" :message (str "could not write " path ": " (ex-message e))}])))
+
 (defn default-name
   "Default store name: the project directory's name when `dir` is a
    `.kimun` directory, else the directory's own name."

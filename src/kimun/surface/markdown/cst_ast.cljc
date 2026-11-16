@@ -1,36 +1,15 @@
 (ns kimun.surface.markdown.cst-ast
   "SLDB-MD as a view over the tree-sitter CST (docs/v2/14 §13 etapa S.2, decision
    29): the pod's **block** CST (`parse-block`, no inline) is segmented into
-   blocks and the closed-profile rules of `kimun.surface.markdown.ast` are
+   blocks and the closed-profile rules of `kimun.surface.markdown.profile` are
    applied *after* the parse — `_` never emphasis, out-of-profile → `:opaque`
    byte for byte, lazy continuation per docs/v2/04 §3.1. The canonical render
    stays a function of the neutral AST (`kimun.surface.markdown.render`), so
    the round trip is preserved."
   (:require [clojure.string :as str]
             [kimun.host.treesitter :as ts]
-            [kimun.surface.markdown.ast :as ast]
+            [kimun.surface.markdown.profile :as profile]
             [kimun.surface.markdown.cst :as cst]))
-
-(defn- norm
-  "The text the pod's block grammar needs: a final newline. Without it an
-   ATX-only document parses to an ERROR root (R2 §6)."
-  [text]
-  (if (str/ends-with? text "\n") text (str text "\n")))
-
-(defn- source-lines
-  "Lines of the original text with the convention of `cst/parse`: internal blank
-   lines kept, the empty line the trailing newline adds dropped."
-  [text]
-  (let [raw (str/split text #"\n" -1)
-        raw (if (str/ends-with? text "\n") (vec (butlast raw)) (vec raw))]
-    (if (= text "") [] raw)))
-
-(defn- span
-  "`[start-line end-line)` of a pod block: start/end point rows, end exclusive."
-  [node]
-  (let [[sr _] (:start_point node)
-        [er ec] (:end_point node)]
-    [(long sr) (long (if (zero? ec) er (inc er)))]))
 
 (defn- expand
   "Top-level named block nodes of a block CST root, `section` wrappers flattened
@@ -77,12 +56,12 @@
                 :else (recur (inc i))))))))
 
 (defn- line-spans
-  "Line spans `[start end)` of the pod nodes. `span` is the rule of R2; it needs
+  "Line spans `[start end)` of the pod nodes. `ts/block-span` is the rule of R2; it needs
    one correction: when a node ends mid-line (end column > 0) and the next node
    starts on that same line, the line belongs to the next node, so the current
    one ends before it (the pod splits a line between two nodes)."
   [nodes]
-  (let [spans (mapv span nodes)
+  (let [spans (mapv ts/block-span nodes)
         starts (mapv #(first (:start_point %)) nodes)]
     (mapv (fn [k [s e]]
             (let [[er ec] (:end_point (nth nodes k))
@@ -95,9 +74,6 @@
 (defn- fence-close? [line ch n]
   (let [l (cst/strip-cr line)]
     (boolean (re-matches (re-pattern (str "^ {0,3}" (if (= ch \`) "`" "~") "{" n ",} *$")) l))))
-
-(defn- leading-spaces [line]
-  (count (take-while #(= \space %) line)))
 
 (defn- same-list-marker? [w mt line]
   (let [m (cst/list-marker line)]
@@ -114,8 +90,8 @@
               (or (same-list-marker? w mt line)
                   (and (= k :blank) next-line
                        (or (same-list-marker? w mt next-line)
-                           (>= (leading-spaces next-line) w)))
-                  (and (not= k :blank) (>= (leading-spaces line) w))
+                           (>= (cst/leading-spaces next-line) w)))
+                  (and (not= k :blank) (>= (cst/leading-spaces line) w))
                   (= k :paragraph)))
       false)))
 
@@ -225,16 +201,16 @@
 (defn parse
   "Markdown text → neutral AST, segmented by the tree-sitter pod and converted
    with the SLDB-MD profile rules. Documents the pod parses to an ERROR (or to a
-   kind with no counterpart) fall back to `ast/parse-native`, the oracle; any
+   kind with no counterpart) fall back to `profile/parse`, the oracle; any
    internal error does too, so the flag is always safe."
   [host s]
   (try
-    (let [lines (source-lines s)
-          root (first (ts/parse-block (norm s)))
+    (let [lines (ts/source-lines s)
+          root (first (ts/parse-block (ts/with-final-newline s)))
           nodes (expand root)]
       (if (or (:has_error root) (some unknown? nodes))
-        (ast/parse-native host s)
+        (profile/parse host s)
         (let [spans (line-spans nodes)
               cst-blocks (reconcile-blocks lines nodes spans)]
-          {:type :document :attrs {} :children (ast/from-blocks host {:blocks cst-blocks})})))
-    (catch Throwable _ (ast/parse-native host s))))
+          {:type :document :attrs {} :children (profile/from-blocks host {:blocks cst-blocks})})))
+    (catch Throwable _ (profile/parse host s))))

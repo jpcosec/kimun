@@ -94,14 +94,6 @@
   "Set of node ids in the tree."
   [tree] (set (map second (positions tree))))
 
-(defn contains-node?
-  "True when `node` occurs somewhere in the tree."
-  [tree node] (contains? (nodes tree) node))
-
-(defn paths-of
-  "All paths where `node` occurs."
-  [tree node] (vec (keep (fn [[p n]] (when (= n node) p)) (positions tree))))
-
 (defn parent-path
   "Path of the parent position; nil for the root."
   [path] (when (seq path) (pop path)))

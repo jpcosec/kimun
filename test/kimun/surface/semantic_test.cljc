@@ -89,6 +89,4 @@
     (is (= ["representation.markdown" "source.code.python" "system.desk" "type.knowledge.a.b" "type.x.y"]
            (sem/model-tags child {"Base" base})) "a base replaces a key whole; the model adds its own")
     (is (= ["a:b" "representation.markdown" "source.document.markdown" "t"]
-           (sem/tags-of {:model/name "Plain"} {} {:payload {"tags" [" t " "" 3] "semantic_tags" ["a:b"]}})))
-    (is (= {:by-tag {"t" #{"M:a" "M:b"} "u" #{"M:b"}} :by-doc {"M:a" ["t"] "M:b" ["t" "u"]}}
-           (sem/index [{:model "M" :name "b" :tags ["u" "t"]} {:model "M" :name "a" :tags ["t"]}])))))
+           (sem/tags-of {:model/name "Plain"} {} {:payload {"tags" [" t " "" 3] "semantic_tags" ["a:b"]}})))))

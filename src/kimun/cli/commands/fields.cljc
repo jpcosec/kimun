@@ -15,6 +15,7 @@
             [clojure.walk :as walk]
             [kimun.cli.commands.docs :as docs]
             [kimun.cli.compose :as compose]
+            [kimun.cli.args :as cli-args]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
             [kimun.surface.docs :as tdocs]
@@ -38,11 +39,9 @@
    "kimun fields clear DOC PATH                    empty a list field"])
 
 (defn- usage! [sub message]
-  (err/raise :cli/usage (str "`fields " sub "` " message) {:group "fields" :subcommand sub}))
+  (cli-args/usage! "fields" sub (str "`fields " sub "` " message) {}))
 
-(defn- open [opts {:keys [env cwd]}] (cli-store/open! (cli-store/resolve-store opts env cwd)))
 
-(defn- store-ref [descriptor path] {:name (:name descriptor) :path path})
 
 (defn- flag
   "A boolean option that may arrive as a string; anything else is `:cli/usage`."
@@ -106,10 +105,10 @@
   "`fields schema MODEL [FIELD]`: the field schema of a model
    (`kimun.surface.fields/schema`)."
   [args opts ctx]
-  (let [{:keys [descriptor store] store-path :path} (open opts ctx)
+  (let [{:keys [descriptor store] store-path :path} (cli-store/open-for opts ctx)
         model (or (get args 0) (usage! "schema" "needs a MODEL"))
         d (fields/with-schema-fields store (:descriptor (mstore/model store model)))]
-    (out/ok "fields schema" {:store (store-ref descriptor store-path) :revision (:head store)
+    (out/ok "fields schema" {:store (cli-store/store-ref descriptor store-path) :revision (:head store)
                              :data (if-let [f (get args 1)] (fields/schema d (str/replace f "/" ".")) (fields/schema d))})))
 
 (defn get-field
@@ -119,10 +118,10 @@
   [args opts ctx]
   (if (str/starts-with? (str (get args 0)) "models/")
     (schema (str/split (subs (get args 0) (count "models/")) #"/" 2) opts ctx)
-    (let [{:keys [descriptor store] store-path :path} (open opts ctx)
+    (let [{:keys [descriptor store] store-path :path} (cli-store/open-for opts ctx)
           {:keys [doc path]} (target store args "get")
           [full d] (readable store doc)]
-      (out/ok "fields get" {:store (store-ref descriptor store-path) :revision (:head store)
+      (out/ok "fields get" {:store (cli-store/store-ref descriptor store-path) :revision (:head store)
                             :data {:doc (:name full) :model (:model full) :address (address full)
                                    :field (first (fields/split-path path)) :path path
                                    :value (fields/value-at (:payload full) path)
@@ -135,9 +134,9 @@
    `:results`, not a failure."
   [args opts ctx]
   (let [field (or (get args 0) (usage! "query" "needs a FIELD path"))
-        {:keys [descriptor store] store-path :path} (open opts ctx)
+        {:keys [descriptor store] store-path :path} (cli-store/open-for opts ctx)
         ast (some-> (:where opts) where/parse)]
-    (out/ok "fields query" {:store (store-ref descriptor store-path) :revision (:head store)
+    (out/ok "fields query" {:store (cli-store/store-ref descriptor store-path) :revision (:head store)
                             :data {:field field
                                    :results (fields/query store (str/join "." (fields/split-path field))
                                                           {:model (:model opts) :where ast})}})))
@@ -150,10 +149,6 @@
                       "; a heading inside a field value is a field the model is missing")
                  {:document (:name doc) :model (:model doc) :undeclared (mapv :raw (:headings r))}))))
 
-(defn- write-file! [root path text]
-  (try (let [f (fs/path root path)] (some-> (fs/parent f) fs/create-dirs) (spit (str f) text) [])
-       (catch Exception e [{:type "docs/file-not-written" :message (str "could not write " path ": " (ex-message e))}])))
-
 (defn- mutation
   "The command of mutation `op` named `sub` on the command line. Data:
    `{:doc :model :address :operation :field :path :before :after :unchanged?
@@ -161,7 +156,7 @@
    `:operation` (`fields <op>`), `:address` (`Model:doc`) and `:fields`."
   [op sub {:keys [value? create?]}]
   (fn [args opts ctx]
-    (let [{:keys [backend descriptor store] store-path :path :as opened} (open opts ctx)
+    (let [{:keys [backend descriptor store] store-path :path :as opened} (cli-store/open-for opts ctx)
           {:keys [doc path more]} (target store args sub)
           raw (when value? (or (get more 0) (usage! sub "needs a VALUE (JSON or YAML)")))
           mopts (cond-> {:create? create? :dedupe (flag opts :dedupe sub) :drop-empty (flag opts :drop-empty sub)}
@@ -183,9 +178,9 @@
               ;; previous write failed after the commit): repair it as `docs update`.
               stale? (and (:path full)
                           (not= text (try (slurp (str (fs/path root (:path full)))) (catch Exception _ nil))))]
-          (out/ok command {:store (store-ref descriptor store-path) :revision (:head store)
+          (out/ok command {:store (cli-store/store-ref descriptor store-path) :revision (:head store)
                            :data (assoc (result text) :unchanged? true)
-                           :warnings (if stale? (write-file! root (:path full) text) [])}))
+                           :warnings (if stale? (cli-store/write-file! root (:path full) text) [])}))
         (let [current (or (:descriptor (mstore/model store (:model full))) d)
               {:keys [text]} (fields/render-checked current (:payload m) (compose/context opened) (:field m))
               _ (refuse-noise! current full text)
@@ -193,9 +188,9 @@
                                                 {:actor (:actor opts) :timestamp (docs/timestamp) :operation command})
               r (if plan (store/commit! backend store plan) {:revision-id (:head store)})
               root (str (fs/parent (fs/absolutize store-path)))]
-          (out/ok command {:store (store-ref descriptor store-path) :revision (:revision-id r)
+          (out/ok command {:store (cli-store/store-ref descriptor store-path) :revision (:revision-id r)
                            :data (assoc (result text) :unchanged? (nil? plan))
-                           :warnings (if (and plan (:path full)) (write-file! root (:path full) text) [])}))))))
+                           :warnings (if (and plan (:path full)) (cli-store/write-file! root (:path full) text) [])}))))))
 
 (def spec
   "Options of the `fields` group (babashka.cli spec, merged by `kimun.cli.main`)."

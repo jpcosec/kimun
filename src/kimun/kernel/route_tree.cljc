@@ -1,8 +1,7 @@
 (ns kimun.kernel.route-tree
   "The route map as a Merkle tree by path (K2a, docs/v2/14 §20; route schema 2,
    docs/v2/10 §11.2): one node per directory, so a change in one tracked path
-   rewrites the nodes from that path up to the root and no other node, and two
-   trees are compared by going down only where the hashes differ.
+   rewrites the nodes from that path up to the root and no other node.
 
    What that buys and what it does not. The NUMBER of nodes read or written
    follows the depth of the path, not the number of routes. Each of those nodes
@@ -31,7 +30,7 @@
    give the same root. The OBJECT ID of the root is what the heads name as the
    durable locator. Both are checked on the way down (`:route/corrupt`), node by
    node, without reading the rest: every node read — the root included, in
-   `lookup`, `entries`, `update` and `diff` alike — must hash to the object id
+   `lookup`, `entries` and `update` alike — must hash to the object id
    it was asked for, and a node below another must also have the route hash and
    the count its parent recorded.
 
@@ -226,37 +225,3 @@
   [host load object]
   (vec (sort-by :path (walk host load (fetch host load object) nil))))
 
-(defn- diff-nodes
-  [host load-a a load-b b prefix]
-  (let [segs (sort (distinct (concat (keys (:children a)) (keys (:children b)))))]
-    (apply merge-with into {:added [] :removed [] :changed []}
-           (for [seg segs
-                 :let [p (if prefix (str prefix "/" seg) seg)
-                       ca (get-in a [:children seg]) cb (get-in b [:children seg])
-                       ea (some-> (:entry ca) (assoc :path p)) eb (some-> (:entry cb) (assoc :path p))
-                       da (:dir ca) db (:dir cb)]]
-             (merge-with into
-                         (cond
-                           (and ea eb) (if (= (sensed ea) (sensed eb)) {} {:changed [{:path p :before ea :after eb}]})
-                           ea {:removed [ea]}
-                           eb {:added [eb]}
-                           :else {})
-                         (if (or (and (nil? da) (nil? db)) (= (:hash da) (:hash db)))
-                           {}
-                           (diff-nodes host load-a (some->> da (below host load-a))
-                                       load-b (some->> db (below host load-b)) p)))))))
-
-(defn diff
-  "Path diff between the tree whose root node is `a` (through `load-a`) and the
-   one whose root node is `b` (through `load-b`): `{:added [entry …] :removed [entry …] :changed
-   [{:path :before :after} …]}`, each sorted by path. An entry whose `:tree-id`
-   alone changed is not a change. Goes down only where the route hashes of two
-   nodes differ, so the cost follows what changed, not the size of the trees."
-  [host load-a a load-b b]
-  (let [na (fetch host load-a a) nb (fetch host load-b b)
-        r (if (= (node-hash host na) (node-hash host nb))
-            {:added [] :removed [] :changed []}
-            (diff-nodes host load-a na load-b nb nil))]
-    {:added (vec (sort-by :path (:added r)))
-     :removed (vec (sort-by :path (:removed r)))
-     :changed (vec (sort-by :path (:changed r)))}))

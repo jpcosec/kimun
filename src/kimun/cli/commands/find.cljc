@@ -13,6 +13,7 @@
    printed; a bad option value is `cli/usage`. Reading never writes: the index
    comes from `cache/federated!`, nothing under the store directory changes."
   (:require [clojure.string :as str]
+            [kimun.cli.args :as cli-args]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
             [kimun.surface.index.cache :as cache]
@@ -31,20 +32,18 @@
    :select {:ref "K1,K2" :desc "find: keep only these keys of each result"}
    :limit {:ref "N" :desc "find: at most N results, after ordering"}})
 
-(defn- usage! [msg data] (err/raise :cli/usage msg (merge {:group "find"} data)))
-
 (defn- csv [v] (vec (remove str/blank? (map str/trim (str/split (str v) #",")))))
 
 (defn- parse-in [v]
   (let [k (if (nil? v) :all (keyword (if (= "both" (str v)) "all" (str v))))]
     (if (search/layers k) k
-        (usage! (str "`--in` needs physical, semantic or all, got `" v "`") {:option "in" :value (str v)}))))
+        (cli-args/usage! "find" (str "`--in` needs physical, semantic or all, got `" v "`") {:option "in" :value (str v)}))))
 
 (defn- parse-kinds [v]
   (when (some? v)
     (let [ks (set (map keyword (csv v)))]
       (when (or (empty? ks) (not-every? search/kinds ks))
-        (usage! (str "`--type` needs one or more of " (str/join ", " (sort (map name search/kinds))) ", got `" v "`")
+        (cli-args/usage! "find" (str "`--type` needs one or more of " (str/join ", " (sort (map name search/kinds))) ", got `" v "`")
                 {:option "type" :value (str v)}))
       ks)))
 
@@ -52,12 +51,12 @@
   (cond (nil? v) nil
         (and (integer? v) (not (neg? v))) v
         (and (string? v) (re-matches #"\d+" v)) (parse-long v)
-        :else (usage! (str "`--limit` needs a non-negative integer, got `" v "`") {:option "limit" :value (str v)})))
+        :else (cli-args/usage! "find" (str "`--limit` needs a non-negative integer, got `" v "`") {:option "limit" :value (str v)})))
 
 (defn- parse-select [v]
   (when (some? v)
     (let [ks (csv v)]
-      (when (empty? ks) (usage! "`--select` needs one or more keys" {:option "select" :value (str v)}))
+      (when (empty? ks) (cli-args/usage! "find" "`--select` needs one or more keys" {:option "select" :value (str v)}))
       (mapv keyword ks))))
 
 (defn- flag? [v] (boolean (and v (not= "false" (str v)))))
@@ -69,12 +68,12 @@
    `--select`. The `--where` expression and the option values are checked
    before the store is opened."
   [term opts {:keys [env cwd]}]
-  (when-not (string? term) (usage! "`find` needs a TERM (use \"\" to match everything)" {}))
+  (when-not (string? term) (cli-args/usage! "find" "`find` needs a TERM (use \"\" to match everything)" {}))
   (let [ast (when (some? (:where opts)) (where/parse (str (:where opts))))
         in (parse-in (:in opts)) kinds (parse-kinds (:type opts))
         limit (parse-limit (:limit opts)) select (parse-select (:select opts))
         regex? (flag? (:regex opts)) fuzzy? (flag? (:fuzzy opts))
-        _ (when (and regex? fuzzy?) (usage! "`--regex` and `--fuzzy` exclude each other" {:option "regex"}))
+        _ (when (and regex? fuzzy?) (cli-args/usage! "find" "`--regex` and `--fuzzy` exclude each other" {:option "regex"}))
         o (cli-store/open! (cli-store/resolve-store opts env cwd))
         found (search/search (cache/federated! o) term
                              {:in in :kinds kinds :regex? regex? :fuzzy? fuzzy? :where ast :global? (flag? (:global opts))})]

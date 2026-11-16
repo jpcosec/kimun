@@ -34,17 +34,11 @@
   [query text]
   (let [words (fn [s] (frequencies (str/split (str/lower-case s) #"\s+")))
         a (words query) b (words text) ks (distinct (concat (keys a) (keys b)))]
-    (corpus/cosine (map #(get a % 0) ks) (map #(get b % 0) ks))))
-
-;; v1: test_field_id_roundtrips_through_the_fields_address_space
-(deftest field-id-roundtrips
-  (let [plain (corpus/field-id "Note" "uno" "body")
-        linked (corpus/field-id "Note" "uno" "steps/2/title" "other-store")]
-    (is (= "docs/Note/uno/body" plain))
-    (is (= {:store nil :model "Note" :doc "uno" :field "body"} (corpus/split-field-id plain)))
-    (is (= {:store "other-store" :model "Note" :doc "uno" :field "steps/2/title"} (corpus/split-field-id linked)))
-    (is (nil? (corpus/split-field-id "Note:uno")))
-    (is (nil? (corpus/split-field-id "docs/uno")))))
+    (let [va (map #(get a % 0) ks) vb (map #(get b % 0) ks)
+          dot (reduce + 0.0 (map * va vb))
+          na (Math/sqrt (reduce + 0.0 (map #(* % %) va)))
+          nb (Math/sqrt (reduce + 0.0 (map #(* % %) vb)))]
+      (if (and (pos? na) (pos? nb)) (/ dot (* na nb)) 0.0))))
 
 ;; v1: test_projection_excludes_identity_fields_and_short_text
 (deftest projection-excludes-identity-fields-and-short-text
@@ -166,3 +160,18 @@
     (is (= #{"Note:uno" "Other:z"} (set (map :document-id (corpus/entries i)))))
     (is (= #{"Note:uno"} (set (map :document-id (corpus/entries i {:models ["Note"]})))))
     (is (= #{"Note:uno"} (set (map :document-id (corpus/entries i {:exclude-models ["Other"]})))))))
+
+(deftest dice-is-a-deterministic-grapheme-trigram-coefficient
+  (let [h host/host]
+    (is (= 1.0 (corpus/dice h "El cielo es azul." "El cielo es azul.")))
+    (is (= 1.0 (corpus/dice h "" "")) "two empty texts are identical")
+    (is (= 0.0 (corpus/dice h "" "abc")))
+    (is (= 0.0 (corpus/dice h "abcdef" "uvwxyz")))
+    (is (= (corpus/dice h "a b c" "a b d") (corpus/dice h "a b d" "a b c")) "symmetric")
+    (is (< 0.6 (corpus/dice h "La hierba es verde." "La hierba es parda.")))
+    (is (> 0.6 (corpus/dice h "La hierba es verde." "Otro asunto por completo.")))
+    (testing "a text of fewer than three graphemes contributes the whole text as one gram"
+      (is (= 1.0 (corpus/dice h "ab" "ab")))
+      (is (= 0.0 (corpus/dice h "ab" "cd"))))
+    (testing "grapheme clusters, not code units"
+      (is (= 1.0 (corpus/dice h (str "e" "\u0301" "xyz") "\u00e9xyz")) "NFC-equal texts"))))

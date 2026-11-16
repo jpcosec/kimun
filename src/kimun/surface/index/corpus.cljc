@@ -21,7 +21,7 @@
   (:require [clojure.string :as str]
             [kimun.surface.docs :as tdocs]
             [kimun.host.default :as host]
-            [kimun.kernel.reconcile :as reconcile])
+            [kimun.kernel.ports :as ports])
   #?(:clj (:import (java.text Normalizer Normalizer$Form))))
 
 ;; ---------------------------------------------------------------- projection
@@ -52,17 +52,6 @@
   ([model doc field store]
    (let [address (str "docs/" model "/" doc "/" field)]
      (if store (str store "/" address) address))))
-
-(defn split-field-id
-  "A field id back into `{:store :model :doc :field}`, or nil if it is not one (v1 `split_field_id`)."
-  [value]
-  (let [i (str/last-index-of value "/docs/")
-        store (when i (subs value 0 i))
-        body (cond i (subs value (+ i 6))
-                   (str/starts-with? value "docs/") (subs value 5))
-        parts (when body (str/split body #"/" 3))]
-    (when (= 3 (count parts))
-      {:store (not-empty store) :model (first parts) :doc (second parts) :field (nth parts 2)})))
 
 (defn document-id
   "`Model:name`, or `store:Model:name` for a linked store (v1 `export_id`)."
@@ -151,9 +140,30 @@
         stripped (str/replace nfd #"\p{Mn}" "")]
     (str/join " " (remove str/blank? (str/split (str/lower-case stripped) #"\s+")))))
 
+;; ---------------------------------------------------------------- dice
+
+(defn- trigrams
+  "Multiset of grapheme trigrams of `s` in NFC; a text shorter than three
+   graphemes contributes one gram, the whole text."
+  [host s]
+  (let [t (ports/nfc (ports/text host) s)
+        g (ports/graphemes (ports/segmenter host) t)]
+    (frequencies (if (< (count g) 3) [t] (map #(apply str %) (partition 3 1 g))))))
+
+(defn dice
+  "Dice coefficient over the multiset of grapheme trigrams:
+   2·|A ∩ B| / (|A| + |B|), the intersection taken as the minimum of
+   multiplicities. Integer arithmetic with a single final division, so the
+   value is identical on any IEEE-754 host."
+  [host a b]
+  (let [ta (trigrams host a) tb (trigrams host b)
+        inter (reduce + 0 (map (fn [[k v]] (min v (get tb k 0))) ta))
+        total (+ (reduce + 0 (vals ta)) (reduce + 0 (vals tb)))]
+    (if (zero? total) 0.0 (/ (double (* 2 inter)) total))))
+
 (defn lexical-score
   "The deterministic default score of `query` against `text`, in [0, 1]: the best
-   Dice coefficient (`kimun.kernel.reconcile/dice`, trigram multiset) between the
+   Dice coefficient (`dice`, trigram multiset) between the
    normalised query and the normalised text or any of its words, 0.0 when either
    is blank. The structure is v1's `DifflibMatcher.similarity`; the metric is the
    kernel's, not `difflib.ratio()`."
@@ -161,17 +171,8 @@
   (let [q (normalize query) c (normalize text)]
     (if (or (str/blank? q) (str/blank? c))
       0.0
-      (reduce max (reconcile/dice host/host q c)
-              (map #(reconcile/dice host/host q %) (str/split c #" "))))))
-
-(defn cosine
-  "Cosine similarity of two numeric vectors (0.0 when either has no magnitude);
-   for building a `:score-fn` out of an embedder."
-  [a b]
-  (let [dot (reduce + 0.0 (map * a b))
-        na (Math/sqrt (reduce + 0.0 (map #(* % %) a)))
-        nb (Math/sqrt (reduce + 0.0 (map #(* % %) b)))]
-    (if (and (pos? na) (pos? nb)) (/ dot (* na nb)) 0.0)))
+      (reduce max (dice host/host q c)
+              (map #(dice host/host q %) (str/split c #" "))))))
 
 ;; ---------------------------------------------------------------- ranking
 

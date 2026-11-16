@@ -35,28 +35,6 @@
     (when (and (m/has-node? g source) (m/has-node? g target))
       (bfs-path nbrs source target))))
 
-(defn paths-between
-  "Simple paths between two nodes ignoring direction, shortest first. Takes the
-   first `:limit` (default 10) found by a sorted depth-first walk, bounded by
-   `:cutoff` edges, then sorts them by length."
-  [g source target & {:keys [relations cutoff limit] :or {limit 10}}]
-  (let [c (m/collapsed g relations)
-        cutoff (or cutoff (dec (count (:nodes c))))
-        known (set (:nodes c))]
-    (if-not (and (known source) (known target))
-      []
-      (letfn [(walk [path on]
-                (let [cur (peek path)]
-                  (cond
-                    (= cur target) [path]
-                    (>= (dec (count path)) cutoff) []
-                    :else (mapcat (fn [n] (when-not (on n) (walk (conj path n) (conj on n))))
-                                  (m/undirected-neighbors c cur)))))]
-        (->> (if (= source target) [[source]] (walk [source] #{source}))
-             (take limit)
-             (sort-by count)
-             vec)))))
-
 ;; --------------------------------------------------------------- cycles
 
 (defn- cycles-from
@@ -78,23 +56,6 @@
          (sort-by count)
          vec)))
 
-(defn acyclic?
-  "True when the relation graph has no cycle (self loops count)."
-  [g & {:keys [relations]}]
-  (empty? (cycles g :relations relations :limit 1)))
-
-(def must-be-acyclic
-  "Relations whose meaning depends on there being no cycle."
-  ["semantic_parent" "extends"])
-
-(defn cycle-errors
-  "One sentence per cyclic relation of `must-be-acyclic`, naming the cycle;
-   empty when every one is a DAG (v1 `acyclic.cycle_errors`)."
-  [g]
-  (vec (for [rel must-be-acyclic
-             cyc (cycles g :relations [rel] :limit 1)]
-         (str "Relation '" rel "' has a cycle: " (m/relation-label (conj cyc (first cyc))) "."))))
-
 ;; ---------------------------------------------------------------- order
 
 (defn layers
@@ -114,12 +75,6 @@
                        {:cycle (first (cycles g :relations relations :limit 1))}))
           (recur (reduce disj remaining layer) (conj out layer)))))))
 
-(defn topological-order
-  "Every node after everything it points at: the layers flattened. Raises
-   `:graph/cycle` (data `:cycle`) when the relation is not a DAG."
-  [g & {:keys [relations]}]
-  (vec (apply concat (layers g :relations relations))))
-
 ;; ----------------------------------------------------------- components
 
 (defn components
@@ -138,11 +93,6 @@
                           (recur (into (pop stack) fresh) (into grp fresh)))))]
             (recur (rest todo) (into seen grp) (conj out (vec (sort grp))))))
         (vec (sort-by (juxt (comp - count) first) out))))))
-
-(defn islands
-  "Every component but the largest."
-  [g & {:keys [relations node-types]}]
-  (vec (rest (components g :relations relations :node-types node-types))))
 
 (defn of-types
   "`scores` (id -> value) restricted to nodes of `node-types` (nil keeps all)."

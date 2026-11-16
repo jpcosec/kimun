@@ -53,7 +53,8 @@
       (re-matches re-table l)   :table
       :else                     :paragraph)))
 
-(defn- leading-spaces [line]
+(defn leading-spaces
+  "Number of leading spaces of `line`." [line]
   (count (take-while #(= \space %) line)))
 
 (defn marker-type

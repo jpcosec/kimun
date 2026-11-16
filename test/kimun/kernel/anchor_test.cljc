@@ -8,7 +8,6 @@
 (def caps {"jp" :all})
 (def T "01ARZ3NDEKTSV4RRFFQ69G5FAV")
 (def TS "2026-08-29T12:00:00.000Z")
-(def zeros {:intact 0 :superseded 0 :orphan 0})
 (def fp (str "sha-256:" (apply str (repeat 64 "0"))))
 
 (defn- plan [base ops] {:plan/version 1 :base base :actor "jp" :engines {} :timestamp TS :ops ops})
@@ -41,6 +40,14 @@
                                                         :evidence {:ref-hash :sp :actor "jp"}} :as :r2}]))]
     {:store (:store r1) :rev (:revision-id r1) :a (merge a (:aliases r1))}))
 
+(defn- endpoint-state
+  "State of one endpoint node, through the private derivation `state` is built on."
+  [store rev node]
+  (@#'anchor/endpoint-state* (@#'anchor/context store rev) node))
+
+(defn- orphans [store rev]
+  (vec (sort (map :edge (filter #(= :orphan (:state %)) (anchor/states store rev))))))
+
 (defn- state-of [{:keys [store rev a]} k] (:state (anchor/state store rev (a k))))
 
 ;; ---------------------------------------------------------------- §6.2 states
@@ -55,7 +62,7 @@
     (is (= :intact (state-of w :r1)) "reference between two placed leaves")
     (is (= :intact (state-of w :b1)) "binding to a symbol that lives in no tree (§6.2, first slice)")
     (is (= :intact (state-of w :r2)) "reference to a span whose leaf is placed and whose range fits")
-    (is (= 3 (:anchors (anchor/report (:store w) (:rev w)))))))
+    (is (= 3 (count (anchor/states (:store w) (:rev w)))))))
 
 (deftest detaching-the-referent-orphans-the-anchor
   (let [{:keys [store rev a]} (world)
@@ -64,7 +71,7 @@
     (is (= :orphan (state-of w' :r1)) "the :to endpoint is in no tree any more")
     (is (= :orphan (state-of w' :r2)) "the :from endpoint is in no tree any more")
     (is (= :intact (state-of w' :b1)) "an untouched anchor does not move")
-    (is (= (sort [(a :r1) (a :r2)]) (:orphans (anchor/report (:store r) (:revision-id r))))
+    (is (= (sort [(a :r1) (a :r2)]) (orphans (:store r) (:revision-id r)))
         "and the report lists them, by ascending edge id")))
 
 (deftest a-span-whose-leaf-is-replaced-is-orphan-and-its-leaf-is-superseded
@@ -72,20 +79,20 @@
         r (rev/apply-plan store (plan rev [{:op :add-node :node {:class :sign :kind :text :content {:text "El cielo es gris."}} :as :p1b}
                                            {:op :replace :tree T :at [0] :new :p1b}]))
         s' (:store r) rev' (:revision-id r)]
-    (is (= :superseded (:state (anchor/endpoint-state s' rev' (a :p1)))))
-    (is (= [(get (:aliases r) :p1b)] (:successors (anchor/endpoint-state s' rev' (a :p1)))))
-    (is (= :orphan (:state (anchor/endpoint-state s' rev' (a :sp))))
+    (is (= :superseded (:state (endpoint-state s' rev' (a :p1)))))
+    (is (= [(get (:aliases r) :p1b)] (:successors (endpoint-state s' rev' (a :p1)))))
+    (is (= :orphan (:state (endpoint-state s' rev' (a :sp))))
         "the stand-off address over the replaced leaf no longer resolves")
     (is (= :orphan (:state (anchor/state s' rev' (a :r2)))))))
 
 (deftest a-span-whose-range-runs-past-its-leaf-is-orphan
   (let [{:keys [store rev a]} (world)
         r (rev/apply-plan store (plan rev [{:op :add-node :node {:class :sign :kind :span :content {:leaf (a :p1) :range [0 99]}} :as :big}]))]
-    (is (= :orphan (:state (anchor/endpoint-state (:store r) (:revision-id r) (get (:aliases r) :big)))))))
+    (is (= :orphan (:state (endpoint-state (:store r) (:revision-id r) (get (:aliases r) :big)))))))
 
 (deftest an-endpoint-that-is-not-in-the-pool-is-orphan
   (let [{:keys [store rev]} (world)]
-    (is (= :orphan (:state (anchor/endpoint-state store rev "no-such-node"))))))
+    (is (= :orphan (:state (endpoint-state store rev "no-such-node"))))))
 
 ;; ---------------------------------------------------------------- §6.1 supersedes trigger
 
@@ -119,7 +126,7 @@
                                            {:op :add-node :node {:class :sign :kind :text :content {:text "La hierba es seca."}} :as :y}
                                            {:op :add-edge :edge {:type :supersedes :from :x :to (a :p2) :evidence {:actor "jp"}}}
                                            {:op :add-edge :edge {:type :supersedes :from :y :to (a :p2) :evidence {:actor "ana"}}}]))
-        es (anchor/endpoint-state (:store r) (:revision-id r) (a :p2))]
+        es (endpoint-state (:store r) (:revision-id r) (a :p2))]
     (is (= :superseded (:state es)))
     (is (:ambiguous? es))
     (is (nil? (:latest es)))
@@ -134,56 +141,16 @@
         r2 (rev/apply-plan (:store r1) (plan (:revision-id r1) [{:op :add-node :node {:class :sign :kind :text :content {:text "c"}} :as :c}
                                                                 {:op :add-edge :edge {:type :supersedes :from :c :to b :evidence {:actor "jp"}}}]))
         c (get (:aliases r2) :c)
-        es (anchor/endpoint-state (:store r2) (:revision-id r2) (a :p2))]
+        es (endpoint-state (:store r2) (:revision-id r2) (a :p2))]
     (is (= [b] (:successors es)) "only the direct successor")
     (is (= c (:latest es)) "the chain is followed to the end")
     (is (not (:ambiguous? es)))))
 
 ;; ---------------------------------------------------------------- §6.3 queries
 
-(deftest anchored-in-answers-what-is-anchored-in-what
-  (let [{:keys [store rev a]} (world)
-        r (anchor/anchored-in store rev (a :p1))]
-    (is (= (a :p1) (:node r)))
-    (is (= [[T [0]]] (:positions r)))
-    (is (= [(a :b1) (a :r1)] (sort (map :edge (:as-from r)))))
-    (is (= [] (:as-to r)))
-    (testing "a node at several positions lists them all in document order"
-      (let [r2 (rev/apply-plan store (plan rev [{:op :add-edge :edge {:type :ownership :tree T :parent [] :to (a :p1) :order 3}}]))]
-        (is (= [[T [0]] [T [3]]] (:positions (anchor/anchored-in (:store r2) (:revision-id r2) (a :p1)))))))))
-
-(deftest report-always-carries-the-three-states-and-the-five-types
-  (let [{:keys [store rev]} (world)
-        r (anchor/report store rev)]
-    (is (= rev (:revision r)))
-    (is (= 3 (:anchors r)))
-    (is (= {:intact 3 :superseded 0 :orphan 0} (:by-state r)))
-    (is (= anchor/anchor-types (set (keys (:by-type r)))))
-    (is (= (assoc zeros :intact 2) (get-in r [:by-type :reference])))
-    (is (= zeros (get-in r [:by-type :derived])))
-    (is (= [] (:orphans r)))))
-
-(deftest diff-reports-added-removed-and-changed-anchors
-  (let [{:keys [store rev a]} (world)
-        r (rev/apply-plan store (plan rev [{:op :detach :tree T :at [1]}
-                                           {:op :add-edge :edge {:type :semantic :from (a :sym) :to (a :sym)
-                                                                 :evidence {:ref-hash (a :sym) :actor "jp" :context (a :w)}} :as :self}
-                                           {:op :remove-edge :edge (a :b1)}]))
-        d (anchor/diff (:store r) rev (:revision-id r))]
-    (is (= [(get (:aliases r) :self)] (map :edge (:added d))))
-    (is (= [(a :b1)] (:removed d)))
-    (is (= (sort-by :edge [{:edge (a :r1) :type :reference :before :intact :after :orphan}
-                           {:edge (a :r2) :type :reference :before :intact :after :orphan}])
-           (:changed d)))
-    (testing "an edge whose two endpoints are the same node is listed on both sides"
-      (let [ai (anchor/anchored-in (:store r) (:revision-id r) (a :sym))]
-        (is (= [(get (:aliases r) :self)] (map :edge (:as-from ai))))
-        (is (= [(get (:aliases r) :self)] (map :edge (:as-to ai))))))))
-
 (deftest queries-are-pure-derived-and-deterministic
   (let [{:keys [store rev]} (world)]
     (is (= (anchor/states store rev) (anchor/states store rev)))
-    (is (= (anchor/report store rev) (anchor/report store rev)))
     (is (= (sort (map :edge (anchor/states store rev))) (map :edge (anchor/states store rev)))
         "anchors come ordered by edge id")))
 
@@ -191,7 +158,6 @@
   (let [{:keys [store rev a]} (world)
         boom (fn [f] (try (f) nil (catch #?(:clj clojure.lang.ExceptionInfo :cljs :default) e (ex-data e))))]
     (is (= :anchor/unknown-revision (:type (boom #(anchor/states store "nope")))))
-    (is (= :anchor/unknown-revision (:type (boom #(anchor/report store "nope")))))
     (is (= :anchor/unknown-revision (:type (boom #(anchor/placements store "nope")))))
     (is (= :anchor/not-an-anchor (:type (boom #(anchor/state store rev "nope")))))
     (testing "an active edge that is not an anchor is refused too"

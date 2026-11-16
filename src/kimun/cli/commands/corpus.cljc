@@ -10,6 +10,7 @@
    (exit 5; v1's HTTP 409 `not_indexed`), not an empty list. An empty `hits`
    always means 'no matches'. Every command is `(fn [args opts ctx] envelope)`."
   (:require             [clojure.string :as str]
+            [kimun.cli.args :as cli-args]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
             [kimun.surface.index.cache :as cache]
@@ -25,8 +26,6 @@
    :refresh {:desc "rank: rebuild the index first instead of failing when it is missing" :coerce :boolean}})
 
 (def default-k "Hits returned when `--k` is absent (v1 `RankRequest.k`)." 5)
-
-(defn- usage! [msg data] (err/raise :cli/usage msg (merge {:group "corpus"} data)))
 
 ;; ---------------------------------------------------------------- the one door to the index
 
@@ -48,26 +47,26 @@
   (cond (nil? v) default-k
         (and (integer? v) (pos? v)) v
         (and (string? v) (re-matches #"\d+" v) (pos? (parse-long v))) (parse-long v)
-        :else (usage! (str "`--k` needs a positive integer, got `" v "`") {:option "k" :value (str v)})))
+        :else (cli-args/usage! "corpus" (str "`--k` needs a positive integer, got `" v "`") {:option "k" :value (str v)})))
 
 (defn- parse-threshold [v]
   (cond (nil? v) 0.0
         (number? v) (double v)
         (and (string? v) (re-matches #"[+-]?\d+(\.\d+)?([eE][+-]?\d+)?" v)) (parse-double v)
-        :else (usage! (str "`--threshold` needs a number, got `" v "`") {:option "threshold" :value (str v)})))
+        :else (cli-args/usage! "corpus" (str "`--threshold` needs a number, got `" v "`") {:option "threshold" :value (str v)})))
 
 (defn- parse-among [v]
   (when (string? v) (not-empty (vec (remove str/blank? (map str/trim (str/split v #",")))))))
 
 (defn- query-of [args]
   (let [q (str/trim (str/join " " args))]
-    (when (str/blank? q) (usage! "`corpus rank` needs a QUERY" {:subcommand "rank"}))
+    (when (str/blank? q) (cli-args/usage! "corpus" "`corpus rank` needs a QUERY" {:subcommand "rank"}))
     q))
 
 ;; ---------------------------------------------------------------- the federated view
 
-(defn- opened [opts {:keys [env cwd]}]
-  (let [o (cli-store/open! (cli-store/resolve-store opts env cwd))]
+(defn- opened [opts ctx]
+  (let [o (cli-store/open-for opts ctx)]
     {:o o :linked (cli-store/linked-stores (:path o))}))
 
 (defn- stores-of
@@ -88,7 +87,6 @@
                  {:not-indexed (mapv :store missing)}))
     (mapv (fn [{:keys [store found]}] {:store store :index (:index found)}) found)))
 
-(defn- store-ref [{:keys [descriptor path]}] {:name (:name descriptor) :path path})
 
 ;; ---------------------------------------------------------------- commands
 
@@ -102,7 +100,7 @@
         w (opened opts ctx) v (view (stores-of w) (boolean (:refresh opts)))
         c (if fields? (corpus/entries v) (corpus/document-entries v))
         hits (corpus/rank c q {:k k :threshold threshold :among among})]
-    (out/ok "corpus rank" {:store (store-ref (:o w)) :revision (get-in w [:o :store :head])
+    (out/ok "corpus rank" {:store (cli-store/store-ref (:o w)) :revision (get-in w [:o :store :head])
                            :data {:query q :fields fields? :hits hits}})))
 
 (defn refresh
@@ -112,7 +110,7 @@
   [_args opts ctx]
   (let [w (opened opts ctx) v (view (stores-of w) true)]
     (out/ok "corpus refresh"
-            {:store (store-ref (:o w)) :revision (get-in w [:o :store :head])
+            {:store (cli-store/store-ref (:o w)) :revision (get-in w [:o :store :head])
              :data {:stores (mapv (fn [{:keys [store index]}]
                                     {:store store :head (:head index)
                                      :documents (count (corpus/document-entries index))

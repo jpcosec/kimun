@@ -10,6 +10,7 @@
   (:require [babashka.fs :as fs]
             [clojure.string :as str]
             [kimun.cli.commands.direct :as direct]
+            [kimun.cli.args :as cli-args]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
             [kimun.surface.docs :as tdocs]
@@ -32,8 +33,6 @@
    "explains_failure_of" "WHY" "grounded_by" "PROVENANCE" "restricts" "WHEN_WHERE"
    "defines" "WHAT"})
 
-(defn- usage! [msg data] (err/raise :cli/usage msg (merge {:group "docs"} data)))
-
 (defn- absolute [cwd p] (str (fs/normalize (fs/absolutize (fs/path cwd p)))))
 
 (defn- file? [p] (try (fs/regular-file? p) (catch Exception _ false)))
@@ -48,7 +47,7 @@
                 :else nil)]
     (if (and n (pos? n))
       n
-      (usage! (str "`--depth` needs a positive integer, got `" v "`") {:subcommand "recover" :depth (str v)}))))
+      (cli-args/usage! "docs" (str "`--depth` needs a positive integer, got `" v "`") {:subcommand "recover" :depth (str v)}))))
 
 (defn- project
   "`{:root :predicates :by-name :ambiguous :by-path}`: the project root, the
@@ -105,7 +104,7 @@
           :else (err/raise :links/missing (str "no tracked document or file named `" ref "`") {:document ref}))))
 
 (defn- setup [sub args opts {:keys [cwd] :as ctx}]
-  (let [ref (or (first args) (usage! (str "`docs " sub "` needs a document NAME or file path") {:subcommand sub}))
+  (let [ref (or (first args) (cli-args/usage! "docs" (str "`docs " sub "` needs a document NAME or file path") {:subcommand sub}))
         proj (project opts ctx)]
     {:path (root-document ref proj cwd) :proj proj}))
 

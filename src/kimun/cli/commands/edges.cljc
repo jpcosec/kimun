@@ -9,23 +9,14 @@
    command is `(fn [args opts ctx] envelope)`."
   (:require [clojure.string :as str]
             [kimun.cli.commands.docs :as cdocs]
+            [kimun.cli.args :as cli-args]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
             [kimun.graph.edges :as edges]
-            [kimun.host.default :as host]
+            [kimun.graph.model :as m]
             [kimun.kernel.err :as err]
-            [kimun.kernel.ports :as ports]
-            [kimun.kernel.revision :as revision]
-            [kimun.kernel.store :as store]))
+            [kimun.kernel.revision :as revision]))
 
-(defn- open [opts {:keys [env cwd]}] (cli-store/open! (cli-store/resolve-store opts env cwd)))
-(defn- store-ref [{:keys [descriptor path]}] {:name (:name descriptor) :path path})
-
-(defn- usage! [sub message data]
-  (err/raise :cli/usage message (merge {:group "edges" :subcommand sub} data)))
-
-(defn- require-arg! [args i what sub]
-  (or (get args i) (usage! sub (str "`edges " sub "` needs " what) {})))
 
 (defn- text-opt
   "Option `k` as a non-blank string or nil; anything else is `cli/usage`. A
@@ -37,10 +28,10 @@
         v (if (and (sequential? v) (= 1 (count v))) (first v) v)]
     (cond (nil? v) nil
           (and (string? v) (not (str/blank? v))) v
-          :else (usage! sub (str "option --" (name k) " needs a value") {:option k}))))
+          :else (cli-args/usage! "edges" sub (str "option --" (name k) " needs a value") {:option k}))))
 
 (defn- require-opt! [opts k sub]
-  (or (text-opt opts k sub) (usage! sub (str "`edges " sub "` needs --" (name k)) {:option k})))
+  (or (text-opt opts k sub) (cli-args/usage! "edges" sub (str "`edges " sub "` needs --" (name k)) {:option k})))
 
 (defn- flag
   "Boolean option `k`: true/false or the strings \"true\"/\"false\"."
@@ -48,13 +39,13 @@
   (let [v (get opts k)]
     (cond (or (nil? v) (false? v) (= "false" v)) false
           (or (true? v) (= "true" v)) true
-          :else (usage! sub (str "option --" (name k) " is a flag, got `" v "`") {:option k :value v}))))
+          :else (cli-args/usage! "edges" sub (str "option --" (name k) " is a flag, got `" v "`") {:option k :value v}))))
 
 (defn- choice [opts k allowed sub]
   (when-let [v (text-opt opts k sub)]
     (if (contains? allowed v)
       v
-      (usage! sub (str "option --" (name k) " must be one of " (str/join "|" (sort allowed)) ", got `" v "`") {:option k :value v}))))
+      (cli-args/usage! "edges" sub (str "option --" (name k) " must be one of " (str/join "|" (sort allowed)) ", got `" v "`") {:option k :value v}))))
 
 (defn- csv [opts k sub]
   (when-let [v (text-opt opts k sub)] (vec (remove str/blank? (map str/trim (str/split v #","))))))
@@ -63,7 +54,7 @@
   (let [x (:exclude-tag opts)]
     {:links? (not (flag opts :no-links sub))
      :exclude-tags (cond (nil? x) [] (string? x) [x] (and (sequential? x) (every? string? x)) (vec x)
-                         :else (usage! sub "option --exclude-tag needs a value" {:option :exclude-tag}))}))
+                         :else (cli-args/usage! "edges" sub "option --exclude-tag needs a value" {:option :exclude-tag}))}))
 
 (defn- linked
   "The reachable linked stores of `o` as `[{:name :store}]` for the federated
@@ -81,7 +72,7 @@
    the reachable linked stores unless `--local`."
   ([opts ctx sub] (load-index opts ctx sub true))
   ([opts ctx sub linked?]
-   (let [o (open opts ctx)]
+   (let [o (cli-store/open-for opts ctx)]
      (assoc o :index (edges/index (:store o) (assoc (index-opts opts sub) :linked (if linked? (linked o opts sub) [])))))))
 
 (defn- known! [g id]
@@ -117,14 +108,14 @@
   [args opts ctx]
   (let [{s :store i :index :as o} (load-index opts ctx "show") g (:graph i)
         from (or (text-opt opts :from "show") (get args 0)) to (text-opt opts :to "show") rel (text-opt opts :relation "show")
-        _ (when (and from to) (usage! "show" "`edges show` takes --from or --to, not both" {}))
+        _ (when (and from to) (cli-args/usage! "edges" "show" "`edges show` takes --from or --to, not both" {}))
         from (some->> from (known! g)) to (some->> to (known! g))
         es (cond from (edges/edges-from g from rel) to (edges/edges-to g to rel)
                  :else (filterv #(or (nil? rel) (= rel (:type %))) (:edges g)))
-        end? (fn [id a] (or (nil? id) (= id (some-> (:document a) edges/doc-id))))
+        end? (fn [id a] (or (nil? id) (= id (some-> (:document a) m/doc-id))))
         authored (filterv #(and (or (nil? rel) (= rel (:relation %))) (end? from (:from %)) (end? to (:to %))) (:authored i))]
     (out/ok "edges show"
-            {:store (store-ref o) :revision (:head s)
+            {:store (cli-store/store-ref o) :revision (:head s)
              :data {:from from :to to :relation rel :links (boolean (:links? (index-opts opts "show")))
                     :count (count es) :edges (mapv edge-row es) :authored (mapv relation-row authored)}})))
 
@@ -144,7 +135,7 @@
                 :violations (mapv #(cond-> (update % :kind name) (map? (:edge %)) (update :edge edge-row)) (:violations r))
                 :anchors (mapv relation-row (:anchors r)) :counts (counts i) :revision (:head s)}]
     (if (:ok report)
-      (out/ok "edges check" {:store (store-ref o) :revision (:head s) :data (dissoc report :revision)})
+      (out/ok "edges check" {:store (cli-store/store-ref o) :revision (:head s) :data (dissoc report :revision)})
       (err/raise :edges/invalid
                  (str (count (:errors report)) " error(s), " (count (:anchors report)) " authored relation(s) not intact")
                  report))))
@@ -156,9 +147,9 @@
    graph under their qualified ids (`annex:Table:t99`)."
   [args opts ctx]
   (let [{s :store i :index :as o} (load-index opts ctx "node") g (:graph i)
-        id (known! g (require-arg! args 0 "a node ID" "node"))]
+        id (known! g (cli-args/require-arg! "edges" args 0 "a node ID" "node"))]
     (out/ok "edges node"
-            {:store (store-ref o) :revision (:head s)
+            {:store (cli-store/store-ref o) :revision (:head s)
              :data (assoc (edges/node g id) :out (count (edges/edges-from g id)) :in (count (edges/edges-to g id)))})))
 
 (defn nodes
@@ -171,21 +162,11 @@
         t (text-opt opts :type "nodes")
         ns' (if t (edges/nodes-of-type g t) (mapv (fn [[id n]] {:id id :type (:type n)}) (sort-by key (:nodes g))))]
     (out/ok "edges nodes"
-            {:store (store-ref o) :revision (:head s)
+            {:store (cli-store/store-ref o) :revision (:head s)
              :data {:type t :count (count ns') :types (into (sorted-map) (frequencies (map :type (vals (:nodes g))))) :nodes ns'}})))
 
-(defn- commit
-  "Builds a plan with `build` over the opened store and commits it when it
-   changes anything: `{:opened :store :revision :changed}`."
-  [build arg opts ctx]
-  (let [{:keys [backend] s :store :as o} (open opts ctx)
-        {:keys [changed plan]} (build host/host s arg {:actor (:actor opts) :timestamp (cdocs/timestamp)
-                                                       :tree-id (ports/ulid (:ids host/host))})
-        r (when changed (store/commit! backend s plan))]
-    {:opened o :store (if r (:store r) s) :revision (if r (:revision-id r) (:head s)) :changed (boolean changed)}))
-
 (defn- relation-args [args opts sub]
-  {:from (doc-token (require-arg! args 0 "a FROM document" sub)) :to (doc-token (require-arg! args 1 "a TO document" sub))
+  {:from (doc-token (cli-args/require-arg! "edges" args 0 "a FROM document" sub)) :to (doc-token (cli-args/require-arg! "edges" args 1 "a TO document" sub))
    :relation (require-opt! opts :relation sub)})
 
 (defn- names?
@@ -200,11 +181,11 @@
    or an untracked document is `edges/missing`."
   [args opts ctx]
   (let [{:keys [from to relation] :as a} (relation-args args opts "relate")
-        {:keys [opened changed revision] s :store} (commit edges/relate-plan a opts ctx)
+        {:keys [opened changed revision] s :store} (cdocs/commit-built edges/relate-plan a opts ctx)
         hit (first (filter #(and (= relation (:relation %)) (names? from (get-in % [:from :document])) (names? to (get-in % [:to :document])))
                            (edges/authored s)))]
     (out/ok "edges relate"
-            {:store (store-ref opened) :revision revision
+            {:store (cli-store/store-ref opened) :revision revision
              :data {:changed changed :relation relation :from (or (get-in hit [:from :document]) from)
                     :to (or (get-in hit [:to :document]) to) :anchor (some-> (:state hit) name)}})))
 
@@ -214,8 +195,8 @@
    `{:changed :relation :from :to}`; `edges/missing` when none stands."
   [args opts ctx]
   (let [a (relation-args args opts "unrelate")
-        {:keys [opened changed revision]} (commit edges/unrelate-plan a opts ctx)]
-    (out/ok "edges unrelate" {:store (store-ref opened) :revision revision :data (assoc a :changed changed)})))
+        {:keys [opened changed revision]} (cdocs/commit-built edges/unrelate-plan a opts ctx)]
+    (out/ok "edges unrelate" {:store (cli-store/store-ref opened) :revision revision :data (assoc a :changed changed)})))
 
 (defn- all-types [s] (merge edges/builtin-relation-types (edges/stored-relation-types s)))
 
@@ -224,8 +205,8 @@
    :types [{\"name\" \"direction\" \"cardinality\" \"axis\" \"source_types\"
    \"target_types\" \"condition\" \"description\" \"builtin\"}]}` by name."
   [_args opts ctx]
-  (let [o (open opts ctx) s (:store o) ts (mapv #(assoc % "builtin" (boolean (get % "builtin"))) (vals (all-types s)))]
-    (out/ok "edges types" {:store (store-ref o) :revision (:head s) :data {:count (count ts) :types ts}})))
+  (let [o (cli-store/open-for opts ctx) s (:store o) ts (mapv #(assoc % "builtin" (boolean (get % "builtin"))) (vals (all-types s)))]
+    (out/ok "edges types" {:store (cli-store/store-ref o) :revision (:head s) :data {:count (count ts) :types ts}})))
 
 (defn type-define
   "`edges type-define NAME [--direction directed|undirected] [--cardinality
@@ -234,7 +215,7 @@
    redefines a relation type. Data: `{:changed :type}`; a builtin name is
    `edges/conflict`, a bad name `edges/invalid`, a bad option `cli/usage`."
   [args opts ctx]
-  (let [sub "type-define" n (require-arg! args 0 "a relation type NAME" sub)
+  (let [sub "type-define" n (cli-args/require-arg! "edges" args 0 "a relation type NAME" sub)
         t (into {:name n}
                 (remove (comp nil? val))
                 {:direction (choice opts :direction #{"directed" "undirected"} sub)
@@ -242,9 +223,9 @@
                  :axis (some-> (text-opt opts :axis sub) str/upper-case)
                  :source-types (csv opts :source-types sub) :target-types (csv opts :target-types sub)
                  :condition (text-opt opts :condition sub) :description (text-opt opts :description sub)})
-        {:keys [opened changed revision] s :store} (commit edges/define-relation-type-plan t opts ctx)]
+        {:keys [opened changed revision] s :store} (cdocs/commit-built edges/define-relation-type-plan t opts ctx)]
     (out/ok "edges type-define"
-            {:store (store-ref opened) :revision revision
+            {:store (cli-store/store-ref opened) :revision revision
              :data {:changed changed :type (get (edges/stored-relation-types s) n)}})))
 
 (defn- materialised? [s]
@@ -255,7 +236,7 @@
   [command message opts ctx]
   (let [{s :store i :index :as o} (load-index opts ctx (last (str/split command #" ")) false)]
     (out/ok command
-            {:store (store-ref o) :revision (:head s)
+            {:store (cli-store/store-ref o) :revision (:head s)
              :data (merge {:changed false :derived true :message message :problems (count (:problems i))
                            :relations-tree (materialised? s) :predicates (count (edges/predicates s))
                            :relation-types (count (all-types s))}

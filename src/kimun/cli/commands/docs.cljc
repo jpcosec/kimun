@@ -13,6 +13,7 @@
             [clojure.walk :as walk]
             [kimun.cli.compose :as compose]
             [kimun.cli.linked :as linked]
+            [kimun.cli.args :as cli-args]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
             [kimun.surface.docs :as tdocs]
@@ -32,7 +33,6 @@
             [kimun.surface.models.capture :as capture]
             [kimun.surface.parse-contract :as parse-contract]))
 
-(defn- store-ref [descriptor path] {:name (:name descriptor) :path path})
 
 (defn timestamp
   "The current UTC instant in the plan's shape, `yyyy-MM-ddTHH:mm:ss.SSSZ`."
@@ -40,6 +40,17 @@
   #?(:clj (.format (java.time.format.DateTimeFormatter/ofPattern "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                    (java.time.ZonedDateTime/now java.time.ZoneOffset/UTC))
      :cljs (.toISOString (js/Date.))))
+
+(defn commit-built
+  "Opens the store, builds a plan with `build` (`(build host store arg
+   {:actor :timestamp :tree-id})` returning `{:changed :plan}`) and commits it
+   when it changes anything: `{:opened :store :revision :changed}`."
+  [build arg opts ctx]
+  (let [{:keys [backend] s :store :as o} (cli-store/open-for opts ctx)
+        {:keys [changed plan]} (build host/host s arg {:actor (:actor opts) :timestamp (timestamp)
+                                                       :tree-id (ports/ulid (:ids host/host))})
+        r (when changed (store/commit! backend s plan))]
+    {:opened o :store (if r (:store r) s) :revision (if r (:revision-id r) (:head s)) :changed (boolean changed)}))
 
 (defn documents
   "`[{:name :tree :root}]` of every untyped `:document` tree in `store` (plus
@@ -79,9 +90,6 @@
         (err/raise :docs/ambiguous (str (count found) " documents are named `" token "`; use the tree id")
                    {:document token :trees (mapv :tree found)}))))))
 
-(defn- require-arg! [args i what sub]
-  (or (get args i)
-      (err/raise :cli/usage (str "`docs " sub "` needs " what) {:group "docs" :subcommand sub})))
 
 (defn- mint-unit
   "A fresh id for a field unit: a ULID from the host's minter (identity is
@@ -123,7 +131,7 @@
    Raises `:docs/exists` (exit 3) when a document with that name is already in
    the store."
   [args opts {:keys [env cwd]}]
-  (let [file (require-arg! args 0 "a Markdown FILE" "ingest")
+  (let [file (cli-args/require-arg! "docs" args 0 "a Markdown FILE" "ingest")
         [path text] (read-file! file cwd)
         name (name-of opts path)
         {:keys [backend descriptor store] store-path :path} (cli-store/open! (cli-store/resolve-store opts env cwd))
@@ -136,7 +144,7 @@
                                                       {:doc (ports/ulid (:ids host/host)) :tree-id tree-id
                                                        :actor (:actor opts) :timestamp (timestamp)})
             r (store/commit! backend store plan)]
-        (out/ok "docs ingest" {:store (store-ref descriptor store-path)
+        (out/ok "docs ingest" {:store (cli-store/store-ref descriptor store-path)
                                :revision (:revision-id r)
                                :data {:name name :tree tree-id :path path :blocks blocks
                                       :class tdocs/generic-class :anchor anchor}}))
@@ -144,7 +152,7 @@
                                                     :timestamp (timestamp) :base (:head store)})
             r (store/commit! backend store plan)
             t (get-in r [:store :trees tree-id])]
-        (out/ok "docs ingest" {:store (store-ref descriptor store-path)
+        (out/ok "docs ingest" {:store (cli-store/store-ref descriptor store-path)
                                :revision (:revision-id r)
                                :data {:name name :tree tree-id :path path
                                       :blocks (count (tree/children-at t []))}})))))
@@ -157,7 +165,7 @@
    parse contract — and `:unchanged?` says whether anything moved. Data:
    `{:name :tree :path :blocks}`."
   [args opts {:keys [env cwd]}]
-  (let [file (require-arg! args 0 "a Markdown FILE" "update")
+  (let [file (cli-args/require-arg! "docs" args 0 "a Markdown FILE" "update")
         token (or (:name opts) (get args 1)
                   (err/raise :cli/usage "`docs update` needs --name NAME (or a second token naming the document)" {:group "docs" :subcommand "update"}))
         [path text] (read-file! file cwd)
@@ -172,7 +180,7 @@
       (let [{:keys [plan blocks unchanged?]} (tdocs/generic-update-plan host/host store generic text
                                                                         {:path anchor :actor (:actor opts) :timestamp (timestamp)})
             r (if plan (store/commit! backend store plan) {:revision-id (:head store)})]
-        (out/ok "docs update" {:store (store-ref descriptor store-path)
+        (out/ok "docs update" {:store (cli-store/store-ref descriptor store-path)
                                :revision (:revision-id r)
                                :data {:name name :tree tree :path path :blocks blocks
                                       :class (:class generic) :anchor anchor :unchanged? (boolean unchanged?)}}))
@@ -180,7 +188,7 @@
                                            {:actor (:actor opts) :timestamp (timestamp) :base (:head store)})
             r (store/commit! backend store plan)
             t (get-in r [:store :trees tree])]
-        (out/ok "docs update" {:store (store-ref descriptor store-path)
+        (out/ok "docs update" {:store (cli-store/store-ref descriptor store-path)
                                :revision (:revision-id r)
                                :data {:name name :tree tree :path path
                                       :blocks (count (tree/children-at t []))}})))))
@@ -189,10 +197,10 @@
   "`docs render NAME|TREE`: the canonical Markdown of the document, as the
    envelope's data (a string, so `--format text` prints the document itself)."
   [args opts {:keys [env cwd]}]
-  (let [token (require-arg! args 0 "a document NAME or tree id" "render")
+  (let [token (cli-args/require-arg! "docs" args 0 "a document NAME or tree id" "render")
         {:keys [descriptor store] store-path :path} (cli-store/open! (cli-store/resolve-store opts env cwd))
         {:keys [tree]} (resolve-document store token)]
-    (out/ok "docs render" {:store (store-ref descriptor store-path)
+    (out/ok "docs render" {:store (cli-store/store-ref descriptor store-path)
                            :revision (:head store)
                            :data (or (tdocs/document-markdown store (or (tdocs/find-document store token)
                                                                         (tdocs/generic-document store tree) tree))
@@ -210,7 +218,7 @@
         docs (tdocs/documents store)
         typed (map #(select-keys % [:name :qualified :tree :root :model :model-version :state :path]) docs)
         all (if (:model opts) (filter #(= (:model opts) (:model %)) typed) (concat typed (documents store docs)))]
-    (out/ok "docs list" {:store (store-ref descriptor store-path)
+    (out/ok "docs list" {:store (cli-store/store-ref descriptor store-path)
                          :revision (:head store)
                          :data (vec (sort-by (juxt :name :tree) all))})))
 
@@ -243,14 +251,6 @@
 (defn- relative-path [root p]
   (str (fs/relativize (fs/path root) (fs/absolutize p))))
 
-(defn- write-file!
-  "Writes `text` at `root`/`path`; returns a warnings vector (empty on success)."
-  [root path text]
-  (try (let [f (fs/path root path)] (some-> (fs/parent f) fs/create-dirs) (spit (str f) text) [])
-       (catch Exception e [{:type "docs/file-not-written" :message (str "could not write " path ": " (ex-message e))}])))
-
-(defn- open [opts {:keys [env cwd]}] (cli-store/open! (cli-store/resolve-store opts env cwd)))
-
 (defn- doc-data
   "The document map as `docs` answers it. A document of a spec 16 class (M1g, `:spec16`)
    also reports the exact class it was anchored under (`:class`, the address of its
@@ -274,7 +274,7 @@
   "The envelope of a document write; `token` is the tree id of the document
    written (a short name may be shared, K8)."
   [command descriptor store-path r store' token extra]
-  (out/ok command (merge {:store (store-ref descriptor store-path) :revision (:revision-id r)
+  (out/ok command (merge {:store (cli-store/store-ref descriptor store-path) :revision (:revision-id r)
                           :data (doc-data (tdocs/document store' token))} extra)))
 
 ;; The refusal of v1's `refuse_structural_noise` + `refuse_undeclared_frontmatter`: a heading the
@@ -315,7 +315,7 @@
    foreign model is bound in the store, in its own commit, only once the
    document has passed every check. Data: the document map."
   [args opts {:keys [env cwd]}]
-  (let [token (require-arg! args 0 "a MODEL" "create") name (require-arg! args 1 "a document NAME" "create")
+  (let [token (cli-args/require-arg! "docs" args 0 "a MODEL" "create") name (cli-args/require-arg! "docs" args 1 "a document NAME" "create")
         {:keys [opened alias home]} (linked/target opts env cwd)
         {:keys [backend descriptor store] store-path :path} opened
         payload (read-payload opts cwd)
@@ -336,7 +336,7 @@
                                           :path path :actor (:actor opts) :timestamp (timestamp) :operation "docs create"
                                           :inline (:inline opts)})
         r (store/commit! backend store plan)]
-    (done "docs create" descriptor store-path r (:store r) tree {:warnings (write-file! root path text)})))
+    (done "docs create" descriptor store-path r (:store r) tree {:warnings (cli-store/write-file! root path text)})))
 
 (defn track
   "`docs track MODEL FILE [--name N]`: tracks an existing Markdown file as a
@@ -345,7 +345,7 @@
    refused (`docs/not-idempotent`) unless `--force`. MODEL and `--store`
    accept a linked store as in `docs create`. Data: the document map."
   [args opts {:keys [env cwd]}]
-  (let [token (require-arg! args 0 "a MODEL" "track") file (require-arg! args 1 "a Markdown FILE" "track")
+  (let [token (cli-args/require-arg! "docs" args 0 "a MODEL" "track") file (cli-args/require-arg! "docs" args 1 "a Markdown FILE" "track")
         [p text] (read-file! file cwd)
         {:keys [opened home]} (linked/target opts env cwd)
         {:keys [backend descriptor store] store-path :path} opened
@@ -379,7 +379,7 @@
    a section the new contract adds cannot swallow the old text. Data: the
    document map plus `:unchanged?`."
   [doc args opts {:keys [cwd] :as ctx}]
-  (let [{:keys [backend descriptor store] store-path :path} (open opts ctx)
+  (let [{:keys [backend descriptor store] store-path :path} (cli-store/open-for opts ctx)
         root (project-root store-path)
         payload? (or (:data opts) (seq (:set opts)))
         current (:descriptor (mstore/model store (:model doc)))
@@ -399,7 +399,7 @@
         {:keys [plan unchanged?]} (tdocs/update-plan host/host store (:tree doc) text
                                                      {:mint mint-unit :actor (:actor opts) :timestamp (timestamp)})
         r (if plan (store/commit! backend store plan) {:store store :revision-id (:head store)})
-        warnings (if (and (or payload? migrate?) (:path doc)) (write-file! root (:path doc) text) [])]
+        warnings (if (and (or payload? migrate?) (:path doc)) (cli-store/write-file! root (:path doc) text) [])]
     (update (done "docs update" descriptor store-path r (:store r) (:tree doc) {:warnings warnings})
             :data assoc :unchanged? (boolean unchanged?))))
 
@@ -424,14 +424,14 @@
    `docs/previous-file-present`. Data: what `docs update` returns for that
    document, plus `:reanchored {:from :to :previous-file :reason}`."
   [args opts {:keys [env cwd] :as ctx}]
-  (let [token (require-arg! args 0 "a document NAME" "reanchor")
-        file (require-arg! args 1 "a Markdown FILE" "reanchor")
+  (let [token (cli-args/require-arg! "docs" args 0 "a document NAME" "reanchor")
+        file (cli-args/require-arg! "docs" args 1 "a Markdown FILE" "reanchor")
         reason (:reason opts)
         _ (when (or (not (string? reason)) (str/blank? (str/trim reason)))
             (err/raise :cli/usage "`docs reanchor` needs --reason TEXT: the declaration says what happened"
                        {:group "docs" :subcommand "reanchor"}))
         [path text] (read-file! file cwd)
-        {:keys [backend descriptor store] store-path :path} (open opts ctx)
+        {:keys [backend descriptor store] store-path :path} (cli-store/open-for opts ctx)
         root (project-root store-path)
         d (document-at store token)
         _ (when-not (:path d)
@@ -470,7 +470,7 @@
                      :message (str "the previous file " (:path d) " is still there and is no longer tracked:"
                                    " if it was a copy, it is a different unit — declare it with `docs track`/`docs ingest`")
                      :path (:path d) :document (:name d)}])]
-    (out/ok "docs reanchor" {:store (store-ref descriptor store-path)
+    (out/ok "docs reanchor" {:store (cli-store/store-ref descriptor store-path)
                              :revision (:revision-id res)
                              :data (assoc (:data res)
                                           :reanchored {:from (:path d) :to anchor
@@ -484,10 +484,10 @@
   ([args opts ctx] (untrack args opts ctx false))
   ([args opts ctx delete?]
    (let [sub (if delete? "delete" "untrack")
-         token (require-arg! args 0 "a document NAME" sub)
+         token (cli-args/require-arg! "docs" args 0 "a document NAME" sub)
          _ (when (and delete? (not (:yes opts)))
              (err/raise :docs/confirmation-required "`docs delete` removes the file too: pass --yes to confirm" {:document token}))
-         {:keys [backend descriptor store] store-path :path} (open opts ctx)
+         {:keys [backend descriptor store] store-path :path} (cli-store/open-for opts ctx)
          doc (document-at store token)
          ;; the state of the file BEFORE acting: the closure declaration says what was there
          file-state (cond (nil? (:path doc)) "none"
@@ -501,7 +501,7 @@
          r (store/commit! backend store plan)
          f (when path (fs/path (project-root store-path) path))]
      (when (and delete? f (fs/exists? f)) (fs/delete f))
-     (out/ok (str "docs " sub) {:store (store-ref descriptor store-path) :revision (:revision-id r)
+     (out/ok (str "docs " sub) {:store (cli-store/store-ref descriptor store-path) :revision (:revision-id r)
                                 :data {:name name :path path :file-deleted? (boolean (and delete? f))
                                        :closure {:file file-state :reason (:reason opts)}}}))))
 
@@ -562,8 +562,8 @@
    omits `:blocks`. Data: `{:name :tree :path :parse-contract :sections
    :blocks}`."
   [args opts {:keys [cwd] :as ctx}]
-  (let [token (require-arg! args 0 "a document NAME" "anchors")
-        {:keys [descriptor store] store-path :path} (open opts ctx)
+  (let [token (cli-args/require-arg! "docs" args 0 "a document NAME" "anchors")
+        {:keys [descriptor store] store-path :path} (cli-store/open-for opts ctx)
         d (or (tdocs/resolve-any store token)
               (err/raise :docs/missing (str "no document named or identified by `" token "`") {:document token}))
         root (project-root store-path)
@@ -580,7 +580,7 @@
         a (anchors/anchors host/host (str text) {:spans (capture/aligned-spans (str text))
                                                  :parse-contract contract})]
     (out/ok "docs anchors"
-            {:store (store-ref descriptor store-path)
+            {:store (cli-store/store-ref descriptor store-path)
              :revision (:head store)
              :data (cond-> {:name (:name d) :tree (:tree d) :path (:path d)
                             :parse-contract (:parse-contract a)
@@ -693,14 +693,14 @@
    DECLARES that unit `ID` of document NAME is now anchored in OTHER (K1f, docs/v2/14
    §21 rule 3): the same id, one revision touching both trees. See `mark`."
   [args opts {:keys [env cwd] :as ctx}]
-  (let [token (require-arg! args 0 "a document NAME" "mark")
+  (let [token (cli-args/require-arg! "docs" args 0 "a document NAME" "mark")
         usage! (fn [msg] (err/raise :cli/usage msg {:group "docs" :subcommand "mark"}))
         unit (or (:unit opts) (usage! "`docs mark --from` needs --unit ID: the unit that moves"))
         _ (when-not (string? (:reason opts)) (usage! "`docs mark --from` needs --reason TEXT: the declaration says what happened"))
         _ (when-not (= 1 (count (filter some? [(or (:locator opts) (field-locator opts))
                                                (when-not (field-locator opts) (:field opts))])))
             (usage! "`docs mark --from` needs exactly one of --locator L (a structural unit; or --field F --index N / --path a.b for an item or a nested key) or --field F (a field unit)"))
-        {:keys [backend descriptor store] store-path :path} (open opts ctx)
+        {:keys [backend descriptor store] store-path :path} (cli-store/open-for opts ctx)
         [from from-text] (mark-target store store-path (:from opts))
         [to to-text] (mark-target store store-path token)
         _ (when (= (:tree from) (:tree to))
@@ -719,7 +719,7 @@
                                   :declared declared :actor (:actor opts) :timestamp (timestamp)})
         r (store/commit! backend store (:plan mp))]
     (out/ok "docs mark"
-            {:store (store-ref descriptor store-path) :revision (:revision-id r)
+            {:store (cli-store/store-ref descriptor store-path) :revision (:revision-id r)
              :data (assoc (doc-data (tdocs/resolve-any (:store r) (:tree to)))
                           :id unit :moved (select-keys declared [:unit :from :to :locator :field]))})))
 
@@ -738,7 +738,7 @@
    (`docs/not-anchored`), or no `--reason` on a re-anchor (`cli/usage`).
    Data: the document map plus `:marked {:id :locator :kind :label}`."
   [args opts {:keys [env cwd] :as ctx}]
-  (let [token (require-arg! args 0 "a document NAME" "mark")
+  (let [token (cli-args/require-arg! "docs" args 0 "a document NAME" "mark")
         locator (locator-opt opts)
         _ (when-not locator
             (err/raise :cli/usage "`docs mark` needs --locator L (the locator `docs anchors` prints), or --field F with --index N / --path a.b (an item or a nested key)"
@@ -747,7 +747,7 @@
         _ (when (and unit (not (string? (:reason opts))))
             (err/raise :cli/usage "`docs mark --unit` needs --reason TEXT: the declaration says what happened"
                        {:group "docs" :subcommand "mark"}))
-        {:keys [backend descriptor store] store-path :path} (open opts ctx)
+        {:keys [backend descriptor store] store-path :path} (cli-store/open-for opts ctx)
         [d text] (mark-target store store-path token)
         a (resolve-locator! locator text store d)
         marks (or (:marks d) {})
@@ -770,7 +770,7 @@
                              :label (:label opts)})
         r (store/commit! backend store (:plan mp))]
     (out/ok "docs mark"
-            {:store (store-ref descriptor store-path) :revision (:revision-id r)
+            {:store (cli-store/store-ref descriptor store-path) :revision (:revision-id r)
              :data (assoc (doc-data (tdocs/resolve-any (:store r) (:tree d)))
                           :marked (select-keys mark [:kind :locator :hash :label])
                           :id id)})))
@@ -803,9 +803,9 @@
    \"unit-closure\"}`). The document itself is written as an update of the same
    text. Unknown unit: `docs/missing`. Data: the document map plus `:unmarked`."
   [args opts {:keys [env cwd] :as ctx}]
-  (let [token (require-arg! args 0 "a document NAME" "unmark")
-        id (require-arg! args 1 "a unit ID" "unmark")
-        {:keys [backend descriptor store] store-path :path} (open opts ctx)
+  (let [token (cli-args/require-arg! "docs" args 0 "a document NAME" "unmark")
+        id (cli-args/require-arg! "docs" args 1 "a unit ID" "unmark")
+        {:keys [backend descriptor store] store-path :path} (cli-store/open-for opts ctx)
         [d text] (mark-target store store-path token)
         mark? (contains? (or (:marks d) {}) id)
         field (when-not mark? (tdocs/unit-field d id))
@@ -827,7 +827,7 @@
              (tdocs/close-unit-plan host/host store d text base))
         r (store/commit! backend store (:plan mp))]
     (out/ok "docs unmark"
-            {:store (store-ref descriptor store-path) :revision (:revision-id r)
+            {:store (cli-store/store-ref descriptor store-path) :revision (:revision-id r)
              :data (assoc (doc-data (tdocs/resolve-any (:store r) (:tree d))) :unmarked id)})))
 
 (defn marks
@@ -838,15 +838,15 @@
    `ambiguous`, `missing`) and the candidates are PROPOSALS: kimun never decides
    that a unit moved, was split or is another one."
   [args opts {:keys [cwd] :as ctx}]
-  (let [token (require-arg! args 0 "a document NAME" "marks")
-        {:keys [descriptor store] store-path :path} (open opts ctx)
+  (let [token (cli-args/require-arg! "docs" args 0 "a document NAME" "marks")
+        {:keys [descriptor store] store-path :path} (cli-store/open-for opts ctx)
         d (or (tdocs/resolve-any store token)
               (err/raise :docs/missing (str "no document named or identified by `" token "`") {:document token}))
         text (or (document-text store store-path d) "")
         contract (parse-contract/record host/host (parse-contract/environment) (or (:class d) "generic/md"))
         r (tdocs/marks-of host/host (str text) d contract (field-payload store d (str text)))]
     (out/ok "docs marks"
-            {:store (store-ref descriptor store-path) :revision (:head store)
+            {:store (cli-store/store-ref descriptor store-path) :revision (:head store)
              :data {:name (:name d) :tree (:tree d) :path (:path d)
                     :parse-contract (:parse-contract r) :marks (:marks r)}})))
 
@@ -857,10 +857,10 @@
    AST (`kimun.surface.markdown.plan/store->ast`, docs/v2/04 §8) as `{:name :tree :ast}`;
    an untyped document is resolved too."
   [args opts ctx]
-  (let [{:keys [descriptor store] store-path :path} (open opts ctx)
-        token (require-arg! args 0 "a document NAME" "show")
+  (let [{:keys [descriptor store] store-path :path} (cli-store/open-for opts ctx)
+        token (cli-args/require-arg! "docs" args 0 "a document NAME" "show")
         ast? (or (:ast opts) (= "ast" (:format opts)))]
-    (out/ok "docs show" {:store (store-ref descriptor store-path) :revision (:head store)
+    (out/ok "docs show" {:store (cli-store/store-ref descriptor store-path) :revision (:head store)
                          :data (if ast?
                                  (let [{:keys [name tree]} (resolve-document store token)]
                                    {:name name :tree tree
@@ -880,9 +880,9 @@
   "`docs status`: `[{:name :path :status}]` comparing each tracked file with
    the fingerprint recorded for it (`ok`, `modified`, `missing`)."
   [_args opts ctx]
-  (let [{:keys [descriptor store] store-path :path} (open opts ctx)
+  (let [{:keys [descriptor store] store-path :path} (cli-store/open-for opts ctx)
         root (project-root store-path)]
-    (out/ok "docs status" {:store (store-ref descriptor store-path) :revision (:head store)
+    (out/ok "docs status" {:store (cli-store/store-ref descriptor store-path) :revision (:head store)
                            :data (tdocs/sync-report store #(let [f (fs/path root %)] (when (fs/regular-file? f) (slurp (str f)))))})))
 
 (defn update-any

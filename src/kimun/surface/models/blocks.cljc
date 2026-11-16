@@ -136,29 +136,6 @@
 
 ;; ------------------------------------------------------------ pod (M layer)
 
-(defn- norm-pod-text
-  "The text the pod's block grammar needs: a final newline. Without it an
-   ATX-only document parses to an ERROR root (R2 §6)."
-  [text]
-  (if (str/ends-with? text "\n") text (str text "\n")))
-
-(defn- pod-lines
-  "Lines of `text` as the pod numbers them: internal blank lines kept, the empty
-   line the trailing newline would add dropped (the convention of
-   `kimun.surface.markdown.cst`)."
-  [text]
-  (let [raw (str/split text #"\n" -1)
-        raw (if (str/ends-with? text "\n") (vec (butlast raw)) (vec raw))]
-    (if (= text "") [] raw)))
-
-(defn- pod-span
-  "`[start-line end-line)` of a pod block: start/end point rows, end exclusive
-   (an end column other than 0 belongs to the last line)."
-  [node]
-  (let [[sr _] (:start_point node)
-        [er ec] (:end_point node)]
-    [(long sr) (long (if (zero? ec) er (inc er)))]))
-
 (defn- pod-type
   "Native `:type` for a pod block kind, `::list` for lists (the marker decides
    bullet vs ordered), or nil when the kind has no counterpart here."
@@ -217,7 +194,7 @@
      :map [i end] :children (list-items lines i end)}))
 
 (defn- pod-block [lines node]
-  (let [[i j] (pod-span node)
+  (let [[i j] (ts/block-span node)
         t (pod-type (:type node))]
     (cond
       (nil? t) nil
@@ -237,8 +214,8 @@
    when the pod is unavailable or returns a kind with no counterpart here."
   [text]
   (when (ts/available?)
-    (let [lines (pod-lines text)
-          blocks (mapv #(pod-block lines %) (ts/blocks (norm-pod-text text)))]
+    (let [lines (ts/source-lines text)
+          blocks (mapv #(pod-block lines %) (ts/blocks (ts/with-final-newline text)))]
       (when (every? some? blocks) blocks))))
 
 (defn parse

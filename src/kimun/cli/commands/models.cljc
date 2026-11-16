@@ -36,7 +36,6 @@
    :dry-run {:desc "Report the documents a redefinition would rewrite, without writing" :coerce :boolean}
    :backfill {:desc "Rewrite the model's documents under the new contract" :coerce :boolean}})
 
-(defn- store-ref [descriptor path] {:name (:name descriptor) :path path})
 
 (defn read-descriptor-file
   "The descriptor in EDN file `path` (relative to `cwd`); raises
@@ -59,7 +58,7 @@
     (str/ends-with? token ".edn") (read-descriptor-file token cwd)
     :else (let [dir (cli-store/resolve-store opts env cwd)]
             (if (and dir (cli-store/store? dir))
-              (:descriptor (mstore/model (:store (open-store opts ctx)) token))
+              (:descriptor (mstore/model (:store (cli-store/open-for opts ctx)) token))
               (err/raise :models/missing (str "no model `" token "`: not an .edn file and no store to look it up in") {:model token})))))
 
 (defn- rewrites
@@ -117,7 +116,7 @@
    text the new contract changes) without writing; `--backfill` rewrites them;
    without it they stay as they are, reported `:superseded` until updated."
   [descriptor opts ctx command]
-  (let [{:keys [backend store] d :descriptor path :path} (open-store opts ctx)
+  (let [{:keys [backend store] d :descriptor path :path} (cli-store/open-for opts ctx)
         _ (validate-model! descriptor)
         ;; documents are rewritten only for v1 models: a spec 16 class has no template to render (M1g)
         v1? (and (not (mstore/spec16? descriptor))
@@ -129,13 +128,13 @@
                                :tree-id (ports/ulid (:ids host/host))})
         data (-> (dissoc r :plan) (assoc :unchanged? (boolean (:unchanged r)) :backfill (mapv :name todo)) (dissoc :unchanged))]
     (if (:dry-run opts)
-      (out/ok command {:store (store-ref d path) :revision (:head store) :data (assoc data :dry-run? true)})
+      (out/ok command {:store (cli-store/store-ref d path) :revision (:head store) :data (assoc data :dry-run? true)})
       (let [applied (when (:plan r) (store/commit! backend store (:plan r)))
             store' (if applied (:store applied) store)
             done (if (:backfill opts)
                    (backfill! backend store' todo opts (str (fs/parent (fs/absolutize path))))
                    {:store store' :revision (:head store') :warnings []})]
-        (out/ok command {:store (store-ref d path) :revision (:revision done) :warnings (:warnings done)
+        (out/ok command {:store (cli-store/store-ref d path) :revision (:revision done) :warnings (:warnings done)
                          :data (assoc data :backfilled (if (:backfill opts) (mapv :name todo) []))})))))
 
 (defn define
@@ -168,10 +167,10 @@
    `:anchoring :fields`). With `--isa BASE` only BASE and the models that
    inherit from it, transitively."
   [_args opts ctx]
-  (let [{:keys [store] d :descriptor path :path} (open-store opts ctx)
+  (let [{:keys [store] d :descriptor path :path} (cli-store/open-for opts ctx)
         all (mstore/models store)
         keep? (if-let [b (:isa opts)] (isa-names all b) (constantly true))]
-    (out/ok "models list" {:store (store-ref d path) :revision (:head store)
+    (out/ok "models list" {:store (cli-store/store-ref d path) :revision (:head store)
                            :data (mapv (fn [m] {:name (:name m) :version (:version m) :id (:id m)
                                                 :fields (field-count (:descriptor m))
                                                 :documents (count (tdocs/of-model store (:name m)))
@@ -202,18 +201,18 @@
   "`models show NAME [--format md]`: `{:name :version :id :descriptor :history
    :markdown}`; `--format md` prints the projection itself."
   [args opts ctx]
-  (let [{:keys [store] d :descriptor path :path} (open-store opts ctx)
+  (let [{:keys [store] d :descriptor path :path} (cli-store/open-for opts ctx)
         m (mstore/model store (need-name args "show"))
         h (mstore/history store (:name m))]
-    (out/ok "models show" {:store (store-ref d path) :revision (:head store)
+    (out/ok "models show" {:store (cli-store/store-ref d path) :revision (:head store)
                            :data (assoc (dissoc m :position) :history h :markdown (projection m h))})))
 
 (defn history
   "`models history NAME`: the versions newest first,
    `[{:version :id :revision :actor :timestamp}]`."
   [args opts ctx]
-  (let [{:keys [store] d :descriptor path :path} (open-store opts ctx)]
-    (out/ok "models history" {:store (store-ref d path) :revision (:head store)
+  (let [{:keys [store] d :descriptor path :path} (cli-store/open-for opts ctx)]
+    (out/ok "models history" {:store (cli-store/store-ref d path) :revision (:head store)
                               :data (mstore/history store (need-name args "history"))})))
 
 (defn- problems
@@ -241,10 +240,10 @@
    the failure `models/invalid` (exit 3) carrying the same report."
   [args opts {:keys [env cwd] :as ctx}]
   (let [dir (cli-store/resolve-store opts env cwd)
-        opened (when (and dir (cli-store/store? dir)) (open-store opts ctx))
+        opened (when (and dir (cli-store/store? dir)) (cli-store/open-for opts ctx))
         defined (if opened (mstore/models (:store opened)) [])
         targets (cond (:file opts) [(read-descriptor-file (:file opts) cwd)]
-                      (first args) [(:descriptor (mstore/model (:store (or opened (open-store opts ctx))) (first args)))]
+                      (first args) [(:descriptor (mstore/model (:store (or opened (cli-store/open-for opts ctx))) (first args)))]
                       :else (mapv :descriptor defined))
         docs-of (fn [d] (if opened (tdocs/of-model (:store opened) (:model/name d)) []))
         doc-errors (fn [d] (vec (for [doc (if (mstore/spec16? d) [] (docs-of d))
@@ -257,7 +256,7 @@
                                  (seq (docs-of d)) (assoc :documents (count (docs-of d))))))
                      targets)]
     (if (every? :ok report)
-      (out/ok "models check" {:store (when opened (store-ref (:descriptor opened) (:path opened)))
+      (out/ok "models check" {:store (when opened (cli-store/store-ref (:descriptor opened) (:path opened)))
                               :revision (:head (:store opened)) :data {:ok true :models report}})
       (out/failure :models/invalid (str/join "; " (mapcat :errors report)) {:ok false :models report} 3))))
 
@@ -293,7 +292,7 @@
   (let [name (need-name args "field-add")
         _ (when-not (and (:field opts) (:type opts) (not (str/blank? (str (:description opts)))))
             (err/raise :cli/usage "`models field-add` needs --field NAME, --type TYPE and --description TEXT" {:group "models" :subcommand "field-add"}))
-        d (:descriptor (mstore/model (:store (open-store opts ctx)) name))
+        d (:descriptor (mstore/model (:store (cli-store/open-for opts ctx)) name))
         _ (refuse-spec16! d "field-add")
         type (parse-type (:type opts))
         field (cond-> {:name (:field opts) :type type :required (boolean (:required opts)) :description (:description opts)}
@@ -306,7 +305,7 @@
   [args opts ctx]
   (let [name (need-name args "field-remove")
         _ (when-not (:field opts) (err/raise :cli/usage "`models field-remove` needs --field NAME" {:group "models" :subcommand "field-remove"}))
-        d (:descriptor (mstore/model (:store (open-store opts ctx)) name))
+        d (:descriptor (mstore/model (:store (cli-store/open-for opts ctx)) name))
         _ (refuse-spec16! d "field-remove")]
     (commit-define! (edit/remove-field d (:field opts)) opts ctx "models field-remove")))
 
@@ -315,14 +314,14 @@
    the string); with `-f` the file becomes the template of a new version."
   [args opts {:keys [cwd] :as ctx}]
   (let [name (need-name args "template")
-        {:keys [store] sd :descriptor path :path} (open-store opts ctx)
+        {:keys [store] sd :descriptor path :path} (cli-store/open-for opts ctx)
         d (:descriptor (mstore/model store name))
         _ (refuse-spec16! d "template")]
     (if-let [f (:file opts)]
       (let [p (fs/absolutize (fs/path cwd f))]
         (when-not (fs/regular-file? p) (err/raise :models/no-file (str "no such file: " p) {:path (str p)}))
         (commit-define! (edit/set-template d (slurp (str p))) opts ctx "models template"))
-      (out/ok "models template" {:store (store-ref sd path) :revision (:head store) :data (:template d)}))))
+      (out/ok "models template" {:store (cli-store/store-ref sd path) :revision (:head store) :data (:template d)}))))
 
 (def commands
   "Subcommand name → command fn `(fn [args opts ctx] envelope)`."

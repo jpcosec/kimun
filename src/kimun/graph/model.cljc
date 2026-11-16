@@ -10,6 +10,20 @@
   (:require [clojure.set :as set]
             [clojure.string :as str]))
 
+;; ---------------------------------------------------------------- node ids
+
+(defn store-id "Node id of the store." [] "sldb://store")
+(defn model-id "Node id of model `m`." [m] (str "sldb://model/" m))
+(defn field-id "Node id of field `f` of model `m`." [m f] (str "sldb://field/" m "." f))
+(defn doc-id "Node id of the document with export id `Model:name`." [export-id] (str "sldb://document/" export-id))
+(defn section-id
+  "Node id of the section whose key is `key`, or of section `path` of document `export-id`."
+  ([key] (str "sldb://section/" key))
+  ([export-id path] (section-id (str export-id "#" path))))
+(defn tag-id "Node id of semantic tag `t`." [t] (str "sldb://semantic_tag/" t))
+(defn relation-type-id "Node id of relation type `n`." [n] (str "sldb://relation_type/" n))
+(defn anchor-id "Node id of the anchor named `symbol`." [symbol] (str "sldb://anchor/" symbol))
+
 (def derived-relations
   "Relations the edge index itself writes from the store's structure (v1
    BUILTIN_RELATION_TYPES). Analyses skip them unless asked, because they make

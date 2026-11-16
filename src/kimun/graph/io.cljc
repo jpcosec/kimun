@@ -84,11 +84,6 @@
   "The semantic-export contract version this module reads."
   1)
 
-(defn- model-id [n] (str "sldb://model/" n))
-(defn- document-id [i] (str "sldb://document/" i))
-(defn- section-id [i] (str "sldb://section/" i))
-(defn- tag-id [t] (str "sldb://semantic_tag/" t))
-
 (defn- edge [target rel] {"target_id" target "relation_type" rel "metadata" {}})
 
 (defn- node
@@ -111,35 +106,35 @@
   [p prov tag]
   (let [dag (get p "semantic_dag")
         parents (some #(when (= tag (get % "id")) (get % "parents")) (get dag "nodes"))]
-    (node (tag-id tag) "semantic_tag"
-          (concat (map #(edge (tag-id %) "semantic_parent") parents)
-                  (map #(edge (tag-id %) "semantic_equivalent") (get-in dag ["equivalences" tag])))
+    (node (m/tag-id tag) "semantic_tag"
+          (concat (map #(edge (m/tag-id %) "semantic_parent") parents)
+                  (map #(edge (m/tag-id %) "semantic_equivalent") (get-in dag ["equivalences" tag])))
           {"tag" tag} prov)))
 
 (defn- model-node
   [p prov model]
   (let [docs (filter #(= (get model "name") (get % "model")) (get p "documents"))]
-    (node (model-id (get model "name")) "sldb_model"
-          (concat (map #(edge (document-id (get % "id")) "has_document") docs)
-                  (map #(edge (tag-id %) "tagged_as") (get model "semantics")))
+    (node (m/model-id (get model "name")) "sldb_model"
+          (concat (map #(edge (m/doc-id (get % "id")) "has_document") docs)
+                  (map #(edge (m/tag-id %) "tagged_as") (get model "semantics")))
           (-> (select-keys model ["name" "model_ref" "path" "version" "canonical" "family" "base_models" "hash_b"])
               (assoc "semantic_tags" (get model "semantics")))
-          (assoc prov "model" model "parent_store_node_id" "sldb://store"))))
+          (assoc prov "model" model "parent_store_node_id" (m/store-id)))))
 
 (defn- document-node
   [p prov d]
   (let [secs (filter #(= (get d "id") (get % "document_id")) (get p "sections"))]
-    (node (document-id (get d "id")) "sldb_document"
-          (concat (map #(edge (section-id (get % "id")) "has_section") secs)
-                  (map #(edge (tag-id %) "tagged_as") (get d "semantic_tags")))
+    (node (m/doc-id (get d "id")) "sldb_document"
+          (concat (map #(edge (m/section-id (get % "id")) "has_section") secs)
+                  (map #(edge (m/tag-id %) "tagged_as") (get d "semantic_tags")))
           (-> (select-keys d ["name" "model" "path" "semantic_tags" "hash_c" "hash_d"])
               (assoc "export_id" (get d "id")))
           (assoc prov "document" d))))
 
 (defn- section-node
   [prov s]
-  (node (section-id (get s "id")) "sldb_section"
-        (map #(edge (tag-id %) "tagged_as") (get s "semantic_tags"))
+  (node (m/section-id (get s "id")) "sldb_section"
+        (map #(edge (m/tag-id %) "tagged_as") (get s "semantic_tags"))
         (-> (select-keys s ["path" "title" "breadcrumbs" "about" "semantic_tags" "slug" "level" "line_start" "line_end"])
             (assoc "export_id" (get s "id") "document_id" (get s "document_id")))
         (assoc prov "section" s)))
@@ -160,8 +155,8 @@
       {"version" "1.0"
        "metadata" {"source_contract" c "producer" (get p "producer") "store" store "generated_from" contract-name}
        "nodes" (vec (concat
-                     [(node "sldb://store" "sldb_store"
-                            (map #(edge (model-id (get % "name")) "has_model") (get p "models"))
+                     [(node (m/store-id) "sldb_store"
+                            (map #(edge (m/model-id (get % "name")) "has_model") (get p "models"))
                             {"root" (get store "root") "store_path" (get store "store_path") "hash_a" (get store "hash_a")}
                             prov)]
                      (map #(tag-node p prov %) (sort (collect-tags p)))

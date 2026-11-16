@@ -144,15 +144,8 @@
     (err/raise :docs/parser-unavailable
                "A CST selector step (:find, :table, :preserve-nesting) needs the tree-sitter pod; it is not available"
                {:steps (mapv :key steps)}))
-  (let [text (if (str/ends-with? text "\n") text (str text "\n"))
+  (let [text (ts/with-final-newline text)
         root (first (ts/parse-block text))
         lines (vec (str/split text #"\n" -1))]
     (into {} (keep (fn [s] (when-some [[v ls] (capture root lines s)] [(:key s) {:value v :lines ls}]))) steps)))
 
-(defn extract
-  "`{field value}` (string keys, the step's `:key`) captured by the CST `steps`
-   from Markdown `text`. A step whose section, list or table is not found
-   leaves its field out. Raises `:docs/parser-unavailable` when the
-   tree-sitter pod is not available, `:models/invalid` for a step with no `:key`."
-  [steps text]
-  (update-vals (extract-located steps text) :value))

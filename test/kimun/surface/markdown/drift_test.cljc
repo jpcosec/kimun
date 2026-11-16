@@ -1,12 +1,7 @@
 (ns kimun.surface.markdown.drift-test
-  "Exit criterion of milestone 5b (docs/v2/02 §9 row 5b): a .md edited outside
-   the kernel leaves anchors orphan, reconciliation reclassifies them as
-   drifted by naming the substitute, and accepting the proposal leaves them
-   superseded and re-anchored."
+  "An external edit of a .md produces an update plan that keeps the document readable."
   (:require [clojure.test :refer [deftest is testing]]
             [kimun.host.default :as host]
-            [kimun.kernel.anchor :as anchor]
-            [kimun.kernel.reconcile :as rec]
             [kimun.kernel.revision :as rev]
             [kimun.kernel.tree :as tree]
             [kimun.surface.markdown.plan :as mdp]))
@@ -30,41 +25,6 @@
                                                            :evidence {:ref-hash old-leaf :actor "jp"}} :as :ref}]})]
     {:store (:store r2) :rev (:revision-id r2) :ref (get (:aliases r2) :ref)
      :old-leaf old-leaf :first-leaf first-leaf}))
-
-(deftest external-edit-orphans-the-anchor
-  (let [{:keys [store rev ref old-leaf first-leaf]} (world)
-        _ (is (= :intact (:state (anchor/state store rev ref))))
-        r (rev/apply-plan store (mdp/markdown->update-plan h store T after
-                                                           {:actor "jp" :timestamp TS :base rev}))
-        s' (:store r) rev' (:revision-id r)]
-    (testing "the surface records no succession: that is what an external edit is"
-      (is (= [] (:superseded r)))
-      (is (empty? (filter (fn [eid] (= :supersedes (:type (rev/get-object s' eid))))
-                          (:edges s')))))
-    (testing "what survived the edit is still placed and intact"
-      (is (= first-leaf (tree/node-at {:root (rev/tree-at s' rev' T)} [0 0])))
-      (is (= :intact (:state (anchor/endpoint-state s' rev' first-leaf)))))
-    (testing "what the edit replaced is orphan"
-      (is (= :orphan (:state (anchor/endpoint-state s' rev' old-leaf))))
-      (is (= :orphan (:state (anchor/state s' rev' ref))))
-      (is (= [ref] (:orphans (anchor/report s' rev')))))
-    (testing "reconciliation names the substitute by position, and accepting it re-anchors"
-      (let [new-leaf (tree/node-at {:root (rev/tree-at s' rev' T)} [1 0])
-            [p & more] (rec/proposals s' rev' {:base rev})]
-        (is (nil? more) "one proposal, the best one for the single orphan")
-        (is (= {:old old-leaf :candidate new-leaf :method :position :confidence 1.0}
-               (select-keys p [:old :candidate :method :confidence])))
-        (is (= [ref] (:edges p)))
-        (let [r3 (rev/apply-plan s' (rec/accept-plan s' rev' p {:actor "jp" :timestamp TS}))
-              s3 (:store r3) rev3 (:revision-id r3)]
-          (is (= [[old-leaf new-leaf]] (:superseded r3)))
-          (is (= :superseded (:state (anchor/state s3 rev3 ref))))
-          (is (= 1 (count (filter (fn [s] (and (= :reference (:type s))
-                                               (= new-leaf (get-in s [:to :node]))
-                                               (= :intact (:state s))))
-                                  (anchor/states s3 rev3))))
-              "the reference followed the successor (§6.1)")
-          (is (= [] (:orphans (anchor/report s3 rev3)))))))))
 
 (deftest update-plan-keeps-the-document-readable-and-refuses-a-changed-root
   (let [{:keys [store rev]} (world)

@@ -5,7 +5,8 @@
   (:require [clojure.test :refer [deftest is testing]]
             [kimun.surface.links :as links]
             [kimun.surface.links.parser :as parser]
-            [kimun.surface.links.recovery :as recovery]))
+            [kimun.surface.links.recovery :as recovery]
+            [kimun.surface.links.resolver :as resolver]))
 
 (defn- dir [path] (subs path 0 (inc (.lastIndexOf ^String path "/"))))
 
@@ -95,7 +96,7 @@
   (testing "ports test_links.py::test_resolve_predicate_link (relative-path tier)"
     (let [w (world {"/t/docs/spec-001.md" "# Spec 001\n"})
           link (first (links/parse-links "[implements:: [[docs/spec-001.md]]]" {"implements" "HOW"}))
-          r (links/resolve-link (:lookup w) link "/t/current.md")]
+          r (resolver/resolve-link (:lookup w) link "/t/current.md")]
       (is (true? (:resolved r)))
       (is (= :predicate-link (:kind r)))
       (is (= "implements" (:predicate r)))
@@ -139,7 +140,7 @@
 (deftest resolution-outcomes
   (testing "missing, ambiguous and tier precedence (lookup contract; v1 has no ambiguity)"
     (let [link (first (links/parse-links "[[t]]"))
-          res #(links/resolve-link (constantly %) link "/p/d.md")]
+          res #(resolver/resolve-link (constantly %) link "/p/d.md")]
       (is (= {:resolved false :reason :missing :candidates []}
              (select-keys (res []) [:resolved :reason :candidates])))
       (is (= [false :ambiguous ["/a" "/b"]]

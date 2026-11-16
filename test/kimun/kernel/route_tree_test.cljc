@@ -150,41 +150,12 @@
            (every? (fn [e] (= e (rt/lookup h (:objs s) (:object s) (:path e)))) flat)
            (= (:hash (build (vals final))) (:hash (build (rt/entries h (:objs s) (:object s)))))))))
 
-(defn- flat-diff
-  "The path diff of two entry collections, computed from the flat maps: what
-   `rt/diff` must answer without walking them. An entry whose `:tree-id` alone
-   changed is not a change."
-  [before after]
-  (let [b (into {} (map (juxt :path identity)) (route/canonical-entries h before))
-        a (into {} (map (juxt :path identity)) (route/canonical-entries h after))
-        paths (sort (distinct (concat (keys b) (keys a))))
-        stable #(dissoc % :tree-id)]
-    {:added (vec (keep #(when-not (contains? b %) (get a %)) paths))
-     :removed (vec (keep #(when-not (contains? a %) (get b %)) paths))
-     :changed (vec (keep (fn [p]
-                           (let [x (get b p) y (get a p)]
-                             (when (and x y (not= (stable x) (stable y)))
-                               {:path p :before x :after y})))
-                         paths))}))
-
-(defspec the-diff-of-two-trees-is-the-diff-of-their-entries 60
-  (prop/for-all [ops-a gen-ops ops-b gen-ops]
-    (let [a (replayed ops-a) b (replayed ops-b)
-          sa (build (vals a)) sb (build (vals b))]
-      (= (flat-diff (vals a) (vals b))
-         (rt/diff h (:objs sa) (:object sa) (:objs sb) (:object sb))))))
-
 (defspec equal-roots-mean-equal-sensed-entries 60
   (prop/for-all [ops-a gen-ops ops-b gen-ops]
     (let [strip (fn [m] (set (map #(dissoc % :tree-id) (vals m))))
           a (replayed ops-a) b (replayed ops-b)]
       (= (= (strip a) (strip b))
          (= (:hash (build (vals a))) (:hash (build (vals b))))))))
-
-(deftest a-tree-id-change-alone-is-not-a-diff
-  (let [a (build [(entry "docs/a.md" 1 "T1")])
-        b (build [(entry "docs/a.md" 1 "T9")])]
-    (is (= {:added [] :removed [] :changed []} (rt/diff h (:objs a) (:object a) (:objs b) (:object b))))))
 
 ;; ---------------------------------------------------------------- local cost
 
@@ -216,27 +187,6 @@
     (reset! calls [])
     (is (nil? (rt/lookup h load (:object s) "nowhere/at/all.md")))
     (is (= 1 (count @calls)) "the descent stops at the first missing segment")))
-
-(deftest a-diff-goes-down-only-where-the-hashes-differ
-  (let [a (build (corpus 2000 20))
-        b (step a {"d3/s2/f43.md" (entry "d3/s2/f43.md" "edited")
-                   "d3/s2/new.md" (entry "d3/s2/new.md" 7)
-                   "d9/s0/f9.md" rt/removal})
-        [load-a calls-a] (counting (:objs a))
-        [load-b calls-b] (counting (:objs b))
-        d (rt/diff h load-a (:object a) load-b (:object b))]
-    (is (= ["d3/s2/new.md"] (mapv :path (:added d))))
-    (is (= ["d9/s0/f9.md"] (mapv :path (:removed d))))
-    (is (= ["d3/s2/f43.md"] (mapv :path (:changed d))))
-    ;; root + d3 + d3/s2 + d9 + d9/s0 on each side, out of 161 nodes (1 + 20 + 140;
-    ;; the object map also holds the empty root the build started from)
-    (is (= 5 (count @calls-a)))
-    (is (= 5 (count @calls-b)))
-    (is (= 162 (count (:objs a))))
-    (testing "equal trees are compared at the root"
-      (let [[la ca] (counting (:objs a)) [lb cb] (counting (:objs a))]
-        (is (= {:added [] :removed [] :changed []} (rt/diff h la (:object a) lb (:object a))))
-        (is (= [1 1] [(count @ca) (count @cb)]))))))
 
 (deftest a-wide-directory-is-rewritten-whole
   ;; the limit of one node per directory: there is no fan-out inside it. With every
@@ -285,9 +235,7 @@
         sub-ref (get-in docs [:children "sub" :dir])
         sub (get (:objs s) (:object sub-ref))
         thrown (fn [f] (:type (ex-data (try (f) (catch Exception e e)))))
-        ;; differs inside docs/sub, so a diff has to go down to every node altered below
-        other (build [(entry "docs/sub/a.md" 7 "T1") (entry "docs/b.md" 2 "T2") (entry "top.md" 3 "T3")
-                      (entry "other/c.md" 4 "T4")])]
+        ]
     (doseq [[where id node at]
             [["a leaf directory" (:object sub-ref) sub [:children "a.md" :entry :tree-id]]
              ["a middle directory" (:object docs-ref) docs [:children "b.md" :entry :tree-id]]
@@ -300,8 +248,6 @@
           (is (= :route/corrupt (thrown #(rt/lookup h objs (:object s) "docs/sub/a.md"))) "lookup")
           (is (= :route/corrupt (thrown #(rt/entries h objs (:object s)))) "entries")
           (is (= :route/corrupt (thrown #(rt/update h objs (:object s) {"docs/sub/a.md" (entry "docs/sub/a.md" 9)}))) "update")
-          (is (= :route/corrupt (thrown #(rt/diff h objs (:object s) (:objs other) (:object other)))) "diff, damaged side first")
-          (is (= :route/corrupt (thrown #(rt/diff h (:objs other) (:object other) objs (:object s)))) "diff, damaged side second")
           (when (= id (:object s))
             (is (= :route/corrupt (thrown #(rt/root-node h objs (:hash s) (:object s)))) "root-node")))))
     (testing "the damage stays local: a branch that does not go through the altered node answers"

@@ -15,11 +15,6 @@
   [& {:as flags}]
   (fn [request] (vec (for [[k flag] flags :when (truthy? (param request k))] flag))))
 
-(defn- also
-  "A handler that concatenates the argv of `argv-fns` onto command-route's."
-  [& fs]
-  (fn [request] (vec (mapcat #(% request) fs))))
-
 (defn- overriding
   "`handler` with `statuses` (error-type string to HTTP status) applied by
    `views/override` to its result: the per-route adapter for the cases where

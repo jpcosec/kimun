@@ -18,12 +18,10 @@
    status given by `status-of`, or a Ring response map (it has `:status`),
    passed through. Anything that escapes is a failure envelope."
   (:require [cheshire.core :as json]
-            [babashka.fs :as fs]
             [clojure.string :as str]
             [kimun.cli.errors :as errors]
             [kimun.cli.out :as out]
             [kimun.surface.http.routes :as routes]
-            [kimun.surface.http.views :as views]
             #?(:clj [org.httpkit.server :as hk])))
 
 ;; ---------------------------------------------------------------- envelope -> status
@@ -130,15 +128,6 @@
           (seq hits) {:allowed (set (map #(get-in % [:route :method]) hits))})))
 
 ;; ---------------------------------------------------------- command routes
-
-(def run-command
-  "Runs `argv` through the CLI of ctx (`:run`, default `kimun.cli.main/run`)
-   with `--store` and `--format json` appended; returns its envelope."
-  views/run-command)
-
-(def command-route
-  "A route handler that runs a CLI command (see `kimun.surface.http.views/command-route`)."
-  views/command-route)
 
 (def routes
   "The routing table (a vector of route entries; see the namespace docstring),

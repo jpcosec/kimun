@@ -5,6 +5,9 @@
             [clojure.test :refer [deftest is testing]]
             [kimun.surface.include :as inc]))
 
+(defn- glob-match? [glob p]
+  (boolean (re-matches (inc/compile-glob glob) (inc/normalize-path p))))
+
 (defn- err-type [thunk]
   (try (thunk) nil (catch clojure.lang.ExceptionInfo e (:type (ex-data e)))))
 
@@ -38,16 +41,16 @@
 
 (deftest globs
   (testing "** spans separators (and **/ matches none), * and ? stay in one segment"
-    (is (inc/glob-match? "desk/atoms/**/*.md" "desk/atoms/x.md"))
-    (is (inc/glob-match? "desk/atoms/**/*.md" "desk/atoms/a/b/x.md"))
-    (is (not (inc/glob-match? "desk/atoms/**/*.md" "desk/atoms/x.txt")))
-    (is (inc/glob-match? "a/*.md" "a/x.md"))
-    (is (not (inc/glob-match? "a/*.md" "a/b/x.md")))
-    (is (inc/glob-match? "a/?.md" "a/x.md"))
-    (is (not (inc/glob-match? "a/?.md" "a/xy.md")))
-    (is (inc/glob-match? "**/x.md" "x.md"))
-    (is (inc/glob-match? "**/x.md" "a/b/x.md"))
-    (is (inc/glob-match? "desk/models/*.edn" "desk/models/AtomDoc.edn"))))
+    (is (glob-match? "desk/atoms/**/*.md" "desk/atoms/x.md"))
+    (is (glob-match? "desk/atoms/**/*.md" "desk/atoms/a/b/x.md"))
+    (is (not (glob-match? "desk/atoms/**/*.md" "desk/atoms/x.txt")))
+    (is (glob-match? "a/*.md" "a/x.md"))
+    (is (not (glob-match? "a/*.md" "a/b/x.md")))
+    (is (glob-match? "a/?.md" "a/x.md"))
+    (is (not (glob-match? "a/?.md" "a/xy.md")))
+    (is (glob-match? "**/x.md" "x.md"))
+    (is (glob-match? "**/x.md" "a/b/x.md"))
+    (is (glob-match? "desk/models/*.edn" "desk/models/AtomDoc.edn"))))
 
 (deftest plan-over-a-tree
   (let [cfg (inc/parse cfg-text)

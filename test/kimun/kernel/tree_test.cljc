@@ -38,6 +38,10 @@
     (is (= 64 (count (tree/descriptor-id h (:descriptor tree)))))
     (is (= #{:tree :kind :name :root} (set (keys (:descriptor tree)))))))
 
+(defn- paths-of
+  "All paths where `node` occurs in `tree`."
+  [tree node] (vec (keep (fn [[p n]] (when (= n node) p)) (tree/positions tree))))
+
 (deftest positions-and-paths
   (let [{:keys [ids tree]} (sample-tree)]
     (is (= (:r ids) (tree/node-at tree [])))
@@ -45,7 +49,7 @@
     (is (= [(:a ids) (:b ids)] (tree/children-at tree [])))
     (is (= [[] (:r ids)] (first (tree/positions tree))))
     (is (= 5 (count (tree/positions tree))))
-    (is (= [[0 0]] (tree/paths-of tree (:a1 ids))))))
+    (is (= [[0 0]] (paths-of tree (:a1 ids))))))
 
 (deftest golden-fixture-trees-edn
   (let [fx #?(:clj (edn/read-string (slurp (io/file "test/fixtures/trees.edn")))
@@ -53,14 +57,14 @@
         ids (mapv (fn [{:keys [class kind content]}] (:id (node/make h class kind content))) (:nodes fx))
         {:keys [kind root children]} (:tree fx)
         t (reduce (fn [t [p kids]]
-                    (let [path (first (tree/paths-of t (ids p)))]
+                    (let [path (first (paths-of t (ids p)))]
                       (reduce (fn [t [i c]] (tree/add-child t path (ids c) i)) t (map-indexed vector kids))))
                   (tree/create h kind "fixture" (ids root) (:tree-id fx))
                   (sort-by (fn [[p _]] p) children))
         t (tree/commit h t)]
     (is (= (:root (:expected fx)) (tree/merkle-root t)))
     (doseq [[alias th] (:objects (:expected fx))]
-      (is (= th (tree/hash-at t (first (tree/paths-of t (ids alias))))) (str "tree object of alias " alias)))))
+      (is (= th (tree/hash-at t (first (paths-of t (ids alias))))) (str "tree object of alias " alias)))))
 
 (deftest sibling-order-enters-the-hash-invariant-14
   (let [{:keys [tree]} (sample-tree)
@@ -85,10 +89,10 @@
         other (->> (-> (tree/create h :taxonomy "tax" (text "tax-root") "01ARZ3NDEKTSV4RRFFQ69G5FAW")
                        (tree/add-child [] a 0))
                    (tree/commit h))]
-    (is (= [[0] [2]] (tree/paths-of twice a)) "same node at two positions of one tree")
+    (is (= [[0] [2]] (paths-of twice a)) "same node at two positions of one tree")
     (is (not= (tree/hash-at twice [0]) (tree/hash-at twice [2])) "different subtrees, different objects")
     (is (= (tree/hash-at other [0]) (tree/hash-at twice [2])) "identical subtree (a leaf) shares one object across trees")
-    (is (tree/contains-node? other a))))
+    (is (contains? (tree/nodes other) a))))
 
 (deftest identical-subtrees-share-objects
   (let [i (text "item") p (text "p")

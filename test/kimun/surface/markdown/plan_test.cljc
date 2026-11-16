@@ -7,7 +7,6 @@
             [kimun.surface.markdown.ast :as ast]
             [kimun.surface.markdown.render :as render]
             [kimun.surface.markdown.plan :as plan]
-            [kimun.surface.markdown.report :as report]
             #?(:clj [clojure.java.io :as io])))
 
 (def h host/host)
@@ -38,8 +37,8 @@
         leaf (:id (node/make h :sign :text {:text "El cielo es azul."}))]
     (is (rev/get-object s2 leaf))
     (is (= 1 (count (filter #(= "El cielo es azul." (get-in % [:content :text])) (filter :class (vals (:objects s2)))))) "one leaf node")
-    (is (kimun.kernel.tree/contains-node? (get-in s2 [:trees T]) leaf))
-    (is (kimun.kernel.tree/contains-node? (get-in s2 [:trees U]) leaf) "same text with different marks shares the leaf; the marks differ on the block")))
+    (is (contains? (kimun.kernel.tree/nodes (get-in s2 [:trees T])) leaf))
+    (is (contains? (kimun.kernel.tree/nodes (get-in s2 [:trees U])) leaf) "same text with different marks shares the leaf; the marks differ on the block")))
 
 (deftest not-a-document
   (let [s (:store (rev/apply-plan (rev/empty-store h {"jp" :all})
@@ -53,7 +52,6 @@
   (let [md (slurp-fixture "test/fixtures/markdown/outside-profile.md")
         expected (read-fixture "test/fixtures/markdown/outside-profile.report.edn")
         a (ast/parse h md)]
-    (is (= expected (report/report h a)))
     (testing "opaque regions re-emit verbatim and the document is stable"
       (let [r (render/render h a)]
         (is (= a (ast/parse h r)))
@@ -61,9 +59,3 @@
           (let [b (reduce (fn [node i] (nth (:children node) i)) a path)]
             (is (clojure.string/includes? r (:blob b)))))))))
 
-(deftest coverage
-  (is (= 1.0 (:coverage (report/report h (ast/parse h "# a\n\nb *c*\n")))))
-  (let [rep (report/report h (ast/parse h "> <div>\n> x\n\npara\n"))]
-    (is (= [{:path [0 0] :format "markdown/html" :graphemes 7}] (:opaque-regions rep)))
-    (is (= 3 (:blocks rep)))
-    (is (< 0.0 (:coverage rep) 1.0))))

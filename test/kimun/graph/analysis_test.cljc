@@ -38,40 +38,30 @@
       (is (nil? (a/path-between g "a" "nowhere")))
       (is (= ["a" "b" "c" "d"] (a/path-between g "a" "d"))))))
 
-(deftest every-route-capped
-  (testing "v1 test_every_route_between_two_nodes_shortest_first_and_capped"
-    (let [g (index-of [["a" "implements" "b"] ["b" "implements" "d"] ["a" "implements" "c"] ["c" "implements" "d"]])]
-      (is (= [["a" "b" "d"] ["a" "c" "d"]] (sort (a/paths-between g "a" "d"))))
-      (is (= 1 (count (a/paths-between g "a" "d" :limit 1))))
-      (is (= [] (a/paths-between g "a" "d" :cutoff 1))))))
-
 (deftest cycle-found-dag-reports-none
   (testing "v1 test_a_cycle_is_found_and_a_dag_reports_none"
     (is (= [] (a/cycles (index-of chain))))
-    (is (a/acyclic? (index-of chain)))
     (let [looped (index-of (conj chain ["d" "implements" "a"]))]
-      (is (not (a/acyclic? looped)))
+      (is (seq (a/cycles looped)))
       (is (= ["a" "b" "c" "d"] (sort (first (a/cycles looped))))))))
 
 (deftest order-after-what-it-points-at
   (testing "v1 test_order_puts_a_node_after_everything_it_points_at"
     (let [g (index-of chain)]
-      (is (= ["d" "c" "b" "a"] (a/topological-order g)))
       (is (= [["d"] ["c"] ["b"] ["a"]] (a/layers g))))))
 
 (deftest ordering-cyclic-raises
   (testing "v1 test_ordering_a_cyclic_relation_raises_with_the_cycle_in_hand"
     (let [g (index-of [["a" "implements" "b"] ["b" "implements" "a"]])
-          e (try (a/topological-order g) nil (catch clojure.lang.ExceptionInfo e e))]
+          e (try (a/layers g) nil (catch clojure.lang.ExceptionInfo e e))]
       (is (= :graph/cycle (:type (ex-data e))))
       (is (= ["a" "b"] (sort (:cycle (ex-data e)))))
       (is (re-find #"a -> b|b -> a" (ex-message e))))))
 
-(deftest components-islands-isolated
+(deftest components-isolated
   (testing "v1 test_components_islands_and_isolated_nodes"
     (let [g (index-of (into chain [["x" "implements" "y"] ["lonely" "tagged_as" "tag"]]))]
       (is (= [["a" "b" "c" "d"] ["x" "y"] ["lonely"] ["tag"]] (a/components g)))
-      (is (= [["x" "y"] ["lonely"] ["tag"]] (a/islands g)))
       (is (= ["lonely" "tag"] (a/isolated g))))))
 
 (deftest centrality-ranks
@@ -120,17 +110,8 @@
           present (sort (m/present g))]
       (is (some #{"has_document"} present))
       (is (= #{} (m/authored g)))
-      (is (a/acyclic? g))
-      (is (= (count (:nodes g)) (count (a/topological-order g :relations "*"))))
+      (is (= [] (a/cycles g)))
       (is (pos? (second (first (a/central g :limit 1))))))))
-
-(deftest cycle-in-must-be-dag-relation
-  (testing "v1 test_a_cycle_in_a_relation_that_must_be_a_dag_is_an_error_no_per_edge_check_can_see"
-    (is (= [] (a/cycle-errors (index-of [["child" "semantic_parent" "parent"]]))))
-    (let [reported (a/cycle-errors (index-of [["a" "semantic_parent" "b"] ["b" "semantic_parent" "a"] ["m" "extends" "m"]]))]
-      (is (= 2 (count reported)))
-      (is (.startsWith ^String (first reported) "Relation 'semantic_parent' has a cycle:"))
-      (is (= "Relation 'extends' has a cycle: m -> m." (second reported))))))
 
 ;; ---- api/test_api_graph_analysis.py, engine-level (store-backed parts deferred)
 
@@ -160,7 +141,7 @@
 (deftest api-order-and-cycles
   (testing "v1 api test_order_and_cycles_over_what_the_store_asserts"
     (is (= [] (a/cycles world)))
-    (let [order (vec (a/topological-order world))]
+    (let [order (vec (apply concat (a/layers world)))]
       (is (< (.indexOf order s1) (.indexOf order s2) (.indexOf order s3))))))
 
 (deftest api-isolated-document

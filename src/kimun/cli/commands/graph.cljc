@@ -11,6 +11,7 @@
    `(fn [args opts ctx] envelope)`."
   (:require [babashka.fs :as fs]
             [clojure.string :as str]
+            [kimun.cli.args :as cli-args]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
             [kimun.graph.analysis :as a]
@@ -23,24 +24,19 @@
 
 ;; ---------------------------------------------------------------- options
 
-(defn- usage! [message data] (err/raise :cli/usage message (assoc data :group "graph")))
-
-(defn- require-arg! [args i what sub]
-  (or (get args i) (usage! (str "`graph " sub "` needs " what) {:subcommand sub})))
-
 (defn- int-opt
   "Option `k` as an integer >= `least` (`default` when absent)."
   [opts k default least]
   (let [v (get opts k) n (cond (nil? v) default (integer? v) v :else (parse-long (str v)))]
     (if (and n (>= n least))
       n
-      (usage! (str "option --" (name k) " needs an integer >= " least ", got " (pr-str v)) {:option k :value v}))))
+      (cli-args/usage! "graph" (str "option --" (name k) " needs an integer >= " least ", got " (pr-str v)) {:option k :value v}))))
 
 (defn- choice-opt [opts k allowed default]
   (let [v (get opts k default)]
     (if (some #{v} allowed)
       v
-      (usage! (str "option --" (name k) " must be one of " (str/join ", " allowed) ", got " (pr-str v))
+      (cli-args/usage! "graph" (str "option --" (name k) " must be one of " (str/join ", " allowed) ", got " (pr-str v))
               {:option k :value v :allowed (vec allowed)}))))
 
 (defn- many
@@ -112,7 +108,7 @@
    leave it). ID is an `sldb://` id or a `Model:name`; unknown is `graph/missing`."
   [args opts ctx]
   (let [src (source opts ctx)]
-    (answer "graph get" src (gs/node (:graph src) (require-arg! args 0 "a node ID" "get")))))
+    (answer "graph get" src (gs/node (:graph src) (cli-args/require-arg! "graph" args 0 "a node ID" "get")))))
 
 (defn list-nodes
   "`graph list [--type T]`: `{:count :nodes [id]}`, sorted; `--type` (repeatable)
@@ -126,7 +122,7 @@
    language). Data `{:count :nodes [{:id :type :semantics :facets :edges}]}`;
    a malformed query is `graph/bad-query`."
   [_ opts {:keys [cwd] :as ctx}]
-  (let [file (or (:file opts) (:f opts) (usage! "`graph query` needs -f FILE.json" {:subcommand "query"}))
+  (let [file (or (:file opts) (:f opts) (cli-args/usage! "graph" "`graph query` needs -f FILE.json" {:subcommand "query"}))
         data (read-json-file cwd file "query")
         src (source opts ctx)
         nodes (q/execute (:graph src) data)]
@@ -140,7 +136,7 @@
   (let [depth (int-opt opts :depth 1 0)
         direction (choice-opt opts :direction ["both" "incoming" "outgoing"] "both")
         src (source opts ctx) g (:graph src)
-        id (gs/node-id g (require-arg! args 0 "a node ID" "neighborhood"))
+        id (gs/node-id g (cli-args/require-arg! "graph" args 0 "a node ID" "neighborhood"))
         found (t/neighborhood-by-direction g [id] depth direction :types (or (many (:relation opts)) []))]
     (answer "graph neighborhood" src {:node id :depth depth :direction direction :nodes (vec (sort (conj (set found) id)))})))
 
@@ -149,7 +145,7 @@
    shortest route, `{:from :to :length :path [id]}`. No route is the failure
    `graph/empty` (\"No path between …\", exit 1); an unknown node `graph/missing`."
   [args opts ctx]
-  (let [a0 (require-arg! args 0 "FROM and TO node ids" "path") b0 (require-arg! args 1 "FROM and TO node ids" "path")
+  (let [a0 (cli-args/require-arg! "graph" args 0 "FROM and TO node ids" "path") b0 (cli-args/require-arg! "graph" args 1 "FROM and TO node ids" "path")
         src (source opts ctx) g (:graph src)
         from (gs/node-id g a0) to (gs/node-id g b0)
         route (a/path-between g from to :relations (relations-of opts) :directed (boolean (:directed opts)))]
@@ -206,7 +202,7 @@
    (default `tagged_as`), most shared first (default 10)."
   [args opts ctx]
   (let [limit (int-opt opts :limit 10 1) src (source opts ctx) g (:graph src)
-        id (gs/node-id g (require-arg! args 0 "a node ID" "similar"))]
+        id (gs/node-id g (cli-args/require-arg! "graph" args 0 "a node ID" "similar"))]
     (answer "graph similar" src
             {:node id
              :nodes (scored :shared (a/similar-to g id :relations (or (many (:relation opts)) ["tagged_as"])
@@ -230,13 +226,13 @@
    `{:path :nodes :edges :types :relations}`."
   [args opts {:keys [cwd] :as ctx}]
   (let [action (get args 0)
-        file #(or (get args 1) (:output opts) (:input opts) (usage! (str "`graph snapshot " action "` needs a FILE") {:subcommand "snapshot"}))]
+        file #(or (get args 1) (:output opts) (:input opts) (cli-args/usage! "graph" (str "`graph snapshot " action "` needs a FILE") {:subcommand "snapshot"}))]
     (case action
       "save" (let [f (file) src (source opts ctx) g (:graph src)]
                (answer "graph snapshot save" src (assoc (gs/summary g) :path (write-json-file! cwd f (gs/snapshot g)))))
       "load" (let [f (file) g (gs/from-snapshot (read-json-file cwd f "snapshot"))]
                (answer "graph snapshot load" {} (assoc (gs/summary g) :path (shown cwd f))))
-      (usage! "`graph snapshot` needs `save FILE` or `load FILE`" {:subcommand "snapshot" :action action}))))
+      (cli-args/usage! "graph" "`graph snapshot` needs `save FILE` or `load FILE`" {:subcommand "snapshot" :action action}))))
 
 (defn ingest-sldb
   "`graph ingest-sldb FILE [-o OUT]`: converts a semantic export (contract
@@ -244,7 +240,7 @@
    `-o` written to OUT with the summary `{:path :contract :nodes :edges :types
    :relations}`. No store is opened; a wrong contract is `graph/bad-export`."
   [args opts {:keys [cwd]}]
-  (let [in (or (get args 0) (:input opts) (usage! "`graph ingest-sldb` needs the export FILE" {:subcommand "ingest-sldb"}))
+  (let [in (or (get args 0) (:input opts) (cli-args/usage! "graph" "`graph ingest-sldb` needs the export FILE" {:subcommand "ingest-sldb"}))
         payload (read-json-file cwd in "semantic export")
         _ (when-not (and (map? payload) (contains? payload "contract"))
             (err/raise :graph/bad-export (str (shown cwd in) " is not a semantic export") {:path (shown cwd in)}))
