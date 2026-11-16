@@ -1,0 +1,9 @@
+
+Testing kimun.cli.beat-git-test
+
+Testing kimun.cli.sense-test
+
+Testing kimun.cli.diagnostics-test
+
+Ran 28 tests containing 657 assertions.
+0 failures, 0 errors.
