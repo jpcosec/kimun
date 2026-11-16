@@ -512,7 +512,21 @@ Qué queda **pendiente tras `D0`**, y nada de ello es una pregunta al dueño sob
   "unit-move"}` con origen y destino); no se funde: un localizador o un campo de destino que ya
   tiene unidad se rechaza (hay que cerrar la otra antes). kimun no detecta ni propone ningún
   cierre ni traslado. Siguen fuera: renombrar un campo dentro del documento y el linaje entre
-  unidades (esperan decisión del dueño), los campos anidados y los ítems de lista. `K2b`, esa serie y la implementación de `M1` esperan a
+  unidades (esperan decisión del dueño). **K1h (2026-11-15, inferencia del equipo):** una **clave
+  anidada** de un campo estructurado y un **ítem** de un campo lista de un documento tipado se
+  marcan **por declaración** (`docs mark NAME --field F --index N` o `--path a.b`; el lugar
+  de `§20`: los anclajes más finos se declaran por instrucción): nada por debajo del primer
+  nivel se acuña solo (la unidad de cada campo de primer nivel sigue acuñándose sola, K1c). Es
+  una marca más del descriptor (`:kind :item` o `:nested`, localizador `{:field F :index N}` o
+  `{:field F :path [k …]}`) con los **mismos estados y candidatos** que K1e, el mismo re-anclaje
+  con `--reason`, el mismo cierre y el mismo traslado; la huella es el hash canónico del valor
+  extraído y no entra en ningún hash del documento. La posición de un ítem se desplaza al
+  insertar: por eso el estado se decide con localizador y huella, y ante la duda se **proponen**
+  candidatos (solo dentro del mismo campo; dos ítems iguales son dos unidades y el 1:n los lista
+  todos) y kimun no elige. Si el campo padre deja de extraerse, todas sus marcas pasan a
+  `missing` y conservan su id (la ausencia no termina la unidad); cerrar la unidad del campo
+  padre no cierra las marcas de sus ítems. Quedan fuera: ítems dentro de ítems, documentos
+  genéricos (sin campos: `docs/not-anchored`), el sensor, el renombrado y el linaje. `K2b`, esa serie y la implementación de `M1` esperan a
   `K1`.
 - **Alcance sobre `01 §4` principio 3 y decisiones `1`, `3`, `4` de `05`**: se revisa al
   implementar `K1`, en lo que toca a unidades.

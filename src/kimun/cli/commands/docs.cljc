@@ -537,10 +537,13 @@
         (and (map? l) (contains? l :kind)) (update :kind keyword)))))
 
 (defn- locator-kind
-  "`:block` when the locator names a block (`:type`), `:section` when it is a
-   path of titles."
+  "`:block` when the locator names a block (`:type`), `:item` / `:nested` when it
+   names an item (`:field` + `:index`) or a nested key (`:field` + `:path`) of a
+   field (K1h), `:section` when it is a path of titles."
   [loc]
   (cond (:type loc) :block
+        (and (map? loc) (contains? loc :field) (contains? loc :index)) :item
+        (and (map? loc) (contains? loc :field) (contains? loc :path)) :nested
         (or (vector? loc) (sequential? loc)) :section
         (and (map? loc) (contains? loc :section)) :block
         :else :section))
@@ -604,11 +607,51 @@
       (err/raise :docs/no-file (str "`" (:name d) "` has no readable source") {:document (:name d) :path (:path d)}))
     [d (str text)]))
 
+(defn- field-locator
+  "The locator of an item or a nested key given as options (K1h): `--field F
+   --index N` or `--field F --path a.b` (keys split on `.`; a key with a dot is
+   written with `--locator`). Nil when neither `--index` nor `--path` is there
+   (a bare `--field` names a field unit)."
+  [opts]
+  (let [f (:field opts)]
+    (cond (and f (some? (:index opts)) (some? (:path opts)))
+          (err/raise :cli/usage "`--index` and `--path` are alternatives: an item or a nested key" {:group "docs" :subcommand "mark"})
+          (and f (some? (:index opts)))
+          {:field f :index (or (parse-long (str (:index opts)))
+                               (err/raise :cli/usage "`--index` needs a whole number: the position of the item" {:group "docs" :subcommand "mark" :value (:index opts)}))}
+          (and f (some? (:path opts))) {:field f :path (str/split (str (:path opts)) #"\.")}
+          (or (some? (:index opts)) (some? (:path opts)))
+          (err/raise :cli/usage "`--index` / `--path` need --field F: the field the item or the nested key lives in" {:group "docs" :subcommand "mark"}))))
+
+(defn- locator-opt
+  "The locator the options give: `--locator L`, or the item/nested one of
+   `field-locator`; nil when there is none. Both at once is `cli/usage`."
+  [opts]
+  (let [fl (field-locator opts)]
+    (when (and fl (:locator opts))
+      (err/raise :cli/usage "give --locator L or --field F with --index/--path, not both" {:group "docs" :subcommand "mark"}))
+    (or fl (some-> (:locator opts) str parse-locator))))
+
+(defn- field-payload
+  "The payload of typed document `d` read from `text`, where its items and nested
+   keys are marked (K1h); nil for a generic document or one that no longer
+   extracts (its field marks then read `:missing`)."
+  [store d text]
+  (when (and (not (:generic d)) (:model d))
+    (:payload (tdocs/payload-of store (assoc d :source text)))))
+
 (defn- resolve-locator!
-  "The anchor of `locator` in `text` (the S2a anchors), raising
-   `docs/anchor-unresolved` when nothing is there."
-  [locator text]
-  (let [as (anchors/anchors host/host text)
+  "The anchor of `locator` in `text` (the S2a anchors; for a typed document also
+   the items and nested keys of its payload, K1h), raising `docs/anchor-unresolved`
+   when nothing is there and `docs/not-anchored` when the locator names a field
+   of a document that has none (a generic one)."
+  [locator text store d]
+  (let [kind (locator-kind locator)
+        _ (when (and (#{:item :nested} kind) (or (:generic d) (nil? (:model d))))
+            (err/raise :docs/not-anchored
+                       (str "`" (:name d) "` is a generic document: it has no fields, so no item or nested key to mark")
+                       {:document (:name d) :locator locator}))
+        as (tdocs/mark-anchors host/host store d text)
         a (anchors/resolve-anchor as locator)]
     (or a
         (err/raise :docs/anchor-unresolved
@@ -629,24 +672,25 @@
         usage! (fn [msg] (err/raise :cli/usage msg {:group "docs" :subcommand "mark"}))
         unit (or (:unit opts) (usage! "`docs mark --from` needs --unit ID: the unit that moves"))
         _ (when-not (string? (:reason opts)) (usage! "`docs mark --from` needs --reason TEXT: the declaration says what happened"))
-        _ (when-not (= 1 (count (filter some? [(:locator opts) (:field opts)])))
-            (usage! "`docs mark --from` needs exactly one of --locator L (a structural unit) or --field F (a field unit)"))
+        _ (when-not (= 1 (count (filter some? [(or (:locator opts) (field-locator opts))
+                                               (when-not (field-locator opts) (:field opts))])))
+            (usage! "`docs mark --from` needs exactly one of --locator L (a structural unit; or --field F --index N / --path a.b for an item or a nested key) or --field F (a field unit)"))
         {:keys [backend descriptor store] store-path :path} (open opts ctx)
         [from from-text] (mark-target store store-path (:from opts))
         [to to-text] (mark-target store store-path token)
         _ (when (= (:tree from) (:tree to))
             (usage! "`docs mark --from` moves a unit to ANOTHER document; re-anchoring in the same one is `docs mark --unit`"))
-        locator (some-> (:locator opts) str parse-locator)
-        a (when locator (resolve-locator! locator to-text))
+        locator (locator-opt opts)
+        a (when locator (resolve-locator! locator to-text store to))
         mark (when locator
                (let [label (or (:label opts) (:label (get (:marks from) unit)))]
                  (cond-> {:kind (locator-kind locator) :locator locator :hash (:hash a)}
                    label (assoc :label label))))
         declared (cond-> {:kind "unit-move" :unit unit :from (:name from) :to (:name to) :reason (:reason opts)}
                    locator (assoc :locator locator)
-                   (:field opts) (assoc :field (:field opts)))
+                   (and (:field opts) (not locator)) (assoc :field (:field opts)))
         mp (tdocs/move-unit-plan host/host store from to
-                                 {:unit unit :mark mark :field (:field opts) :from-text from-text :to-text to-text
+                                 {:unit unit :mark mark :field (when-not locator (:field opts)) :from-text from-text :to-text to-text
                                   :declared declared :actor (:actor opts) :timestamp (timestamp)})
         r (store/commit! backend store (:plan mp))]
     (out/ok "docs mark"
@@ -670,18 +714,17 @@
    Data: the document map plus `:marked {:id :locator :kind :label}`."
   [args opts {:keys [env cwd] :as ctx}]
   (let [token (require-arg! args 0 "a document NAME" "mark")
-        locator-text (:locator opts)
-        _ (when-not locator-text
-            (err/raise :cli/usage "`docs mark` needs --locator L (the locator `docs anchors` prints)"
+        locator (locator-opt opts)
+        _ (when-not locator
+            (err/raise :cli/usage "`docs mark` needs --locator L (the locator `docs anchors` prints), or --field F with --index N / --path a.b (an item or a nested key)"
                        {:group "docs" :subcommand "mark"}))
-        locator (parse-locator (str locator-text))
         unit (:unit opts)
         _ (when (and unit (not (string? (:reason opts))))
             (err/raise :cli/usage "`docs mark --unit` needs --reason TEXT: the declaration says what happened"
                        {:group "docs" :subcommand "mark"}))
         {:keys [backend descriptor store] store-path :path} (open opts ctx)
         [d text] (mark-target store store-path token)
-        a (resolve-locator! locator text)
+        a (resolve-locator! locator text store d)
         marks (or (:marks d) {})
         _ (when-let [holder (taken-locator marks locator unit)]
             (err/raise :docs/exists
@@ -747,7 +790,7 @@
             (err/raise :cli/usage "`docs unmark` of a field unit needs --reason TEXT: the declaration says what happened"
                        {:group "docs" :subcommand "unmark"}))
         status (if mark?
-                 (-> (tdocs/marks-of host/host text d nil) :marks
+                 (-> (tdocs/marks-of host/host text d nil (field-payload store d text)) :marks
                      (->> (filter #(= id (:id %))) first :status))
                  (->> (tdocs/unit-states store (assoc d :source text)) (filter #(= id (:id %))) first :status))
         declared (cond-> {:kind "unit-closure" :unit id :status status}
@@ -776,7 +819,7 @@
               (err/raise :docs/missing (str "no document named or identified by `" token "`") {:document token}))
         text (or (document-text store store-path d) "")
         contract (parse-contract/record host/host (parse-contract/environment) (or (:class d) "generic/md"))
-        r (tdocs/marks-of host/host (str text) d contract)]
+        r (tdocs/marks-of host/host (str text) d contract (field-payload store d (str text)))]
     (out/ok "docs marks"
             {:store (store-ref descriptor store-path) :revision (:head store)
              :data {:name (:name d) :tree (:tree d) :path (:path d)
@@ -805,7 +848,8 @@
                                        found (tdocs/find-document store token)]
                                    (assoc (doc-data d) :markdown (:source d)
                                           :units (tdocs/unit-states store found)
-                                          :marks (:marks (tdocs/marks-of host/host (str (:source d)) found nil)))))})))
+                                          :marks (:marks (tdocs/marks-of host/host (str (:source d)) found nil
+                                                                                  (field-payload store found (str (:source d))))))))})))
 
 (defn status
   "`docs status`: `[{:name :path :status}]` comparing each tracked file with
@@ -846,7 +890,8 @@
    :sections {:desc "Only the sections of the document (docs anchors)" :coerce :boolean}
    :locator {:ref "L" :desc "Locator of a section or a block, as `docs anchors` prints it (docs mark)"}
    :unit {:ref "ID" :desc "Unit to re-anchor, move or close (docs mark, docs unmark)"}
-   :label {:ref "TEXT" :desc "Optional label of a structural unit (docs mark)"}})
+   :label {:ref "TEXT" :desc "Optional label of a structural unit (docs mark)"}
+   :index {:ref "N" :desc "Position of the list item to mark, with --field (docs mark)"}})
 
 (def commands
   "Subcommand name → command fn `(fn [args opts ctx] envelope)`."

@@ -1,0 +1,12 @@
+== sin cambios en src/: cli.nested-units-test
+      1 46 failures, 3 errors.
+      1 ERROR in (an-item-and-a-nested-key-are-marked-by-declaration-only)
+      2 ERROR in (field-marks-are-not-a-hash-survive-rebuilds-and-the-parent-may-vanish)
+      9 FAIL in (an-item-and-a-nested-key-are-marked-by-declaration-only)
+      2 FAIL in (field-marks-are-not-a-hash-survive-rebuilds-and-the-parent-may-vanish)
+      7 FAIL in (identical-items-are-two-units-and-one-to-many-lists-every-candidate)
+     14 FAIL in (inserting-shifts-deleting-is-missing-and-closing-is-declared)
+     14 FAIL in (rejections-and-the-other-document-classes)
+      1 Ran 5 tests containing 94 assertions.
+== kimun.surface.marks-test sin el cambio: no carga (anchors/field-anchors inexistente: "Could not resolve symbol"), es decir, sus 2 pruebas nuevas fallan.
+== con el cambio: ver directed.txt (76 tests, 1086 aserciones, 0 fallos).

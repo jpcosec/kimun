@@ -1,0 +1,39 @@
+
+Testing kimun.cli.nested-units-test
+
+Testing kimun.surface.marks-test
+
+Testing kimun.cli.marks-test
+moved existing store to /tmp/kimun-adhoc-1005686750183176385/kimun-marks-inc-7872509898979835880/.kimun.bak-20261115-221046-01M7GYG6DS1SACBVCMJRB00V7E
+
+Testing kimun.cli.unit-close-move-test
+moved existing store to /tmp/kimun-close-inc-5998946748780213941/.kimun.bak-20261115-221048-01M7GYG7JQV0F05S9K5E9KS7VX
+moved existing store to /tmp/kimun-close-inc-7270827550388510523/.kimun.bak-20261115-221048-01M7GYG8BBE9JWWXRPJ30M0AF3
+
+Testing kimun.cli.field-units-test
+moved existing store to /tmp/kimun-adhoc-1005686750183176385/kimun-units-inc-7063643570279353243/.kimun.bak-20261115-221049-01M7GYG8V3H0B1QQQDZTPMZXW0
+
+Testing kimun.cli.reanchor-test
+moved existing store to /tmp/kimun-adhoc-1005686750183176385/kimun-reanchor-inc-15423468813070181374/.kimun.bak-20261115-221049-01M7GYG92RFHYWY3T9V1B9Z0H1
+
+Testing kimun.cli.identity-carry-test
+moved existing store to /tmp/kimun-adhoc-1005686750183176385/kimun-k1a-2548992110943991175/.kimun.bak-20261115-221049-01M7GYG9BKE5PDRSDBQVW2AP3W
+moved existing store to /tmp/kimun-adhoc-1005686750183176385/kimun-k1a-6126684293848993657/.kimun.bak-20260101-000000-01M7GYG9ECPH63H4AWAFNKNJV5
+moved existing store to /tmp/kimun-adhoc-1005686750183176385/kimun-k1a-6126684293848993657/.kimun.bak-20260101-000000-01M7GYG9FAAEP2AGCT4F1DZ6KR
+moved existing store to /tmp/kimun-adhoc-1005686750183176385/kimun-k1a-17706948585642310931/.kimun.bak-20261115-221050-01M7GYG9JBE9CFD9G8T9M170KS
+moved existing store to /tmp/kimun-adhoc-1005686750183176385/kimun-k1a-17706948585642310931/.kimun.bak-20261115-221050-01M7GYG9KC3QJ27RA60732N4PD
+moved existing store to /tmp/kimun-adhoc-1005686750183176385/kimun-k1a-495408007187947719/.kimun.bak-20261115-221050-01M7GYG9PQTFRD6SXR1TJYZKV8
+moved existing store to /tmp/kimun-adhoc-1005686750183176385/kimun-k1a-6291404965567945596/.kimun.bak-20261115-221050-01M7GYG9TKMTM42ZF62ZSTG0TR
+
+Testing kimun.cli.typed-docs-test
+
+Testing kimun.cli.docs-test
+
+Testing kimun.cli.spec16-docs-test
+
+Testing kimun.surface.markdown.anchors-test
+
+Testing kimun.doc14-contract-test
+
+Ran 76 tests containing 1086 assertions.
+0 failures, 0 errors.

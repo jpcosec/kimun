@@ -117,3 +117,62 @@
     (is (= :anchored (:status st)))
     (is (= [] (:candidates st)))))
 
+
+;; ---------------------------------------------------------------- K1h: items and nested keys
+
+(defn- fa [payload] (anchors/field-anchors host/host payload))
+(defn- ilocs [payload] (mapv :locator (:items (fa payload))))
+
+(deftest item-and-nested-marks-read-with-the-same-table
+  (let [before (fa {"tags" ["a" "b" "c"] "meta" {"k" "v" "n" {"x" 1}}})
+        item (fn [i] (:hash (anchors/resolve-anchor before {:field "tags" :index i})))
+        nested (:hash (anchors/resolve-anchor before {:field "meta" :path ["n" "x"]}))
+        marks {"b" {:kind :item :locator {:field "tags" :index 1} :hash (item 1)}
+               "x" {:kind :nested :locator {:field "meta" :path ["n" "x"]} :hash nested}}
+        status (fn [as] (into {} (map (juxt :id identity)) (anchors/mark-states as marks)))]
+    (is (= 3 (count (:items before))) "there are items to compare")
+    (is (= 3 (count (:nested before))) "every key path of the map: k, n and n.x")
+    (is (= [:anchored :anchored] (map :status (vals (status before)))))
+    (testing "an item inserted before it shifts the index: ambiguous, with the hash candidate, nothing decided"
+      (let [st ((status (fa {"tags" ["a" "new" "b" "c"] "meta" {"k" "v" "n" {"x" 1}}})) "b")]
+        (is (= :ambiguous (:status st)))
+        (is (= [{:locator {:field "tags" :index 1} :reason :locator}
+                {:locator {:field "tags" :index 2} :reason :hash}]
+               (:candidates st)))))
+    (testing "an edit in place is a mutation; the nested key too"
+      (let [st (status (fa {"tags" ["a" "B" "c"] "meta" {"k" "v" "n" {"x" 2}}}))]
+        (is (= [:mutated :mutated] [(:status (st "b")) (:status (st "x"))]))))
+    (testing "the parent field gone: every mark is missing, none is removed, no candidate"
+      (let [st (status (fa {}))]
+        (is (= 2 (count st)))
+        (is (= [:missing :missing] (map :status (vals st))))
+        (is (= [[] []] (map :candidates (vals st))))))
+    (testing "the same value in ANOTHER field is not a candidate"
+      (let [st ((status (fa {"tags" ["a" "z" "c"] "other" ["b"]})) "b")]
+        (is (= :mutated (:status st)))
+        (is (= [] (:candidates st)))))))
+
+(deftest identical-items-are-two-units-and-one-to-many-lists-all
+  (let [p {"tags" ["dup" "dup" "x" "dup"]}
+        a (fa p)
+        h (:hash (first (:items a)))
+        marks {"first" {:kind :item :locator {:field "tags" :index 0} :hash h}
+               "second" {:kind :item :locator {:field "tags" :index 1} :hash h}}
+        st (into {} (map (juxt :id identity)) (anchors/mark-states a marks))]
+    (is (= 3 (count (filter #(= h (:hash %)) (:items a)))) "three items hash alike")
+    (is (= [:anchored :anchored] [(:status (st "first")) (:status (st "second"))]) "two marks, two units")
+    (testing "item 0 replaced: it is ambiguous and ALL the other equal items are listed"
+      (let [a2 (fa {"tags" ["changed" "dup" "x" "dup"]})
+            s (first (filter #(= "first" (:id %)) (anchors/mark-states a2 marks)))]
+        (is (= :ambiguous (:status s)))
+        (is (= [{:field "tags" :index 0} {:field "tags" :index 1} {:field "tags" :index 3}]
+               (mapv :locator (:candidates s)))
+            "the locator candidate and every hash candidate")
+        (is (= marks (anchors/advance-marks a2 marks)) "a normal write does not choose")))
+    (testing "advance-marks records the new hash of a mutated item only"
+      (let [a3 (fa {"tags" ["Z" "other"]})
+            adv (anchors/advance-marks a3 marks)]
+        (is (not= h (:hash (adv "first"))))
+        (is (= (:hash (anchors/resolve-anchor a3 {:field "tags" :index 0})) (:hash (adv "first"))))
+        (is (= (:hash (anchors/resolve-anchor a3 {:field "tags" :index 1})) (:hash (adv "second"))))
+        (is (= (map :locator (vals marks)) (map :locator (vals adv))))))))

@@ -157,21 +157,53 @@
        parse-contract (assoc :parse-contract parse-contract)))))
 
 (defn resolve-anchor
-  "The anchor (a section or a block) of `anchors` whose `:locator` equals
-   `locator`, or nil. Exact equality: a locator is read under one contract and
+  "The anchor (a section, a block or, when `field-anchors` were merged in, an
+   item or a nested key) of `anchors` whose `:locator` equals `locator`, or nil. Exact equality: a locator is read under one contract and
    one state of the document, not resolved by approximation."
   [anchors locator]
-  (or (some #(when (= locator (:locator %)) %) (:sections anchors))
-      (some #(when (= locator (:locator %)) %) (:blocks anchors))))
+  (some #(when (= locator (:locator %)) %)
+        (concat (:sections anchors) (:blocks anchors) (:items anchors) (:nested anchors))))
 
 ;; ---------------------------------------------------------------- structural marks (K1e)
 
+(defn- nested-paths
+  "Every key path under map `m`, with the value found there, as `[path value]`
+   in sorted-key order (maps only: nothing inside a list)."
+  [m prefix]
+  (mapcat (fn [[k v]]
+            (let [p (conj prefix k)]
+              (cons [p v] (when (map? v) (nested-paths v p)))))
+          (sort-by (comp str key) m)))
+
+(defn field-anchors
+  "Anchors BELOW a field, from the `payload` of a typed document (K1h): `{:items
+   [{:locator {:field f :index i} :hash h}] :nested [{:locator {:field f :path
+   [k …]} :hash h}]}`. An ITEM is each element of a field whose value is a list;
+   a NESTED key is each key path under a field whose value is a map. The hash is
+   `canon/digest` of the extracted value (canonical), never an identity: the
+   index of an item shifts when something is inserted before it, exactly like
+   a block ordinal. Merge the result into the text `anchors` to read marks of
+   kind `:item` and `:nested` with `mark-states`/`advance-marks`."
+  [host payload]
+  (let [anchor (fn [loc v] {:locator loc :hash (canon/digest host v)})]
+    (reduce-kv
+     (fn [acc f v]
+       (cond
+         (sequential? v) (update acc :items into (map-indexed (fn [i x] (anchor {:field f :index i} x)) v))
+         (map? v) (update acc :nested into (map (fn [[p x]] (anchor {:field f :path p} x)) (nested-paths v [])))
+         :else acc))
+     {:items [] :nested []}
+     (into (sorted-map) payload))))
+
 (defn- entries-of
-  "The anchors of `anchors` of `kind` (`:section` or `:block`)."
+  "The anchors of `anchors` of `kind` (`:section`, `:block`, or, when
+   `field-anchors` were merged in, `:item` and `:nested`)."
   [anchors kind]
   (case kind
     :section (:sections anchors)
-    :block (:blocks anchors)))
+    :block (:blocks anchors)
+    :item (:items anchors)
+    :nested (:nested anchors)))
 
 (defn- anchor-at
   "The anchor of `kind` whose locator is `locator`, or nil."
@@ -179,10 +211,15 @@
   (first (filter #(= locator (:locator %)) (entries-of anchors kind))))
 
 (defn- same-hash
-  "Anchors of `kind` other than `a` whose hash is `h`."
-  [anchors kind a h]
+  "Anchors of `kind` other than `a` whose hash is `h`. An item or a nested key
+   is only compared inside its own field (`loc`'s `:field`): the same value in
+   another field is another thing."
+  [anchors kind a h loc]
   (vec (remove #(identical? % a)
-               (filter #(= h (:hash %)) (entries-of anchors kind)))))
+               (filter #(and (= h (:hash %))
+                             (or (not (#{:item :nested} kind))
+                                 (= (:field loc) (:field (:locator %)))))
+                       (entries-of anchors kind)))))
 
 (defn- candidate
   "A candidate for a mark: its locator, why it is offered and, when the block
@@ -213,7 +250,7 @@
                         loc (:locator m)
                         h (:hash m)
                         a (anchor-at anchors kind loc)
-                        others (same-hash anchors kind a h)
+                        others (same-hash anchors kind a h loc)
                         status (cond (and a (= h (:hash a))) :anchored
                                      (and a (empty? others)) :mutated
                                      a :ambiguous
