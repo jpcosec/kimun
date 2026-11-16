@@ -1,0 +1,161 @@
+## A: spec 16 reading disabled (reading-of and current-reading return nil: the contract of a spec 16 document is the version 1 of before M1h)
+
+Testing kimun.cli.spec16-contract-test
+
+FAIL in (editing-an-inherited-step-is-the-same-single-contract-change) (/tmp/kimun-m1h-wt/test/kimun/cli/spec16_contract_test.cljc:122)
+one signal, naming the inherited selector; the class itself did not move
+expected: (= [[:contract/changed true false [:ancestors :selector]]] sigs)
+  actual: (not (= [[:contract/changed true false [:ancestors :selector]]] [[:contract/changed true false []]]))
+
+FAIL in (editing-an-inherited-step-is-the-same-single-contract-change) (/tmp/kimun-m1h-wt/test/kimun/cli/spec16_contract_test.cljc:122)
+expected: (not= (:ancestors before) (:ancestors (recorded p)))
+  actual: (not (not= nil nil))
+
+FAIL in (a-spec16-document-records-substrate-profile-compat-ancestors-and-selector) (/tmp/kimun-m1h-wt/test/kimun/cli/spec16_contract_test.cljc:99)
+expected: (= 2 (:contract/version r))
+  actual: (not (= 2 1))
+
+FAIL in (a-spec16-document-records-substrate-profile-compat-ancestors-and-selector) (/tmp/kimun-m1h-wt/test/kimun/cli/spec16_contract_test.cljc:99)
+expected: (= "sldb-md/blocks:markdown" (:substrate r))
+  actual: (not (= "sldb-md/blocks:markdown" nil))
+
+FAIL in (a-spec16-document-records-substrate-profile-compat-ancestors-and-selector) (/tmp/kimun-m1h-wt/test/kimun/cli/spec16_contract_test.cljc:99)
+expected: (= "strict" (:compat r))
+  actual: (not (= "strict" nil))
+
+FAIL in (a-spec16-document-records-substrate-profile-compat-ancestors-and-selector) (/tmp/kimun-m1h-wt/test/kimun/cli/spec16_contract_test.cljc:99)
+expected: (= [base] (:ancestors r))
+  actual: (not (= ["be7f68b61d962405c311738df7b07f76737bbd3fab9c3df4f14ec98e5fffdf2e"] nil))
+
+ERROR in (a-spec16-document-records-substrate-profile-compat-ancestors-and-selector) (/tmp/kimun-m1h-wt/test/kimun/cli/spec16_contract_test.cljc:99)
+expected: (re-matches #"sha-256:[0-9a-f]{64}" (:selector r))
+  actual: java.lang.NullPointerException: null
+ at java.util.regex.Matcher.getTextLength (Matcher.java:1806)
+    java.util.regex.Matcher.reset (Matcher.java:459)
+    java.util.regex.Matcher.<init> (Matcher.java:255)
+    java.util.regex.Pattern.matcher (Pattern.java:1181)
+    clojure.core$re_matcher.invokeStatic (core.clj:4913)
+    clojure.core$re_matches.invokeStatic (core.clj:4943)
+    clojure.core$re_matches.invoke (core.clj:4943)
+    clojure.lang.AFn.applyToHelper (AFn.java:156)
+    clojure.lang.AFn.applyTo (AFn.java:144)
+    clojure.core$apply.invokeStatic (core.clj:667)
+    clojure.core$apply.invoke (core.clj:662)
+    sci.lang.Var.invoke (lang.cljc:219)
+    sci.impl.analyzer$return_call$reify__5247.eval (analyzer.cljc:1756)
+    sci.impl.analyzer$analyze_let_STAR_$reify__4901.eval (analyzer.cljc:726)
+    sci.impl.evaluator$eval_try_plain.invokeStatic (evaluator.cljc:140)
+    sci.impl.evaluator$eval_try.invokeStatic (evaluator.cljc:149)
+    sci.impl.analyzer$analyze_try$reify__4965.eval (analyzer.cljc:1046)
+    sci.impl.analyzer$return_do$reify__4628.eval (analyzer.cljc:133)
+    sci.impl.analyzer$return_do$reify__4619.eval (analyzer.cljc:94)
+    sci.impl.analyzer$analyze_let_STAR_$reify__4905.eval (analyzer.cljc:762)
+    sci.impl.fns$fun$arity_0__1461.invoke (fns.cljc:129)
+    babashka.impl.clojure.test$test_var_impl$fn__30077.invoke (test.clj:720)
+    babashka.impl.clojure.test$test_var_impl.invokeStatic (test.clj:720)
+    babashka.impl.clojure.test$test_var_impl.invoke (test.clj:711)
+    sci.lang.Var.invoke (lang.cljc:217)
+    babashka.impl.clojure.test$test_vars$fn__30104$fn__30109.invoke (test.clj:741)
+    babashka.impl.clojure.test$default_fixture.invokeStatic (test.clj:690)
+    babashka.impl.clojure.test$default_fixture.invoke (test.clj:686)
+    babashka.impl.clojure.test$test_vars$fn__30104.invoke (test.clj:741)
+    babashka.impl.clojure.test$default_fixture.invokeStatic (test.clj:690)
+    babashka.impl.clojure.test$default_fixture.invoke (test.clj:686)
+    babashka.impl.clojure.test$test_vars.invokeStatic (test.clj:737)
+    babashka.impl.clojure.test$test_all_vars.invokeStatic (test.clj:744)
+    babashka.impl.clojure.test$test_ns.invokeStatic (test.clj:766)
+    babashka.impl.clojure.test$run_tests$fn__30124.invoke (test.clj:783)
+    clojure.core$map$fn__5956.invoke (core.clj:2776)
+    clojure.lang.LazySeq.force (LazySeq.java:50)
+    clojure.lang.LazySeq.realize (LazySeq.java:87)
+    clojure.lang.LazySeq.seq (LazySeq.java:104)
+    clojure.lang.Cons.next (Cons.java:41)
+    clojure.lang.RT.boundedLength (RT.java:1810)
+    clojure.lang.RestFn.applyTo (RestFn.java:133)
+    clojure.core$apply.invokeStatic (core.clj:669)
+    babashka.impl.clojure.test$run_tests.invokeStatic (test.clj:776)
+    babashka.impl.clojure.test$run_tests.doInvoke (test.clj:776)
+    clojure.lang.RestFn.applyTo (RestFn.java:142)
+    clojure.core$apply.invokeStatic (core.clj:669)
+    babashka.impl.test$contextualize$fn__30140.doInvoke (test.clj:7)
+    clojure.lang.RestFn.invoke (RestFn.java:411)
+    sci.lang.Var.invoke (lang.cljc:217)
+    sci.impl.analyzer$return_call$reify__5179.eval (analyzer.cljc:1756)
+    sci.impl.interpreter$eval_form_STAR_.invokeStatic (interpreter.cljc:60)
+    sci.impl.interpreter$eval_form.invokeStatic (interpreter.cljc:80)
+    sci.impl.interpreter$eval_string_STAR_.invokeStatic (interpreter.cljc:104)
+    sci.impl.interpreter$eval_string_STAR_.invoke (interpreter.cljc:89)
+    sci.impl.interpreter$eval_string_STAR_.invokeStatic (interpreter.cljc:91)
+    sci.core$eval_string_STAR_.invokeStatic (core.cljc:325)
+    babashka.main$exec$fn__30821$fn__30861$fn__30862.invoke (main.clj:1124)
+    babashka.main$exec$fn__30821$fn__30861.invoke (main.clj:1124)
+    babashka.main$exec$fn__30821.invoke (main.clj:1114)
+    clojure.lang.AFn.applyToHelper (AFn.java:152)
+    clojure.lang.AFn.applyTo (AFn.java:144)
+    clojure.core$apply.invokeStatic (core.clj:667)
+    clojure.core$with_bindings_STAR_.invokeStatic (core.clj:1994)
+    clojure.core$with_bindings_STAR_.doInvoke (core.clj:1994)
+    clojure.lang.RestFn.invoke (RestFn.java:428)
+    babashka.main$exec.invokeStatic (main.clj:899)
+    babashka.main$main.invokeStatic (main.clj:1378)
+    babashka.main$main.doInvoke (main.clj:1292)
+    clojure.lang.RestFn.applyTo (RestFn.java:140)
+    clojure.core$apply.invokeStatic (core.clj:667)
+    babashka.main$_main.invokeStatic (main.clj:1404)
+    babashka.main$_main.doInvoke (main.clj:1395)
+    clojure.lang.RestFn.applyTo (RestFn.java:140)
+    babashka.main.main (:-1)
+    java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit (LambdaForm$DMH:-1)
+
+FAIL in (editing-a-step-of-the-own-selector-is-a-contract-change-not-a-source-change) (/tmp/kimun-m1h-wt/test/kimun/cli/spec16_contract_test.cljc:110)
+the file is intact; the class and its composed selector moved
+expected: (= [[:contract/changed true false [:class :selector]]] (signals p))
+  actual: (not (= [[:contract/changed true false [:class :selector]]] [[:contract/changed true false [:class]]]))
+
+FAIL in (editing-a-step-of-the-own-selector-is-a-contract-change-not-a-source-change) (/tmp/kimun-m1h-wt/test/kimun/cli/spec16_contract_test.cljc:110)
+the repair needs no decision: stores update, and then nothing is reported
+expected: (not= (:selector before) (:selector (recorded p)))
+  actual: (not (not= nil nil))
+
+Ran 8 tests containing 55 assertions.
+8 failures, 1 errors.
+## B: no tree-sitter substrate clause in compare-recorded
+
+Testing kimun.cli.spec16-contract-test
+
+FAIL in (a-tree-sitter-substrate-without-the-pod-is-parser-unavailable) (/tmp/kimun-m1h-wt/test/kimun/cli/spec16_contract_test.cljc:139)
+expected: (= {:status :parser-unavailable, :changed []} (cmp no-pod))
+  actual: (not (= {:status :parser-unavailable, :changed []} {:status :same, :changed []}))
+
+Ran 8 tests containing 55 assertions.
+1 failures, 0 errors.
+## C: move-text of a spec 16 class renders (NPE as before)
+
+Testing kimun.cli.spec16-contract-test
+
+FAIL in (editing-an-inherited-step-is-the-same-single-contract-change) (/tmp/kimun-m1h-wt/test/kimun/cli/spec16_contract_test.cljc:122)
+expected: (= [] (signals p))
+  actual: (not (= [] [[:contract/changed true false [:ancestors :selector]]]))
+
+FAIL in (editing-an-inherited-step-is-the-same-single-contract-change) (/tmp/kimun-m1h-wt/test/kimun/cli/spec16_contract_test.cljc:122)
+expected: (not= (:ancestors before) (:ancestors (recorded p)))
+  actual: (not (not= ["be7f68b61d962405c311738df7b07f76737bbd3fab9c3df4f14ec98e5fffdf2e"] ["be7f68b61d962405c311738df7b07f76737bbd3fab9c3df4f14ec98e5fffdf2e"]))
+
+FAIL in (editing-a-step-of-the-own-selector-is-a-contract-change-not-a-source-change) (/tmp/kimun-m1h-wt/test/kimun/cli/spec16_contract_test.cljc:110)
+the repair needs no decision: stores update, and then nothing is reported
+expected: (true? (:ok (run p "stores" "update")))
+  actual: (not (true? false))
+
+FAIL in (editing-a-step-of-the-own-selector-is-a-contract-change-not-a-source-change) (/tmp/kimun-m1h-wt/test/kimun/cli/spec16_contract_test.cljc:110)
+the repair needs no decision: stores update, and then nothing is reported
+expected: (= [] (signals p))
+  actual: (not (= [] [[:contract/changed true false [:class :selector]]]))
+
+FAIL in (editing-a-step-of-the-own-selector-is-a-contract-change-not-a-source-change) (/tmp/kimun-m1h-wt/test/kimun/cli/spec16_contract_test.cljc:110)
+the repair needs no decision: stores update, and then nothing is reported
+expected: (not= (:selector before) (:selector (recorded p)))
+  actual: (not (not= "sha-256:83f320cfc9e38f5034cc4f305cff6e5770e74aafd23689ba4afe229a3a275ed6" "sha-256:83f320cfc9e38f5034cc4f305cff6e5770e74aafd23689ba4afe229a3a275ed6"))
+
+Ran 8 tests containing 55 assertions.
+5 failures, 0 errors.
+RESTORED_IDENTICAL

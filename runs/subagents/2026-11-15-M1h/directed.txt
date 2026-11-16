@@ -1,0 +1,79 @@
+== kimun.cli.contract-test kimun.cli.sense-test kimun.cli.heartbeat-test kimun.cli.tour-test kimun.cli.spec16-docs-test kimun.cli.spec16-contract-test kimun.surface.parse-contract-test kimun.surface.diagnostics-test
+
+Testing kimun.cli.contract-test
+
+Testing kimun.cli.sense-test
+
+Testing kimun.cli.heartbeat-test
+
+Testing kimun.cli.tour-test
+
+Testing kimun.cli.spec16-docs-test
+
+Testing kimun.cli.spec16-contract-test
+
+Testing kimun.surface.parse-contract-test
+
+Testing kimun.surface.diagnostics-test
+
+Ran 58 tests containing 522 assertions.
+0 failures, 0 errors.
+exit 0
+== kimun.cli.typed-docs-test kimun.cli.generic-docs-test kimun.cli.field-units-test kimun.cli.marks-test kimun.cli.cold-cache-test kimun.cli.stores-test
+
+Testing kimun.cli.typed-docs-test
+
+Testing kimun.cli.generic-docs-test
+
+Testing kimun.cli.field-units-test
+moved existing store to /tmp/kimun-adhoc-13404092432904824049/kimun-units-inc-3441004206050293843/.kimun.bak-20261115-213314-01M7GWBEXPPGWSC8BQ2H4YEN1J
+
+Testing kimun.cli.marks-test
+moved existing store to /tmp/kimun-adhoc-13404092432904824049/kimun-marks-inc-4513557442979024478/.kimun.bak-20261115-213314-01M7GWBF4WJN8K7V0JE7MEP64V
+
+Testing kimun.cli.cold-cache-test
+
+Testing kimun.cli.stores-test
+
+Ran 68 tests containing 683 assertions.
+0 failures, 0 errors.
+exit 0
+== kimun.cli.diagnostics-test kimun.parity.diagnostics-test kimun.cli.docs-test kimun.cli.docs-anchors-test kimun.cli.docs-parity-test kimun.cli.routes-test kimun.cli.find-test kimun.cli.reanchor-test kimun.cli.fields-test
+
+Testing kimun.cli.diagnostics-test
+
+Testing kimun.parity.diagnostics-test
+
+Testing kimun.cli.docs-test
+
+Testing kimun.cli.docs-anchors-test
+
+Testing kimun.cli.docs-parity-test
+docs parity: {:cases 57, :equal 54, :expected-diffs 3}
+
+Testing kimun.cli.routes-test
+
+Testing kimun.cli.find-test
+
+Testing kimun.cli.reanchor-test
+moved existing store to /tmp/kimun-adhoc-13973192776134487380/kimun-reanchor-inc-5924315101994522034/.kimun.bak-20261115-213401-01M7GWCWDAA2CAD9SP6X767WVN
+
+Testing kimun.cli.fields-test
+
+Ran 59 tests containing 961 assertions.
+0 failures, 0 errors.
+exit 0
+== kimun.surface.models.parity-test kimun.cli.golden-test kimun.cli.corpus-test kimun.spec16-models-contract-test
+
+Testing kimun.surface.models.parity-test
+parity engine corpus: {:pass 2384, :fail 0, :excluded 24, :pending 0}
+
+Testing kimun.cli.golden-test
+
+Testing kimun.cli.corpus-test
+
+Testing kimun.spec16-models-contract-test
+
+Ran 12 tests containing 340 assertions.
+0 failures, 0 errors.
+exit 0

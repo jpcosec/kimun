@@ -144,7 +144,7 @@
                            (let [n (noise/structural-noise descriptor t {:related (keep :descriptor (map #(mstore/find-model store (:name %)) (mstore/models store)))})]
                            (when (noise/noisy? n) n))))
         noisy (fn [base n] [:noise (assoc base :noise n :undeclared (mapv :raw (:headings n)))])
-        pc (parse-contract/compare-recorded host env (:parse-contract doc) (:model-id doc))
+        pc (parse-contract/compare-recorded host env (:parse-contract doc) (:model-id doc) (tdocs/current-reading store (:model-id doc)))
         contract-moved? (or (= :superseded (:state doc)) (= :changed (:status pc)))
         base {:content-ok (boolean content-ok) :fields-ok (boolean (and content-ok (:payload recorded) (= :intact (:state doc))))
               :contract-ok (and (not contract-moved?) (not= :orphan (:state doc))

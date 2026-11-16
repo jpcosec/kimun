@@ -443,6 +443,17 @@ repone la caché cuando la raíz recomputada coincide con la registrada (nunca s
 archivo desactualizado o `:rebuild-mismatch`), y `docs update` re-registra el árbol cuando detecta
 divergencia de raíz o hash de contenido incluso si huella y contrato no cambiaron.
 
+**Clases spec 16 (M1h).** El contrato de un documento de una clase del spec 16 (`docs/v2/16 §3.3`) es de
+versión 2: a los seis componentes añade `:substrate` (`parser:grammar` que declara la clase), `:profile`,
+`:compat`, `:ancestors` (ids de las revisiones con que se compuso su selector, `M1g`) y `:selector` (digest del
+selector y los campos **compuestos**, propio más heredado). Editar un paso del selector, propio o heredado,
+es `contract/changed` (`:changed` nombra `:class`, `:ancestors` o `:selector`), no `source/*`; el estado
+`:superseded` de `M1g` y esa señal son un solo hecho (la categoría es `:contract-moved`) y la reparación es
+`docs update` / `stores update`, sin decisión. Un `:contract/digest` declarado en el descriptor no se lee: el
+digest se recalcula siempre. Una clase que declara el sustrato `treesitter` y se lee sin el pod es
+`contract/parser-unavailable`. Los documentos v1 y genéricos siguen en versión 1, byte a byte; un documento de
+spec 16 registrado en versión 1 (antes de `M1h`) se compara como versión 1 y no se informa como cambio.
+
 **Compatibilidad y migración.** No cambia la versión de formato: es una clave de evidencia adicional
 (`02 §3.2`). Un documento escrito antes de K6 no tiene `:parse-contract`: se lee igual, su estado es
 `:unrecorded` y **nunca** se informa como cambio de contrato por eso. Adquiere el contrato la próxima
