@@ -12,7 +12,7 @@
    Hierarchy of terms: the dots of a name are hierarchy, `UI.view.dashboard` is
    also `UI.view` and `UI`. A node is one of the tagged forms of the evaluator:
    `{:term s}`, `{:proposition id}`, `{:anchor {:path :locator}}`, `{:files
-   pattern}` or a scalar literal."
+   pattern}`, `{:generated {:path p}}` or a scalar literal."
   (:require [clojure.string :as str]
             [kimun.surface.include :as include]))
 
@@ -89,7 +89,9 @@
    :other node}` when the proposition has an `(at …)` anchor whose `:path` is
    `path` (`:locator` says where inside it), or `{:via :files :pattern s
    :proposition p :side :other node}` when it has a `(files pattern)` node whose
-   pattern matches `path` (`*` stays inside a segment, `**` crosses them). `:other`
+   pattern matches `path` (`*` stays inside a segment, `**` crosses them), or
+   `{:via :generated :proposition p :side :other node}` when it has a `{:generated {:path
+   path}}` node (a file materialized from the propositions, `diseno-generar.md`). `:other`
    is what is on the opposite side: so \"of which classes is this file?\" is answered
    without anything declared per file. Several patterns reaching the same file give
    several rows."
@@ -100,9 +102,12 @@
                          [side node] (sides p)
                          :let [other (if (= side :a) (:b p) (:a p))
                                a (when (map? node) (:anchor node))
-                               pat (when (map? node) (:files node))]
+                               pat (when (map? node) (:files node))
+                               g (when (map? node) (:generated node))]
                          row [(when (and a (= path (clean-path (:path a))))
                                 {:via :anchor :proposition p :side side :locator (:locator a) :other other})
+                              (when (and g (= path (clean-path (:path g))))
+                                {:via :generated :proposition p :side side :other other})
                               (when (and (string? pat) (re-matches (include/compile-glob (clean-path pat)) path))
                                 {:via :files :pattern pat :proposition p :side side :other other})]
                          :when row]

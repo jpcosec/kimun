@@ -60,7 +60,7 @@ keyword, booleano) y nada más. `:id` es el hash canónico de `(R A B)` más el 
 ## 4. Cómo
 
 Con `sci`, que viene en Babashka: evalúa Clojure de verdad, aislado (sin disco, sin red, sin `eval`
-del proceso), con el vocabulario (`relation`, `at`, `files`) como único punto de partida. Las
+del proceso), con el vocabulario (`relation`, `at`, `files`; `generated` está en `diseno-generar.md`) como único punto de partida. Las
 relaciones son macros de ese evaluador, para que los símbolos desnudos lleguen como términos.
 
 ## 5. Cortes

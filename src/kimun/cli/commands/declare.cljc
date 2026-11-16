@@ -17,14 +17,16 @@
             [kimun.kernel.err :as err]
             [kimun.surface.declare :as declare]
             [kimun.surface.declared-anchors :as declared-anchors]
+            [kimun.surface.generate :as generate]
             [kimun.surface.propositions :as props]))
 
 (def spec
   "Options of the `declare` group (merged by `kimun.cli.main`): `--context` (of `add`) and
-   `--exact` (of `about`); `--to` is the shared option of `edges` and `--path` that of
+   `--exact` (of `about`), `--check` (of `generate`); `--to` is the shared option of `edges` and `--path` that of
    `docs create`."
   {:context {:ref "NAME" :desc "declare add: create the file given by --to with (ns NAME) when it does not exist"}
-   :exact {:desc "declare about: only the term itself, not the more specific ones (UI.view.dashboard under UI.view)" :coerce :boolean}})
+   :exact {:desc "declare about: only the term itself, not the more specific ones (UI.view.dashboard under UI.view)" :coerce :boolean}
+   :check {:desc "declare generate: do not write; say which generated files differ from what their recipe gives today (exit 3 if any)" :coerce :boolean}})
 
 (def project-dir
   "The folder, under the working directory, whose `*.clj` files are the declarations
@@ -347,9 +349,94 @@
     (out/ok "declare members"
             {:data {:root (str root) :pattern pattern :members ms :files-from from :summary {:members (count ms)}}})))
 
+;; --- generate (docs/v2/drafts/diseno-generar.md) -------------------------------------------
+
+(defn- target
+  "`{:abs :real-rel}` of the generated path `rel` under `root` (real, symlinks resolved): the
+   real path of the nearest existing ancestor-or-self plus the missing tail, as a path relative
+   to the real root, or nil when it leaves the root."
+  [root rel]
+  (let [abs (fs/path root rel)
+        [existing tail] (loop [p abs tail []]
+                          (if (or (fs/exists? p) (fs/sym-link? p) (nil? (fs/parent p)))
+                            [p tail]
+                            (recur (fs/parent p) (cons (str (fs/file-name p)) tail))))
+        dangling? (and (fs/sym-link? existing) (not (fs/exists? existing)))
+        real (when-not dangling? (fs/real-path existing))
+        full (when real (apply fs/path real tail))]
+    (when (and full (fs/starts-with? full root))
+      {:abs abs :real-rel (str/replace (str (fs/relativize root full)) "\\" "/")})))
+
+(defn- check-target!
+  "Raises `declare/bad-generated` (file and line of its declaration) when the generated `path`
+   may not be written: under `kimun/`, `.git/` or `.kimun/`, outside the root through a symlink,
+   or a folder. Returns the absolute path."
+  [root {:keys [path] {:keys [file line]} :at}]
+  (let [bad (fn [why] (err/raise :declare/bad-generated (str file ":" line ": cannot generate `" path "`: " why)
+                                 {:path path :file file :line line}))
+        t (target root path)]
+    (when-let [why (generate/forbidden path)] (bad why))
+    (when-not t (bad "it leaves the project root (through a symbolic link)"))
+    (when-let [why (generate/forbidden (:real-rel t))] (bad (str "through a symbolic link, " why)))
+    (when (fs/directory? (:abs t)) (bad "it is a folder"))
+    (:abs t)))
+
+(defn- byte-count [text] (alength (.getBytes (str text) "UTF-8")))
+
+(defn generate-of
+  "`declare generate [--check]`: runs the recipes of every `(generated path recipe)` of the
+   project's declarations (`kimun/`; no FILE) and writes each file; `--check` writes nothing.
+   Everything is validated and every recipe run BEFORE anything is written, so a failing
+   recipe or a refused path leaves the tree as it was. Data `{:root :check :files [{:path :status
+   :bytes :declared-at}] :summary {:files :created :updated :unchanged}}`, `:status` being
+   `:created|:updated|:unchanged` (with `--check`: `:missing|:differs|:same`, summary keys
+   `:missing :differs :same`). With `--check` and any file not `:same` the answer is the failure
+   `declare/generated-differs` (exit 3, as `include/drift`) carrying the same data. Errors: the
+   `declare/*` of evaluation and of `kimun.surface.generate` and `declare/bad-generated` for a
+   refused path; FILE is a usage error."
+  [argv opts {:keys [cwd] :as ctx}]
+  (when (seq argv)
+    (args/usage! "declare" "generate" "`declare generate` works on the whole project and takes no FILE" {:extra (vec argv)}))
+  (let [check? (boolean (:check opts))
+        rt (project-root cwd)
+        root (:root rt)
+        {:keys [results]} (read-set rt [] ctx)
+        rs (declare/recipes results)
+        gen-paths (into #{} (map :path) rs)
+        targets (into {} (map (fn [e] [(:path e) (check-target! root e)])) rs)
+        paths (vec (remove gen-paths (:files (repo-files root))))
+        texts (generate/run host/host rs
+                            {:propositions (vec (mapcat :propositions results)) :paths paths :read-now (project-reader root)}
+                            (timeout-opts ctx))
+        rows (mapv (fn [{:keys [path text declared-at]}]
+                     (let [abs (get targets path)
+                           old (when (fs/regular-file? abs) (slurp (str abs)))]
+                       {:path path :text text :abs abs :declared-at declared-at
+                        :status (cond (nil? old) (if check? :missing :created)
+                                      (= old text) (if check? :same :unchanged)
+                                      :else (if check? :differs :updated))
+                        :bytes (byte-count text)}))
+                   texts)]
+    (when-not check?
+      (doseq [{:keys [abs text status]} rows
+              :when (#{:created :updated} status)]
+        (fs/create-dirs (fs/parent abs))
+        (write-atomic! abs text)))
+    (let [files (mapv #(select-keys % [:path :status :bytes :declared-at]) rows)
+          data {:root (str root) :check check? :files files
+                :summary (merge {:files (count files)} (frequencies (map :status files)))}]
+      (if (and check? (some #(not= :same (:status %)) files))
+        (out/failure :declare/generated-differs
+                     (str (count (remove #(= :same (:status %)) files)) " of " (count files)
+                          " generated files differ from what their recipes give today: "
+                          (str/join ", " (map #(str (:path %) " " (name (:status %))) (remove #(= :same (:status %)) files))))
+                     data 3)
+        (out/ok (if check? "declare generate --check" "declare generate") {:data data})))))
+
 (def commands
   "Subcommand name → command fn `(fn [args opts ctx] envelope)`."
-  {"read" read-files "anchors" anchors-of "add" add-form "terms" terms-of "about" about-of "members" members-of})
+  {"read" read-files "anchors" anchors-of "add" add-form "terms" terms-of "about" about-of "members" members-of
+   "generate" generate-of})
 
 (defn dispatch
   "Runs subcommand `sub` of the `declare` group. `args` are the tokens after
@@ -357,4 +444,4 @@
   [sub args opts ctx]
   (if-let [f (get commands sub)]
     (f (vec args) opts ctx)
-    (args/usage! "declare" sub (str "unknown `declare` command: " (or sub "(none)") "; known: read, anchors, add, terms, about, members") {})))
+    (args/usage! "declare" sub (str "unknown `declare` command: " (or sub "(none)") "; known: read, anchors, add, terms, about, members, generate") {})))

@@ -1,0 +1,35 @@
+$ cat kimun/vistas.clj
+(ns proyecto.vistas (:require [proyecto.base :refer [isa anchors]]))
+
+(isa cache-no-es-fuente decision)
+(isa generar-es-vista decision)
+(anchors cache-no-es-fuente (at "docs/spec.md" ["Spec" "Caché"] {:type :paragraph :n 1}))
+
+(defn decisiones [ask]
+  (str "# Decisiones\n\n"
+       (apply str (for [p ((:about ask) 'decision)
+                        :let [t (:term (:other p))
+                              src (first (for [q ((:about ask) t) :when (:anchor (:other q))] (:other q)))]]
+                    (str "- " t (when src (str ": " ((:text ask) src))) "\n")))))
+
+(isa (generated "docs/decisiones.md" decisiones) doc.indice)
+
+$ kimun declare generate --format edn
+{:ok true, :command "declare generate", :store nil, :revision nil, :data {:root "/tmp/gen-example-sxKB", :check false, :files [{:path "docs/decisiones.md", :status :created, :bytes 83, :declared-at {:file "kimun/vistas.clj", :line 14}}], :summary {:files 1, :created 1}}, :warnings []}
+exit=0
+$ cat docs/decisiones.md
+# Decisiones
+
+- cache-no-es-fuente: La caché no es una fuente.
+- generar-es-vista
+$ kimun declare generate --check --format edn (nada cambio)
+{:ok true, :command "declare generate --check", :store nil, :revision nil, :data {:root "/tmp/gen-example-sxKB", :check true, :files [{:path "docs/decisiones.md", :status :same, :bytes 83, :declared-at {:file "kimun/vistas.clj", :line 14}}], :summary {:files 1, :same 1}}, :warnings []}
+exit=0
+$ kimun declare generate --check --format edn (editado a mano)
+{:ok false, :error {:type "declare/generated-differs", :message "1 of 1 generated files differ from what their recipes give today: docs/decisiones.md differs", :data {:root "/tmp/gen-example-sxKB", :check true, :files [{:path "docs/decisiones.md", :status :differs, :bytes 83, :declared-at {:file "kimun/vistas.clj", :line 14}}], :summary {:files 1, :differs 1}}}, :exit 3}
+exit=3
+$ kimun declare about --path docs/decisiones.md --format edn
+{:ok true, :command "declare about", :store nil, :revision nil, :data {:path "docs/decisiones.md", :results [{:via :generated, :proposition {:r "proyecto.base/isa", :a {:generated {:path "docs/decisiones.md"}}, :b {:term "doc.indice"}, :context "proyecto.vistas", :at {:file "kimun/vistas.clj", :line 14}, :id "d996dbb4a52af6beed97249dba47d93797d59227ee455086a9c8df34c98e2f49"}, :side :a, :other {:term "doc.indice"}}], :root "/tmp/gen-example-sxKB", :files [], :summary {:results 1}}, :warnings []}
+$ kimun declare generate (repone) y de nuevo (segunda corrida)
+{:ok true, :command "declare generate", :store nil, :revision nil, :data {:root "/tmp/gen-example-sxKB", :check false, :files [{:path "docs/decisiones.md", :status :updated, :bytes 83, :declared-at {:file "kimun/vistas.clj", :line 14}}], :summary {:files 1, :updated 1}}, :warnings []}
+{:ok true, :command "declare generate", :store nil, :revision nil, :data {:root "/tmp/gen-example-sxKB", :check false, :files [{:path "docs/decisiones.md", :status :unchanged, :bytes 83, :declared-at {:file "kimun/vistas.clj", :line 14}}], :summary {:files 1, :unchanged 1}}, :warnings []}

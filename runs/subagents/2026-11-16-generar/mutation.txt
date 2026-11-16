@@ -1,0 +1,67 @@
+== M1-no-conflict-check (exit 1)
+      1 3 failures, 1 errors.
+      1 ERROR in (the-same-path-needs-the-same-recipe) (/tmp/kimun-gen-wt/test/kimun/surface/generate_test.cljc:156)
+      3 FAIL in (the-same-path-needs-the-same-recipe) (/tmp/kimun-gen-wt/test/kimun/surface/generate_test.cljc:156)
+      1 Ran 12 tests containing 60 assertions.
+== M2-recipe-runs-at-evaluation (exit 1)
+      1 3 failures, 5 errors.
+      1 ERROR in (a-recipe-called-after-the-evaluation-and-from-another-namespace-works) (/tmp/kimun-gen-wt/test/kimun/surface/generate_test.cljc:149)
+      1 ERROR in (ask-answers-with-each-function) (/tmp/kimun-gen-wt/test/kimun/surface/generate_test.cljc:74)
+      1 ERROR in (ask-text-reads-the-region-an-anchor-names) (/tmp/kimun-gen-wt/test/kimun/surface/generate_test.cljc:96)
+      1 ERROR in (evaluating-runs-no-recipe) (/tmp/kimun-gen-wt/test/kimun/surface/generate_test.cljc:66)
+      1 ERROR in (the-example-of-the-design-gives-the-hand-written-text) (/tmp/kimun-gen-wt/test/kimun/surface/generate_test.cljc:45)
+      3 FAIL in (a-bad-recipe-is-a-declared-error) (/tmp/kimun-gen-wt/test/kimun/surface/generate_test.cljc:115)
+      1 Ran 12 tests containing 47 assertions.
+== M3-check-writes (exit 0)
+      1 0 failures, 0 errors.
+      1 Ran 9 tests containing 87 assertions.
+== M4-forbidden-not-checked (exit 0)
+      1 0 failures, 0 errors.
+      1 Ran 9 tests containing 87 assertions.
+== M5-no-symlink-check (exit 1)
+      1 2 failures, 0 errors.
+      2 FAIL in (paths-that-may-not-be-written-are-refused-before-writing-anything) (/tmp/kimun-gen-wt/test/kimun/cli/generate_test.cljc:118)
+      1 Ran 9 tests containing 87 assertions.
+== M6-generated-files-in-members (exit 1)
+      1 13 failures, 0 errors.
+      8 FAIL in (check-says-differs-and-writes-nothing-and-generate-restores) (/tmp/kimun-gen-wt/test/kimun/cli/generate_test.cljc:83)
+      4 FAIL in (generate-creates-then-leaves-it-unchanged) (/tmp/kimun-gen-wt/test/kimun/cli/generate_test.cljc:58)
+      1 FAIL in (only-declared-paths-are-touched-and-members-ignore-generated-files) (/tmp/kimun-gen-wt/test/kimun/cli/generate_test.cljc:148)
+      1 Ran 9 tests containing 87 assertions.
+== M7-about-path-without-generated (exit 1)
+      1 10 failures, 0 errors.
+     10 FAIL in (about-path-of-a-generated-file-says-which-proposition-names-it) (/tmp/kimun-gen-wt/test/kimun/cli/generate_test.cljc:161)
+      1 Ran 9 tests containing 87 assertions.
+== M8-recipe-in-the-id (exit 1)
+      1 2 failures, 0 errors.
+      1 FAIL in (the-example-of-the-design-gives-the-hand-written-text) (/tmp/kimun-gen-wt/test/kimun/surface/generate_test.cljc:45)
+      1 FAIL in (the-id-does-not-depend-on-the-recipe) (/tmp/kimun-gen-wt/test/kimun/surface/generate_test.cljc:57)
+      1 Ran 21 tests containing 147 assertions.
+== M9-non-string-accepted (exit 1)
+      1 7 failures, 1 errors.
+      1 ERROR in (a-bad-recipe-is-a-declared-error) (/tmp/kimun-gen-wt/test/kimun/surface/generate_test.cljc:115)
+      2 FAIL in (a-bad-recipe-is-a-declared-error) (/tmp/kimun-gen-wt/test/kimun/surface/generate_test.cljc:115)
+      5 FAIL in (a-failing-recipe-writes-none) (/tmp/kimun-gen-wt/test/kimun/cli/generate_test.cljc:107)
+      1 Ran 21 tests containing 147 assertions.
+== M10-no-timeout-per-recipe: NOT RUN to completion (without the limit the test's endless recipe never returns: the run hangs on purpose and was killed by hand; detected by non-termination, not by an assertion)
+== M3b-check-writes-missing-and-differs (exit 1)
+      1 4 failures, 0 errors.
+      4 FAIL in (check-says-differs-and-writes-nothing-and-generate-restores) (/tmp/kimun-gen-wt/test/kimun/cli/generate_test.cljc:83)
+      1 Ran 9 tests containing 87 assertions.
+== M4b-forbidden-and-link-checks-removed (exit 1)
+      1 10 failures, 3 errors.
+      3 ERROR in (paths-that-may-not-be-written-are-refused-before-writing-anything) (/tmp/kimun-gen-wt/test/kimun/cli/generate_test.cljc:118)
+     10 FAIL in (paths-that-may-not-be-written-are-refused-before-writing-anything) (/tmp/kimun-gen-wt/test/kimun/cli/generate_test.cljc:118)
+      1 Ran 9 tests containing 87 assertions.
+== M11-write-even-if-equal (exit 1)
+      1 3 failures, 0 errors.
+      2 FAIL in (generate-creates-then-leaves-it-unchanged) (/tmp/kimun-gen-wt/test/kimun/cli/generate_test.cljc:58)
+      1 FAIL in (only-declared-paths-are-touched-and-members-ignore-generated-files) (/tmp/kimun-gen-wt/test/kimun/cli/generate_test.cljc:148)
+      1 Ran 9 tests containing 87 assertions.
+== M12-check-reports-ok-when-differs (exit 1)
+      1 10 failures, 0 errors.
+     10 FAIL in (check-says-differs-and-writes-nothing-and-generate-restores) (/tmp/kimun-gen-wt/test/kimun/cli/generate_test.cljc:83)
+      1 Ran 9 tests containing 87 assertions.
+restored-identical
+
+Notas: M3 (`--check` con la guarda de escritura quitada) y M4 (solo la primera comprobación de ruta prohibida quitada) SOBREVIVIERON: eran equivalentes (en check el estado nunca es :created/:updated; la comprobación de la ruta real repite la de la ruta declarada). Se reemplazaron por M3b y M4b, que sí discriminan. Restauración: `diff -r src /tmp/generar-src-backup` idéntico (parche en /tmp/generar-src.patch; copia en /tmp/generar-src-backup; sin git stash).

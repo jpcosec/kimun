@@ -1,0 +1,49 @@
+
+Testing kimun.surface.generate-test
+
+Testing kimun.cli.generate-test
+
+Testing kimun.cli.beat-git-test
+
+Testing kimun.cli.c4-route-rebuild-test
+moved existing store to /tmp/kimun-adhoc-11963083093546601723/kimun-c4-route-2524530461197230597/.kimun.bak-20261116-021617-01M7HCHQTRS1X7M22EVP2HMMFJ
+
+Testing kimun.cli.cache-verified-test
+
+Testing kimun.cli.changed-test
+
+Testing kimun.cli.cold-cache-test
+
+Testing kimun.cli.compose-test
+
+Testing kimun.cli.contract-test
+
+Testing kimun.cli.corpus-test
+
+Testing kimun.cli.declare-anchors-test
+
+Testing kimun.cli.declare-ask-test
+
+Testing kimun.cli.declare-fixes-test
+
+Testing kimun.cli.declare-project-test
+
+Testing kimun.cli.declare-root-test
+
+Testing kimun.cli.declare-test
+
+Testing kimun.cli.diagnostics-test
+
+Testing kimun.cli.docs-anchors-test
+
+Testing kimun.cli.docs-test
+
+Testing kimun.cli.edges-test
+
+Testing kimun.cli.fault-injection-test
+
+Testing kimun.cli.fields-test
+
+Ran 143 tests containing 1848 assertions.
+0 failures, 0 errors.
+exit=0

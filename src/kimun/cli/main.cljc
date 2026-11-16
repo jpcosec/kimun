@@ -129,6 +129,7 @@
              "  declare terms [FILE…]       every term of the declarations with how many propositions name it and its dotted ancestors (implicit ones marked); read-only"
              "  declare about TERM [FILE…] [--exact] · about --path PATH [FILE…]   the propositions where TERM (or a more specific one) appears; or what is known of a project file (anchors on it, (files …) patterns that reach it); read-only"
              "  declare members 'PATTERN'   the project files (from the project root) (git's, else the directory's) a (files PATTERN) node reaches, expanded now; read-only"
+             "  declare generate [--check]  run the recipes of (generated PATH RECIPE) and write each generated document (atomic; never under kimun/, .git/ or .kimun/; if a recipe fails, none); --check writes nothing and exits 3 if any differs"
              "  serve [--port N] [--host H] [--token T] [--cors]   HTTP API over the commands (default 127.0.0.1:8787; a non-loopback --host or --cors needs a token; routes are confined to the project)"
              "                              --token (or $KIMUN_SERVE_TOKEN) requires `Authorization: Bearer TOKEN`"
              "  mcp                         MCP server over stdio (JSON-RPC, one message per line): the declare and stores read commands as tools"

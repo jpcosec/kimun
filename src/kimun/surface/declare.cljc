@@ -1,13 +1,14 @@
 (ns kimun.surface.declare
   "Evaluator of declaration files (docs/v2/drafts/diseno-evaluar.md, cut 1:
    read). A declaration file is real Clojure, evaluated in an isolated `sci`
-   context whose only vocabulary beyond `clojure.core` is `relation`, `at` and
-   `files`; evaluating it produces propositions `(R A B)` in a context and
+   context whose only vocabulary beyond `clojure.core` is `relation`, `at`, `files`
+   and `generated`; evaluating it produces propositions `(R A B)` in a context and
    writes nothing anywhere: this namespace touches no disk, network or store.
 
    Entry points: `read-declarations` (one file without requires) and
    `read-project` (a set of files whose contexts require each other). The result
-   is `{:context s :relations {s {:doc s}} :propositions [p …]}` where a
+   is `{:context s :relations {s {:doc s}} :propositions [p …] :generated [{:path :at
+   :context}]}` where a
    proposition is `{:r s :a node :b node :context s :at {:file :line} :id s}`
    (plus `:also-at` when the same proposition is written again). `:r` is
    `\"defining-context/name\"`: a relation belongs to the context that defines it,
@@ -23,6 +24,11 @@
      records a proposition. Exactly two arguments; the docstring is mandatory.
    - `(at path & locator)` is `{:anchor {:path path :locator [..]}}` and
      `(files pattern)` is `{:files pattern}`: neither opens a file.
+   - `(generated path recipe)` (docs/v2/drafts/diseno-generar.md) is the node
+     `{:generated {:path path}}` and registers `recipe`, a function of the file, as the
+     one that produces `path` (relative to the project, no `..`). Nothing is run here:
+     the recipes travel in the metadata of each file result (`recipes` reads them) and
+     `kimun.surface.generate` runs them. The recipe is not part of the node nor of the `:id`.
 
    BARE SYMBOL versus BOUND SYMBOL, the exact rule. An argument of a relation
    form that is a symbol is a TERM (the symbol itself, dots included:
@@ -53,11 +59,13 @@
 
    Errors are `kimun.kernel.err/raise` with `:declare/*` types, always carrying
    `:file` and `:line`: `syntax`, `relation-redefined`, `no-context`, `reserved-context`,
-   `ns-clauses`, `unresolved`, `arity`, `bad-relation`, `bad-node`, `bad-arg`, `bad-locator`
+   `ns-clauses`, `unresolved`, `arity`, `bad-relation`, `bad-node`, `bad-arg`, `bad-generated`,
+   `bad-locator`
    (the shape of every `(at …)` is checked after the file evaluates, with
    `kimun.surface.declared-anchors/translate`), `timeout` (a file that evaluates longer than
    the `:timeout-ms` option, default `default-timeout-ms`), `eval`; of a set: `duplicate-context`,
-   `unknown-context`, `require-cycle`, `unknown-relation`, `relation-conflict`."
+   `unknown-context`, `require-cycle`, `unknown-relation`, `relation-conflict`,
+   `generated-conflict` (one path, two different recipes)."
   (:require [clojure.string :as str]
             [sci.core :as sci]
             [kimun.surface.declared-anchors :as declared-anchors]
@@ -168,6 +176,46 @@
     (err/raise :declare/bad-arg "`files` needs a pattern as a non-empty string" {:got (pr-str pattern)}))
   (with-meta {:files pattern} {::node true}))
 
+(defn- generated-path
+  "The normalized path (no leading `./`) of a `generated` at `file`:`line`, or `declare/bad-generated`
+   when it is not a relative path of the project: a string, not blank, not absolute, no `..`
+   or empty segments, not a folder."
+  [file line path]
+  (let [bad (fn [why] (fail :declare/bad-generated
+                            (str file ":" line ": `generated` needs a file path inside the project, relative to its root: " why)
+                            line {:file file :path (pr-str path)}))]
+    (when-not (string? path) (bad (str "not a string (" (pr-str path) ")")))
+    (let [p (str/replace path #"^(\./)+" "")]
+      (when (or (str/blank? p) (str/starts-with? p "/") (re-find #"^[A-Za-z]:" p) (str/includes? p "\\"))
+        (bad (pr-str path)))
+      (when (or (str/ends-with? p "/") (some #(contains? #{"" "." ".."} %) (str/split p #"/" -1)))
+        (bad (str (pr-str path) " (empty, `.` or `..` segment, or a folder)")))
+      p)))
+
+(defn- generate!
+  "Registers `recipe` for `path` and returns the node `{:generated {:path p}}`."
+  [st path recipe line]
+  (let [file (:file @st)
+        p (generated-path file line path)]
+    (when-not (fn? recipe)
+      (fail :declare/bad-generated
+            (str file ":" line ": the recipe of `" p "` must be a function (a `fn` or a `defn` of this file), got " (pr-str recipe))
+            line {:file file :path p}))
+    (swap! st update :generated conj {:path p :at {:file file :line line} :context (str (:context @st)) :fn recipe})
+    (with-meta {:generated {:path p}} {::node true})))
+
+(defn- generated-macro
+  "The sci macro `generated`: `(generated path recipe)`; a macro only to know its line."
+  [st]
+  (with-meta
+    (fn [form _env & args]
+      (let [line (or (:line (meta form)) 0)]
+        (when (not= 2 (count args))
+          (fail :declare/bad-generated (str (:file @st) ":" line ": `generated` takes a path and a recipe: (generated \"docs/x.md\" recipe)")
+                line {:file (:file @st) :arity (count args)}))
+        (list 'kimun.declare.impl/generated st (first args) (second args) line)))
+    {:sci/macro true}))
+
 (defn- make-ctx
   "A fresh isolated sci context; nothing of the host is exposed. The
    vocabulary lives in the namespace of the file's `context` (sci evaluates in
@@ -175,9 +223,10 @@
    evaluation is pinned to this one by `read-declarations`)."
   [st context]
   (sci/init
-   {:namespaces {context {'relation (relation-macro st) 'at at-fn 'files files-fn}
+   {:namespaces {context {'relation (relation-macro st) 'at at-fn 'files files-fn 'generated (generated-macro st)}
                  'kimun.declare.impl {'emit (fn [r line args st'] (emit! st' r line (first args) (second args)))
                                       'define (fn [r doc line st'] (define! st' r doc line))
+                                      'generated (fn [st' path recipe line] (generate! st' path recipe line))
                                       'expand expand
                                       'expand-as (fn [r form env args resolver] (expand st r form env args resolver))}}
     :deny '[slurp spit load-file load-string require use import]}))
@@ -299,7 +348,7 @@
   "How long one file may take to evaluate, unless the `:timeout-ms` option says otherwise."
   10000)
 
-(defn- run-limited
+(defn run-limited
   "Calls `f` on a daemon thread and waits at most `timeout-ms` for it; returns its value,
    rethrows what it threw, or raises `declare/timeout` for `file`. The JVM (and Babashka's
    native image) cannot stop a thread that does not cooperate: after a timeout the thread is
@@ -335,7 +384,7 @@
    already evaluated required contexts `[{:context sym :names [relation-name…] :refer […]}]`."
   [host text file info imports timeout-ms]
   (let [referred (into {} (for [{c :context rs :refer} imports, r rs] [(str r) (str c)]))
-        st (atom {:file file :host host :context (:context info) :relations {} :props [] :index {} :referred referred})
+        st (atom {:file file :host host :context (:context info) :relations {} :props [] :index {} :generated [] :referred referred})
         context (:context info)
         ctx (make-ctx st context)]
     (try
@@ -347,11 +396,39 @@
                      ;; resolves the `:require`s against the macros the prelude just defined
                      (sci/eval-string+ ctx (str text) {:ns (sci/create-ns context nil)})))
       (catch Throwable e (rethrow e file 1)))
-    (let [{:keys [relations props]} @st]
+    (let [{:keys [relations props generated]} @st
+          recipes (reduce (fn [acc e] (if (some #(and (= (:path e) (:path %)) (identical? (:fn e) (:fn %))) acc) acc (conj acc e)))
+                          [] generated)]
       (check-locators! props)
-      {:context (str context)
-       :relations relations
-       :propositions (mapv #(vary-meta % dissoc ::proposition) props)})))
+      (with-meta
+        {:context (str context)
+         :relations relations
+         :propositions (mapv #(vary-meta % dissoc ::proposition) props)
+         :generated (mapv #(dissoc % :fn) recipes)}
+        {::recipes recipes}))))
+
+(defn- check-generated-conflicts!
+  "Raises `declare/generated-conflict` when two `generated` of the file results `results` name
+   the same path with different recipes (at the second one; both positions in the data)."
+  [results]
+  (reduce (fn [seen {:keys [path at] f :fn :as e}]
+            (if-let [prev (get seen path)]
+              (if (identical? (:fn prev) f)
+                seen
+                (fail :declare/generated-conflict
+                      (str (:file at) ":" (:line at) ": `" path "` already has another recipe, declared at " (:file (:at prev)) ":" (:line (:at prev)))
+                      (:line at) {:file (:file at) :path path :positions [(:at prev) at]}))
+              (assoc seen path e)))
+          {} (mapcat #(::recipes (meta %)) results)))
+
+(defn recipes
+  "The recipes of the file results `results` (as `read-project` returns them): `[{:path :at {:file
+   :line} :context :fn}]`, one per path (the first declaration), in order. The functions travel
+   only in the metadata of the results, never in their data."
+  [results]
+  (:out (reduce (fn [{:keys [seen] :as acc} e]
+                  (if (contains? seen (:path e)) acc (-> acc (update :seen conj (:path e)) (update :out conj e))))
+                {:seen #{} :out []} (mapcat #(::recipes (meta %)) results))))
 
 (defn- order
   "The files of `scanned` (`[{:file :text :info}]`) in dependency order (each
@@ -416,7 +493,9 @@
                                         (:requires info))]
                       (assoc acc (:context info) (assoc (evaluate-file host text file info imports timeout-ms) :file file))))
                   {} (order scanned))]
-     (mapv #(get results (get-in % [:info :context])) scanned))))
+     (let [out (mapv #(get results (get-in % [:info :context])) scanned)]
+       (check-generated-conflicts! out)
+       out))))
 
 (defn header-of
   "`{:context \"c\" :requires [\"other\" …]}` of the declaration file `text` (named `file`): its

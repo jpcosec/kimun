@@ -36,7 +36,7 @@
 (defn- files-of [a] (vec (get a "files")))
 
 (def tools
-  "The tools, as data. Only `kimun_declare_add` writes."
+  "The tools, as data. Only `kimun_declare_add` and `kimun_declare_generate` write."
   [{:name "kimun_declare_read" :read-only true
     :description "Evaluate declaration files as one project and list the propositions they produce."
     :inputSchema (obj {:files files-prop})
@@ -78,6 +78,14 @@
     :description "The verdict of the store: ok, degraded or needs-human."
     :inputSchema (obj {})
     :argv (fn [_] ["stores" "health"])}
+   {:name "kimun_declare_generate_check" :read-only true
+    :description "Run the recipes of the generated documents ((generated path recipe) in the declarations) and say which files are missing or differ from what their recipe gives today; writes nothing. Fails (exit 3) when any differs."
+    :inputSchema (obj {})
+    :argv (fn [_] ["declare" "generate" "--check"])}
+   {:name "kimun_declare_generate" :read-only false
+    :description "WRITES: run the recipes of the generated documents and write each declared file (atomically; never under kimun/, .git/ or .kimun/); says created, updated or unchanged. If any recipe fails nothing is written."
+    :inputSchema (obj {})
+    :argv (fn [_] ["declare" "generate"])}
    {:name "kimun_declare_add" :read-only false
     :description "WRITES: append one form to a declaration file if the set still evaluates and the form is new; `context` creates the file with (ns CONTEXT)."
     :inputSchema (obj {:to {:type "string" :description "Declaration file (relative to the working directory)"}

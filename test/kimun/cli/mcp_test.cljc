@@ -49,15 +49,16 @@
   (let [[_ ctx] (ctx-with ok-envelope)
         listed (get-in (ask ctx {"jsonrpc" "2.0" "id" 1 "method" "tools/list"}) ["result" "tools"])]
     (is (= ["kimun_declare_read" "kimun_declare_anchors" "kimun_declare_terms" "kimun_declare_about"
-            "kimun_declare_members" "kimun_changed" "kimun_seen" "kimun_health" "kimun_declare_add"]
+            "kimun_declare_members" "kimun_changed" "kimun_seen" "kimun_health"
+            "kimun_declare_generate_check" "kimun_declare_generate" "kimun_declare_add"]
            (mapv #(get % "name") listed)))
     (doseq [t listed]
       (is (string? (get t "description")))
       (is (= "object" (get-in t ["inputSchema" "type"])))
       (is (map? (get-in t ["inputSchema" "properties"])))
       (is (every? (set (keys (get-in t ["inputSchema" "properties"]))) (get-in t ["inputSchema" "required"])))
-      (is (= (not= "kimun_declare_add" (get t "name")) (get-in t ["annotations" "readOnlyHint"]))
-          "only declare_add is not read-only"))))
+      (is (= (not (#{"kimun_declare_add" "kimun_declare_generate"} (get t "name"))) (get-in t ["annotations" "readOnlyHint"]))
+          "only declare_add and declare_generate are not read-only"))))
 
 (deftest each-tool-builds-its-argv
   (let [cases [["kimun_declare_read" {} ["declare" "read"]]
@@ -73,6 +74,8 @@
                ["kimun_changed" {} ["stores" "changed"]]
                ["kimun_seen" {} ["stores" "seen"]]
                ["kimun_health" {} ["stores" "health"]]
+               ["kimun_declare_generate_check" {} ["declare" "generate" "--check"]]
+               ["kimun_declare_generate" {} ["declare" "generate"]]
                ["kimun_declare_add" {"to" "k/a.clj" "form" "(isa x Y)"} ["declare" "add" "--to" "k/a.clj" "(isa x Y)"]]
                ["kimun_declare_add" {"to" "k/a.clj" "form" "(isa x Y)" "context" "p.a"}
                 ["declare" "add" "--to" "k/a.clj" "(isa x Y)" "--context" "p.a"]]]]
@@ -148,7 +151,7 @@
         resp (mapv json/parse-string lines)]
     (is (= 0 (:exit reads)))
     (is (= [1 2 3] (mapv #(get % "id") resp)) "one line per request, none for the notification, nothing else")
-    (is (= 9 (count (get-in resp [1 "result" "tools"]))))
+    (is (= 11 (count (get-in resp [1 "result" "tools"]))))
     (is (= {"files" 1 "relations" 1 "propositions" 1}
            (-> (get-in resp [2 "result" "content" 0 "text"]) json/parse-string (get-in ["data" "summary"]))))
     (is (= before (slurp file)) "reading changed nothing")
