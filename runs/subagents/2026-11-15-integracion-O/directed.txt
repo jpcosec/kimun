@@ -1,0 +1,14 @@
+
+Testing kimun.cli.range-marks-test
+
+Testing kimun.surface.marks-test
+
+Testing kimun.cli.marks-test
+moved existing store to /tmp/kimun-adhoc-8409974456066195747/kimun-marks-inc-4368114038354634556/.kimun.bak-20261115-222233-01M7GZ5RCMZHCNX178QE611V4M
+
+Testing kimun.cli.nested-units-test
+
+Testing kimun.doc14-contract-test
+
+Ran 27 tests containing 553 assertions.
+0 failures, 0 errors.
