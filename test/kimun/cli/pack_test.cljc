@@ -110,7 +110,7 @@
           (is (zero? (:packed d)))
           (is (= 1 (count (fs/glob (file p ".kimun" "packs") "*.idx")))))))))
 
-(deftest packs-are-a-format-4-layout
+(deftest a-store-of-another-format-is-refused-by-pack-and-unpack
   (let [p (project)
         store-edn (file p ".kimun" "store.edn")
         text (slurp store-edn)
@@ -120,7 +120,7 @@
       (let [e (run p "stores" sub)]
         (is (some? (:error e)) (str sub " on format 3 must fail"))
         (is (= 5 (:exit e)))
-        (is (= "store/error" (get-in e [:error :type])))))
+        (is (= "store/unsupported-format" (get-in e [:error :type])))))
     (spit store-edn text)
     (is (:ok (run p "stores" "pack")))))
 

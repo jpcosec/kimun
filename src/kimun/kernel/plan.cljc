@@ -19,8 +19,7 @@
    used wherever an id is expected in later ops. Validation checks by name:
    base-cas, ids-exist, tree-integrity, evidence-ref-hash, capability,
    opaque-replace-only, pure-data."
-  (:require [clojure.string :as str]
-            [kimun.kernel.canon :as canon]))
+  (:require [kimun.kernel.canon :as canon]))
 
 (def ops
   "The primitive operations (docs/v2/02 §5). `:register-tree` is the format-4

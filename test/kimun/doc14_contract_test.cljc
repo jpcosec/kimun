@@ -98,8 +98,8 @@
       (is (str/includes? (section-slice doc "## 1. ") "sin idioma fijo ni"))
       (is (str/includes? (section-slice doc "## 7. ") "modelo **multilingüe**"))
       (is (str/includes? s17 "default descartado")))
-    (testing "historical §10 distinguishes in-place upgrade in 10-escala.md"
-      (is (str/includes? s10 "2→3` en el sitio"))
+    (testing "historical §10 points to 10-escala.md for the formats that are no longer opened"
+      (is (str/includes? s10 "`stores upgrade` ya no existe"))
       (is (str/includes? s10 "10-escala.md")))
     (testing ":contract edge is explicitly located on `reference`, not `derived`"
       (is (str/includes? s18 "arista `reference`"))
@@ -123,18 +123,18 @@
       (is (str/includes? s13 "**`S2` fase 3"))
       (is (str/includes? s13 "**espera a `K1`**"))
       (is (not (str/includes? s13 "Bloqueados por `D0`"))))
-    (testing "§13 and decision 44 mark K2a as partial: C2a/C2b/C4/C5 implemented, schema 1 (flat O(n) digest) kept as legacy, schema 2 the tree, the fan-out cost still open"
+    (testing "§13 and decision 44 mark K2a as partial: C2a/C2b/C4/C5 implemented, schema 2 the tree, the fan-out cost still open"
       (is (not (str/includes? s13 "**`K2a` (cerrada):**")))
-      (doseq [needle ["C2a" "C2b" "C4" "C5" "digest plano `O(n)`" "Merkle incremental" "b4931b7c"
-                      "esquema 1" "esquema 2" "stores upgrade" "fan-out"]]
+      (doseq [needle ["C2a" "C2b" "C4" "C5" "Merkle incremental" "b4931b7c"
+                      "esquema 2" "fan-out"]]
         (is (str/includes? s13 needle) (str "Missing K2a/C5 marker in §13: " needle))
         (is (str/includes? s12 needle) (str "Missing K2a/C5 marker in §12: " needle)))
       (is (str/includes? s13 "2c56e680"))
       (is (not (str/includes? s13 "sigue pendiente `C5`")) "C5 is no longer pending in §13")
       (is (not (str/includes? s12 "pendiente en `C5`")) "nor in decision 44"))
-    (testing "§20 separates the two route schemas and states the limits of C5 without closing D0"
+    (testing "§20 states route schema 2 and the limits of C5 without closing D0"
       (let [s20 (section-slice doc "## 20. ")]
-        (doseq [needle ["Esquema 1 (legado)" "Esquema 2 (stores nuevos)" "digest plano `O(n)`" "b4931b7c"
+        (doseq [needle ["esquema 2" "b4931b7c"
                         "no hay fan-out" "route-coverage" "`K1`/`D0`" "runs/subagents/2026-11-15-C5/EVIDENCE.md"]]
           (is (str/includes? s20 needle) (str "Missing C5 marker in §20: " needle)))
         (is (not (str/includes? s20 "Pendiente en `K2a` (`C5`")) "C5 is not listed as pending")))

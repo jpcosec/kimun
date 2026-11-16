@@ -48,7 +48,6 @@
     (is (= (:stored d) (+ (:reached d) (:unreachable d))))
     (is (pos? (:unreachable d)) "three later commits replaced the heads map and route nodes")
     (is (= (:unreachable d) (get-in d [:candidates :count])))
-    (is (= {:count 0 :bytes 0 :by-class {}} (:held d)) "a format-4 store keeps no plan in objects/")
     (is (= [] (:damaged d)))
     (is (= [] (:lost-revisions d)))
     (is (true? (:stable? d)))
@@ -73,8 +72,7 @@
     (is (= (get-in d [:candidates :bytes]) (reduce + (map :bytes ids))))
     (is (= (get-in d [:roots :count]) (count (filter :root? ids))))
     (is (every? #(fs/exists? (file p ".kimun" "objects" (:id %))) ids))
-    (is (every? #(= (:bytes %) (fs/size (file p ".kimun" "objects" (:id %)))) ids))
-    (is (= [] (get-in d [:ids :held])))))
+    (is (every? #(= (:bytes %) (fs/size (file p ".kimun" "objects" (:id %)))) ids))))
 
 (deftest the-command-changes-nothing
   (let [p (project)

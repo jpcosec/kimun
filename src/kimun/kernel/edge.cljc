@@ -10,7 +10,8 @@
    represented by tree objects (kimun.kernel.tree); their shape exists here so
    plans can express them, addressing the parent by its position path."
   (:require [kimun.kernel.canon :as canon]
-            [kimun.kernel.err :as err]))
+            [kimun.kernel.err :as err]
+            [kimun.kernel.tree :as tree]))
 
 (def types
   "The seven edge types."
@@ -38,8 +39,6 @@
   (or (and (string? actor) (nil? engine) (nil? version))
       (and (nil? actor) (string? engine) (string? version))))
 
-(defn- path? [p] (and (vector? p) (every? #(and (integer? %) (<= 0 %)) p)))
-
 (defn validate
   "Returns the edge when its shape and mandatory evidence are admitted; raises
    :edge/invalid otherwise."
@@ -49,7 +48,7 @@
   (when (contains? edge :timestamp) (fail edge "timestamp is not part of an edge (invariant 16)"))
   (if (= type :ownership)
     (do (when-not (string? tree) (fail edge "ownership edges carry :tree"))
-        (when-not (path? parent) (fail edge "ownership edges carry :parent, a position path"))
+        (when-not (tree/path? parent) (fail edge "ownership edges carry :parent, a position path"))
         (when (contains? edge :from) (fail edge "ownership edges address the parent by :parent path, not :from"))
         (when-not (and (integer? order) (<= 0 order)) (fail edge "ownership edges carry a non-negative :order")))
     (do (when-not (string? from) (fail edge ":from must be a node id"))

@@ -130,7 +130,7 @@
         verified-text (if (and (:path doc) content-ok) (or text (:source doc)) (:source doc))
         recorded (when (and descriptor verified-text) (try-extract store doc descriptor verified-text))
         on-disk (when (and descriptor text (not content-ok)) (try-extract store doc descriptor text))
-        ;; the recorded payload's hashes live in the anchor edge (format 3): the text is not stored,
+        ;; the recorded payload's hashes live in the anchor edge: the text is not stored,
         ;; so an edit is told apart from a reformatting by comparing hashes, not payloads
         on-disk-hash (when-let [p (:payload on-disk)] (tdocs/content-hash host p))
         recorded-hash (or (:recorded-content-hash doc)

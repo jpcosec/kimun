@@ -1,9 +1,10 @@
 # kimun (SLDB v2) — Escala y formatos del store (2026-10-09)
 
 > Por qué y cómo cambió la forma en disco de las revisiones (formato 2), qué cuesta abrir,
-> leer y escribir un store, qué comprueba cada verificación y cómo se pasa un store de
-> formato 1 al 2; qué cambia el **formato 3** (§10, docs/v2/14 §10) y qué cambia el
-**formato 4** (§11, docs/v2/14 §18–§19: registro por documento y árbol como caché). Este documento es el
+> leer y escribir un store, qué comprueba cada verificación; qué cambia el **formato 3**
+> (§10, docs/v2/14 §10) y qué cambia el
+**formato 4** (§11, docs/v2/14 §18–§19: registro por documento y árbol como caché).
+> Este código solo abre el formato 4 con esquema de rutas 2 (§8). Este documento es el
 > **único dueño del formato en disco**; `02` fija el
 > contrato de la revisión y enlaza aquí para la forma en disco. Autoridad: `02` (qué
 > construye) > este documento. Números en
@@ -126,9 +127,7 @@ nodo mmap            {:mmap :leaf :entries [[k v] …]} | {:mmap :branch :count 
 
 Los ids de nodos, aristas, objetos de árbol y descriptores no cambian con el formato
 (`bb oracle`). Cambian los ids de revisión (sus campos) y de transacción (el plan
-resuelto incluye `:base`, un id de revisión). Un store de formato 1 (`:format-version 1`,
-o sin la clave) sigue abriendo y escribiendo con el motor conservado en
-`kimun.kernel.legacy.revision` (abre por replay; `heads.edn` = `{:head :heads}`).
+resuelto incluye `:base`, un id de revisión).
 
 Objetos sin referencia que pueden quedar en `objects/` (todos de escritura única e
 inofensivos): los de un escritor que perdió la carrera (§7) y los nodos del mmap de
@@ -138,7 +137,7 @@ en `:objects` todo lo que hay en `objects/`, ellos incluidos.
 
 ## 6. Qué confía `open` y qué comprueba cada verificación
 
-`open` (formato 2, host con `LazyMaps`) **no replaya ni lee el log**. Comprueba: que
+`open` (host con `LazyMaps`) **no replaya ni lee el log**. Comprueba: que
 `store.edn` existe y su `:hash-alg` es el del host; que `heads.edn` tiene la forma
 `{:head id :heads-root id}` (`:store/corrupt-heads`); que el objeto `:head` existe, hashea
 a su id y es una Revision, y que `:heads-root` existe, hashea a su id y es un nodo mmap
@@ -191,38 +190,18 @@ siguiente commit la descarta (trunca) bajo el lock antes de agregar. Un log
 `:inconsistent` hace que el siguiente commit falle con `store/error` sin escribir nada.
 No hay `fsync`: está cubierta la muerte del proceso, no un corte de energía.
 
-## 8. Ruta de upgrade
+## 8. Formatos anteriores
 
-`kimun stores upgrade` (sobre `kimun.kernel.upgrade/upgrade!`, que lee un backend y escribe
-otro vacío):
-
-1. Construye el store nuevo en el directorio hermano `<store>.upgrade-<stamp>`, con el
-   descriptor del original (todas sus claves) en `:format-version 2`.
-2. Vuelve a confirmar, en orden de log y con el motor de formato 2, cada transacción
-   confirmada del original; el plan resuelto queda igual salvo `:base`, reescrito al id
-   nuevo de la misma revisión. Actor, timestamp, engines y ops son los del plan; la cadena
-   de padres sigue el orden del log; nodos, aristas y árboles salen con los mismos ids.
-3. Comprueba que ninguna transacción se rebasó y que cada plan quedó igual; que las
-   cabezas nuevas (la del store y la de cada árbol) son las originales mapeadas; que los
-   árboles (descriptor y raíz Merkle) y las aristas activas de la cabeza coinciden con los
-   de la Revision cabeza original; y `verify-full` del store nuevo.
-4. Solo entonces renombra el original a `<store>.format-1-<stamp>` (respaldo que el
-   usuario puede borrar) y pone el nuevo en su lugar. Si `heads.edn` del original cambió
-   mientras tanto, abandona con `store/stale` (exit 4) y borra el directorio de trabajo.
-5. Escribe `upgrade-format-1.edn` en el store nuevo (ids viejos → nuevos de revisiones y
-   transacciones). Copia los demás ficheros del directorio salvo `index/`, derivado y
-   indexado por ids de revisión que ya no existen (`rebuild-indexes` lo regenera).
-
-Una cola no confirmada del log original no se lleva (nunca fue un commit) y se informa en
-`:dropped-tail`. Sobre un store de formato 2 el comando no hace nada (`:upgraded false`).
-Pruebas: `test/kimun/kernel/upgrade_test.cljc` (historia con todas las ops, propiedad
-sobre historias aleatorias, rechazos) y `test/kimun/cli/upgrade_test.cljc` (`docs list`,
-`docs show`, `fields get`, `journal show` y `stores verify` responden igual antes y
-después, leyendo los ids por el mapa).
+Un store de formato 1, 2 o 3, o de formato 4 sin esquema de rutas 2 (`store.edn` sin
+`:route-schema 2`), ya no se abre: `open`, `replay` y `replay-open` fallan con
+`store/unsupported-format` (exit 5) y el mensaje «format N is no longer supported: rebuild
+with `include build --rebuild`». No hay `stores upgrade` ni migración en el sitio: el camino
+es reconstruir el store desde los archivos con `include build --rebuild` (o, para un store
+de sldb v1, `migrate --from-v1`).
 
 ## 9. Después
 
-Store real (copia de 1.551 documentos, mejorada con `stores upgrade` en 77,6 s):
+Store real (copia de 1.551 documentos, migrada al formato 2 en 77,6 s):
 
 | medida | antes | después | objetivo |
 |---|---|---|---|
@@ -281,7 +260,7 @@ Qué cambia:
    del payload escrito, que es como `diagnostics` distingue un reformateo de una edición sin
    guardar el texto (con el archivo editado, el árbol da el texto rastreado).
 2. **El texto se lee del archivo.** `docs` reconstruye `:source` así: el signo verbatim si
-   lo hay (`:inline` o store formato 2), si no el archivo **mientras su fingerprint coincide
+   lo hay (`:inline`), si no el archivo **mientras su fingerprint coincide
    con el registrado** (el archivo ES el texto rastreado), si no el render canónico del
    árbol (lo rastreado cuando el archivo se editó por fuera). El kernel no hace I/O: el
    host inyecta `:read-file` en el valor del store.
@@ -291,12 +270,11 @@ Qué cambia:
    archivo. Por defecto `:by-reference`.
 4. **El plan no se guarda dos veces.** La línea del log es `{:id tx-id :revision rev-id}`;
    el plan resuelto sigue en el CAS bajo `tx-id` (invariante 17) y `replay-open`/`verify-full`
-   lo leen de ahí. Las líneas de formato 2 (con `:plan`) se siguen leyendo. Además, el plan
+   lo leen de ahí. Además, el plan
    resuelto **referencia los nodos por id**: un `:add-node` con alias se resuelve a
    `{:op :add-node :id <node-id>}` y el contenido del nodo vive una sola vez, como objeto del
    CAS; `replay-open`/`verify-full` reconstruyen el nodo desde el CAS cuando falta `:node`. El
-   plan de ENTRADA no cambia (sigue aceptando `:node` inline) y un plan resuelto almacenado sin
-   `:as` (formato 2 o un formato 3 anterior) se lee igual y reproduce su propio `tx-id`. Del
+   plan de ENTRADA no cambia (sigue aceptando `:node` inline). Del
    mismo plan de entrada cambian `tx-id` y `revision-id`; los ids de nodo, arista, árbol,
    descriptor y mmap no.
 5. **Una revisión por `include build`** (§11): todos los modelos y documentos declarados
@@ -304,10 +282,8 @@ Qué cambia:
    `stores update` también compone en **UNA revisión** los `update-plan` de todos los documentos
    que repara (el journal de esa revisión lleva `:documents`, con los campos que cambió cada uno).
 
-Ruta de upgrade: `stores upgrade` sobre un store formato 2 lo convierte **en el sitio**
-(reescribe las líneas del log sin `:plan` y el descriptor a `:format-version 3`, y verifica;
-restaura si falla). Para un store `:git :ignore` el camino fuerte es `include build --rebuild`,
-que reconstruye el store desde los archivos y descarta las copias verbatim.
+Para un store `:git :ignore` el camino es `include build --rebuild`, que reconstruye el
+store desde los archivos y descarta las copias verbatim.
 
 Medido en este repo (desk de 433 KB, 539 documentos; antes = formato 2 del commit
 `b4e02790`, después = formato 3 de S1b): aparente **28.349.458 B → 8.066.006 B** (~7,88 MB)
@@ -473,11 +449,9 @@ marcado `:cached?`: son derivados y su integridad la comprueba el resolver (raí
 vs recomputada). El resto de objetos (nodos raíz, anchors, aristas, descriptores, mmaps,
 revisiones) se verifica como siempre.
 
-**Ruta de upgrade.** `include build --rebuild` produce el store formato 4 (reconstruye desde
-los archivos; es el camino fuerte para un store `:git :ignore`). `stores upgrade` sobre un
-store formato 2 lo pasa a 3 en el sitio; sobre un store formato 3 reporta `:needs-rebuild` y
-nombra `include build --rebuild`, porque registrar como caché exige los archivos y no es una
-reescritura en el sitio.
+**Cómo se obtiene.** `include build --rebuild` produce el store formato 4 (reconstruye desde
+los archivos; es el camino para un store `:git :ignore`): registrar como caché exige los
+archivos y no es una reescritura en el sitio.
 
 **Medido en este repo** (desk de 433 KB, 539 documentos; antes = formato 3 de S1b, después =
 formato 4; `include build --rebuild` en ambos):
@@ -504,23 +478,23 @@ el plan (907 KB) fijan el tamaño; el árbol ya no está en el store (tree-objec
 texto 168 KB → 0). `bb store-size [DIR]` reproduce la tabla y mide el caché aparte; detalle por
 clase en `runs/research/2026-10-08/S1c-report.md §2` (medición `store-size-after.txt`).
 
-### 11.2 El mapa de rutas: de mapa plano a árbol Merkle por ruta (K2a, corte C5)
+### 11.2 El mapa de rutas: árbol Merkle por ruta (K2a, corte C5)
 
-El registro por ruta de lo trackeado (`kimun.kernel.route`, contrato de la superficie en
-`06 §3` «Rutas de lo trackeado») tiene dos esquemas. El formato del store sigue siendo 4 y
-`heads.edn` conserva sus claves (`:routes-root`, `:routes-object`); lo que cambia es el objeto
-que `:routes-object` nombra y cómo se calcula `:routes-root`.
+El registro por ruta de lo trackeado (`kimun.kernel.route` valida las entradas,
+`kimun.kernel.route-tree` guarda el árbol; contrato de la superficie en `06 §3` «Rutas de lo
+trackeado») es un árbol Merkle por ruta: esquema 2, `kimun.route/2`. `store.edn` lleva
+`:route-schema 2` y `heads.edn` conserva sus claves (`:routes-root`, `:routes-object`).
 
-| | esquema 1 (`kimun.route/1`) | esquema 2 (`kimun.route/2`) |
-|---|---|---|
-| objeto | **un** mapa `ruta → entrada` con todas las rutas | un nodo por **directorio** (`kimun.kernel.route-tree`) |
-| `:routes-root` | digest de la lista ordenada de entradas (5 campos) | hash de ruta del nodo raíz |
-| `:routes-object` | digest del mapa completo, con `:tree-id` | id CAS del nodo raíz |
-| escribir una ruta | reescribe el mapa entero | reescribe **enteros** los nodos de su camino: tantos nodos como segmentos, y un trabajo igual a la suma de los hijos directos de esos directorios |
-| abrir | lee y rehashea el mapa entero | lee y comprueba **solo el nodo raíz** (sus hijos directos) |
-| buscar una ruta | en memoria, tras leer todo | un nodo por segmento, cada uno leído y rehasheado entero |
-| comparar dos raíces | diff de las dos listas completas | baja solo por donde los hashes difieren |
-| caché `cache/routes/` | espejo derivado del mapa | no se usa: los nodos son objetos del CAS |
+| | esquema 2 |
+|---|---|
+| objeto | un nodo por **directorio** (`kimun.kernel.route-tree`) |
+| `:routes-root` | hash de ruta del nodo raíz |
+| `:routes-object` | id CAS del nodo raíz |
+| escribir una ruta | reescribe **enteros** los nodos de su camino: tantos nodos como segmentos, y un trabajo igual a la suma de los hijos directos de esos directorios |
+| abrir | lee y comprueba **solo el nodo raíz** (sus hijos directos) |
+| buscar una ruta | un nodo por segmento, cada uno leído y rehasheado entero |
+| comparar dos raíces | baja solo por donde los hashes difieren |
+| caché | ninguna: los nodos son objetos del CAS |
 
 **Nodo del árbol.**
 
@@ -531,7 +505,7 @@ que `:routes-object` nombra y cómo se calcula `:routes-root`.
 ```
 
 Un hijo tiene `:entry` (una ruta trackeada termina ahí), `:dir` (hay rutas más abajo) o ambos
-(el esquema 1 admite `a` y `a/b.md` a la vez; el árbol no rechaza lo que aquel aceptaba). Un
+(`a` y `a/b.md` a la vez). Un
 nodo que no es la raíz nunca queda vacío: el árbol es función de sus entradas y no del orden
 de las escrituras que lo construyeron.
 
@@ -543,43 +517,10 @@ contra lo que su padre registró (hash de ruta y cuenta); si no coincide es `rou
 (exit 5) **en esa rama**, y las demás siguen respondiendo. `stores verify` rehashea todos los
 nodos alcanzables como cualquier otro objeto.
 
-**Compatibilidad: ningún store cambia sin que se pida.**
-
-- `store.edn` de un store **nuevo** lleva `:route-schema 2`. Un `store.edn` sin esa clave —todo
-  store creado antes de este corte— es esquema 1.
-- Un store de esquema 1 **abre, responde y escribe como antes**: mapa plano, la misma raíz, su
-  caché derivado. Una escritura no lo convierte y `store.edn` no se toca.
-- Mientras el store no tiene rutas decide `store.edn`; cuando las tiene, decide el objeto que
-  nombran las cabeceras (su `:route/version`).
-- `stores check` informa `:routes-schema` (1 o 2).
-- El **replay** (`replay-open`, `verify-full`) aplica cada escritura con el esquema que declara
-  `store.edn`, y compara las cabeceras resultantes con `heads.edn`.
-
-**Pasar de 1 a 2 es explícito**, por una de dos vías:
-
-1. `kimun stores upgrade` sobre un store formato 4 de esquema 1
-   (`kimun.kernel.store/upgrade-routes!`): escribe los nodos del árbol con **las mismas
-   entradas, `:tree-id` incluidos**, reemplaza las cabeceras bajo el lock de escritura (falla
-   con `store/stale` si otro escritor las movió) y graba `:route-schema 2`. No agrega
-   transacción ni revisión; el log no se mueve; documentos, árboles e historial quedan igual.
-   Después rehashea todo lo alcanzable y, si eso falla, repone las cabeceras y `store.edn`
-   anteriores. Interrumpido entre cabeceras y `store.edn`, el store abre y escribe como
-   esquema 2 y una segunda llamada lo completa.
-2. `kimun include build --rebuild`, que crea un store nuevo (esquema 2 desde el inicio).
-
-**La raíz cambia al pasar de esquema.** Es otro cálculo sobre las mismas entradas, y el comando
-devuelve las dos (`:routes-root-before`, `:routes-root`). Dos raíces de esquemas distintos no
-se comparan entre sí. Un store actualizado y uno nacido en esquema 2 con los mismos archivos
-tienen la misma raíz, porque el árbol no depende de la historia.
-
-**Un mapa plano que no se puede leer no se actualiza.** Si la raíz de un store de esquema 1 no
-corresponde a su mapa, `upgrade-routes!` falla con `store/error` y no escribe nada: se
-reconstruye primero. Nada se inventa.
-
-**Un binario anterior a este corte** no conoce el esquema 2: sobre un store de esquema 2 falla
-al abrir con `store/corrupt-head` (`:not-a-route-map`). Falla cerrado, pero el mensaje habla
-de corrupción y no de versión. No se subió la versión de formato para no forzar la migración
-de todos los stores formato 4.
+**Un store sin esquema 2 no se abre.** Su `store.edn` sin `:route-schema 2` falla con
+`store/unsupported-format` (§8). `stores check` informa `:route-count` y `:routes-root`. El
+**replay** (`replay-open`, `verify-full`) aplica cada escritura sobre el árbol y compara las
+cabeceras resultantes con `heads.edn`.
 
 **Límites.**
 
@@ -588,7 +529,7 @@ de todos los stores formato 4.
   Cada uno de esos nodos se lee, se rehashea y se reescribe **entero**, de modo que el trabajo y
   los bytes escritos son proporcionales a los hijos directos de los directorios del camino. Un
   directorio ancho cuesta en proporción a su ancho, y un store con todos sus archivos en **un**
-  directorio (o en la raíz) paga por todas las rutas en cada escritura, igual que el esquema 1.
+  directorio (o en la raíz) paga por todas las rutas en cada escritura.
   Lo medido: 2000 rutas en 20 directorios de 7 subdirectorios tocan 3 nodos por escritura, y
   eso prueba **nodos tocados**, no bytes; con las mismas 2000 rutas en un solo directorio se
   tocan 2 nodos y uno lleva las 2000 entradas (`kimun.kernel.route-tree-test`,
@@ -596,7 +537,7 @@ de todos los stores formato 4.
 - `14 §20` pide que el cambio suba a la raíz y se pueda bajar solo por la rama que cambió; eso
   está. **No** está un coste sublineal dentro de un directorio plano. Si K2a lo exige, es un
   pendiente: un índice con fan-out por directorio sería otra forma de nodo, es decir otro
-  esquema de rutas con su propio paso explícito.
+  esquema de rutas.
 - Los nodos reemplazados quedan en `objects/` sin referencia, como los demás objetos
   superados; recolectarlos es K5.
 - Enumerar todas las rutas (`stores check`, la cobertura) sigue leyendo el árbol entero.
@@ -619,16 +560,14 @@ todavía un comando que borre.**
   nombran las cabeceras. No hay política de retención: nada de la historia se considera
   prescindible.
 - **No alcanzable** = guardado y no alcanzado. Cada uno se lee del store mismo (nunca del caché),
-  se rehashea y cae en una de tres listas:
+  se rehashea y cae en una de dos listas:
 
 | lista | qué es | qué se puede decir |
 |---|---|---|
-| `:held` | un plan resuelto (`:plan`) cuyo id nombra una línea **confirmada** del log (formatos 1–3 guardan los planes en el CAS) | el recorrido no lo sigue, pero sin él el log no se puede reproducir (`verify-full` responde `:replay-unavailable`). **No es candidato** |
 | `:damaged` | no hashea a su nombre, o no se puede leer | su clase no es confiable: solo se informa |
 | `:candidates` | el resto, con su clase por forma y `:root?` | nada conocido lo necesita **en el momento del inventario** |
 
-**Clases** (por forma, `store/object-class`): `revision`, `mmap-leaf`, `mmap-branch`, `route-map`
-(esquema 1), `route-node` (esquema 2), `plan`, `descriptor`, `node`, `edge`, `tree-object`,
+**Clases** (por forma, `store/object-class`): `revision`, `mmap-leaf`, `mmap-branch`, `route-node`, `descriptor`, `node`, `edge`, `tree-object`,
 `unknown`. La clase dice qué es el objeto, no por qué quedó ahí.
 
 **Qué se puede leer de los candidatos sin adivinar.**
@@ -656,15 +595,12 @@ todavía un comando que borre.**
 - **«Menciona»** es toda cadena con forma de id dentro del objeto: un superconjunto de sus
   referencias. Puede marcar como no-raíz un objeto que nadie referencia de verdad; nunca al
   revés.
-- No se miran referencias desde fuera del store (otro store enlazado, el índice derivado,
-  `upgrade-format-1.edn`). No se conoce ninguna que apunte a objetos de `objects/`; no está
-  demostrado que no exista.
+- No se miran referencias desde fuera del store (otro store enlazado, el índice derivado).
+  No se conoce ninguna que apunte a objetos de `objects/`; no está demostrado que no exista.
 
 **Comprobación de solidez** (`kimun.kernel.unreachable-test`): sobre una **copia** de un store,
 borrar todos los candidatos deja un store que abre en la misma cabecera, con las mismas rutas,
 que pasa `verify` y `verify-full` (el log sigue reproduciéndose) y acepta una escritura nueva.
-Borrar un plan `:held` deja `verify` en verde y el replay no disponible: por eso no es
-candidato.
 
 ### 11.4 Packs de objetos pequeños (K4, primer corte)
 

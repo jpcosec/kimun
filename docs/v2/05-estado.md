@@ -12,8 +12,8 @@ no es identidad — `14 §21`). Cada capacidad tiene un dueño:
 
 - **Kernel (formatos 2, 3 y 4)** — pool de nodos S/M/G, árboles de posiciones con Merkle, aristas
   tipadas con evidencia, revisiones inmutables con sucesión, estados de anclaje derivados y
-  reconciliación de ediciones externas. `open` lee las cabezas sin replay y `stores upgrade`
-  pasa un store 1→2 (reconstruido), 2→3 (en el sitio) o 3→4 (pide `include build --rebuild`). En formato 4 un documento con archivo se registra (anchor + clase + hashes) y su árbol vive en un caché por hash. Contrato: `02-sustrato-computacional.md`;
+  reconciliación de ediciones externas. `open` lee las cabezas sin replay; solo se lee el
+  formato 4 (un store anterior se reconstruye con `include build --rebuild`). En formato 4 un documento con archivo se registra (anchor + clase + hashes) y su árbol vive en un caché por hash. Contrato: `02-sustrato-computacional.md`;
   forma en disco: `10-escala.md`.
 - **Superficie Markdown** — perfil cerrado SLDB-MD: texto → CST → AST neutro → árbol de
   documento en el pool, render canónico y reingesta de ficheros editados por fuera. Dueño:

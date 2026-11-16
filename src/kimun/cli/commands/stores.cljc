@@ -1,7 +1,7 @@
 (ns kimun.cli.commands.stores
   "The `kimun stores` group (docs/v2/06 §3): `init`, `check`, `health`,
    `sense`, `heartbeat`, `update`, `reconcile`, `verify`, `unreachable`, `pack`,
-   `unpack`, `upgrade`, `show`, and the federation commands `link`, `unlink` and
+   `unpack`, `show`, and the federation commands `link`, `unlink` and
    `links`. Every
    command is `(fn [args opts ctx] envelope)` where `args` are the positional
    tokens after the subcommand and `ctx` is `{:env env :cwd cwd}`; `dispatch`
@@ -25,8 +25,7 @@
             [kimun.kernel.ports :as ports]
             [kimun.kernel.plan :as plan]
             [kimun.kernel.revision :as revision]
-            [kimun.kernel.store :as store]
-            [kimun.kernel.upgrade :as upgrade]))
+            [kimun.kernel.store :as store]))
 
 (defn- store-ref [descriptor path] {:name (:name descriptor) :path path})
 
@@ -74,9 +73,7 @@
 (defn check
   "`stores check`: opens the store (replaying the log) and reports
    `{:name :path :hash-alg :revisions :trees :objects :head :links}` (plus
-   `:routes-root`, `:routes-schema` (2 = Merkle tree by path, 1 = the flat map
-   of a store written before it, which `stores upgrade` moves to 2),
-   `:route-count`, `:routes-complete?`, `:routes-missing`,
+   `:routes-root`, `:route-count`, `:routes-complete?`, `:routes-missing`,
    `:routes-shared` and `:routes-outside` once a document with a file is
    registered: the root of the route Merkle of K2a, the routes under it and
    what it does not cover — documents registered before routes existed
@@ -112,7 +109,6 @@
                  ;; tracked: what it leaves out (unrouted, shared or outside the project) is listed with it
                  (or (:routes-root store) (some #(seq (get coverage %)) [:missing :shared :outside]))
                  (assoc :routes-root (:routes-root store)
-                        :routes-schema (revision/route-schema store)
                         :route-count (err/rescue-any (fn [_] nil) (count (:routes store)))
                         :routes-complete? (every? #(empty? (get coverage %)) [:missing :shared :outside])
                         :routes-missing (mapv :qualified (:missing coverage))
@@ -445,13 +441,11 @@
    - `:lost-revisions` `[id]`: candidates that are revisions, i.e. commits that
      are not in the history of the head (a writer that lost the race, or the
      uncommitted tail).
-   - `:held` `{:count :bytes :by-class}`: resolved plans a committed log line
-     names; without them the log cannot be replayed, they are not candidates.
    - `:damaged` `[{:id :reason}]`: unreachable objects that do not hash to
      their name or do not read; only reported.
    - `:stable?`: false when the heads moved while the inventory was taken.
    - `:uncommitted-tail` when the log ends with a line the heads do not record.
-   - with `--ids`, `:ids {:candidates [{:id :class :root? :bytes}] :held […]}`.
+   - with `--ids`, `:ids {:candidates [{:id :class :root? :bytes}]}`.
 
    Bytes are file sizes, not disk blocks. A candidate is not known to be
    garbage: a writer stores its objects before it moves the heads, so an
@@ -471,12 +465,10 @@
                             :candidates (tally backend (:candidates r))
                             :roots (tally backend (filter :root? (:candidates r)))
                             :lost-revisions (mapv :id (filter #(= :revision (:class %)) (:candidates r)))
-                            :held (tally backend (:held r))
                             :damaged (:damaged r)
                             :stable? (:stable? r)}
                      tail (assoc :uncommitted-tail (select-keys tail [:id :revision :torn-line]))
-                     (:ids opts) (assoc :ids {:candidates (mapv size (:candidates r))
-                                              :held (mapv size (:held r))}))
+                     (:ids opts) (assoc :ids {:candidates (mapv size (:candidates r))}))
              :warnings (if (:stable? r)
                          []
                          [{:type "unreachable/unstable"
@@ -486,15 +478,6 @@
   "The largest `stores pack --max-bytes` accepts: a pack record is held in
    memory while it is written, so the option has a ceiling."
   16777216)
-
-(defn- pack-only!
-  "Raises :store/error unless `descriptor` is a format-4 store: packs are part of
-   the format-4 layout (docs/v2/10 §11.4)."
-  [descriptor path what]
-  (when-not (= 4 (:format-version descriptor))
-    (err/raise :store/error
-               (str what " needs a format-4 store; " path " is format " (:format-version descriptor))
-               {:path path :format-version (:format-version descriptor)})))
 
 (defn- checked-max-bytes
   "`--max-bytes` as a long in [1, max-pack-bytes], or nil when it was not given;
@@ -515,7 +498,7 @@
   "`stores pack [--max-bytes N] [--cache]`: moves the loose objects smaller than
    N bytes (default 4096) into a new pack and removes the loose copies
    (`kimun.host.fs-store/pack!`; docs/v2/10 §11.4 for the store, §11.5 for the
-   cache). Explicit and never part of a commit; only a format-4 store. `--cache`
+   cache). Explicit and never part of a commit. `--cache`
    packs the DERIVED cache (`cache/objects` → `cache/packs`), which is not the
    store: it also drops the cache packs that cannot be loaded, deletes a loose
    cache object that does not hash to its name and deletes a loose object a
@@ -529,7 +512,6 @@
   [_args opts {:keys [env cwd]}]
   (let [path (cli-store/resolve-store opts env cwd)
         {:keys [backend descriptor]} (cli-store/open! path)
-        _ (pack-only! descriptor path "stores pack")
         max-bytes (checked-max-bytes opts)
         cache? (:cache opts)
         r (if cache?
@@ -560,13 +542,12 @@
 
 (defn unpack
   "`stores unpack`: writes every packed object back to `objects/` and removes the
-   pack (`kimun.host.fs-store/unpack!`; docs/v2/10 §11.4). Only a format-4 store.
+   pack (`kimun.host.fs-store/unpack!`; docs/v2/10 §11.4).
    The store is verified after unpacking: a failure is `store/corrupt` (exit 5).
    Data: `{:path :packs :unpacked :checked}`."
   [_args opts {:keys [env cwd]}]
   (let [path (cli-store/resolve-store opts env cwd)
         {:keys [backend descriptor]} (cli-store/open! path)
-        _ (pack-only! descriptor path "stores unpack")
         r (fs-store/unpack! backend)
         reopened (cli-store/open! path)
         v (store/verify (:backend reopened) (:store reopened))]
@@ -579,157 +560,6 @@
                    (str (count (:bad v)) " problem(s) after unpacking " path)
                    {:path path :checked (:checked v) :bad (:bad v)}
                    5))))
-
-(def ^:private layout
-  "Entries of a store directory that the upgrade rebuilds, or drops: the
-   derived index is keyed by revision ids that the upgrade replaces
-   (`rebuild-indexes` writes it again)."
-  #{"objects" "log.edn" "heads.edn" "store.edn" "lock" "index"})
-
-(defn- stamp [] (str/replace (docs/timestamp) #"[^0-9]" ""))
-
-(defn- upgrade-routes
-  "The data of `stores upgrade` on the format-4 store at `dir` (backend `b`):
-   moves its route map from schema 1 to schema 2
-   (`kimun.kernel.store/upgrade-routes!`), then rehashes every reachable
-   object. When that check fails the previous heads and store.edn are put
-   back and the failure is `store/corrupt`."
-  [b dir]
-  (let [descriptor (store/read-descriptor b)
-        heads (store/read-heads b)
-        t0 (System/nanoTime)
-        r (store/upgrade-routes! b host/host)]
-    (if-not (:upgraded r)
-      {:upgraded false :format-version 4 :route-schema (:route-schema r) :path dir}
-      (let [v (try (store/verify b (store/open b host/host))
-                   (catch Exception e {:ok? false :bad [{:reason :open-failed :message (ex-message e)}]}))]
-        (when-not (:ok? v)
-          (when (:routes-root r) (store/swap-heads! b (store/read-heads b) heads))
-          (store/write-descriptor! b descriptor)
-          (err/raise :store/corrupt "the store did not verify after the route upgrade; the previous heads were restored"
-                     {:path dir :bad (:bad v)}))
-        (cond-> {:upgraded true :format-version 4 :path dir
-                 :from-route-schema 1 :route-schema 2 :routes (:routes r)
-                 :checked (:checked v)
-                 :seconds (/ (Math/round (/ (- (System/nanoTime) t0) 1e7)) 100.0)}
-          (:routes-root r) (assoc :routes-root-before (:routes-root-before r)
-                                  :routes-root (:routes-root r)
-                                  :route-nodes (:nodes r)))))))
-
-(defn upgrade-store
-  "`stores upgrade`: moves the store to the current format. A format-1 store is
-   rewritten as format 2 (`kimun.kernel.upgrade/upgrade!`: every transaction
-   re-committed in log order through the format-2 engine, then checked and
-   fully verified). The new store is built in the sibling directory
-   `<store>.upgrade-<stamp>`; the original is untouched until the new one
-   verifies, then it is renamed to `<store>.format-1-<stamp>` (a backup the user
-   may delete) and the new one takes its place. Files of the store directory
-   other than the layout are carried over (not `index/`, derived and keyed by
-   the old revision ids). `upgrade-format-1.edn` in the new store maps every old
-   revision and transaction id to its new id. A format-2 store is converted to
-   format 3 in place: its log lines `{:id :plan :revision}` become
-   `{:id :revision}` (the resolved plan is already in the CAS, invariant 17)
-   and `store.edn` records `:format-version 3`; nothing else moves and the
-   whole store is verified after the rewrite, restoring the previous files if
-   it fails. For a `:git :ignore` store the stronger path is
-   `include build --rebuild`, which reconstructs the store from the files and
-   drops the verbatim source copies. A format-3 store is not rewritten in
-   place: format 4 registers a by-reference document as cache (docs/v2/14
-   §18.6), which needs the files, so the upgrade reports
-   `:needs-rebuild true` and names `kimun include build --rebuild`. A format-4
-   store keeps its format; when its route map is of schema 1 (one flat map
-   object, every store written before the route tree) it is moved to schema 2,
-   the Merkle tree by path (docs/v2/10 §11.2): same entries, same documents,
-   same head revision, no transaction added, and a route root that changes
-   because it is computed over a tree. The data then carries
-   `{:from-route-schema 1 :route-schema 2 :routes :routes-root-before
-   :routes-root :route-nodes :checked :seconds}`. A store already of schema 2
-   is left as is (`:upgraded false :route-schema 2`). When a writer commits to the
-   original meanwhile the upgrade is abandoned with `store/stale` (exit 4).
-   Data: `{:upgraded
-   :format-version :path}` plus, when upgraded, `{:transactions :head-before
-   :backup :map :dropped-tail :checked :seconds}` (format 1) or
-   `{:transactions :dropped-plans :checked :seconds}` (format 2→3)."
-  [_args opts {:keys [env cwd]}]
-  (let [dir0 (cli-store/resolve-store opts env cwd)
-        _ (when (or (nil? dir0) (not (cli-store/store? dir0))) (cli-store/open! dir0))
-        dir (str (fs/absolutize dir0))
-        b (cli-store/backend dir)
-        descriptor (store/read-descriptor b)
-        heads-file (str (fs/path dir "heads.edn"))
-        heads-text #(when (fs/exists? heads-file) (slurp heads-file))]
-    (cond
-      (= 2 (:format-version descriptor 1))
-      (let [log-file (str (fs/path dir "log.edn"))
-            desc-file (str (fs/path dir "store.edn"))
-            log (vec (store/read-log b))
-            bad (some #(when-not (store/transaction? %) %) log)
-            _ (when bad (err/raise :store/corrupt-log "cannot upgrade: unreadable log line" {:line (or (:torn-line bad) bad)}))
-            dropped (count (filter :plan log))
-            log-text (if (seq log) (str (str/join "\n" (map #(pr-str (dissoc % :plan)) log)) "\n") "")
-            desc-text (pr-str (assoc descriptor :format-version 3))
-            old-log (when (fs/exists? log-file) (slurp log-file))
-            old-desc (slurp desc-file)
-            t0 (System/nanoTime)]
-        (spit log-file log-text)
-        (spit desc-file desc-text)
-        (let [v (try (store/verify-full b host/host)
-                     (catch Exception e {:ok? false :bad [{:reason :replay-failed :message (ex-message e)}]}))]
-          (if (:ok? v)
-            (out/ok "stores upgrade" {:store (store-ref (store/read-descriptor b) dir)
-                                       :revision (:head (store/read-heads b))
-                                       :data {:upgraded true :from-format 2 :format-version 3 :path dir
-                                              :transactions (count log) :dropped-plans dropped
-                                              :checked (:checked v)
-                                              :seconds (/ (Math/round (/ (- (System/nanoTime) t0) 1e7)) 100.0)}})
-            (do (when old-log (spit log-file old-log))
-                (spit desc-file old-desc)
-                (err/raise :store/error "the format-3 store does not verify; the log and descriptor were restored" {:bad (:bad v)})))))
-
-      (= 1 (:format-version descriptor 1))
-      (let [t (stamp)
-            tmp (str dir ".upgrade-" t)
-            backup (str dir ".format-1-" t)
-            before (heads-text)
-            head-before (:head (store/read-heads b))
-            t0 (System/nanoTime)
-            r (try (upgrade/upgrade! b (cli-store/backend tmp) host/host)
-                   (catch Exception e (fs/delete-tree tmp) (throw e)))]
-        (when (not= before (heads-text))
-          (fs/delete-tree tmp)
-          (err/raise :store/stale (str "the store at " dir " changed while it was being upgraded; run the upgrade again") {:path dir}))
-        (doseq [f (fs/list-dir dir)
-                :let [n (str (fs/file-name f))]
-                :when (not (or (layout n) (str/includes? n ".tmp-")))]
-          (if (fs/directory? f) (fs/copy-tree f (fs/path tmp n)) (fs/copy f (fs/path tmp n))))
-        (spit (str (fs/path tmp "upgrade-format-1.edn"))
-              (pr-str {:from-format 1 :to-format 2 :head-before head-before :head (:head r)
-                       :revisions (into (sorted-map) (:revisions r)) :transaction-ids (into (sorted-map) (:transaction-ids r))}))
-        (fs/move dir backup {:atomic-move true})
-        (fs/move tmp dir {:atomic-move true})
-        (out/ok "stores upgrade" {:store (store-ref descriptor dir)
-                                  :revision (:head r)
-                                  :data {:upgraded true :format-version 2 :path dir
-                                         :transactions (:transactions r)
-                                         :head-before head-before
-                                         :backup backup
-                                         :map (str (fs/path dir "upgrade-format-1.edn"))
-                                         :dropped-tail (some-> (:dropped-tail r) (select-keys [:id :revision :torn-line]))
-                                         :checked (get-in r [:verify :checked])
-                                         :seconds (/ (Math/round (/ (- (System/nanoTime) t0) 1e7)) 100.0)}}))
-
-      :else
-      (out/ok "stores upgrade" {:store (store-ref descriptor dir)
-                                :revision (:head (store/read-heads b))
-                                :data (if (= 3 (:format-version descriptor 1))
-                                        ;; format 3 → 4 registers a by-reference document as cache (no tree
-                                        ;; object, no block/text node in the CAS): it requires the files, so
-                                        ;; it is a rebuild, not an in-place rewrite (docs/v2/14 §18.6)
-                                        {:upgraded false :format-version 3 :path dir
-                                         :needs-rebuild true
-                                         :action "kimun include build --rebuild"
-                                         :message "format 3 → 4 registers documents with a file as cache; run `kimun include build --rebuild` to rebuild from the files"}
-                                        (upgrade-routes b dir))}))))
 
 (defn show
   "`stores show`: descriptor and heads without replaying the log:
@@ -804,7 +634,7 @@
 
 (def commands
   "Subcommand name → command fn."
-  {"init" init "check" check "verify" verify "upgrade" upgrade-store "show" show
+  {"init" init "check" check "verify" verify "show" show
    "link" link "unlink" unlink "links" links
    "unreachable" unreachable "pack" pack "unpack" unpack "health" health "sense" sense "heartbeat" heartbeat "update" update-store "reconcile" reconcile})
 

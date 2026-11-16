@@ -50,13 +50,11 @@
             [clojure.string :as str]
             [kimun.host.store-cache :as cache]
             [kimun.kernel.err :as err]
-            [kimun.kernel.store :as store]
-            #?@(:clj [[clojure.java.io :as io]]))
+            [kimun.kernel.store :as store])
   #?(:clj (:import [java.nio.file Files Paths StandardCopyOption StandardOpenOption]
                    [java.nio.channels FileChannel]
                    [java.nio ByteBuffer]
-                   [java.nio.charset StandardCharsets]
-                   [java.security MessageDigest])))
+                   [java.nio.charset StandardCharsets])))
 
 #?(:clj
    (do
@@ -161,12 +159,6 @@
        "The lower-case hex of bytes [off, off+len) of `arr`."
        [^bytes arr off len]
        (.formatHex hex-format arr (int off) (int (+ off len))))
-
-     (defn- sha256-hex
-       "The id a content has: lower-case hex SHA-256 of its bytes (the store's
-        only hash algorithm)."
-       [^bytes content]
-       (bytes->hex (.digest (MessageDigest/getInstance "SHA-256") content) 0 32))
 
      (defn- file-names
        "Sorted names of the regular files of directory `d` that end with
@@ -312,14 +304,14 @@
                    (let [es (persistent! entries)]
                      (when (not= claimed (count es)) (bad-pack p "the footer's record count does not match"))
                      {:entries es :count (count es) :start footer-start
-                      :digest (sha256-hex (entries->idx es)) :footer-digest footer-digest})
+                      :digest (cache/sha256-hex (entries->idx es)) :footer-digest footer-digest})
                    (let [lb (read-at ch pos 4)
                          len (when lb (.getInt (ByteBuffer/wrap lb)))]
                      (when (or (nil? len) (neg? len) (> (long len) (- footer-start pos 4)))
                        (bad-pack p "record length beyond the file"))
                      (let [content (read-at ch (+ pos 4) len)]
                        (when (nil? content) (bad-pack p "truncated record"))
-                       (let [id (sha256-hex content)]
+                       (let [id (cache/sha256-hex content)]
                          (when (and prev (not (pos? (compare id prev))))
                            (bad-pack p "records are not in strict id order"))
                          (recur (+ pos 4 len) id
@@ -360,7 +352,7 @@
              isz (when (and fits? (exists? ip)) (Files/size ip))
              arr (when (and isz (= (long isz) (* idx-entry claimed)))
                    (Files/readAllBytes ip))]
-         (when (and arr (= (bytes->hex foot 16 32) (sha256-hex arr))) arr)))
+         (when (and arr (= (bytes->hex foot 16 32) (cache/sha256-hex arr))) arr)))
 
      (defn- load-pack
        "`{:name nm :bytes <canonical index bytes> :count n :start footer-start}` of
@@ -530,14 +522,14 @@
              f (in-dir (:loose (cache-home dir)) id)
              loose (when (exists? f)
                      (when-let [bs (err/rescue-any (fn [_] nil) (Files/readAllBytes f))]
-                       (when (= id (sha256-hex bs))
+                       (when (= id (cache/sha256-hex bs))
                          (String. ^bytes bs StandardCharsets/UTF_8))))]
          (or loose
              (let [packs (cache-packs b)]
                (when-let [[arr off len] (packed-entry packs id)]
                  (let [pack (some #(when (identical? arr (:bytes %)) %) packs)]
                    (when-let [bs (pack-bytes-of (cache-home (:dir b)) pack off len)]
-                     (when (= id (sha256-hex bs))
+                     (when (= id (cache/sha256-hex bs))
                        (String. ^bytes bs StandardCharsets/UTF_8)))))))))
 
      (defn- write-bytes-atomic!
@@ -625,7 +617,7 @@
                                ;; a sound copy of that id
                                (let [content (read-bytes (in-dir (:loose home) id))]
                                  (cond
-                                   (not= id (sha256-hex content))
+                                   (not= id (cache/sha256-hex content))
                                    (do (vswap! damaged conj id) (recur pos (rest cands) acc))
                                    (contains? skip id)
                                    (do (vswap! skipped conj id) (recur pos (rest cands) acc))
@@ -636,7 +628,7 @@
                                        (recur (+ pos 4 (alength ^bytes content)) (rest cands)
                                               (conj acc [id (+ pos 4) (alength ^bytes content)])))))
                                acc))]
-                    (write-fully! ch (ByteBuffer/wrap (footer (count es) (sha256-hex (entries->idx es)))))
+                    (write-fully! ch (ByteBuffer/wrap (footer (count es) (cache/sha256-hex (entries->idx es)))))
                     (.force ch true)
                     es))]
          (if (empty? es)
@@ -648,7 +640,7 @@
                    expected (mapv first es)]
                (if (or (instance? Throwable scan)
                        (not= expected (mapv first (:entries scan)))
-                       (not= (sha256-hex (entries->idx (:entries scan))) (:footer-digest scan)))
+                       (not= (cache/sha256-hex (entries->idx (:entries scan))) (:footer-digest scan)))
                  (do (Files/deleteIfExists target)
                      (Files/deleteIfExists (idx-file home nm))
                      (err/raise :store/corrupt-pack
@@ -782,7 +774,7 @@
                                            (let [p (in-dir (:loose home) id)
                                                  res (when (exists? p) (read-bytes p))
                                                  sound? (and res (= (long len) (alength ^bytes res))
-                                                             (= id (sha256-hex res)))]
+                                                             (= id (cache/sha256-hex res)))]
                                              (if sound?
                                                n
                                                (do (write-bytes-atomic! p (read-at ch off len))
@@ -792,7 +784,7 @@
                      (let [p (in-dir (:loose home) id)]
                        (when (or (not (exists? p))
                                  (not= (long len) (Files/size p))
-                                 (not= id (sha256-hex (read-bytes p))))
+                                 (not= id (cache/sha256-hex (read-bytes p))))
                          (err/raise :store/corrupt-pack
                                     (str "store: " id " was not written back from pack " nm "; the pack was kept")
                                     {:path kdir :pack nm :id id}))))
@@ -840,9 +832,6 @@
   store/PlanCache
   (read-plan [_ tx-id] (cache/read-plan dir tx-id))
   (write-plan! [_ tx-id plan] (cache/write-plan! dir tx-id plan))
-  store/RouteCache
-  (read-routes [_ root head] (cache/read-routes dir root head))
-  (write-routes! [_ root head routes] (cache/write-routes! dir root head routes))
   store/Backend
   (read-descriptor [_]
     #?(:clj (some-> (read-text (path dir "store.edn")) edn/read-string)))
@@ -916,19 +905,6 @@
                       (let [new-text (pr-str new)]
                         (write-atomic! hp new-text)
                         (reset! heads-memo {:text new-text :value new}))
-                      true)))))))
-  store/HeadsSwap
-  (swap-heads! [_ expected new]
-    #?(:clj (with-store-lock dir wait?
-              (fn []
-                (let [hp (path dir "heads.edn")
-                      text (read-text hp)
-                      current (if (nil? text) store/no-heads (edn/read-string text))]
-                  (if (not= current expected)
-                    false
-                    (let [new-text (pr-str new)]
-                      (write-atomic! hp new-text)
-                      (reset! heads-memo {:text new-text :value new})
                       true)))))))
   store/StoredObjects
   (read-stored-object [this id]

@@ -117,7 +117,7 @@
    registered under the generic class (K3, docs/v2/14 §18.1): its external
    anchor, the class `generic/md` and the root hash enter the store and its
    tree is cache — `:class` and `:anchor` (the relative path) are in the data,
-   and the file is watched by `stores sense`. In an `:inline` or format-1
+   and the file is watched by `stores sense`. In an `:inline`
    store, or for a file outside the project, the tree is persisted as before.
    Data: `{:name :tree :path :blocks}` plus `:class :anchor` when registered.
    Raises `:docs/exists` (exit 3) when a document with that name is already in

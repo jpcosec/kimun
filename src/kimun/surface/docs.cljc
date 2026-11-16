@@ -28,8 +28,8 @@
      contract the document was parsed and extracted under with its digest
      (`kimun.surface.parse-contract`, K6). A document written before K6 has no
      `:parse-contract`; it gains one the next time it is written.
-   Reading an old store that still holds the verbatim source sign
-   (`{markdown/source blob}`) is supported: its text wins over the file.
+   An inline document holds the verbatim source sign (`{markdown/source blob}`):
+   its text wins over the file.
    Untracking removes those edges; the tree stays in history and is hidden.
 
    Names (K8, docs/v2/06 §3 «Nombres de documento»): a document's `:name` is a
@@ -121,11 +121,11 @@
 (defn- target [store e] (get-in store [:objects (:to e)]))
 (defn- model-node? [n] (= mstore/blob-format (get-in n [:content :format])))
 (defn- stored-source?
-  "True for the verbatim source sign of a format-2 store (no longer written)."
+  "True for the verbatim source sign of an inline document."
   [n] (= source-format (get-in n [:content :format])))
 (defn- source-or-file?
   "True for the two signs a document owns besides its model binding: its
-   file on disk (or its legacy stored source text)."
+   file on disk (or, inline, its stored source text)."
   [n]
   (or (stored-source? n) (= :external (:kind n))))
 
@@ -138,7 +138,7 @@
 
 (defn- source-of
   "The document's source text — the text it was tracked with: the verbatim
-   sign of a format-2 store when it is still there, else the file the anchor
+   sign of an inline document when there is one, else the file the anchor
    points to while its fingerprint still matches what was recorded (the file
    IS the tracked text then), else the canonical rendering of the document
    tree (the tracked structure, when the file was edited outside the store).
@@ -868,7 +868,7 @@
         payload (extract-under (:descriptor m) (map :descriptor lineage) text)
         ch (content-hash host payload)
         inline? (or inline (= :inline (:content store)))
-        cached? (and path (not inline?) (not (revision/legacy? store)))
+        cached? (and path (not inline?))
         engines (meta-engines {:operation (or operation "docs track") :address (str model ":" name)
                                :fields (changed-fields {} payload)})
         ;; units live in the descriptor a `:register-tree` writes: only a by-reference document has one
@@ -911,7 +911,7 @@
         path (or path (:path doc))
         ch (content-hash host payload)
         inline? (or inline (:inline doc))
-        cached? (and path (not inline?) (not (revision/legacy? store)))
+        cached? (and path (not inline?))
         ;; only a by-reference document persists units (in its registry descriptor); an inline or
         ;; legacy one has none, and must not look "moved" for lacking them
         ;; an explicit `:units` is a DECLARATION (a closure, a move: K1f): taken as given, nothing minted
@@ -979,10 +979,10 @@
 
 (defn generic-registrable?
   "True when a document without a model is registered by reference in `store`
-   (class `generic-class`, tree as cache): the store is not a format-1 one and
-   its content mode is not `:inline` — the rule typed documents follow. Otherwise its tree is persisted, as before K3."
+   (class `generic-class`, tree as cache): the content mode of `store` is not
+   `:inline` — the rule typed documents follow. Otherwise its tree is persisted."
   [store]
-  (and (not (revision/legacy? store)) (not= :inline (:content store))))
+  (not= :inline (:content store)))
 
 (defn- generic-ops
   "Ops registering the file `path` with text `text` as the generic document

@@ -16,9 +16,3 @@
    :ids       ulid/minter
    :segmenter text/segmenter
    :lazy-maps lazy/maps})
-
-(defn layer-cache
-  "A fresh memo for `kimun.kernel.standoff/layers`: an atom holding a map keyed
-   by leaf id. The host composes the memo and hands it to the kernel as an
-   argument, so the kernel keeps no global mutable state (docs/v2/03 §1)."
-  [] (atom {}))

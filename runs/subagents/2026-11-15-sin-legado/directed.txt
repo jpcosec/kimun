@@ -1,0 +1,126 @@
+### kimun.kernel.anchor-test kimun.kernel.canon-test kimun.kernel.edge-test kimun.kernel.hardening-test kimun.kernel.mmap-test kimun.kernel.node-test kimun.kernel.plan-test kimun.kernel.reconcile-test kimun.kernel.revision-format2-test kimun.kernel.revision-test kimun.kernel.route-store-test kimun.kernel.route-test kimun.kernel.route-tree-store-test kimun.kernel.route-tree-test kimun.kernel.store-test kimun.kernel.tree-test kimun.kernel.unreachable-test kimun.host.pack-test
+
+Testing kimun.kernel.anchor-test
+
+Testing kimun.kernel.canon-test
+
+Testing kimun.kernel.edge-test
+
+Testing kimun.kernel.hardening-test
+
+Testing kimun.kernel.mmap-test
+
+Testing kimun.kernel.node-test
+
+Testing kimun.kernel.plan-test
+
+Testing kimun.kernel.reconcile-test
+
+Testing kimun.kernel.revision-format2-test
+
+Testing kimun.kernel.revision-test
+
+Testing kimun.kernel.route-store-test
+
+Testing kimun.kernel.route-test
+
+Testing kimun.kernel.route-tree-store-test
+
+Testing kimun.kernel.route-tree-test
+
+Testing kimun.kernel.store-test
+
+Testing kimun.kernel.tree-test
+
+Testing kimun.kernel.unreachable-test
+
+Testing kimun.host.pack-test
+
+Ran 219 tests containing 1211 assertions.
+0 failures, 0 errors.
+### kimun.cli.stores-test kimun.cli.include-test kimun.cli.identity-carry-test kimun.cli.model-carry-test kimun.cli.routes-test kimun.cli.route-schema-test kimun.cli.migrate-test
+
+Testing kimun.cli.stores-test
+
+Testing kimun.cli.include-test
+
+Testing kimun.cli.identity-carry-test
+
+Testing kimun.cli.model-carry-test
+
+Testing kimun.cli.routes-test
+
+Testing kimun.cli.route-schema-test
+
+Testing kimun.cli.migrate-test
+SKIPPED kimun.cli.migrate-test/real-store-sample-extracts-as-in-v1: /home/jp/proyectos/hum-ecosystem/tools/sldb/.sldb is not on this machine
+
+Ran 62 tests containing 530 assertions.
+0 failures, 0 errors.
+### kimun.cli.docs-test kimun.cli.typed-docs-test kimun.cli.generic-docs-test kimun.cli.cold-cache-test kimun.cli.journal-test kimun.cli.pack-test kimun.cli.cache-pack-test kimun.cli.unreachable-test kimun.doc14-contract-test kimun.cli.c4-route-rebuild-test kimun.cli.cache-verified-test kimun.cli.fault-injection-test
+
+Testing kimun.cli.docs-test
+
+Testing kimun.cli.typed-docs-test
+
+Testing kimun.cli.generic-docs-test
+
+Testing kimun.cli.cold-cache-test
+
+Testing kimun.cli.journal-test
+
+Testing kimun.cli.pack-test
+
+Testing kimun.cli.cache-pack-test
+
+Testing kimun.cli.unreachable-test
+
+Testing kimun.doc14-contract-test
+
+Testing kimun.cli.c4-route-rebuild-test
+
+Testing kimun.cli.cache-verified-test
+
+Testing kimun.cli.fault-injection-test
+
+Ran 81 tests containing 923 assertions.
+0 failures, 0 errors.
+### kimun.surface.journal-test kimun.surface.include-test kimun.cli.main-test kimun.cli.sense-test kimun.cli.links-test kimun.cli.contract-test kimun.cli.golden-test kimun.cli.tour-test kimun.cli.release-test kimun.cli.heartbeat-test kimun.cli.diagnostics-test kimun.cli.docs-anchors-test kimun.lint-test kimun.wittgenstein-manifest-test kimun.cli.names-test kimun.cli.field-units-test kimun.cli.marks-test
+
+Testing kimun.surface.journal-test
+
+Testing kimun.surface.include-test
+
+Testing kimun.cli.main-test
+
+Testing kimun.cli.sense-test
+
+Testing kimun.cli.links-test
+
+Testing kimun.cli.contract-test
+
+Testing kimun.cli.golden-test
+
+Testing kimun.cli.tour-test
+
+Testing kimun.cli.release-test
+release_test: bundle --version in 400 ms
+
+Testing kimun.cli.heartbeat-test
+
+Testing kimun.cli.diagnostics-test
+
+Testing kimun.cli.docs-anchors-test
+
+Testing kimun.lint-test
+
+Testing kimun.wittgenstein-manifest-test
+
+Testing kimun.cli.names-test
+
+Testing kimun.cli.field-units-test
+
+Testing kimun.cli.marks-test
+
+Ran 104 tests containing 1950 assertions.
+0 failures, 0 errors.

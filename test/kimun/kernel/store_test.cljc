@@ -132,15 +132,14 @@
 
 (defn- ex-of [f] (try (f) nil (catch #?(:clj clojure.lang.ExceptionInfo :cljs :default) e (ex-data e))))
 (defn- heads-of
-  "What heads.edn records for `s` (format 2: the per-tree heads as an mmap root)."
+  "What heads.edn records for `s` (the per-tree heads as an mmap root)."
   [s] (store/heads-record s))
 
 (deftest two-writers-on-the-same-loaded-store-the-loser-leaves-nothing-visible
-  (doseq [[kind mk] [[:fs #(fs/backend (tmp-dir))] [:memory mem-backend]]
-          fv [1 2]]
-    (testing (str kind " backend, format " fv)
+  (doseq [[kind mk] [[:fs #(fs/backend (tmp-dir))] [:memory mem-backend]]]
+    (testing (str kind " backend")
       (let [b (mk)
-            s0 (store/init! b h {"jp" :all} {:format-version fv})
+            s0 (store/init! b h {"jp" :all})
             loaded (:store (store/commit! b s0 (doc-plan s0 1)))   ; both writers hold this value
             winner (store/commit! b loaded (doc-plan loaded 2))
             log-before (store/read-log b)
@@ -169,19 +168,18 @@
 
 #?(:clj
    (deftest concurrent-writers-on-the-fs-backend-exactly-one-wins
-     (doseq [fv [1 2]]
-       (let [dir (tmp-dir)
-             b (fs/backend dir)
-             s0 (store/init! b h {"jp" :all} {:format-version fv})
-             loaded (:store (store/commit! b s0 (doc-plan s0 1)))
-             results (mapv deref (mapv (fn [i] (future (try (store/commit! (fs/backend dir) loaded (doc-plan loaded (+ 2 i))) :won
-                                                           (catch clojure.lang.ExceptionInfo e (:type (ex-data e))))))
-                                       (range 8)))]
-         (is (= {:won 1 :store/stale 7} (frequencies results)))
-         (is (= 2 (count (store/read-log b))) "one line per winner, none per loser")
-         (let [reopened (store/replay-open b h)]
-           (is (= 2 (rev/tree-count reopened)))
-           (is (:ok? (store/verify b reopened))))))))
+     (let [dir (tmp-dir)
+           b (fs/backend dir)
+           s0 (store/init! b h {"jp" :all})
+           loaded (:store (store/commit! b s0 (doc-plan s0 1)))
+           results (mapv deref (mapv (fn [i] (future (try (store/commit! (fs/backend dir) loaded (doc-plan loaded (+ 2 i))) :won
+                                                         (catch clojure.lang.ExceptionInfo e (:type (ex-data e))))))
+                                     (range 8)))]
+       (is (= {:won 1 :store/stale 7} (frequencies results)))
+       (is (= 2 (count (store/read-log b))) "one line per winner, none per loser")
+       (let [reopened (store/replay-open b h)]
+         (is (= 2 (rev/tree-count reopened)))
+         (is (:ok? (store/verify b reopened)))))))
 
 (deftest log-tail-rule
   (let [tx (fn [r] {:id (str "t" r) :plan {} :revision r})
@@ -204,14 +202,13 @@
    (deftest a-writer-dead-between-log-append-and-heads-write-is-ignored-reported-and-repaired
      ;; the half-written state is produced through the files of the backend: what
      ;; commit-tx! leaves when the process dies after its append (or inside it)
-     (doseq [fv [1 2]
-             [case-name first-commit? dead-line] [[:whole-line false (fn [r] (str (pr-str (:transaction r)) "\n"))]
+     (doseq [[case-name first-commit? dead-line] [[:whole-line false (fn [r] (str (pr-str (:transaction r)) "\n"))]
                                                   [:torn-line false (fn [r] (subs (pr-str (:transaction r)) 0 40))]
                                                   [:first-commit-of-the-store true (fn [r] (str (pr-str (:transaction r)) "\n"))]]]
-       (testing (str "format " fv " " case-name)
+       (testing (str case-name)
          (let [dir (tmp-dir)
                b (fs/backend dir)
-               s0 (store/init! b h {"jp" :all} {:format-version fv})
+               s0 (store/init! b h {"jp" :all})
                committed (if first-commit? s0 (:store (store/commit! b s0 (doc-plan s0 1))))
                dead (rev/apply-plan committed (doc-plan committed 2))
                n (if first-commit? 0 1)]
@@ -235,23 +232,23 @@
 
 #?(:clj
    (deftest a-log-that-does-not-end-at-the-heads-refuses-further-commits
-     (doseq [fv [1 2]]
-       (let [dir (tmp-dir)
-             b (fs/backend dir)
-             s0 (store/init! b h {"jp" :all} {:format-version fv})
-             s1 (:store (store/commit! b s0 (doc-plan s0 1)))
-             r2 (rev/apply-plan s1 (doc-plan s1 2))
-             r3 (rev/apply-plan (:store r2) (doc-plan (:store r2) 3))
-             _ (spit (str dir "/log.edn") (str (pr-str (:transaction r2)) "\n" (pr-str (:transaction r3)) "\n") :append true)
-             log-before (slurp (str dir "/log.edn"))
-             heads-before (store/read-heads b)]
-         (is (nil? (store/uncommitted-tail b)) "two lines beyond the heads are not a dead writer's tail")
-         (is (= :store/error (:type (ex-of #(store/replay-open b h)))) "the full replay refuses")
-         (is (= [:replay-failed] (map :reason (:bad (store/verify-full b h)))) "and the full verification reports it")
-         (is (some #{:log-heads-mismatch} (map :reason (:bad (store/verify b s1)))) "the cheap check sees a log that does not end at the heads")
-         (is (= :store/error (:type (ex-of #(store/commit! b s1 (doc-plan s1 4))))) "a holder of the recorded heads cannot commit on top")
-         (is (= log-before (slurp (str dir "/log.edn"))))
-         (is (= heads-before (store/read-heads b)))))))
+     (let [dir (tmp-dir)
+           b (fs/backend dir)
+           s0 (store/init! b h {"jp" :all})
+           s1 (:store (store/commit! b s0 (doc-plan s0 1)))
+           r2 (rev/apply-plan s1 (doc-plan s1 2))
+           r3 (rev/apply-plan (:store r2) (doc-plan (:store r2) 3))
+           _ (doseq [r [r2 r3]] (store-cache/write-plan! dir (:id (:transaction r)) (:plan (:transaction r))))
+           _ (spit (str dir "/log.edn") (str (pr-str (dissoc (:transaction r2) :plan)) "\n" (pr-str (dissoc (:transaction r3) :plan)) "\n") :append true)
+           log-before (slurp (str dir "/log.edn"))
+           heads-before (store/read-heads b)]
+       (is (nil? (store/uncommitted-tail b)) "two lines beyond the heads are not a dead writer's tail")
+       (is (= :store/error (:type (ex-of #(store/replay-open b h)))) "the full replay refuses")
+       (is (= [:replay-failed] (map :reason (:bad (store/verify-full b h)))) "and the full verification reports it")
+       (is (some #{:log-heads-mismatch} (map :reason (:bad (store/verify b s1)))) "the cheap check sees a log that does not end at the heads")
+       (is (= :store/error (:type (ex-of #(store/commit! b s1 (doc-plan s1 4))))) "a holder of the recorded heads cannot commit on top")
+       (is (= log-before (slurp (str dir "/log.edn"))))
+       (is (= heads-before (store/read-heads b))))))
 
 (deftest reopen-from-a-separate-bb-process
   (let [dir (tmp-dir)
@@ -424,7 +421,7 @@
        (is (= :store/corrupt-heads (:type (damaged (fn [dir _ _] (spit (str dir "/heads.edn") "{:head 1 :heads []}"))))) "wrong shape")
        (is (= :store/corrupt-heads (:type (damaged (fn [dir _ s] (spit (str dir "/heads.edn") (pr-str (:heads s))))))) "not {:head :heads-root}")
        (is (= :store/corrupt-heads (:type (damaged (fn [dir _ s] (spit (str dir "/heads.edn") (pr-str {:head (:head s) :heads (into {} (:heads s))}))))))
-           "the format-1 shape is not a format-2 heads.edn"))))
+           "the {:head :heads} shape is not a heads.edn"))))
 
 #?(:clj
    (deftest a-tampered-object-is-detected-by-the-hash-check
@@ -581,7 +578,7 @@
            "replay refuses instead of pretending it is complete"))))
 
 #?(:clj
-   (deftest a-legacy-cas-plan-is-still-checked-and-replayable
+   (deftest a-plan-kept-in-the-cas-is-still-checked-and-replayable
      (let [[dir b s] (docs-store! 2 0)
            tx-id (:tx (rev/revision s (:head s)))
            plan (store-cache/read-plan dir tx-id)
@@ -592,7 +589,7 @@
        (is (= {:status :complete} (:replay v)))
        (is (true? (:ok? v)))
        (is (= (:head s) (:head (store/replay-open b h)))
-           "the legacy CAS plan keeps the old replay path"))))
+           "a plan in the CAS (a backend without a plan cache) replays"))))
 
 #?(:clj
    (deftest a-tampered-cached-plan-is-a-hash-mismatch-not-a-replay-failure
@@ -608,16 +605,3 @@
        (is (nil? (:replay-unavailable v))
            "a present but wrong plan is corruption, not a missing cache"))))
 
-#?(:clj
-   (deftest format-3-keeps-its-resolved-plan-in-the-cas
-     (let [dir (tmp-dir)
-           b (fs/backend dir)
-           s0 (store/init! b h {"jp" :all} {:format-version 3})
-           s1 (:store (store/commit! b s0 (doc-plan s0 1)))
-           tx-id (:tx (rev/revision s1 (:head s1)))]
-       (is (bfs/exists? (str dir "/objects/" tx-id))
-           "format 3 is legacy CAS: the plan is an object")
-       (is (not (bfs/exists? (store-cache/plan-path dir tx-id)))
-           "format 3 does not use the format-4 plan cache")
-       (is (= (:head s1) (:head (store/replay-open b h))))
-       (is (= {:status :complete} (:replay (store/verify-full b h)))))))

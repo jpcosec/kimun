@@ -1,7 +1,6 @@
 (ns kimun.kernel.revision-test
   (:require [clojure.test :refer [deftest is testing]]
             [kimun.kernel.test-util :as tu :refer [defspec]]
-            [kimun.kernel.legacy.revision :as legacy]
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
             [clojure.edn :as edn]
@@ -42,17 +41,11 @@
   (let [fx (read-fixture "test/fixtures/tx-001.edn")
         caps (get-in fx [:store :capabilities])
         expected (get-in fx [:expected :revision])]
-    (testing "format 1 (legacy engine): the fixture pins the whole Revision"
-      (let [{:keys [revision revision-id]} (legacy/apply-plan (legacy/empty-store h caps) (:plan fx))]
-        (is (= expected revision) "eight fields")
-        (is (= (get-in fx [:expected :revision-id]) revision-id))
-        (is (= (tu/tx-001-revision-ids 1) revision-id))
-        (is (= #{:roots :trees :edges :parents :tx :actor :engines :timestamp} (set (keys revision))))))
-    (testing "format 2: same parents, actor, engines and tree roots, state held in three mmaps"
+    (testing "same parents, actor, engines and tree roots, state held in three mmaps"
       (let [{:keys [revision revision-id store]} (rev/apply-plan (rev/empty-store h caps) (:plan fx))]
         (is (= (tu/tx-001-revision-ids 2) revision-id))
         (is (= #{:trees :edges :incidence :parents :tx :actor :engines :timestamp} (set (keys revision))) "eight fields")
-        ;; :tx differs from format 1: the resolved plan of this format names each aliased
+        ;; :tx differs from the fixture's: the resolved plan names each aliased
         ;; :add-node by id, and the transaction id hashes that resolved plan (docs/v2/14 §10)
         (is (= (select-keys expected [:parents :actor :engines :timestamp])
                (select-keys revision [:parents :actor :engines :timestamp])))
@@ -62,16 +55,15 @@
         (is (= (sort (:edges store)) (rev/active-edges store)))))))
 
 (deftest fixture-tx-002-conflict
-  (doseq [[fx apply-plan empty-store] [[(tu/format-2-fixture (read-fixture "test/fixtures/tx-002-conflict.edn")) rev/apply-plan rev/empty-store]
-                                       [(read-fixture "test/fixtures/tx-002-conflict.edn") legacy/apply-plan legacy/empty-store]]]
-    (let [store (reduce (fn [s p] (:store (apply-plan s p))) (empty-store h (get-in fx [:store :capabilities])) (:base-plans fx))
-          e (try (apply-plan store (:concurrent-plan fx)) nil (catch #?(:clj clojure.lang.ExceptionInfo :cljs :default) e (ex-data e)))]
-      (is (= :plan/conflict (:type e)))
-      (is (= (get-in fx [:expected :conflicts]) (get-in e [:conflict-set :conflicts])))
-      (testing "a plan touching only a disjoint tree rebases automatically"
-        (let [r (apply-plan store (:disjoint-plan fx))]
-          (is (= (:base (:disjoint-plan fx)) (:rebased-from r)) "rebased from the stale base")
-          (is (= [(:head store)] (get-in r [:revision :parents])) "onto the current head"))))))
+  (let [fx (tu/format-2-fixture (read-fixture "test/fixtures/tx-002-conflict.edn"))
+        store (reduce (fn [s p] (:store (rev/apply-plan s p))) (rev/empty-store h (get-in fx [:store :capabilities])) (:base-plans fx))
+        e (try (rev/apply-plan store (:concurrent-plan fx)) nil (catch #?(:clj clojure.lang.ExceptionInfo :cljs :default) e (ex-data e)))]
+    (is (= :plan/conflict (:type e)))
+    (is (= (get-in fx [:expected :conflicts]) (get-in e [:conflict-set :conflicts])))
+    (testing "a plan touching only a disjoint tree rebases automatically"
+      (let [r (rev/apply-plan store (:disjoint-plan fx))]
+        (is (= (:base (:disjoint-plan fx)) (:rebased-from r)) "rebased from the stale base")
+        (is (= [(:head store)] (get-in r [:revision :parents])) "onto the current head")))))
 
 (deftest apply-is-deterministic-and-all-or-nothing
   (let [s (rev/empty-store h caps)

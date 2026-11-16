@@ -148,15 +148,30 @@
           flat (route/canonical-entries h (vals final))]
       (and (= flat (rt/entries h (:objs s) (:object s)))
            (every? (fn [e] (= e (rt/lookup h (:objs s) (:object s) (:path e)))) flat)
-           ;; the schema-1 root and digest of the entries read back are the ones of the flat map
-           (= (route/root h (vals final)) (route/root h (rt/entries h (:objs s) (:object s))))
-           (= (route/entries-digest h (vals final)) (route/entries-digest h (rt/entries h (:objs s) (:object s))))))))
+           (= (:hash (build (vals final))) (:hash (build (rt/entries h (:objs s) (:object s)))))))))
+
+(defn- flat-diff
+  "The path diff of two entry collections, computed from the flat maps: what
+   `rt/diff` must answer without walking them. An entry whose `:tree-id` alone
+   changed is not a change."
+  [before after]
+  (let [b (into {} (map (juxt :path identity)) (route/canonical-entries h before))
+        a (into {} (map (juxt :path identity)) (route/canonical-entries h after))
+        paths (sort (distinct (concat (keys b) (keys a))))
+        stable #(dissoc % :tree-id)]
+    {:added (vec (keep #(when-not (contains? b %) (get a %)) paths))
+     :removed (vec (keep #(when-not (contains? a %) (get b %)) paths))
+     :changed (vec (keep (fn [p]
+                           (let [x (get b p) y (get a p)]
+                             (when (and x y (not= (stable x) (stable y)))
+                               {:path p :before x :after y})))
+                         paths))}))
 
 (defspec the-diff-of-two-trees-is-the-diff-of-their-entries 60
   (prop/for-all [ops-a gen-ops ops-b gen-ops]
     (let [a (replayed ops-a) b (replayed ops-b)
           sa (build (vals a)) sb (build (vals b))]
-      (= (route/diff h (vals a) (vals b))
+      (= (flat-diff (vals a) (vals b))
          (rt/diff h (:objs sa) (:object sa) (:objs sb) (:object sb))))))
 
 (defspec equal-roots-mean-equal-sensed-entries 60

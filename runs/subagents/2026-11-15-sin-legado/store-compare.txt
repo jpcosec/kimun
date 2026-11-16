@@ -1,0 +1,34 @@
+Comparison of a deterministic store (script /tmp/kimun-nl-base/build.clj, kept below): fixed tree ids and timestamp, 5 documents with route in one commit + 1 more commit; built with main (HEAD ec901ac7, before the edits) and with this tree.
+main:  {:head "208c8091515101e7db0fdcbb9eb720c0b7c4236304c47957ac3cdf1f6c0602fc", :heads-root "6f679afcc4a5ce4a86da9bc82046225618935c67b2fcfb5ffbe08c09a89b06ce", :routes-root "bc5ab57491bbac65fc95b45282383972933c9698fa99d6e61fd3dd77b2d7089e", :routes-object "5ddc48b41c53359f843fd5e1f291d58620fb08b4f570c8266ab18cd56375a53b"}
+
+output of the build+verify with this tree: true 208c8091515101e7db0fdcbb9eb720c0b7c4236304c47957ac3cdf1f6c0602fc
+
+files in each store: 42 / 42
+$ diff -r s-before s-after
+IDENTICAL (store.edn, heads.edn, log.edn, objects/, cache/ byte for byte)
+
+== build.clj
+;; deterministic store builder (fixed tree ids, timestamp): prints nothing; writes dir given as arg
+(require '[kimun.host.default :as host] '[kimun.host.fs-store :as fs] '[kimun.kernel.node :as node]
+         '[kimun.kernel.store :as store])
+(def h host/host)
+(def TS "2026-08-29T12:00:00.000Z")
+(defn tid [i] (format "01ARZ3NDEKTSV4RRFFQ69G%04d" i))
+(defn entry [path v] {:path path :fingerprint (str "sha-256:" v) :class "C" :projection-hash (str "projection-" v) :content-hash (str "content-" v)})
+(defn ops [i]
+  (let [root (node/make h :sign :block {:format :markdown :type :document :attrs {:n i}})
+        ext (node/make h :sign :external {:locator {:kind :file :path (str "d" i ".md")} :sample ""
+                                          :fingerprint "sha-256:1111111111111111111111111111111111111111111111111111111111111111"})]
+    [{:op :add-node :node root}
+     {:op :register-tree :tree {:kind :document :name (str "d" i) :class "C" :content-hash (str "content-" i) :cached? true :root (:id root)}
+      :id (tid i) :root (:id root) :merkle-root (str "projection-" i) :route (entry (str "d" i ".md") i)}
+     {:op :add-node :node ext}
+     {:op :add-edge :edge {:type :reference :from (:id root) :to (:id ext) :evidence {:ref-hash (:id ext) :actor "jp"}}}]))
+(defn plan [base os] {:plan/version 1 :base base :actor "jp" :engines {} :timestamp TS :ops (vec os)})
+(def sdir (first *command-line-args*))
+(def b (fs/backend sdir))
+(def s0 (store/init! b h {"jp" :all}))
+(def r1 (store/commit! b s0 (plan nil (mapcat ops (range 5)))))
+(def s1 (:store r1))
+(def r2 (store/commit! b s1 (plan (:head s1) (ops 7))))
+(let [o (store/open b h) v (store/verify b o)] (println (:ok? v) (:head o)))

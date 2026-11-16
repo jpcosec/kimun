@@ -41,7 +41,7 @@ De mayor a menor. Ante contradicción gana el número menor.
 | `06-superficies-y-cli.md` | inventario real de la CLI, envelope, códigos de salida y rutas de `serve` |
 | `07-modelos-como-nodos.md` | modelos como descriptores EDN en el árbol `models`; frontmatter y segmentos |
 | `08-distribucion.md` | topología de repos, toolchain, `bb jar`/`bb release`, layout e instalación |
-| `10-escala.md` | formatos 2 a 4 del store, coste de abrir/leer/escribir, `stores upgrade` |
+| `10-escala.md` | formato del store (el vigente es el 4; los anteriores ya no se leen), coste de abrir/leer/escribir |
 | `12-ecosistema-y-pendientes.md` | pendientes de kimun, consumidores de v1 y la capa G (`wittgenstein`) |
 | `13-include.md` | `kimun.include.edn`: qué versiona un repo en git y el grupo `include` |
 | `14-juego-del-lenguaje.md` | **reordenado por tema (`DOC1` / `F18`)**: separa contrato objetivo, estado implementado, decisiones abiertas (`D-G`; `D0` es desde el 2026-11-15 contrato S–M derivado) e historia; integra `P1–P15`, tres capas (`§19`), clases/anclaje vs. generación (`§18`), trackeable vs. trackeado (`§20`), identidad vs. huella Merkle (`§21`, contrato `D0` derivado por el concilio; implementación `K1`) y decisiones `21–46` |

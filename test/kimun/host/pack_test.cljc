@@ -50,7 +50,7 @@
   ([docs edits]
    (let [dir (str (ktu/temp-dir "kimun-pack-"))
          b (fs/backend dir)]
-     (store/init! b h {"jp" :all} {})
+     (store/init! b h {"jp" :all})
      (let [s (store/open (fs/backend dir) h)
            _ (store/commit! (fs/backend dir) s (plan (:head s) (mapcat #(register-ops % 0) (range docs))))]
        (doseq [k (range 1 (inc edits))]
@@ -455,7 +455,7 @@
                     r (store/unreachable b s)]
                 (into {} (map (fn [k] [k (get r k)]) [:stored :reached :unreachable]))
                 (assoc (select-keys r [:stored :reached :unreachable])
-                       :ids (sort (map :id (concat (:candidates r) (:held r) (:damaged r)))))))
+                       :ids (sort (map :id (concat (:candidates r) (:damaged r)))))))
         before (inv)]
     (fs/pack! (fs/backend dir))
     (is (= before (inv)))))

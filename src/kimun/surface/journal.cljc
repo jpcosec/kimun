@@ -49,11 +49,10 @@
        vec))
 
 (defn- plan-of
-  "The resolved plan of transaction `tx`: `:plan` when the log line carries it
-   (format 2), else the CAS object `:id` (format 3; the log line is
+  "The resolved plan of transaction `tx`: the CAS object `:id` (the log line is
    `{:id :revision}` and the plan lives in the store's objects)."
   [store tx]
-  (or (:plan tx) (get-in store [:objects (:id tx)])))
+  (get-in store [:objects (:id tx)]))
 
 (defn- entry
   "The journal entry of transaction `tx` (`{:id :plan? :revision}`)."

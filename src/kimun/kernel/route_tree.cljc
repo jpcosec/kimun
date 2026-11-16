@@ -9,8 +9,7 @@
    is read, hashed and rewritten WHOLE, so the work is the sum of the children
    of the directories on the path: a directory with many direct children costs
    in proportion to them, and a store whose tracked files all sit in one
-   directory pays for every route on every write, as the flat map of schema 1
-   does. There is no fan-out inside a directory; bounding that cost would be
+   directory pays for every route on every write. There is no fan-out inside a directory; bounding that cost would be
    another node shape, hence another route schema.
 
    Node object (a plain EDN value in the CAS, id = `canon/digest` of the node):
@@ -249,8 +248,7 @@
 
 (defn diff
   "Path diff between the tree whose root node is `a` (through `load-a`) and the
-   one whose root node is `b` (through `load-b`), in the shape of
-   `kimun.kernel.route/diff`: `{:added [entry …] :removed [entry …] :changed
+   one whose root node is `b` (through `load-b`): `{:added [entry …] :removed [entry …] :changed
    [{:path :before :after} …]}`, each sorted by path. An entry whose `:tree-id`
    alone changed is not a change. Goes down only where the route hashes of two
    nodes differ, so the cost follows what changed, not the size of the trees."

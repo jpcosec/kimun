@@ -109,7 +109,7 @@ y los tres principios de la adenda 2026-10-08 (`P13–P15`), ya conciliados con 
 - **P5 — Anchors con hash.** Los punteros del grafo sobre la base documental son *anchors*; cada
   uno lleva la huella del source evaluado. Si el source cambia, la huella deja de sostener vigencia
   y lo derivado o anclado entra en reconciliación. (Sobre su relación con la identidad, ver `§21` y `D0`.)
-  *(Estrato: Parcialmente implementado en Formato 4 y cortes `C2a`/`C2b`/`C4`/`C5` de `K2a` para archivos y rutas (árbol Merkle por ruta en stores de esquema 2; los anteriores siguen en esquema 1 hasta `stores upgrade`); el coste dentro de un directorio ancho sigue pendiente y la verificación en G es Contrato objetivo.)*
+  *(Estrato: Parcialmente implementado en Formato 4 y cortes `C2a`/`C2b`/`C4`/`C5` de `K2a` para archivos y rutas (árbol Merkle por ruta, esquema 2); el coste dentro de un directorio ancho sigue pendiente y la verificación en G es Contrato objetivo.)*
 - **P6 — Indexación estructural completa.** El documento se indexa estructuralmente
   (tree-sitter), delimitando qué de la estructura se trackea (`§18`, `§20`). Sobre ese anclaje
   emergen las clasificaciones y proyecciones semánticas. **El LLM no inventa: archiva.**
@@ -188,7 +188,7 @@ store en un zapato chino:
 | capa | contiene | regla | estado actual en kimun |
 |---|---|---|---|
 | **caché** | árboles concretos, bloques, campos extraídos, índices (`Datalog`, vectores, búsqueda) | **derivado**: se recalcula desde fuente + contrato y se puede borrar sin perder conocimiento (ver cautela `K6` abajo) | **Implementado en parte**: `<store>/cache/` en Formato 4 (`10 §11`, `docs.cljc`, `store_cache.cljc`) guarda árboles por hash; índices Datalog/vectores son Etapa C |
-| **store estable** (base de kimun) | hashes y anchors del ambiente (texto, código y, a futuro, datos) + el registro mínimo de qué se trackea | **no guarda el contenido**: detecta cualquier modificación del ambiente por huella y permite **reconciliar** | **Implementado en parte**: anchors/hashes por documento en Formato 4, cortes `C2a`/`C2b`/`C4`/`C5` de `K2a` (`3b2d6d5d`..`b4931b7c`: `kimun.kernel.route`, planes fuera del CAS, mantenimiento desde `surface.docs`, `route-coverage` en `stores check\|verify` y el mapa de rutas como árbol Merkle por directorio en los stores nuevos, esquema 2; los stores anteriores siguen en esquema 1, con `route-root` como digest plano `O(n)` de entradas ordenadas, hasta `stores upgrade`), nombres por ruta (`K8`: `bcd85a53`), clase genérica (`K3`: `076be35b`, `43d9db6d`) y `K6` en Markdown (`555b2dbc` digest de contrato + `rebuild-mismatch` puro en memoria); **sigue pendiente en `K2a` el coste dentro de un directorio ancho (sin fan-out) y su medición en un store real**, la extensión de `K6` a selectores de código (`M1`) y `K2b` (`K1`/`D0`) |
+| **store estable** (base de kimun) | hashes y anchors del ambiente (texto, código y, a futuro, datos) + el registro mínimo de qué se trackea | **no guarda el contenido**: detecta cualquier modificación del ambiente por huella y permite **reconciliar** | **Implementado en parte**: anchors/hashes por documento en Formato 4, cortes `C2a`/`C2b`/`C4`/`C5` de `K2a` (`3b2d6d5d`..`b4931b7c`: `kimun.kernel.route`, planes fuera del CAS, mantenimiento desde `surface.docs`, `route-coverage` en `stores check\|verify` y el mapa de rutas como árbol Merkle por directorio, esquema 2), nombres por ruta (`K8`: `bcd85a53`), clase genérica (`K3`: `076be35b`, `43d9db6d`) y `K6` en Markdown (`555b2dbc` digest de contrato + `rebuild-mismatch` puro en memoria); **sigue pendiente en `K2a` el coste dentro de un directorio ancho (sin fan-out) y su medición en un store real**, la extensión de `K6` a selectores de código (`M1`) y `K2b` (`K1`/`D0`) |
 | **grafo** (paquete aparte, sobre la base) | modelos (anclaje y generación), clases y herencia, capa G (hechos, contextos) y todo lo que vive **solo** en el grafo | **es el conocimiento**; se ancla al ambiente a través de las huellas del store estable | **Parcialmente separado (primer corte `P1` en `70b8abe9`) / Contrato objetivo**: `kimun.graph.{model,io,query,traversal,analysis,store}` vive en su paquete con anillo en `bb lint` (cruce residual declarado `kimun.surface.semantic` → `kimun.graph.io`); mover `kimun.surface.models.*`, `semantic` y `edges` espera separar anclaje de generación (`M1` / `D0`) y la capa G completa espera `D0` y `D-G` |
 
 Reglas normativas:
@@ -327,16 +327,13 @@ Separación de estratos sobre rutas e indexación de lo trackeado:
   (`f837069d`), mapa durable de entradas por ruta (`kimun.kernel.route`, `790007e2`), mantenimiento desde
   `surface.docs` (`C2b`, `ff9d44c3`, `b776ae42`), informe de cobertura (`route-coverage` en
   `stores check` y `stores verify`, `C4`, `2c56e680`) y el árbol Merkle por ruta (`C5`, `b4931b7c`,
-  `kimun.kernel.route-tree`). El mapa de rutas tiene **dos esquemas** (`10 §11.2`):
-  - **Esquema 1 (legado):** un objeto plano; `route-root` es un digest plano `O(n)` de entradas ordenadas
-    y `open` valida el mapa completo. Así sigue todo store creado antes de `C5`, **sin cambios**, hasta que se
-    pide `stores upgrade` o `include build --rebuild`; la raíz cambia al cambiar de esquema.
-  - **Esquema 2 (stores nuevos):** un nodo por directorio. El cambio sube a la raíz por los nodos de su
-    camino y se baja solo por la rama que cambió (punto 2 de arriba): una escritura reescribe esos nodos,
-    `open` valida solo el nodo raíz y el diff baja por donde los hashes difieren.
+  `kimun.kernel.route-tree`). El mapa de rutas es de **esquema 2** (`10 §11.2`), el único que se abre:
+  un nodo por directorio. El cambio sube a la raíz por los nodos de su
+  camino y se baja solo por la rama que cambió (punto 2 de arriba): una escritura reescribe esos nodos,
+  `open` valida solo el nodo raíz y el diff baja por donde los hashes difieren.
 - **Límites de `C5` (pendientes en `K2a`, sin depender de `D0`):** no hay fan-out **dentro** de un
   directorio: cada nodo del camino se lee, se rehashea y se reescribe entero, de modo que un directorio
-  ancho cuesta en proporción a sus hijos y un store con todo en un directorio paga como el esquema 1; el
+  ancho cuesta en proporción a sus hijos y un store con todo en un directorio paga por todas sus rutas en cada escritura; el
   árbol acota la cantidad de nodos tocados, no hace el coste independiente del número de rutas. Enumerar
   las rutas y la cobertura (`route-coverage`) leen el árbol entero. No está medido en un store real. Las
   hojas son entradas por documento: los **campos** trackeados como hojas dependen de `K1`/`D0`
@@ -703,7 +700,7 @@ Reúne las decisiones `21–46` (numeradas a continuación de `05 §3`), señala
 | 41 | Todo documento es instancia de una clase; herencia con `derive`/`isa?`; clase cambiada = otra clase | **Parcialmente implementado** (`K3` clase genérica cerrado en `076be35b`, `43d9db6d`; Spec 16 `M1` redactado, runtime M1 espera `P1`/`D0`) | `14 §18`, `16-modelos-como-subgrafos.md`, `10 §11` | `spec16_models_contract_test`, `typed_docs_test` |
 | 42 | Anclaje y generación son modelos distintos; azúcar en nodo; `source` vs `generado` | **Especificado (`M1`)** (desk actual tratado como `source` tras retiro de modelos legacy, `F10`) | `14 §18.7–9`, `16-modelos-como-subgrafos.md` | `spec16_models_contract_test`, `manifest.edn` |
 | 43 | Tres capas: caché, store estable (hashes/anchors, nunca contenido) y grafo (`kimun.graph.*` paquete aparte) | **Parcialmente implementado**: `Formato 4` en `main`; primer corte de `P1` implementado (`70b8abe9`: `kimun.graph.*` con anillo en `bb lint`; modelos/`semantic`/`edges` pendientes de `M1`/`D0`); `K2a` con cortes `C2a`/`C2b`/`C4` implementados y estructura Merkle incremental/coste pendiente | `14 §19`, `12 §1`, `03 §1` | `durability_test`, `lint_test` |
-| 44 | Trackeable vs. trackeado; Merkle del store estable por ruta sobre lo trackeado; plan fuera del CAS | **Parcial (`K2a`)**: cortes `C2a`, `C2b`, `C4` y `C5` implementados (`3b2d6d5d`..`b4931b7c`: plan fuera del CAS, mapa durable de rutas y, en stores nuevos, árbol Merkle incremental por directorio con descenso local — esquema 2; los stores anteriores siguen en esquema 1, `route-root` como digest plano `O(n)` de entradas ordenadas, hasta `stores upgrade`); **pendiente el coste dentro de un directorio ancho (sin fan-out) y medir en un store real**; retirada de `mmap`/aristas redundantes es `K2b` (`D0`/`K1`) | `14 §20`, `10 §11`, `10 §11.2`, `06-superficies-y-cli.md` | `route_store_test`, `route_tree_test`, `route_tree_store_test`, `route_schema_test`, `routes_test`, `c4_route_rebuild_test` |
+| 44 | Trackeable vs. trackeado; Merkle del store estable por ruta sobre lo trackeado; plan fuera del CAS | **Parcial (`K2a`)**: cortes `C2a`, `C2b`, `C4` y `C5` implementados (`3b2d6d5d`..`b4931b7c`: plan fuera del CAS, mapa durable de rutas y, en stores nuevos, árbol Merkle incremental por directorio con descenso local — esquema 2, el único que se abre); **pendiente el coste dentro de un directorio ancho (sin fan-out) y medir en un store real**; retirada de `mmap`/aristas redundantes es `K2b` (`D0`/`K1`) | `14 §20`, `10 §11`, `10 §11.2`, `06-superficies-y-cli.md` | `route_store_test`, `route_tree_test`, `route_tree_store_test`, `route_schema_test`, `routes_test`, `c4_route_rebuild_test` |
 | 45 | Formato 4 implementado (`S1c`): registro por documento y árbol como caché por hash en `<store>/cache/` | **Implementado (`S1c`)** | `10-escala.md §11`, `05 §1` | `durability_test`, `diagnostics_test` |
 | 46 | El hash detecta mutaciones; no es identidad (ni lugar es identidad positiva; dirección `2026-11-14`) | **Contrato S–M derivado por el concilio (`D0`, 2026-11-15)**; implementación pendiente | `14 §21`, `runs/research/2026-11-15/concilio/d0-contrato-sintesis.md`, `drafts/fuentes-identidad.md` | **Sin código todavía**: lo implementa `K1`; `K2b`, `S2` y `M1` esperan a `K1`; `G1` además a `D-G` |
 
@@ -735,10 +732,8 @@ Estado real de ejecución por etapa (el backlog vivo y dependencias residen en
       `ecb30774`, `790007e2`), mantenimiento desde `surface.docs` (`C2b`: `ff9d44c3`, `b776ae42`),
       cobertura de rutas en `stores check|verify` (`C4`: `2c56e680`; evidencias en
       `runs/subagents/2026-11-14-k2a-*` y `2026-11-14-C2b/`) y **árbol Merkle incremental por ruta
-      (`C5`: `b4931b7c`, `runs/subagents/2026-11-15-C5/`)**: los stores nuevos son de esquema 2 (un nodo
-      por directorio, descenso local); los anteriores siguen en esquema 1 (`route-root` como
-      digest plano `O(n)` de entradas ordenadas) hasta `stores upgrade` o `include build --rebuild`
-      (`10 §11.2`).
+      (`C5`: `b4931b7c`, `runs/subagents/2026-11-15-C5/`)**: el store es de esquema 2 (un nodo
+      por directorio, descenso local; `10 §11.2`).
       **Sigue pendiente:** el coste dentro de un directorio ancho (no hay fan-out: un directorio plano
       cuesta en proporción a sus hijos) y medirlo en un store real; las hojas por campo son de `K1`/`D0`.
     - **`K6` (implementada para Markdown; selectores de código con `M1`):** el digest y comparación
@@ -802,7 +797,7 @@ La tabla promesa → test, con la evidencia implementada (incluidos formatos 3 y
 | `01 §4.1` (y principio 3 en `D0`) | "el pool es la fuente de verdad" → autoridad partida por clase (`§2`, decisión 21). El principio 3 («identidad = contenido») queda **pendiente bajo `D0`** (`§21`, decisión 46) | `§2` vigente por tabla de autoridad; `§21` abierto en `D0` |
 | `04` | hojas `:text` con contenido por referencia (`Formato 4`); el mapeo AST → árbol de caché sigue determinista | Implementado en Formato 4 (`10 §11`) |
 | `07` | modelo = símbolo-tipo + selector EDN + generación (`§18`, Spec 16); `:contract` en Formato 4 se registra en la evidencia de la arista **`reference` (`root → external`)**, no en `derived` (decisión 40 / `A1`) | `A1` implementado en Formato 4; selector EDN en Spec 16 (`M1`, pendiente de implementación) |
-| `10` | formato 4 (`10 §11`) es el formato actual; `stores upgrade` migra **en sitio** (`2→3`) o reconstruye (`1→2`, `3→4`) según `10-escala.md`, superando la nota histórica de `§10` | Implementado (`10-escala.md`, `05-estado.md`) |
+| `10` | formato 4 (`10 §11`) es el formato actual; un store de otro formato no se abre y se reconstruye con `include build --rebuild` (`10-escala.md §8`), superando la nota histórica de `§10` | Implementado (`10-escala.md`, `05-estado.md`) |
 | `11 §1` | tree-sitter como pod en proceso (`etapa S.2`, decisión 29); perfil `propositions` para Etapa C (`§11`) | Pod implementado; chequeo `C1` implementado; `propositions` es objetivo |
 | `12 §3` | wittgenstein/Matrix = productor y evaluador externo por protocolo, no almacén; inventario en `tests/wittgenstein-manifest.md` (`T01`) | `T01` cerrado; `12 §3` pendiente de reescritura junto a `G1` |
 | `docs/archive/v2/09` | rescatado como referencia de anchors de evaluación (`derived`, `§7`), aún no implementado | Archivado (`no implementado`) |
@@ -821,10 +816,7 @@ La tabla promesa → test, con la evidencia implementada (incluidos formatos 3 y
 > `§18`–`§20` y por el **contrato implementado del formato 4** en **`docs/v2/10-escala.md §10–§11`**.
 > Se conserva como registro del salto formato 2 → 3 y para mantener citas de código/tests (`:content :inline`, `markdown/source`).
 >
-> **Divergencia histórica ya resuelta (`F18`):** la frase inicial de abajo decía que «`stores upgrade 2→3`
-> reconstruye desde los archivos (`include build`)». En el **contrato implementado** (`10-escala.md §10–§11`,
-> `05-estado.md §1`), `stores upgrade` migra **`1→2`** reconstruyendo, **`2→3` en el sitio** sin
-> reimportar ni perder historia, y **`3→4`** pide `include build --rebuild`.
+> **`stores upgrade` ya no existe:** un store de otro formato se reconstruye con `include build --rebuild` (`10-escala.md §8`).
 
 | hoy (formato 2, histórico) | formato 3 (histórico 2026-10-08) |
 |---|---|

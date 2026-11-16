@@ -309,9 +309,9 @@ el mismo layout — `10-escala.md §11`), y `roots`,
 motores de esta transacción, no se heredan; `timestamp` entra al hash.
 
 En los formatos 2–4 `trees`, `edges` e `incidence` son raíces de mapas Merkle independientes de
-la historia (`kimun.kernel.mmap`); `incidence` es derivada de `edges` y determinista. El
-formato 1 conserva `:roots`, el *tree-set* y el *edge-set* como objetos y abre por replay;
-`kimun stores upgrade` lo pasa a formato 2. La forma en disco (`store.edn`, `objects/`,
+la historia (`kimun.kernel.mmap`); `incidence` es derivada de `edges` y determinista. Los
+formatos anteriores al 4 ya no se leen (un store viejo se reconstruye con `include build
+--rebuild`). La forma en disco (`store.edn`, `objects/`,
 `log.edn`, `heads.edn`, `lock`) y el coste de cada operación los posee `10-escala.md`
 §3–§7.
 

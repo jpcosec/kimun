@@ -1,6 +1,6 @@
 (ns kimun.kernel.revision-format2-test
-  "Format 2 of the revision engine: accessors, the legacy engine as oracle,
-   what a committer persists, and the format-1 path of kimun.kernel.store."
+  "The revision engine: accessors, the incidence invariants over random
+   histories, and what a committer persists."
   (:require [kimun.test-util :as ktu] [clojure.test :refer [deftest is testing]]
             [clojure.edn :as edn]
             [clojure.test.check.generators :as gen]
@@ -11,9 +11,7 @@
             [kimun.host.store-cache :as store-cache]
             [kimun.kernel.canon :as canon]
             [kimun.kernel.generators :as g]
-            [kimun.kernel.legacy.revision :as legacy]
             [kimun.kernel.mmap :as mmap]
-            [kimun.kernel.node :as node]
             [kimun.kernel.ports :as ports]
             [kimun.kernel.revision :as rev]
             [kimun.kernel.store :as store]
@@ -26,7 +24,6 @@
 
 (defn- plan [base ops] {:plan/version 1 :base base :actor "jp" :engines {} :timestamp TS :ops ops})
 (defn- text-op [s as] {:op :add-node :node {:class :sign :kind :text :content {:text s}} :as as})
-(defn- check-of [f] (try (f) nil (catch #?(:clj clojure.lang.ExceptionInfo :cljs :default) e (or (:check (ex-data e)) (:type (ex-data e))))))
 
 ;; ---------------------------------------------------------------- random histories
 
@@ -82,57 +79,37 @@
            (and (map? v) (= [:set] (keys v)) (string? (:set v)))
            (vector? v)))))
 
-(defn- same-state? [l s]
+(defn- consistent?
+  "True when the views of `s` agree with what its head Revision holds: the
+   :trees view is `load-tree` per tree, the :edges view the active edge ids,
+   the counts and the :incidence entries those the active edges imply, each
+   value in its canonical shape."
+  [s]
   (let [head (rev/revision s (:head s))]
-    (and (= (:trees l) (:trees s))
-         (= (into {} (map (fn [[tid t]] [tid [(tree/descriptor-id h (:descriptor t)) (tree/merkle-root t)]])) (:trees l))
-            (into {} (map (fn [tid] [tid (rev/tree-entry s tid)])) (rev/tree-ids s)))
-         (every? (fn [tid] (= (get (:trees s) tid) (rev/load-tree s tid (:head s)))) (rev/tree-ids s))
-         (= (:edges l) (:edges s) (set (rev/active-edges s)))
-         (= (count (:trees l)) (rev/tree-count s)) (= (count (:edges l)) (rev/edge-count s))
-         (= (set (filter :class (vals (:objects l)))) (set (filter :class (vals (:objects s)))))
+    (and (every? (fn [tid] (= (get (:trees s) tid) (rev/load-tree s tid (:head s)))) (rev/tree-ids s))
+         (= (:edges s) (set (rev/active-edges s)))
+         (= (count (:trees s)) (rev/tree-count s)) (= (count (:edges s)) (rev/edge-count s))
          (= (into {} (map (fn [[n ids]] [n (vec ids)])) (incidence-of s)) (incidence-entries s))
          (every? (fn [[_ v]] (canonical-incidence-value? s v)) (mmap/entries #(rev/get-object s %) (:incidence head)))
          (every? (fn [[n ids]] (= (vec ids) (rev/edges-touching s n))) (incidence-of s)))))
 
-(defn- node-ref-ops
-  "Resolved ops with every :add-node keyed by node id: format 2 replaces the
-   inline :node of an aliased op by its :id, the legacy engine keeps the
-   content (docs/v2/14 §10)."
-  [host ops]
-  (mapv (fn [op]
-          (if (= :add-node (:op op))
-            (assoc (dissoc op :node) :id (or (:id op) (node/node-id host (:node op))))
-            op))
-        ops))
-
-(defn- run-both
-  "Applies the same steps to the legacy engine and to format 2; true when every
-   step is accepted/rejected alike and leaves the same trees, edges and nodes."
+(defn- run-steps
+  "Applies `steps` after `first-plan`; true when every accepted step leaves
+   `consistent?` views and a rejected one leaves the store as it was."
   [first-plan steps]
   (let [tid (some :id (filter #(= :new-tree (:op %)) (:ops first-plan)))]
-    (loop [l (:store (legacy/apply-plan (legacy/empty-store h caps) first-plan))
-           s (:store (rev/apply-plan (rev/empty-store h caps) first-plan))
-           n 0 steps steps]
+    (loop [s (:store (rev/apply-plan (rev/empty-store h caps) first-plan)) n 0 steps steps]
       (cond
-        (not (same-state? l s)) false
+        (not (consistent? s)) false
         (empty? steps) true
         :else
-        (let [ops (step-ops l tid n (first steps))
-              cl (check-of #(legacy/apply-plan l (plan (:head l) ops)))
-              cs (check-of #(rev/apply-plan s (plan (:head s) ops)))]
-          (cond
-            (not= cl cs) false
-            cl (recur l s (inc n) (rest steps))
-            :else (let [rl (legacy/apply-plan l (plan (:head l) ops)) rs (rev/apply-plan s (plan (:head s) ops))]
-                    (and (= (select-keys rl [:aliases :edges-added :superseded]) (select-keys rs [:aliases :edges-added :superseded]))
-                         (= (node-ref-ops h (:ops (:plan (:transaction rl))))
-                            (node-ref-ops h (:ops (:plan (:transaction rs)))))
-                         (recur (:store rl) (:store rs) (inc n) (rest steps))))))))))
+        (let [ops (step-ops s tid n (first steps))
+              r (try (rev/apply-plan s (plan (:head s) ops)) (catch #?(:clj clojure.lang.ExceptionInfo :cljs :default) _ nil))]
+          (recur (if r (:store r) s) (inc n) (rest steps)))))))
 
-(defspec format-2-and-legacy-engines-agree-on-random-histories 40
+(defspec random-histories-keep-the-views-and-the-incidence-consistent 40
   (prop/for-all [p g/gen-valid-plan steps (gen/vector gen-step 0 12)]
-    (run-both p steps)))
+    (run-steps p steps)))
 
 ;; ---------------------------------------------------------------- hubs
 
@@ -303,8 +280,6 @@
                               "nothing else entered the CAS")
                           (:store r)))
                       (store/init! b h caps) plans)]
-    ;; the default store is format 3 (docs/v2/14 §10); this suite pins the commit
-    ;; mechanics shared by formats 2 and 3
     (is (= store/format-version (:format-version (store/read-descriptor b))))
     (is (= 0 (:listings @state)) "apply-plan and commit! never call object-ids")
     (is (= (set (keys (:objects final))) (set (keys (:objects @state)))))
@@ -345,31 +320,6 @@
     (is (every? #(not (contains? % :node)) (filter #(= :add-node (:op %)) (:ops resolved)))
         "no add-node op carries node content")
     (is (true? (:ok? (store/verify-full b h))) "the node-free plan replays")))
-
-;; ---------------------------------------------------------------- format 1 through the store
-
-(deftest a-format-1-store-opens-commits-and-reopens-through-the-legacy-path
-  #?(:clj
-     (let [dir (str (ktu/temp-dir "sldb-f1-"))
-           b (fs/backend dir)
-           fx1 (edn/read-string (slurp "test/fixtures/tx-001.edn"))
-           fx2 (edn/read-string (slurp "test/fixtures/tx-002-conflict.edn"))
-           s0 (store/init! b h (get-in fx1 [:store :capabilities]) {:format-version 1})
-           r1 (store/commit! b s0 (:plan fx1))
-           s1 (store/open b h)
-           r2 (store/commit! b s1 (second (:base-plans fx2)))
-           s2 (store/open b h)]
-       (is (= 1 (:format-version (store/read-descriptor b)) (:format-version s0) (:format-version s2)))
-       (is (rev/legacy? s2))
-       (is (= (get-in fx1 [:expected :revision-id]) (:revision-id r1) (tu/tx-001-revision-ids 1)) "format-1 revision ids are unchanged")
-       (is (contains? (:revision r2) :roots))
-       (is (= (select-keys (:store r2) [:head :heads :revisions :trees :edges :objects])
-              (select-keys s2 [:head :heads :revisions :trees :edges :objects])))
-       (is (:ok? (store/verify b s2)))
-       (is (= (sort (:edges s2)) (rev/active-edges s2)))
-       (is (= (sort (keys (:trees s2))) (rev/tree-ids s2)))
-       (is (every? (fn [[tid t]] (= [(tree/descriptor-id h (:descriptor t)) (tree/merkle-root t)] (rev/tree-entry s2 tid))) (:trees s2)))
-       (is (= :plan/conflict (check-of #(store/commit! b s2 (:concurrent-plan fx2)))) "conflict detection of the legacy engine"))))
 
 (deftest diff-of-a-first-revision-with-content-resolves-the-empty-map
   ;; The parent of a first revision is the empty map, a constant `init!` does not

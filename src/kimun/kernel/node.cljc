@@ -28,14 +28,6 @@
                                       (contains? c :object) (string? (:context c))))
             :context     (fn [c] (string? (:name c)))}})
 
-(def classes
-  "The three node classes: :sign (S), :symbol (M), :fact (G)."
-  (set (keys shapes)))
-
-(defn kinds
-  "Admitted kinds of a class."
-  [class] (set (keys (get shapes class))))
-
 (defn address
   "Addressability class derived from kind (docs/v2/01 §4.7): :structural,
    :opaque or :external."

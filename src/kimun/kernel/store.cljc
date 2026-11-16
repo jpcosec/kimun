@@ -4,28 +4,24 @@
 
    Layout (files-only backend, see kimun.host.fs-store; docs/v2/10 §11, 14 §10):
      <dir>/store.edn      {:format-version 4 :hash-alg :sha-256 :capabilities {...} :route-schema 2}
-                          (:route-schema absent = route schema 1, docs/v2/10 §11.2)
+                          (the only format and route schema this code opens, docs/v2/10 §11)
      <dir>/objects/<id>   canonical EDN text of the hashed form of the object; H(file) == id
      <dir>/packs/<n>.pack K4: small loose objects moved explicitly by `stores pack`
                           (records + a footer naming the index digest; the pack is
                           store, its .idx is derived, docs/v2/10 §11.4)
      <dir>/cache/packs/   K4b: the same pack format for the DERIVED cache; not the
                           store (verify, object-ids and unreachable never see it)
-     <dir>/cache/         format 4: derived cache of a document with an external anchor —
-                          cache/routes/<root>.<head>.edn mirrors the durable CAS
-                          route-map object of route schema 1 (schema 2 keeps the map
-                          as tree nodes in objects/ and writes no mirror); open validates the CAS object first,
-                          so this is a contract mirror, not a measured accelerator —
+     <dir>/cache/         derived cache of a document with an external anchor — the route
+                          map lives as tree nodes in objects/, not here —
                           one entry per document keyed by (fingerprint, class, parser) plus
                           its tree/block/field objects by hash; gitignored, deletable,
                           recomputable from the file and verifiable against the root hash;
                           cache/plans/<tx-id>.edn holds the resolved build plan (K2a),
                           read by replay and checked by verify-full
-     <dir>/log.edn        one Transaction map per line, append-only: {:id :plan :revision} in
-                          formats 1–2, {:id :revision} in formats 3–4
-     <dir>/heads.edn      formats 2–4: {:head rev-id :heads-root mmap-root-id} (the per-tree
-                          heads tree-id -> rev-id are an mmap in the CAS); format 1: {:head rev-id
-                          :heads {tree-id rev-id}}; written atomically (`heads-record`)
+     <dir>/log.edn        one line per transaction, append-only: {:id :revision}
+     <dir>/heads.edn      {:head rev-id :heads-root mmap-root-id} (the per-tree heads
+                          tree-id -> rev-id are an mmap in the CAS); written atomically
+                          (`heads-record`)
      <dir>/lock           empty; the exclusive lock of `commit-tx!` is taken on it
 
    heads.edn is the commit point. A Transaction is committed when heads.edn
@@ -37,18 +33,17 @@
    `replay-open` ignores it, `verify` reports it and the next `commit-tx!`
    discards it before appending (never appends after it).
 
-   :format-version 4 (new stores) is the revision format of kimun.kernel.revision;
-   formats 2 and 3 share that engine; :format-version 1 is served by
-   kimun.kernel.legacy.revision. The store value carries :format-version and
-   every function here dispatches on it.
+   :format-version 4 with route schema 2 is the only store this code opens: a
+   store of another format or route schema raises :store/unsupported-format
+   (`open`), whose message says to rebuild with `include build --rebuild`.
 
-   `open` (formats 2–4, host with the LazyMaps port) reads store.edn and
+   `open` (host with the LazyMaps port) reads store.edn and
    heads.edn, checks the head Revision objects and replays NOTHING: see its
    docstring for what it checks and what it trusts. `replay-open` is the full
    verification by replay (log.edn through apply-plan, every transaction and
    revision id, final heads against heads.edn); `verify` recomputes the hash
-   of every object reachable from the heads; `verify-full` is both. Format 1
-   (and hosts without lazy maps) open through `replay-open`. `commit!` writes
+   of every object reachable from the heads; `verify-full` is both. Hosts
+   without lazy maps open through `replay-open`. `commit!` writes
    exactly the objects the plan created, then calls `commit-tx!`."
   (:require [clojure.edn :as edn]
             [kimun.kernel.canon :as canon]
@@ -57,9 +52,7 @@
             [kimun.kernel.ports :as ports]
             [kimun.kernel.err :as err]
             [kimun.kernel.mmap :as mmap]
-            [kimun.kernel.legacy.revision :as legacy]
             [kimun.kernel.revision :as revision]
-            [kimun.kernel.route :as route]
             [kimun.kernel.route-tree :as route-tree]))
 
 (defprotocol Backend
@@ -81,32 +74,14 @@
      whose lock is held by another process may raise :store/busy instead of
      waiting, having written nothing."))
 
-;; ---------------------------------------------------------------- heads swap (optional port)
-
-(defprotocol HeadsSwap
-  "Optional backend capability: replace the heads without a transaction. Only
-   for a change that names the same head revision and the same per-tree heads
-   under another route root (`upgrade-routes!`): the log does not move."
-  (swap-heads! [b expected new]
-    "Under the same exclusive lock as `commit-tx!`: when the current heads
-     differ from `expected`, writes nothing and returns false; otherwise
-     replaces them with `new` and returns true. Appends nothing to the log."))
-
 ;; ---------------------------------------------------------------- plan cache (optional port)
 
 (defprotocol PlanCache
   "Optional backend capability: the resolved plan of a transaction lives in the
    store's derived cache, not in the CAS. A backend without it keeps the plan in
-   `objects/` (formats 1–3 and in-memory test backends)."
+   `objects/` (in-memory test backends)."
   (read-plan [b tx-id] "The resolved plan cached under `tx-id`, or nil.")
   (write-plan! [b tx-id plan] "Writes the resolved plan once; returns its id."))
-
-(defprotocol RouteCache
-  "Optional backend capability: the route entries behind `:routes-root` are
-   derived cache. The root is durable in heads.edn; the entries may be rebuilt
-   by replay from the `:route` values in the log, never invented by `open`."
-  (read-routes [b root head] "The route entry map cached under `root` at `head`, or nil.")
-  (write-routes! [b root head routes] "Writes route entries once; returns `root`."))
 
 ;; ---------------------------------------------------------------- object cache (optional port)
 
@@ -199,26 +174,25 @@
 ;; ---------------------------------------------------------------- log tail
 
 (def no-heads
-  "The heads of a store without heads.edn (nothing committed), both formats."
+  "The heads of a store without heads.edn (nothing committed)."
   {:head nil :heads {}})
 
 (defn heads-record
   "The heads.edn value of `store`, the commit point `commit-tx!` compares and
-   replaces: `no-heads` before the first commit; format 2 {:head rev-id
+   replaces: `no-heads` before the first commit, else {:head rev-id
    :heads-root id}, the root of the mmap tree-id -> rev-id in the CAS (its size
-   does not grow with the number of trees); format 4 adds `:routes-root` when
-   the store tracks a route tree; format 1 {:head rev-id :heads {tree-id rev-id}}."
+   does not grow with the number of trees), plus `:routes-root` and
+   `:routes-object` when the store tracks a route tree."
   [store]
-  (cond (nil? (:head store)) no-heads
-        (revision/legacy? store) {:head (:head store) :heads (:heads store)}
-        :else (cond-> {:head (:head store) :heads-root (:heads-root store)}
-                (some? (:routes-root store)) (assoc :routes-root (:routes-root store))
-                (some? (:routes-object store)) (assoc :routes-object (:routes-object store)))))
+  (if (nil? (:head store))
+    no-heads
+    (cond-> {:head (:head store) :heads-root (:heads-root store)}
+      (some? (:routes-root store)) (assoc :routes-root (:routes-root store))
+      (some? (:routes-object store)) (assoc :routes-object (:routes-object store)))))
 
 (defn transaction?
-  "True for a well-formed log entry: `{:id :plan :revision}` in format 2,
-   `{:id :revision}` in format 3 (the resolved plan lives in the CAS under
-   `:id`, so it is not duplicated in the log)."
+  "True for a well-formed log entry `{:id :revision}` (the resolved plan lives
+   in the CAS or the plan cache under `:id`, so the log does not duplicate it)."
   [entry]
   (boolean (and (map? entry) (:id entry) (:revision entry))))
 
@@ -271,63 +245,51 @@
 ;; ---------------------------------------------------------------- init / open
 
 (def format-version
-  "The format new stores are created with (docs/v2/14 §10, §18.6): format 4
-   registers a document with a file as cache (descriptor + merkle root, no tree
-   object and no block/text node in the CAS)."
+  "The format of every store: 4 registers a document with a file as cache
+   (descriptor + merkle root, no tree object and no block/text node in the CAS;
+   docs/v2/14 §10, §18.6)."
   4)
 
 (def route-schema
-  "The route schema new stores are created with (docs/v2/10 §11.2): 2, the
-   route map as a Merkle tree by path. store.edn records it as `:route-schema`;
-   a store.edn without the key is a store of schema 1 (one flat map object),
-   which keeps opening and writing as it did until `upgrade-routes!`."
+  "The route schema of every store (docs/v2/10 §11.2): 2, the route map as a
+   Merkle tree by path. store.edn records it as `:route-schema`."
   2)
 
-(defn- descriptor-route-schema
-  "The route schema a store.edn map declares: its `:route-schema`, else 1."
+(defn- supported!
+  "Raises :store/unsupported-format unless `descriptor` (a store.edn map) is of
+   the one format and route schema this code opens."
   [descriptor]
-  (or (:route-schema descriptor) 1))
-
-(defn- empty-store
-  "The empty store value of format `fv` (1 = legacy, 2–4 = current) and route
-   schema `rs`."
-  [host capabilities fv rs]
-  (case fv
-    1 (assoc (legacy/empty-store host capabilities) :format-version 1)
-    (2 3 4) (assoc (revision/empty-store host capabilities) :format-version fv :routes-schema rs)
-    (fail "unsupported store format" {:format-version fv})))
+  (let [fv (or (:format-version descriptor) 1) rs (or (:route-schema descriptor) 1)]
+    (when-not (and (= format-version fv) (= route-schema rs))
+      (fail (str "format " fv (when (= format-version fv) (str ", route schema " rs))
+                 " is no longer supported: rebuild with `include build --rebuild`")
+            {:type :store/unsupported-format :format-version fv :route-schema rs}))))
 
 (defn init!
-  "Creates a new store in backend `b` with the given capabilities; returns the
-   empty in-memory store. `opts` {:format-version 1} creates a legacy format-1
-   store (tests and upgrade); the default is `format-version`. A format-4 store
-   is created with route schema `route-schema`, recorded in store.edn;
-   `opts` {:route-schema 1} creates one of schema 1 (tests and upgrade)."
-  ([b host capabilities] (init! b host capabilities {}))
-  ([b host capabilities opts]
-   (when (read-descriptor b) (fail "store already initialised" {}))
-   (let [fv (or (:format-version opts) format-version)
-         rs (if (= 4 fv) (or (:route-schema opts) route-schema) 1)
-         store (empty-store host capabilities fv rs)]
-     (write-descriptor! b (cond-> {:format-version fv :hash-alg (ports/algorithm (ports/hasher host)) :capabilities capabilities}
-                            (not= 1 rs) (assoc :route-schema rs)))
-     store)))
+  "Creates a new store in backend `b` with the given capabilities (format
+   `format-version`, route schema `route-schema`, recorded in store.edn);
+   returns the empty in-memory store."
+  [b host capabilities]
+  (when (read-descriptor b) (fail "store already initialised" {}))
+  (write-descriptor! b {:format-version format-version :hash-alg (ports/algorithm (ports/hasher host))
+                        :capabilities capabilities :route-schema route-schema})
+  (revision/empty-store host capabilities))
 
 (defn- plan-of
-  "The resolved plan of a log entry of `b`: `:plan` when the line carries it
-   (format 2), else the CAS object `:id` (legacy), else the derived plan cache
-   (`PlanCache`). A plan is identified by the digest of its resolved form; its
-   absence is reported by replay, never silently accepted."
+  "The resolved plan of a log entry of `b`: the CAS object `:id` (a backend
+   without a plan cache), else the derived plan cache (`PlanCache`). A plan is
+   identified by the digest of its resolved form; its absence is reported by
+   replay, never silently accepted."
   [b entry]
-  (or (:plan entry)
-      (some-> (read-object b (:id entry)) edn/read-string)
+  (or (some-> (read-object b (:id entry)) edn/read-string)
       (when (satisfies? PlanCache b) (read-plan b (:id entry)))))
 
 (defn- replay-log
   "Replays the entries `log` over the empty store of backend `b`."
   [b host log]
-  (let [{:keys [capabilities hash-alg] fv :format-version :as descriptor} (or (read-descriptor b) (fail "no store.edn" {}))
+  (let [{:keys [capabilities hash-alg] :as descriptor} (or (read-descriptor b) (fail "no store.edn" {}))
         alg (ports/algorithm (ports/hasher host))]
+    (supported! descriptor)
     (when (not= hash-alg alg) (fail "hash algorithm mismatch" {:store hash-alg :hasher alg}))
     (reduce (fn [store {:keys [id revision] :as entry}]
               (when-not (transaction? entry)
@@ -339,19 +301,18 @@
                 (when (not= id (:id (:transaction r))) (fail "replayed transaction id differs from log" {:logged id :got (:id (:transaction r))}))
                 (when (not= revision (:revision-id r)) (fail "replayed revision id differs from log" {:logged revision :got (:revision-id r) :tx id}))
                 (:store r)))
-            ;; the route schema of every replayed write is the one store.edn declares
-            (empty-store host capabilities (or fv 1) (descriptor-route-schema descriptor))
+            (revision/empty-store host capabilities)
             log)))
 
 (defn replay
-  "Rebuilds the in-memory store from log.edn alone (through the apply-plan of
-   the store's :format-version), checking each logged transaction and revision
-   id. Every line counts, an uncommitted tail included. Returns the store value."
+  "Rebuilds the in-memory store from log.edn alone (through
+   `revision/apply-plan`), checking each logged transaction and revision id.
+   Every line counts, an uncommitted tail included. Returns the store value."
   [b host]
   (replay-log b host (read-log b)))
 
 (defn replay-open
-  "Full verification by replay, for both formats: `replay` plus consistency of
+  "Full verification by replay: `replay` plus consistency of
    heads.edn with the replayed heads (when present). Trusts only store.edn and
    log.edn. An :uncommitted log tail (`log-tail`) is not replayed: the store
    opens at the recorded heads (`uncommitted-tail` and `verify` report it).
@@ -367,29 +328,25 @@
   (and (map? o) (contains? o :tx) (contains? o :parents) (contains? o :trees) (contains? o :edges)))
 
 (defn- well-formed-heads?
-  "Format 2: `no-heads` or {:head id :heads-root id}; format 1: {:head id|nil :heads {tree-id rev-id}}."
-  [fv hd]
+  "`no-heads`, or {:head id :heads-root id} with the optional :routes-root and :routes-object."
+  [hd]
   (and (map? hd)
        (or (= no-heads hd)
-           (if (= 1 fv)
-             (and (= #{:head :heads} (set (keys hd)))
-                  (map? (:heads hd)) (every? string? (keys (:heads hd))) (every? string? (vals (:heads hd)))
-                  (string? (:head hd)))
-             (or (and (= #{:head :heads-root} (set (keys hd)))
-                      (string? (:head hd)) (string? (:heads-root hd)))
-                 (and (= #{:head :heads-root :routes-root} (set (keys hd)))
-                      (string? (:head hd)) (string? (:heads-root hd)) (string? (:routes-root hd)))
-                 (and (= #{:head :heads-root :routes-root :routes-object} (set (keys hd)))
-                      (string? (:head hd)) (string? (:heads-root hd))
-                      (string? (:routes-root hd)) (string? (:routes-object hd))))))))
+           (or (and (= #{:head :heads-root} (set (keys hd)))
+                    (string? (:head hd)) (string? (:heads-root hd)))
+               (and (= #{:head :heads-root :routes-root} (set (keys hd)))
+                    (string? (:head hd)) (string? (:heads-root hd)) (string? (:routes-root hd)))
+               (and (= #{:head :heads-root :routes-root :routes-object} (set (keys hd)))
+                    (string? (:head hd)) (string? (:heads-root hd))
+                    (string? (:routes-root hd)) (string? (:routes-object hd)))))))
 
 (defn- checked-heads
   "heads.edn of `b` (absent = `no-heads`), raising :store/corrupt-heads when it
-   is not the shape of format `fv` (`heads-record`; an unreadable file is the
-   backend's to report, with the same type)."
-  [b fv]
+   is not the shape `heads-record` writes (an unreadable file is the backend's
+   to report, with the same type)."
+  [b]
   (let [hd (or (read-heads b) no-heads)]
-    (when-not (well-formed-heads? fv hd) (fail "heads.edn is malformed" {:type :store/corrupt-heads :heads hd}))
+    (when-not (well-formed-heads? hd) (fail "heads.edn is malformed" {:type :store/corrupt-heads :heads hd}))
     hd))
 
 (defn- checked-head-object
@@ -409,65 +366,32 @@
                 (if (caching? b) (cache-object! b id o) o)
                 (bad shape))))))
 
-(defn- flat-route-object?
-  "Shape of the durable route-map object of schema 1: `{:route/version …
-   :entries path→entry}`."
-  [o]
-  (and (map? o) (= route/schema (:route/version o)) (map? (:entries o))))
-
-(defn- route-object?
-  "Shape of the object `:routes-object` names: the flat map of schema 1 or the
-   root node of the tree of schema 2."
-  [o]
-  (or (flat-route-object? o) (route-tree/node? o)))
-
 (defn- open-from-heads
-  [b host capabilities fv rs]
+  [b host capabilities]
   (let [lm (ports/lazy-maps host)
-        hd (checked-heads b fv)
+        hd (checked-heads b)
         {:keys [head heads-root routes-root routes-object]} hd
         checked (cond-> {}
                   head (assoc head (checked-head-object b host head revision-object? :not-a-revision))
                   heads-root (assoc heads-root (checked-head-object b host heads-root mmap/node? :not-an-mmap-node))
                   routes-object (assoc routes-object
-                                       (checked-head-object b host routes-object route-object? :not-a-route-map)))
-        ;; the object itself says which schema it is; store.edn decides only while
-        ;; the store has no route yet
-        tree? (route-tree/node? (get checked routes-object))
-        cas-routes (when (and routes-object (not tree?)) (some-> (get checked routes-object) :entries))
-        cached-routes (when (and routes-root (not tree?) (satisfies? RouteCache b))
-                        (read-routes b routes-root head))
-        route-ok? (fn [m]
-                    (boolean
-                     (and (map? m)
-                          (err/rescue-any
-                           (fn [_] false)
-                           (let [es (route/canonical-entries host (vals m))]
-                             (and (every? (fn [[k e]]
-                                            (= k (:path (route/entry host e))))
-                                          m)
-                                  (= routes-root (route/root host es))
-                                  (= routes-object (route/entries-digest host es))))))))
-        cached-ok? (route-ok? cached-routes)
-        cas-ok? (route-ok? cas-routes)
-        raw-routes (if cached-ok? cached-routes (when cas-ok? cas-routes))
+                                       (checked-head-object b host routes-object route-tree/node? :not-a-route-map)))
         objects (ports/lazy-map lm
                                 (fn [id] (when (string? id) (load-object b id)))
                                 #(object-ids b)
                                 checked)
         load #(get objects %)
-        ;; schema 2: the root node was read and rehashed above; here its route hash is
-        ;; checked against the heads, and every other node is read and checked against
-        ;; its parent only when a lookup goes through it
-        tree-ok? (and tree?
+        ;; the root node was read and rehashed above; here its route hash is checked
+        ;; against the heads, and every other node is read and checked against its
+        ;; parent only when a lookup goes through it
+        tree-ok? (and (some? routes-object)
                       (err/rescue-any (fn [_] false)
                                       (some? (route-tree/root-node host load routes-root routes-object))))
-        routes (cond
-                 tree-ok? (ports/lazy-map lm
-                                          #(route-tree/lookup host load routes-object %)
-                                          #(map :path (route-tree/entries host load routes-object))
-                                          {})
-                 raw-routes raw-routes)
+        routes (when tree-ok?
+                 (ports/lazy-map lm
+                                 #(route-tree/lookup host load routes-object %)
+                                 #(map :path (route-tree/entries host load routes-object))
+                                 {}))
         heads (if heads-root
                 (ports/lazy-map lm #(mmap/lookup host load heads-root % nil) #(mmap/keys load heads-root) {})
                 {})
@@ -482,20 +406,18 @@
                                                (recur (into (pop todo) (:parents (get objects id))) (conj seen id)))
                                              seen)))
                                   {})]
-    (revision/lazy-store {:host host :capabilities capabilities :format-version fv
+    (revision/lazy-store {:host host :capabilities capabilities :format-version format-version
                           :objects objects :revisions revisions :head head :heads heads :heads-root heads-root
                           :routes-root routes-root :routes-object routes-object :routes routes
-                          :routes-schema (cond tree? 2 routes-object 1 :else rs)
                           :routes-available? (boolean (or (nil? routes-root) (some? routes)))
-                          :routes-invalid? (boolean (and routes-root
-                                                         (or (and tree? (not tree-ok?))
-                                                             (and cached-routes (not cached-ok?)))))})))
+                          :routes-invalid? (boolean (and routes-root (not tree-ok?)))})))
 
 (defn open
   "Opens the store in backend `b`.
 
-   Formats 2–4 on a host with the LazyMaps port: NO replay, the log is not read.
-   CHECKS: store.edn exists and its :hash-alg is the host's; heads.edn is
+   On a host with the LazyMaps port: NO replay, the log is not read.
+   CHECKS: store.edn exists, is of the supported format and route schema
+   (:store/unsupported-format) and its :hash-alg is the host's; heads.edn is
    well-formed (`no-heads` or {:head id :heads-root id}, :store/corrupt-heads);
    the :head object exists, its content hashes to the id and is a Revision,
    and the :heads-root object exists, hashes to its id and is an mmap node
@@ -515,123 +437,54 @@
    backend; orphans of a losing writer included when enumerated), :revisions
    (ancestors of the heads), :trees and :edges are computed on first use.
 
-   Format 1, or a host without the port: `replay-open` (full replay)."
+   A host without the port: `replay-open` (full replay)."
   [b host]
-  (let [{:keys [capabilities hash-alg] fv :format-version :as descriptor} (or (read-descriptor b) (fail "no store.edn" {}))
+  (let [{:keys [capabilities hash-alg] :as descriptor} (or (read-descriptor b) (fail "no store.edn" {}))
         alg (ports/algorithm (ports/hasher host))]
-    (if (and (>= (or fv 1) 2) (ports/lazy-maps? host))
+    (supported! descriptor)
+    (if (ports/lazy-maps? host)
       (do (when (not= hash-alg alg) (fail "hash algorithm mismatch" {:store hash-alg :hasher alg}))
-          (open-from-heads b host capabilities fv (descriptor-route-schema descriptor)))
+          (open-from-heads b host capabilities))
       (replay-open b host))))
 
 ;; ---------------------------------------------------------------- commit
 
 (defn- tx-line
-  "The log line written for transaction `tx` of `store`: the whole Transaction
-   in formats 1–2, `{:id :revision}` in formats 3–4 — the resolved plan lives in
-   the CAS (legacy) or the derived plan cache and the line never duplicates it."
-  [store tx]
-  (if (>= (or (:format-version store) 2) 3) (dissoc tx :plan) tx))
+  "The log line written for transaction `tx`: `{:id :revision}`, the resolved
+   plan lives in the CAS or the derived plan cache and the line never
+   duplicates it."
+  [tx]
+  (dissoc tx :plan))
 
 (defn commit!
   "Applies `plan` to the in-memory `store` (loaded from backend `b`), then
-   persists: the objects the plan created (:new-objects; format 1: the objects
-   absent from the loaded store), then the Transaction line and the heads
+   persists: the objects the plan created (:new-objects), then the Transaction line and the heads
    through `commit-tx!` against the heads the caller loaded. When another
    writer moved them the result is :store/stale and neither log.edn nor
    heads.edn changed; the objects already written stay as unreferenced
-   write-once files. Both formats take this path. Never lists the backend's
+   write-once files. Never lists the backend's
    objects. Returns the apply result."
   [b store plan]
   (let [host (:host store)
         r (revision/apply-plan store plan)
         s' (:store r)
         tx (:transaction r)
-        ;; Only format 4 is the K2a plan-cache format. Format 3 is legacy:
-        ;; its resolved plan stays in the CAS so its replay path is unchanged.
-        plan-cache? (and (satisfies? PlanCache b)
-                         (>= (or (:format-version store) 2) 4))
-        new-objects (cond-> (if (revision/legacy? store)
-                              (into {} (remove #(contains? (:objects store) (key %))) (:objects s'))
-                              (:new-objects r))
+        plan-cache? (satisfies? PlanCache b)
+        new-objects (cond-> (:new-objects r)
                       plan-cache? (dissoc (:id tx)))
         expected (heads-record store)]
     ;; The plan is provenance/audit, not authority: with a PlanCache backend it
     ;; is written to the derived cache before the commit, so a successful commit
-    ;; is replayable. A backend without the port keeps the legacy CAS shape.
+    ;; is replayable. A backend without the port keeps the plan in the CAS.
     (when plan-cache? (write-plan! b (:id tx) (:plan tx)))
-    (when (and (satisfies? RouteCache b)
-               (:routes-write? s')
-               (:routes-available? s')
-               (some? (:routes-root s'))
-               (some? (:routes s')))
-      (write-routes! b (:routes-root s') (:head s') (:routes s')))
     (doseq [[id obj] new-objects] (write-object! b id (serialize host obj)))
-    (when-not (commit-tx! b expected (tx-line store tx) (heads-record s'))
+    (when-not (commit-tx! b expected (tx-line tx) (heads-record s'))
       (fail "heads moved since the store was loaded; reload and retry" {:type :store/stale :expected expected}))
     (if plan-cache?
       (-> r
           (update :store update :objects dissoc (:id tx))
           (update :new-objects dissoc (:id tx)))
       r)))
-
-(defn upgrade-routes!
-  "Moves the store of backend `b` from route schema 1 (one flat map object) to
-   schema 2 (the Merkle tree by path, `kimun.kernel.route-tree`), in place and
-   only when asked (docs/v2/10 §11.2). The same entries, tree ids included, are
-   written as tree nodes; the heads then name the root of the tree and
-   store.edn records `:route-schema 2`. No transaction is added and no revision
-   changes: the head, the per-tree heads and every document stay as they were.
-   The route root CHANGES, because schema 2 hashes a tree and schema 1 a list;
-   both are returned.
-
-   Order: node objects (unreferenced until the next step), heads
-   (`swap-heads!`, refused with :store/stale when a writer moved them), then
-   store.edn. Stopped between the last two, the store opens and writes as
-   schema 2 and a second call completes it.
-
-   Returns `{:upgraded bool :route-schema 2 :routes n}` plus, when the heads
-   changed, `:routes-root-before`, `:routes-root`, `:routes-object` and `:nodes`
-   (node objects of the tree). `:upgraded false`: there was nothing to do.
-   Raises :store/error for a format other than 4, a backend without
-   `HeadsSwap`, or a schema-1 route map that cannot be read (rebuild it first:
-   nothing is invented)."
-  [b host]
-  (let [descriptor (or (read-descriptor b) (fail "no store.edn" {}))
-        store (open b host)
-        declared (descriptor-route-schema descriptor)
-        record! #(write-descriptor! b (assoc descriptor :route-schema 2))]
-    (when-not (= 4 (:format-version descriptor))
-      (fail "route schema 2 needs a format-4 store" {:format-version (:format-version descriptor)}))
-    (cond
-      ;; no route yet, or the heads already name a tree: only store.edn may be behind
-      (or (nil? (:routes-object store)) (= 2 (:routes-schema store)))
-      (do (when (not= 2 declared) (record!))
-          {:upgraded (not= 2 declared) :route-schema 2
-           :routes (if (:routes-object store) (count (:routes store)) 0)})
-
-      (not (:routes-available? store))
-      (fail "the route map of schema 1 cannot be read; rebuild the store before upgrading its routes"
-            {:type :store/error :routes-root (:routes-root store)})
-
-      (not (satisfies? HeadsSwap b))
-      (fail "this backend cannot replace its heads in place" {:type :store/error})
-
-      :else
-      (let [entries (vec (vals (:routes store)))
-            tree (route-tree/from-entries host entries)
-            expected (heads-record store)
-            heads' (assoc expected :routes-root (:hash tree) :routes-object (:object tree))]
-        ;; the tree must give back exactly what the flat map held before anything is replaced
-        (when (not= (route/canonical-entries host entries) (route-tree/entries host (:new tree) (:object tree)))
-          (fail "the route tree does not hold the entries of the flat map" {:type :store/error}))
-        (doseq [[id node] (:new tree)] (write-object! b id (serialize host node)))
-        (when-not (swap-heads! b expected heads')
-          (fail "heads moved while the routes were being upgraded; run the upgrade again" {:type :store/stale :expected expected}))
-        (record!)
-        {:upgraded true :route-schema 2 :routes (count entries)
-         :routes-root-before (:routes-root store) :routes-root (:hash tree)
-         :routes-object (:object tree) :nodes (count (:new tree))}))))
 
 (defn route-coverage
   "Verifiable coverage of the durable route map against the documents CURRENTLY
@@ -682,8 +535,8 @@
   "What object `o`, reached as `kind`, refers to: a seq of [id kind]. Kinds:
    :obj (the id must be a stored object), :heads (a node of the per-tree heads
    mmap of heads.edn: its leaf values are Revisions, its keys tree ULIDs), :trees (a node of a Revision's :trees
-   mmap: its leaf keys are tree ULIDs, not objects) and :soft (format-1 shapes
-   and edge endpoints: followed only when stored, as before format 2)."
+   mmap: its leaf keys are tree ULIDs, not objects) and :soft (edge endpoints and
+   a descriptor's root: followed only when stored)."
   [o kind]
   (let [as (fn [k ids] (for [id ids :when (string? id)] [id k]))]
     (cond
@@ -701,10 +554,7 @@
       ;; live in the plan cache (K2a). `verify-full` checks plans when present;
       ;; this walk deliberately does not turn a cache absence into corruption.
       (and (map? o) (:incidence o) (:tx o)) (concat (as :trees [(:trees o)]) (as :obj (concat [(:edges o) (:incidence o)] (:parents o))))
-      (and (map? o) (:roots o) (:tx o))            (as :soft (concat (vals (:roots o)) [(:trees o) (:edges o)] (:parents o)))
       (and (map? o) (:node o) (contains? o :children)) (as :obj (cons (:node o) (mapcat identity (:children o))))
-      (and (vector? o) (every? vector? o))         (as :soft (map second o))
-      (and (vector? o) (every? string? o))         (as :soft o)
       (and (map? o) (:tree o) (:root o))           (as :soft [(:root o)])
       (and (map? o) (:type o) (:from o))           (as :soft [(:from o) (:to o) (get-in o [:evidence :context])])
       :else [])))
@@ -712,17 +562,16 @@
 (defn reachable
   "Ids of every object reachable from the heads of `store` (docs/v2/02 §3.1):
    the transitive closure over id references, acyclic because ids are hashes.
-   Format-2 Revisions are walked through their three mmaps (branch children,
-   leaf keys, id vectors and the nested edge-id set of a hub
-   :incidence entry `{:set root}`), and the per-tree heads through the nodes of
-   the :heads-root mmap; format-1 Revisions through :roots and the sets. The
-   `:tx` digest is provenance, not an object: a resolved plan in the CAS or the
+   Revisions are walked through their three mmaps (branch children, leaf keys,
+   id vectors and the nested edge-id set of a hub :incidence entry
+   `{:set root}`), and the per-tree heads through the nodes of the :heads-root
+   mmap. The `:tx` digest is provenance, not an object: a resolved plan in the CAS or the
    PlanCache is verified by `verify-full`, not by this walk.
-   For a format-2 `:trees` mmap leaf, the descriptor is followed as an object
+   For a `:trees` mmap leaf, the descriptor is followed as an object
    and its merkle root as a `[:tree-hash descriptor-id]`: if the tree is marked `:cached?` the
    root is derived (cache, docs/v2/14 §19) and is not required to be in the
    CAS; otherwise it is verified like any other object.
-   Never raises on damaged content: an id that a format-2 structure names but
+   Never raises on damaged content: an id that a structure names but
    that is absent or unreadable IS in the result (so `verify` reports it) and
    the walk goes on with what it can still read; what was reachable only
    through an unreadable object is not in the result. The empty map, a constant
@@ -742,11 +591,11 @@
         ;; ABSENT it is not damage; present but unreadable or altered it is reported as usual
         empty-id (:root (mmap/empty (:host store)))
         absent? (fn [id] (not (err/rescue-any (fn [_] true) (contains? objs id))))]
-    ;; format 2: the per-tree heads through the nodes of the heads mmap (a damaged one is
-    ;; reported like any other, never raised while enumerating a view); format 1: the :heads map
+    ;; the per-tree heads through the nodes of the heads mmap (a damaged one is
+    ;; reported like any other, never raised while enumerating a view)
     (loop [todo (cond-> (if-let [r (:heads-root store)]
                          (into [[r :heads]] (when (:head store) [[(:head store) :obj]]))
-                         (mapv #(vector % :obj) (remove nil? (cons (:head store) (vals (:heads store))))))
+                         [])
                    (:routes-object store) (conj [(:routes-object store) :obj]))
            seen #{}]
       (if (empty? todo)
@@ -766,8 +615,7 @@
 
 (defn object-class
   "The class of a stored object by its shape: `:revision`, `:mmap-leaf`,
-   `:mmap-branch`, `:route-map` (route schema 1), `:route-node` (schema 2),
-   `:plan` (a resolved plan kept in the CAS by formats 1–3), `:descriptor`,
+   `:mmap-branch`, `:route-node`, `:descriptor`,
    `:node`, `:edge`, `:tree-object`, else `:unknown`. A shape is what the object
    is, not why it is where it is."
   [o]
@@ -775,9 +623,7 @@
     (mmap/leaf? o) :mmap-leaf
     (mmap/branch? o) :mmap-branch
     (route-tree/node? o) :route-node
-    (flat-route-object? o) :route-map
     (revision-object? o) :revision
-    (and (map? o) (contains? o :ops) (contains? o :plan/version)) :plan
     (and (map? o) (:tree o) (:root o)) :descriptor
     (and (map? o) (:class o) (:kind o) (contains? o :content)) :node
     (and (map? o) (:type o) (:from o) (:to o)) :edge
@@ -801,13 +647,9 @@
    looked at. REACHED is `reachable`, the same walk `verify` rehashes: the head
    revision and its whole history, the per-tree heads, and the route map the
    heads name. Unreachable = stored and not reached. Each one is read from the
-   store itself (never from a cache) and rehashed, and falls in one of three
+   store itself (never from a cache) and rehashed, and falls in one of two
    lists:
 
-   - `:held` — a resolved plan (`:plan`) whose id a COMMITTED log line names.
-     The walk does not follow it, but without it the log cannot be replayed
-     (`verify-full` answers `:replay-unavailable`; formats 1–3 keep plans in
-     the CAS): it is not a candidate for anything.
    - `:damaged` — `{:id :reason}` with `:hash-mismatch` or `:unreadable`: its
      class cannot be trusted, so it is only reported.
    - `:candidates` — the rest: `{:id :class :root?}`. `:root?` is true when no
@@ -818,7 +660,7 @@
      uncommitted tail. It is not a top: the heads map written with it
      mentions it.
 
-   Returns `{:stored n :reached n :unreachable n :candidates [...] :held [...]
+   Returns `{:stored n :reached n :unreachable n :candidates [...]
    :damaged [...] :stable? bool}` plus `:uncommitted-tail` (the log entry the
    heads do not record) when there is one: what that line wrote is unreachable
    and is among the candidates. `:reached` counts the reached ids that are
@@ -834,8 +676,7 @@
         hasher (ports/hasher host)
         stored (set (object-ids b))
         live (reachable store)
-        [committed tail] (split-log b)
-        logged (into #{} (keep :id) committed)
+        tail (uncommitted-tail b)
         read (fn [id]
                (let [content (stored-content b id)]
                  (cond
@@ -846,14 +687,12 @@
                              {:id id :class (object-class o) :mentions (disj (mentioned-ids o) id)})))))
         items (mapv read (sort (remove live stored)))
         sound (remove :damage items)
-        mentioned (into #{} (mapcat :mentions) sound)
-        held? (fn [i] (and (= :plan (:class i)) (contains? logged (:id i))))]
+        mentioned (into #{} (mapcat :mentions) sound)]
     (cond-> {:stored (count stored)
              :reached (count (filter stored live))
              :unreachable (count items)
              :candidates (mapv (fn [i] {:id (:id i) :class (:class i) :root? (not (contains? mentioned (:id i)))})
-                               (remove held? sound))
-             :held (mapv #(select-keys % [:id :class]) (filter held? sound))
+                               sound)
              :damaged (mapv (fn [i] {:id (:id i) :reason (:damage i)}) (filter :damage items))
              :stable? (= (heads-record store) (or (read-heads b) no-heads))}
       tail (assoc :uncommitted-tail tail))))
@@ -898,8 +737,8 @@
       tail (assoc :uncommitted-tail tail))))
 
 (defn- cached-plan
-  "The plan object of `id`: legacy CAS text first, then the PlanCache value;
-   nil when neither exists. A damaged cached plan is reported as missing, never
+  "The plan object of `id`: the PlanCache value, else the CAS text; nil when
+   neither exists. A damaged cached plan is reported as missing, never
    as a corrupt object."
   [b id]
   (or (when (satisfies? PlanCache b)
@@ -914,7 +753,7 @@
   (let [ids (plan-ids log)
         entries (keep (fn [entry]
                         (when (string? (:id entry))
-                          [(:id entry) (or (:plan entry) (cached-plan b (:id entry)))]))
+                          [(:id entry) (cached-plan b (:id entry))]))
                       log)
         digest (fn [content]
                  (if (string? content)

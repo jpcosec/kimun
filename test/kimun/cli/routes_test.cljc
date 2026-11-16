@@ -13,7 +13,6 @@
             [kimun.host.default :as host]
             [kimun.host.store-cache :as store-cache]
             [kimun.kernel.ports :as ports]
-            [kimun.kernel.route :as route]
             [kimun.kernel.route-tree :as route-tree]
             [kimun.kernel.store :as kstore]
             [kimun.surface.docs :as tdocs]
@@ -116,8 +115,10 @@
       (spit (file p "notes" "plain.md") note-edited)
       (is (= root-before (root p)) "the store does not move until the file is registered again")
       (is (true? (:ok (run p "docs" "update" "notes/plain.md" "--name" "plain"))))
-      (let [d (route/diff h (vals before) (vals (routes p)))]
-        (is (= [[] [] ["notes/plain.md"]] [(:added d) (:removed d) (mapv :path (:changed d))]))
+      (let [after (routes p)
+            stable #(dissoc % :tree-id)
+            changed (vec (sort (keep (fn [[path e]] (when (not= (stable e) (stable (get before path))) path)) after)))]
+        (is (= [(set (keys before)) ["notes/plain.md"]] [(set (keys after)) changed]) "one route changed, none came or went")
         (is (not= root-before (root p)))
         (is (not= (get-in before ["notes/plain.md" :projection-hash])
                   (get-in (routes p) ["notes/plain.md" :projection-hash])))))

@@ -1,12 +1,10 @@
 (ns kimun.kernel.route
-  "Route Merkle over the tracked documents of a store (K2a, docs/v2/14 §20).
+  "Route entries over the tracked documents of a store (K2a, docs/v2/14 §20).
 
    A route entry names the tracked projection of one relative path with the IDs
    the store already has: `:path`, `:fingerprint`, `:class`,
-   `:projection-hash`, `:content-hash` and, as a locator, `:tree-id`. The route
-   root hashes only the first five, sorted by path: the nominal tree id, the
-   revision and the timestamp do not enter it. Rebuilding the same files under a
-   new ULID therefore gives the same root.
+   `:projection-hash`, `:content-hash` and, as a locator, `:tree-id`. The Merkle
+   tree of the entries by path is `kimun.kernel.route-tree`.
 
    `:path` is a locator, not an identity. Duplicate or unsafe paths are rejected
    instead of being resolved by hash or by last writer. This namespace is pure:
@@ -14,10 +12,6 @@
   (:require [clojure.string :as str]
             [kimun.kernel.canon :as canon]
             [kimun.kernel.err :as err]))
-
-(def schema
-  "Schema marker of the hashed route value."
-  "kimun.route/1")
 
 (def required
   "Keys every route entry must carry (all strings). `:tree-id` is optional."
@@ -75,12 +69,6 @@
     (cond-> (select-keys (assoc m :path p) (conj required :tree-id))
       (nil? tree-id) (dissoc :tree-id))))
 
-(defn- hashed-entry
-  "The value of an entry that enters the route root: the five stable fields, in
-   order. `:tree-id` is deliberately absent."
-  [e]
-  [(str (:path e)) (:fingerprint e) (:class e) (:projection-hash e) (:content-hash e)])
-
 (defn canonical-entries
   "Validated entries sorted by their NFC path. Raises `:route/ambiguous` when
    two entries address the same NFC path; the conflict is visible, never
@@ -91,57 +79,3 @@
             :when (= (:path a) (:path b))]
       (err/raise :route/ambiguous (str "route: duplicate path " (:path a)) {:path (:path a)}))
     es))
-
-(defn root
-  "Root hash of the route tree of `entries` under `host`: the canonical digest
-   of `{:route/version \"kimun.route/1\" :entries [hashed-entry …]}`, entries
-   sorted by path. `:tree-id`, revisions and time do not enter the root."
-  [host entries]
-  (canon/digest host {:route/version schema
-                      :entries (mapv hashed-entry (canonical-entries host entries))}))
-
-(defn canonical-map
-  "The complete route map path → entry, sorted by path and including the
-   `:tree-id` locator. This is the value persisted as a CAS object, so its
-   digest and the bytes of that object are the same thing."
-  [host entries]
-  (into (sorted-map)
-        (map (fn [e] [(:path e) e]))
-        (canonical-entries host entries)))
-
-(defn map-object
-  "The exact object persisted for a route map: `{:route/version … :entries
-   canonical-map}`. Its digest is `entries-digest`."
-  [host entries]
-  {:route/version schema :entries (canonical-map host entries)})
-
-(defn entries-digest
-  "Digest of the COMPLETE route map (including `:tree-id`) in `map-object`
-   form. This is the durable locator check; `root` hashes only the five
-   hashed/sensorized fields and cannot detect a changed tree-id. Neither root
-   nor digest is node identity: D0 remains open."
-  [host entries]
-  (canon/digest host (map-object host entries)))
-
-(defn lookup
-  "The entry at `path` in `entries`, normalized to NFC, or nil."
-  [host entries path]
-  (let [p (nfc-path host path)]
-    (some #(when (= p (:path %)) %) (canonical-entries host entries))))
-
-(defn diff
-  "Path diff between two entry collections:
-   `{:added [entry …] :removed [entry …] :changed [{:path p :before e :after e} …]}`.
-   An entry whose `:tree-id` changed but whose hashed fields did not is not a
-   change; a changed fingerprint, class, projection or content hash is."
-  [host before after]
-  (let [b (into {} (map (juxt :path identity)) (canonical-entries host before))
-        a (into {} (map (juxt :path identity)) (canonical-entries host after))
-        paths (sort (distinct (concat (keys b) (keys a))))]
-    {:added (vec (keep #(when-not (contains? b %) (get a %)) paths))
-     :removed (vec (keep #(when-not (contains? a %) (get b %)) paths))
-     :changed (vec (keep (fn [p]
-                           (let [x (get b p) y (get a p)]
-                             (when (and x y (not= (hashed-entry x) (hashed-entry y)))
-                               {:path p :before x :after y})))
-                         paths))}))

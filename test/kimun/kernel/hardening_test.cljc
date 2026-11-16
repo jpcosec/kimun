@@ -11,7 +11,6 @@
             [kimun.kernel.edge :as edge]
             [kimun.kernel.tree :as tree]
             [kimun.kernel.revision :as rev]
-            [kimun.kernel.heads :as heads]
             [kimun.kernel.store :as store]
             [kimun.host.fs-store :as fs]
             #?@(:clj [[babashka.fs :as bfs]])))
@@ -255,20 +254,6 @@
     (is (= base (:rebased-from r)))
     (is (= 2 (count (:edges (:store r)))) "both concurrent bindings survive")))
 
-;; ---------------------------------------------------------------- heads under contention
-
-(deftest concurrent-commits-on-disjoint-trees-all-land
-  (let [ref (atom (rev/empty-store h caps))
-        tids (mapv #(str "01ARZ3NDEKTSV4RRFFQ69G5FA" (nth "ABCDEFGH" %)) (range 6))
-        mk (fn [i] (plan nil [{:op :add-node :node {:class :sign :kind :block :content {:format :markdown :type :document :attrs {:i i}}} :as :r}
-                             {:op :new-tree :tree {:kind :document :name (str i)} :id (tids i) :root :r}]))
-        ;; plan as a function of the store the commit actually sees: retries rebuild :base
-        results #?(:clj (doall (map deref (mapv (fn [i] (future (heads/commit! ref (fn [s] (assoc (mk i) :base (:head s)))))) (range 6))))
-                   :cljs (mapv (fn [i] (heads/commit! ref (fn [s] (assoc (mk i) :base (:head s))))) (range 6)))]
-    (is (= 6 (count results)))
-    (is (= 6 (count (:revisions @ref))))
-    (is (= (set tids) (set (keys (:heads @ref)))))))
-
 ;; ---------------------------------------------------------------- store failure modes (§8.1)
 
 #?(:clj
@@ -277,16 +262,9 @@
            b (fs/backend dir)
            s (:store (store/commit! b (store/init! b h caps) (plan nil doc-ops)))]
        (testing "store.edn carries the descriptor fields"
-         ;; a new format-4 store also declares its route schema (docs/v2/10 §11.2) …
+         ;; a format-4 store also declares its route schema (docs/v2/10 §11.2)
          (is (= #{:format-version :hash-alg :capabilities :route-schema} (set (keys (store/read-descriptor b)))))
          (is (= 2 (:route-schema (store/read-descriptor b))))
-         ;; … and a store.edn with the three fields alone, which is every store created
-         ;; before that key existed, still opens: it is a store of route schema 1
-         (let [old-dir (str (ktu/temp-dir "sldb-hard-"))
-               ob (fs/backend old-dir)]
-           (store/commit! ob (store/init! ob h caps {:route-schema 1}) (plan nil doc-ops))
-           (is (= #{:format-version :hash-alg :capabilities} (set (keys (store/read-descriptor ob)))))
-           (is (= (:head (store/open ob h)) (:head (store/replay-open ob h)))))
          (is (= :sha-256 (:hash-alg (store/read-descriptor b)))))
        (testing "a missing object file is reported by verify"
          (let [victim (first (sort (store/reachable s)))]
@@ -299,14 +277,27 @@
        (testing "hash algorithm mismatch on open"
          (let [dir2 (str (ktu/temp-dir "sldb-alg-")) b2 (fs/backend dir2)]
            (store/init! b2 h caps)
-           (spit (str dir2 "/store.edn") (pr-str {:format-version 1 :hash-alg :blake3 :capabilities caps}))
+           (spit (str dir2 "/store.edn") (pr-str {:format-version 4 :route-schema 2 :hash-alg :blake3 :capabilities caps}))
            (is (= :store/error (:type (ex-of #(store/open b2 h)))))
-           ;; format 2 opens from the heads, not by replay: the same check on that path, with history
+           ;; the store opens from the heads, not by replay: the same check on that path, with history
            (let [dir3 (str (ktu/temp-dir "sldb-alg-")) b3 (fs/backend dir3)
                  s3 (store/init! b3 h caps)]
              (store/commit! b3 s3 {:plan/version 1 :base nil :actor "jp" :engines {} :timestamp "2026-08-29T12:00:00.000Z"
                                    :ops [{:op :add-node :node {:class :sign :kind :text :content {:text "x"}}}]})
              (is (some? (store/open b3 h)))
-             (spit (str dir3 "/store.edn") (pr-str {:format-version 2 :hash-alg :blake3 :capabilities caps}))
+             (spit (str dir3 "/store.edn") (pr-str {:format-version 4 :route-schema 2 :hash-alg :blake3 :capabilities caps}))
              (is (= :store/error (:type (ex-of #(store/open b3 h)))))
-             (is (re-find #"hash algorithm" (ex-message (try (store/open b3 h) (catch Exception e e)))))))))))
+             (is (re-find #"hash algorithm" (ex-message (try (store/open b3 h) (catch Exception e e))))))))
+       (testing "a store of a format or route schema that is no longer supported fails with one declared error"
+         (doseq [[label descriptor] [["format 1" {:format-version 1 :hash-alg :sha-256 :capabilities caps}]
+                                     ["format 2" {:format-version 2 :hash-alg :sha-256 :capabilities caps}]
+                                     ["format 3" {:format-version 3 :hash-alg :sha-256 :capabilities caps :route-schema 2}]
+                                     ["format 4, route schema 1" {:format-version 4 :hash-alg :sha-256 :capabilities caps}]]]
+           (let [d (str (ktu/temp-dir "sldb-old-")) ob (fs/backend d)]
+             (store/write-descriptor! ob descriptor)
+             (doseq [[how f] [["open" #(store/open ob h)] ["replay-open" #(store/replay-open ob h)] ["replay" #(store/replay ob h)]]]
+               (let [e (ex-of f)]
+                 (is (= :store/unsupported-format (:type e)) (str label " " how))
+                 (is (= (:format-version descriptor) (:format-version e)) (str label " " how))))
+             (is (re-find #"no longer supported: rebuild with `include build --rebuild`"
+                          (ex-message (try (store/open ob h) (catch Exception e e)))) label)))))))

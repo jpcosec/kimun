@@ -68,7 +68,7 @@ Layout de un store formato 4 (`kimun.kernel.store`; detalle en `10`):
   index/<head>.edn   ; índice derivado por cabecera (`rebuild-indexes`), gitignored
 ```
 
-- `stores upgrade` reescribe un store formato 1 como formato 2 (backup `<store>.format-1-<marca>`, mapa `upgrade-format-1.edn`); un store formato 2 pasa a 3 en el sitio; un store formato 3 reporta `:needs-rebuild` y nombra `include build --rebuild` (formato 4). Un store formato 4 conserva su formato; si su mapa de rutas es de esquema 1 pasa a esquema 2, el árbol Merkle por ruta (`10 §11.2`), y si ya lo es no hace nada.
+- Un store de formato anterior al 4 o sin esquema de rutas 2 no se abre: cualquier comando que lo abra falla con `store/unsupported-format` (exit 5) y pide reconstruir con `include build --rebuild` (`10 §8`). No hay `stores upgrade`.
 - Los enlaces (`:links`) son `{:name :path}` con `:path` **relativo al store**; un enlace absoluto o duplicado es `store/invalid-links` (exit 5). `stores link NAME PATH` enlaza un `.kimun` o su proyecto; `stores links` informa `ok | missing | not-a-store`.
 - Capacidades por defecto al crear: `{actor :all "kimun/derive" :all "kimun/materialize" :all}`.
 - `index/` es derivado: leer nunca escribe; `rebuild-indexes` lo reconstruye bajo orden.
@@ -82,10 +82,9 @@ Layout de un store formato 4 (`kimun.kernel.store`; detalle en `10`):
 | `stores init` | `--name NAME`, `--content by-reference\|inline` | `{:path :name :actor :capabilities}`; `--content inline` escribe `:content :inline` en `store.edn` (docs/v2/10 §10); falla `cli/store-exists` (5) si ya hay store |
 | `stores check` | — | `{:name :path :hash-alg :revisions :trees :objects :head :links}` + `:routes-root :route-count :routes-complete? :routes-missing :routes-shared :routes-outside` si hay documentos registrados con archivo (abajo, «Rutas») + `:documents` si hay findings; abre por replay; store inválido ⇒ `store/invalid` (5) | Warning `cache/corrupt-pack` cuando un pack de `cache/packs` no se puede cargar (se ignora; nunca exit 5).
 | `stores verify` | — | `{:checked :bad}`; verify-full (replay + hash); corrupción ⇒ `store/corrupt` (5) |
-| `stores unreachable` | `[--ids]` | inventario **read-only** de los objetos de `objects/` que las cabeceras no alcanzan (`10 §11.3`): `{:note :stored :reached :unreachable :candidates {:count :bytes :by-class} :roots {…} :lost-revisions [id] :held {…} :damaged [{:id :reason}] :stable?}` + `:uncommitted-tail` si la hay; `--ids` agrega `:ids {:candidates [{:id :class :root? :bytes}] :held […]}`. No escribe ni borra nada; no existe comando que borre. Un candidato **no** es basura segura: `:note` lo dice en cada respuesta. Warning `unreachable/unstable` si las cabeceras se movieron durante el inventario |
+| `stores unreachable` | `[--ids]` | inventario **read-only** de los objetos de `objects/` que las cabeceras no alcanzan (`10 §11.3`): `{:note :stored :reached :unreachable :candidates {:count :bytes :by-class} :roots {…} :lost-revisions [id] :damaged [{:id :reason}] :stable?}` + `:uncommitted-tail` si la hay; `--ids` agrega `:ids {:candidates [{:id :class :root? :bytes}]}`. No escribe ni borra nada; no existe comando que borre. Un candidato **no** es basura segura: `:note` lo dice en cada respuesta. Warning `unreachable/unstable` si las cabeceras se movieron durante el inventario |
 | `stores pack` | `[--max-bytes N] [--cache]` | mueve los objetos sueltos menores que N (defecto 4096, máximo 16 MiB) a `packs/<name>.pack` y borra los sueltos (`10 §11.4`): `{:path :packed :pack :bytes :kept-loose :skipped-damaged :packs :checked :indexes-repaired}`; `:indexes-repaired` cuenta los `.idx` que reescribió (lectores no escriben: un `.idx` ausente o raro se repara aquí, y puede ser 1 con `:packed` 0). Verifica después; un fallo es `store/corrupt` (5) y recuerda que los sueltos ya no están (`stores unpack`). `--cache` empaqueta la **caché derivada** (`cache/objects` → `cache/packs`; verifica por lectura, ignora en memoria un pack malo, borra sueltos dañados y duplicados) y nunca toca el store; `:scope` dice cuál. Solo formato 4; otro formato es `store/error` (5); `--max-bytes` inválido es `cli/usage` (6) |
 | `stores unpack` | — | escribe de vuelta cada objeto empaquetado y borra el pack: `{:path :packs :unpacked :checked}`; verifica después (`store/corrupt` 5 si falla). Solo formato 4 |
-| `stores upgrade` | — | `{:upgraded :format-version :path …}`; 1→2 reconstruye en un directorio hermano (`:transactions :backup :map`), 2→3 convierte en el sitio (líneas `{:id :revision}`, `:dropped-plans`), 3→4 reporta `:needs-rebuild true :action "kimun include build --rebuild"` (el registro como caché exige los archivos); formato 4 con rutas de esquema 1 pasa a esquema 2 en el sitio (`:from-route-schema 1 :route-schema 2 :routes :routes-root-before :routes-root :route-nodes :checked`), y con esquema 2 responde `:upgraded false :route-schema 2`; carrera de escritura ⇒ `store/stale` (4) |
 | `stores show` | — | `{:name :path :hash-alg :links :head :capabilities}`; sin replay |
 | `stores health` | — | `{:status :summary :findings :actions :next}`; `ok \| degraded \| needs-human` |
 | `stores sense` | `[--once]` | una observación read-only: `{:mode :once :observed-at :tracked :valid :signals :counts :summary}`; reusa `kimun.surface.diagnostics`, no escribe ni en el store ni en `<store>/cache/` y no inicia daemon. `:observed-at` es la hora de esta respuesta, no un evento persistido; las señales cubren las categorías del diagnóstico, no todo cambio topológico. Distingue fuente, contrato y recálculo (`10 §11.1`, K6): `source/*` frente a `contract/changed`, `contract/parser-unavailable`, `contract/inconsistent` y `contract/rebuild-mismatch`; el `:detail` lleva `content-ok`, `contract-ok`, `contract {:status :changed}` y `:registered-root`/`:rebuilt-root` |
@@ -281,11 +280,8 @@ un store existente sin reconstruirlo (por ejemplo dentro de `stores update`), y 
 **Esquema del mapa (K2a, corte C5; `10 §11.2`).** Un store nuevo guarda el mapa como **árbol
 Merkle por ruta** (esquema 2): una escritura reescribe solo los nodos del camino que tocó (cada uno
 entero: un directorio ancho cuesta en proporción a sus hijos, `10 §11.2`), abrir lee solo el nodo
-raíz y dos raíces se comparan bajando por donde difieren. Un store creado antes
-es esquema 1 (un mapa plano) y **sigue así, sin cambios, hasta que se pide**: `stores upgrade` lo
-pasa a esquema 2 con las mismas rutas, documentos e historial, y devuelve la raíz anterior y la
-nueva (la raíz cambia al cambiar de esquema); `include build --rebuild` también. `stores check`
-informa `:routes-schema`. Un nodo dañado del árbol es `route/corrupt` (5) al leer esa rama.
+raíz y dos raíces se comparan bajando por donde difieren. `stores check`
+informa `:route-count` y `:routes-root`. Un nodo dañado del árbol es `route/corrupt` (5) al leer esa rama.
 
 El objeto del mapa de rutas (en esquema 2, su nodo raíz) es, junto con la revisión de cabecera y la raíz de cabeceras por árbol,
 uno de los tres que la apertura misma verifica: dañado o ausente, todo comando falla con
@@ -303,7 +299,7 @@ el **hash raíz**; el árbol y sus bloques son **caché**, recalculable desde el
 persistía el árbol entero y el archivo no quedaba anclado.
 
 - Vale para stores por referencia (el defecto) con el archivo dentro del proyecto. En un store
-  `:inline` o formato 1, o con un archivo fuera del proyecto, el árbol se persiste como antes.
+  `:inline`, o con un archivo fuera del proyecto, el árbol se persiste como antes.
 - El documento **queda sensorizado**: `stores check|health|sense|heartbeat` lo cuentan en `:tracked` y
   dan `source/missing`, `source/mutated` (cambió la estructura), `source/reformatted` (cambió el texto,
   no la estructura) y las señales de contrato de K6. El finding lleva `:generic true` y `:model nil`.
@@ -549,7 +545,7 @@ Tabla de rutas como datos en `src/kimun/surface/http/routes.cljc`; cada ruta del
 | `stores list`, `store show` | `stores show` | descriptor y cabeceras sin replay |
 | `stores check` | `stores check` | abre por replay; findings como warnings |
 | — | `stores verify` | nuevo: recomputa hashes y verifica el replay |
-| — | `stores health`, `stores update`, `stores reconcile [--apply]`, `stores upgrade` | nuevos: diagnóstico, reparación sin decisión, federación, formato del store (1→2→3→4) |
+| — | `stores health`, `stores update`, `stores reconcile [--apply]` | nuevos: diagnóstico, reparación sin decisión, federación |
 | `stores semantic-map` | `rebuild-indexes` | solo reconstruye bajo orden; leer nunca escribe |
 | `stores semantic-export`, `query` | `graph export\|snapshot\|query`, `semantic export` | export con rutas relativas, `producer kimun`, contrato v2 |
 | `models add\|update` | `models define` | modelo = datos en el árbol, no clase Python |

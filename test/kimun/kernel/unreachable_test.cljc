@@ -1,8 +1,7 @@
 (ns kimun.kernel.unreachable-test
   "K5, first cut: the read-only inventory of stored objects the heads do not
    reach (`kimun.kernel.store/unreachable`, docs/v2/10 §11.3). What it lists is
-   exactly what `verify` does not walk; a plan the log names is held, not a
-   candidate; what a losing writer left and the roots later commits replaced
+   exactly what `verify` does not walk; what a losing writer left and the roots later commits replaced
    are candidates with their tops marked; and removing every candidate from a
    COPY of the store leaves a store that opens, replays and verifies. The
    inventory itself writes nothing."
@@ -45,12 +44,10 @@
 (defn- plan [base ops]
   {:plan/version 1 :base base :actor "jp" :engines {} :timestamp TS :ops (vec ops)})
 
-(defn- fresh
-  ([] (fresh {}))
-  ([opts]
-   (let [dir (str (ktu/temp-dir "kimun-unreachable-"))
-         b (fs/backend dir)]
-     [dir (store/init! b h {"jp" :all} opts)])))
+(defn- fresh []
+  (let [dir (str (ktu/temp-dir "kimun-unreachable-"))
+        b (fs/backend dir)]
+    [dir (store/init! b h {"jp" :all})]))
 
 (defn- commit!
   "Commits `ops` on the store at `dir`, opened fresh; returns the new store."
@@ -61,12 +58,11 @@
 
 (defn- history
   "A store at `dir` after `n` commits: three documents, then edits of the first."
-  ([n] (history n {}))
-  ([n opts]
-   (let [[dir _] (fresh opts)]
-     (commit! dir (mapcat #(register-ops % 0) (range 3)))
-     (doseq [k (range 1 n)] (commit! dir (register-ops 0 k)))
-     dir)))
+  [n]
+  (let [[dir _] (fresh)]
+    (commit! dir (mapcat #(register-ops % 0) (range 3)))
+    (doseq [k (range 1 n)] (commit! dir (register-ops 0 k)))
+    dir))
 
 (defn- inventory [dir]
   (let [b (fs/backend dir)] (store/unreachable b (store/open b h))))
@@ -89,7 +85,7 @@
         r (store/unreachable b s)
         stored (set (store/object-ids b))
         live (set/intersection stored (store/reachable s))
-        listed (set (map :id (concat (:candidates r) (:held r) (:damaged r))))]
+        listed (set (map :id (concat (:candidates r) (:damaged r))))]
     (is (= (count stored) (:stored r)))
     (is (= (count live) (:reached r)))
     (is (= (:unreachable r) (count listed)))
@@ -104,7 +100,6 @@
   (let [dir (history 1)
         r (inventory dir)]
     (is (= [] (:candidates r)))
-    (is (= [] (:held r)))
     (is (= (:stored r) (:reached r)))))
 
 (deftest replaced-roots-are-candidates-and-their-tops-are-marked
@@ -116,19 +111,7 @@
         "only nodes of the heads map and of the route tree: nothing a revision names")
     (is (contains? (classes roots) :route-node))
     (is (contains? (classes roots) :mmap-leaf))
-    (is (= 3 (count (filter #(= :route-node (:class %)) roots))) "one replaced route root per later commit")
-    (is (= [] (:held r)) "format 4 keeps plans in the cache, not in objects/")))
-
-(deftest the-flat-route-map-of-schema-1-is-a-candidate-once-replaced
-  (let [dir (history 3 {:route-schema 1})
-        r (inventory dir)]
-    (is (= 2 (count (filter #(= :route-map (:class %)) (:candidates r)))))
-    (is (every? :root? (filter #(= :route-map (:class %)) (:candidates r))))
-    (testing "and the one the heads name is not"
-      (is (not (contains? (set (map :id (:candidates r))) (:routes-object (store/read-heads (fs/backend dir)))))))
-    (testing "after the route upgrade the last flat map is one more"
-      (store/upgrade-routes! (fs/backend dir) h)
-      (is (= 3 (count (filter #(= :route-map (:class %)) (:candidates (inventory dir)))))))))
+    (is (= 3 (count (filter #(= :route-node (:class %)) roots))) "one replaced route root per later commit")))
 
 ;; ---------------------------------------------------------------- a losing writer
 
@@ -153,34 +136,6 @@
         "what that revision reaches is below it, not a top")
     (is (nil? (get-in (store/open (fs/backend dir) h) [:routes (path-of 7)])) "the lost write is not in the store")
     (is (true? (:ok? (store/verify (fs/backend dir) (store/open (fs/backend dir) h)))))))
-
-;; ---------------------------------------------------------------- plans in the CAS
-
-(deftest a-plan-the-log-names-is-held-not-a-candidate
-  ;; format 3 keeps the resolved plan of every transaction in objects/; the walk does
-  ;; not follow it and replay needs it
-  (let [[dir _] (fresh {:format-version 3})
-        doc (fn [i] [{:op :add-node :node (node/make h :sign :block {:format :markdown :type :document :attrs {:n i}}) :as :r}
-                     {:op :new-tree :tree {:kind :document :name (str i)} :id (tid i) :root :r}])
-        _ (commit! dir (doc 0))
-        _ (commit! dir (doc 1))
-        logged (set (map :id (store/read-log (fs/backend dir))))
-        r (inventory dir)]
-    (is (= 2 (count logged)))
-    (is (= logged (set (map :id (:held r)))) "both resolved plans, and nothing else")
-    (is (every? #(= :plan (:class %)) (:held r)))
-    (is (empty? (set/intersection logged (set (map :id (:candidates r))))))
-    (testing "the plan of a transaction that lost the race is not in the log: a candidate, under its revision"
-      (let [b1 (fs/backend dir) b2 (fs/backend dir)
-            s1 (store/open b1 h) s2 (store/open b2 h)]
-        (store/commit! b1 s1 (plan (:head s1) (doc 2)))
-        (is (= :store/stale (try (store/commit! b2 s2 (plan (:head s2) (doc 3))) nil
-                                 (catch Exception e (:type (ex-data e))))))
-        (let [r (inventory dir)
-              lost (filter #(= :plan (:class %)) (:candidates r))]
-          (is (= 3 (count (:held r))))
-          (is (= 1 (count lost)))
-          (is (false? (:root? (first lost))) "its revision mentions it"))))))
 
 ;; ---------------------------------------------------------------- an unfinished commit
 
@@ -233,9 +188,8 @@
 
 (deftest a-copy-without-its-candidates-still-opens-replays-and-verifies
   ;; never on the store itself: the copy is the experiment
-  (doseq [[label dir] [["format 4, route schema 2" (history 5)]
-                       ["format 4, route schema 1" (history 5 {:route-schema 1})]]]
-    (testing label
+  (let [dir (history 5)]
+    (testing "format 4, route schema 2"
       (let [copy (str (ktu/temp-dir "kimun-unreachable-copy-"))
             _ (bfs/copy-tree dir copy {:replace-existing true})
             r (inventory copy)
@@ -256,22 +210,6 @@
               "and it takes a new write"))
         (is (= (:stored (inventory dir)) (count (store/object-ids (fs/backend dir)))) "the original was not touched")))))
 
-(deftest a-held-plan-is-needed-without-it-the-log-does-not-replay
-  ;; why `:held` is not a candidate list
-  (let [[dir _] (fresh {:format-version 3})
-        _ (commit! dir [{:op :add-node :node (node/make h :sign :block {:format :markdown :type :document :attrs {}}) :as :r}
-                        {:op :new-tree :tree {:kind :document :name "0"} :id (tid 0) :root :r}])
-        copy (str (ktu/temp-dir "kimun-unreachable-copy-"))
-        _ (bfs/copy-tree dir copy {:replace-existing true})
-        held (:held (inventory copy))]
-    (is (= 1 (count held)))
-    (is (nil? (:replay-unavailable (store/verify-full (fs/backend copy) h))) "with the plan, the log replays")
-    (bfs/delete (bfs/path copy "objects" (:id (first held))))
-    (is (true? (:ok? (store/verify (fs/backend copy) (store/open (fs/backend copy) h))))
-        "the hash walk does not notice")
-    (is (= [(:id (first held))] (:missing (:replay-unavailable (store/verify-full (fs/backend copy) h))))
-        "but the log can no longer be replayed, and verify-full says which plan is missing")))
-
 (deftest object-class-names-each-shape
   (let [dir (history 2)
         b (fs/backend dir)
@@ -282,5 +220,4 @@
     (is (contains? #{:mmap-leaf :mmap-branch} (of (:heads-root s))))
     (is (= :unknown (store/object-class {:something "else"})))
     (is (= :unknown (store/object-class nil)))
-    (is (= :plan (store/object-class (plan nil []))))
     (is (= (ports/algorithm (ports/hasher h)) (:hash-alg (edn/read-string (slurp (str (bfs/path dir "store.edn")))))))))
