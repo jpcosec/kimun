@@ -1,0 +1,18 @@
+store /tmp/k2b0-s500/.kimun
+class                           count        bytes        avg
+route/node                        500     49120000      98240
+mmap/branch                      5840      6402488       1096
+mmap/leaf                        5349      3277371        613
+revision                          501       985499       1967
+edge/reference                   1000       468000        468
+descriptor                        501       156640        313
+edge/derived                      500       146500        293
+sign/sign/external                500       136000        272
+sign/sign/block                   501        57582        115
+sign/sign/opaque                    1         1354       1354
+tree-object                         2          309        155
+TOTAL objects                   15195     60751743
+log.edn                                      75651
+TOTAL apparent                            60827394  (59401.8 KB)
+cache (derived)                 10153      4691970  (4582.0 KB)
+on disk                                  155455488  (151812.0 KB)

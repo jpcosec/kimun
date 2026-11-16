@@ -1,0 +1,33 @@
+store /tmp/k2b0-bulk500/.kimun objects 4256 revisions 1
+
+== 1. bytes by class of object (all history) ==
+mmap/leaf                     1163       539720
+edge/reference                1000       471000
+descriptor                     501       354140
+route                            2       196263
+edge/derived                   500       146500
+sign/sign/external             500       138500
+mmap/branch                     85        93965
+sign/sign/block                501        57582
+sign/sign/opaque                 1         1354
+revision                         1          491
+tree-object                      2          309
+TOTAL objects                 4256      1999824
+log.edn bytes 151
+
+== 2. Revision mmaps: LIVE (head) vs HISTORY (all revisions) ==
+map          head: nodes bytes        history: nodes bytes    
+trees           238     106428  (+0 hub-set nodes)    238     106428  (+0 hub-set nodes)
+edges           271     136900  (+0 hub-set nodes)    271     136900  (+0 hub-set nodes)
+incidence       537     330462  (+1 hub-set nodes)    537     330462  (+1 hub-set nodes)
+heads           238      71859  (heads.edn :heads-root, live only)
+head: incidence entries 2001 of which hubs 1 (hub = more than 16 edges; a node that many documents point at, e.g. the class descriptor)
+head: active edges 1500 trees 501
+
+== 3. edge objects by (type, target kind), all stored ==
+type -> target                          n      bytes   evidence-B  active active-bytes
+reference -> external(file)           500     335000       253000     500       335000
+derived -> model-descriptor           500     146500        62000     500       146500
+reference -> model-descriptor         500     136000        50000     500       136000
+
+note: ids and bytes are file sizes of loose objects (apparent bytes, no block rounding).
