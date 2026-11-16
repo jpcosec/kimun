@@ -38,9 +38,11 @@
 (def tools
   "The tools, as data. Only `kimun_declare_add` and `kimun_declare_generate` write."
   [{:name "kimun_declare_read" :read-only true
-    :description "Evaluate declaration files as one project and list the propositions they produce."
-    :inputSchema (obj {:files files-prop})
-    :argv (fn [a] (into ["declare" "read"] (files-of a)))}
+    :description "Evaluate declaration files as one project and list the propositions they produce, plus the ones their (reading ...) readers read from the project files (each with its source); declared_only runs no reader."
+    :inputSchema (obj {:files files-prop
+                       :declared_only {:type "boolean" :description "Do not run the readers: only what the declarations say"}})
+    :argv (fn [a] (cond-> (into ["declare" "read"] (files-of a))
+                    (true? (get a "declared_only")) (conj "--declared-only")))}
    {:name "kimun_declare_anchors" :read-only true
     :description "Resolve the (at ...) anchors of the declarations against the files; with `since` (a commit) git says what changed."
     :inputSchema (obj {:files files-prop :since {:type "string" :description "Commit to compare from"}})

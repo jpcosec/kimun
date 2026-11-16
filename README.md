@@ -24,6 +24,9 @@ above; the plan, in stages, is `docs/v2/drafts/plan-producto.md` (approved by th
 - Declarations in Clojure under `kimun/`: `declare read` evaluates them (isolated, with `sci`)
   into propositions `(R A B)`. A context is the file's `ns`; contexts `:require` each other to
   share relations.
+- Readers by class: `(reading (files "glob") (fn [doc] …))` declares how a class of Markdown files is read
+  (`doc` is `{:path :front :sections :text}`); `declare read|terms|about|anchors` include what the readers
+  declare, each proposition with its `:source {:path}` (`docs/v2/drafts/diseno-leer.md`; no cache).
 - `declare add` appends one form to a declaration file (the only write of the group).
 - `declare anchors [--since COMMIT]` resolves the `(at …)` anchors of declarations against the
   files; git says which files changed, and only those are opened.

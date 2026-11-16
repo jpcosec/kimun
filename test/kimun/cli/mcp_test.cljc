@@ -63,6 +63,8 @@
 (deftest each-tool-builds-its-argv
   (let [cases [["kimun_declare_read" {} ["declare" "read"]]
                ["kimun_declare_read" {"files" ["a.clj" "b.clj"]} ["declare" "read" "a.clj" "b.clj"]]
+               ["kimun_declare_read" {"declared_only" true "files" ["a.clj"]} ["declare" "read" "a.clj" "--declared-only"]]
+               ["kimun_declare_read" {"declared_only" false} ["declare" "read"]]
                ["kimun_declare_anchors" {"since" "abc"} ["declare" "anchors" "--since" "abc"]]
                ["kimun_declare_anchors" {} ["declare" "anchors"]]
                ["kimun_declare_terms" {} ["declare" "terms"]]

@@ -91,14 +91,16 @@
    :proposition p :side :other node}` when it has a `(files pattern)` node whose
    pattern matches `path` (`*` stays inside a segment, `**` crosses them), or
    `{:via :generated :proposition p :side :other node}` when it has a `{:generated {:path
-   path}}` node (a file materialized from the propositions, `diseno-generar.md`). `:other`
+   path}}` node (a file materialized from the propositions, `diseno-generar.md`). After those,
+   the rows `{:via :source :proposition p}` of the propositions a reader read FROM that file (its
+   `:sources`, `diseno-leer.md`): they say what the file says, not what is known about it. `:other`
    is what is on the opposite side: so \"of which classes is this file?\" is answered
    without anything declared per file. Several patterns reaching the same file give
    several rows."
   [props path]
   (let [path (clean-path path)]
     {:path path
-     :results (vec (for [p props
+     :results (into (vec (for [p props
                          [side node] (sides p)
                          :let [other (if (= side :a) (:b p) (:a p))
                                a (when (map? node) (:anchor node))
@@ -111,7 +113,10 @@
                               (when (and (string? pat) (re-matches (include/compile-glob (clean-path pat)) path))
                                 {:via :files :pattern pat :proposition p :side side :other other})]
                          :when row]
-                     row))}))
+                     row))
+                    (for [p props
+                          :when (some #(= path (clean-path (:path %))) (:sources p))]
+                      {:via :source :proposition p}))}))
 
 (defn members
   "The paths of `paths` that the pattern of a `{:files pattern}` node matches, sorted

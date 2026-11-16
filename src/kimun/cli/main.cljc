@@ -123,7 +123,7 @@
              "  sections list DOC · fields DOC SECTION · find [TERM] [--in physical|semantic|both] [--regex] [--fuzzy] [--where EXPR]"
              "  semantic show [TAG] | tags [PREFIX]            a tag (parents, children, equivalents, documents) or the DAG; list tags"
              "  semantic parent-add|parent-remove CHILD PARENT · equivalent-add A B · export [-o FILE]"
-             "  declare read [FILE…]        evaluate declaration files (Clojure; none: the *.clj under kimun/) as one project and show their propositions; read-only, no store"
+             "  declare read [FILE…] [--declared-only]   evaluate declaration files (Clojure; none: the *.clj under kimun/) as one project and show their propositions, and the ones their (reading …) readers read from the project files; --declared-only runs no reader; read-only, no store"
              "  declare add --to FILE 'FORM' [--context NAME]   append one form to a declaration file if the set still evaluates and the form is new (--context creates the file); the only write of the group"
              "  declare anchors [FILE…] [--since COMMIT]   resolve the (at …) anchors of declarations against the files; with a commit (or the pointer of a store here) git says what changed; read-only"
              "  declare terms [FILE…]       every term of the declarations with how many propositions name it and its dotted ancestors (implicit ones marked); read-only"

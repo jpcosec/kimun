@@ -18,14 +18,16 @@
             [kimun.surface.declare :as declare]
             [kimun.surface.declared-anchors :as declared-anchors]
             [kimun.surface.generate :as generate]
-            [kimun.surface.propositions :as props]))
+            [kimun.surface.propositions :as props]
+            [kimun.surface.reading :as reading]))
 
 (def spec
   "Options of the `declare` group (merged by `kimun.cli.main`): `--context` (of `add`) and
-   `--exact` (of `about`), `--check` (of `generate`); `--to` is the shared option of `edges` and `--path` that of
+   `--exact` (of `about`), `--check` (of `generate`), `--declared-only` (of `read`); `--to` is the shared option of `edges` and `--path` that of
    `docs create`."
   {:context {:ref "NAME" :desc "declare add: create the file given by --to with (ns NAME) when it does not exist"}
    :exact {:desc "declare about: only the term itself, not the more specific ones (UI.view.dashboard under UI.view)" :coerce :boolean}
+   :declared-only {:desc "declare read: do not run the readers of (reading …); only what the declarations say" :coerce :boolean}
    :check {:desc "declare generate: do not write; say which generated files differ from what their recipe gives today (exit 3 if any)" :coerce :boolean}})
 
 (def project-dir
@@ -130,22 +132,39 @@
         results (declare/read-project host/host (into texts deps) (timeout-opts ctx))]
     {:results (vec (take (count texts) results)) :required (mapv :file deps)}))
 
+(declare gather)
+
 (defn read-files
-  "`declare read [FILE…]`: data `{:root :files [{:file :context :relations :propositions}]
-   :summary {:files :relations :propositions}}`, plus `:required [path…]` when FILEs under the
-   project folder needed contexts of other project files, loaded as dependencies and not listed
-   in `:files`. A file that does not exist is `declare/missing`
+  "`declare read [FILE…] [--declared-only]`: data `{:root :files [{:file :context :relations
+   :propositions :readings}] :summary {:files :relations :propositions} :readings [{:pattern :at
+   :context :matched :propositions :errors}] :read-propositions [p…] :reading-errors [{:path
+   :pattern :at :type :message}]}`; the summary has also `:readings :read-propositions
+   :reading-errors` (counts) only when the project declares readers. Plus
+   `:required [path…]` when FILEs under the project folder needed contexts of other project
+   files, loaded as dependencies and not listed in `:files`. `:propositions` of a file are the
+   ones its declarations write; `:read-propositions` are the ones the readers emit
+   (`(reading …)`, run on the project files they reach, `docs/v2/drafts/diseno-leer.md`), each
+   with `:source {:path}` and `:sources`; `--declared-only` runs no reader (the lists are empty and
+   the `:readings` carry no counts). A file that does not exist is `declare/missing`
    (1); one that does not evaluate is the `declare/*` error of the evaluator (3), naming file
-   and line."
-  [files _opts {:keys [cwd] :as ctx}]
+   and line; a reader that fails on a file is NOT an error: it is a row of `:reading-errors`."
+  [files opts {:keys [cwd] :as ctx}]
   (let [rt (project-root cwd)
-        {:keys [results required]} (read-set rt files ctx)]
+        g (gather rt files ctx {:declared-only (boolean (:declared-only opts))})
+        {:keys [results required readings reading-errors read-propositions]} g]
     (out/ok "declare read"
             {:data (cond-> {:root (str (:root rt))
                             :files results
-                            :summary {:files (count results)
-                                      :relations (transduce (map (comp count :relations)) + results)
-                                      :propositions (transduce (map (comp count :propositions)) + results)}}
+                            :summary (cond-> {:files (count results)
+                                              :relations (transduce (map (comp count :relations)) + results)
+                                              :propositions (transduce (map (comp count :propositions)) + results)}
+                                       ;; only a project that declares readers has the keys of reading
+                                       (seq readings) (assoc :readings (count readings)
+                                                             :read-propositions (count read-propositions)
+                                                             :reading-errors (count reading-errors)))
+                            :readings readings
+                            :read-propositions read-propositions
+                            :reading-errors reading-errors}
                      (seq required) (assoc :required required))})))
 
 (defn- project-reader
@@ -182,8 +201,8 @@
             (args/usage! "declare" "anchors" "`declare anchors --since` needs a COMMIT" {}))
         rt (project-root cwd)
         root (:root rt)
-        {:keys [results required]} (read-set rt files ctx)
-        props (vec (mapcat :propositions results))
+        {:keys [results required propositions reading-errors]} (gather rt files ctx {})
+        props propositions
         cmp (comparison root since)
         changed (when cmp
                   (into #{} (mapcat (juxt :path :from)) (remove nil? (git/changed-since root (:since cmp) [".kimun"]))))
@@ -200,7 +219,8 @@
                                       :opened (count (filter :opened rows))
                                       :by-status (frequencies (map :status rows))}
                             :since (:since cmp) :pointer (:pointer cmp) :head (:head cmp)}
-                     (seq required) (assoc :required required))})))
+                     (seq required) (assoc :required required)
+                     (seq reading-errors) (assoc :reading-errors reading-errors))})))
 
 (defn- write-atomic!
   "Writes `text` to `path` through a temporary file in the same folder and a rename."
@@ -267,12 +287,6 @@
 
 ;; --- cut 3b: asking (docs/v2/drafts/diseno-evaluar.md §9, §11) ----------------------------
 
-(defn- propositions-of-set
-  "`{:propositions [p…] :required [file…]}` of the declaration set (the FILEs given or the project's)."
-  [rt files ctx]
-  (let [{:keys [results required]} (read-set rt files ctx)]
-    {:propositions (vec (mapcat :propositions results)) :required required}))
-
 (defn- walk-files
   "The files under `root` relative to it, without `.git` and `.kimun`."
   [root]
@@ -289,18 +303,46 @@
     {:files (vec (filter #(fs/regular-file? (fs/path root %)) l)) :from :git}
     {:files (walk-files root) :from :walk}))
 
+(defn- gather
+  "Everything the commands that ask need, from ONE place: the declaration set (`read-set`)
+   and, unless `:declared-only`, what the readers of its `(reading …)` read from the project
+   files. Returns `{:results :required :propositions :read-propositions :readings
+   :reading-errors}`: `:propositions` are ALL the propositions of the project, the declared ones
+   and the read ones merged by `:id` (`kimun.surface.reading/combine`); `:read-propositions` only
+   the read ones. `:paths` (the project files, from git or the walk) are listed only when some
+   reader exists, or given in `opts`. Files generated by a `(generated …)` and the ones under `kimun/` are never read."
+  [rt files ctx {:keys [declared-only paths]}]
+  (let [{:keys [results required]} (read-set rt files ctx)
+        declared (vec (mapcat :propositions results))
+        rs (declare/readers results)]
+    (if (or declared-only (empty? rs))
+      {:results results :required required :propositions declared :read-propositions []
+       :readings (if declared-only (mapv #(select-keys % [:pattern :at :context]) rs) [])
+       :reading-errors []}
+      (let [root (:root rt)
+            ps (or paths (:files (repo-files root)))
+            {:keys [emitted errors readings]}
+            (reading/run rs ps (assoc (timeout-opts ctx)
+                                      :read-now (project-reader root)
+                                      :exclude (into #{} (map :path) (declare/recipes results))))]
+        {:results results :required required
+         :propositions (reading/combine declared emitted)
+         :read-propositions (reading/combine [] emitted)
+         :readings readings :reading-errors errors}))))
+
 (defn terms-of
   "`declare terms [FILE…]`: data `{:root :terms [{:term :count :ancestors :implicit}] :files
    [file…] :summary {:terms :implicit}}`; without FILE the project's declarations. See
    `kimun.surface.propositions/terms`."
   [files _opts {:keys [cwd] :as ctx}]
   (let [rt (project-root cwd)
-        {:keys [propositions required]} (propositions-of-set rt files ctx)
+        {:keys [propositions required reading-errors]} (gather rt files ctx {})
         ts (props/terms propositions)]
     (out/ok "declare terms"
             {:data (cond-> {:root (str (:root rt)) :terms ts :files (vec files)
                             :summary {:terms (count ts) :implicit (count (filter :implicit ts))}}
-                     (seq required) (assoc :required required))})))
+                     (seq required) (assoc :required required)
+                     (seq reading-errors) (assoc :reading-errors reading-errors))})))
 
 (defn- relative-to-root
   "`p` (relative to the working directory or absolute) as a path relative to the root; a
@@ -326,13 +368,14 @@
         term (when-not p (args/require-arg! "declare" argv 0 "a TERM (or --path PATH)" "about"))
         files (vec (if p argv (rest argv)))
         rt (project-root cwd)
-        {ps :propositions required :required} (propositions-of-set rt files ctx)
+        {ps :propositions required :required reading-errors :reading-errors} (gather rt files ctx {})
         data (if p
                (props/about-path ps (relative-to-root rt p))
                (props/about ps term {:exact (boolean (:exact opts))}))]
     (out/ok "declare about"
             {:data (cond-> (assoc data :root (str (:root rt)) :files files :summary {:results (count (:results data))})
-                     (seq required) (assoc :required required))})))
+                     (seq required) (assoc :required required)
+                     (seq reading-errors) (assoc :reading-errors reading-errors))})))
 
 (defn members-of
   "`declare members 'PATTERN'`: the project files a `(files PATTERN)` node reaches, expanded
@@ -400,13 +443,14 @@
   (let [check? (boolean (:check opts))
         rt (project-root cwd)
         root (:root rt)
-        {:keys [results]} (read-set rt [] ctx)
+        all-paths (:files (repo-files root))
+        {:keys [results propositions reading-errors]} (gather rt [] ctx {:paths all-paths})
         rs (declare/recipes results)
         gen-paths (into #{} (map :path) rs)
         targets (into {} (map (fn [e] [(:path e) (check-target! root e)])) rs)
-        paths (vec (remove gen-paths (:files (repo-files root))))
+        paths (vec (remove gen-paths all-paths))
         texts (generate/run host/host rs
-                            {:propositions (vec (mapcat :propositions results)) :paths paths :read-now (project-reader root)}
+                            {:propositions propositions :paths paths :read-now (project-reader root)}
                             (timeout-opts ctx))
         rows (mapv (fn [{:keys [path text declared-at]}]
                      (let [abs (get targets path)
@@ -423,8 +467,9 @@
         (fs/create-dirs (fs/parent abs))
         (write-atomic! abs text)))
     (let [files (mapv #(select-keys % [:path :status :bytes :declared-at]) rows)
-          data {:root (str root) :check check? :files files
-                :summary (merge {:files (count files)} (frequencies (map :status files)))}]
+          data (cond-> {:root (str root) :check check? :files files
+                        :summary (merge {:files (count files)} (frequencies (map :status files)))}
+                 (seq reading-errors) (assoc :reading-errors reading-errors))]
       (if (and check? (some #(not= :same (:status %)) files))
         (out/failure :declare/generated-differs
                      (str (count (remove #(= :same (:status %)) files)) " of " (count files)

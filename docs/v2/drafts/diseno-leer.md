@@ -76,7 +76,7 @@ kimun relee solo eso.
 ## 5. Cortes
 
 1. **Leer** (este): `reading`, la vista `doc`, `:source`, y los comandos de preguntar incluyendo lo
-   leído. Solo Markdown con frontmatter YAML.
+   leído. Solo Markdown con frontmatter YAML. **Hecho 2026-11-16** (`kimun.surface.reading`, ver el final).
 2. **Lectores para el desk de deskops**, escritos como declaraciones en una copia del proyecto:
    átomos, tareas, pills, reviews, contratos de materialización, relaciones, etiquetas. El criterio
    es que `declare about` responda sobre el desk real lo que hoy responde `sldb`/`deskops`, medido
@@ -98,3 +98,23 @@ importan, y que lo que hace por debajo —saber qué cambió, índice, aristas, 
 Lo que eso exige, y hoy no existe: una forma de que Python hable con kimun sin lanzar un proceso por
 llamada, y que kimun responda las preguntas que hoy responden el índice de aristas, las reglas y las
 vistas de sldb. No se diseña hasta que el dueño diga cuál de las dos cosas quiso decir.
+
+## 7. Decidido al implementar (corte 1, 2026-11-16)
+
+Elecciones de quien implementó, no del dueño; lo medido está en `runs/subagents/2026-11-16-leer/REPORT.md`.
+
+- **Qué se lee.** Los archivos del proyecto que calzan con el patrón, según la lista de git (o el
+  recorrido si no hay repositorio). Nunca los generados por `(generated …)` ni los de `kimun/`.
+- **La vista `doc`.** `:front` tiene claves de texto en todos los niveles; las fechas YAML llegan como
+  cadena (`"2026-11-15"` si es medianoche UTC, si no el instante ISO), nunca como objeto Java. Es nil si no
+  hay frontmatter, si no es YAML válido o si no es un mapa. `:sections` son los títulos ATX fuera de
+  código; su `:text` llega hasta el siguiente título de cualquier nivel. Un archivo que no es Markdown
+  entra con `:front nil`, `:sections []` y su contenido en `:text`.
+- **Fallos.** Un lector que lanza, tarda más del límite (10 s) o emite algo inválido deja fuera solo ese
+  par (lector, archivo) y su fila va en `:reading-errors` con `:path :pattern :at :type :message`. Un
+  `(reading …)` mal formado es el error `declare/bad-reading`.
+- **Misma proposición.** Declarada a mano y leída es una sola (mismo `:id`); conserva el `:at` de la
+  declaración y acumula `:sources`.
+- **`--declared-only`** no corre lectores. El resumen de `declare read` trae `:readings
+  :read-propositions :reading-errors` solo si el proyecto declara lectores.
+- **Sin caché**: se relee todo cada vez que se pregunta; el número está en el REPORT.

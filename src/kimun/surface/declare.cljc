@@ -1,8 +1,8 @@
 (ns kimun.surface.declare
   "Evaluator of declaration files (docs/v2/drafts/diseno-evaluar.md, cut 1:
    read). A declaration file is real Clojure, evaluated in an isolated `sci`
-   context whose only vocabulary beyond `clojure.core` is `relation`, `at`, `files`
-   and `generated`; evaluating it produces propositions `(R A B)` in a context and
+   context whose only vocabulary beyond `clojure.core` is `relation`, `at`, `files`,
+   `generated` and `reading`; evaluating it produces propositions `(R A B)` in a context and
    writes nothing anywhere: this namespace touches no disk, network or store.
 
    Entry points: `read-declarations` (one file without requires) and
@@ -29,6 +29,13 @@
      one that produces `path` (relative to the project, no `..`). Nothing is run here:
      the recipes travel in the metadata of each file result (`recipes` reads them) and
      `kimun.surface.generate` runs them. The recipe is not part of the node nor of the `:id`.
+   - `(reading (files pattern) reader)` (docs/v2/drafts/diseno-leer.md) registers `reader`, a
+     function of one file (`fn?`), for the project files `pattern` reaches. Evaluating opens no
+     file and runs no reader: the readers travel in the metadata of each file result (`readers`
+     reads them), the result's data has `:readings [{:pattern :at :context}]`, and
+     `kimun.surface.reading` runs them later through `collect`: what the relation uses inside a
+     reader emit goes to the sink of that call (`*sink*`), not to the closed state of the file.
+     The form returns nil.
 
    BARE SYMBOL versus BOUND SYMBOL, the exact rule. An argument of a relation
    form that is a symbol is a TERM (the symbol itself, dots included:
@@ -59,7 +66,7 @@
 
    Errors are `kimun.kernel.err/raise` with `:declare/*` types, always carrying
    `:file` and `:line`: `syntax`, `relation-redefined`, `no-context`, `reserved-context`,
-   `ns-clauses`, `unresolved`, `arity`, `bad-relation`, `bad-node`, `bad-arg`, `bad-generated`,
+   `ns-clauses`, `unresolved`, `arity`, `bad-relation`, `bad-node`, `bad-arg`, `bad-generated`, `bad-reading`,
    `bad-locator`
    (the shape of every `(at …)` is checked after the file evaluates, with
    `kimun.surface.declared-anchors/translate`), `timeout` (a file that evaluates longer than
@@ -94,22 +101,30 @@
                 (str "`" r "`: an argument must be a term, a scalar literal (string, number, keyword, boolean), a proposition, (at …) or (files …); got " (pr-str v))
                 line {:relation r})))
 
+(def ^:dynamic *sink*
+  "When bound to an atom `{:props [] :index {}}`, the propositions a relation use emits go there
+   and not to the state of the file (readers run AFTER the file finished evaluating:
+   `docs/v2/drafts/diseno-leer.md`); see `collect`."
+  nil)
+
 (defn- emit!
   "Builds, registers and returns the proposition `(r a b)` (values already
-   evaluated). State lives in the atom `st` of this evaluation."
+   evaluated). The context, file and hasher come from the atom `st` of this
+   evaluation; the proposition is registered in `st` or, inside `collect`, in its sink."
   [st r line a b]
   (let [{:keys [context file host]} @st
+        tgt (or *sink* st)
         a' (node-of r line a)
         b' (node-of r line b)
         id (try (canon/digest host {:r (str r) :a a' :b b' :context (str context)})
                 (catch clojure.lang.ExceptionInfo e
                   (fail :declare/bad-node (str "`" r "`: cannot be hashed: " (ex-message e)) line {:relation r})))
         at {:file file :line line}]
-    (if-let [i (get-in @st [:index id])]
-      (do (swap! st update-in [:props i :also-at] (fnil conj []) at)
-          (nth (:props @st) i))
+    (if-let [i (get-in @tgt [:index id])]
+      (do (swap! tgt update-in [:props i :also-at] (fnil conj []) at)
+          (nth (:props @tgt) i))
       (let [p (with-meta {:r (str r) :a a' :b b' :context (str context) :at at :id id} {::proposition true})]
-        (swap! st (fn [s] (-> s (update :props conj p) (assoc-in [:index id] (count (:props s))))))
+        (swap! tgt (fn [s] (-> s (update :props conj p) (assoc-in [:index id] (count (:props s))))))
         p))))
 
 (defn- arg-form
@@ -216,6 +231,31 @@
         (list 'kimun.declare.impl/generated st (first args) (second args) line)))
     {:sci/macro true}))
 
+(defn- reading!
+  "Registers the reader `f` of the files `conjunto` (a `(files pattern)` node) and returns nil.
+   Nothing is opened or run here."
+  [st conjunto f line]
+  (let [file (:file @st)
+        bad (fn [why] (fail :declare/bad-reading (str file ":" line ": `reading` " why) line {:file file}))]
+    (when-not (and (map? conjunto) (string? (:files conjunto)) (node? conjunto))
+      (bad (str "needs a (files \"pattern\") as its first argument, got " (pr-str conjunto))))
+    (when-not (fn? f)
+      (bad (str "needs a function of the file as its second argument (a `fn` or a `defn` of this file), got " (pr-str f))))
+    (swap! st update :readings conj {:pattern (:files conjunto) :at {:file file :line line} :context (str (:context @st)) :fn f :st st})
+    nil))
+
+(defn- reading-macro
+  "The sci macro `reading`: `(reading (files pattern) reader)`; a macro only to know its line."
+  [st]
+  (with-meta
+    (fn [form _env & args]
+      (let [line (or (:line (meta form)) 0)]
+        (when (not= 2 (count args))
+          (fail :declare/bad-reading (str (:file @st) ":" line ": `reading` takes a set of files and a reader: (reading (files \"docs/*.md\") (fn [doc] …))")
+                line {:file (:file @st) :arity (count args)}))
+        (list 'kimun.declare.impl/reading st (first args) (second args) line)))
+    {:sci/macro true}))
+
 (defn- make-ctx
   "A fresh isolated sci context; nothing of the host is exposed. The
    vocabulary lives in the namespace of the file's `context` (sci evaluates in
@@ -223,10 +263,11 @@
    evaluation is pinned to this one by `read-declarations`)."
   [st context]
   (sci/init
-   {:namespaces {context {'relation (relation-macro st) 'at at-fn 'files files-fn 'generated (generated-macro st)}
+   {:namespaces {context {'relation (relation-macro st) 'at at-fn 'files files-fn 'generated (generated-macro st) 'reading (reading-macro st)}
                  'kimun.declare.impl {'emit (fn [r line args st'] (emit! st' r line (first args) (second args)))
                                       'define (fn [r doc line st'] (define! st' r doc line))
                                       'generated (fn [st' path recipe line] (generate! st' path recipe line))
+                                      'reading (fn [st' conjunto f line] (reading! st' conjunto f line))
                                       'expand expand
                                       'expand-as (fn [r form env args resolver] (expand st r form env args resolver))}}
     :deny '[slurp spit load-file load-string require use import]}))
@@ -384,7 +425,7 @@
    already evaluated required contexts `[{:context sym :names [relation-name…] :refer […]}]`."
   [host text file info imports timeout-ms]
   (let [referred (into {} (for [{c :context rs :refer} imports, r rs] [(str r) (str c)]))
-        st (atom {:file file :host host :context (:context info) :relations {} :props [] :index {} :generated [] :referred referred})
+        st (atom {:file file :host host :context (:context info) :relations {} :props [] :index {} :generated [] :readings [] :referred referred})
         context (:context info)
         ctx (make-ctx st context)]
     (try
@@ -396,7 +437,7 @@
                      ;; resolves the `:require`s against the macros the prelude just defined
                      (sci/eval-string+ ctx (str text) {:ns (sci/create-ns context nil)})))
       (catch Throwable e (rethrow e file 1)))
-    (let [{:keys [relations props generated]} @st
+    (let [{:keys [relations props generated readings]} @st
           recipes (reduce (fn [acc e] (if (some #(and (= (:path e) (:path %)) (identical? (:fn e) (:fn %))) acc) acc (conj acc e)))
                           [] generated)]
       (check-locators! props)
@@ -404,8 +445,9 @@
         {:context (str context)
          :relations relations
          :propositions (mapv #(vary-meta % dissoc ::proposition) props)
-         :generated (mapv #(dissoc % :fn) recipes)}
-        {::recipes recipes}))))
+         :generated (mapv #(dissoc % :fn) recipes)
+         :readings (mapv #(select-keys % [:pattern :at :context]) readings)}
+        {::recipes recipes ::readers readings}))))
 
 (defn- check-generated-conflicts!
   "Raises `declare/generated-conflict` when two `generated` of the file results `results` name
@@ -429,6 +471,29 @@
   (:out (reduce (fn [{:keys [seen] :as acc} e]
                   (if (contains? seen (:path e)) acc (-> acc (update :seen conj (:path e)) (update :out conj e))))
                 {:seen #{} :out []} (mapcat #(::recipes (meta %)) results))))
+
+(defn readers
+  "The readers of the file results `results` (as `read-project` returns them), in order:
+   `[{:pattern :at {:file :line} :context :fn}]`. Like the recipes, the functions travel only in
+   the metadata of the results, never in their data (`:readings` of a result has no `:fn`)."
+  [results]
+  (vec (for [e (mapcat #(::readers (meta %)) results)] (select-keys e [:pattern :at :context :fn]))))
+
+(defn collect
+  "Runs `f` (a call of a reader, made AFTER its file finished evaluating) on a limited thread
+   (`run-limited`, `timeout-ms`, attributed to `file`) and returns the propositions that the
+   relation uses inside it emitted, `[p…]` without their return value (ignored); what `f`
+   returns is dropped. Emissions do not go to the (closed) state of the file but to a sink of
+   this call: the dynamic `*sink*`, which `run-limited` conveys to its thread, so a reader
+   abandoned after a timeout can only write into a sink nobody reads. The shape of every
+   `(at …)` it emitted is checked (`declare/bad-locator`). Raises what `f` raises."
+  [file timeout-ms f]
+  (let [sink (atom {:props [] :index {}})]
+    (binding [*sink* sink]
+      (run-limited file timeout-ms f))
+    (let [ps (:props @sink)]
+      (check-locators! ps)
+      (mapv #(vary-meta % dissoc ::proposition) ps))))
 
 (defn- order
   "The files of `scanned` (`[{:file :text :info}]`) in dependency order (each
