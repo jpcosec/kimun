@@ -1,0 +1,25 @@
+== M1 a notification is answered
+      1 6 failures, 0 errors.
+      3 FAIL in (methods-and-ids) (/tmp/kimun-mcp-wt/test/kimun/cli/mcp_test.cljc:23)
+      3 FAIL in (the-process-speaks-json-rpc-over-stdio) (/tmp/kimun-mcp-wt/test/kimun/cli/mcp_test.cljc:121)
+      1 Ran 6 tests containing 139 assertions.
+== M2 (first try, raw: prefix, survived: the test did not try a command line as a tool name; test strengthened)
+      1 0 failures, 0 errors.
+      1 Ran 6 tests containing 139 assertions.
+== M3 a failed envelope does not mark isError
+      1 1 failures, 0 errors.
+      1 FAIL in (a-failed-command-is-an-error-result-not-a-protocol-error) (/tmp/kimun-mcp-wt/test/kimun/cli/mcp_test.cljc:88)
+      1 Ran 6 tests containing 139 assertions.
+== restored: mcp-test green again
+      1 0 failures, 0 errors.
+      1 Ran 6 tests containing 139 assertions.
+== M2b a name that is not in the table is run as a CLI command line
+      1 4 failures, 0 errors.
+      4 FAIL in (invalid-calls-never-reach-the-cli) (/tmp/kimun-mcp-wt/test/kimun/cli/mcp_test.cljc:96)
+      1 Ran 6 tests containing 141 assertions.
+== restored
+      1 0 failures, 0 errors.
+      1 Ran 6 tests containing 141 assertions.
+== M4 the option-like validation is removed
+Ran 6 tests containing 159 assertions.
+10 failures, 9 errors.

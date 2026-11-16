@@ -21,11 +21,14 @@
             [kimun.cli.commands.sections :as sections]
             [kimun.cli.commands.semantic :as semantic]
             [kimun.cli.commands.links :as links]
+            [kimun.cli.commands.mcp :as mcp]
             [kimun.cli.commands.serve :as serve]
             [kimun.cli.commands.stores :as stores]
             [kimun.cli.errors :as errors]
             [kimun.cli.store :as cli-store]
             [kimun.cli.out :as out]))
+
+(declare run version-data)
 
 (def groups
   "First token → group dispatch `(fn [subcommand args opts ctx] envelope)`,
@@ -47,6 +50,8 @@
    "sections" sections/dispatch
    "semantic" semantic/dispatch
    "serve" serve/dispatch
+   ;; `run` and the version are injected: the command cannot require this namespace
+   "mcp" (fn [sub args opts ctx] (mcp/dispatch run (:version (version-data)) sub args opts ctx))
    "models" models/dispatch
    "include" include/dispatch
    "extract" (direct/dispatcher "extract")
@@ -57,7 +62,7 @@
   "The option spec of every group, merged: a group declares its own options
    in its `spec` var, so adding a group never edits `kimun.cli.args`. Two
    groups may share an option name only with the same meaning."
-  (merge stores/spec docs/spec serve/spec models/spec include/spec direct/spec links/spec semantic/spec fields/spec sections/spec find/spec corpus/spec index/spec predicates/spec edges/spec graph/spec declare/spec))
+  (merge stores/spec docs/spec serve/spec mcp/spec models/spec include/spec direct/spec links/spec semantic/spec fields/spec sections/spec find/spec corpus/spec index/spec predicates/spec edges/spec graph/spec declare/spec))
 
 (def usage
   "Usage text shown by `kimun`, `kimun help` and `--help`."
@@ -126,6 +131,7 @@
              "  declare members 'PATTERN'   the project files (from the project root) (git's, else the directory's) a (files PATTERN) node reaches, expanded now; read-only"
              "  serve [--port N] [--host H] [--token T] [--cors]   HTTP API over the commands (default 127.0.0.1:8787)"
              "                              --token (or $KIMUN_SERVE_TOKEN) requires `Authorization: Bearer TOKEN`"
+             "  mcp                         MCP server over stdio (JSON-RPC, one message per line): the declare and stores read commands as tools"
              ""
              "options:"
              "  --store PATH    store directory (.kimun or its project dir); else $KIMUN_STORE, else walk-up"

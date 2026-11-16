@@ -1,0 +1,46 @@
+
+Testing kimun.cli.mcp-test
+
+Testing kimun.cli.declare-ask-test
+
+Testing kimun.cli.declare-anchors-test
+
+Testing kimun.cli.declare-project-test
+
+Testing kimun.cli.declare-root-test
+
+Testing kimun.cli.docs-test
+
+Testing kimun.cli.edges-test
+
+Testing kimun.cli.fields-test
+
+Testing kimun.cli.find-test
+
+Testing kimun.cli.graph-test
+
+Testing kimun.cli.index-test
+
+Testing kimun.cli.links-test
+
+Testing kimun.cli.models-test
+
+Testing kimun.cli.names-test
+
+Testing kimun.cli.predicates-test
+
+Testing kimun.cli.routes-test
+
+Testing kimun.cli.route-schema-test
+
+Testing kimun.cli.sections-test
+
+Testing kimun.cli.semantic-test
+
+Testing kimun.cli.seen-test
+moved existing store to /tmp/kimun-adhoc-12414195123782428330/kimun-seen-inc-15802884390979981010/.kimun.bak-20261116-014845-01M7HAZAFBCYYVTHFDAN60GD00
+
+Testing kimun.cli.sense-test
+
+Ran 159 tests containing 1869 assertions.
+0 failures, 0 errors.

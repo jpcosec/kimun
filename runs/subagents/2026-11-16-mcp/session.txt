@@ -1,0 +1,27 @@
+# stdin
+{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"t","version":"0"}}}
+{"jsonrpc":"2.0","method":"notifications/initialized"}
+{"jsonrpc":"2.0","id":"a","method":"tools/list"}
+{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"kimun_declare_read","arguments":{}}}
+{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"kimun_declare_add","arguments":{"to":"kimun/a.clj","form":"(isa z Y)"}}}
+{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{"name":"kimun_declare_read","arguments":{"files":["nope.clj"]}}}
+{"jsonrpc":"2.0","id":6,"method":"tools/call","params":{"name":"kimun_health","arguments":{"x":1}}}
+{"jsonrpc":"2.0","id":7,"method":"nope"}
+{"jsonrpc":"2.0","method":"nope"}
+not json
+
+# stdout (exit 0; text fields truncated to 200 chars)
+{"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2025-03-26","capabilities":{"tools":{}},"serverInfo":{"name":"kimun","version":"2.0.0-alpha.1"}}}
+{"jsonrpc":"2.0","id":"a","result":{"tools":[{"name":"kimun_declare_read","description":"Evaluate declaration files as one project and list the propositions they produce.","inputSchema":{"type":"object","properties":{"files":{"type":"array","items":{"type":"string"},"description":"Declaration files (relative to the working directory); none: the *.clj under kimun/"}},"additionalProperties":false},"
+{"jsonrpc":"2.0","id":3,"result":{"content":[{"type":"text","text":"{\n  \"ok\" : true,\n  \"command\" : \"declare read\",\n  \"store\" : null,\n  \"revision\" : null,\n  \"data\" : {\n    \"root\" : \"/tmp/tmp.Vt5xUNxBZH\",\n    \"files\" : [ {\n      \"context\" : \"p.a\",\n      \"relations\" : {\n        \"isa\" : {\n          \"doc\" : \"d\"\n        }\n      },\n      \"propositions\" : [ {\
+{"jsonrpc":"2.0","id":4,"result":{"content":[{"type":"text","text":"{\n  \"ok\" : true,\n  \"command\" : \"declare add\",\n  \"store\" : null,\n  \"revision\" : null,\n  \"data\" : {\n    \"root\" : \"/tmp/tmp.Vt5xUNxBZH\",\n    \"file\" : \"kimun/a.clj\",\n    \"added\" : true,\n    \"propositions\" : [ {\n      \"r\" : \"p.a/isa\",\n      \"a\" : {\n        \"term\" : \"z\"\n      },\n      \"b\
+{"jsonrpc":"2.0","id":5,"result":{"content":[{"type":"text","text":"{\n  \"ok\" : false,\n  \"error\" : {\n    \"type\" : \"declare/missing\",\n    \"message\" : \"declaration file not found: nope.clj\",\n    \"data\" : {\n      \"file\" : \"nope.clj\"\n    }\n  },\n  \"exit\" : 1\n}"}],"isError":true}}
+{"jsonrpc":"2.0","id":6,"error":{"code":-32602,"message":"kimun_health: unknown argument `x`"}}
+{"jsonrpc":"2.0","id":7,"error":{"code":-32601,"message":"method not found: nope"}}
+{"jsonrpc":"2.0","id":null,"error":{"code":-32700,"message":"parse error"}}
+# stderr
+# file after
+(ns p.a)
+(relation isa "d")
+(isa x Y)
+(isa z Y)

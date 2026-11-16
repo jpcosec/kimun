@@ -1,0 +1,13 @@
+
+Testing kimun.cli.mcp-test
+
+Testing kimun.cli.main-test
+
+Testing kimun.cli.golden-test
+
+Testing kimun.cli.declare-test
+
+Testing kimun.lint-test
+
+Ran 23 tests containing 253 assertions.
+0 failures, 0 errors.

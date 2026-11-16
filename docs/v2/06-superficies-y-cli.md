@@ -507,6 +507,26 @@ Campos de documentos tipados. `DOC` es nombre, tree-id o `Model:doc`; un campo d
 
 `serve [start] [--port N] [--host H] [--token T] [--cors]`. Bloquea hasta interrupción; `--token` o `$KIMUN_SERVE_TOKEN` exige `Authorization: Bearer TOKEN`; def. `127.0.0.1:8787`.
 
+### mcp
+
+`mcp`: un servidor MCP (Model Context Protocol) por stdio sobre los comandos que ya existen; no tiene opciones. Se arranca como proceso hijo del cliente (`kimun mcp`, con el directorio de trabajo del proyecto): lee de stdin un mensaje JSON-RPC 2.0 por línea, escribe una línea por respuesta en stdout y nada más (registros y errores propios, solo por stderr). EOF en stdin termina con 0. Implementa `initialize`, `notifications/initialized`, `ping`, `tools/list` y `tools/call`; declara solo `capabilities {tools {}}`. Método desconocido `-32601`, JSON inválido `-32700`, parámetros inválidos (herramienta desconocida, argumento fuera del esquema, de otro tipo o faltante) `-32602`; una notificación (sin `id`) nunca se responde.
+
+Las herramientas son una tabla de datos (`kimun.surface.mcp/tools`, como las rutas de `serve`): `{:name :description :inputSchema :argv :read-only}`. `tools/call` traduce los argumentos a argv y llama a `kimun.cli.main/run` (inyectada por el comando) con el cwd del servidor; el **envelope tal cual** va como JSON en `content [{type "text" text …}]`, con `isError true` si `:ok` es false (un fallo del comando no es un fallo del protocolo). Los nombres de archivo se pasan a la CLI sin abrirlos. No hay forma de ejecutar un comando fuera de la tabla.
+
+| Herramienta | Argumentos | Comando |
+|---|---|---|
+| `kimun_declare_read` | `files?` | `declare read [FILE…]` |
+| `kimun_declare_anchors` | `files?`, `since?` | `declare anchors [FILE…] [--since C]` |
+| `kimun_declare_terms` | `files?` | `declare terms [FILE…]` |
+| `kimun_declare_about` | `term` o `path` (uno), `exact?`, `files?` | `declare about TERM [FILE…] [--exact]` / `--path PATH` |
+| `kimun_declare_members` | `pattern` | `declare members PATTERN` |
+| `kimun_changed` | `since?` | `stores changed [--since C]` |
+| `kimun_seen` | — | `stores seen` |
+| `kimun_health` | — | `stores health` |
+| `kimun_declare_add` | `to`, `form`, `context?` | `declare add --to FILE FORM [--context N]` (la única que escribe) |
+
+Lo que supone del protocolo (sin poder contrastarlo con la especificación): `tools/list` devuelve `{tools [{name description inputSchema annotations {readOnlyHint bool}}]}`; `tools/call` recibe `{name arguments}` y devuelve `{content [{type "text" text}] isError bool}`; `initialize` devuelve `{protocolVersion capabilities serverInfo {name version}}`, con la versión pedida si es `2024-11-05`, `2025-03-26` o `2025-06-18`, y `2024-11-05` si no; no hay lotes JSON-RPC (un arreglo es `-32600`); un valor de cadena (suelto o dentro de un arreglo) que empieza por `-` es `-32602` y `run` no se llama, para que ninguna herramienta reciba opciones que su esquema no declara.
+
 ### Recorrido observable de una mutación
 
 `bash scripts/tour_mutation.sh` demuestra con la CLI, en un proyecto temporal,
