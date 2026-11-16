@@ -32,7 +32,7 @@
   "namespace → graph namespaces it still requires against the rule: the debt
    of P1 (docs/v2/12 §1), written down so that it can only shrink. A crossing
    outside this map fails; so does an entry the namespace no longer needs."
-  {"kimun.surface.semantic" #{"kimun.graph.io"}})
+  {})
 
 (def mutable-constructors
   "Heads of a `def` value form that create mutable state; forbidden in ring 0

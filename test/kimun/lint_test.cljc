@@ -60,26 +60,29 @@
       (is (str/includes? out "kimun.graph.model") out))))
 
 (deftest the-graph-package-sits-over-the-base-and-under-the-cli
-  (is (= 0 (:exit (lint-of {"kimun/graph/fine.cljc" (ns-source "kimun.graph.fine" "kimun.surface.edges")}))))
+  (is (= 0 (:exit (lint-of {"kimun/graph/fine.cljc" (ns-source "kimun.graph.fine" "kimun.graph.edges")}))))
   (is (= 0 (:exit (lint-of {"kimun/graph/fine.cljc" (ns-source "kimun.graph.fine" "kimun.graph.model")}))))
   (is (= 0 (:exit (lint-of {"kimun/cli/fine.cljc" (ns-source "kimun.cli.fine" "kimun.graph.model")}))))
   (let [{:keys [exit out]} (lint-of {"kimun/graph/bad.cljc" (ns-source "kimun.graph.bad" "kimun.cli.out")})]
     (is (= 1 exit))
     (is (str/includes? out "kimun.graph.bad: forbidden require kimun.cli.out") out)))
 
-(deftest a-pending-graph-crossing-is-exact-and-may-only-shrink
-  ;; the one written down passes
-  (is (= 0 (:exit (lint-of {"kimun/surface/semantic.cljc" (ns-source "kimun.surface.semantic" "kimun.graph.io")}))))
-  ;; another graph namespace from the same place does not
-  (let [{:keys [exit out]} (lint-of {"kimun/surface/semantic.cljc"
-                                     (str "(ns kimun.surface.semantic\n  \"A documented namespace.\"\n"
-                                          "  (:require [kimun.graph.io :as a] [kimun.graph.model :as b]))\n")})]
-    (is (= 1 exit))
-    (is (str/includes? out "may not require the graph package: kimun.graph.model") out))
-  ;; and once the crossing is gone the entry must go too
-  (let [{:keys [exit out]} (lint-of {"kimun/surface/semantic.cljc" (ns-source "kimun.surface.semantic" "clojure.string")})]
-    (is (= 1 exit))
-    (is (str/includes? out "no longer needed") out)))
+(deftest no-base-namespace-requires-the-graph-package-any-more
+  ;; P1b emptied `pending-graph-crossings`: the semantic export and the edges moved
+  ;; into the package, so the base reaching back into it fails like any crossing
+  (doseq [[base target] [["kimun.surface.semantic" "kimun.graph.io"]
+                         ["kimun.surface.semantic" "kimun.graph.export"]
+                         ["kimun.surface.docs" "kimun.graph.edges"]]]
+    (let [{:keys [exit out]} (lint-of {(str (str/replace base "." "/") ".cljc") (ns-source base target)})]
+      (is (= 1 exit) (str base " -> " target))
+      (is (str/includes? out (str "the base may not require the graph package: " target)) out)))
+  ;; and the entry that used to excuse the semantic crossing is gone, so a
+  ;; base namespace with no crossing is clean (no stale entry to demand)
+  (is (= 0 (:exit (lint-of {"kimun/surface/semantic.cljc" (ns-source "kimun.surface.semantic" "clojure.string")})))))
+
+(deftest the-moved-namespaces-read-the-base-from-inside-the-package
+  (is (= 0 (:exit (lint-of {"kimun/graph/export.cljc" (ns-source "kimun.graph.export" "kimun.surface.semantic")}))))
+  (is (= 0 (:exit (lint-of {"kimun/graph/edges.cljc" (ns-source "kimun.graph.edges" "kimun.surface.models.store")})))))
 
 (deftest the-real-src-tree-is-clean
   (let [{:keys [exit out]} (lint (str (fs/path repo "src")))]

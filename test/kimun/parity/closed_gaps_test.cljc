@@ -142,7 +142,7 @@
     (readable? p)))
 
 ;; ---------------------------------------------------------------- edges and graph across linked stores
-;; Closed by the linked-store federation of `kimun.surface.edges/index`
+;; Closed by the linked-store federation of `kimun.graph.edges/index`
 ;; (`docs/v2/06`): the caller opens the reachable linked stores and passes them
 ;; under `:linked`, and their documents and sections join qualified by the link
 ;; name (v1 `store/edge_index/federation.qualify`); `--local` leaves them out.

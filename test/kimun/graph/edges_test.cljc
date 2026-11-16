@@ -1,12 +1,12 @@
-(ns kimun.surface.edges-test
+(ns kimun.graph.edges-test
   "v1's edge-index tests at surface level: stores are set up through the CLI
-   (`kimun.cli.main/run`), then the pure `kimun.surface.edges` is read."
+   (`kimun.cli.main/run`), then the pure `kimun.graph.edges` is read."
   (:require [kimun.test-util :as ktu] [babashka.fs :as fs]
             [cheshire.core :as json]
             [clojure.test :refer [deftest is testing]]
             [kimun.cli.main :as main]
             [kimun.cli.store :as cli-store]
-            [kimun.surface.edges :as edges]
+            [kimun.graph.edges :as edges]
             [kimun.host.default :as host]
             [kimun.kernel.ports :as ports]
             [kimun.kernel.store :as store]))

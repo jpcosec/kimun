@@ -14,7 +14,7 @@
             [kimun.cli.errors :as errors]
             [kimun.cli.main :as main]
             [kimun.cli.store :as cli-store]
-            [kimun.surface.edges :as edges]
+            [kimun.graph.edges :as edges]
             [kimun.graph.io :as gio]
             [kimun.graph.query :as q]
             [kimun.graph.store :as gs]

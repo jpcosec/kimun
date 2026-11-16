@@ -3,14 +3,14 @@
    `show`, `validate` and `remove` over the predicate definitions document
    links use (`[name:: [[target]]]`). v1 kept them in the store index YAML;
    here they are nodes of the `relations` tree, read by
-   `kimun.surface.edges/predicates` (v1's defaults while none was written) and
+   `kimun.graph.edges/predicates` (v1's defaults while none was written) and
    written as `TransactionPlan`s through `kimun.kernel.store/commit!`. Every
    command is `(fn [args opts ctx] envelope)`."
   (:require [clojure.string :as str]
             [kimun.cli.commands.docs :as cdocs]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
-            [kimun.surface.edges :as edges]
+            [kimun.graph.edges :as edges]
             [kimun.host.default :as host]
             [kimun.kernel.err :as err]
             [kimun.kernel.ports :as ports]

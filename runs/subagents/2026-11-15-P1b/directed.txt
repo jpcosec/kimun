@@ -1,0 +1,22 @@
+== A
+Testing kimun.graph.traversal-test
+
+Testing kimun.graph.analysis-test
+
+Testing kimun.lint-test
+
+Ran 80 tests containing 1117 assertions.
+0 failures, 0 errors.
+exit=0
+== B
+moved existing store to /tmp/kimun-adhoc-11256541057351972353/kimun-s16-include-13638367283990548901/.kimun.bak-20261115-215339-01M7GXGV14ZC49CASTM0MZ5EG2
+
+Ran 68 tests containing 958 assertions.
+0 failures, 0 errors.
+exit=0
+== C (http + index + sections)
+Testing kimun.cli.sections-test
+
+Ran 126 tests containing 922 assertions.
+0 failures, 0 errors.
+exit=0

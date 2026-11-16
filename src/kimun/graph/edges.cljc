@@ -1,4 +1,4 @@
-(ns kimun.surface.edges
+(ns kimun.graph.edges
   "The graph of a store as a derived view (v1's edge index), pure.
 
    `(index store)` rebuilds, from an opened store value (the `:store` of

@@ -9,7 +9,7 @@
             [kimun.cli.errors :as errors]
             [kimun.cli.main :as main]
             [kimun.cli.store :as cli-store]
-            [kimun.surface.edges :as edges]
+            [kimun.graph.edges :as edges]
             [kimun.surface.links :as links]
             [kimun.host.default :as host]
             [kimun.kernel.ports :as ports]

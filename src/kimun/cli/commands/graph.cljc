@@ -3,7 +3,7 @@
    `neighborhood`, `path`, `cycles`, `order`, `components`, `central`,
    `isolated`, `similar`, `snapshot save|load`, `export` and `ingest-sldb`.
    Every read is the pure engine (`kimun.graph.*`) over one graph: the
-   view derived from the opened store (`kimun.surface.edges`, predicate links
+   view derived from the opened store (`kimun.graph.edges`, predicate links
    included unless `--no-links`) or, with `--snapshot FILE`, a saved snapshot —
    same answer either way (`kimun.graph.store`). Nothing is written
    but the file `snapshot save`, `export -o` or `ingest-sldb -o` names; paths

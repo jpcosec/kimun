@@ -1,7 +1,7 @@
-(ns kimun.surface.edges-parity-test
+(ns kimun.graph.edges-parity-test
   "Differential on real data: the edge index v1 held for 40 real documents of
    23 models (frozen under test/fixtures/parity/edges, no v1 at run time)
-   against what `kimun.surface.edges/index` derives from a store rebuilt from
+   against what `kimun.graph.edges/index` derives from a store rebuilt from
    the same descriptors and texts. Compared: the set of (relation, from, to)
    per scope and relation, both directions, against v1's *composed* view (what
    v1's readers return), plus the type of every endpoint. A difference is
@@ -16,7 +16,7 @@
             [kimun.cli.main :as main]
             [kimun.cli.store :as cli-store]
             [kimun.surface.docs :as tdocs]
-            [kimun.surface.edges :as edges]
+            [kimun.graph.edges :as edges]
             [kimun.surface.models.store :as mstore]
             [kimun.host.default :as host]
             [kimun.kernel.ports :as ports]

@@ -13,7 +13,7 @@
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
             [kimun.surface.docs :as tdocs]
-            [kimun.surface.edges :as edges]
+            [kimun.graph.edges :as edges]
             [kimun.surface.links :as links]
             [kimun.kernel.err :as err]))
 
@@ -52,7 +52,7 @@
 
 (defn- project
   "`{:root :predicates :by-name :ambiguous :by-path}`: the project root, the
-   store's predicate registry (`kimun.surface.edges/predicate-registry`), the
+   store's predicate registry (`kimun.graph.edges/predicate-registry`), the
    tracked documents' absolute paths by name, and their stored sources by
    absolute path. A short name shared by several documents (K8) is not in
    `:by-name`: it is in `:ambiguous`, name → the qualified names it may mean,

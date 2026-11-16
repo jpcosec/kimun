@@ -2,7 +2,7 @@
   "Semantic layer, pure half: tags of a document (differential against a real
    v1 store, frozen under test/fixtures/parity/semantic), the DAG walks of v1
    `tests/store/test_semantic_dag_walk.py`, the empty-store queries of
-   `test_queries_expanded.py` and the export readers."
+   `test_queries_expanded.py`."
   (:require [cheshire.core :as json]
             [clojure.edn :as edn]
             [clojure.string :as str]
@@ -112,18 +112,3 @@
       (if (expected-diff k)
         (is (not= (get d "expected") got) (str k " is listed in EXPECTED-DIFFS.edn but matches"))
         (is (= (get d "expected") got) (str k))))))
-
-(deftest export-snapshot-reads-both-contract-versions
-  (let [v2 {"contract" {"name" "sldb_kgdb_semantic_export" "version" 2 "generated_at" "t"}
-            "producer" {"name" "kimun" "version" "0" "command" []}
-            "store" {"root" "." "store_path" ".kimun" "store_hash" "h"}
-            "models" [{"name" "Spec" "semantics" ["type.knowledge.spec"] "base_models" [] "model_hash" "m"}]
-            "documents" [{"id" "Spec:s1" "name" "s1" "model" "Spec" "path" "s1.md" "semantic_tags" ["type.knowledge.spec"]}]
-            "sections" []
-            "semantic_dag" {"nodes" [{"id" "type" "parents" []} {"id" "type.knowledge.spec" "parents" ["type"]}] "equivalences" {}}}
-        snap (sem/export->snapshot v2)
-        ids (set (map #(get-in % ["identity" "node_id"]) (get snap "nodes")))]
-    (is (= 2 (get-in snap ["metadata" "source_contract" "version"])))
-    (is (every? ids ["sldb://store" "sldb://model/Spec" "sldb://document/Spec:s1" "sldb://semantic_tag/type.knowledge.spec"]))
-    (is (= ids (set (map #(get-in % ["identity" "node_id"]) (get (sem/export->snapshot (assoc-in v2 ["contract" "version"] 1)) "nodes")))))
-    (is (thrown? #?(:clj clojure.lang.ExceptionInfo :cljs ExceptionInfo) (sem/export->snapshot (assoc-in v2 ["contract" "version"] 3))))))

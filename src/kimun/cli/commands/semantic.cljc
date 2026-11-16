@@ -12,6 +12,7 @@
             [kimun.cli.commands.docs :as cdocs]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
+            [kimun.graph.export :as sexport]
             [kimun.surface.semantic :as sem]
             [kimun.host.default :as host]
             [kimun.kernel.err :as err]
@@ -86,7 +87,7 @@
   [args opts {:keys [cwd] :as ctx}]
   (let [o (open opts ctx) s (:store o)
         rel (str (fs/file-name (fs/absolutize (:path o))))
-        payload (sem/export s {:generated-at (cdocs/timestamp) :version (kimun-version) :store-path rel
+        payload (sexport/export s {:generated-at (cdocs/timestamp) :version (kimun-version) :store-path rel
                                :command (into ["semantic" "export"] args)})
         file (or (:output opts) (:o opts))]
     (when file

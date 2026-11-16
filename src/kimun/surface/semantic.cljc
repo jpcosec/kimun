@@ -1,7 +1,7 @@
 (ns kimun.surface.semantic
   "The semantic layer (v1 `sldb.store.semantic*`, `export.py`): the tags of a
-   document, the tag index, the tag DAG with its walks, equivalences and the
-   semantic export. Pure: every function takes values (descriptors, document
+   document, the tag index, the tag DAG with its walks and equivalences (the
+   semantic export lives in `kimun.graph.export`). Pure: every function takes values (descriptors, document
    maps, an opened store) and returns values or TransactionPlans.
 
    Persistence (replaces v1's `semantic_dag.yaml`): a tag is the `:symbol/:term`
@@ -13,7 +13,6 @@
   (:require [clojure.set :as set]
             [clojure.string :as str]
             [kimun.surface.docs :as docs]
-            [kimun.graph.io :as gio]
             [kimun.surface.models.store :as mstore]
             [kimun.kernel.err :as err]
             [kimun.kernel.node :as node]))
@@ -25,7 +24,6 @@
 (def tag-lang "`:lang` of the term node of a tag." "sldb/tag")
 (def parent-context "Name of the context node under which `A is a kind of B` is asserted." "sldb/semantic/parent")
 (def equivalent-context "Name of the context node under which `A means B` is asserted." "sldb/semantic/equivalent")
-(def contract-version "Version of the `sldb_kgdb_semantic_export` contract kimun emits." 2)
 
 ;; ---- tags of a document ----
 
@@ -264,43 +262,3 @@
   (if (seq (get-in (declared store) [:edges [:equivalent a b]]))
     {:changed false}
     {:changed true :plan (plan store "semantic equivalent-add" a b opts (relation-ops host a b equivalent-context (:actor opts)))}))
-
-;; ---- export ----
-
-(defn export
-  "The `sldb_kgdb_semantic_export` payload, version 2 (string keys). `opts`:
-   `:generated-at`, `:version` (kimun's), `:command` (argv), `:store-path`
-   (relative to the project root; nothing absolute is emitted). `sections`
-   is empty until the section index lands."
-  [store {:keys [generated-at version command store-path]}]
-  (let [models (mstore/models store) bases (into {} (map (juxt :name :descriptor)) models) g (dag store)
-        tags (into {} (map (juxt :name :tags)) (document-tags store))]
-    {"contract" {"name" gio/contract-name "version" contract-version "generated_at" generated-at}
-     "producer" {"name" "kimun" "version" version "command" (vec command)}
-     "store" {"root" "." "store_path" store-path "store_hash" (:head store)}
-     "models" (vec (for [m (sort-by :name models)]
-                     {"name" (:name m) "version" (:version m) "model_hash" (:id m)
-                      "semantics" (model-tags (:descriptor m) bases) "base_models" (vec (sort (set (:base (:descriptor m)))))}))
-     "documents" (vec (for [d (sort-by (juxt :model :name) (docs/documents store)) :when (get bases (:model d))
-                            :let [full (docs/document store (:tree d))]]
-                        {"id" (str (:model d) ":" (:name d)) "name" (:name d) "model" (:model d) "path" (:path d)
-                         "source_hash" (:source-hash full) "content_hash" (:content-hash full)
-                         "semantic_tags" (get tags (:name d) [])}))
-     "sections" []
-     "semantic_dag" {"nodes" (mapv (fn [[t ps]] {"id" t "parents" (vec ps)}) (:nodes g))
-                     "equivalences" (into (sorted-map) (map (fn [[k v]] [k (vec v)])) (:equivalences g))}}))
-
-(defn export->snapshot
-  "`kimun.graph.io/semantic-export->snapshot` for a version 1 or
-   version 2 export: a v2 payload is read through the v1 reader (its semantic
-   hash names aliased to v1's letters) and keeps its own contract in the
-   snapshot metadata."
-  [p]
-  (if (= contract-version (get-in p ["contract" "version"]))
-    (let [alias (fn [m from to] (cond-> m (contains? m from) (assoc to (get m from))))
-          v1 (-> p (assoc-in ["contract" "version"] gio/contract-version)
-                 (update "store" alias "store_hash" "hash_a")
-                 (update "models" (partial mapv #(alias % "model_hash" "hash_b")))
-                 (update "documents" (partial mapv #(-> % (alias "source_hash" "hash_c") (alias "content_hash" "hash_d")))))]
-      (assoc-in (gio/semantic-export->snapshot v1) ["metadata" "source_contract"] (get p "contract")))
-    (gio/semantic-export->snapshot p)))

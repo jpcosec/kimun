@@ -1,7 +1,7 @@
 (ns kimun.cli.commands.edges
   "The `kimun edges` group (v1 `sldb edges`): `show`, `check`, `node`,
    `nodes`, `relate`, `unrelate`, `types`, `type-define`, `init` and
-   `rebuild`. The graph is the derived view `kimun.surface.edges` computes from
+   `rebuild`. The graph is the derived view `kimun.graph.edges` computes from
    the opened store at its head — nothing is indexed on disk, so `init` and
    `rebuild` only report. Authored relations and relation types are written as
    `TransactionPlan`s through `kimun.kernel.store/commit!`. Predicate links
@@ -11,7 +11,7 @@
             [kimun.cli.commands.docs :as cdocs]
             [kimun.cli.out :as out]
             [kimun.cli.store :as cli-store]
-            [kimun.surface.edges :as edges]
+            [kimun.graph.edges :as edges]
             [kimun.host.default :as host]
             [kimun.kernel.err :as err]
             [kimun.kernel.ports :as ports]
@@ -67,7 +67,7 @@
 
 (defn- linked
   "The reachable linked stores of `o` as `[{:name :store}]` for the federated
-   view (`kimun.surface.edges/index`): their opened kernel stores under the
+   view (`kimun.graph.edges/index`): their opened kernel stores under the
    link names `kimun.cli.store/linked-stores` gives them, with its cycle guard.
    Empty with `--local`."
   [o opts sub]
@@ -99,7 +99,7 @@
    :from (update from :state name) :to (update to :state name)})
 
 (defn- doc-token
-  "A document endpoint as `kimun.surface.edges` plans take it: the `Model:name`
+  "A document endpoint as `kimun.graph.edges` plans take it: the `Model:name`
    of an `sldb://document/…` id, anything else unchanged."
   [id]
   (let [p "sldb://document/"] (if (str/starts-with? id p) (subs id (count p)) id)))

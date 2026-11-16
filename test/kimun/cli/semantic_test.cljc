@@ -11,6 +11,7 @@
             [kimun.cli.errors :as errors]
             [kimun.cli.main :as main]
             [kimun.cli.store :as cli-store]
+            [kimun.graph.export :as sexport]
             [kimun.surface.docs :as docs]
             [kimun.surface.semantic :as sem]
             [kimun.host.default :as host]))
@@ -155,12 +156,12 @@
             written (json/parse-string (slurp (str (fs/path p "out" "export.json"))))]
         (is (= {:path "out/export.json" :models 2 :documents 2} (select-keys (:data e) [:path :models :documents])))
         (is (= (dissoc payload "contract") (dissoc written "contract")))
-        (is (some #(= "sldb://document/Topology:t1" (get-in % ["identity" "node_id"])) (get (sem/export->snapshot written) "nodes")))))))
+        (is (some #(= "sldb://document/Topology:t1" (get-in % ["identity" "node_id"])) (get (sexport/export->snapshot written) "nodes")))))))
 
 ;; v1 test_semantic_export.py: test_export_kgdb_semantic_payload_api
 (deftest export-payload-api
   (let [p (world)
-        payload (sem/export (opened p) {:generated-at "2026-01-01T00:00:00.000Z" :version "0" :command ["test"] :store-path ".kimun"})]
+        payload (sexport/export (opened p) {:generated-at "2026-01-01T00:00:00.000Z" :version "0" :command ["test"] :store-path ".kimun"})]
     (is (= ["test"] (get-in payload ["producer" "command"])))
     (is (= "Spec:s1" (get-in payload ["documents" 0 "id"])))
     (is (= [] (get payload "sections")) "sections arrive with the section index (deferred)")))

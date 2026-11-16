@@ -2,15 +2,15 @@
   "Where the graph a `graph` command reads comes from, and the one shape it
    has whatever the source (v1 `store/graph/convert.py` and the promise of
    `tests/api/test_graph_source_parity.py`): the derived view of an opened
-   store (`kimun.surface.edges/graph`), a node-link or native snapshot file,
+   store (`kimun.graph.edges/graph`), a node-link or native snapshot file,
    or a semantic export. Every source is brought to the *canonical* graph —
    each node `{:type :semantics :facets}`, each edge `{:from :to :type
    :metadata}` — so a read answers the same from the live store and from the
    snapshot saved from it. Pure: no I/O."
-  (:require [kimun.surface.edges :as edges]
+  (:require [kimun.graph.edges :as edges]
             [kimun.graph.io :as io]
             [kimun.graph.model :as m]
-            [kimun.surface.semantic :as sem]
+            [kimun.graph.export :as sexport]
             [kimun.kernel.err :as err]))
 
 (defn canonical
@@ -24,7 +24,7 @@
 
 (defn from-store
   "The canonical graph derived from an opened `store`. Each node carries the
-   facets `kimun.surface.edges/node` gives it, so they travel in a snapshot.
+   facets `kimun.graph.edges/node` gives it, so they travel in a snapshot.
    `opts`: `:links?` (predicate links found in document text become edges;
    default true — the CLI view), `:exclude-tags` and `:linked` (the reachable
    linked stores, `[{:name string :store opened-store}]`, whose documents join
@@ -42,9 +42,9 @@
 
 (defn from-semantic-export
   "The canonical graph of a semantic export payload, contract version 1 or 2
-   (`kimun.surface.semantic/export->snapshot`). Raises `:graph/bad-export`."
+   (`kimun.graph.export/export->snapshot`). Raises `:graph/bad-export`."
   [payload]
-  (canonical (io/snapshot->graph (sem/export->snapshot payload))))
+  (canonical (io/snapshot->graph (sexport/export->snapshot payload))))
 
 (defn from-snapshot
   "The canonical graph of parsed JSON `data`: a node-link map, a native

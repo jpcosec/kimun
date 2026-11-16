@@ -1,0 +1,14 @@
+== mutation 1: base ns kimun.surface.index.search requires kimun.graph.edges
+RING/DOC: kimun.surface.index.search: the base may not require the graph package: kimun.graph.edges
+1 violation(s) in 111 files
+Error while executing task: lint
+exit=1
+== mutation 2: stale pending entry for kimun.surface.semantic
+35:  {"kimun.surface.semantic" #{"kimun.graph.io"}})
+RING/DOC: kimun.surface.semantic: pending graph crossing no longer needed, remove it from the lint: kimun.graph.io
+1 violation(s) in 111 files
+Error while executing task: lint
+exit=1
+== restored
+identical
+rings and docstrings ok: 111 files
