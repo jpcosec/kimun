@@ -62,6 +62,47 @@
   [{:keys [backend store path]}]
   (diag/report store (file-reader path) {:verify (store/verify backend store)}))
 
+(defn- project-of
+  "`{:root :ex}` for the open store at `path`: the project directory and the store's path
+   relative to it (excluded from what git reports)."
+  [path]
+  (let [root (str (fs/parent (fs/absolutize path)))]
+    {:root root :ex [(str (fs/relativize root (fs/absolutize path)))]}))
+
+(defn- change-scope
+  "Which documents the diagnosis has to open. `{:mode :full}` (everything, as always) when
+   `full?` is set, the project is not in a git repository with commits, or the store has no
+   pointer (`stores seen`); a damaged pointer is `git/bad-pointer`, never ignored. Otherwise
+   `{:mode :git :since :head :changed n :paths #{…}}`: what git says moved between the pointer
+   and the working tree (committed or not, untracked included); a renamed path counts at the
+   old and at the new name. Read-only: nobody moves the pointer here, so a pointer moved while
+   the store lagged is not seen by this path (`--full` sees it)."
+  [path full?]
+  (if full?
+    {:mode :full}
+    (let [{:keys [root ex]} (project-of path)
+          head (try (git/repo-head root)
+                    (catch clojure.lang.ExceptionInfo e
+                      (if (#{:git/not-a-repository :git/no-commits} (:type (ex-data e))) nil (throw e))))
+          since (when head (seen/read-pointer path root))]
+      (if-not since
+        {:mode :full}
+        (let [changes (git/changed-since root since ex)]
+          {:mode :git :since since :head head :changed (count changes)
+           :paths (into #{} (comp (mapcat (juxt :path :from)) (remove nil?)) changes)})))))
+
+(defn- scoped-report
+  "`[report scope]`: the diagnosis of an opened store, opening only the documents `change-scope`
+   says may have changed. `scope` is the `:scope` of the response:
+   `{:mode :git|:full :since :head :changed :opened}` (`:opened`: documents whose file was read)."
+  [{:keys [backend store path]} full?]
+  (let [sc (change-scope path full?)
+        reader (file-reader path)
+        opened (atom 0)
+        report (diag/report store (fn [rel] (swap! opened inc) (reader rel))
+                            {:verify (store/verify backend store) :changed (:paths sc)})]
+    [report {:mode (:mode sc) :since (:since sc) :head (:head sc) :changed (:changed sc) :opened @opened}]))
+
 (def ^:private warning-type
   {:reformatted "docs/file-modified" :edited "docs/file-modified" :missing "docs/file-missing"
    :contract-moved "docs/superseded" :parser-unavailable "docs/parser-unavailable"
@@ -169,9 +210,9 @@
    `{:observed-at :tracked :valid :signals :counts :summary}`. Shared by
    `stores sense` and every beat of `stores heartbeat`, so both report the
    same signals."
-  [command dir]
+  [command dir full?]
   (let [{:keys [descriptor store path] :as opened} (cli-store/open! dir)
-        report (diagnose opened)
+        [report scope] (scoped-report opened full?)
         signals (signals/from-report report)]
     (out/ok command {:store (store-ref descriptor path)
                      :revision (:head store)
@@ -180,7 +221,8 @@
                             :valid (:valid report)
                             :signals signals
                             :counts (signals/counts signals)
-                            :summary (signals/summary signals)}})))
+                            :summary (signals/summary signals)
+                            :scope scope}})))
 
 (defn sense
   "`stores sense [--once]`: one read-only observation of tracked documents.
@@ -189,17 +231,16 @@
    the single observation explicit; this command never loops (the loop is
    `stores heartbeat`). Data: `{:mode :once :observed-at :tracked :valid :signals
    :counts :summary}`. `:observed-at` is the wall-clock of this response only;
-   it is never written to the store as an event."
-  [_args opts {:keys [env cwd]}]
-  (update (observe "stores sense" (cli-store/resolve-store opts env cwd))
-          :data #(merge (array-map :mode :once) %)))
+   it is never written to the store as an event.
 
-(defn- project-of
-  "`{:root :ex}` for the open store at `path`: the project directory and the store's path
-   relative to it (excluded from what git reports)."
-  [path]
-  (let [root (str (fs/parent (fs/absolutize path)))]
-    {:root root :ex [(str (fs/relativize root (fs/absolutize path)))]}))
+   With a git repository that has commits and a pointer (`stores seen`), only the documents
+   whose path git reports changed since the pointer are opened (`change-scope`); `--full`, no
+   git, no commits or no pointer open them all. `:scope` says which path was taken
+   (`{:mode :git|:full :since :head :changed :opened}`). Nobody moves the pointer here: a pointer
+   moved while the store lagged is invisible to the git path; `--full` sees it."
+  [_args opts {:keys [env cwd]}]
+  (update (observe "stores sense" (cli-store/resolve-store opts env cwd) (:full opts))
+          :data #(merge (array-map :mode :once) %)))
 
 (defn changed
   "`stores changed [--since COMMIT]`: read-only, asks git what changed between COMMIT and the
@@ -309,7 +350,7 @@
         runtime (Runtime/getRuntime)]
     (.addShutdownHook runtime hook)
     (try
-      (let [r (heartbeat/run {:observe #(errors/wrap (fn [] (observe "stores heartbeat" dir)))
+      (let [r (heartbeat/run {:observe #(errors/wrap (fn [] (observe "stores heartbeat" dir (:full opts))))
                               :emit emit-line!
                               :wait #(true? (deref stop % false))
                               :stop? #(realized? stop)
@@ -331,13 +372,14 @@
   "`stores health`: the verdict of the store (`kimun.surface.diagnostics/health`):
    `{:status :summary :findings :actions :next}` with `:status` `:ok`,
    `:degraded` (a command repairs it: `:next` is `run: …`) or `:needs-human`
-   (`:next` is `inspect: …`). Each finding is also a warning."
+   (`:next` is `inspect: …`). Each finding is also a warning. `:data` adds `:scope`, and
+   the git path of `stores sense` applies (`--full` opens every document)."
   [_args opts {:keys [env cwd]}]
   (let [{:keys [descriptor store path] :as opened} (cli-store/open! (cli-store/resolve-store opts env cwd))
-        report (diagnose opened)]
+        [report scope] (scoped-report opened (:full opts))]
     (out/ok "stores health" {:store (store-ref descriptor path)
                              :revision (:head store)
-                             :data (assoc (diag/health report) :summary (:summary report))
+                             :data (assoc (diag/health report) :summary (:summary report) :scope scope)
                              :warnings (mapv finding-warning (:findings report))})))
 
 (defn- update-meta
@@ -693,6 +735,7 @@
    :content {:ref "MODE" :desc "Content mode of the store: by-reference (default) or inline (stores init)"}
    :apply {:desc "Write what the comparison found (stores reconcile)" :coerce :boolean}
    :since {:ref "COMMIT" :desc "Commit to compare the working tree with (stores changed; default: the pointer). `stores seen --set COMMIT` reuses the shared --set option of docs"}
+   :full {:desc "Open every tracked document instead of only what git says changed since the pointer (stores sense, health, heartbeat)" :coerce :boolean}
    :once {:desc "Make the single observation explicit (stores sense; no daemon)" :coerce :boolean}
    :ids {:desc "List the id, class and bytes of every object (stores unreachable)" :coerce :boolean}
    :max-bytes {:ref "N" :desc "Largest loose object, in bytes, that `stores pack` moves into a pack (default 4096, at most 16777216)"}

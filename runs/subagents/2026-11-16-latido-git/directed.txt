@@ -1,0 +1,29 @@
+Testing kimun.cli.beat-git-test
+Testing kimun.cli.sense-test
+Testing kimun.cli.heartbeat-test
+Testing kimun.surface.heartbeat-test
+Testing kimun.surface.diagnostics-test
+Testing kimun.surface.signals-test
+Ran 48 tests containing 481 assertions.
+0 failures, 0 errors.
+---
+Testing kimun.cli.diagnostics-test
+FAIL in (health-names-the-document-the-category-and-the-command) (/tmp/kimun-beat-wt/test/kimun/cli/diagnostics_test.cljc:227)
+expected: (= {:status :ok, :findings [], :actions [], :next nil} (dissoc (:data (run p "stores" "health")) :summary))
+  actual: (not (= {:status :ok, :findings [], :actions [], :next nil} {:status :ok, :findings [], :actions [], :next nil, :scope {:mode :full, :since nil, :head nil, :changed nil, :opened 1}}))
+Testing kimun.cli.stores-test
+Testing kimun.cli.changed-test
+Testing kimun.cli.seen-test
+moved existing store to /tmp/kimun-adhoc-9011387861589426699/kimun-seen-inc-2365399637122925275/.kimun.bak-20261116-005951-01M7H85S0EHR3AJ4CZ2XAC68F2
+Testing kimun.cli.tour-test
+Ran 53 tests containing 768 assertions.
+1 failures, 0 errors.
+---
+Testing kimun.cli.cold-cache-test
+Testing kimun.cli.fault-injection-test
+Testing kimun.lint-test
+Ran 17 tests containing 152 assertions.
+0 failures, 0 errors.
+
+Ran 13 tests containing 419 assertions.
+0 failures, 0 errors.

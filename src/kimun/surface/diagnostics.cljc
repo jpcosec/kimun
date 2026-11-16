@@ -180,11 +180,38 @@
                                    :rebuilt-content-hash now-hash))]
           (if-let [n (noise-of verified-text)] (noisy base n) [:ok base]))))))
 
-(defn- diagnose [store env shared read-file doc]
+(defn- unread?
+  "True when the file of `doc` is not to be opened: a set of `changed` paths was handed in
+   (what git says moved) and the path of `doc` is not in it."
+  [changed doc]
+  (boolean (and changed (:path doc) (not (contains? changed (:path doc))))))
+
+(defn- classify-unread
+  "`[category extras]` of a typed document whose file was not opened because git does not
+   report its path as changed: the file counts as valid, and only what comes from the store
+   is checked (orphan, the recorded contract against the one in force). The checks that need
+   the text (unextractable, rebuild mismatch, structural noise) are not made."
+  [store env doc]
+  (let [host (:host store)
+        pc (parse-contract/compare-recorded host env (:parse-contract doc) (:model-id doc) (tdocs/current-reading store (:model-id doc)))
+        contract-moved? (or (= :superseded (:state doc)) (= :changed (:status pc)))
+        base {:content-ok true :fields-ok (= :intact (:state doc))
+              :contract-ok (and (not contract-moved?) (not= :orphan (:state doc))
+                                (contains? #{:same :unrecorded} (:status pc)))
+              :contract (select-keys pc [:status :changed])}]
+    (cond
+      (= :orphan (:state doc)) [:orphan base]
+      (= :inconsistent (:status pc)) [:contract-inconsistent base]
+      (= :parser-unavailable (:status pc)) [:parser-unavailable base]
+      contract-moved? [:contract-moved base]
+      :else [:ok base])))
+
+(defn- diagnose [store env shared read-file changed doc]
   (let [descriptor (or (tdocs/contract-descriptor store doc)
                        (some->> (:model doc) (mstore/find-model store) :descriptor))
-        text (when (:path doc) (read-file (:path doc)))
-        [category extras] (classify store env doc descriptor text)
+        skip? (unread? changed doc)
+        text (when (and (:path doc) (not skip?)) (read-file (:path doc)))
+        [category extras] (if skip? (classify-unread store env doc) (classify store env doc descriptor text))
         ;; a short name shared by several documents is an ambiguous alias (K8): commands get the qualified name
         token (if (contains? shared (:name doc)) (:qualified doc) (:name doc))
         f (merge {:category category :model (:model doc) :document (:name doc) :qualified (:qualified doc) :tree (:tree doc)
@@ -201,10 +228,11 @@
    fingerprint, its structure against the registered root when the text
    changed or to detect `rebuild-mismatch` (`10 §11.1`), and its parse contract
    against the one in force."
-  [store env shared read-file doc]
+  [store env shared read-file changed doc]
   (let [host (:host store)
-        text (when (:path doc) (read-file (:path doc)))
-        content-ok (and (some? text) (= (:fingerprint doc) (tdocs/fingerprint host text)))
+        skip? (unread? changed doc)
+        text (when (and (:path doc) (not skip?)) (read-file (:path doc)))
+        content-ok (or skip? (and (some? text) (= (:fingerprint doc) (tdocs/fingerprint host text))))
         pc (parse-contract/compare-recorded host env (:parse-contract doc) (:class doc))
         rebuilt (when (and (some? text)
                            (or (not content-ok) (contains? #{:same :unrecorded} (:status pc))))
@@ -215,7 +243,7 @@
                             (some? rebuilt)
                             (not= (:merkle-root doc) rebuilt))
         category (cond
-                   (nil? text) :missing
+                   (and (nil? text) (not skip?)) :missing
                    (not content-ok) (if (= (:merkle-root doc) rebuilt)
                                       :reformatted
                                       :edited)
@@ -277,7 +305,13 @@
 (defn report
   "The diagnosis of `store`. `read-file` is `(fn [relative-path] text-or-nil)`;
    `opts` may carry `:verify`, the result of `kimun.kernel.store/verify`
-   (`{:ok? :checked :bad}`), which adds the store-level finding `:corrupt`.
+   (`{:ok? :checked :bad}`), which adds the store-level finding `:corrupt`, and
+   `:changed`, a set of project-relative paths (nil: every document is opened, as always).
+   With a set, a document whose path is not in it is not opened nor hashed: its file counts
+   as valid and only the checks that come from the store are made (orphan, contract moved,
+   inconsistent or parser unavailable); unextractable, rebuild mismatch and structural noise
+   need the text and are made only for the documents that are opened. A document without a
+   file is always treated as before.
    A document finding also carries `:qualified` and `:tree`; when several
    documents share a short name, `:action` and the message name each by its
    qualified name, so the repair command is never ambiguous (K8).
@@ -296,7 +330,7 @@
    reported and asks for a human but does not block (v1: noise already tracked
    is reported without blocking); noise brought in by a hand edit does block."
   ([store read-file] (report store read-file {}))
-  ([store read-file {:keys [verify]}]
+  ([store read-file {:keys [verify changed]}]
    (let [damaged? (and verify (not (:ok? verify)))
          env (parse-contract/environment)
          ;; a store with damaged objects may not be readable at all (e.g. a lost mmap node of the
@@ -307,16 +341,16 @@
                                                generic (tdocs/generic-documents store)
                                                shared (set (keep (fn [[n c]] (when (> c 1) n))
                                                                  (frequencies (map :name (concat all generic)))))
-                                               ds (into (mapv #(diagnose store env shared read-file %) all)
-                                                        (map #(diagnose-generic store env shared read-file %))
+                                               ds (into (mapv #(diagnose store env shared read-file changed %) all)
+                                                        (map #(diagnose-generic store env shared read-file changed %))
                                                         generic)]
                                            (walk/postwalk identity [ds (mapv #(model-finding ds %) (mstore/models store))])))
                          (let [all (tdocs/documents store)
                                                generic (tdocs/generic-documents store)
                                                shared (set (keep (fn [[n c]] (when (> c 1) n))
                                                                  (frequencies (map :name (concat all generic)))))
-                                               ds (into (mapv #(diagnose store env shared read-file %) all)
-                                                        (map #(diagnose-generic store env shared read-file %))
+                                               ds (into (mapv #(diagnose store env shared read-file changed %) all)
+                                                        (map #(diagnose-generic store env shared read-file changed %))
                                                         generic)]
                            [ds (mapv #(model-finding ds %) (mstore/models store))]))
          corrupt (when (and verify (not (:ok? verify)))

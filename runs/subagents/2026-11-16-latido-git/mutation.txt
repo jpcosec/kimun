@@ -1,0 +1,29 @@
+== M1: opens every document (changed set ignored)
+      1 17 failures, 0 errors.
+     10 FAIL in (a-changed-document-is-the-only-one-opened) (/tmp/kimun-beat-wt/test/kimun/cli/beat_git_test.cljc:101)
+      1 FAIL in (contract-moved-is-seen-without-any-file-changing) (/tmp/kimun-beat-wt/test/kimun/cli/beat_git_test.cljc:145)
+      2 FAIL in (deleted-and-moved-documents) (/tmp/kimun-beat-wt/test/kimun/cli/beat_git_test.cljc:122)
+      4 FAIL in (nothing-changed-opens-nothing) (/tmp/kimun-beat-wt/test/kimun/cli/beat_git_test.cljc:93)
+      1 Ran 11 tests containing 207 assertions.
+== M2: rename counts only at the new name
+      1 5 failures, 0 errors.
+      1 FAIL in (a-rename-counts-at-both-names) (/tmp/kimun-beat-wt/test/kimun/cli/beat_git_test.cljc:138)
+      4 FAIL in (deleted-and-moved-documents) (/tmp/kimun-beat-wt/test/kimun/cli/beat_git_test.cljc:122)
+      1 Ran 11 tests containing 207 assertions.
+== M3: unread documents skip the contract check (always :ok)
+      1 4 failures, 0 errors.
+      4 FAIL in (contract-moved-is-seen-without-any-file-changing) (/tmp/kimun-beat-wt/test/kimun/cli/beat_git_test.cljc:145)
+      1 Ran 11 tests containing 207 assertions.
+== M4: --full ignored
+      1 28 failures, 0 errors.
+     12 FAIL in (a-changed-document-is-the-only-one-opened) (/tmp/kimun-beat-wt/test/kimun/cli/beat_git_test.cljc:101)
+      1 FAIL in (a-damaged-pointer-is-the-declared-error) (/tmp/kimun-beat-wt/test/kimun/cli/beat_git_test.cljc:200)
+      4 FAIL in (contract-moved-is-seen-without-any-file-changing) (/tmp/kimun-beat-wt/test/kimun/cli/beat_git_test.cljc:145)
+      4 FAIL in (deleted-and-moved-documents) (/tmp/kimun-beat-wt/test/kimun/cli/beat_git_test.cljc:122)
+      3 FAIL in (full-forces-the-whole-path-even-with-a-pointer) (/tmp/kimun-beat-wt/test/kimun/cli/beat_git_test.cljc:194)
+      4 FAIL in (nothing-changed-opens-nothing) (/tmp/kimun-beat-wt/test/kimun/cli/beat_git_test.cljc:93)
+      1 Ran 11 tests containing 207 assertions.
+== M5: unread documents skip the orphan check
+      1 1 failures, 0 errors.
+      1 FAIL in (orphan-is-seen-without-opening-the-file) (/tmp/kimun-beat-wt/test/kimun/cli/beat_git_test.cljc:153)
+      1 Ran 11 tests containing 207 assertions.

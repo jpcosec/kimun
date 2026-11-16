@@ -238,7 +238,7 @@
       (is (= "inspect: login.md" (get-in h [:data :next]))))
     (is (true? (:ok (run p "docs" "update" "login"))) "the named command repairs it")
     (is (= {:status :ok :findings [] :actions [] :next nil}
-           (dissoc (:data (run p "stores" "health")) :summary)))))
+           (dissoc (:data (run p "stores" "health")) :summary :scope)))))
 
 (deftest update-repairs-what-needs-no-decision
   ;; v1: test_store_is_valid_again_after_update
