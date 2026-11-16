@@ -1,0 +1,11 @@
+
+Testing kimun.cli.declare-root-test
+
+Testing kimun.cli.declare-ask-test
+
+Testing kimun.cli.declare-project-test
+
+Testing kimun.cli.main-test
+
+Ran 23 tests containing 173 assertions.
+0 failures, 0 errors.
