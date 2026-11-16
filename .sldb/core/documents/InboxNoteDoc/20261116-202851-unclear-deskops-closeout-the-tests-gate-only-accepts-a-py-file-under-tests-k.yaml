@@ -1,0 +1,22 @@
+name: 20261116-202851-unclear-deskops-closeout-the-tests-gate-only-accepts-a-py-file-under-tests-k
+path: desk/inbox/20261116-202851-unclear-deskops-closeout-the-tests-gate-only-accepts-a-py-file-under-tests-k.md
+source_hash: 931a6e8e9ad7da105dae4e0e2b40db252fe1cec8c6f1a5933c6b53f6dcb866db
+content_hash: e84e8af39fa845b3b87fba9c68bdb0187937bffc793e7b6387479689b35ea1bb
+field_hashes:
+  kind: 683144a12969e0fd85512737e57b4db93ed15ee760906165a5516d581a77889a
+  sender_project: 35d53354ac301d8fb5ae94f2c3b19cc261a42cc09f6ee6b7a60b5c686b776d77
+  target_project: 35d53354ac301d8fb5ae94f2c3b19cc261a42cc09f6ee6b7a60b5c686b776d77
+  created_at: fe5f0aefe5662dfab96b1d2cb19d24b5df461dc9adbbf1d549a728ce1c05643c
+  status: 35ff74aeea25311f4fe759a6b762c8cd41a79adb23dd5615b92cf215175a63e5
+  title: 0a74452544ad2c49fa817c475cbb8fca7de80872ed6c7e607cd5a57011a2da23
+  body: 1348e84f7cd90cf4f33de894328431538de424ece064dbe5a4215c8f6e23f465
+semantic_tags:
+- representation.markdown
+- source.document.markdown
+- type.desk.inbox-note
+- workspace.desk.inbox
+provenance:
+  by: agent
+  at: '2026-11-16T23:29:58Z'
+  authority: generated
+  via: save_document_payload

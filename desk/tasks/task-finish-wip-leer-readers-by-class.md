@@ -1,26 +1,26 @@
 ---
 sldb:
   by: agent
-  at: '2026-11-16T23:16:38Z'
+  at: '2026-11-16T23:28:15Z'
   authority: generated
   via: save_document_payload
 id: task-finish-wip-leer-readers-by-class
-status: active
+status: ready_for_testing
 summary: ''
 tags:
 - workspace:desk
 - artifact:task
-current_node: ritual-testing
+current_node: ritual-closeout
 history:
 - task_activates
+- task_hands_to_closeout
 references:
+- 2e350e22b7a8e4ebf7eb93f244beed6899c89d46
+- test/kimun/surface/reading_test.cljc
+- test/kimun/cli/reading_test.cljc
+- runs/subagents/2026-11-16-leer/REPORT.md
+- runs/subagents/2026-11-16-leer/coordinator/full-test.txt
 - docs/v2/drafts/diseno-leer.md
-- docs/v2/drafts/diseno-evaluar.md
-- docs/v2/drafts/diseno-generar.md
-- docs/v2/drafts/traspaso-2026-11-17.md
-- docs/coordinacion/reglas-ejecutor.md
-- docs/coordinacion/validate.sh
-- AGENTS.md
 depends_on:
 - task-toolchain-on-robocop2-and-suite-reproduced
 pills: []

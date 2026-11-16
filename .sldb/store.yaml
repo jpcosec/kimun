@@ -266,6 +266,15 @@ include:
     name: review-task-toolchain-on-robocop2-and-suite-reproduced-evidence-external-1
   - path: desk/reviews/task-toolchain-on-robocop2-and-suite-reproduced/evidence-external-2.md
     name: review-task-toolchain-on-robocop2-and-suite-reproduced-evidence-external-2
+  - path: desk/reviews/task-finish-wip-leer-readers-by-class/evidence-tests-1.md
+    name: review-task-finish-wip-leer-readers-by-class-evidence-tests-1
+  - path: desk/reviews/task-finish-wip-leer-readers-by-class/evidence-commit-1.md
+    name: review-task-finish-wip-leer-readers-by-class-evidence-commit-1
+  - path: desk/reviews/task-finish-wip-leer-readers-by-class/evidence-atom-1.md
+    name: review-task-finish-wip-leer-readers-by-class-evidence-atom-1
+- model: InboxNoteDoc
+  paths:
+  - desk/inbox/20261116-202851-unclear-deskops-closeout-the-tests-gate-only-accepts-a-py-file-under-tests-k.md
 graph_backend: networkx
 policy: {}
 tag_models:

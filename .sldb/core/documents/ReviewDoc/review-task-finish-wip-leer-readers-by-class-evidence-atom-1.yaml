@@ -1,0 +1,36 @@
+name: review-task-finish-wip-leer-readers-by-class-evidence-atom-1
+path: desk/reviews/task-finish-wip-leer-readers-by-class/evidence-atom-1.md
+source_hash: c46b85ab4be295a7062f8805fa748180f7087fde37cb13f7e73795d9b51fddfb
+content_hash: dca58daf8bcc8edd2a697bb54e52154edb590b89d583306568adac773268ed4a
+field_hashes:
+  id: dc90bcde19d96189e69244469c73dc3885325ba59be330d61779b121778b4148
+  title: 96706bc27849c5b0f8f90bee51ed7dc6e63866afd2db0f3965b06472701b5503
+  kind: edecec53ab11f560816e75a17681eb83886beace01d7fb927d99707d3d031aac
+  fact: c833c202b5b45ac10909767bb422916db457ddd48188a4ee591f0618893df0ba
+  value: 6c275e110973fcea9042973188d309425a69710ae03022399dabd64f8ee109ad
+  subject: 35b6c0acaf05f7ff563f6d60e6fda7ddf19c9ca65cb6a54f752a46b9bcc99645
+  subject_ref: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+  engine: 9eeef991471c47a0f748cc581c93b036c7560af99f0fcdf1ed75357a5551f1ac
+  actor: 35d53354ac301d8fb5ae94f2c3b19cc261a42cc09f6ee6b7a60b5c686b776d77
+  run_dir: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+  input_sha256: 2fe5c90c261ce8355e6a96d4943d2f45a31f3d000b168242551a20d5e581b28e
+  output_sha256: 12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126
+  verdict: d288c584af270151f7b7cd7977b94160ce1d7b501dee2d6308f2ac84ebaacc99
+  reason: b1ca18094837220b6b2ec9dd6f69c42b54806da60ca5c97a955461e096eb27cf
+  created_at: 41bf74e4844557cda39ee093bc45227e7f11e2bded8b0bb838e395789b3ccafe
+  disposed_at: 41bf74e4844557cda39ee093bc45227e7f11e2bded8b0bb838e395789b3ccafe
+  disposed_by: 35d53354ac301d8fb5ae94f2c3b19cc261a42cc09f6ee6b7a60b5c686b776d77
+  summary: e718b8e0881b116a14b9b102c9fd06204158abc16e3d46d53e593885c0fb6230
+  disposition: 85f2b46dfd8307e611d4c369beb987bddda1c2bb42f3ead2dea1505edb4304e8
+  tags: 26f66ebae91f717518f0d0c6585e99f1cbd539bcb3504598ddeb732dec3a0af9
+semantic_tags:
+- representation.markdown
+- source.document.markdown
+- type.workflow.review
+- workspace.desk.runs
+- workspace:desk
+provenance:
+  by: agent
+  at: '2026-11-16T23:28:21Z'
+  authority: generated
+  via: create_document
