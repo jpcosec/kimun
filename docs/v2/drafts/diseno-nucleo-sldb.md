@@ -4,6 +4,13 @@ Borrador de Claude, 2026-11-16. Sigue a `diseno-leer.md §6`. Entre «» va el d
 elecciones mías. La partición de §3 es una estimación hecha leyendo inventarios: nada de ella está
 probado, y no leí el código de sldb por dentro.
 
+> **Mal planteado; no construir sobre §3 ni §5 (2026-11-16, mismo día).** El dueño corrigió el marco
+> dos veces después de escrito: «kgdb mas que congelado, está integrado en sldb. Creo que conocer eso
+> te va a desbloquear lo de las reglas» y, sobre el núcleo como grafo más evaluación de predicados,
+> «bueno, eso y entender (y migrar bien) los modelos». El núcleo de sldb son dos mitades (el grafo con
+> su lenguaje de predicados, y los modelos), no la lista de funciones de API que reparte la tabla de
+> §3; las reglas no son «difíciles» y las escrituras no son «la decisión». Se rehace desde ahí.
+
 ## 1. Lo que dijo el dueño
 
 «esto no está listo hasta que no sea capaz de 1- Ser el nucleo nuevo de sldb y 2- Usar algun proyecto
