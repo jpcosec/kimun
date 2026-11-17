@@ -235,7 +235,6 @@ include:
 - model: TaskDecisionDoc
   paths:
   - desk/tasks/task-open-owner-decisions-that-hold-work.md
-  - desk/tasks/task-owner-decides-what-new-core-of-sldb-means.md
 - model: ReviewDoc
   paths:
   - path: desk/reviews/task-toolchain-on-robocop2-and-suite-reproduced/bundle-1.md
@@ -282,6 +281,14 @@ include:
     name: review-task-readers-for-every-class-of-the-deskops-desk-evidence-commit-1
   - path: desk/reviews/task-readers-for-every-class-of-the-deskops-desk/evidence-document-1.md
     name: review-task-readers-for-every-class-of-the-deskops-desk-evidence-document-1
+  - path: desk/reviews/task-owner-decides-what-new-core-of-sldb-means/owner-1.md
+    name: review-task-owner-decides-what-new-core-of-sldb-means-owner-1
+  - path: desk/reviews/task-owner-decides-what-new-core-of-sldb-means/evidence-commit-1.md
+    name: review-task-owner-decides-what-new-core-of-sldb-means-evidence-commit-1
+  - path: desk/reviews/task-owner-decides-what-new-core-of-sldb-means/evidence-document-1.md
+    name: review-task-owner-decides-what-new-core-of-sldb-means-evidence-document-1
+  - path: desk/reviews/task-owner-decides-what-new-core-of-sldb-means/owner-2.md
+    name: review-task-owner-decides-what-new-core-of-sldb-means-owner-2
 - model: InboxNoteDoc
   paths:
   - desk/inbox/20261116-202851-unclear-deskops-closeout-the-tests-gate-only-accepts-a-py-file-under-tests-k.md

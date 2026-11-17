@@ -3,10 +3,10 @@ model_ref: deskops.models:TaskDecisionDoc
 path: ''
 documents_index: .sldb/core/documents/TaskDecisionDoc.yaml
 sections_index: .sldb/runtime/sections/TaskDecisionDoc.yaml
-model_hash: 6ac47da50aaebccc5fa4b54fae78d4088b9e9321d4cc280d6bb0d5051a2fd67b
-roster_hash: d91d9294fde26708961af6adde878ad425a7766e1c0ac8a22ca732b5ebd11f9f
+model_hash: bc85c926af40553441b3f30028adc7978499a4658e77c718f4f4f1437c60f708
+roster_hash: 610fd59c26ef7782f6c0c73aa0cb27cbd3e4e46e3226a0fd8d4dbcd74148c961
 contract_hash: 8977e4980584dafddb756289693401a7776fe2643c18afab6bd751213fddea69
-documents_count: 2
+documents_count: 1
 version: 1
 canonical: false
 family: null
