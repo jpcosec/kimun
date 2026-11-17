@@ -93,11 +93,14 @@ nombres). Por debajo no hay una interfaz de persistencia: 139 archivos de `api/`
 internos del store. El problema medido de sldb es de rendimiento («reprocesar lo que no cambió»:
 `stores build --check` 50 min; `deskops doctor` 10–14 s, de ellos 7,8 s en dos subprocesos).
 
-Mi lectura, sin confirmar por el dueño: «núcleo» significa que sldb sigue existiendo para quienes lo
-importan, y que lo que hace por debajo —saber qué cambió, índice, aristas, preguntar— lo hace kimun.
-Lo que eso exige, y hoy no existe: una forma de que Python hable con kimun sin lanzar un proceso por
-llamada, y que kimun responda las preguntas que hoy responden el índice de aristas, las reglas y las
-vistas de sldb. No se diseña hasta que el dueño diga cuál de las dos cosas quiso decir.
+El dueño, 2026-11-16 (`sesion-2026-11-15.md`, sección de ese día): «No, puta, para todo lo que se pueda implementar facilmente, implementemoslo en kimun. Pero muy posiblemente haya cosas "perifericas" para las que sea mas facil hacer adaptadores a python o sdk»
+
+Lo que sigue de eso, y es lectura mía: mi lectura anterior (sldb sigue como fachada para quienes lo
+importan y kimun trabaja solo por debajo) queda descartada. Lo que sldb hace y es fácil de hacer en
+kimun se implementa en kimun; lo periférico puede ir por adaptadores a Python o un SDK. Falta, antes
+de diseñar: un inventario de lo que sldb hace y de lo que sus consumidores usan de verdad, partido en
+«kimun ya lo hace», «fácil en kimun», «difícil» y «periférico (adaptador o SDK)». El dueño no fijó
+dónde pasa la línea entre fácil y periférico.
 
 ## 7. Decidido al implementar (corte 1, 2026-11-16)
 
